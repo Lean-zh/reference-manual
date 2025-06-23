@@ -52,67 +52,83 @@ def zhdocstring : BlockRoleExpander
           | throwError "Failed to parse docstring as Markdown"
         ast.blocks.mapM (blockFromMarkdownWithLean [zhName.2])
 
-    let declType ← Block.Docstring.DeclType.ofName enName.2 (hideFields := false) (hideStructureConstructor := false)
+    let enDeclType ← Block.Docstring.DeclType.ofName enName.2 (hideFields := false) (hideStructureConstructor := false)
+    let zhDeclType ← Block.Docstring.DeclType.ofName zhName.2 (hideFields := false) (hideStructureConstructor := false)
 
-    let signature ← Signature.forName enName.2
+    let enSignature ← Signature.forName enName.2
 
-    let extras ← getExtras enName.2 declType
+    let extras ← getExtras enName.2 zhName.2 enDeclType zhDeclType
 
-    pure #[← ``(Verso.Doc.Block.other (Verso.Genre.Manual.Block.docstring $(quote enName.2) $(quote declType) $(quote signature) $(quote customLabel)) #[$(blockStx ++ extras),*])]
+    pure #[← ``(Verso.Doc.Block.other (Verso.Genre.Manual.Block.docstring $(quote enName.2) $(quote enDeclType) $(quote enSignature) $(quote customLabel)) #[$(blockStx ++ extras),*])]
 
   | _args, more => throwErrorAt more[0]! "Unexpected block argument"
 where
-    getExtras (name : Name) (declType : Block.Docstring.DeclType) : DocElabM (Array Term) :=
-    match declType with
-    | .structure isClass constructor? _ fieldInfo parents _ => do
-      let ctorRow : Option Term ← constructor?.mapM fun constructor => do
-        let header := if isClass then "Instance Constructor" else "Constructor"
-        let sigDesc : Array Term ←
-          if let some docs := constructor.docstring? then
-            let some mdAst := MD4Lean.parse docs
-              | throwError "Failed to parse docstring as Markdown"
-            mdAst.blocks.mapM (blockFromMarkdownWithLean [name, constructor.name])
-          else pure (#[] : Array Term)
-        let sig ← `(Verso.Doc.Block.other (Verso.Genre.Manual.Block.internalSignature $(quote constructor.hlName) none) #[$sigDesc,*])
-        ``(Verso.Doc.Block.other (Verso.Genre.Manual.Block.docstringSection $(quote header)) #[$sig])
+    getExtras (enName: Name) (zhName : Name) (enDeclType : Block.Docstring.DeclType) (zhDeclType:Block.Docstring.DeclType) : DocElabM (Array Term) :=
+    match enDeclType with
+    | .structure enIsClass enConstructor? _ enFieldInfo enParents _ => do
+      match zhDeclType with
+      | .structure zhIsClass zhConstructor? _ zhFieldInfo zhParents _ => do
+        match enConstructor? with
+        | none => pure (#[] : Array Term)
+        | some enConstructor =>
+          let ctorRow : Option Term ← zhConstructor?.mapM fun zhConstructor => do
+            let header := if zhIsClass then "Instance Constructor" else "Constructor"
+            let sigDesc : Array Term ←
+              if let some docs := zhConstructor.docstring? then
+                let some mdAst := MD4Lean.parse docs
+                  | throwError "Failed to parse docstring as Markdown"
+                mdAst.blocks.mapM (blockFromMarkdownWithLean [enName, enConstructor.name])
+              else pure (#[] : Array Term)
+            let sig ← `(Verso.Doc.Block.other (Verso.Genre.Manual.Block.internalSignature $(quote enConstructor.hlName) none) #[$sigDesc,*])
+            ``(Verso.Doc.Block.other (Verso.Genre.Manual.Block.docstringSection $(quote header)) #[$sig])
 
-      let parentsRow : Option Term ← do
-        if parents.isEmpty then pure none
-        else
-          let header := "Extends"
-          let inh ← ``(Verso.Doc.Block.other (Verso.Genre.Manual.Block.inheritance $(quote name) $(quote parents)) #[])
-          some <$> ``(Verso.Doc.Block.other (Verso.Genre.Manual.Block.docstringSection $(quote header)) #[$inh])
-
-      let fieldsRow : Option Term ← do
-        let header := if isClass then "Methods" else "Fields"
-        let fieldInfo := fieldInfo.filter (·.subobject?.isNone)
-        let fieldSigs : Array Term ← fieldInfo.mapM fun i => do
-          let inheritedFrom : Option Nat :=
-            i.fieldFrom.head?.bind (fun n => parents.findIdx? (·.name == n.name))
-          let sigDesc : Array Term ←
-            if let some docs := i.docString? then
-              let some mdAst := MD4Lean.parse docs
-                | throwError "Failed to parse docstring as Markdown"
-              mdAst.blocks.mapM (blockFromMarkdownWithLean <| name :: (constructor?.map ([·.name])).getD [])
+          let parentsRow : Option Term ← do
+            if enParents.isEmpty then pure none
             else
-              pure (#[] : Array Term)
-          ``(Verso.Doc.Block.other (Verso.Genre.Manual.Block.fieldSignature $(quote i.visibility) $(quote i.fieldName) $(quote i.type) $(quote inheritedFrom) $(quote <| parents.map (·.parent))) #[$sigDesc,*])
-        if fieldSigs.isEmpty then pure none
-        else some <$> ``(Verso.Doc.Block.other (Verso.Genre.Manual.Block.docstringSection $(quote header)) #[$fieldSigs,*])
+              let header := "Extends"
+              let inh ← ``(Verso.Doc.Block.other (Verso.Genre.Manual.Block.inheritance $(quote enName) $(quote zhParents)) #[])
+              some <$> ``(Verso.Doc.Block.other (Verso.Genre.Manual.Block.docstringSection $(quote header)) #[$inh])
 
-      pure <| ctorRow.toArray ++ parentsRow.toArray ++ fieldsRow.toArray
-    | .inductive ctors .. => do
-      let ctorSigs : Array Term ←
-        -- Elaborate constructor docs in the type's NS
-        ctors.mapM fun c => withTheReader Core.Context ({· with currNamespace := name}) do
-          let sigDesc ←
-            if let some docs := c.docstring? then
-              let some mdAst := MD4Lean.parse docs
-                | throwError "Failed to parse docstring as Markdown"
-              mdAst.blocks.mapM (blockFromMarkdownWithLean [name, c.name])
-            else pure (#[] : Array Term)
-          ``(Verso.Doc.Block.other (Verso.Genre.Manual.Block.constructorSignature $(quote c.signature)) #[$sigDesc,*])
-      pure #[← ``(Verso.Doc.Block.other (Verso.Genre.Manual.Block.docstringSection "Constructors") #[$ctorSigs,*])]
+          let fieldsRow : Option Term ← do
+            let header := if enIsClass then "Methods" else "Fields"
+            -- 由于field不会打印namespace，所以这里直接采用zhFieldInfo
+            let fieldInfo := zhFieldInfo.filter (·.subobject?.isNone)
+            let fieldSigs : Array Term ← fieldInfo.mapM fun i => do
+              let inheritedFrom : Option Nat :=
+                i.fieldFrom.head?.bind (fun n => enParents.findIdx? (·.name == n.name))
+              let sigDesc : Array Term ←
+                if let some docs := i.docString? then
+                  let some mdAst := MD4Lean.parse docs
+                    | throwError "Failed to parse docstring as Markdown"
+                  mdAst.blocks.mapM (blockFromMarkdownWithLean <| enName :: (zhConstructor?.map ([·.name])).getD [])
+                else
+                  pure (#[] : Array Term)
+              ``(Verso.Doc.Block.other (Verso.Genre.Manual.Block.fieldSignature $(quote i.visibility) $(quote i.fieldName) $(quote i.type) $(quote inheritedFrom) $(quote <| zhParents.map (·.parent))) #[$sigDesc,*])
+            if fieldSigs.isEmpty then pure none
+            else some <$> ``(Verso.Doc.Block.other (Verso.Genre.Manual.Block.docstringSection $(quote header)) #[$fieldSigs,*])
+
+          pure <| ctorRow.toArray ++ parentsRow.toArray ++ fieldsRow.toArray
+      | _ => pure #[]
+    | .inductive enCtors .. => do
+      match zhDeclType with
+      | .inductive zhCtors .. => do
+        let ctorSigs : Array Term ←
+          if enCtors.size = zhCtors.size then
+            -- Elaborate constructor docs in the type's NS
+            -- 原代码有一句 withTheReader Core.Context ({· with currNamespace := enName})
+            (enCtors.zip zhCtors).mapM fun c =>
+            do
+              let sigDesc ←
+                if let some docs := c.2.docstring? then
+                  let some mdAst := MD4Lean.parse docs
+                    | throwError "Failed to parse docstring as Markdown"
+                  mdAst.blocks.mapM (blockFromMarkdownWithLean [enName, c.1.name])
+                else pure (#[] : Array Term)
+              ``(Verso.Doc.Block.other (Verso.Genre.Manual.Block.constructorSignature $(quote c.1.signature)) #[$sigDesc,*])
+          else
+            pure #[]
+          pure #[← ``(Verso.Doc.Block.other (Verso.Genre.Manual.Block.docstringSection "Constructors") #[$ctorSigs,*])]
+      | _ => pure #[]
     | _ => pure #[]
 
 end Verso.Genre.Manual

@@ -13,7 +13,7 @@ import Manual.Language.InductiveTypes
 import Manual.Quotients
 
 import Manual.ZhDocString.ZhDocString
-import Manual.ZhDocString.Chapter4
+import Manual.ZhDocString.Types
 
 open Verso.Genre Manual
 open Verso.Genre.Manual.InlineLean
@@ -283,6 +283,7 @@ tag := "propositions"
 
 # 命题 (Propositions)
 %%%
+file := "Propositions"
 tag := "propositions"
 %%%
 
@@ -362,6 +363,10 @@ This means that the following examples are accepted:
 -/
 
 # 宇宙（Universe）
+%%%
+file := "Universe"
+tag := "universe"
+%%%
 
 类型由 {deftech key := "universes"}_宇宙_ 分类。{index}[universe]{margin}[宇宙有时也称为 {deftech key := "sorts"}_类别(sort)_。]
 每个宇宙都有一个 自然数{deftech key := "universe level"}_层级(level)_。{index subterm := "of universe"}[level]
