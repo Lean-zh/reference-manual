@@ -11,6 +11,16 @@
 - 参考 [翻译规范](https://github.com/Agda-zh/PLFA-zh/issues/1)
 - [术语表](https://docs.google.com/spreadsheets/d/1HL3E_eNF3rI6dy3k7_EpSOLo1eRkBDNIEPeyTg_Eu3s/edit?usp=sharing)
 
+## {docstring xxx}的翻译
+由于{docstring xxx}会直接引用lean的源码，因此本仓库在Manual目录下创建了ZhDocString目录，其中`Manual/ZhDocString/ZhDocString.lean`定义了`zhdocstring` 
+用法如下 `{zhdocstring 原对象 翻译过的对象}`
+其中翻译过的对象可以在 `Manual/ZhDocString/`下创建一个对应章节的lean文件，然后通过namespace创建一个和原对象同名的对象
+如`Chapter4.lean`中创建了`ZhDoc.propext` 并提供了与`propext`对应的翻译文档
+然后在原文中使用`{docstring propext}`的地方 替换为 `{zhdocstring propext ZhDoc.propext}`
+`zhdocstring`会使用`propext`的签名和连接，但是会使用`ZhDoc.propext`文档块
+以此来完成対{docstring xxx}的翻译
+
+
 ## 特别注意
 
 - 提交PR前务必本地执行 `deploy/generate.sh` 确保无编译错误, 无任何`error`输出, **`lake exe generate-manual --depth 2`不能保证无错误**
@@ -19,6 +29,7 @@
   - 遇到技术术语的定义`{deftech}_xxx_` 时，修改为 `{deftech key := "xxx"}_中文_`
 - 以 `::::` 开始到 `::::` 结束的代码块是一个整体， 需要整体注释掉重新创建一个新的翻译过的版本
 - 如果某篇文档缺少tag 请添加一个，否则可能会导致问题
+- `{index}[xxx]` 不需要翻译
 - 如下#doc 对应的%%%块下需要添加`file := 原文件英文名` 否则将标题改为中文后，对应的静态文件名会出现错误 
 ```
 #doc (Manual) "简介" =>
@@ -26,6 +37,8 @@
 file := "Introduction"
 %%%
 ```
+
+
 ## 本地编译与环境安装
 **本参考手册只能在非windows环境下构建**
 1. latex, 参考[本地构建](#在本地构建参考手册)

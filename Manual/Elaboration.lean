@@ -426,7 +426,7 @@ To see auxiliary pattern matching functions in Lean's output, set the option {op
 
 这种转化分为两步：首先，在项繁释期间，将用到的模式匹配替换为实现特定区分的 {deftech key:="auxiliary matching function"}_辅助匹配函数_。
 这些辅助函数自身由归递器定义，且不必真的用到归递器的递归功能。{margin}[它们会用到 `casesOn`，具体参见{ref "recursor-elaboration-helpers"}[归递器与繁释帮助章节]。]
-项繁释器最终返回的核心项中，模式匹配已被这种特殊函数替代，但仍有递归出现。尚包含递归但其它方面已繁释为核心语言的定义称为 {deftech key := "pre-definition"}[前定义]。
+项繁释器最终返回的核心项中，模式匹配已被这种特殊函数替代，但仍有递归出现。尚包含递归但其它方面已繁释为核心语言的定义称为 {deftech key := "pre-definition"}[预定义]。
 若需在 Lean 输出里看到辅助模式匹配函数，可设置 {option}`pp.match` 为 {lean}`false`。
 
 {optionDocs pp.match}
@@ -477,8 +477,8 @@ The compiler stores an intermediate representation in an environment extension.
 -/
 
 :::paragraph
-前定义随后被交由编译器和内核。
-编译器收到未消去递归的前定义。
+预定义随后被交由编译器和内核。
+编译器收到未消去递归的预定义。
 发送给内核的版本则经过第二次转化，将显式递归替换为使用 {ref "structural-recursion"}[归递子]、{ref "well-founded-recursion"}[良构递归](well-founded recursion)或其它方式。
 此种分工原因有三：
  * 编译器可以编译 {ref "partial-unsafe"}[`partial`（偏）函数]，对于内核而言仅当作推理的不可见常量。
