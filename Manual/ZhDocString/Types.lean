@@ -79,6 +79,11 @@ Examples:
  * `([.up (by trivial), .up (by simp), .up (by decide)] : List (PLift True))`
  * `(Nat : Type 0)`
  * `(PLift Nat : Type 1)`
+structure PLift (α : Sort u) : Type u where
+  /- Wraps a proof or value to increase its type's universe level by 1. -/
+  up ::
+  /- Extracts a wrapped proof or value from a universe-lifted proposition or type. -/
+  down : α
 -/
 
 /--
@@ -96,10 +101,8 @@ Examples:
  * `(PLift Nat : Type 1)`
 -/
 structure PLift (α : Sort u) : Type u where
-  /- Wraps a proof or value to increase its type's universe level by 1. -/
   /-- 将一个证明或值包装起来,以使其类型的宇宙层级增加1。 -/
   up ::
-  /- Extracts a wrapped proof or value from a universe-lifted proposition or type. -/
   /-- 从提升到宇宙的命题或类型中提取一个封装的证明或值。 -/
   down : α
 
@@ -122,7 +125,19 @@ Examples:
  * `(ULift Nat : Type 1)`
  * `(ULift Nat : Type 5)`
  * `(ULift.{7} (PUnit : Type 3) : Type 7)`
+-- The universe variable `r` is written first so that `ULift.{r} α` can be used
+-- when `s` can be inferred from the type of `α`.
+structure ULift.{r, s} (α : Type s) : Type (max s r) where
+  /- Wraps a value to increase its type's universe level. -/
+  /-- 包装一个值,以提升其类型的宇宙等级。 -/
+  up ::
+  /- Extracts a wrapped value from a universe-lifted type. -/
+  /- 从一个被提升宇宙的类型中提取出被包装的值。 -/
+  down : α
+
+end ZhDoc
 -/
+
 /--
 提升一个类型到更高的宇宙层级。
 
@@ -132,14 +147,11 @@ Examples:
 
 相关的类型 `PLift` 可以用来将命题或类型的宇宙提升一级。
 -/
--- The universe variable `r` is written first so that `ULift.{r} α` can be used
--- when `s` can be inferred from the type of `α`.
+-- 首先写出通用变量 `r`，这样当 `α` 的类型能够推断出 `s` 时，可以使用 `ULift.{r} α`
 structure ULift.{r, s} (α : Type s) : Type (max s r) where
-  /- Wraps a value to increase its type's universe level. -/
   /-- 包装一个值,以提升其类型的宇宙等级。 -/
   up ::
-  /- Extracts a wrapped value from a universe-lifted type. -/
-  /- 从一个被提升宇宙的类型中提取出被包装的值。 -/
+  /-- 从一个被提升宇宙的类型中提取出被包装的值。 -/
   down : α
 
 end ZhDoc

@@ -13,12 +13,20 @@
 
 ## {docstring xxx}的翻译
 由于{docstring xxx}会直接引用lean的源码，因此本仓库在Manual目录下创建了ZhDocString目录，其中`Manual/ZhDocString/ZhDocString.lean`定义了`zhdocstring` 
-用法如下 `{zhdocstring 原对象 翻译过的对象}`
-其中翻译过的对象可以在 `Manual/ZhDocString/`下创建一个对应章节的lean文件，然后通过namespace创建一个和原对象同名的对象
-如`Chapter4.lean`中创建了`ZhDoc.propext` 并提供了与`propext`对应的翻译文档
+用法如下 
+```{zhdocstring 原对象 翻译过的对象}```
+
+其中翻译过的对象可以在 `Manual/ZhDocString/`下创建一个对应文件的lean文件，然后通过namespace创建一个和原对象同名的对象
+
+如`Manual/ZhDocString/Types.lean`中创建了`ZhDoc.propext` 并提供了与`propext`对应的翻译文档
+
 然后在原文中使用`{docstring propext}`的地方 替换为 `{zhdocstring propext ZhDoc.propext}`
+
 `zhdocstring`会使用`propext`的签名和连接，但是会使用`ZhDoc.propext`文档块
+
 以此来完成対{docstring xxx}的翻译
+
+注意，源码中的文档块以`/--`开头`-/`结尾，必须対每个属性/构造子编写文档，否则会编译报错
 
 
 ## 特别注意
