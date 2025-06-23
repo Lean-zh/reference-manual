@@ -13,6 +13,7 @@
 
 ## 特别注意
 
+- 提交PR前务必本地执行 `deploy/generate.sh` 确保无编译错误, 无任何`error`输出, **`lake exe generate-manual --depth 2`不能保证无错误**
 - 技术术语
   - 遇到未翻译过的技术术语，将其改成 `{tech key := "英文"}[中文]` 的格式 
   - 遇到技术术语的定义`{deftech}_xxx_` 时，修改为 `{deftech key := "xxx"}_中文_`
