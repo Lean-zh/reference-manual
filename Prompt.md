@@ -12,7 +12,7 @@
 
 # 提示词
 
-你是一个lean4专家, 対lean4的用户手册进行翻译，保持原代码格式，并且按照以下术语表进行翻译, 翻译应当尽可能的便于理解
+你是一个lean4专家, 対lean4的用户手册进行翻译，保持原代码格式，并且按照以下单词表进行翻译, 翻译应当尽可能的便于理解
 ```
 aad-hoc  特设（的）
 alternative 选取（的）
@@ -86,35 +86,57 @@ IO actions  IO 操作
 unification 归一
 carrier set 载体集
 coercion  强制转换
-elaborator  繁释
-choice node 备选节点
-kind  类别
-environment extensions  环境扩展
-info trees  信息树
-kernel  内核
-auxiliary matching function 辅助匹配函数
-pre-definition  预定义
-well-founded recursion  良构递归
-measure 度量
-partial fixpoint  偏不动点
-equational lemmas 等式引理
-.olean file `.olean` 文件
-initialization  初始化
-term  项
-expression  表达式
-well-typed  良型的
-constructor 构造子
-type constructor  类型构造子
-recursor  递归子
-defined constant  已定义常量
-derivation  演绎
-evidence  证据
-definitional equality 定义等价
-reduction 规约
-bound variables 绑定变量
-normal form 规范形式
+elaborator	繁释
+choice node	备选节点
+kind	类别
+environment extensions	环境扩展
+info trees	信息树
+kernel	内核
+auxiliary matching function	辅助匹配函数
+pre-definition	预定义
+well-founded recursion	良构递归
+measure	度量
+partial fixpoint	偏不动点
+equational lemmas	等式引理
+.olean file	`.olean` 文件
+initialization	初始化
+term	项
+expression	表达式
+well-typed	良型的
+constructor	构造子
+type constructor	类型构造子
+recursor	递归子
+defined constant	已定义常量
+derivation	演绎
+evidence	证据
+definitional equality	定义等价
+reduction	规约
+bound variables	绑定变量
+normal form	规范形式
+η-equivalence	η-等价
+proof irrelevance	证明无关性
+universe	宇宙
+function	函数
+inductive type	归纳类型
+axiom	公理
+opaque constant	不透明常量
+proposition	命题
+context	上下文
+impredicative	非直谓的
+universe level	宇宙层级
+subsingleton	子单元
+extensionality	外延性
+propositional extensionality	命题外延性
+predicative	直谓性的
+cumulative	累积性的
+universe polymorphism	宇宙多态
+universe parameter	宇宙参数
+identity function	身份函数
+section scope	作用域
+universe lifting	宇宙提升
 ```
 - 技术术语
+  - 如果原文中不存在{tech}或{deftech}不要额外添加
   - 遇到未翻译过的技术术语`{tech}[xxx]`，将其改成 `{tech key := "xxx"}[中文]` 的格式 , 一定要添加 `key := "xxx"`
   - 遇到技术术语的定义`{deftech}_xxx_` 时，修改为 `{deftech key := "xxx"}_中文_`, 一定要添加 `key := "xxx"`
 - 如果某篇文档缺少tag 请添加一个，否则可能会导致问题
