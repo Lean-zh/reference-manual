@@ -1891,6 +1891,42 @@ window.addEventListener("load", () => {
 });
 </script>
     <script>
+      
+window.addEventListener("load", () => {
+  tippy('.keyword-of.hl.lean', {
+    allowHtml: true,
+    /* DEBUG -- remove the space: * /
+    onHide(any) { return false; },
+    trigger: "click",
+    // */
+    maxWidth: "none",
+
+    theme: "lean",
+    placement: 'bottom-start',
+    content (tgt) {
+      const content = document.createElement("span");
+      const state = tgt.querySelector(".hover-info").cloneNode(true);
+      state.style.display = "block";
+      content.appendChild(state);
+      /* Render docstrings - TODO server-side */
+      if ('undefined' !== typeof marked) {
+          for (const d of content.querySelectorAll("code.docstring, pre.docstring")) {
+              const str = d.innerText;
+              const html = marked.parse(str);
+              const rendered = document.createElement("div");
+              rendered.classList.add("docstring");
+              rendered.innerHTML = html;
+              d.parentNode.replaceChild(rendered, d);
+          }
+      }
+      content.style.display = "block";
+      content.className = "hl lean popup";
+      return content;
+    }
+  });
+});
+</script>
+    <script>
       let xref = {"Verso.Genre.Manual.section":
  {"title": "Sections or chapters of the manual",
   "description": null,
@@ -2083,16 +2119,14 @@ window.addEventListener("load", () => {
    "totality":
    [{"id": "totality",
      "data":
-     {"title": "Totality and Termination",
+     {"title": "完全性与终止性",
       "shortTitle": null,
       "sectionNum": "4.1.4.",
       "context":
       [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
        {"title": "类型系统", "shortTitle": null, "number": "4"},
-       {"title": "Functions", "shortTitle": null, "number": "1"},
-       {"title": "Totality and Termination",
-        "shortTitle": null,
-        "number": "4"}]},
+       {"title": "函数", "shortTitle": null, "number": "1"},
+       {"title": "完全性与终止性", "shortTitle": null, "number": "4"}]},
      "address": "/The Type System/Functions/"}],
    "token-antiquotations":
    [{"id": "token-antiquotations",
@@ -6147,13 +6181,13 @@ window.addEventListener("load", () => {
    "functions":
    [{"id": "functions",
      "data":
-     {"title": "Functions",
+     {"title": "函数",
       "shortTitle": null,
       "sectionNum": "4.1.",
       "context":
       [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
        {"title": "类型系统", "shortTitle": null, "number": "4"},
-       {"title": "Functions", "shortTitle": null, "number": "1"}]},
+       {"title": "函数", "shortTitle": null, "number": "1"}]},
      "address": "/The Type System/Functions/"}],
    "function-types":
    [{"id": "function-types",
@@ -6180,14 +6214,14 @@ window.addEventListener("load", () => {
    "function-extensionality":
    [{"id": "function-extensionality",
      "data":
-     {"title": "Extensionality",
+     {"title": "外延性",
       "shortTitle": null,
       "sectionNum": "4.1.3.",
       "context":
       [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
        {"title": "类型系统", "shortTitle": null, "number": "4"},
-       {"title": "Functions", "shortTitle": null, "number": "1"},
-       {"title": "Extensionality", "shortTitle": null, "number": "3"}]},
+       {"title": "函数", "shortTitle": null, "number": "1"},
+       {"title": "外延性", "shortTitle": null, "number": "3"}]},
      "address": "/The Type System/Functions/"}],
    "function-application":
    [{"id": "function-application",
@@ -6203,14 +6237,26 @@ window.addEventListener("load", () => {
    "function-api":
    [{"id": "function-api",
      "data":
-     {"title": "API Reference",
+     {"title": "API 参考",
       "shortTitle": null,
       "sectionNum": "4.1.5.",
       "context":
       [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
        {"title": "类型系统", "shortTitle": null, "number": "4"},
-       {"title": "Functions", "shortTitle": null, "number": "1"},
-       {"title": "API Reference", "shortTitle": null, "number": "5"}]},
+       {"title": "函数", "shortTitle": null, "number": "1"},
+       {"title": "API 参考", "shortTitle": null, "number": "5"}]},
+     "address": "/The Type System/Functions/"}],
+   "function-abstractions":
+   [{"id": "function-abstractions",
+     "data":
+     {"title": "函数抽象",
+      "shortTitle": null,
+      "sectionNum": "4.1.1.",
+      "context":
+      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
+       {"title": "类型系统", "shortTitle": null, "number": "4"},
+       {"title": "函数", "shortTitle": null, "number": "1"},
+       {"title": "函数抽象", "shortTitle": null, "number": "1"}]},
      "address": "/The Type System/Functions/"}],
    "fun-coercion":
    [{"id": "fun-coercion",
@@ -6841,14 +6887,14 @@ window.addEventListener("load", () => {
    "currying":
    [{"id": "currying",
      "data":
-     {"title": "Currying",
+     {"title": "柯里化",
       "shortTitle": null,
       "sectionNum": "4.1.2.",
       "context":
       [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
        {"title": "类型系统", "shortTitle": null, "number": "4"},
-       {"title": "Functions", "shortTitle": null, "number": "1"},
-       {"title": "Currying", "shortTitle": null, "number": "2"}]},
+       {"title": "函数", "shortTitle": null, "number": "1"},
+       {"title": "柯里化", "shortTitle": null, "number": "2"}]},
      "address": "/The Type System/Functions/"}],
    "conv-simp":
    [{"id": "conv-simp",
@@ -7888,16 +7934,16 @@ window.addEventListener("load", () => {
    [{"id": "xs", "data": null, "address": "/Basic-Types/Lazy-Computations/"}],
    "y.y": [{"id": "B", "data": null, "address": "/Terms/Identifiers/"}],
    "y":
-   [{"id": "y", "data": null, "address": "/Coercions/Coercing-to-Sorts/"},
-    {"id": "B", "data": null, "address": "/Terms/Identifiers/"}],
+   [{"id": "B", "data": null, "address": "/Terms/Identifiers/"},
+    {"id": "y", "data": null, "address": "/Coercions/Coercing-to-Sorts/"}],
    "xs":
    [{"id": "xs", "data": null, "address": "/Basic-Types/Lazy-Computations/"}],
    "x":
-   [{"id": "x", "data": null, "address": "/Namespaces-and-Sections/"},
-    {"id": "x-next", "data": null, "address": "/Terms/Identifiers/"},
-    {"id": "x-next-next",
+   [{"id": "x-next-next",
      "data": null,
-     "address": "/Coercions/Coercing-to-Sorts/"}],
+     "address": "/Coercions/Coercing-to-Sorts/"},
+    {"id": "x", "data": null, "address": "/Namespaces-and-Sections/"},
+    {"id": "x-next", "data": null, "address": "/Terms/Identifiers/"}],
    "wednesday":
    [{"id": "wednesday",
      "data": null,
@@ -7940,13 +7986,13 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/The Type System/Inductive-Types/"}],
    "two":
-   [{"id": "EvenNumber",
+   [{"id": "two______",
      "data": null,
      "address": "/The Type System/Inductive-Types/"},
-    {"id": "two______",
+    {"id": "two", "data": null, "address": "/The Type System/Functions/"},
+    {"id": "EvenNumber",
      "data": null,
-     "address": "/The Type System/Inductive-Types/"},
-    {"id": "two", "data": null, "address": "/The Type System/Functions/"}],
+     "address": "/The Type System/Inductive-Types/"}],
    "twice":
    [{"id": "twice", "data": null, "address": "/Coercions/Coercion-Insertion/"}],
    "truth_functional_imp":
@@ -7983,13 +8029,13 @@ window.addEventListener("load", () => {
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"}],
    "ten": [{"id": "ten", "data": null, "address": "/Basic-Types/Arrays/"}],
    "tally_eq_add":
-   [{"id": "tally_eq_add-next-next",
+   [{"id": "tally_eq_add",
+     "data": null,
+     "address": "/Definitions/Recursive-Definitions/"},
+    {"id": "tally_eq_add-next-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
     {"id": "tally_eq_add-next",
-     "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "tally_eq_add",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"}],
    "tally":
@@ -8015,10 +8061,10 @@ window.addEventListener("load", () => {
    [{"id": "swap", "data": null, "address": "/Interacting-with-Lean/"}],
    "swap": [{"id": "swap", "data": null, "address": "/Interacting-with-Lean/"}],
    "sum_eq_add":
-   [{"id": "sum_eq_add",
+   [{"id": "sum_eq_add-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "sum_eq_add-next",
+    {"id": "sum_eq_add",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"}],
    "sumUntilFive":
@@ -8072,7 +8118,10 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Basic-Types/Linked-Lists/"}],
    "select":
-   [{"id": "select-next-next",
+   [{"id": "select",
+     "data": null,
+     "address": "/Definitions/Headers-and-Signatures/"},
+    {"id": "select-next-next",
      "data": null,
      "address": "/Definitions/Headers-and-Signatures/"},
     {"id": "select-next",
@@ -8080,33 +8129,24 @@ window.addEventListener("load", () => {
      "address": "/Definitions/Headers-and-Signatures/"},
     {"id": "select-next-next-next",
      "data": null,
-     "address": "/Definitions/Headers-and-Signatures/"},
-    {"id": "select",
-     "data": null,
      "address": "/Definitions/Headers-and-Signatures/"}],
    "satisfyingIndices":
    [{"id": "satisfyingIndices",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"}],
    "s2":
-   [{"id": "NonEmptyString-next",
-     "data": null,
-     "address": "/Basic-Types/Subtypes/"},
-    {"id": "NonEmptyString",
+   [{"id": "NonEmptyString", "data": null, "address": "/Basic-Types/Subtypes/"},
+    {"id": "NonEmptyString-next",
      "data": null,
      "address": "/Basic-Types/Subtypes/"}],
    "s1_eq_s2":
-   [{"id": "NonEmptyString-next",
-     "data": null,
-     "address": "/Basic-Types/Subtypes/"},
-    {"id": "NonEmptyString",
+   [{"id": "NonEmptyString", "data": null, "address": "/Basic-Types/Subtypes/"},
+    {"id": "NonEmptyString-next",
      "data": null,
      "address": "/Basic-Types/Subtypes/"}],
    "s1":
-   [{"id": "NonEmptyString-next",
-     "data": null,
-     "address": "/Basic-Types/Subtypes/"},
-    {"id": "NonEmptyString",
+   [{"id": "NonEmptyString", "data": null, "address": "/Basic-Types/Subtypes/"},
+    {"id": "NonEmptyString-next",
      "data": null,
      "address": "/Basic-Types/Subtypes/"}],
    "runCountdown":
@@ -8136,11 +8176,11 @@ window.addEventListener("load", () => {
      "main-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/Run-Time-Code/Reference-Counting/"},
-    {"id":
-     "main-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+    {"id": "process",
      "data": null,
      "address": "/Run-Time-Code/Reference-Counting/"},
-    {"id": "process",
+    {"id":
+     "main-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/Run-Time-Code/Reference-Counting/"}],
    "printEven":
@@ -8199,15 +8239,15 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/The Type System/Inductive-Types/"}],
    "oneTwoThree":
-   [{"id": "oneTwoThree",
+   [{"id": "oneTwoThree-next",
      "data": null,
-     "address": "/The Type System/Inductive-Types/"},
+     "address": "/Coercions/Coercing-Between-Types/"},
     {"id": "oneTwoThree-next-next",
      "data": null,
      "address": "/Basic-Types/Arrays/"},
-    {"id": "oneTwoThree-next",
+    {"id": "oneTwoThree",
      "data": null,
-     "address": "/Coercions/Coercing-Between-Types/"}],
+     "address": "/The Type System/Inductive-Types/"}],
    "one":
    [{"id": "two______",
      "data": null,
@@ -8267,10 +8307,10 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Coercions/Coercing-to-Function-Types/"}],
    "n":
-   [{"id": "NaturalNum-next",
+   [{"id": "NaturalNum",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "NaturalNum",
+    {"id": "NaturalNum-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"}],
    "mustBeEqual":
@@ -8280,7 +8320,10 @@ window.addEventListener("load", () => {
    "mkStx":
    [{"id": "mkStx", "data": null, "address": "/Notations-and-Macros/Macros/"}],
    "min'":
-   [{"id": "min___-next",
+   [{"id": "min___-next-next",
+     "data": null,
+     "address": "/Definitions/Recursive-Definitions/"},
+    {"id": "min___-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
     {"id": "min___-next-next-next",
@@ -8288,82 +8331,79 @@ window.addEventListener("load", () => {
      "address": "/Definitions/Recursive-Definitions/"},
     {"id": "min___",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "min___-next-next",
-     "data": null,
      "address": "/Definitions/Recursive-Definitions/"}],
    "map":
-   [{"id": "map", "data": null, "address": "/The Type System/Universe/"},
-    {"id": "map-next-next",
+   [{"id": "map-next-next",
      "data": null,
      "address": "/Definitions/Headers-and-Signatures/"},
+    {"id": "map-next", "data": null, "address": "/The Type System/Universe/"},
     {"id": "map-next-next-next",
      "data": null,
      "address": "/Definitions/Headers-and-Signatures/"},
     {"id": "map-next-next-next-next",
      "data": null,
      "address": "/Definitions/Headers-and-Signatures/"},
-    {"id": "map-next", "data": null, "address": "/The Type System/Universe/"}],
+    {"id": "map", "data": null, "address": "/The Type System/Universe/"}],
    "main":
-   [{"id": "main-next-next-next-next-next",
-     "data": null,
-     "address": "/IO/Mutable-References/"},
-    {"id": "main-next-next-next",
-     "data": null,
-     "address": "/IO/Logical-Model/"},
-    {"id": "main-next-next-next-next-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/IO/Processes/"},
-    {"id":
-     "main-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/Run-Time-Code/Reference-Counting/"},
-    {"id": "main-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/IO/Files___-File-Handles___-and-Streams/"},
-    {"id": "main-next-next-next-next",
-     "data": null,
-     "address": "/IO/Console-Output/"},
-    {"id": "main-next-next",
-     "data": null,
-     "address": "/Functors___-Monads-and--do--Notation/API-Reference/"},
-    {"id": "main-next-next-next-next-next-next-next-next-next-next",
+   [{"id": "main-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/IO/Processes/"},
     {"id": "main-next",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
-    {"id": "main-next-next-next-next-next-next",
-     "data": null,
-     "address": "/IO/Mutable-References/"},
     {"id":
      "main-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/Basic-Types/Tuples/"},
-    {"id":
-     "main-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+    {"id": "main-next-next-next",
      "data": null,
-     "address": "/Run-Time-Code/Reference-Counting/"},
+     "address": "/IO/Logical-Model/"},
+    {"id": "main-next-next-next-next",
+     "data": null,
+     "address": "/IO/Console-Output/"},
+    {"id": "main-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/IO/Processes/"},
+    {"id": "main-next-next-next-next-next-next",
+     "data": null,
+     "address": "/IO/Mutable-References/"},
+    {"id": "main-next-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/IO/Files___-File-Handles___-and-Streams/"},
+    {"id": "main-next-next-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/IO/Processes/"},
     {"id":
      "main-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/IO/Processes/"},
-    {"id": "main-next-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/IO/Files___-File-Handles___-and-Streams/"},
-    {"id": "main",
-     "data": null,
-     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
     {"id":
      "main-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/IO/Processes/"},
+    {"id": "main-next-next-next-next-next",
+     "data": null,
+     "address": "/IO/Mutable-References/"},
+    {"id":
+     "main-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/Run-Time-Code/Reference-Counting/"},
+    {"id": "main",
+     "data": null,
+     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
     {"id": "main-next-next-next-next-next-next-next",
      "data": null,
      "address": "/IO/Mutable-References/"},
-    {"id": "main-next-next-next-next-next-next-next-next-next-next-next",
+    {"id": "main-next-next",
      "data": null,
-     "address": "/IO/Processes/"}],
+     "address": "/Functors___-Monads-and--do--Notation/API-Reference/"},
+    {"id": "main-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/IO/Files___-File-Handles___-and-Streams/"},
+    {"id":
+     "main-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/Run-Time-Code/Reference-Counting/"}],
    "loop":
    [{"id": "loop",
      "data": null,
@@ -8443,7 +8483,10 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"}],
    "half''":
-   [{"id": "half______-next-next",
+   [{"id": "half______-next-next-next-next",
+     "data": null,
+     "address": "/Definitions/Recursive-Definitions/"},
+    {"id": "half______-next-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
     {"id": "half______-next",
@@ -8454,9 +8497,6 @@ window.addEventListener("load", () => {
      "address": "/Definitions/Recursive-Definitions/"},
     {"id": "half______",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "half______-next-next-next-next",
-     "data": null,
      "address": "/Definitions/Recursive-Definitions/"}],
    "half'":
    [{"id": "half___",
@@ -8466,34 +8506,34 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"}],
    "half":
-   [{"id": "half-next-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/Terms/Pattern-Matching/"},
-    {"id": "half-next-next-next-next-next-next",
+   [{"id": "half-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
     {"id": "half-next-next-next-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "half-next-next-next-next-next-next-next",
+    {"id": "half-next-next-next",
+     "data": null,
+     "address": "/Definitions/Recursive-Definitions/"},
+    {"id": "half-next-next-next-next-next-next",
+     "data": null,
+     "address": "/Definitions/Recursive-Definitions/"},
+    {"id": "half-next-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
     {"id": "half-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "half-next",
+    {"id": "half-next-next-next-next-next-next-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
     {"id": "half-next-next-next-next-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "half-next-next-next",
+    {"id": "half-next-next-next-next-next-next-next-next-next",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
+     "address": "/Terms/Pattern-Matching/"},
     {"id": "half",
-     "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "half-next-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"}],
    "goodMorning":
@@ -8511,10 +8551,10 @@ window.addEventListener("load", () => {
      "address": "/Basic-Types/Tuples/"}],
    "getThird":
    [{"id": "getThird", "data": null, "address": "/Terms/Conditionals/"},
+    {"id": "getThird-next", "data": null, "address": "/Terms/Conditionals/"},
     {"id": "getThird-next-next",
      "data": null,
-     "address": "/Terms/Conditionals/"},
-    {"id": "getThird-next", "data": null, "address": "/Terms/Conditionals/"}],
+     "address": "/Terms/Conditionals/"}],
    "getPPContext":
    [{"id": "getPPContext",
      "data": null,
@@ -8538,10 +8578,10 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"}],
    "getBytes'":
-   [{"id": "getBytes___-next",
+   [{"id": "getBytes___",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Lifting-Monads/"},
-    {"id": "getBytes___",
+    {"id": "getBytes___-next",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Lifting-Monads/"}],
    "getBytes":
@@ -8557,14 +8597,14 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Basic-Types/Optional-Values/"}],
    "g":
-   [{"id": "f-next-next-next-next-next",
+   [{"id": "g-next", "data": null, "address": "/Basic-Types/The-Empty-Type/"},
+    {"id": "f-next-next-next-next-next",
      "data": null,
      "address": "/Terms/Functions/"},
-    {"id": "g", "data": null, "address": "/Basic-Propositions/Truth/"},
-    {"id": "g-next", "data": null, "address": "/Basic-Types/The-Empty-Type/"},
     {"id": "f-next-next-next-next",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive-Definitions/"},
+    {"id": "g", "data": null, "address": "/Basic-Propositions/Truth/"}],
    "funext'":
    [{"id": "funext___",
      "data": null,
@@ -8590,16 +8630,16 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"}],
    "fib":
-   [{"id": "fib",
-     "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "fib-next-next",
+   [{"id": "fib-next-next-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
     {"id": "fib-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "fib-next-next-next",
+    {"id": "fib-next-next",
+     "data": null,
+     "address": "/Definitions/Recursive-Definitions/"},
+    {"id": "fib",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
     {"id": "fib-next-next-next-next",
@@ -8612,32 +8652,32 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Notations-and-Macros/Custom-Operators/"}],
    "f":
-   [{"id": "f-next-next-next",
+   [{"id": "f", "data": null, "address": "/Definitions/Recursive-Definitions/"},
+    {"id": "f-next-next-next-next-next",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "f-next-next",
-     "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "f-next-next-next-next-next-next",
-     "data": null,
-     "address": "/Terms/Pattern-Matching/"},
+     "address": "/Terms/Functions/"},
     {"id": "f-next-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/Notations-and-Macros/Macros/"},
     {"id": "f-next-next-next-next-next-next-next",
      "data": null,
      "address": "/Basic-Propositions/Truth/"},
-    {"id": "f-next-next-next-next-next",
-     "data": null,
-     "address": "/Terms/Functions/"},
-    {"id": "f", "data": null, "address": "/Definitions/Recursive-Definitions/"},
     {"id": "f-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/Basic-Types/The-Empty-Type/"},
     {"id": "f-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
+    {"id": "f-next-next-next-next-next-next",
+     "data": null,
+     "address": "/Terms/Pattern-Matching/"},
+    {"id": "f-next-next",
+     "data": null,
+     "address": "/Definitions/Recursive-Definitions/"},
     {"id": "f-next-next-next-next",
+     "data": null,
+     "address": "/Definitions/Recursive-Definitions/"},
+    {"id": "f-next-next-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"}],
    "extEq":
@@ -8659,15 +8699,15 @@ window.addEventListener("load", () => {
    "ex3":
    [{"id": "ex3", "data": null, "address": "/Notations-and-Macros/Macros/"}],
    "ex2":
-   [{"id": "ex2", "data": null, "address": "/Notations-and-Macros/Macros/"},
-    {"id": "ex2-next",
-     "data": null,
-     "address": "/Notations-and-Macros/Macros/"}],
-   "ex1":
-   [{"id": "ex1-next",
+   [{"id": "ex2-next",
      "data": null,
      "address": "/Notations-and-Macros/Macros/"},
-    {"id": "ex1", "data": null, "address": "/Notations-and-Macros/Macros/"}],
+    {"id": "ex2", "data": null, "address": "/Notations-and-Macros/Macros/"}],
+   "ex1":
+   [{"id": "ex1", "data": null, "address": "/Notations-and-Macros/Macros/"},
+    {"id": "ex1-next",
+     "data": null,
+     "address": "/Notations-and-Macros/Macros/"}],
    "everyOther":
    [{"id": "everyOther",
      "data": null,
@@ -8813,28 +8853,28 @@ window.addEventListener("load", () => {
    "addAlias":
    [{"id": "addAlias", "data": null, "address": "/Basic-Types/Maps-and-Sets/"}],
    "add'":
-   [{"id": "add___", "data": null, "address": "/The Type System/Quotients/"},
-    {"id": "add___-next",
+   [{"id": "add___-next",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive-Definitions/"},
+    {"id": "add___", "data": null, "address": "/The Type System/Quotients/"}],
    "add":
-   [{"id": "add-next",
+   [{"id": "add",
+     "data": null,
+     "address": "/Definitions/Headers-and-Signatures/"},
+    {"id": "add-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
     {"id": "add-next-next",
      "data": null,
-     "address": "/Terms/Pattern-Matching/"},
-    {"id": "add",
-     "data": null,
-     "address": "/Definitions/Headers-and-Signatures/"}],
+     "address": "/Terms/Pattern-Matching/"}],
    "ack":
-   [{"id": "ack",
-     "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "ack-next",
+   [{"id": "ack-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
     {"id": "ack-next-next",
+     "data": null,
+     "address": "/Definitions/Recursive-Definitions/"},
+    {"id": "ack",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"}],
    "accessControl":
@@ -8883,8 +8923,8 @@ window.addEventListener("load", () => {
    "Z'":
    [{"id": "Z___eq", "data": null, "address": "/The Type System/Quotients/"}],
    "Z":
-   [{"id": "Z", "data": null, "address": "/The Type System/Quotients/"},
-    {"id": "Z___a", "data": null, "address": "/The Type System/Quotients/"}],
+   [{"id": "Z___a", "data": null, "address": "/The Type System/Quotients/"},
+    {"id": "Z", "data": null, "address": "/The Type System/Quotients/"}],
    "Yes.intro":
    [{"id": "Yes___intro",
      "data": null,
@@ -9006,10 +9046,10 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Basic-Propositions/Propositional-Equality/"}],
    "Vector.append_associative":
-   [{"id": "Vector___append_associative-next",
+   [{"id": "Vector___append_associative",
      "data": null,
      "address": "/Basic-Propositions/Propositional-Equality/"},
-    {"id": "Vector___append_associative",
+    {"id": "Vector___append_associative-next",
      "data": null,
      "address": "/Basic-Propositions/Propositional-Equality/"}],
    "Vacant":
@@ -9029,24 +9069,24 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Terms/Function-Application/"}],
    "User.name":
-   [{"id": "main",
+   [{"id": "main-next",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
-    {"id": "main-next",
+    {"id": "main",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"}],
    "User.favoriteNat":
-   [{"id": "main",
+   [{"id": "main-next",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
-    {"id": "main-next",
+    {"id": "main",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"}],
    "User":
-   [{"id": "main",
+   [{"id": "main-next",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
-    {"id": "main-next",
+    {"id": "main",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"}],
    "Ty.nat":
@@ -9128,17 +9168,17 @@ window.addEventListener("load", () => {
     {"id": "Tree___map-next-next-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "Tree___map-next-next",
+    {"id": "Tree___map-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "Tree___map-next",
+    {"id": "Tree___map-next-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"}],
    "Tree.leaf":
-   [{"id": "Tree___node",
+   [{"id": "Tree",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "Tree",
+    {"id": "Tree___node",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"}],
    "Tree.fastBEq":
@@ -9166,10 +9206,10 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Interacting-with-Lean/"}],
    "Tree.branch":
-   [{"id": "Tree___empty",
+   [{"id": "Tree",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "Tree",
+    {"id": "Tree___empty",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"}],
    "Tree.big":
@@ -9185,19 +9225,19 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"}],
    "Tree":
-   [{"id": "Tree___empty",
-     "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "Tree___branches",
-     "data": null,
-     "address": "/Interacting-with-Lean/"},
-    {"id": "Tree___node",
+   [{"id": "Tree___rev___",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
     {"id": "Tree",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "Tree___rev___",
+    {"id": "Tree___branches",
+     "data": null,
+     "address": "/Interacting-with-Lean/"},
+    {"id": "Tree___empty",
+     "data": null,
+     "address": "/Definitions/Recursive-Definitions/"},
+    {"id": "Tree___node",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"}],
    "Tm.zero":
@@ -9233,10 +9273,10 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Coercions/Coercing-to-Function-Types/"}],
    "Tm":
-   [{"id": "Tm", "data": null, "address": "/The Type System/Inductive-Types/"},
-    {"id": "Tm-next",
+   [{"id": "Tm-next",
      "data": null,
-     "address": "/Coercions/Coercing-to-Function-Types/"}],
+     "address": "/Coercions/Coercing-to-Function-Types/"},
+    {"id": "Tm", "data": null, "address": "/The Type System/Inductive-Types/"}],
    "ThreeChoices.yes":
    [{"id": "ThreeChoices___yes",
      "data": null,
@@ -9527,10 +9567,10 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/The Type System/Inductive-Types/"}],
    "RLE":
-   [{"id": "RLE___run",
+   [{"id": "RunsMatch",
      "data": null,
      "address": "/The Type System/Inductive-Types/"},
-    {"id": "RunsMatch",
+    {"id": "RLE___run",
      "data": null,
      "address": "/The Type System/Inductive-Types/"}],
    "Quadrant.sw":
@@ -9760,10 +9800,10 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/The Type System/Inductive-Types/"}],
    "ONat.mk":
-   [{"id": "ONat___mk-next",
+   [{"id": "ONat___mk-next-next",
      "data": null,
      "address": "/The Type System/Inductive-Types/"},
-    {"id": "ONat___mk-next-next",
+    {"id": "ONat___mk-next",
      "data": null,
      "address": "/The Type System/Inductive-Types/"},
     {"id": "ONat___mk",
@@ -9778,10 +9818,10 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/The Type System/Inductive-Types/"}],
    "ONat":
-   [{"id": "ONat",
+   [{"id": "ONat___mk-next",
      "data": null,
      "address": "/The Type System/Inductive-Types/"},
-    {"id": "ONat___mk-next",
+    {"id": "ONat",
      "data": null,
      "address": "/The Type System/Inductive-Types/"},
     {"id": "ONat___mk",
@@ -9800,10 +9840,8 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/The Type System/Inductive-Types/"}],
    "NonEmptyString":
-   [{"id": "NonEmptyString-next",
-     "data": null,
-     "address": "/Basic-Types/Subtypes/"},
-    {"id": "NonEmptyString",
+   [{"id": "NonEmptyString", "data": null, "address": "/Basic-Types/Subtypes/"},
+    {"id": "NonEmptyString-next",
      "data": null,
      "address": "/Basic-Types/Subtypes/"}],
    "NonEmptyList.non_empty":
@@ -9829,24 +9867,24 @@ window.addEventListener("load", () => {
    "No":
    [{"id": "No", "data": null, "address": "/The Type System/Inductive-Types/"}],
    "NaturalNum":
-   [{"id": "NaturalNum-next",
+   [{"id": "NaturalNum",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "NaturalNum",
+    {"id": "NaturalNum-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"}],
    "NatWrapper.val":
-   [{"id": "NatWrapper___val",
+   [{"id": "NatWrapper___val-next",
      "data": null,
      "address": "/Type-Classes/Instance-Declarations/"},
-    {"id": "NatWrapper___val-next",
+    {"id": "NatWrapper___val",
      "data": null,
      "address": "/Type-Classes/Instance-Declarations/"}],
    "NatWrapper":
-   [{"id": "NatWrapper___val",
+   [{"id": "NatWrapper___val-next",
      "data": null,
      "address": "/Type-Classes/Instance-Declarations/"},
-    {"id": "NatWrapper___val-next",
+    {"id": "NatWrapper___val",
      "data": null,
      "address": "/Type-Classes/Instance-Declarations/"}],
    "NatTree.leaf":
@@ -10088,16 +10126,16 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"}],
    "List.findIndex":
-   [{"id": "List___findIndex-next",
+   [{"id": "List___findIndex-next-next-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "List___findIndex-next-next-next",
+    {"id": "List___findIndex-next-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
     {"id": "List___findIndex",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "List___findIndex-next-next",
+    {"id": "List___findIndex-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"}],
    "List.brecOnTable":
@@ -10191,11 +10229,11 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Coercions/Coercion-Insertion/"}],
    "L":
-   [{"id": "L", "data": null, "address": "/The Type System/Universe/"},
-    {"id": "L-next", "data": null, "address": "/The Type System/Universe/"},
+   [{"id": "L-next", "data": null, "address": "/The Type System/Universe/"},
     {"id": "L-next-next",
      "data": null,
-     "address": "/The Type System/Universe/"}],
+     "address": "/The Type System/Universe/"},
+    {"id": "L", "data": null, "address": "/The Type System/Universe/"}],
    "K":
    [{"id": "K",
      "data": null,
@@ -10378,24 +10416,24 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/The Type System/Inductive-Types/"}],
    "EvenOddList.nil":
-   [{"id": "EvenOddList___nil",
+   [{"id": "EvenOddList___nil-next",
      "data": null,
      "address": "/The Type System/Inductive-Types/"},
-    {"id": "EvenOddList___nil-next",
+    {"id": "EvenOddList___nil",
      "data": null,
      "address": "/The Type System/Inductive-Types/"}],
    "EvenOddList.cons":
-   [{"id": "EvenOddList___nil",
+   [{"id": "EvenOddList___nil-next",
      "data": null,
      "address": "/The Type System/Inductive-Types/"},
-    {"id": "EvenOddList___nil-next",
+    {"id": "EvenOddList___nil",
      "data": null,
      "address": "/The Type System/Inductive-Types/"}],
    "EvenOddList":
-   [{"id": "EvenOddList___nil",
+   [{"id": "EvenOddList___nil-next",
      "data": null,
      "address": "/The Type System/Inductive-Types/"},
-    {"id": "EvenOddList___nil-next",
+    {"id": "EvenOddList___nil",
      "data": null,
      "address": "/The Type System/Inductive-Types/"}],
    "EvenNumber.val":
@@ -10423,10 +10461,10 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/The Type System/Inductive-Types/"}],
    "Even.zero":
-   [{"id": "Even___zero-next-next-next",
+   [{"id": "Even___zero", "data": null, "address": "/Introduction/"},
+    {"id": "Even___zero-next-next-next",
      "data": null,
      "address": "/The Type System/Inductive-Types/"},
-    {"id": "Even___zero", "data": null, "address": "/Introduction/"},
     {"id": "Even___zero-next", "data": null, "address": "/Introduction/"}],
    "Even.succ":
    [{"id": "Even___zero-next-next-next",
@@ -10448,13 +10486,13 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Type-Classes/Instance-Declarations/"}],
    "Even":
-   [{"id": "Even___zero-next-next-next",
-     "data": null,
-     "address": "/The Type System/Inductive-Types/"},
-    {"id": "Even___zero", "data": null, "address": "/Introduction/"},
-    {"id": "Even___number",
+   [{"id": "Even___number",
      "data": null,
      "address": "/Coercions/Coercing-Between-Types/"},
+    {"id": "Even___zero", "data": null, "address": "/Introduction/"},
+    {"id": "Even___zero-next-next-next",
+     "data": null,
+     "address": "/The Type System/Inductive-Types/"},
     {"id": "Even___zero-next", "data": null, "address": "/Introduction/"},
     {"id": "Even",
      "data": null,
@@ -10730,8 +10768,10 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Terms/Pattern-Matching/"}],
    "Bad":
-   [{"id": "Bad", "data": null, "address": "/The Type System/Inductive-Types/"},
-    {"id": "Bad-next",
+   [{"id": "Bad-next",
+     "data": null,
+     "address": "/The Type System/Inductive-Types/"},
+    {"id": "Bad",
      "data": null,
      "address": "/The Type System/Inductive-Types/"}],
    "B.y": [{"id": "B", "data": null, "address": "/Terms/Identifiers/"}],
@@ -10972,24 +11012,25 @@ window.addEventListener("load", () => {
      "data": {"term": "well-founded relation"},
      "address": "/Definitions/Recursive-Definitions/"}],
    "well founded recursion":
-   [{"id": "--tech-term-well-founded-recursion",
+   [{"id": "--tech-term-____________-next-next-next",
      "data": {"term": "well-founded recursion"},
-     "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "--tech-term-____________-next-next-next",
+     "address": "/Elaboration and Compilation/"},
+    {"id": "--tech-term-well-founded-recursion",
      "data": {"term": "well-founded recursion"},
-     "address": "/Elaboration and Compilation/"}],
+     "address": "/Definitions/Recursive-Definitions/"}],
    "universe polymorphism":
-   [{"id": "--tech-term-____________-next-next-next-next-next-next-next-next",
+   [{"id":
+     "--tech-term-____________-next-next-next-next-next-next-next-next-next-next",
      "data": {"term": "宇宙多态"},
      "address": "/The Type System/Universe/"}],
    "universe parameter":
    [{"id":
-     "--tech-term-____________-next-next-next-next-next-next-next-next-next",
+     "--tech-term-____________-next-next-next-next-next-next-next-next-next-next-next",
      "data": {"term": "宇宙参数"},
      "address": "/The Type System/Universe/"}],
    "universe lifting":
    [{"id":
-     "--tech-term-____________-next-next-next-next-next-next-next-next-next-next",
+     "--tech-term-____________-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": {"term": "宇宙提升"},
      "address": "/The Type System/Universe/"}],
    "universe level":
@@ -10997,7 +11038,8 @@ window.addEventListener("load", () => {
      "data": {"term": "层级(level)"},
      "address": "/The Type System/Universe/"}],
    "universe":
-   [{"id": "--tech-term-______-next-next-next-next-next-next-next",
+   [{"id":
+     "--tech-term-______-next-next-next-next-next-next-next-next-next-next-next",
      "data": {"term": "宇宙"},
      "address": "/The Type System/Universe/"}],
    "unit like type":
@@ -11033,8 +11075,8 @@ window.addEventListener("load", () => {
      "data": {"term": "traces"},
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "total":
-   [{"id": "--tech-term-total",
-     "data": {"term": "total"},
+   [{"id": "--tech-term-______-next-next-next-next-next-next-next-next-next",
+     "data": {"term": "完全"},
      "address": "/The Type System/Functions/"}],
    "toolchain override":
    [{"id": "--tech-term-toolchain-override",
@@ -11075,12 +11117,12 @@ window.addEventListener("load", () => {
      "data": {"term": "Term elaborators"},
      "address": "/Notations-and-Macros/Elaborators/"}],
    "term":
-   [{"id": "--tech-term-___",
+   [{"id": "--tech-term-Terms",
      "data": {"term": "Terms"},
-     "address": "/The Type System/"},
-    {"id": "--tech-term-Terms",
+     "address": "/Terms/"},
+    {"id": "--tech-term-___",
      "data": {"term": "Terms"},
-     "address": "/Terms/"}],
+     "address": "/The Type System/"}],
    "task":
    [{"id": "--tech-term-Tasks",
      "data": {"term": "Tasks"},
@@ -11258,15 +11300,15 @@ window.addEventListener("load", () => {
      "data": {"term": "Right-associative"},
      "address": "/Notations-and-Macros/Custom-Operators/"}],
    "resolve":
-   [{"id": "--tech-term-resolve",
+   [{"id": "--tech-term-resolving",
      "data": {"term": "resolving"},
-     "address": "/IO/Tasks-and-Threads/"},
+     "address": "/Terms/Identifiers/"},
     {"id": "--tech-term-resolving-next",
      "data": {"term": "resolving"},
      "address": "/IO/Tasks-and-Threads/"},
-    {"id": "--tech-term-resolving",
+    {"id": "--tech-term-resolve",
      "data": {"term": "resolving"},
-     "address": "/Terms/Identifiers/"}],
+     "address": "/IO/Tasks-and-Threads/"}],
    "require":
    [{"id": "--tech-term-require",
      "data": {"term": "require"},
@@ -11336,7 +11378,8 @@ window.addEventListener("load", () => {
      "data": {"term": "protected"},
      "address": "/Namespaces-and-Sections/"}],
    "propositional extensionality":
-   [{"id": "--tech-term-_________-next-next-next-next-next",
+   [{"id":
+     "--tech-term-_________-next-next-next-next-next-next-next-next-next-next",
      "data": {"term": "外延性"},
      "address": "/The Type System/Propositions/"}],
    "propositional equality":
@@ -11344,7 +11387,8 @@ window.addEventListener("load", () => {
      "data": {"term": "Propositional equality"},
      "address": "/Basic-Propositions/Propositional-Equality/"}],
    "proposition":
-   [{"id": "--tech-term-______-next-next-next-next-next-next",
+   [{"id":
+     "--tech-term-______-next-next-next-next-next-next-next-next-next-next",
      "data": {"term": "命题"},
      "address": "/The Type System/Propositions/"}],
    "proof term":
@@ -11379,7 +11423,8 @@ window.addEventListener("load", () => {
      "data": {"term": "prelude"},
      "address": "/Source-Files-and-Modules/"}],
    "predicative":
-   [{"id": "--tech-term-_________-next-next-next-next-next-next",
+   [{"id":
+     "--tech-term-_________-next-next-next-next-next-next-next-next-next-next-next",
      "data": {"term": "直谓性"},
      "address": "/The Type System/Universe/"}],
    "precedence":
@@ -11443,12 +11488,12 @@ window.addEventListener("load", () => {
      "data": {"term": "package configuration"},
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "package":
-   [{"id": "--tech-term-package",
+   [{"id": "--tech-term-packages",
      "data": {"term": "package"},
-     "address": "/Build-Tools-and-Distribution/Lake/"},
-    {"id": "--tech-term-packages",
+     "address": "/Source-Files-and-Modules/"},
+    {"id": "--tech-term-package",
      "data": {"term": "package"},
-     "address": "/Source-Files-and-Modules/"}],
+     "address": "/Build-Tools-and-Distribution/Lake/"}],
    "owned":
    [{"id": "--tech-term-owned",
      "data": {"term": "owned"},
@@ -11506,8 +11551,8 @@ window.addEventListener("load", () => {
      "data": {"term": "non-terminal simps"},
      "address": "/The-Simplifier/Terminal-vs-Non-Terminal-Positions/"}],
    "non dependent":
-   [{"id": "--tech-term-Non-Dependent",
-     "data": {"term": "Non-Dependent"},
+   [{"id": "--tech-term-_________-next-next-next-next-next-next-next",
+     "data": {"term": "非依值"},
      "address": "/The Type System/Functions/"}],
    "non associative":
    [{"id": "--tech-term-Non-associative",
@@ -11645,12 +11690,12 @@ window.addEventListener("load", () => {
      "data": {"term": "macro expansion"},
      "address": "/Notations-and-Macros/Macros/"}],
    "macro":
-   [{"id": "--tech-term-macro",
+   [{"id": "--tech-term-Macros",
      "data": {"term": "Macros"},
-     "address": "/Notations-and-Macros/Defining-New-Syntax/"},
-    {"id": "--tech-term-Macros",
+     "address": "/Notations-and-Macros/Macros/"},
+    {"id": "--tech-term-macro",
      "data": {"term": "Macros"},
-     "address": "/Notations-and-Macros/Macros/"}],
+     "address": "/Notations-and-Macros/Defining-New-Syntax/"}],
    "log":
    [{"id": "--tech-term-log",
      "data": {"term": "log"},
@@ -11680,12 +11725,12 @@ window.addEventListener("load", () => {
      "data": {"term": "library directories"},
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "library":
-   [{"id": "--tech-term-Libraries",
+   [{"id": "--tech-term-libraries",
      "data": {"term": "Libraries"},
-     "address": "/Build-Tools-and-Distribution/Lake/"},
-    {"id": "--tech-term-libraries",
+     "address": "/Source-Files-and-Modules/"},
+    {"id": "--tech-term-Libraries",
      "data": {"term": "Libraries"},
-     "address": "/Source-Files-and-Modules/"}],
+     "address": "/Build-Tools-and-Distribution/Lake/"}],
    "left fold":
    [{"id": "--tech-term-Left-folds",
      "data": {"term": "Left folds"},
@@ -11735,16 +11780,16 @@ window.addEventListener("load", () => {
      "data": {"term": "interpolated string"},
      "address": "/Basic-Types/Strings/"}],
    "intensional":
-   [{"id": "--tech-term-intensional",
-     "data": {"term": "intensional"},
+   [{"id": "--tech-term-_________-next-next-next-next-next-next-next-next-next",
+     "data": {"term": "内涵性"},
      "address": "/The Type System/Functions/"}],
    "instance implicit":
-   [{"id": "--tech-term-instance-implicit-next",
+   [{"id": "--tech-term-instance-implicit",
      "data": {"term": "instance-implicit"},
-     "address": "/Type-Classes/"},
-    {"id": "--tech-term-instance-implicit",
+     "address": "/Terms/Functions/"},
+    {"id": "--tech-term-instance-implicit-next",
      "data": {"term": "instance-implicit"},
-     "address": "/Terms/Functions/"}],
+     "address": "/Type-Classes/"}],
    "instance":
    [{"id": "--tech-term-instances",
      "data": {"term": "instances"},
@@ -11874,16 +11919,16 @@ window.addEventListener("load", () => {
      "data": {"term": "Functor"},
      "address": "/Functors___-Monads-and--do--Notation/"}],
    "function type":
-   [{"id": "--tech-term-function-types",
-     "data": {"term": "function types"},
+   [{"id": "--tech-term-____________-next-next-next-next-next-next-next",
+     "data": {"term": "函数类型"},
      "address": "/The Type System/Functions/"}],
    "function abstraction":
-   [{"id": "--tech-term-function-abstractions",
-     "data": {"term": "function abstractions"},
+   [{"id": "--tech-term-____________-next-next-next-next-next-next-next-next",
+     "data": {"term": "函数抽象"},
      "address": "/The Type System/Functions/"}],
    "function":
-   [{"id": "--tech-term-Functions",
-     "data": {"term": "Functions"},
+   [{"id": "--tech-term-______-next-next-next-next-next-next",
+     "data": {"term": "函数"},
      "address": "/The Type System/Functions/"}],
    "force":
    [{"id": "--tech-term-forcing",
@@ -11950,12 +11995,12 @@ window.addEventListener("load", () => {
      "data": {"term": "expansion"},
      "address": "/Notations-and-Macros/Custom-Operators/"}],
    "executable":
-   [{"id": "--tech-term-executables",
+   [{"id": "--tech-term-Executables",
      "data": {"term": "Executables"},
-     "address": "/Source-Files-and-Modules/"},
-    {"id": "--tech-term-Executables",
+     "address": "/Build-Tools-and-Distribution/Lake/"},
+    {"id": "--tech-term-executables",
      "data": {"term": "Executables"},
-     "address": "/Build-Tools-and-Distribution/Lake/"}],
+     "address": "/Source-Files-and-Modules/"}],
    "exception monad":
    [{"id": "--tech-term-Exception-monads",
      "data": {"term": "Exception monads"},
@@ -12000,8 +12045,8 @@ window.addEventListener("load", () => {
      "data": {"term": "dynamic arrays"},
      "address": "/Basic-Types/Arrays/"}],
    "domain":
-   [{"id": "--tech-term-domain",
-     "data": {"term": "domain"},
+   [{"id": "--tech-term-_________-next-next-next-next-next",
+     "data": {"term": "定义域"},
      "address": "/The Type System/Functions/"}],
    "documentation comment":
    [{"id": "--tech-term-Documentation-comments",
@@ -12056,8 +12101,8 @@ window.addEventListener("load", () => {
      "data": {"term": "dependent sums"},
      "address": "/Basic-Types/Tuples/"}],
    "dependent product":
-   [{"id": "--tech-term-dependent-products",
-     "data": {"term": "dependent products"},
+   [{"id": "--tech-term-_________-next-next-next-next-next-next",
+     "data": {"term": "依值积"},
      "address": "/The Type System/Functions/"}],
    "dependent pair":
    [{"id": "--tech-term-Dependent-pairs",
@@ -12072,8 +12117,8 @@ window.addEventListener("load", () => {
      "data": {"term": "Dependent coercions"},
      "address": "/Coercions/Coercing-Between-Types/"}],
    "dependent":
-   [{"id": "--tech-term-Dependent",
-     "data": {"term": "Dependent"},
+   [{"id": "--tech-term-______-next-next-next-next-next-next-next-next",
+     "data": {"term": "依值"},
      "address": "/The Type System/Functions/"}],
    "delaborator":
    [{"id": "--tech-term-delaborators",
@@ -12138,8 +12183,8 @@ window.addEventListener("load", () => {
      "data": {"term": "Custom eliminators"},
      "address": "/Tactic-Proofs/Tactic-Reference/"}],
    "currying":
-   [{"id": "--tech-term-currying",
-     "data": {"term": "currying"},
+   [{"id": "--tech-term-_________-next-next-next-next-next-next-next-next",
+     "data": {"term": "柯里化"},
      "address": "/The Type System/Functions/"}],
    "current namespace":
    [{"id": "--tech-term-current-namespace",
@@ -12153,7 +12198,8 @@ window.addEventListener("load", () => {
      "data": {"term": "current do block"},
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"}],
    "cumulative":
-   [{"id": "--tech-term-____________-next-next-next-next-next-next-next",
+   [{"id":
+     "--tech-term-____________-next-next-next-next-next-next-next-next-next",
      "data": {"term": "累积性的"},
      "address": "/The Type System/Universe/"}],
    "course of values recursion":
@@ -12189,8 +12235,8 @@ window.addEventListener("load", () => {
      "data": {"term": "coercion"},
      "address": "/Coercions/"}],
    "codomain":
-   [{"id": "--tech-term-codomain",
-     "data": {"term": "codomain"},
+   [{"id": "--tech-term-______-next-next-next-next-next-next-next",
+     "data": {"term": "陪域"},
      "address": "/The Type System/Functions/"}],
    "class abbreviation":
    [{"id": "--tech-term-class-abbreviations",
@@ -12330,10 +12376,10 @@ window.addEventListener("load", () => {
   "description": "Tactics for performing targeted rewriting of subterms",
   "contents":
   {"Lean.Parser.Tactic.Conv.«conv·._»":
-   [{"id": "Lean___Parser___Tactic___Conv____FLQQ_conv________FLQQ_-next",
+   [{"id": "Lean___Parser___Tactic___Conv____FLQQ_conv________FLQQ_",
      "data": {"userName": "· ..."},
      "address": "/Tactic-Proofs/Targeted-Rewriting-with--conv/"},
-    {"id": "Lean___Parser___Tactic___Conv____FLQQ_conv________FLQQ_",
+    {"id": "Lean___Parser___Tactic___Conv____FLQQ_conv________FLQQ_-next",
      "data": {"userName": "· ..."},
      "address": "/Tactic-Proofs/Targeted-Rewriting-with--conv/"}],
    "Lean.Parser.Tactic.Conv.«conv_<;>_»":
@@ -12592,12 +12638,12 @@ window.addEventListener("load", () => {
      "data": {"userName": "with_unfolding_all"},
      "address": "/Tactic-Proofs/The-Tactic-Language/"}],
    "Lean.Parser.Tactic.withReducibleAndInstances":
-   [{"id": "with_reducible_and_instances",
+   [{"id": "with_reducible_and_instances-next",
      "data": {"userName": "with_reducible_and_instances"},
-     "address": "/Tactic-Proofs/The-Tactic-Language/"},
-    {"id": "with_reducible_and_instances-next",
+     "address": "/Tactic-Proofs/Tactic-Reference/"},
+    {"id": "with_reducible_and_instances",
      "data": {"userName": "with_reducible_and_instances"},
-     "address": "/Tactic-Proofs/Tactic-Reference/"}],
+     "address": "/Tactic-Proofs/The-Tactic-Language/"}],
    "Lean.Parser.Tactic.withReducible":
    [{"id": "with_reducible-next",
      "data": {"userName": "with_reducible"},
@@ -13206,10 +13252,10 @@ window.addEventListener("load", () => {
   "description": null,
   "contents":
   {"«term∃_,_»":
-   [{"id": "_FLQQ_term_________FLQQ_",
+   [{"id": "_FLQQ_term_________FLQQ_-next",
      "data": null,
      "address": "/Basic-Propositions/Quantifiers/"},
-    {"id": "_FLQQ_term_________FLQQ_-next",
+    {"id": "_FLQQ_term_________FLQQ_",
      "data": null,
      "address": "/Basic-Propositions/Quantifiers/"}],
    "«term‹_›»":
@@ -13217,10 +13263,10 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Tactic-Proofs/Reading-Proof-States/"}],
    "«termΣ_,_»":
-   [{"id": "_FLQQ_term_________FLQQ_-next-next-next-next-next-next",
+   [{"id": "_FLQQ_term_________FLQQ_-next-next-next-next-next",
      "data": null,
      "address": "/Basic-Types/Tuples/"},
-    {"id": "_FLQQ_term_________FLQQ_-next-next-next-next-next",
+    {"id": "_FLQQ_term_________FLQQ_-next-next-next-next-next-next",
      "data": null,
      "address": "/Basic-Types/Tuples/"}],
    "«termΣ'_,_»":
@@ -13235,10 +13281,10 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Basic-Propositions/Logical-Connectives/"}],
    "«term{_:_//_}»":
-   [{"id": "_FLQQ_term___________________FLQQ_",
+   [{"id": "_FLQQ_term___________________FLQQ_-next",
      "data": null,
      "address": "/Basic-Types/Subtypes/"},
-    {"id": "_FLQQ_term___________________FLQQ_-next",
+    {"id": "_FLQQ_term___________________FLQQ_",
      "data": null,
      "address": "/Basic-Types/Subtypes/"}],
    "«term_⊕_»":
@@ -13473,12 +13519,12 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Notations-and-Macros/Precedence/"}],
    "num.antiquot":
-   [{"id": "num___antiquot",
+   [{"id": "num___antiquot-next",
      "data": null,
-     "address": "/Type-Classes/Instance-Declarations/"},
-    {"id": "num___antiquot-next",
+     "address": "/Notations-and-Macros/Precedence/"},
+    {"id": "num___antiquot",
      "data": null,
-     "address": "/Notations-and-Macros/Precedence/"}],
+     "address": "/Type-Classes/Instance-Declarations/"}],
    "ident.antiquot":
    [{"id": "ident___antiquot", "data": null, "address": "/Terms/Functions/"}],
    "coeSortNotation":
@@ -13510,27 +13556,27 @@ window.addEventListener("load", () => {
    [{"id": "Manual___FreeSyntax___more-next-next-next",
      "data": null,
      "address": "/Notations-and-Macros/Macros/"},
-    {"id": "Manual___FreeSyntax___more",
+    {"id": "Manual___FreeSyntax___more-next-next",
      "data": null,
-     "address": "/Terms/Function-Application/"},
+     "address": "/Notations-and-Macros/Macros/"},
     {"id": "Manual___FreeSyntax___more-next",
      "data": null,
      "address": "/Terms/Function-Application/"},
-    {"id": "Manual___FreeSyntax___more-next-next",
+    {"id": "Manual___FreeSyntax___more",
      "data": null,
-     "address": "/Notations-and-Macros/Macros/"}],
+     "address": "/Terms/Function-Application/"}],
    "Manual.FreeSyntax.embed":
    [{"id": "Manual___FreeSyntax___embed",
      "data": null,
      "address": "/Terms/Functions/"}],
    "Manual.FreeSyntax.done":
-   [{"id": "Manual___FreeSyntax___done",
+   [{"id": "Manual___FreeSyntax___done-next",
+     "data": null,
+     "address": "/Build-Tools-and-Distribution/Lake/"},
+    {"id": "Manual___FreeSyntax___done",
      "data": null,
      "address": "/Notations-and-Macros/Macros/"},
     {"id": "Manual___FreeSyntax___done-next-next",
-     "data": null,
-     "address": "/Build-Tools-and-Distribution/Lake/"},
-    {"id": "Manual___FreeSyntax___done-next",
      "data": null,
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "List.«term_~_»":
@@ -13611,28 +13657,28 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"}],
    "Lean.Parser.Termination.terminationBy":
-   [{"id": "Lean___Parser___Termination___terminationBy-next",
+   [{"id": "Lean___Parser___Termination___terminationBy-next-next-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "Lean___Parser___Termination___terminationBy-next-next-next",
+    {"id": "Lean___Parser___Termination___terminationBy-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"}],
    "Lean.Parser.Term.typeAscription":
-   [{"id": "Lean___Parser___Term___typeAscription-next",
+   [{"id": "Lean___Parser___Term___typeAscription",
      "data": null,
-     "address": "/Terms/Type-Ascription/"},
-    {"id": "Lean___Parser___Term___typeAscription",
+     "address": "/Terms/Functions/"},
+    {"id": "Lean___Parser___Term___typeAscription-next",
      "data": null,
-     "address": "/Terms/Functions/"}],
+     "address": "/Terms/Type-Ascription/"}],
    "Lean.Parser.Term.tuple":
    [{"id": "Lean___Parser___Term___tuple",
      "data": null,
      "address": "/Basic-Types/Tuples/"}],
    "Lean.Parser.Term.syntheticHole":
-   [{"id": "Lean___Parser___Term___syntheticHole-next",
+   [{"id": "Lean___Parser___Term___syntheticHole",
      "data": null,
      "address": "/Terms/Holes/"},
-    {"id": "Lean___Parser___Term___syntheticHole",
+    {"id": "Lean___Parser___Term___syntheticHole-next",
      "data": null,
      "address": "/Terms/Holes/"}],
    "Lean.Parser.Term.subst":
@@ -13640,32 +13686,32 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Basic-Propositions/Propositional-Equality/"}],
    "Lean.Parser.Term.structInstField":
-   [{"id": "Lean___Parser___Term___structInstField",
+   [{"id": "Lean___Parser___Term___structInstField-next",
      "data": null,
      "address": "/The Type System/Inductive-Types/"},
-    {"id": "Lean___Parser___Term___structInstField-next",
+    {"id": "Lean___Parser___Term___structInstField",
      "data": null,
      "address": "/The Type System/Inductive-Types/"}],
    "Lean.Parser.Term.structInst":
-   [{"id": "Lean___Parser___Term___structInst-next",
+   [{"id": "Lean___Parser___Term___structInst",
      "data": null,
      "address": "/The Type System/Inductive-Types/"},
-    {"id": "Lean___Parser___Term___structInst",
+    {"id": "Lean___Parser___Term___structInst-next",
      "data": null,
      "address": "/The Type System/Inductive-Types/"}],
    "Lean.Parser.Term.strictImplicitBinder":
-   [{"id": "Lean___Parser___Term___strictImplicitBinder-next",
-     "data": null,
-     "address": "/Definitions/Headers-and-Signatures/"},
-    {"id": "Lean___Parser___Term___strictImplicitBinder",
-     "data": null,
-     "address": "/Definitions/Headers-and-Signatures/"},
-    {"id": "Lean___Parser___Term___strictImplicitBinder-next-next-next",
+   [{"id": "Lean___Parser___Term___strictImplicitBinder-next-next-next",
      "data": null,
      "address": "/Terms/Functions/"},
     {"id": "Lean___Parser___Term___strictImplicitBinder-next-next",
      "data": null,
-     "address": "/Terms/Functions/"}],
+     "address": "/Terms/Functions/"},
+    {"id": "Lean___Parser___Term___strictImplicitBinder-next",
+     "data": null,
+     "address": "/Definitions/Headers-and-Signatures/"},
+    {"id": "Lean___Parser___Term___strictImplicitBinder",
+     "data": null,
+     "address": "/Definitions/Headers-and-Signatures/"}],
    "Lean.Parser.Term.stateRefT":
    [{"id": "Lean___Parser___Term___stateRefT",
      "data": null,
@@ -13682,10 +13728,10 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Terms/Function-Application/"}],
    "Lean.Parser.Term.pipeProj":
-   [{"id": "Lean___Parser___Term___pipeProj",
+   [{"id": "Lean___Parser___Term___pipeProj-next",
      "data": null,
      "address": "/Terms/Function-Application/"},
-    {"id": "Lean___Parser___Term___pipeProj-next",
+    {"id": "Lean___Parser___Term___pipeProj",
      "data": null,
      "address": "/Terms/Function-Application/"}],
    "Lean.Parser.Term.paren":
@@ -13701,10 +13747,10 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Terms/Pattern-Matching/"}],
    "Lean.Parser.Term.namedPattern":
-   [{"id": "Lean___Parser___Term___namedPattern",
+   [{"id": "Lean___Parser___Term___namedPattern-next",
      "data": null,
      "address": "/Terms/Pattern-Matching/"},
-    {"id": "Lean___Parser___Term___namedPattern-next",
+    {"id": "Lean___Parser___Term___namedPattern",
      "data": null,
      "address": "/Terms/Pattern-Matching/"}],
    "Lean.Parser.Term.matchDiscr":
@@ -13722,12 +13768,12 @@ window.addEventListener("load", () => {
    [{"id": "Lean___Parser___Term___instBinder-next",
      "data": null,
      "address": "/Terms/Functions/"},
-    {"id": "Lean___Parser___Term___instBinder",
-     "data": null,
-     "address": "/Definitions/Headers-and-Signatures/"},
     {"id": "Lean___Parser___Term___instBinder-next-next",
      "data": null,
-     "address": "/Terms/Functions/"}],
+     "address": "/Terms/Functions/"},
+    {"id": "Lean___Parser___Term___instBinder",
+     "data": null,
+     "address": "/Definitions/Headers-and-Signatures/"}],
    "Lean.Parser.Term.inaccessible":
    [{"id": "Lean___Parser___Term___inaccessible",
      "data": null,
@@ -13736,10 +13782,10 @@ window.addEventListener("load", () => {
    [{"id": "Lean___Parser___Term___implicitBinder",
      "data": null,
      "address": "/Definitions/Headers-and-Signatures/"},
-    {"id": "Lean___Parser___Term___implicitBinder-next",
+    {"id": "Lean___Parser___Term___implicitBinder-next-next",
      "data": null,
      "address": "/Terms/Functions/"},
-    {"id": "Lean___Parser___Term___implicitBinder-next-next",
+    {"id": "Lean___Parser___Term___implicitBinder-next",
      "data": null,
      "address": "/Terms/Functions/"}],
    "Lean.Parser.Term.hole":
@@ -13747,26 +13793,26 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Terms/Holes/"}],
    "Lean.Parser.Term.fun":
-   [{"id": "Lean___Parser___Term___fun-next-next-next-next",
-     "data": null,
-     "address": "/Terms/Functions/"},
-    {"id": "Lean___Parser___Term___fun",
-     "data": null,
-     "address": "/Terms/Functions/"},
-    {"id": "Lean___Parser___Term___fun-next-next-next-next-next",
-     "data": null,
-     "address": "/Terms/Pattern-Matching/"},
-    {"id": "Lean___Parser___Term___fun-next",
+   [{"id": "Lean___Parser___Term___fun",
      "data": null,
      "address": "/Terms/Functions/"},
     {"id": "Lean___Parser___Term___fun-next-next-next",
      "data": null,
      "address": "/Terms/Functions/"},
+    {"id": "Lean___Parser___Term___fun-next",
+     "data": null,
+     "address": "/Terms/Functions/"},
+    {"id": "Lean___Parser___Term___fun-next-next-next-next",
+     "data": null,
+     "address": "/Terms/Functions/"},
+    {"id": "Lean___Parser___Term___fun-next-next-next-next-next",
+     "data": null,
+     "address": "/Terms/Pattern-Matching/"},
     {"id": "Lean___Parser___Term___fun-next-next",
      "data": null,
      "address": "/Terms/Functions/"}],
    "Lean.Parser.Term.forall":
-   [{"id": "Lean___Parser___Term___forall",
+   [{"id": "Lean___Parser___Term___forall-next-next",
      "data": null,
      "address": "/Basic-Propositions/Quantifiers/"},
     {"id": "Lean___Parser___Term___forall-next-next-next",
@@ -13775,7 +13821,7 @@ window.addEventListener("load", () => {
     {"id": "Lean___Parser___Term___forall-next",
      "data": null,
      "address": "/Basic-Propositions/Quantifiers/"},
-    {"id": "Lean___Parser___Term___forall-next-next",
+    {"id": "Lean___Parser___Term___forall",
      "data": null,
      "address": "/Basic-Propositions/Quantifiers/"}],
    "Lean.Parser.Term.explicitBinder":
@@ -13786,22 +13832,11 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Definitions/Headers-and-Signatures/"}],
    "Lean.Parser.Term.doSeqItem":
-   [{"id": "Lean___Parser___Term___doSeqItem-next-next-next-next",
-     "data": null,
-     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
-    {"id":
-     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+   [{"id":
+     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
     {"id": "Lean___Parser___Term___doSeqItem-next-next-next",
-     "data": null,
-     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
-    {"id":
-     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
-    {"id":
-     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
     {"id":
@@ -13812,7 +13847,17 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
     {"id":
-     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
+    {"id": "Lean___Parser___Term___doSeqItem-next-next-next-next",
+     "data": null,
+     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
+    {"id":
+     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
+    {"id": "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
     {"id":
@@ -13820,26 +13865,15 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
     {"id":
-     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
     {"id":
-     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
-    {"id": "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next",
+     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
     {"id":
-     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
-    {"id":
-     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
-    {"id":
-     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next",
+     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
     {"id":
@@ -13847,11 +13881,23 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
     {"id":
-     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
     {"id":
-     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next",
+     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
+    {"id":
+     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
+    {"id":
+     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
+    {"id":
+     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"}],
    "Lean.Parser.Term.doReassignArrow":
@@ -13862,10 +13908,10 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"}],
    "Lean.Parser.Term.doReassign":
-   [{"id": "Lean___Parser___Term___doReassign-next",
+   [{"id": "Lean___Parser___Term___doReassign",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
-    {"id": "Lean___Parser___Term___doReassign",
+    {"id": "Lean___Parser___Term___doReassign-next",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"}],
    "Lean.Parser.Term.do":
@@ -13873,35 +13919,35 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"}],
    "Lean.Parser.Term.depArrow":
-   [{"id": "Lean___Parser___Term___depArrow-next-next-next-next",
+   [{"id": "Lean___Parser___Term___depArrow",
      "data": null,
      "address": "/Terms/Function-Types/"},
-    {"id": "Lean___Parser___Term___depArrow-next-next-next",
+    {"id": "Lean___Parser___Term___depArrow-next-next",
      "data": null,
      "address": "/Terms/Function-Types/"},
     {"id": "Lean___Parser___Term___depArrow-next-next-next-next-next-next-next",
      "data": null,
      "address": "/Terms/Function-Types/"},
-    {"id": "Lean___Parser___Term___depArrow-next-next-next-next-next",
+    {"id": "Lean___Parser___Term___depArrow-next-next-next-next",
      "data": null,
      "address": "/Terms/Function-Types/"},
     {"id": "Lean___Parser___Term___depArrow-next",
      "data": null,
      "address": "/Terms/Function-Types/"},
-    {"id": "Lean___Parser___Term___depArrow",
+    {"id": "Lean___Parser___Term___depArrow-next-next-next-next-next",
      "data": null,
      "address": "/Terms/Function-Types/"},
     {"id": "Lean___Parser___Term___depArrow-next-next-next-next-next-next",
      "data": null,
      "address": "/Terms/Function-Types/"},
-    {"id": "Lean___Parser___Term___depArrow-next-next",
+    {"id": "Lean___Parser___Term___depArrow-next-next-next",
      "data": null,
      "address": "/Terms/Function-Types/"}],
    "Lean.Parser.Term.byTactic":
-   [{"id": "Lean___Parser___Term___byTactic-next",
+   [{"id": "Lean___Parser___Term___byTactic-next-next",
      "data": null,
      "address": "/Tactic-Proofs/Running-Tactics/"},
-    {"id": "Lean___Parser___Term___byTactic-next-next",
+    {"id": "Lean___Parser___Term___byTactic-next",
      "data": null,
      "address": "/Tactic-Proofs/Running-Tactics/"}],
    "Lean.Parser.Term.borrowed":
@@ -13913,10 +13959,10 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Attributes/"}],
    "Lean.Parser.Term.attrKind":
-   [{"id": "Lean___Parser___Term___attrKind",
+   [{"id": "Lean___Parser___Term___attrKind-next-next",
      "data": null,
      "address": "/Attributes/"},
-    {"id": "Lean___Parser___Term___attrKind-next-next",
+    {"id": "Lean___Parser___Term___attrKind",
      "data": null,
      "address": "/Attributes/"},
     {"id": "Lean___Parser___Term___attrKind-next",
@@ -13949,20 +13995,20 @@ window.addEventListener("load", () => {
     {"id": "Lean___Parser___Tactic___configItem-next-next",
      "data": null,
      "address": "/Tactic-Proofs/The-Tactic-Language/"},
-    {"id": "Lean___Parser___Tactic___configItem-next-next-next",
+    {"id": "Lean___Parser___Tactic___configItem-next",
      "data": null,
      "address": "/Tactic-Proofs/The-Tactic-Language/"},
-    {"id": "Lean___Parser___Tactic___configItem-next",
+    {"id": "Lean___Parser___Tactic___configItem-next-next-next",
      "data": null,
      "address": "/Tactic-Proofs/The-Tactic-Language/"}],
    "Lean.Parser.Tactic.Conv.enterArg":
-   [{"id": "Lean___Parser___Tactic___Conv___enterArg-next-next-next",
+   [{"id": "Lean___Parser___Tactic___Conv___enterArg-next",
+     "data": null,
+     "address": "/Tactic-Proofs/Targeted-Rewriting-with--conv/"},
+    {"id": "Lean___Parser___Tactic___Conv___enterArg-next-next-next",
      "data": null,
      "address": "/Tactic-Proofs/Targeted-Rewriting-with--conv/"},
     {"id": "Lean___Parser___Tactic___Conv___enterArg-next-next",
-     "data": null,
-     "address": "/Tactic-Proofs/Targeted-Rewriting-with--conv/"},
-    {"id": "Lean___Parser___Tactic___Conv___enterArg-next",
      "data": null,
      "address": "/Tactic-Proofs/Targeted-Rewriting-with--conv/"}],
    "Lean.Parser.Syntax.unary":
@@ -13984,23 +14030,23 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Notations-and-Macros/Precedence/"}],
    "Lean.Parser.Syntax.sepBy1":
-   [{"id": "Lean___Parser___Syntax___sepBy1-next-next",
+   [{"id": "Lean___Parser___Syntax___sepBy1-next",
      "data": null,
      "address": "/Notations-and-Macros/Defining-New-Syntax/"},
     {"id": "Lean___Parser___Syntax___sepBy1",
      "data": null,
      "address": "/Notations-and-Macros/Defining-New-Syntax/"},
-    {"id": "Lean___Parser___Syntax___sepBy1-next",
+    {"id": "Lean___Parser___Syntax___sepBy1-next-next",
      "data": null,
      "address": "/Notations-and-Macros/Defining-New-Syntax/"}],
    "Lean.Parser.Syntax.sepBy":
-   [{"id": "Lean___Parser___Syntax___sepBy-next",
-     "data": null,
-     "address": "/Notations-and-Macros/Defining-New-Syntax/"},
-    {"id": "Lean___Parser___Syntax___sepBy",
+   [{"id": "Lean___Parser___Syntax___sepBy",
      "data": null,
      "address": "/Notations-and-Macros/Defining-New-Syntax/"},
     {"id": "Lean___Parser___Syntax___sepBy-next-next",
+     "data": null,
+     "address": "/Notations-and-Macros/Defining-New-Syntax/"},
+    {"id": "Lean___Parser___Syntax___sepBy-next",
      "data": null,
      "address": "/Notations-and-Macros/Defining-New-Syntax/"}],
    "Lean.Parser.Syntax.paren":
@@ -14148,13 +14194,13 @@ window.addEventListener("load", () => {
    [{"id": "Lean___Parser___Command___mixfix-next",
      "data": null,
      "address": "/Notations-and-Macros/Custom-Operators/"},
-    {"id": "Lean___Parser___Command___mixfix-next-next-next",
+    {"id": "Lean___Parser___Command___mixfix-next-next",
      "data": null,
      "address": "/Notations-and-Macros/Custom-Operators/"},
     {"id": "Lean___Parser___Command___mixfix",
      "data": null,
      "address": "/Notations-and-Macros/Custom-Operators/"},
-    {"id": "Lean___Parser___Command___mixfix-next-next",
+    {"id": "Lean___Parser___Command___mixfix-next-next-next",
      "data": null,
      "address": "/Notations-and-Macros/Custom-Operators/"},
     {"id": "Lean___Parser___Command___mixfix-next-next-next-next",
@@ -14176,13 +14222,13 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Notations-and-Macros/Macros/"}],
    "Lean.Parser.Command.instance":
-   [{"id": "Lean___Parser___Command___instance-next-next-next",
+   [{"id": "Lean___Parser___Command___instance-next",
+     "data": null,
+     "address": "/Type-Classes/Instance-Declarations/"},
+    {"id": "Lean___Parser___Command___instance-next-next-next",
      "data": null,
      "address": "/Type-Classes/Instance-Declarations/"},
     {"id": "Lean___Parser___Command___instance-next-next",
-     "data": null,
-     "address": "/Type-Classes/Instance-Declarations/"},
-    {"id": "Lean___Parser___Command___instance-next",
      "data": null,
      "address": "/Type-Classes/Instance-Declarations/"}],
    "Lean.Parser.Command.initialize":
@@ -14223,10 +14269,10 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Attributes/"}],
    "Lean.Parser.Command.end":
-   [{"id": "Lean___Parser___Command___end",
+   [{"id": "Lean___Parser___Command___end-next",
      "data": null,
      "address": "/Namespaces-and-Sections/"},
-    {"id": "Lean___Parser___Command___end-next",
+    {"id": "Lean___Parser___Command___end",
      "data": null,
      "address": "/Namespaces-and-Sections/"}],
    "Lean.Parser.Command.elab_rules":
@@ -14242,18 +14288,24 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Type-Classes/Deriving-Instances/"}],
    "Lean.Parser.Command.declaration":
-   [{"id":
-     "Lean___Parser___Command___declaration-next-next-next-next-next-next-next-next",
+   [{"id": "Lean___Parser___Command___declaration-next-next-next-next-next",
      "data": null,
      "address": "/Definitions/Definitions/"},
     {"id":
-     "Lean___Parser___Command___declaration-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "Lean___Parser___Command___declaration-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/Definitions/Example-Declarations/"},
     {"id":
-     "Lean___Parser___Command___declaration-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "Lean___Parser___Command___declaration-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
-     "address": "/Type-Classes/Class-Declarations/"},
+     "address": "/Definitions/Theorems/"},
+    {"id":
+     "Lean___Parser___Command___declaration-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/Definitions/Example-Declarations/"},
+    {"id": "Lean___Parser___Command___declaration-next",
+     "data": null,
+     "address": "/The Type System/Inductive-Types/"},
     {"id": "Lean___Parser___Command___declaration",
      "data": null,
      "address": "/The Type System/Inductive-Types/"},
@@ -14262,53 +14314,47 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Definitions/Definitions/"},
     {"id":
-     "Lean___Parser___Command___declaration-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "Lean___Parser___Command___declaration-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
-     "address": "/Definitions/Example-Declarations/"},
+     "address": "/Definitions/Theorems/"},
     {"id":
-     "Lean___Parser___Command___declaration-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "Lean___Parser___Command___declaration-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/Type-Classes/Class-Declarations/"},
+    {"id":
+     "Lean___Parser___Command___declaration-next-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/Definitions/Definitions/"},
+    {"id": "Lean___Parser___Command___declaration-next-next-next-next",
+     "data": null,
+     "address": "/Definitions/Definitions/"},
+    {"id":
+     "Lean___Parser___Command___declaration-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/Definitions/Example-Declarations/"},
     {"id":
      "Lean___Parser___Command___declaration-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/Definitions/Theorems/"},
-    {"id": "Lean___Parser___Command___declaration-next-next-next-next-next",
-     "data": null,
-     "address": "/Definitions/Definitions/"},
-    {"id":
-     "Lean___Parser___Command___declaration-next-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/Definitions/Definitions/"},
     {"id":
      "Lean___Parser___Command___declaration-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/Definitions/Definitions/"},
-    {"id":
-     "Lean___Parser___Command___declaration-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+    {"id": "Lean___Parser___Command___declaration-next-next-next",
      "data": null,
-     "address": "/Definitions/Theorems/"},
+     "address": "/Definitions/Definitions/"},
+    {"id":
+     "Lean___Parser___Command___declaration-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/Definitions/Definitions/"},
     {"id":
      "Lean___Parser___Command___declaration-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/Definitions/Definitions/"},
     {"id":
-     "Lean___Parser___Command___declaration-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "Lean___Parser___Command___declaration-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
-     "address": "/Definitions/Theorems/"},
-    {"id": "Lean___Parser___Command___declaration-next-next-next",
-     "data": null,
-     "address": "/Definitions/Definitions/"},
-    {"id":
-     "Lean___Parser___Command___declaration-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/Type-Classes/Class-Declarations/"},
-    {"id": "Lean___Parser___Command___declaration-next-next-next-next",
-     "data": null,
-     "address": "/Definitions/Definitions/"},
-    {"id": "Lean___Parser___Command___declaration-next",
-     "data": null,
-     "address": "/The Type System/Inductive-Types/"}],
+     "address": "/Type-Classes/Class-Declarations/"}],
    "Lean.Parser.Command.declSig":
    [{"id": "Lean___Parser___Command___declSig",
      "data": null,
@@ -14345,77 +14391,77 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"}],
    "Lean.Parser.Attr.simple":
-   [{"id": "Lean___Parser___Attr___simple-next-next-next-next",
+   [{"id":
+     "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
-     "address": "/Terms/Function-Application/"},
-    {"id":
-     "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/Build-Tools-and-Distribution/Lake/"},
-    {"id": "Lean___Parser___Attr___simple",
-     "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "Lean___Parser___Attr___simple-next",
-     "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
-    {"id":
-     "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/Tactic-Proofs/Tactic-Reference/"},
-    {"id": "Lean___Parser___Attr___simple-next-next",
-     "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "Lean___Parser___Attr___simple-next-next-next-next-next",
-     "data": null,
-     "address": "/Terms/Pattern-Matching/"},
-    {"id": "Lean___Parser___Attr___simple-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/Tactic-Proofs/Tactic-Reference/"},
-    {"id":
-     "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/Build-Tools-and-Distribution/Lake/"},
-    {"id":
-     "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/Notations-and-Macros/Elaborators/"},
+     "address": "/Notations-and-Macros/Extending-Lean___s-Output/"},
     {"id": "Lean___Parser___Attr___simple-next-next-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
-    {"id":
-     "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next-next-next-next",
+    {"id": "Lean___Parser___Attr___simple-next-next-next-next-next-next",
      "data": null,
-     "address": "/Notations-and-Macros/Elaborators/"},
+     "address": "/Tactic-Proofs/Tactic-Reference/"},
+    {"id": "Lean___Parser___Attr___simple-next",
+     "data": null,
+     "address": "/Definitions/Recursive-Definitions/"},
+    {"id": "Lean___Parser___Attr___simple-next-next",
+     "data": null,
+     "address": "/Definitions/Recursive-Definitions/"},
     {"id":
      "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/Notations-and-Macros/Extending-Lean___s-Output/"},
     {"id":
-     "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next",
+     "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
-     "address": "/Tactic-Proofs/Tactic-Reference/"},
+     "address": "/Build-Tools-and-Distribution/Lake/"},
     {"id":
      "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/Notations-and-Macros/Elaborators/"},
     {"id":
-     "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
-     "address": "/Notations-and-Macros/Extending-Lean___s-Output/"},
-    {"id": "Lean___Parser___Attr___simple-next-next-next-next-next-next",
+     "address": "/Build-Tools-and-Distribution/Lake/"},
+    {"id":
+     "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next",
      "data": null,
-     "address": "/Tactic-Proofs/Tactic-Reference/"}],
+     "address": "/Tactic-Proofs/Tactic-Reference/"},
+    {"id":
+     "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/Tactic-Proofs/Tactic-Reference/"},
+    {"id": "Lean___Parser___Attr___simple-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/Tactic-Proofs/Tactic-Reference/"},
+    {"id":
+     "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/Notations-and-Macros/Elaborators/"},
+    {"id": "Lean___Parser___Attr___simple-next-next-next-next-next",
+     "data": null,
+     "address": "/Terms/Pattern-Matching/"},
+    {"id":
+     "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/Notations-and-Macros/Elaborators/"},
+    {"id": "Lean___Parser___Attr___simple",
+     "data": null,
+     "address": "/Definitions/Recursive-Definitions/"},
+    {"id": "Lean___Parser___Attr___simple-next-next-next-next",
+     "data": null,
+     "address": "/Terms/Function-Application/"}],
    "Lean.Parser.Attr.simp":
-   [{"id": "Lean___Parser___Attr___simp",
-     "data": null,
-     "address": "/The-Simplifier/Simp-sets/"},
-    {"id": "Lean___Parser___Attr___simp-next-next-next",
-     "data": null,
-     "address": "/The-Simplifier/Simp-sets/"},
-    {"id": "Lean___Parser___Attr___simp-next",
+   [{"id": "Lean___Parser___Attr___simp-next",
      "data": null,
      "address": "/The-Simplifier/Simp-sets/"},
     {"id": "Lean___Parser___Attr___simp-next-next",
+     "data": null,
+     "address": "/The-Simplifier/Simp-sets/"},
+    {"id": "Lean___Parser___Attr___simp",
+     "data": null,
+     "address": "/The-Simplifier/Simp-sets/"},
+    {"id": "Lean___Parser___Attr___simp-next-next-next",
      "data": null,
      "address": "/The-Simplifier/Simp-sets/"}],
    "Lean.Parser.Attr.macro":
@@ -14467,13 +14513,13 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "Lake.DSL.packageCommand":
-   [{"id": "Lake___DSL___packageCommand",
+   [{"id": "Lake___DSL___packageCommand-next-next",
+     "data": null,
+     "address": "/Build-Tools-and-Distribution/Lake/"},
+    {"id": "Lake___DSL___packageCommand",
      "data": null,
      "address": "/Build-Tools-and-Distribution/Lake/"},
     {"id": "Lake___DSL___packageCommand-next",
-     "data": null,
-     "address": "/Build-Tools-and-Distribution/Lake/"},
-    {"id": "Lake___DSL___packageCommand-next-next",
      "data": null,
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "Lake.DSL.moduleFacetDecl":
@@ -14499,13 +14545,13 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "Lake.DSL.leanExeCommand":
-   [{"id": "Lake___DSL___leanExeCommand",
+   [{"id": "Lake___DSL___leanExeCommand-next-next",
      "data": null,
      "address": "/Build-Tools-and-Distribution/Lake/"},
     {"id": "Lake___DSL___leanExeCommand-next",
      "data": null,
      "address": "/Build-Tools-and-Distribution/Lake/"},
-    {"id": "Lake___DSL___leanExeCommand-next-next",
+    {"id": "Lake___DSL___leanExeCommand",
      "data": null,
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "Lake.DSL.getConfig":
@@ -14933,42 +14979,42 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Basic-Propositions/Logical-Connectives/"}],
    "[anonymous]":
-   [{"id": "LawfulApplicative___mk",
-     "data": null,
-     "address": "/Functors___-Monads-and--do--Notation/Laws/"},
-    {"id": "Lake___LeanLibConfig___mk",
+   [{"id": "Lake___LeanExeConfig___mk",
      "data": null,
      "address": "/Build-Tools-and-Distribution/Lake/"},
-    {"id": "IO___Process___SpawnArgs___mk",
+    {"id": "LawfulBEq___mk",
      "data": null,
-     "address": "/IO/Processes/"},
-    {"id": "Monad___mk",
-     "data": null,
-     "address": "/Functors___-Monads-and--do--Notation/"},
-    {"id": "Lake___LeanExeConfig___mk",
-     "data": null,
-     "address": "/Build-Tools-and-Distribution/Lake/"},
+     "address": "/Type-Classes/Basic-Classes/"},
     {"id": "Applicative___mk",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/"},
+    {"id": "GetElem______mk",
+     "data": null,
+     "address": "/Type-Classes/Basic-Classes/"},
+    {"id": "Lake___LeanLibConfig___mk",
+     "data": null,
+     "address": "/Build-Tools-and-Distribution/Lake/"},
     {"id": "LawfulMonad___mk",
+     "data": null,
+     "address": "/Functors___-Monads-and--do--Notation/Laws/"},
+    {"id": "Alternative___mk",
+     "data": null,
+     "address": "/Functors___-Monads-and--do--Notation/"},
+    {"id": "Lean___Order___CCPO___mk",
+     "data": null,
+     "address": "/Definitions/Recursive-Definitions/"},
+    {"id": "LawfulApplicative___mk",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Laws/"},
     {"id": "EquivBEq___mk",
      "data": null,
      "address": "/Type-Classes/Basic-Classes/"},
-    {"id": "Alternative___mk",
+    {"id": "Monad___mk",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/"},
-    {"id": "LawfulBEq___mk",
+    {"id": "IO___Process___SpawnArgs___mk",
      "data": null,
-     "address": "/Type-Classes/Basic-Classes/"},
-    {"id": "Lean___Order___CCPO___mk",
-     "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "GetElem______mk",
-     "data": null,
-     "address": "/Type-Classes/Basic-Classes/"}],
+     "address": "/IO/Processes/"}],
    "Zero.zero":
    [{"id": "Zero___mk",
      "data": null,
@@ -19786,10 +19832,10 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Varieties-of-Monads/"}],
    "MonadState.modifyGet":
-   [{"id": "MonadState___modifyGet",
+   [{"id": "MonadState___mk",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Varieties-of-Monads/"},
-    {"id": "MonadState___mk",
+    {"id": "MonadState___modifyGet",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Varieties-of-Monads/"}],
    "MonadState.mk":
@@ -19797,10 +19843,10 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Varieties-of-Monads/"}],
    "MonadState.get":
-   [{"id": "MonadState___get",
+   [{"id": "MonadState___mk",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Varieties-of-Monads/"},
-    {"id": "MonadState___mk",
+    {"id": "MonadState___get",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Varieties-of-Monads/"}],
    "MonadState":
@@ -26800,13 +26846,12 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "ELAN_HOME":
-   [{"id": "ELAN_HOME",
+   [{"id": "ELAN_HOME-next",
      "data": null,
-     "address": "/Build-Tools-and-Distribution/Lake/"},
-    {"id": "ELAN_HOME-next",
+     "address": "/Build-Tools-and-Distribution/Managing-Toolchains-with-Elan/"},
+    {"id": "ELAN_HOME",
      "data": null,
-     "address":
-     "/Build-Tools-and-Distribution/Managing-Toolchains-with-Elan/"}],
+     "address": "/Build-Tools-and-Distribution/Lake/"}],
    "ELAN":
    [{"id": "ELAN",
      "data": null,
@@ -27812,18 +27857,18 @@ window.addEventListener("load", () => {
       "category": null},
      "address": "/Notations-and-Macros/Precedence/"}],
    "num.antiquot [{\"string\": \"…\", \"kind\": \"meta\"}]":
-   [{"id": "num___antiquot",
+   [{"id": "num___antiquot-next",
      "data":
      {"kind": "num.antiquot",
       "forms": [{"string": "…", "kind": "meta"}],
       "category": null},
-     "address": "/Type-Classes/Instance-Declarations/"},
-    {"id": "num___antiquot-next",
+     "address": "/Notations-and-Macros/Precedence/"},
+    {"id": "num___antiquot",
      "data":
      {"kind": "num.antiquot",
       "forms": [{"string": "…", "kind": "meta"}],
       "category": null},
-     "address": "/Notations-and-Macros/Precedence/"}],
+     "address": "/Type-Classes/Instance-Declarations/"}],
    "ident.antiquot [{\"string\": \"…\", \"kind\": \"meta\"}]":
    [{"id": "ident___antiquot",
      "data":
@@ -27916,15 +27961,15 @@ window.addEventListener("load", () => {
    [{"id": "Manual___FreeSyntax___more-next-next-next",
      "data": {"kind": "Manual.FreeSyntax.more", "forms": [], "category": null},
      "address": "/Notations-and-Macros/Macros/"},
-    {"id": "Manual___FreeSyntax___more",
+    {"id": "Manual___FreeSyntax___more-next-next",
      "data": {"kind": "Manual.FreeSyntax.more", "forms": [], "category": null},
-     "address": "/Terms/Function-Application/"},
+     "address": "/Notations-and-Macros/Macros/"},
     {"id": "Manual___FreeSyntax___more-next",
      "data": {"kind": "Manual.FreeSyntax.more", "forms": [], "category": null},
      "address": "/Terms/Function-Application/"},
-    {"id": "Manual___FreeSyntax___more-next-next",
+    {"id": "Manual___FreeSyntax___more",
      "data": {"kind": "Manual.FreeSyntax.more", "forms": [], "category": null},
-     "address": "/Notations-and-Macros/Macros/"}],
+     "address": "/Terms/Function-Application/"}],
    "Manual.FreeSyntax.embed [{\"string\": \"fun \", \"kind\": \"keyword\"},\n {\"string\": \"(\", \"kind\": \"keyword\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \": \", \"kind\": \"keyword\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \")\", \"kind\": \"keyword\"},\n {\"string\": \" =>\", \"kind\": \"keyword\"},\n {\"string\": \"…\", \"kind\": \"meta\"}]":
    [{"id": "Manual___FreeSyntax___embed",
      "data":
@@ -27942,13 +27987,13 @@ window.addEventListener("load", () => {
       "category": null},
      "address": "/Terms/Functions/"}],
    "Manual.FreeSyntax.done []":
-   [{"id": "Manual___FreeSyntax___done",
+   [{"id": "Manual___FreeSyntax___done-next",
+     "data": {"kind": "Manual.FreeSyntax.done", "forms": [], "category": null},
+     "address": "/Build-Tools-and-Distribution/Lake/"},
+    {"id": "Manual___FreeSyntax___done",
      "data": {"kind": "Manual.FreeSyntax.done", "forms": [], "category": null},
      "address": "/Notations-and-Macros/Macros/"},
     {"id": "Manual___FreeSyntax___done-next-next",
-     "data": {"kind": "Manual.FreeSyntax.done", "forms": [], "category": null},
-     "address": "/Build-Tools-and-Distribution/Lake/"},
-    {"id": "Manual___FreeSyntax___done-next",
      "data": {"kind": "Manual.FreeSyntax.done", "forms": [], "category": null},
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "List.«term_~_» [{\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"~\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"}]":
@@ -28232,7 +28277,7 @@ window.addEventListener("load", () => {
       "category": null},
      "address": "/Definitions/Recursive-Definitions/"}],
    "Lean.Parser.Term.typeAscription [{\"string\": \"(\", \"kind\": \"keyword\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \":\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \")\", \"kind\": \"keyword\"}]":
-   [{"id": "Lean___Parser___Term___typeAscription-next",
+   [{"id": "Lean___Parser___Term___typeAscription",
      "data":
      {"kind": "Lean.Parser.Term.typeAscription",
       "forms":
@@ -28244,8 +28289,8 @@ window.addEventListener("load", () => {
        {"string": "…", "kind": "meta"},
        {"string": ")", "kind": "keyword"}],
       "category": null},
-     "address": "/Terms/Type-Ascription/"},
-    {"id": "Lean___Parser___Term___typeAscription",
+     "address": "/Terms/Functions/"},
+    {"id": "Lean___Parser___Term___typeAscription-next",
      "data":
      {"kind": "Lean.Parser.Term.typeAscription",
       "forms":
@@ -28257,7 +28302,7 @@ window.addEventListener("load", () => {
        {"string": "…", "kind": "meta"},
        {"string": ")", "kind": "keyword"}],
       "category": null},
-     "address": "/Terms/Functions/"}],
+     "address": "/Terms/Type-Ascription/"}],
    "Lean.Parser.Term.tuple [{\"string\": \"(\", \"kind\": \"keyword\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \",\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \")\", \"kind\": \"keyword\"}]":
    [{"id": "Lean___Parser___Term___tuple",
      "data":
@@ -28466,7 +28511,7 @@ window.addEventListener("load", () => {
       "category": null},
      "address": "/Terms/Function-Application/"}],
    "Lean.Parser.Term.pipeProj [{\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"|>.\", \"kind\": \"keyword\"},\n {\"string\": \"…\", \"kind\": \"meta\"}]":
-   [{"id": "Lean___Parser___Term___pipeProj",
+   [{"id": "Lean___Parser___Term___pipeProj-next",
      "data":
      {"kind": "Lean.Parser.Term.pipeProj",
       "forms":
@@ -28476,7 +28521,7 @@ window.addEventListener("load", () => {
        {"string": "…", "kind": "meta"}],
       "category": null},
      "address": "/Terms/Function-Application/"},
-    {"id": "Lean___Parser___Term___pipeProj-next",
+    {"id": "Lean___Parser___Term___pipeProj",
      "data":
      {"kind": "Lean.Parser.Term.pipeProj",
       "forms":
@@ -28698,7 +28743,7 @@ window.addEventListener("load", () => {
       "category": null},
      "address": "/Terms/Holes/"}],
    "Lean.Parser.Term.fun [{\"string\": \"fun\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"=>\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"}]":
-   [{"id": "Lean___Parser___Term___fun-next-next-next-next",
+   [{"id": "Lean___Parser___Term___fun",
      "data":
      {"kind": "Lean.Parser.Term.fun",
       "forms":
@@ -28711,7 +28756,7 @@ window.addEventListener("load", () => {
        {"string": "…", "kind": "meta"}],
       "category": null},
      "address": "/Terms/Functions/"},
-    {"id": "Lean___Parser___Term___fun",
+    {"id": "Lean___Parser___Term___fun-next-next-next-next",
      "data":
      {"kind": "Lean.Parser.Term.fun",
       "forms":
@@ -28738,7 +28783,7 @@ window.addEventListener("load", () => {
       "category": null},
      "address": "/Terms/Functions/"}],
    "Lean.Parser.Term.fun [{\"string\": \"fun\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \":\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"=>\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"}]":
-   [{"id": "Lean___Parser___Term___fun-next",
+   [{"id": "Lean___Parser___Term___fun-next-next-next",
      "data":
      {"kind": "Lean.Parser.Term.fun",
       "forms":
@@ -28755,7 +28800,7 @@ window.addEventListener("load", () => {
        {"string": "…", "kind": "meta"}],
       "category": null},
      "address": "/Terms/Functions/"},
-    {"id": "Lean___Parser___Term___fun-next-next-next",
+    {"id": "Lean___Parser___Term___fun-next",
      "data":
      {"kind": "Lean.Parser.Term.fun",
       "forms":
@@ -29218,7 +29263,7 @@ window.addEventListener("load", () => {
       "category": null},
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"}],
    "Lean.Parser.Term.doReassign [{\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \"(\", \"kind\": \"meta\"},\n {\"string\": \":\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \")?\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \":=\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"}]":
-   [{"id": "Lean___Parser___Term___doReassign-next",
+   [{"id": "Lean___Parser___Term___doReassign",
      "data":
      {"kind": "Lean.Parser.Term.doReassign",
       "forms":
@@ -29234,7 +29279,7 @@ window.addEventListener("load", () => {
        {"string": "…", "kind": "meta"}],
       "category": null},
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
-    {"id": "Lean___Parser___Term___doReassign",
+    {"id": "Lean___Parser___Term___doReassign-next",
      "data":
      {"kind": "Lean.Parser.Term.doReassign",
       "forms":
@@ -29329,7 +29374,7 @@ window.addEventListener("load", () => {
       "category": null},
      "address": "/Terms/Function-Types/"}],
    "Lean.Parser.Term.depArrow [{\"string\": \"(\", \"kind\": \"keyword\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \":\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \")\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"→\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"}]":
-   [{"id": "Lean___Parser___Term___depArrow-next",
+   [{"id": "Lean___Parser___Term___depArrow",
      "data":
      {"kind": "Lean.Parser.Term.depArrow",
       "forms":
@@ -29346,7 +29391,7 @@ window.addEventListener("load", () => {
        {"string": "…", "kind": "meta"}],
       "category": null},
      "address": "/Terms/Function-Types/"},
-    {"id": "Lean___Parser___Term___depArrow",
+    {"id": "Lean___Parser___Term___depArrow-next",
      "data":
      {"kind": "Lean.Parser.Term.depArrow",
       "forms":
@@ -29583,13 +29628,13 @@ window.addEventListener("load", () => {
       "category": null},
      "address": "/Tactic-Proofs/The-Tactic-Language/"}],
    "Lean.Parser.Tactic.Conv.enterArg [{\"string\": \"…\", \"kind\": \"meta\"}]":
-   [{"id": "Lean___Parser___Tactic___Conv___enterArg-next-next-next",
+   [{"id": "Lean___Parser___Tactic___Conv___enterArg-next",
      "data":
      {"kind": "Lean.Parser.Tactic.Conv.enterArg",
       "forms": [{"string": "…", "kind": "meta"}],
       "category": null},
      "address": "/Tactic-Proofs/Targeted-Rewriting-with--conv/"},
-    {"id": "Lean___Parser___Tactic___Conv___enterArg-next",
+    {"id": "Lean___Parser___Tactic___Conv___enterArg-next-next-next",
      "data":
      {"kind": "Lean.Parser.Tactic.Conv.enterArg",
       "forms": [{"string": "…", "kind": "meta"}],
@@ -32166,42 +32211,6 @@ if(name) {
         document.querySelector("#message").innerHTML = "<p>This page expects a 'name' query parameter, along with documentation domains.</p>";
     });
 }
-</script>
-    <script>
-      
-window.addEventListener("load", () => {
-  tippy('.keyword-of.hl.lean', {
-    allowHtml: true,
-    /* DEBUG -- remove the space: * /
-    onHide(any) { return false; },
-    trigger: "click",
-    // */
-    maxWidth: "none",
-
-    theme: "lean",
-    placement: 'bottom-start',
-    content (tgt) {
-      const content = document.createElement("span");
-      const state = tgt.querySelector(".hover-info").cloneNode(true);
-      state.style.display = "block";
-      content.appendChild(state);
-      /* Render docstrings - TODO server-side */
-      if ('undefined' !== typeof marked) {
-          for (const d of content.querySelectorAll("code.docstring, pre.docstring")) {
-              const str = d.innerText;
-              const html = marked.parse(str);
-              const rendered = document.createElement("div");
-              rendered.classList.add("docstring");
-              rendered.innerHTML = html;
-              d.parentNode.replaceChild(rendered, d);
-          }
-      }
-      content.style.display = "block";
-      content.className = "hl lean popup";
-      return content;
-    }
-  });
-});
 </script>
     <script>
       
