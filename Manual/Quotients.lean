@@ -11,26 +11,48 @@ import Manual.Meta
 import Manual.Language.Functions
 import Manual.Language.InductiveTypes
 
+import Manual.ZhDocString.ZhDocString
+import Manual.ZhDocString.Quotients
+
 open Verso.Genre Manual
 open Verso.Genre.Manual.InlineLean
 
+/-
 #doc (Manual) "Quotients" =>
 %%%
 tag := "quotients"
 %%%
+-/
 
-
+#doc (Manual) "商类型" =>
+%%%
+file := "Quotients"
+tag := "quotients"
+%%%
+/-
 {deftech}_Quotient types_ allow a new type to be formed by decreasing the granularity of an existing type's {tech}[propositional equality].
 In particular, given an type $`A` and an equivalence relation $`\sim`, the quotient $`A / \sim` contains the same elements as $`A`, but every pair of elements that are related by $`\sim` are considered equal.
 Equality is respected universally; nothing in Lean's logic can observe any difference between two equal terms.
 Thus, quotient types provide a way to build an impenetrable abstraction barrier.
 In particular, all functions from a quotient type must prove that they respect the equivalence relation.
+-/
+{deftech key := "quotient types"}_商类型_ 允许通过降低现有类型的{tech key := "propositional equality"}[命题等价]的细粒度来构造新类型。
+具体来说，给定一个类型 $`A`$ 和一个等价关系 $`\sim`$，商 $`A / \sim`$ 拥有与 $`A`$ 相同的元素，但每对被 $`\sim`$ 相关联的元素在新类型中都被视为相等。
+等价性在全局范围内都被认同：Lean 的逻辑中任何事物都无法察觉两个被判等的项的不同。
+因此，商类型为我们构建一种不可穿透的抽象屏障提供了途径。
+特别是，所有从商类型出发的函数都必须证明它们满足该等价关系。
 
-{docstring Quotient}
+{zhdocstring Quotient ZhDoc.Quotient}
 
+/-
 A proof that two elements of the underlying type are related by the equivalence relation is sufficient to prove that they are equal in the {name}`Quotient`.
 However, {tech}[definitional equality] is unaffected by the use of {lean}`Quotient`: two elements in the quotient are definitionally equal if and only if they are definitionally equal in the underlying type.
+-/
 
+只要能够证明底层类型的两个元素通过等价关系相关联，那么它们在{name}`Quotient` 中就是相等的。
+然而，{tech key := "definitional equality"}[定义等价]不会因使用 {lean}`Quotient` 而改变：两个商中的元素只有当它们本就在底层类型中定义等价时，才在商类型中定义等价。
+
+/-
 :::paragraph
 Quotient types are not widely used in programming.
 However, they occur regularly in mathematics:
@@ -56,35 +78,96 @@ However, they occur regularly in mathematics:
   With a quotient types, two finite sets can be made equal if they contain the same elements; this definition does not impose any requirements (such as decidable equality or an ordering relation) on the type of elements.
 
 :::
+-/
 
+:::paragraph
+商类型在编程中用得不多，但在数学中非常常见:
 
+: 整数
+
+  整数传统上可表示为自然数对 $`(n, k)`，它编码整数 $`n - k`。
+  在这种编码下，两个整数 $$`(n_1, k_1)` 和 $`(n_2, k_2)` 当且仅当 $`n_1 + k_2 = n_2 + k_1` 时视为相等。
+
+: 有理数
+
+  有理数 $`\frac{n}{d}` 可编码为 `(n, d)`，其中 $`d \neq 0`。两个有理数 $`\frac{n_1}{d_1}` 和 $`\frac{n_2}{d_2}` 当且仅当 $`n_1 d_2 = n_2 d_1` 时视为相等。
+
+: 实数
+
+  实数可以用柯西序列来表示，但此编码不是唯一的。利用商类型，可以让它们的差收敛到零时的柯西序列判为相等。
+
+: 有限集
+
+  有限集可以用元素列表表示。通过商类型，如果两个列表包含的元素完全相同（不用要求元素类型有判定等价或序关系），则它们视为相等。
+
+:::
+
+/-
 One alternative to quotient types would be to reason directly about the equivalence classes introduced by the relation.
 The downside of this approach is that it does not allow _computation_: in addition to knowing _that_ there is an integer that is the sum of 5 and 8, it is useful for $`5 + 8 = 13` to not be a theorem that requires proof.
 Defining functions out of sets of equivalence classes relies on non-computational classical reasoning principles, while functions from quotient types are ordinary computational functions that additionally respect an equivalence relation.
+-/
 
+与商类型对应的另一个选项就是直接对等价类进行推理。
+这种方式的劣势在于其不可“计算”：知道 _确有_ 一个整数等于 $`5+8` 当然很好，对于 $`5+8=13` 来说，它不应是一个需要证明的定理。
+基于等价类集合定义函数需要依赖不可计算的经典推理原则，而商类型中的函数则是普通的可计算函数，并且还尊重等价关系。
+
+/-
 # Alternatives to Quotient Types
 %%%
 tag := "quotient-alternatives"
 %%%
+-/
 
+# 商类型的替代方案
+%%%
+file := "Alternatives to Quotient Types"
+tag := "quotient-alternatives"
+%%%
+
+/-
 While {name}`Quotient` is a convenient way to form quotients with reasonable computational properties, it is often possible to define quotients in other ways.
+-/
 
+虽然 {name}`Quotient` 提供了一种带有合理可计算性的方便商构造方式，但通常还可以通过其他办法定义商类型。
+
+/-
 In general, a type $`Q` is said to be the quotient of $`A` by an equivalence relation $`\sim` if it respects the universal property of quotients: there is a function $`q:A\to Q` with the property that $`q(a)=q(b)` if and only if $`a\sim b` for all $`a` and $`b` in $`A`.
+-/
+一般来说，当一个类型 $`Q` 满足商的普适性质时，它被称为 $`A` 关于等价关系 $`\sim` 的商类型：存在一个函数 $`q : A \to Q`，使得 $`\forall a, b \in A, q(a) = q(b) \iff a \sim b`。
 
+/-
 Quotients formed with {name}`Quotient` have this property up to {tech}[propositional equality]: elements of $`A` that are related by $`\sim` are equal, so they cannot be distinguished.
 However, members of the same equivalence class are not necessarily {tech key:="definitional equality"}[definitionally equal] in the quotient.
+-/
 
+由 {name}`Quotient` 形成的商只在{tech key := "propositional equality"}[命题等价]意义下满足这一性质：被 $`\sim`$ 相关联的 $`A` 的元素在商类型中也是等价的，因此无法区分。
+然而，同一个等价类中的成员在商类型中不一定{tech key:="definitional equality"}[定义等价]。
+
+/-
 Quotients may also be implemented by designating a single representative of each equivalence class in $`A` itself, and then defining $`Q` as pair of elements in $`A` with proofs that they are such a canonical representative.
 Together with a function that maps each $`a` in $`A` to its canonical representative, $`Q` is a quotient of $`A`.
 Due to {tech}[proof irrelevance], representatives in $`Q` of the same equivalence class are {tech key:="definitional equality"}[definitionally equal].
+-/
 
+还有一种实现方式是：在 $`A` 内为每个等价类选择一个唯一代表，然后将 $`Q` 定义为 $`A` 中的元素对，再加上它们确实是该标准代表的证明。配合一个把 $`A` 中每个 $`a` 都映射到其标准代表的函数，$`Q` 就成了 $`A` 的商类型。
+由于 {tech key := "proof irrelevance"}[证明无关性]，$`Q` 内同一等价类代表在定义上就是{tech key:="definitional equality"}[定义相等]的。
+
+/-
 Such a manually implemented quotient $`Q` can be easier to work with than {name}`Quotient`.
 In particular, because each equivalence class is represented by its single canonical representative, there's no need to prove that functions from the quotient respect the equivalence relation.
 It can also have better computational properties due to the fact that the computations give normalized values (in contrast, elements of {name}`Quotient` can be represented in multiple ways).
 Finally, because the manually implemented quotient is an {tech}[inductive type], it can be used in contexts where other kinds of types cannot, such as when defining a {ref "nested-inductive-types"}[nested inductive type].
 However, not all quotients can be manually implemented.
+-/
 
+这种手工实现的商类型 $Q$ 往往比 {name}`Quotient` 更好用。
+特别是，由于每个等价类由唯一标准代表表示，定义自商类型的函数再不需要证明其尊重等价关系。
+这样也常带来更好的计算效果（商类型下同一个元素可能有多种表现形式，而手工商类型始终规范）。
+最后，手工商类型是{tech key:="inductive type"}[归纳类型]，因此能在某些场景用作嵌套归纳类型等用途，而 {name}`Quotient` 却不能。
+然而，并非所有商类型都能手工实现。
 
+/-
 :::example "Manually Quotiented Integers"
 When implemented as pairs of {lean}`Nat`s, each equivalence class according to the desired equality for integers has a canonical representative in which at least one of the {lean}`Nat`s is zero.
 This can be represented as a Lean structure:
@@ -159,7 +242,80 @@ Because each equivalence class is uniquely represented, there's no need to write
 However, in practice, the {ref "quotient-api"}[API for quotients] should be implemented for manually-constructed quotients and proved to respect the universal property.
 
 :::
+-/
 
+:::example "手工实现的商类型整数"
+作为{lean}`Nat`对实现时，根据整数所需等式，每个等价类有至少一个{lean}`Nat`为零的标准代表。这可表示为Lean结构：
+```lean
+structure Z where
+  a : Nat
+  b : Nat
+  canonical : a = 0 ∨ b = 0
+```
+因{tech key := "proof irrelevance"}[证明无关性]，该结构类型中表示相同整数的每个值_已经_等价。用自然数截断于零的减法自动化证明构建，包装器使{lean}`Z`构造更便利：
+```lean
+def Z.mk' (n k : Nat) : Z where
+  a := n - k
+  b := k - n
+  canonical := by omega
+```
+
+此构造满足整数所需等式：
+```lean
+theorem Z_mk'_respects_eq :
+    (Z.mk' n k = Z.mk' n' k') ↔ (n + k' = n' + k) := by
+  simp [Z.mk']
+  omega
+```
+
+为了在示例中使用此类型，添加{name}`Neg`、{name}`OfNat`和{name}`ToString`实例较便利。这些实例使示例读写更易。
+
+```lean
+instance : Neg Z where
+  neg n := Z.mk' n.b n.a
+
+instance : OfNat Z n where
+  ofNat := Z.mk' n 0
+
+instance : ToString Z where
+  toString n :=
+    if n.a = 0 then
+      if n.b = 0 then "0"
+      else s!"-{n.b}"
+    else toString n.a
+```
+```lean (name := intFive)
+#eval (5 : Z)
+```
+```leanOutput intFive
+5
+```
+```lean (name := intMinusFive)
+#eval (-5 : Z)
+```
+```leanOutput intMinusFive
+-5
+```
+
+
+加法是底层{lean}`Nat`的加法：
+```lean
+instance : Add Z where
+  add n k := Z.mk' (n.a + k.a) (n.b + k.b)
+```
+
+```lean (name := addInt)
+#eval (-5 + 22: Z)
+```
+```leanOutput addInt
+17
+```
+
+由于每个等价类都唯一表示，自该类型出发的函数无需再证明符合等价关系。不过，实际开发中，建议为手动实现的商类型补齐 {ref "quotient-api"}[商类型 API] 以及相关的普遍性质证明。
+:::
+
+
+/-
 :::example "Built-In Integers as Quotients"
 
 Lean's built-in integer type {lean}`Int` satisfies the universal property of quotients, and can thus be thought of as a quotient of pairs of {lean}`Nat`s.
@@ -181,55 +337,115 @@ theorem toInt_sound :
   split <;> split <;> omega
 ```
 :::
+-/
 
+:::example "内建整数类型作为商类型"
+
+Lean 内建的整数类型 {lean}`Int` 满足商类型的普遍性质，可以看作是 {lean}`Nat` 对的商类型。每个等价类的代表元可以通过比较和减法计算得出：{margin}[标准库中该函数叫 {name}`Int.subNatNat`。]
+```lean
+def toInt (n k : Nat) : Int :=
+  if n < k then - (k - n : Nat)
+  else if n = k then 0
+  else (n - k : Nat)
+```
+
+它满足商类型的普遍性质。两个 {lean}`Nat` 对只有在 {lean}`toInt` 计算结果相等时代表同一个整数：
+```lean
+theorem toInt_sound :
+    n + k' = k + n' ↔
+    toInt n k = toInt n' k' := by
+  simp only [toInt]
+  split <;> split <;> omega
+```
+:::
+
+/-
 # Setoids
 %%%
 tag := "setoids"
 %%%
+-/
 
+# 集合体 （Setoid）
+%%%
+file := "Setoids"
+tag := "setoids"
+%%%
+
+/-
 Quotient types are built on setoids.
 A {deftech}_setoid_ is a type paired with a distinguished equivalence relation.
 Unlike a quotient type, the abstraction barrier is not enforced, and proof automation designed around equality cannot be used with the setoid's equivalence relation.
 Setoids are useful on their own, in addition to being a building block for quotient types.
+-/
+商类型基于集合体（setoid）概念。
+{deftech key := "setoid"}_集合体_ 指一个类型和其上选定的等价关系的配对。
+不同于商类型，集合体并不强制抽象屏障，对等价关系的自动化证明（如简化）不能直接用集合体中的等价关系。
+除了作为商类型的基础结构外，集合体本身也有其用途。
 
-{docstring Setoid}
 
-{docstring Setoid.refl}
+{zhdocstring Setoid ZhDoc.Setoid}
 
-{docstring Setoid.symm}
+{zhdocstring Setoid.refl ZhDoc.Setoid.refl}
 
-{docstring Setoid.trans}
+{zhdocstring Setoid.symm ZhDoc.Setoid.symm}
 
+{zhdocstring Setoid.trans ZhDoc.Setoid.symm}
+
+/-
 # Equivalence Relations
 %%%
 tag := "equivalence-relations"
 %%%
+-/
 
+# 等价关系
+%%%
+file := "Equivalence Relations"
+tag := "equivalence-relations"
+%%%
+
+/-
 An {deftech}_equivalence relation_ is a relation that is reflexive, symmetric, and transitive.
+-/
 
+{deftech key := "equivalence relation"}_等价关系_ 指的是自反、对称且传递的关系。
+
+/-
 :::syntax term (title := "Equivalence Relations")
 Equivalence according to some canonical equivalence relation for a type is written using `≈`, which is overloaded using the {tech}[type class] {name}`HasEquiv`.
 ```grammar
 $_ ≈ $_
 ```
 :::
+-/
 
-{docstring HasEquiv}
+:::syntax term (title := "等价关系")
+某个类型上的“标准”等价关系记为 `≈`，它是通过 {tech key := "type class"}[类型类] {name}`HasEquiv` 重载的。
+```grammar
+$_ ≈ $_
+```
+:::
+
+{zhdocstring HasEquiv ZhDoc.HasEquiv}
 
 ```lean (show := false)
 section
 variable (r : α → α → Prop)
 ```
-
+/-
 The fact that a relation {lean}`r` is actually an equivalence relation is stated {lean}`Equivalence r`.
+-/
 
-{docstring Equivalence}
+声明某关系 {lean}`r` 实际上是等价关系用 {lean}`Equivalence r` 实现。
+
+{zhdocstring Equivalence ZhDoc.Equivalence}
 
 ```lean (show := false)
 end
 ```
 
-Every {name}`Setoid` instance leads to a corresponding {name}`HasEquiv` instance.
+每一个 {name}`Setoid` 实例都自动带来一个对应的 {name}`HasEquiv` 实例：
 
 ```lean (show := false)
 -- Check preceding para
@@ -240,11 +456,20 @@ variable {α : Sort u} [Setoid α]
 #synth HasEquiv α
 end
 ```
-
+/-
 # Quotient API
 %%%
 tag := "quotient-api"
 %%%
+-/
+
+# 商类型 API
+%%%
+file := "Quotient API"
+tag := "quotient-api"
+%%%
+
+####################### 翻译到这里 ################
 
 The quotient API relies on a pre-existing {name}`Setoid` instance.
 
