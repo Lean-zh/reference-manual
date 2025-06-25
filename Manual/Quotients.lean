@@ -507,7 +507,7 @@ A value in the quotient is a value from the setoid's underlying type, wrapped in
 
 商类型中的值实际上就是集合体的底层类型的元素, 用 {lean}`Quotient.mk` 包裹。
 
-{zhdocstring Quotient.mk ZhDoc.Quotient.m}
+{zhdocstring Quotient.mk ZhDoc.Quotient.mk}
 
 {zhdocstring Quotient.mk' ZhDoc.Quotient.mk'}
 
@@ -624,26 +624,39 @@ instance : OfNat Z n where
 ```
 :::
 
-############ 翻译到这里 ##############
-
+/-
 ## Eliminating Quotients
 %%%
 tag := "quotient-elim"
 %%%
+-/
 
+## 消解商类型
+%%%
+file := "Eliminating Quotients"
+tag := "quotient-elim"
+%%%
 
+/-
 Functions from quotients can be defined by proving that a function from the underlying type respects the quotient's equivalence relation.
 This is accomplished using {lean}`Quotient.lift` or its binary counterpart {lean}`Quotient.lift₂`.
 The variants {lean}`Quotient.liftOn` and {lean}`Quotient.liftOn₂` place the quotient parameter first rather than last in the parameter list.
+-/
 
-{docstring Quotient.lift}
+要从商类型出发定义函数，只需证明相应的底层函数保持等价关系。
+可使用 {lean}`Quotient.lift` 或二元版本 {lean}`Quotient.lift₂` 实现。
+变体 {lean}`Quotient.liftOn` 和 {lean}`Quotient.liftOn₂` 则是将商类型实参放在参数列表前。
 
-{docstring Quotient.liftOn}
+{zhdocstring Quotient.lift ZhDoc.Quotient.lift}
 
-{docstring Quotient.lift₂}
+{zhdocstring Quotient.liftOn ZhDoc.Quotient.liftOn}
 
-{docstring Quotient.liftOn₂}
+{zhdocstring Quotient.lift₂ ZhDoc.Quotient.lift₂}
 
+{zhdocstring Quotient.liftOn₂ ZhDoc.Quotient.liftOn₂}
+
+
+/-
 :::example "Integer Negation and Addition"
 
 ```lean (show := false)
@@ -712,29 +725,121 @@ instance : Add Z where
       omega
 ```
 :::
+-/
 
+
+:::example "整数的取负与加法"
+
+```lean (show := false)
+def Z' : Type := Nat × Nat
+
+def Z.eq (n k : Z') : Prop :=
+  n.1 + k.2 = n.2 + k.1
+
+def Z.eq.eqv : Equivalence Z.eq where
+  refl := by
+    intro (x, y)
+    simp +arith [eq]
+  symm := by
+    intro (x, y) (x', y') heq
+    simp_all only [eq]
+    omega
+  trans := by
+    intro (x, y) (x', y') (x'', y'')
+    intro heq1 heq2
+    simp_all only [eq]
+    omega
+
+instance Z.instSetoid : Setoid Z' where
+  r := Z.eq
+  iseqv := Z.eq.eqv
+
+def Z : Type := Quotient Z.instSetoid
+
+def Z.mk (n : Z') : Z := Quotient.mk _ n
+```
+对于给定的由一对自然数编码而成的整数{lean}`Z`, 取负操作就是交换两分量：
+Given the encoding {lean}`Z` of integers as a quotient of pairs of natural numbers, negation can be implemented by swapping the first and second projections:
+```lean
+def neg' : Z' → Z
+  | (x, y) => .mk (y, x)
+```
+
+只要证明其符合等价关系，即可用 {lean}`Quotient.lift` 升级为商类型上的函数：
+```lean
+instance : Neg Z where
+  neg :=
+    Quotient.lift neg' <| by
+      intro n k equiv
+      apply Quotient.sound
+      simp only [· ≈ ·, Setoid.r, Z.eq] at *
+      omega
+```
+
+类似地，{lean}`Quotient.lift₂` 可定义二元运算，例如分量加法：
+```lean
+def add' (n k : Nat × Nat) : Z :=
+  .mk (n.1 + k.1, n.2 + k.2)
+```
+
+用等价关系证明加法保持等价后即可“提升”：
+```lean
+instance : Add Z where
+  add (n : Z) :=
+    n.lift₂ add' <| by
+      intro n k n' k'
+      intro heq heq'
+      apply Quotient.sound
+      cases n; cases k; cases n'; cases k'
+      simp_all only [· ≈ ·, Setoid.r, Z.eq]
+      omega
+```
+:::
+
+/-
 When the function's result type is a {tech}[subsingleton], {name}`Quotient.recOnSubsingleton` or {name}`Quotient.recOnSubsingleton₂` can be used to define the function.
 Because all elements of a subsingleton are equal, such a function automatically respects the equivalence relation, so there is no proof obligation.
+-/
 
-{docstring Quotient.recOnSubsingleton}
+若函数的返回类型是 {tech key := "subsingleton"}[子单元]，可用 {name}`Quotient.recOnSubsingleton` 或 {name}`Quotient.recOnSubsingleton₂` 直接定义。
+因为目标类型的所有元素都已相等，函数自然保持等价关系。
 
-{docstring Quotient.recOnSubsingleton₂}
+{zhdocstring Quotient.recOnSubsingleton ZhDoc.Quotient.recOnSubsingleton}
 
+{zhdocstring Quotient.recOnSubsingleton₂ ZhDoc.Quotient.recOnSubsingleton₂}
+
+/-
 ## Proofs About Quotients
 %%%
 tag := "quotient-proofs"
 %%%
+-/
+
+## 商类型上的证明
+%%%
+file := "Proofs About Quotients"
+tag := "quotient-proofs"
+%%%
 
 
+/-
 The fundamental tools for proving properties of elements of quotient types are the soundness axiom and the induction principle.
 The soundness axiom states that if two elements of the underlying type are related by the quotient's equivalence relation, then they are equal in the quotient type.
 The induction principle follows the structure of recursors for inductive types: in order to prove that a predicate holds all elements of a quotient type, it suffices to prove that it holds for an application of {name}`Quotient.mk` to each element of the underlying type.
 Because {name}`Quotient` is not an {tech}[inductive type], tactics such as {tactic}`cases` and {tactic}`induction` require that {name}`Quotient.ind` be specified explicitly with the {keyword}`using` modifier.
+-/
 
-{docstring Quotient.sound}
+在商类型上证明性质，主要工具是 soundness 公理和归纳原理。
+soundness 公理表明，如果两个底层类型中的元素满足等价关系，则在商类型中相等。
+归纳原理类似于归纳类型的递归：若要证明某谓词对全部商类型元素成立，只需证明对每个 {name}`Quotient.mk` 形式的元素成立即可。
+由于 {name}`Quotient` 不是 {tech key := "inductive type"}[归纳类型]，使用如 {tactic}`cases` 或 {tactic}`induction` 时需显式指定 {name}`Quotient.ind` 并用 {keyword}`using` 修饰。
 
-{docstring Quotient.ind}
 
+{zhdocstring Quotient.sound ZhDoc.Quotient.sound}
+
+{zhdocstring Quotient.ind ZhDoc.Quotient.ind}
+
+/-
 :::example "Proofs About Quotients"
 
 ```lean (show := false)
@@ -807,38 +912,145 @@ theorem Z.add_neg_inverse (n : Z) : n  + (-n) = 0 := by
 ```
 
 :::
+-/
 
+:::example "商类型上的证明"
+
+```lean (show := false)
+def Z' : Type := Nat × Nat
+
+def Z.eq (n k : Z') : Prop :=
+  n.1 + k.2 = n.2 + k.1
+
+def Z.eq.eqv : Equivalence Z.eq where
+  refl := by
+    intro (x, y)
+    simp +arith [eq]
+  symm := by
+    intro (x, y) (x', y') heq
+    simp_all only [eq]
+    omega
+  trans := by
+    intro (x, y) (x', y') (x'', y'')
+    intro heq1 heq2
+    simp_all only [eq]
+    omega
+
+instance Z.instSetoid : Setoid Z' where
+  r := Z.eq
+  iseqv := Z.eq.eqv
+
+def Z : Type := Quotient Z.instSetoid
+
+def Z.mk (n : Z') : Z := Quotient.mk _ n
+
+def neg' : Z' → Z
+  | (x, y) => .mk (y, x)
+
+instance : Neg Z where
+  neg :=
+    Quotient.lift neg' <| by
+      intro n k equiv
+      apply Quotient.sound
+      simp only [· ≈ ·, Setoid.r, Z.eq] at *
+      omega
+
+def add' (n k : Nat × Nat) : Z :=
+  .mk (n.1 + k.1, n.2 + k.2)
+
+instance : Add Z where
+  add (n : Z) :=
+    n.lift₂ add' <| by
+      intro n k n' k'
+      intro heq heq'
+      apply Quotient.sound
+      cases n; cases k; cases n'; cases k'
+      simp_all only [· ≈ ·, Setoid.r, Z.eq]
+      omega
+
+instance : OfNat Z n where
+  ofNat := Z.mk (n, 0)
+```
+
+给定前面例子中将整数定义为一个商类型，你可以使用 {name}`Quotient.ind` 和 {name}`Quotient.sound` 来证明取负是加法的逆元。
+首先，使用 {lean}`Quotient.ind` 可以将出现的 `n` 替换为 {name}`Quotient.mk` 的应用。
+完成这一转换后，等式的左边，通过具体展开定义以及 {name}`Quotient.lift` 的计算规则，可以归约为一次 {name}`Quotient.mk` 的应用，即两边是定义等价的项。
+此时，就可以应用 {name}`Quotient.sound`，这将带来一个新的目标：需要证明等式两边通过等价关系相关。
+这个目标可以通过 {tactic}`simp_arith` 策略来证明。
+
+
+```lean
+theorem Z.add_neg_inverse (n : Z) : n  + (-n) = 0 := by
+  cases n using Quotient.ind
+  apply Quotient.sound
+  simp +arith [· ≈ ·, Setoid.r, eq]
+```
+
+:::
+
+/-
 For more specialized use cases, {name}`Quotient.rec`, {name}`Quotient.recOn`, and {name}`Quotient.hrecOn` can be used to define dependent functions from a quotient type to a type in any other universe.
 Stating that a dependent function respects the quotient's equivalence relation requires a means of dealing with the fact that the dependent result type is instantiated with different values from the quotient on each side of the equality.
 {name}`Quotient.rec` and {name}`Quotient.recOn` use the {name}`Quotient.sound` to equate the related elements, inserting the appropriate cast into the statement of equality, while {name}`Quotient.hrecOn` uses heterogeneous equality.
+-/
 
-{docstring Quotient.rec}
+对于更特设的使用场景，可以使用 {name}`Quotient.rec`，{name}`Quotient.recOn` 和 {name}`Quotient.hrecOn` 来从一个商类型到任意其他宇宙中的类型，定义依值函数。
+要说明一个依值函数能够遵循商类型的等价关系，需要处理这样一种情况：依值结果类型在等式两边会用不同的商类型里的值来实例化。
+{name}`Quotient.rec` 和 {name}`Quotient.recOn` 会利用 {name}`Quotient.sound` 将相关元素建立等价关系，并在等式中插入恰当的强制转换（cast）；而 {name}`Quotient.hrecOn` 则使用异质等式（heterogeneous equality）。
 
-{docstring Quotient.recOn}
+{zhdocstring Quotient.rec ZhDoc.Quotient.rec}
 
-{docstring Quotient.hrecOn}
+{zhdocstring Quotient.recOn ZhDoc.Quotient.recOn}
 
+{zhdocstring Quotient.hrecOn ZhDoc.Quotient.hrecOn}
+
+/-
 If two elements of a type are equal in a quotient, then they are related by the setoid's equivalence relation.
 This property is called {name}`Quotient.exact`.
+-/
 
-{docstring Quotient.exact}
+若某类型的两个元素在某商类型中相等，则它们在集合体等价关系下也等价。这个性质叫做 {name}`Quotient.exact`。
 
 
+{zhdocstring Quotient.exact ZhDoc.Quotient.exact}
+
+
+/-
 
 # Logical Model
 %%%
 tag := "quotient-model"
 %%%
 
+-/
 
+# 逻辑模型
+%%%
+file := "Logical Model"
+tag := "quotient-model"
+%%%
+
+/-
 Like functions and universes, quotient types are a built-in feature of Lean's type system.
 However, the underlying primitives are based on the somewhat simpler {name}`Quot` type rather than on {name}`Quotient`, and {name}`Quotient` is defined in terms of {name}`Quot`.
 The primary difference is that {name}`Quot` is based on an arbitrary relation, rather than a {name}`Setoid` instance.
 The provided relation need not be an equivalence relation; the rules that govern {name}`Quot` and {name}`Eq` automatically extend the provided relation into its reflexive, transitive, symmetric closure.
 When the relation is already an equivalence relation, {name}`Quotient` should be used instead of {name}`Quot` so Lean can make use of the fact that the relation is an equivalence relation.
+-/
 
+类似函数和宇宙，商类型是 Lean 类型系统的内建特性。
+但底层原语是基于更简单的 {name}`Quot` 类型，而不是 {name}`Quotient`，后者是基于前者实现的。
+主要区别在于 {name}`Quot` 可以接受任意关系，并不限于 {name}`Setoid` 实例。
+而且提供的关系不必先是等价关系。{name}`Quot` 和 {name}`Eq` 的相关规则自动向外扩展为自反、传递和对称。
+如果用的是等价关系，应优先选用 {name}`Quotient` 以便 Lean 利用更多性质。
+
+/-
 The fundamental quotient type API consists of {lean}`Quot`, {name}`Quot.mk`, {name}`Quot.lift`, {name}`Quot.ind`, and {name}`Quot.sound`.
 These are used in the same way as their {name}`Quotient`-based counterparts.
+-/
+
+最基本的商类型操作有 {lean}`Quot`，{name}`Quot.mk`，{name}`Quot.lift`，{name}`Quot.ind`，{name}`Quot.sound`。
+它们的用法与对应的基于 {name}`Quotient` 的 API 类似。
 
 {docstring Quot}
 
