@@ -1,5 +1,34 @@
 namespace ZhDoc
 
+
+
+
+/-
+A setoid is a type with a distinguished equivalence relation, denoted `≈`.
+
+The `Quotient` type constructor requires a `Setoid` instance.
+
+class Setoid (α : Sort u) where
+  /-- `x ≈ y` is the distinguished equivalence relation of a setoid. -/
+  r : α → α → Prop
+  /-- The relation `x ≈ y` is an equivalence relation. -/
+  iseqv : Equivalence r
+-/
+
+/--
+Setoid 是一个带有特殊等价关系(记作 ≈)的类型
+
+ `Quotient` 类型的构造子需要一个 Setoid 实例
+-/
+class Setoid (α : Sort u) where
+  /-- `x ≈ y` 是一个集合体(setoid)的特殊等价关系。 -/
+  r : α → α → Prop
+  /--  `x ≈ y` 是一个等价关系。 -/
+  iseqv : Equivalence r
+
+instance {α : Sort u} [Setoid α] : HasEquiv α :=
+  ⟨Setoid.r⟩
+
 /-
 Quotient types coarsen the propositional equality for a type so that terms related by some
 equivalence relation are considered equal. The equivalence relation is given by an instance of
@@ -42,33 +71,6 @@ relations that actually are equivalence relations.
 -/
 def Quotient {α : Sort u} (s : Setoid α) :=
   @Quot α Setoid.r
-
-
-/-
-A setoid is a type with a distinguished equivalence relation, denoted `≈`.
-
-The `Quotient` type constructor requires a `Setoid` instance.
-
-class Setoid (α : Sort u) where
-  /-- `x ≈ y` is the distinguished equivalence relation of a setoid. -/
-  r : α → α → Prop
-  /-- The relation `x ≈ y` is an equivalence relation. -/
-  iseqv : Equivalence r
--/
-
-/--
-Setoid 是一个带有特殊等价关系(记作 ≈)的类型
-
- `Quotient` 类型的构造子需要一个 Setoid 实例
--/
-class Setoid (α : Sort u) where
-  /-- `x ≈ y` 是一个集合体(setoid)的特殊等价关系。 -/
-  r : α → α → Prop
-  /--  `x ≈ y` 是一个等价关系。 -/
-  iseqv : Equivalence r
-
-instance {α : Sort u} [Setoid α] : HasEquiv α :=
-  ⟨Setoid.r⟩
 
 /-
 /-- A setoid's equivalence relation is reflexive. -/
@@ -150,5 +152,64 @@ structure Equivalence {α : Sort u} (r : α → α → Prop) : Prop where
   symm  : ∀ {x y}, r x y → r y x
   /-- 等价关系具有传递性: `r x y` 和 `r y z` 蕴含 `r x z` -/
   trans : ∀ {x y z}, r x y → r y z → r x z
+
+
+namespace Quotient
+
+/-
+/--
+Places an element of a type into the quotient that equates terms according to an equivalence
+relation.
+
+The setoid instance is provided explicitly. `Quotient.mk'` uses instance synthesis instead.
+
+Given `v : α`, `Quotient.mk s v : Quotient s` is like `v`, except all observations of `v`'s value
+must respect `s.r`. `Quotient.lift` allows values in a quotient to be mapped to other types, so long
+as the mapping respects `s.r`.
+-/
+@[inline]
+protected def mk {α : Sort u} (s : Setoid α) (a : α) : Quotient s :=
+  Quot.mk Setoid.r a
+
+/--
+Places an element of a type into the quotient that equates terms according to an equivalence
+relation.
+
+The equivalence relation is found by synthesizing a `Setoid` instance. `Quotient.mk` instead expects
+the instance to be provided explicitly.
+
+Given `v : α`, `Quotient.mk' v : Quotient s` is like `v`, except all observations of `v`'s value
+must respect `s.r`. `Quotient.lift` allows values in a quotient to be mapped to other types, so long
+as the mapping respects `s.r`.
+
+-/
+protected def mk' {α : Sort u} [s : Setoid α] (a : α) : Quotient s :=
+  Quotient.mk s a
+-/
+
+/--
+把某个类型的元素放入商类型中,该商类型根据等价关系将元素进行等价。
+
+setoid 实例需要显式提供。而 `Quotient.mk'` 使用了实例合成。
+
+给定 `v : α`, `Quotient.mk s v : Quotient s` 类似于 `v`, 只是对 `v` 值都必须满足 `s.r`。
+`Quotient.lift` 允许将商类型中的值映射到其他类型,只要这种映射遵循 `s.r`。
+-/
+@[inline]
+protected def mk {α : Sort u} (s : Setoid α) (a : α) : Quotient s :=
+  Quot.mk Setoid.r a
+
+/--
+将某个类型的元素放入通过等价关系对项进行等价分类的商类型中。
+
+等价关系是通过合成一个`Setoid`实例来找到的。`Quotient.mk`则要求显式地提供该实例。
+
+给定`v : α`，`Quotient.mk' v : Quotient s`就像是`v`，只不过对`v`值的必须满足`s.r`。
+`Quotient.lift`允许将商集中的值映射到其他类型，只要该映射满足`s.r`即可。
+-/
+protected def mk' {α : Sort u} [s : Setoid α] (a : α) : Quotient s :=
+  Quotient.mk s a
+
+end Quotient
 
 end ZhDoc

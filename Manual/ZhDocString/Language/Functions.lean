@@ -10,7 +10,7 @@ them. Function extensionality is a theorem that can be [proved using quotient
 types](lean-manual://section/quotient-funext).
 -/
 /--
-**函数外延性。**如果两个函数对所有可能的参数都返回相等的结果，那么它们就是相等的。
+**函数外延性** :如果两个函数对所有可能的参数都返回相等的结果，那么它们就是相等的。
 
 它被称为“外延性”，因为它提供了一种基于基础数学函数的性质，而不是基于用于表示它们的语法，来证明两个对象相等的方法。函数外延性是一个可以[用商类型证明](lean-manual://section/quotient-funext)的定理。
 -/

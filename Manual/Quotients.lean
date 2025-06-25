@@ -378,6 +378,7 @@ A {deftech}_setoid_ is a type paired with a distinguished equivalence relation.
 Unlike a quotient type, the abstraction barrier is not enforced, and proof automation designed around equality cannot be used with the setoid's equivalence relation.
 Setoids are useful on their own, in addition to being a building block for quotient types.
 -/
+
 商类型基于集合体（setoid）概念。
 {deftech key := "setoid"}_集合体_ 指一个类型和其上选定的等价关系的配对。
 不同于商类型，集合体并不强制抽象屏障，对等价关系的自动化证明（如简化）不能直接用集合体中的等价关系。
@@ -433,6 +434,7 @@ $_ ≈ $_
 section
 variable (r : α → α → Prop)
 ```
+
 /-
 The fact that a relation {lean}`r` is actually an equivalence relation is stated {lean}`Equivalence r`.
 -/
@@ -455,6 +457,7 @@ variable {α : Sort u} [Setoid α]
 #guard_msgs in
 #synth HasEquiv α
 end
+
 ```
 /-
 # Quotient API
@@ -469,26 +472,46 @@ file := "Quotient API"
 tag := "quotient-api"
 %%%
 
-####################### 翻译到这里 ################
-
+/-
 The quotient API relies on a pre-existing {name}`Setoid` instance.
+-/
 
+商类型 API 依赖已存在的 {name}`Setoid` 实例。
+
+/-
 ## Introducing Quotients
 %%%
 tag := "quotient-intro"
 %%%
+-/
 
+## 构造商类型
+%%%
+file := "Introducing Quotients"
+tag := "quotient-intro"
+%%%
 
+/-
 The type {lean}`Quotient` expects an instance of {lean}`Setoid` as an ordinary parameter, rather than as an {tech}[instance implicit] parameter.
 This helps ensure that the quotient uses the intended equivalence relation.
 The instance can be provided either by naming the instance or by using {name}`inferInstance`.
+-/
 
+{lean}`Quotient` 类型需要以普通参数形式显式传入 {lean}`Setoid` 实例（而不是作为 {tech key := "instance implicit"}[隐式实例] 参数）。
+这样可以保证商类型使用的是期望的等价关系。
+该实例可通过取名或用 {name}`inferInstance` 获得。
+
+/-
 A value in the quotient is a value from the setoid's underlying type, wrapped in {lean}`Quotient.mk`.
+-/
 
-{docstring Quotient.mk}
+商类型中的值实际上就是集合体的底层类型的元素, 用 {lean}`Quotient.mk` 包裹。
 
-{docstring Quotient.mk'}
+{zhdocstring Quotient.mk ZhDoc.Quotient.m}
 
+{zhdocstring Quotient.mk' ZhDoc.Quotient.mk'}
+
+/-
 :::example "The Integers as a Quotient Type"
 The integers, defined as pairs of natural numbers where the represented integer is the difference of the two numbers, can be represented via a quotient type.
 This representation is not unique: both {lean}`(4, 7)` and {lean}`(1, 4)` represent {lean type:="Int"}`-3`.
@@ -544,8 +567,64 @@ instance : OfNat Z n where
   ofNat := Z.mk (n, 0)
 ```
 :::
+-/
+
+:::example "用商类型定义整数"
+整数可定义为一对自然数，并通过它们的差值来表示。该表示不是唯一的，比如 {lean}`(4, 7)` 和 {lean}`(1, 4)` 都表示 {lean type:="Int"}`-3`。
 
 
+两个整数编码在何时相等由 {name}`Z.eq` 决定：
+
+```lean
+def Z' : Type := Nat × Nat
+
+def Z.eq (n k : Z') : Prop :=
+  n.1 + k.2 = n.2 + k.1
+```
+
+该关系是个等价关系：
+```lean
+def Z.eq.eqv : Equivalence Z.eq where
+  refl := by
+    intro (x, y)
+    simp +arith [eq]
+  symm := by
+    intro (x, y) (x', y') heq
+    simp_all only [eq]
+    omega
+  trans := by
+    intro (x, y) (x', y') (x'', y'')
+    intro heq1 heq2
+    simp_all only [eq]
+    omega
+```
+
+可以据此实现 {name}`Setoid` 实例：
+```lean
+instance Z.instSetoid : Setoid Z' where
+  r := Z.eq
+  iseqv := Z.eq.eqv
+```
+
+于是类型 {lean}`Z` 是 {lean}`Z'` 在此 {name}`Setoid` 实例下的商类型：
+
+```lean
+def Z : Type := Quotient Z.instSetoid
+```
+
+可用辅助函数 {lean}`Z.mk` 省去每次显式传递实例的麻烦：
+```lean
+def Z.mk (n : Z') : Z := Quotient.mk _ n
+```
+
+当然，数值字面量更方便。给出 {name}`OfNat` 实例可让整数接受数字字面量：
+```lean
+instance : OfNat Z n where
+  ofNat := Z.mk (n, 0)
+```
+:::
+
+############ 翻译到这里 ##############
 
 ## Eliminating Quotients
 %%%
