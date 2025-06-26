@@ -17,6 +17,7 @@ import Manual.ZhDocString.Quotients
 open Verso.Genre Manual
 open Verso.Genre.Manual.InlineLean
 
+
 /-
 #doc (Manual) "Quotients" =>
 %%%
@@ -37,8 +38,8 @@ Thus, quotient types provide a way to build an impenetrable abstraction barrier.
 In particular, all functions from a quotient type must prove that they respect the equivalence relation.
 -/
 {deftech key := "quotient types"}_商类型_ 允许通过降低现有类型的{tech key := "propositional equality"}[命题等价]的细粒度来构造新类型。
-具体来说，给定一个类型 $`A`$ 和一个等价关系 $`\sim`$，商 $`A / \sim`$ 拥有与 $`A`$ 相同的元素，但每对被 $`\sim`$ 相关联的元素在新类型中都被视为相等。
-等价性在全局范围内都被认同：Lean 的逻辑中任何事物都无法察觉两个被判等的项的不同。
+具体来说，给定一个类型 $`A` 和一个等价关系 $`\sim`，商 $`A / \sim` 拥有与 $`A` 相同的元素，但每对被 $`\sim` 相关联的元素在新类型中都被视为相等。
+等价性在全局范围内都被满足：Lean 的逻辑中任何事物都无法察觉两个被判等的项的不同。
 因此，商类型为我们构建一种不可穿透的抽象屏障提供了途径。
 特别是，所有从商类型出发的函数都必须证明它们满足该等价关系。
 
@@ -1052,20 +1053,30 @@ These are used in the same way as their {name}`Quotient`-based counterparts.
 最基本的商类型操作有 {lean}`Quot`，{name}`Quot.mk`，{name}`Quot.lift`，{name}`Quot.ind`，{name}`Quot.sound`。
 它们的用法与对应的基于 {name}`Quotient` 的 API 类似。
 
-{docstring Quot}
+{zhdocstring Quot ZhDoc.Quot}
 
-{docstring Quot.mk}
+{zhdocstring Quot.mk ZhDoc.Quot.mk}
 
-{docstring Quot.lift}
+{zhdocstring Quot.lift ZhDoc.Quot.lift}
 
-{docstring Quot.ind}
+{zhdocstring Quot.ind ZhDoc.Quot.ind}
 
-{docstring Quot.sound}
+{zhdocstring Quot.sound ZhDoc.Quot.sound}
 
+/-
 ## Quotient Reduction
 %%%
 tag := "quotient-reduction"
 %%%
+-/
+
+
+## 商类型规约
+%%%
+file := "Quotient Reduction"
+tag := "quotient-reduction"
+%%%
+
 
 ```lean (show := false)
 section
@@ -1076,8 +1087,13 @@ variable
   (resp : ∀ x y, r x y → f x = f y)
   (x : α)
 ```
+/-
 In addition to the above constants, Lean's kernel contains a reduction rule for {name}`Quot.lift` that causes it to reduce when used with {name}`Quot.mk`, analogous to {tech}[ι-reduction] for inductive types.
 Given a relation {lean}`r` over {lean}`α`, a function {lean}`f` from {lean}`α` to {lean}`β`, and a proof {lean}`resp` that {lean}`f` respects {lean}`r`, the term {lean}`Quot.lift f resp (Quot.mk r x)` is {tech key:="definitional equality"}[definitionally equal] to {lean}`f x`.
+-/
+
+除了上述常量之外，Lean 的内核还包含了关于 {name}`Quot.lift` 的规约规则，使其在与 {name}`Quot.mk` 一起使用时能够规约，这类似于归纳类型的 {tech key:="ι-reduction"}[ι-规约]。
+给定在 {lean}`α` 上的一个关系 {lean}`r`，一个从 {lean}`α` 到 {lean}`β` 的函数 {lean}`f`，以及一个证明 {lean}`resp`，表明 {lean}`f` 保持了 {lean}`r`，那么项 {lean}`Quot.lift f resp (Quot.mk r x)` 与 {lean}`f x` 是 {tech key:="definitional equality"}[定义等价]的。
 
 ```lean (show := false)
 end
@@ -1101,14 +1117,27 @@ example : Quot.lift f ok (Quot.mk r x) = f x := rfl
 end
 ```
 
+/-
 ## Quotients and Inductive Types
 %%%
 tag := "quotients-nested-inductives"
 %%%
+-/
 
+## 商类型与归纳类型
+%%%
+file := "Quotients and Inductive Types"
+tag := "quotients-nested-inductives"
+%%%
+
+/-
 Because {name}`Quot` is not an inductive type, types implemented as quotients may not occur around {ref "nested-inductive-types"}[nested occurrences] in inductive type declarations.
 These types declarations must be rewritten to remove the nested quotient, which can often be done by defining a quotient-free version and then separately defining an equivalence relation that implements the desired equality relation.
+-/
 
+由于 {name}`Quot` 不是归纳类型，因此作为商类型实现的类型不能作为 {ref "nested-inductive-types"}[嵌套项] 出现在归纳类型定义中。此时需拆解商类型，将归纳类型定义为无商版本，再对其定义独立的等价关系。
+
+/-
 :::example "Nested Inductive Types and Quotients"
 
 The nested inductive type of rose trees nests the recursive occurrence of {lean}`RoseTree` under {lean}`List`:
@@ -1131,29 +1160,71 @@ inductive SetTree (α : Type u) where
 ```
 
 :::
+-/
 
-## Low-Level Quotient API
+:::example "嵌套归纳类型与商类型"
 
+{lean}`RoseTree`的嵌套归纳类型，是将递归出现的 {lean}`RoseTree` 嵌套在 {lean}`List` 之下：
+```lean
+inductive RoseTree (α : Type u) where
+  | leaf : α → RoseTree α
+  | branch : List (RoseTree α) → RoseTree α
+```
+
+然而，对 {name}`List` 按照 {ref "squash-types"}[压缩类型] 的方式，将所有元素视为相同来取商会导致 Lean 拒绝该声明：
+```lean (error := true) (name := nestedquot)
+inductive SetTree (α : Type u) where
+  | leaf : α → SetTree α
+  | branch :
+    Quot (fun (xs ys : List (SetTree α)) => True) →
+    SetTree α
+```
+```leanOutput nestedquot
+(kernel) arg #2 of 'SetTree.branch' contains a non valid occurrence of the datatypes being declared
+```
+
+:::
+
+/-
+##  底层商类型 API
+-/
+
+/-
 {name}`Quot.liftOn` is an version of {name}`Quot.lift` that takes the quotient type's value first, by analogy to {name}`Quotient.liftOn`.
+-/
 
-{docstring Quot.liftOn}
+{name}`Quot.liftOn` 是 {name}`Quot.lift` 的变体，将商类型值放参数首，与 {name}`Quotient.liftOn` 类似。
 
+{zhdocstring Quot.liftOn ZhDoc.Quot.liftOn}
+
+/-
 Lean also provides convenient elimination from {name}`Quot` into any subsingleton without further proof obligations, along with dependent elimination principles that correspond to those used for {name}`Quotient`.
+-/
+Lean 还提供了从 {name}`Quot` 到任意 {tech key := "subsingleton"}[子单元] 的消解，无需额外证明，以及与 {name}`Quotient` 相对应的依赖消解原理。
 
-{docstring Quot.recOnSubsingleton}
+{zhdocstring Quot.recOnSubsingleton ZhDoc.Quot.recOnSubsingleton}
 
-{docstring Quot.rec}
+{zhdocstring Quot.rec  ZhDoc.Quot.rec}
 
-{docstring Quot.recOn}
+{zhdocstring Quot.recOn  ZhDoc.Quot.rec}
 
-{docstring Quot.hrecOn}
+{zhdocstring Quot.hrecOn ZhDoc.Quot.hrecOn}
 
 
+/-
 # Quotients and Function Extensionality
 %%%
 tag := "quotient-funext"
 %%%
+-/
 
+# 商类型与函数外延性
+%%%
+file := "Quotients and Function Extensionality"
+tag := "quotient-funext"
+%%%
+
+/-
 :::::keepEnv
 
 Because Lean's definitional equality includes a computational reduction rule for {lean}`Quot.lift`, quotient types are used in the standard library to prove function extensionality, which would need to be an {ref "axioms"}[axiom] otherwise.
@@ -1221,29 +1292,118 @@ theorem funext'
 ```
 
 :::::
+-/
 
-# Squash Types
-%%%
-tag := "squash-types"
-%%%
+:::::keepEnv
+
+由于 Lean 的定义等价包含了 {lean}`Quot.lift` 的计算规约规则，标准库中用商类型来证明函数外延性，否则这个结果通常需要作为一个 {ref "axioms"}[公理] 引入。
+具体做法是，先定义一种按外延等价关系取商的函数类型，对于这种类型，外延等价是定义成立的。
+
+
+```lean
+variable {α : Sort u} {β : α → Sort v}
+
+def extEq (f g : (x : α) → β x) : Prop :=
+  ∀ x, f x = g x
+
+def ExtFun (α : Sort u) (β : α → Sort v) :=
+  Quot (@extEq α β)
+```
+
+外延函数和普通函数一样可以调用。
+函数应用本身就满足外延等价：只要对所有输入应用得到的结果都相等，那应用后的结果自然也相等。
+
+```lean
+def extApp
+    (f : ExtFun α β)
+    (x : α) :
+    β x :=
+  f.lift (· x) fun g g' h => by
+    exact h x
+```
 
 ```lean (show := false)
 section
-variable {α : Sort u}
+variable (f : (x : α) → β x)
 ```
-Squash types are a quotient by the relation that relates all elements, transforming it into a {tech}[subsingleton].
-In other words, if {lean}`α` is inhabited, then {lean}`Squash α` has a single element, and if {lean}`α` is uninhabited, then {lean}`Squash α` is also uninhabited.
-Unlike {lean}`Nonempty α`, which is a proposition stating that {lean}`α` is inhabited and is thus represented by a dummy value at runtime, {lean}`Squash α` is a type that is represented identically to {lean}`α`.
-Because {lean}`Squash α` is in the same universe as {lean}`α`, it is not subject to the restrictions on computing data from propositions.
+为了证明两个函数在外延意义下相等就等价于本身相等，只需证明它们各自转换为外延函数之后，再通过外延化应用的方法得到的结果是相等的。
+原因在于
+```leanTerm
+extApp (Quot.mk _ f)
+```
+在定义上等价于
+```leanTerm
+fun x => (Quot.mk extEq f).lift (· x) (fun _ _ h => h x)
+```
+定义上等价于 {lean}`fun x => f x`，而根据 {tech key := "η-equivalence"}[η-等价]，又等价于 {lean}`f`。
+如果 {name}`Quot.lift` 的计算规则只是命题形式，而不是定义等价的形式，那就不满足，因为规约表达式会出现在函数体里，按等式重写一整个函数本身就需要函数外延性。
 
 ```lean (show := false)
 end
 ```
 
-{docstring Squash}
+于是，只要证明参与两端的外延版函数真的相等即可。
+这正是由于 {name}`Quot.sound` 成立：即它们本就在商类型的等价关系下。
+这里的证明其实比标准库里的写法更为直白：
 
-{docstring Squash.mk}
 
-{docstring Squash.lift}
+```lean
+theorem funext'
+    {f g : (x : α) → β x}
+    (h : ∀ x, f x = g x) :
+    f = g := by
+  suffices extApp (Quot.mk _ f) = extApp (Quot.mk _ g) by
+    unfold extApp at this
+    dsimp at this
+    exact this
+  suffices Quot.mk extEq f = Quot.mk extEq g by
+    apply congrArg
+    exact this
+  apply Quot.sound
+  exact h
+```
 
-{docstring Squash.ind}
+:::::
+
+/-
+# Squash Types
+%%%
+tag := "squash-types"
+%%%
+-/
+
+# 压缩类型
+%%%
+file := "Squash Types"
+tag := "squash-types"
+%%%
+
+
+```lean (show := false)
+section
+variable {α : Sort u}
+```
+
+/-
+Squash types are a quotient by the relation that relates all elements, transforming it into a {tech}[subsingleton].
+In other words, if {lean}`α` is inhabited, then {lean}`Squash α` has a single element, and if {lean}`α` is uninhabited, then {lean}`Squash α` is also uninhabited.
+Unlike {lean}`Nonempty α`, which is a proposition stating that {lean}`α` is inhabited and is thus represented by a dummy value at runtime, {lean}`Squash α` is a type that is represented identically to {lean}`α`.
+Because {lean}`Squash α` is in the same universe as {lean}`α`, it is not subject to the restrictions on computing data from propositions.
+-/
+
+压缩类型（Squash types）是以“所有元素互相关联”的关系取商后的类型，这样得到的就是一个 {tech key := "subsingleton"}[子单元]。
+换句话说，如果 {lean}`α` 中有元素，那么 {lean}`Squash α` 就只有一个元素；如果 {lean}`α` 为空，则 {lean}`Squash α` 也为空。
+和 {lean}`Nonempty α` 不同，后者只是一个“{lean}`α` 非空”这一命题，在运行时只表现为一个占位值；而 {lean}`Squash α` 是类型层面的，它在表示层和 {lean}`α` 完全一样。
+并且由于 {lean}`Squash α` 和 {lean}`α` 处在同一个宇宙层级，它不受“不能从命题中计算数据”的限制。
+
+```lean (show := false)
+end
+```
+
+{zhdocstring Squash ZhDoc.Squash}
+
+{zhdocstring Squash.mk ZhDoc.Squash.mk}
+
+{zhdocstring Squash.lift ZhDoc.Squash.lift}
+
+{zhdocstring Squash.ind ZhDoc.Squash.ind}
