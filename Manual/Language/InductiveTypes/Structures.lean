@@ -869,6 +869,7 @@ Parent projections are in the child structure's namespace, and their name is the
 这些转换函数称为 {deftech key := "parent projections"}_父投影_。
 父投影函数定义在子结构体的命名空间中，形式为父类型名加前缀 `to`。
 
+/-
 ::: example "Structure type inheritance with overlapping fields"
 In this example, a {lean}`Textbook` is a {lean}`Book` that is also an {lean}`AcademicWork`:
 
@@ -916,12 +917,69 @@ example : toAcademicWork = Textbook.toAcademicWork := by
 ```
 
 :::
+-/
 
+::: example "结构体类型继承与字段重叠"
+In this example, a {lean}`Textbook` is a {lean}`Book` that is also an {lean}`AcademicWork`:
+
+```lean
+structure Book where
+  title : String
+  author : String
+
+structure AcademicWork where
+  author : String
+  discipline : String
+
+structure Textbook extends Book, AcademicWork
+
+#check Textbook.toBook
+```
+
+因为 `author` 字段同时出现在 {lean}`Book` 与 {lean}`AcademicWork`，所以 {name}`Textbook.mk` 构造子只需传入一个父实例。
+其签名为：
+```signature
+Textbook.mk (toBook : Book) (discipline : String) : Textbook
+```
+
+转换函数为：
+```signature
+Textbook.toBook (self : Textbook) : Book
+```
+```signature
+Textbook.toAcademicWork (self : Textbook) : AcademicWork
+```
+
+后一函数会将包含的 {lean}`Book` 的 `author` 字段与独立的 `Discipline` 字段组合，等价于：
+```lean
+def toAcademicWork (self : Textbook) : AcademicWork :=
+  let .mk book discipline := self
+  let .mk _title author := book
+  .mk author discipline
+```
+```lean (show := false)
+-- 检验等价
+example : toAcademicWork = Textbook.toAcademicWork := by
+  funext b
+  cases b
+  dsimp [toAcademicWork]
+```
+
+:::
+
+/-
 The resulting structure's projections can be used as if its fields are simply the union of the parents' fields.
 The Lean elaborator automatically generates an appropriate projection when fields are used.
 Likewise, the field-based initialization and structure update notations hide the details of the encoding of inheritance.
 The encoding is, however, visible when using the constructor's name, when using {tech}[anonymous constructor syntax], or when referring to fields by their index rather than their name.
+-/
 
+最终结构体的投影用法上就像字段是所有父结构体字段的并集一样。
+Lean 的繁释器会在使用字段时自动生成合适的投影。
+同样，基于字段的初始化与结构体更新语法可以隐藏继承实现的细节。
+但如果直接使用构造子名称、{tech key := "anonymous constructor syntax"}[匿名构造子语法]，或者按索引而非字段名称引用字段时，这些细节是可见的。
+
+/-
 :::: example "Field Indices and Structure Inheritance"
 
 ```lean
@@ -951,7 +1009,39 @@ The elaborator translates {lean}`coords.fst` into {lean}`coords.toPair.fst`.
 example (t : Triple α) : t.fst = t.toPair.fst := rfl
 ````
 ::::
+-/
 
+:::: example "字段索引与结构体继承"
+
+```lean
+structure Pair (α : Type u) where
+  fst : α
+  snd : α
+deriving Repr
+
+structure Triple (α : Type u) extends Pair α where
+  thd : α
+deriving Repr
+
+def coords : Triple Nat := {fst := 17, snd := 2, thd := 95}
+```
+
+对 {name}`coords` 的第一字段索引求值时，得到的是 {name}`Pair`，而不是字段 `fst` 的值：
+```lean name:=coords1
+#eval coords.1
+```
+```leanOutput coords1
+{ fst := 17, snd := 2 }
+```
+
+繁释器会自动将 {lean}`coords.fst` 转换为 {lean}`coords.toPair.fst`。
+
+````lean (show := false) (keep := false)
+example (t : Triple α) : t.fst = t.toPair.fst := rfl
+````
+::::
+
+/-
 :::: example "No structure subtyping"
 :::keepEnv
 Given these definitions of even numbers, even prime numbers, and a concrete even prime:
@@ -989,6 +1079,47 @@ but is expected to have type
   EvenNumber : Type
 ```
 because values of type {name}`EvenPrime` are not also values of type {name}`EvenNumber`.
+:::
+::::
+-/
+
+:::: example "无结构体子类型关系"
+:::keepEnv
+如下定义偶数、偶质数和具体偶质数：
+```lean
+structure EvenNumber where
+  val : Nat
+  isEven : 2 ∣ val := by decide
+
+structure EvenPrime extends EvenNumber where
+  notOne : val ≠ 1 := by decide
+  isPrime : ∀ n, n ≤ val → n ∣ val  → n = 1 ∨ n = val
+
+def two : EvenPrime where
+  val := 2
+  isPrime := by
+    intros
+    repeat' (cases ‹Nat.le _ _›)
+    all_goals omega
+
+def printEven (num : EvenNumber) : IO Unit :=
+  IO.print num.val
+```
+直接将 {name}`printEven` 应用于 {name}`two` 会产生类型错误：
+```lean (error := true) (name := printTwo)
+#check printEven two
+```
+```leanOutput printTwo
+Application type mismatch: In the application
+  printEven two
+the argument
+  two
+has type
+  EvenPrime : Type
+but is expected to have type
+  EvenNumber : Type
+```
+因为 {name}`EvenPrime` 类型的值并非 {name}`EvenNumber` 类型值。
 :::
 ::::
 
@@ -1045,10 +1176,15 @@ structure F extends A, A' where
 
 ```
 
-
+/-
 The {keywordOf Lean.Parser.Command.print}`#print` command displays the most important information about structure types, including the {tech}[parent projections], all the fields with their default values, the constructor, and the {tech}[field resolution order].
 When working with deep hierarchies that contain inheritance diamonds, this information can be very useful.
+-/
 
+{keywordOf Lean.Parser.Command.print}`#print` 命令能展示所有结构体类型的重要信息，包括 {tech key := "parent projections"}[父投影]、所有字段（含默认值）、构造子及 {tech key := "field resolution order"}[字段解析顺序]。
+对于包含复杂继承菱形的层次结构而言，这些信息非常有用。
+
+/-
 ::: example "{keyword}`#print` and Structure Types"
 
 This collection of structure types models a variety of bicycles, both electric and non-electric and both ordinary-sized and large family bicycles.
@@ -1096,6 +1232,77 @@ field notation resolution order:
 ```
 
 An {lean}`ElectricFamilyBike` has three wheels by default because {lean}`FamilyBike` precedes {lean}`Bicycle` in its resolution order:
+```lean  (name := elFam)
+#print ElectricFamilyBike
+```
+```leanOutput elFam
+structure ElectricFamilyBike : Type
+number of parameters: 0
+parents:
+  ElectricFamilyBike.toFamilyBike : FamilyBike
+  ElectricFamilyBike.toElectricBike : ElectricBike
+fields:
+  Vehicle.wheels : Nat :=
+    3
+  ElectricVehicle.batteries : Nat :=
+    2
+constructor:
+  ElectricFamilyBike.mk (toFamilyBike : FamilyBike) (batteries : Nat) : ElectricFamilyBike
+field notation resolution order:
+  ElectricFamilyBike, FamilyBike, ElectricBike, Bicycle, ElectricVehicle, Vehicle
+```
+
+:::
+-/
+
+::: example "{keyword}`#print` 与结构体类型"
+
+以下是关于自行车的结构体抽象，涵盖电动/非电动、大型/普通家庭自行车。
+最后一种结构体 {lean}`ElectricFamilyBike` 形成了继承图中的“菱形”，因为 {lean}`FamilyBike` 和 {lean}`ElectricBike` 都继承自 {lean}`Bicycle`。
+
+
+```lean
+structure Vehicle where
+  wheels : Nat
+
+structure Bicycle extends Vehicle where
+  wheels := 2
+
+structure ElectricVehicle extends Vehicle where
+  batteries : Nat := 1
+
+structure FamilyBike extends Bicycle where
+  wheels := 3
+
+structure ElectricBike extends Bicycle, ElectricVehicle
+
+structure ElectricFamilyBike
+    extends FamilyBike, ElectricBike where
+  batteries := 2
+```
+
+{keywordOf Lean.Parser.Command.print}`#print` 可以显示各结构体类型的重要信息：
+```lean (name := el)
+#print ElectricBike
+```
+```leanOutput el
+structure ElectricBike : Type
+number of parameters: 0
+parents:
+  ElectricBike.toBicycle : Bicycle
+  ElectricBike.toElectricVehicle : ElectricVehicle
+fields:
+  Vehicle.wheels : Nat :=
+    2
+  ElectricVehicle.batteries : Nat :=
+    1
+constructor:
+  ElectricBike.mk (toBicycle : Bicycle) (batteries : Nat) : ElectricBike
+field notation resolution order:
+  ElectricBike, Bicycle, ElectricVehicle, Vehicle
+```
+
+默认情况下，{lean}`ElectricFamilyBike` 有三轮，因为在解析顺序中 {lean}`FamilyBike` 优先于
 ```lean  (name := elFam)
 #print ElectricFamilyBike
 ```
