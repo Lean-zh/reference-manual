@@ -169,7 +169,6 @@ tag := "inductive-datatypes-parameters-and-indices"
 
 ## 参数与索引
 %%%
-file := "Parameters and Indices"
 tag := "inductive-datatypes-parameters-and-indices"
 %%%
 
@@ -218,11 +217,10 @@ tag := "example-inductive-types"
 %%%
 -/
 
-## 参数与索引
+## 归纳类型样例
 %%%
-tag := "inductive-datatypes-parameters-and-indices"
+tag := "example-inductive-types"
 %%%
-
 /-
 :::example "A constructorless type"
 {lean}`Vacant` is an empty inductive type, equivalent to Lean's {lean}`Empty` type:
