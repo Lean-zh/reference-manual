@@ -208,7 +208,7 @@ Type constructors with indices are said to specify {deftech}_indexed families_ {
 
 索引实际上定义了一个_类型族_。
 每次索引取值确定，就从族中选出一个类型，该类型有它各自的构造子。
-含索引的类型构造子即定义了一个 {deftech}_带索引类型族_ {index subterm:="of types"}[带索引类型族]。
+含索引的类型构造子即定义了一个 {deftech key:="indexed family"}_索引族_ {index subterm:="of types"}[带索引类型族]。
 
 /-
 ## Example Inductive Types
@@ -800,7 +800,7 @@ axiom α : Prop
 
  * {lean}`Float` 由指向包含 `double` 的 Lean 对象的指针表示。
 
- * {deftech}_枚举归纳类型_，即至少 2 个、且不超过 $`2^{32}` 个构造子，且构造子无参数的类型，用 {c}`uint8_t`、{c}`uint16_t`、{c}`uint32_t` 中能一一编号的最小类型表示。例如，{lean}`Bool` 用 {c}`uint8_t` 表示，{lean}`false` 为 {c}`0`，{lean}`true` 为 {c}`1`。{TODO}[需确认此处“无相关参数”描述是否准确]
+ * {deftech key:="enum inductive"}_枚举归纳类型_，即至少 2 个、且不超过 $`2^{32}` 个构造子，且构造子无参数的类型，用 {c}`uint8_t`、{c}`uint16_t`、{c}`uint32_t` 中能一一编号的最小类型表示。例如，{lean}`Bool` 用 {c}`uint8_t` 表示，{lean}`false` 为 {c}`0`，{lean}`true` 为 {c}`1`。{TODO}[需确认此处“无相关参数”描述是否准确]
 
  * {lean}`Decidable α` 的表示与 `Bool` 相同。{TODO}[其实 Decidable 和 Bool 只是“无参数/无相关性”规则的特例？]
 
