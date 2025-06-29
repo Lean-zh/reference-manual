@@ -455,7 +455,7 @@ end
 section
 variable {α : Sort u} [Setoid α]
 /-- info: instHasEquivOfSetoid -/
-#guard_msgs in
+#check_msgs in
 #synth HasEquiv α
 end
 

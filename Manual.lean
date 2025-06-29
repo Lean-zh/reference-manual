@@ -290,6 +290,7 @@ Std.Channel
 Std.Channel.Sync
 Std.CloseableChannel
 Std.Condvar
+Std.Format
 Unit
 PUnit
 Bool
@@ -327,6 +328,7 @@ Sum
 PSum
 Sigma
 Subtype
+Repr
 Thunk
 _root_
 BitVec
@@ -367,6 +369,21 @@ Std.TreeMap
 Std.DTreeMap
 Std.TreeSet
 ```
+
+
+```exceptions
+Std.Format.defUnicode
+Std.Format.format.indent
+Std.Format.format.unicode
+Std.Format.format.width
+Std.Format.getIndent
+Std.Format.getUnicode
+Std.Format.getWidth
+Std.Format.noConfusionType.withCtor
+Std.Format.noConfusionType.withCtorType
+Std.Format.pretty'
+```
+
 
 ```exceptions
 Std.HashMap.all

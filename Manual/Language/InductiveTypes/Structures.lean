@@ -78,7 +78,7 @@ Structures do not add any expressive power to Lean; all of their features are im
 /--
 error: (kernel) arg #1 of 'RecStruct.mk' has a non positive occurrence of the datatypes being declared
 -/
-#guard_msgs in
+#check_msgs in
 structure RecStruct where
   next : RecStruct → RecStruct
 
@@ -711,11 +711,11 @@ constructor:
 field notation resolution order:
   Q'', Q, Q'
 -/
-#guard_msgs in
+#check_msgs in
 #print Q''
 
 /-- info: 0 -/
-#guard_msgs in
+#check_msgs in
 #eval ({} : Q'').x
 
 /--
@@ -732,11 +732,11 @@ constructor:
 field notation resolution order:
   Q''', Q', Q
 -/
-#guard_msgs in
+#check_msgs in
 #print Q'''
 
 /-- info: 3 -/
-#guard_msgs in
+#check_msgs in
 #eval ({} : Q''').x
 
 -- Defaults use local values
@@ -1135,7 +1135,7 @@ structure B where
 structure C extends A where
   z : String
 /-- info: C.mk (toA : A) (z : String) : C -/
-#guard_msgs in
+#check_msgs in
 #check C.mk
 
 def someC : C where
@@ -1151,19 +1151,19 @@ has type
 but is expected to have type
   A : Type
 -/
-#guard_msgs in
+#check_msgs in
 #check (someC : A)
 
 structure D extends A, B where
   z : String
 /-- info: D.mk (toA : A) (toB : B) (z : String) : D -/
-#guard_msgs in
+#check_msgs in
 #check D.mk
 structure E extends A, B where
   x := 44
   z : String
 /-- info: E.mk (toA : A) (toB : B) (z : String) : E -/
-#guard_msgs in
+#check_msgs in
 #check E.mk
 /--
 error: field type mismatch, field 'x' from parent 'A'' has type
@@ -1171,7 +1171,7 @@ error: field type mismatch, field 'x' from parent 'A'' has type
 but is expected to have type
   Nat : Type
 -/
-#guard_msgs in
+#check_msgs in
 structure F extends A, A' where
 
 ```
