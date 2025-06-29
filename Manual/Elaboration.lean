@@ -7,6 +7,8 @@ import VersoManual
 
 import Manual.Meta
 import Manual.Papers
+import Manual.ZhDocString.ZhDocString
+import Manual.ZhDocString.Elaboration
 
 open Verso.Genre Manual
 open Verso.Genre.Manual.InlineLean
@@ -429,7 +431,7 @@ To see auxiliary pattern matching functions in Lean's output, set the option {op
 项繁释器最终返回的核心项中，模式匹配已被这种特殊函数替代，但仍有递归出现。尚包含递归但其它方面已繁释为核心语言的定义称为 {deftech key := "pre-definition"}[预定义]。
 若需在 Lean 输出里看到辅助模式匹配函数，可设置 {option}`pp.match` 为 {lean}`false`。
 
-{optionDocs pp.match}
+{zhOptionDocs pp.match ZhDoc.Option.pp.match}
 
 
 ```lean (show := false) (keep := false)

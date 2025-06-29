@@ -11,6 +11,8 @@ import Manual.Meta.LexedText
 import Manual.Language.InductiveTypes.LogicalModel
 import Manual.Language.InductiveTypes.Structures
 import Manual.Language.InductiveTypes.Nested
+import Manual.ZhDocString.ZhDocString
+import Manual.ZhDocString.Language.InductiveTypes
 
 open Verso.Genre Manual
 open Verso.Genre.Manual.InlineLean
@@ -198,7 +200,7 @@ An index could have been a parameter if all of its type dependencies are themsel
 但如果 {option}`inductive.autoPromoteIndices` 选项为 {lean}`true`，则本来可以作为参数的语法层面的索引会被自动提升为参数。
 当一个索引的所有类型依赖全都是参数类型，且它在所有构造子的类型构造子调用中始终未实例化、未变化，那么它就可以被当作参数。
 
-{optionDocs inductive.autoPromoteIndices}
+{zhOptionDocs inductive.autoPromoteIndices ZhDoc.Option.inductive.autoPromoteIndices}
 
 /-
 Indices can be seen as defining a _family_ of types.
