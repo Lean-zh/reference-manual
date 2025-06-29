@@ -2215,7 +2215,7 @@ window.onload = () => {
               实际上，上述阶段并非严格依次发生。
 Lean 解析一条 <a class="technical-term" href="Source-Files-and-Modules/#--tech-term-commands">命令</a>（顶层声明）、对其进行繁释，并执行必要的内核检查。
 宏展开属于繁释的一部分；在转化某段语法之前，繁释器会首先展开外层的宏。更深层的宏语法可能暂时保留，直到繁释器处理到它们时才展开。
-繁释分为多类型：命令繁释负责实现每条顶层命令的实际效果（如声明 <a class="technical-term" href="The Type System/Inductive-Types/#--tech-term-Inductive-types">归纳类型</a>、保存定义、表达式求值），而项(term)繁释负责构造多种命令中所涉及的项（如类型签名、定义的右侧或需要求值的表达式）。策略执行是术语繁释的特例。</p>
+繁释分为多类型：命令繁释负责实现每条顶层命令的实际效果（如声明 <a class="technical-term" href="The Type System/Inductive Types/#--tech-term-____________-next-next-next-next-next-next-next-next-next-next-next-next-next">归纳类型</a>、保存定义、表达式求值），而项(term)繁释负责构造多种命令中所涉及的项（如类型签名、定义的右侧或需要求值的表达式）。策略执行是术语繁释的特例。</p>
             <p>
               每当对一个命令进行繁释时，Lean 的状态都会改变。
 新定义或类型会被保存以备后续使用，语法也可能被扩展，或着没有显示指定的限定式的名称集合会发生变化。
@@ -2309,7 +2309,7 @@ Lean 的环境不仅含有从名字到定义的映射，还包括通过 <span id
                 2.3. 内核</h2>
               <p>
                 Lean 值得信任的 <span id="--tech-term-______-next-next" class="def-technical-term"><em>内核</em></span> 是一个小型、健壮的核心类型理论类型检查器实现。
-它不包括语法层面的终止性检查，也不执行归一；终止性通过将所有递归函数繁释为使用原语 <a class="technical-term" href="The Type System/Inductive-Types/#--tech-term-recursor">归递子</a> 得以保证，而归一在繁释器阶段已执行。
+它不包括语法层面的终止性检查，也不执行归一；终止性通过将所有递归函数繁释为使用原语 <a class="technical-term" href="The Type System/Inductive Types/#--tech-term-_________-next-next-next-next-next-next-next-next-next-next-next-next-next">归递子</a> 得以保证，而归一在繁释器阶段已执行。
 在命令或项繁释器向环境中加入新的归纳类型或定义之前，必须先通过内核检查，以防止繁释过程中的潜在 bug。</p>
               <p>
                 Lean 的内核使用 C++ 实现。
@@ -2370,12 +2370,12 @@ Lean 的环境不仅含有从名字到定义的映射，还包括通过 <span id
                 2.4. 繁释结果<span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=elaboration-results" title="Permalink">🔗</a></span></h2>
               <p>
                 Lean 的核心类型理论不包括模式匹配与递归定义。
-它只提供底层的 <a class="technical-term" href="The Type System/Inductive-Types/#--tech-term-recursor">归递子</a>，可用于实现区分情况与原语递归。
+它只提供底层的 <a class="technical-term" href="The Type System/Inductive Types/#--tech-term-_________-next-next-next-next-next-next-next-next-next-next-next-next-next">归递子</a>，可用于实现区分情况与原语递归。
 因此，繁释器必须将涉及模式匹配和递归的定义转化为使用归递器的定义。<span class="marginalia"><span class="note">更多关于递归定义繁释细节见<a href="Definitions/Recursive-Definitions/#recursive-definitions">递归定义章节</a>。</span></span>
 这种转化实际上相当于证明了函数对所有参数均终止，因为只有可转化为归递器的函数才保证终止。</p>
               <p>
                 这种转化分为两步：首先，在项繁释期间，将用到的模式匹配替换为实现特定区分的 <span id="--tech-term-__________________" class="def-technical-term"><em>辅助匹配函数</em></span>。
-这些辅助函数自身由归递器定义，且不必真的用到归递器的递归功能。<span class="marginalia"><span class="note">它们会用到 <code>casesOn</code>，具体参见<a href="The Type System/Inductive-Types/#recursor-elaboration-helpers">归递器与繁释帮助章节</a>。</span></span>
+这些辅助函数自身由归递器定义，且不必真的用到归递器的递归功能。<span class="marginalia"><span class="note">它们会用到 <code>casesOn</code>，具体参见<a href="The Type System/Inductive Types/#recursor-elaboration-helpers">归递器与繁释帮助章节</a>。</span></span>
 项繁释器最终返回的核心项中，模式匹配已被这种特殊函数替代，但仍有递归出现。尚包含递归但其它方面已繁释为核心语言的定义称为 <span id="--tech-term-_________-next" class="def-technical-term">预定义</span>。
 若需在 Lean 输出里看到辅助模式匹配函数，可设置 <code class="hl lean inline" data-lean-context="examples"><a href="Elaboration and Compilation/#pp___match" title="Documentation for option pp.match"><span class="option token" data-binding="option-pp.match" data-verso-hover="38">pp.match</span></a></code> 为 <code class="hl lean inline" data-lean-context="examples"><a href="Basic-Types/Booleans/#Bool___false" title="Documentation for Bool.false"><span class="const token" data-binding="const-Bool.false" data-verso-hover="39">false</span></a></code>。</p>
               <div class="namedocs" id="pp___match">

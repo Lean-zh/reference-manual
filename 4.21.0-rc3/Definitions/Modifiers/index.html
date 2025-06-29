@@ -2334,7 +2334,7 @@ They are described in a <a href="Attributes/#attributes">dedicated section</a>.<
 If it is <code class="plain-keyword">protected</code>, then opening its namespace does not bring it into scope.</p>
             <p>
               Functions marked <code class="plain-keyword">noncomputable</code> are not compiled and cannot be executed.
-Functions must be noncomputable if they use noncomputable reasoning principles such as the axiom of choice or excluded middle to produce data that is relevant to the answer that they return, or if they use features of Lean that are exempted from code generation for efficiency reasons, such as <a class="technical-term" href="The Type System/Inductive-Types/#--tech-term-recursor">recursors</a>.
+Functions must be noncomputable if they use noncomputable reasoning principles such as the axiom of choice or excluded middle to produce data that is relevant to the answer that they return, or if they use features of Lean that are exempted from code generation for efficiency reasons, such as <a class="technical-term" href="The Type System/Inductive Types/#--tech-term-_________-next-next-next-next-next-next-next-next-next-next-next-next-next">recursors</a>.
 Noncomputable functions are very useful for specification and reasoning, even if they cannot be compiled and executed.</p>
             <p>
               The <code class="plain-keyword">unsafe</code> marker exempts a definition from kernel checking and enables it to access features that may undermine Lean's guarantees.

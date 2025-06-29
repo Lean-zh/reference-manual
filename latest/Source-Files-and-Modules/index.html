@@ -2191,7 +2191,7 @@ window.onload = () => {
         </nav>
       <main><div class="content-wrapper">
           <nav class="prev-next-buttons">
-            <a class="local-button active" href="The Type System/Quotients/#quotients" rel="prev" title="4.5. Quotients"><span class="arrow">←</span><span class="where">4.5. Quotients</span></a><a class="local-button active" href="Namespaces-and-Sections/#namespaces-sections" rel="next" title="6. Namespaces and Sections"><span class="where">6. Namespaces and Sections</span><span class="arrow">→</span></a></nav>
+            <a class="local-button active" href="The Type System/Quotients/#quotients" rel="prev" title="4.5. 商类型"><span class="arrow">←</span><span class="where">4.5. 商类型</span></a><a class="local-button active" href="Namespaces-and-Sections/#namespaces-sections" rel="next" title="6. Namespaces and Sections"><span class="where">6. Namespaces and Sections</span><span class="arrow">→</span></a></nav>
           <section>
             <h1>
               5. Source Files and Modules<span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=files" title="Permalink">🔗</a></span></h1>
@@ -2216,7 +2216,7 @@ However, Lean normalizes line endings when parsing or comparing files, so all fi
                 5.2. Concrete Syntax<span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=module-syntax" title="Permalink">🔗</a></span></h2>
               <p>
                 Lean's concrete syntax is <a href="Notations-and-Macros/#language-extension">extensible</a>.
-In a language like Lean, it's not possible to completely describe the syntax once and for all, because libraries may define syntax in addition to new constants or <a class="technical-term" href="The Type System/Inductive-Types/#--tech-term-Inductive-types">inductive types</a>.
+In a language like Lean, it's not possible to completely describe the syntax once and for all, because libraries may define syntax in addition to new constants or <a class="technical-term" href="The Type System/Inductive Types/#--tech-term-____________-next-next-next-next-next-next-next-next-next-next-next-next-next">inductive types</a>.
 Rather than completely describing the language here, the overall framework is described, while the syntax of each language construct is documented in the section to which it belongs.</p>
               <section>
                 <h3 id="whitespace">
@@ -2233,9 +2233,9 @@ Neither tab characters nor carriage returns not followed by newlines are valid w
                   Comments are stretches of the file that, despite not being whitespace, are treated as such.
 Lean has two syntaxes for comments:</p>
                 <dl><dt> Line comments</dt><dd><p>
-                      A <code>--</code> that does not occur as part of a token begins a <em>line comment</em>. All characters from the initial <code>-</code> to the newline are treated as whitespace.<span id="--index--next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next"></span></p>
+                      A <code>--</code> that does not occur as part of a token begins a <em>line comment</em>. All characters from the initial <code>-</code> to the newline are treated as whitespace.<span id="--index--next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next"></span></p>
                     </dd><dt> Block comments</dt><dd><p>
-                      A <code>/-</code> that does not occur as part of a token and is not immediately followed by a <code>-</code> character begins a <em>block comment</em>.<span id="--index--next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next"></span>
+                      A <code>/-</code> that does not occur as part of a token and is not immediately followed by a <code>-</code> character begins a <em>block comment</em>.<span id="--index--next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next"></span>
   The block comment continues until a terminating <code>-/</code> is found.
   Block comments may be nested; a <code>-/</code> only terminates the comment if prior nested block comment openers <code>/-</code> have been terminated by a matching <code>-/</code>.</p>
                     </dd></dl><p>
@@ -2246,7 +2246,7 @@ Even though documentation resembles comments, they are their own syntactic categ
                 <h3 id="keywords-and-identifiers">
                   5.2.3. Keywords and Identifiers<span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=keywords-and-identifiers" title="Permalink">🔗</a></span></h3>
                 <p>
-                  An <a class="technical-term" href="Notations-and-Macros/Defining-New-Syntax/#--tech-term-Identifiers">identifier</a> consists of one or more identifier components, separated by <code>'.'</code>.<span id="--index--next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next"></span></p>
+                  An <a class="technical-term" href="Notations-and-Macros/Defining-New-Syntax/#--tech-term-Identifiers">identifier</a> consists of one or more identifier components, separated by <code>'.'</code>.<span id="--index--next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next"></span></p>
                 <p>
                   <span id="--tech-term-Identifier-components" class="def-technical-term">Identifier components</span> consist of a letter or letter-like character or an underscore (<code>'_'</code>), followed by zero or more identifier continuation characters.
 Letters are English letters, upper- or lowercase, and the letter-like characters include a range of non-English alphabetic scripts, including the Greek script which is widely used in Lean, as well as the members of the Unicode letter-like symbol block, which contains a number of double-struck characters (including <code>ℕ</code> and <code>ℤ</code>) and abbreviations.
@@ -2261,7 +2261,7 @@ The guillemets are not part of the resulting identifier component, so <code>«x�
                   Some potential identifier components may be reserved keywords.
 The specific set of reserved keywords depends on the set of active syntax extensions, which may depend on the set of imported modules and the currently-opened  namespaces; it is impossible to enumerate for Lean as a whole.
 These keywords must also be quoted with guillemets to be used as identifier components in most syntactic contexts.
-Contexts in which keywords may be used as identifiers without guillemets, such as constructor names in inductive types, are <span id="--tech-term-raw-identifier" class="def-technical-term"><em>raw identifier</em></span> contexts.<span id="--index--next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next"></span></p>
+Contexts in which keywords may be used as identifiers without guillemets, such as constructor names in inductive types, are <span id="--tech-term-raw-identifier" class="def-technical-term"><em>raw identifier</em></span> contexts.<span id="--index--next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next"></span></p>
                 <p>
                   Identifiers that contain one or more <code>'.'</code> characters, and thus consist of more than one identifier component, are called <span id="--tech-term-hierarchical-identifiers" class="def-technical-term">hierarchical identifiers</span>.
 Hierarchical identifiers are used to represent both module names and names in a namespace.</p>
@@ -2335,7 +2335,7 @@ Specific Lean commands are documented in the corresponding chapters of this manu
                 5.4. Elaborated Modules<span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=module-contents" title="Permalink">🔗</a></span></h2>
               <p>
                 When Lean elaborates a module, the result is an  environment.
-The environment includes the constants, <a class="technical-term" href="The Type System/Inductive-Types/#--tech-term-Inductive-types">inductive types</a>, <a class="technical-term" href="Definitions/Theorems/#--tech-term-theorems">theorems</a>, <a class="technical-term" href="Type-Classes/#--tech-term-type-class">type classes</a>, <a class="technical-term" href="Type-Classes/#--tech-term-instances">instances</a>, and everything else declared in the module, along with side tables that track data as diverse as <a class="technical-term" href="The-Simplifier/Simp-sets/#--tech-term-simp-set">simp sets</a>, namespace aliases, and <a class="technical-term" href="Definitions/Modifiers/#--tech-term-Documentation-comments">documentation comments</a>.</p>
+The environment includes the constants, <a class="technical-term" href="The Type System/Inductive Types/#--tech-term-____________-next-next-next-next-next-next-next-next-next-next-next-next-next">inductive types</a>, <a class="technical-term" href="Definitions/Theorems/#--tech-term-theorems">theorems</a>, <a class="technical-term" href="Type-Classes/#--tech-term-type-class">type classes</a>, <a class="technical-term" href="Type-Classes/#--tech-term-instances">instances</a>, and everything else declared in the module, along with side tables that track data as diverse as <a class="technical-term" href="The-Simplifier/Simp-sets/#--tech-term-simp-set">simp sets</a>, namespace aliases, and <a class="technical-term" href="Definitions/Modifiers/#--tech-term-Documentation-comments">documentation comments</a>.</p>
               <p>
                 As the module is processed by Lean, commands add content to the environment.
 A module's environment can be serialized to a <span id="--tech-term-___olean-file" class="def-technical-term"><code>.olean</code> file</span>, which contains both the environment and a compacted heap region with the run-time objects needed by the environment.
@@ -2355,7 +2355,7 @@ Packages, libraries, and executables are described in detail in the section on <
               </section>
             </section>
           <img referrerpolicy="no-referrer-when-downgrade" src="https://static.scarf.sh/a.png?x-pxid=11415071-5949-444a-8c93-ef0905bcd026"><nav class="prev-next-buttons">
-            <a class="local-button active" href="The Type System/Quotients/#quotients" rel="prev" title="4.5. Quotients"><span class="arrow">←</span><span class="where">4.5. Quotients</span></a><a class="local-button active" href="Namespaces-and-Sections/#namespaces-sections" rel="next" title="6. Namespaces and Sections"><span class="where">6. Namespaces and Sections</span><span class="arrow">→</span></a></nav>
+            <a class="local-button active" href="The Type System/Quotients/#quotients" rel="prev" title="4.5. 商类型"><span class="arrow">←</span><span class="where">4.5. 商类型</span></a><a class="local-button active" href="Namespaces-and-Sections/#namespaces-sections" rel="next" title="6. Namespaces and Sections"><span class="where">6. Namespaces and Sections</span><span class="arrow">→</span></a></nav>
           </div>
         </main></div>
     </body>
