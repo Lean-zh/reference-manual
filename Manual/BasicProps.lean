@@ -8,6 +8,8 @@ import VersoManual
 
 import Manual.Meta
 import Manual.Papers
+import Manual.ZhDocString.ZhDocString
+import Manual.ZhDocString.BasicProps
 
 
 open Manual
@@ -115,7 +117,7 @@ In other words, because {lean}`Or` is not a {tech}[subsingleton], its proofs can
 In a {ref "tactics"}[tactic] proof, disjunctions can be proved using either constructor ({name}`Or.inl` or {name}`Or.inr`) explicitly via {tactic}`apply`.
 Assumptions of disjunctions in the context can be simplified using {tactic}`cases`, pattern matching with {tactic show:="match"}`Lean.Parser.Tactic.match`, or {tactic}`rcases`.
 
-{docstring Or}
+{zhdocstring Or ZhDoc.Or}
 
 When either disjunct is {tech}[decidable], it becomes possible to use {lean}`Or` to compute data.
 This is because the decision procedure's result provides a suitable branch condition.

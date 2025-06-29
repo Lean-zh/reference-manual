@@ -20,14 +20,6 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
-      
-      - name: Extract version from tag
-        id: get_version
-        run: |
-          # Remove 'v' prefix from tag name
-          VERSION=${GITHUB_REF#refs/tags/v}
-          echo "VERSION=$VERSION" >> $GITHUB_ENV
-          echo "Version extracted: $VERSION"
 
       - name: Configure Git
         # These values are recommended at:
@@ -77,6 +69,16 @@ jobs:
       - name: Lean Version
         run: |
           lean --version
+      
+      - name: Extract version from tag
+        id: get_version
+        run: |
+          # Remove 'v' prefix from tag name
+          # VERSION=${GITHUB_REF#refs/tags/v}
+          # use Lean version instead of tag version
+          VERSION=$(lean --version | sed -E 's/^.*version[[:space:]]+([^,]+).*/\1/')
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "Version extracted: $VERSION"
 
       - name: Cache .lake
         uses: actions/cache/restore@v4

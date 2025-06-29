@@ -28,7 +28,7 @@ Lean's interactive features are based on a different paradigm.
 Rather than a separate command prompt outside of the program, Lean provides {tech}[commands] for accomplishing the same tasks in the context of a source file.
 By convention, commands that are intended for interactive use rather than as part of a durable code artifact are prefixed with {keyword}`#`.
 
-Information from Lean commands is available in the {deftech}_message log_, which accumulates output from the {tech}[elaborator].
+Information from Lean commands is available in the {deftech}_message log_, which accumulates output from the elaborator({tech key := "elaborator"}[繁释器]).
 Each entry in the message log is associated with a specific source range and has a {deftech}_severity_.
 There are three severities: {lean type:="Lean.MessageSeverity"}`information` is used for messages that do not indicate a problem, {lean type:="Lean.MessageSeverity"}`warning` indicates a potential problem, and {lean type:="Lean.MessageSeverity"}`error` indicates a definite problem.
 For interactive commands, results are typically returned as informational messages that are associated with the command's leading keyword.

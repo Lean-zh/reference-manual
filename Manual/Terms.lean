@@ -28,7 +28,7 @@ tag := "terms"
 
 
 {deftech}_Terms_ are the principal means of writing mathematics and programs in Lean.
-The {tech}[elaborator] translates them to Lean's minimal core language, which is then checked by the kernel and compiled for execution.
+The elaborator({tech key := "elaborator"}[繁释器]) translates them to Lean's minimal core language, which is then checked by the kernel and compiled for execution.
 The syntax of terms is {ref "syntax-ext"}[arbitrarily extensible]; this chapter documents the term syntax that Lean provides out-of-the-box.
 
 # Identifiers

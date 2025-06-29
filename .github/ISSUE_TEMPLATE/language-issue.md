@@ -1,16 +1,12 @@
 ---
-name: Language Issue
-about: Point out incorrect or confusing use of English
+name: 语言错误
+about: 指出现有翻译中的错误
 title: ''
-labels: ''
+labels: 'typo'
 assignees: ''
 
 ---
 
-**Describe the error**
+**描述错误**
 
-> Please quote the incorrect usage or confusing text here
-
-Why is it incorrect and/or confusing?
-
-Unless otherwise documented, this document is written in US English following the Chicago Manual of Style. However, _specifically_ US usages that are not widely understood in other communities may also be replaced with more universally-understood formulations.
+> 请指出具体的错误及其位置，如果有修改建议就更好了

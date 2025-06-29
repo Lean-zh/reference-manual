@@ -32,17 +32,29 @@ open Verso.Genre.Manual.InlineLean
 
 set_option pp.rawOnError true
 set_option maxRecDepth 1024
-
+/-
 #doc (Manual) "The Lean Language Reference" =>
+-/
+
+#doc (Manual) "Lean 语言参考手册" =>
 %%%
+file := "The Lean Language Reference"
 tag := "lean-language-reference"
 %%%
 
+/-
 This is the _Lean Language Reference_.
 It is intended to be a comprehensive, precise description of Lean: a reference work in which Lean users can look up detailed information, rather than a tutorial intended for new users.
 For other documentation, please refer to the [Lean documentation overview](https://lean-lang.org/documentation/).
 This manual covers Lean version {versionString}[].
+-/
 
+这是Lean语言参考手册。
+它旨在对Lean进行全面而精确的描述，是Lean用户查找详细信息的参考资料，而不是给新用户的入门教程。
+如需其他文档，请参阅[Lean文档总览(英文)](https://lean-lang.org/documentation/) 或 [lean中文文档](https://www.leanprover.cn/)。
+本手册涵盖Lean {versionString}[]版本。
+
+/-
 Lean is an *interactive theorem prover* based on dependent type theory, designed for use both in cutting-edge mathematics and in software verification.
 Lean's core type theory is expressive enough to capture very complicated mathematical objects, but simple enough to admit independent implementations, reducing the risk of bugs that affect soundness.
 The core type theory is implemented in a minimal {tech}[kernel] that does nothing other than check proof terms.
@@ -50,14 +62,33 @@ This core theory and kernel are supported by advanced automation, realized in {r
 Each tactic produces a term in the core type theory that is checked by the kernel, so bugs in tactics do not threaten the soundness of Lean as a whole.
 Along with many other parts of Lean, the tactic language is user-extensible, so it can be built up to meet the needs of a given formalization project.
 Tactics are written in Lean itself, and can be used immediately upon definition; rebuilding the prover or loading external modules is not required.
+-/
 
+Lean是一种基于依值类型论的*交互式定理证明器*，既可用于前沿数学也可用于软件验证。
+Lean的核心类型理论(core type theory)足够丰富，能够描述非常复杂的数学对象，但又足够简单，允许有独立实现，从而降低影响健全性的bug风险。
+核心类型理论通过一个最小的内核({tech}[kernel])实现，内核除了校验证明项外不做其他任何事情。
+这一核心理论与内核由高级自动化机制支持，该机制体现在一种富有表现力的{ref "tactics"}[策略语言]之中。
+每个策略都会产生一个核心类型理论中的项，由内核检查，因此即使策略中出现bug，也不会威胁到整个Lean的健全性。
+除了许多其他Lean组件外，策略语言也是用户可扩展的，因此能根据形式化项目的需求不断完善。
+策略本身用Lean编写，定义后即可使用，无需重建证明器或加载外部模块。
+
+/-
 Lean is also a pure *functional programming language*, with features such as a run-time system based on reference counting that can efficiently work with packed array structures, multi-threading, and monadic {name}`IO`.
 As befits a programming language, Lean is primarily implemented in itself, including the language server, build tool, {tech}[elaborator], and tactic system.
 This very book is written in [Verso](https://github.com/leanprover/verso), a documentation authoring tool written in Lean.
+-/
 
+Lean同时也是一种纯*函数式编程语言*，具有基于引用计数的运行时系统，能够高效处理打包数组结构、多线程和单子{ name }`IO`等特性。
+作为一门编程语言，Lean主要由自身实现，包括语言服务器、构建工具、{tech key:="elaborator"}[繁释器]和策略系统。
+本手册正是用[Verso](https://github.com/leanprover/verso)编写的，Verso是用Lean开发的文档创作工具。
+
+/-
 Familiarity with Lean's programming features is valuable even for users whose primary interest is in writing proofs, because Lean programs are used to implement new tactics and proof automation.
 Thus, this reference manual does not draw a barrier between the two aspects, but rather describes them together so they can shed light on one another.
+-/
 
+熟悉Lean的编程特性，即使对主要关注证明编写的用户来说也非常有价值，因为Lean程序用于实现新的策略和证明自动化。
+因此，本参考手册不会人为地将两者分开描述，而是将它们合在一起讲解，以便互为补充，相互启发。
 
 
 {include 0 Manual.Intro}
@@ -110,16 +141,23 @@ draft := true
 {docstring Dynamic.get?}
 
 
-# Standard Library
+/- # Standard Library -/
+# 动态类型
 %%%
 tag := "standard-library"
 draft := true
 %%%
 
-
+/-
 :::planned 109
 Overview of the standard library, including types from the prelude and those that require imports.
 :::
+-/
+
+:::planned 109
+标准库概述,包括prelude中的类型以及那些需要导入的类型
+:::
+-/
 
 {include 0 Manual.NotationsMacros}
 
@@ -131,7 +169,11 @@ Overview of the standard library, including types from the prelude and those tha
 
 {include 0 Manual.Releases}
 
+/-
 # Index
+-/
+
+# 索引
 %%%
 number := false
 file := some "the-index"
@@ -139,7 +181,11 @@ file := some "the-index"
 
 {theIndex}
 
+/-
 # Progress
+-/
+
+# 进度
 %%%
 number := false
 draft := true
