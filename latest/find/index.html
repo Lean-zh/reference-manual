@@ -1842,6 +1842,91 @@ pre.toml {
   font-weight: 600;
 }
 </style><script>
+      
+window.addEventListener("load", () => {
+  const innerProps = {
+    onShow(inst) { console.log(inst); },
+    onHide(inst) { console.log(inst); },
+    content(tgt) {
+      const content = document.createElement("span");
+      const state = tgt.querySelector(".hover-info").cloneNode(true);
+      state.style.display = "block";
+      content.appendChild(state);
+      /* Render docstrings - TODO server-side */
+      if ('undefined' !== typeof marked) {
+          for (const d of content.querySelectorAll("code.docstring, pre.docstring")) {
+              const str = d.innerText;
+              const html = marked.parse(str);
+              const rendered = document.createElement("div");
+              rendered.classList.add("docstring");
+              rendered.innerHTML = html;
+              d.parentNode.replaceChild(rendered, d);
+          }
+      }
+      content.style.display = "block";
+      content.className = "hl lean popup";
+      return content;
+    }
+  };
+  const outerProps = {
+    allowHtml: true,
+    theme: "lean",
+    placement: 'bottom-start',
+    maxWidth: "none",
+    delay: 100,
+    moveTransition: 'transform 0.2s ease-out',
+    onTrigger(inst, event) {
+      const ref = event.currentTarget;
+      const block = ref.closest('.hl.lean');
+      block.querySelectorAll('.active').forEach((i) => i.classList.remove('active'));
+      ref.classList.add("active");
+    },
+    onUntrigger(inst, event) {
+      const ref = event.currentTarget;
+      const block = ref.closest('.hl.lean');
+      block.querySelectorAll('.active').forEach((i) => i.classList.remove('active'));
+    }
+  };
+  tippy.createSingleton(tippy('pre.grammar.hl.lean .nonterminal.documented, pre.grammar.hl.lean .from-nonterminal.documented, pre.grammar.hl.lean .local-name.documented', innerProps), outerProps);
+});
+</script>
+    <script>
+      
+window.addEventListener("load", () => {
+  tippy('.keyword-of.hl.lean', {
+    allowHtml: true,
+    /* DEBUG -- remove the space: * /
+    onHide(any) { return false; },
+    trigger: "click",
+    // */
+    maxWidth: "none",
+
+    theme: "lean",
+    placement: 'bottom-start',
+    content (tgt) {
+      const content = document.createElement("span");
+      const state = tgt.querySelector(".hover-info").cloneNode(true);
+      state.style.display = "block";
+      content.appendChild(state);
+      /* Render docstrings - TODO server-side */
+      if ('undefined' !== typeof marked) {
+          for (const d of content.querySelectorAll("code.docstring, pre.docstring")) {
+              const str = d.innerText;
+              const html = marked.parse(str);
+              const rendered = document.createElement("div");
+              rendered.classList.add("docstring");
+              rendered.innerHTML = html;
+              d.parentNode.replaceChild(rendered, d);
+          }
+      }
+      content.style.display = "block";
+      content.className = "hl lean popup";
+      return content;
+    }
+  });
+});
+</script>
+    <script>
       let xref = {"Verso.Genre.Manual.section":
  {"title": "Sections or chapters of the manual",
   "description": null,
@@ -7959,18 +8044,18 @@ pre.toml {
   "description": null,
   "contents":
   {"α":
-   [{"id": "___",
+   [{"id": "___-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "___-next",
+    {"id": "___",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"}],
    "ys":
    [{"id": "xs", "data": null, "address": "/Basic-Types/Lazy-Computations/"}],
    "y.y": [{"id": "B", "data": null, "address": "/Terms/Identifiers/"}],
    "y":
-   [{"id": "y", "data": null, "address": "/Coercions/Coercing-to-Sorts/"},
-    {"id": "B", "data": null, "address": "/Terms/Identifiers/"}],
+   [{"id": "B", "data": null, "address": "/Terms/Identifiers/"},
+    {"id": "y", "data": null, "address": "/Coercions/Coercing-to-Sorts/"}],
    "xs":
    [{"id": "xs", "data": null, "address": "/Basic-Types/Lazy-Computations/"}],
    "x":
@@ -8064,13 +8149,13 @@ pre.toml {
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"}],
    "ten": [{"id": "ten", "data": null, "address": "/Basic-Types/Arrays/"}],
    "tally_eq_add":
-   [{"id": "tally_eq_add",
-     "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "tally_eq_add-next-next",
+   [{"id": "tally_eq_add-next-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
     {"id": "tally_eq_add-next",
+     "data": null,
+     "address": "/Definitions/Recursive-Definitions/"},
+    {"id": "tally_eq_add",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"}],
    "tally":
@@ -8096,10 +8181,10 @@ pre.toml {
    [{"id": "swap", "data": null, "address": "/Interacting-with-Lean/"}],
    "swap": [{"id": "swap", "data": null, "address": "/Interacting-with-Lean/"}],
    "sum_eq_add":
-   [{"id": "sum_eq_add",
+   [{"id": "sum_eq_add-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "sum_eq_add-next",
+    {"id": "sum_eq_add",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"}],
    "sumUntilFive":
@@ -8154,16 +8239,16 @@ pre.toml {
      "data": null,
      "address": "/Basic-Types/Linked-Lists/"}],
    "select":
-   [{"id": "select",
+   [{"id": "select-next-next",
      "data": null,
      "address": "/Definitions/Headers-and-Signatures/"},
     {"id": "select-next-next-next",
      "data": null,
      "address": "/Definitions/Headers-and-Signatures/"},
-    {"id": "select-next-next",
+    {"id": "select-next",
      "data": null,
      "address": "/Definitions/Headers-and-Signatures/"},
-    {"id": "select-next",
+    {"id": "select",
      "data": null,
      "address": "/Definitions/Headers-and-Signatures/"}],
    "satisfyingIndices":
@@ -8215,14 +8300,14 @@ pre.toml {
      "address": "/Run-Time-Code/Reference-Counting/"}],
    "process":
    [{"id":
+     "main-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/Run-Time-Code/Reference-Counting/"},
+    {"id":
      "main-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/Run-Time-Code/Reference-Counting/"},
     {"id": "process",
-     "data": null,
-     "address": "/Run-Time-Code/Reference-Counting/"},
-    {"id":
-     "main-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/Run-Time-Code/Reference-Counting/"}],
    "printEven":
@@ -8277,8 +8362,8 @@ pre.toml {
    [{"id": "p_all-next-next",
      "data": null,
      "address": "/Namespaces-and-Sections/"},
-    {"id": "p_all-next", "data": null, "address": "/Namespaces-and-Sections/"},
-    {"id": "p_all", "data": null, "address": "/Namespaces-and-Sections/"}],
+    {"id": "p_all", "data": null, "address": "/Namespaces-and-Sections/"},
+    {"id": "p_all-next", "data": null, "address": "/Namespaces-and-Sections/"}],
    "oneTwoThree'":
    [{"id": "oneTwoThree___",
      "data": null,
@@ -8287,12 +8372,12 @@ pre.toml {
    [{"id": "oneTwoThree",
      "data": null,
      "address": "/The Type System/Inductive Types/"},
-    {"id": "oneTwoThree-next-next",
-     "data": null,
-     "address": "/Basic-Types/Arrays/"},
     {"id": "oneTwoThree-next",
      "data": null,
-     "address": "/Coercions/Coercing-Between-Types/"}],
+     "address": "/Coercions/Coercing-Between-Types/"},
+    {"id": "oneTwoThree-next-next",
+     "data": null,
+     "address": "/Basic-Types/Arrays/"}],
    "one":
    [{"id": "twoHundredThirteen", "data": null, "address": "/Coercions/"},
     {"id": "two______",
@@ -8353,10 +8438,10 @@ pre.toml {
      "data": null,
      "address": "/Coercions/Coercing-to-Function-Types/"}],
    "n":
-   [{"id": "NaturalNum",
+   [{"id": "NaturalNum-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "NaturalNum-next",
+    {"id": "NaturalNum",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"}],
    "mustBeEqual":
@@ -8369,85 +8454,85 @@ pre.toml {
    [{"id": "min___-next-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "min___",
-     "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
     {"id": "min___-next-next-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
     {"id": "min___-next",
      "data": null,
+     "address": "/Definitions/Recursive-Definitions/"},
+    {"id": "min___",
+     "data": null,
      "address": "/Definitions/Recursive-Definitions/"}],
    "map":
-   [{"id": "map-next-next-next-next",
+   [{"id": "map-next", "data": null, "address": "/The Type System/Universe/"},
+    {"id": "map-next-next-next",
      "data": null,
      "address": "/Definitions/Headers-and-Signatures/"},
     {"id": "map-next-next",
      "data": null,
      "address": "/Definitions/Headers-and-Signatures/"},
-    {"id": "map-next", "data": null, "address": "/The Type System/Universe/"},
-    {"id": "map-next-next-next",
+    {"id": "map", "data": null, "address": "/The Type System/Universe/"},
+    {"id": "map-next-next-next-next",
      "data": null,
-     "address": "/Definitions/Headers-and-Signatures/"},
-    {"id": "map", "data": null, "address": "/The Type System/Universe/"}],
+     "address": "/Definitions/Headers-and-Signatures/"}],
    "main":
-   [{"id": "main-next-next-next-next",
-     "data": null,
-     "address": "/IO/Console-Output/"},
-    {"id": "main-next-next-next-next-next-next",
-     "data": null,
-     "address": "/IO/Mutable-References/"},
-    {"id": "main-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/IO/Files___-File-Handles___-and-Streams/"},
-    {"id":
+   [{"id":
      "main-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/Run-Time-Code/Reference-Counting/"},
+    {"id": "main-next-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/IO/Files___-File-Handles___-and-Streams/"},
     {"id":
-     "main-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "main-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
-     "address": "/IO/Processes/"},
-    {"id": "main-next",
-     "data": null,
-     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
+     "address": "/Run-Time-Code/Reference-Counting/"},
     {"id":
      "main-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/Basic-Types/Tuples/"},
     {"id":
-     "main-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/Run-Time-Code/Reference-Counting/"},
-    {"id": "main",
-     "data": null,
-     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
-    {"id": "main-next-next-next-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/IO/Processes/"},
-    {"id": "main-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/IO/Mutable-References/"},
-    {"id": "main-next-next-next",
-     "data": null,
-     "address": "/IO/Logical-Model/"},
-    {"id": "main-next-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/IO/Files___-File-Handles___-and-Streams/"},
-    {"id":
      "main-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/IO/Processes/"},
-    {"id": "main-next-next-next-next-next-next-next-next-next-next",
+    {"id": "main-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/IO/Processes/"},
+    {"id": "main",
+     "data": null,
+     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
+    {"id": "main-next",
+     "data": null,
+     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
+    {"id":
+     "main-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/IO/Processes/"},
     {"id": "main-next-next",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/API-Reference/"},
-    {"id": "main-next-next-next-next-next-next-next-next-next-next-next-next",
+    {"id": "main-next-next-next-next",
+     "data": null,
+     "address": "/IO/Console-Output/"},
+    {"id": "main-next-next-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/IO/Processes/"},
+    {"id": "main-next-next-next",
+     "data": null,
+     "address": "/IO/Logical-Model/"},
     {"id": "main-next-next-next-next-next",
+     "data": null,
+     "address": "/IO/Mutable-References/"},
+    {"id": "main-next-next-next-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/IO/Processes/"},
+    {"id": "main-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/IO/Files___-File-Handles___-and-Streams/"},
+    {"id": "main-next-next-next-next-next-next",
+     "data": null,
+     "address": "/IO/Mutable-References/"},
+    {"id": "main-next-next-next-next-next-next-next",
      "data": null,
      "address": "/IO/Mutable-References/"}],
    "lsts": [{"id": "lsts", "data": null, "address": "/Interacting-with-Lean/"}],
@@ -8509,10 +8594,10 @@ pre.toml {
      "data": null,
      "address": "/The Type System/Universe/"}],
    "identity":
-   [{"id": "___",
+   [{"id": "___-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "___-next",
+    {"id": "___",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"}],
    "id'":
@@ -8531,19 +8616,19 @@ pre.toml {
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"}],
    "half''":
-   [{"id": "half______",
+   [{"id": "half______-next-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "half______-next-next",
+    {"id": "half______",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
     {"id": "half______-next-next-next-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "half______-next",
+    {"id": "half______-next-next-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "half______-next-next-next",
+    {"id": "half______-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"}],
    "half'":
@@ -8554,16 +8639,13 @@ pre.toml {
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"}],
    "half":
-   [{"id": "half",
-     "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "half-next-next-next",
-     "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "half-next-next-next-next-next-next-next-next-next",
+   [{"id": "half-next-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/Terms/Pattern-Matching/"},
-    {"id": "half-next-next-next-next-next-next",
+    {"id": "half-next",
+     "data": null,
+     "address": "/Definitions/Recursive-Definitions/"},
+    {"id": "half",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
     {"id": "half-next-next-next-next-next-next-next",
@@ -8572,16 +8654,19 @@ pre.toml {
     {"id": "half-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "half-next-next",
+    {"id": "half-next-next-next-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "half-next-next-next-next",
+    {"id": "half-next-next-next-next-next-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
     {"id": "half-next-next-next-next-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "half-next",
+    {"id": "half-next-next",
+     "data": null,
+     "address": "/Definitions/Recursive-Definitions/"},
+    {"id": "half-next-next-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"}],
    "grouped":
@@ -8600,10 +8685,10 @@ pre.toml {
      "data": null,
      "address": "/Basic-Types/Tuples/"}],
    "getThird":
-   [{"id": "getThird-next-next",
+   [{"id": "getThird-next", "data": null, "address": "/Terms/Conditionals/"},
+    {"id": "getThird-next-next",
      "data": null,
      "address": "/Terms/Conditionals/"},
-    {"id": "getThird-next", "data": null, "address": "/Terms/Conditionals/"},
     {"id": "getThird", "data": null, "address": "/Terms/Conditionals/"}],
    "getPPContext":
    [{"id": "getPPContext",
@@ -8628,10 +8713,10 @@ pre.toml {
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"}],
    "getBytes'":
-   [{"id": "getBytes___-next",
+   [{"id": "getBytes___",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Lifting-Monads/"},
-    {"id": "getBytes___",
+    {"id": "getBytes___-next",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Lifting-Monads/"}],
    "getBytes":
@@ -8647,13 +8732,13 @@ pre.toml {
      "data": null,
      "address": "/Basic-Types/Optional-Values/"}],
    "g":
-   [{"id": "g-next", "data": null, "address": "/Basic-Types/The-Empty-Type/"},
-    {"id": "f-next-next-next-next",
+   [{"id": "f-next-next-next-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
     {"id": "f-next-next-next-next-next",
      "data": null,
      "address": "/Terms/Functions/"},
+    {"id": "g-next", "data": null, "address": "/Basic-Types/The-Empty-Type/"},
     {"id": "g", "data": null, "address": "/Basic-Propositions/Truth/"}],
    "funext'":
    [{"id": "funext___",
@@ -8682,19 +8767,19 @@ pre.toml {
    "filled":
    [{"id": "grouped", "data": null, "address": "/Interacting-with-Lean/"}],
    "fib":
-   [{"id": "fib",
+   [{"id": "fib-next-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
     {"id": "fib-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
+    {"id": "fib-next-next-next-next",
+     "data": null,
+     "address": "/Definitions/Recursive-Definitions/"},
     {"id": "fib-next-next-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "fib-next-next",
-     "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "fib-next-next-next-next",
+    {"id": "fib",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"}],
    "false_is_true":
@@ -8704,34 +8789,34 @@ pre.toml {
      "data": null,
      "address": "/Notations-and-Macros/Custom-Operators/"}],
    "f":
-   [{"id": "f-next-next",
+   [{"id": "f-next-next-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
+    {"id": "f", "data": null, "address": "/Definitions/Recursive-Definitions/"},
     {"id": "f-next-next-next-next-next-next-next",
      "data": null,
      "address": "/Basic-Propositions/Truth/"},
     {"id": "f-next-next-next-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "f-next-next-next-next-next-next",
-     "data": null,
-     "address": "/Terms/Pattern-Matching/"},
-    {"id": "f", "data": null, "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "f-next-next-next-next-next",
-     "data": null,
-     "address": "/Terms/Functions/"},
-    {"id": "f-next-next-next",
-     "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "f-next",
-     "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
     {"id": "f-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/Basic-Types/The-Empty-Type/"},
+    {"id": "f-next-next-next-next-next",
+     "data": null,
+     "address": "/Terms/Functions/"},
+    {"id": "f-next",
+     "data": null,
+     "address": "/Definitions/Recursive-Definitions/"},
     {"id": "f-next-next-next-next-next-next-next-next-next",
      "data": null,
-     "address": "/Notations-and-Macros/Macros/"}],
+     "address": "/Notations-and-Macros/Macros/"},
+    {"id": "f-next-next-next-next-next-next",
+     "data": null,
+     "address": "/Terms/Pattern-Matching/"},
+    {"id": "f-next-next",
+     "data": null,
+     "address": "/Definitions/Recursive-Definitions/"}],
    "extEq":
    [{"id": "ExtFun", "data": null, "address": "/The Type System/Quotients/"}],
    "extApp":
@@ -8756,10 +8841,10 @@ pre.toml {
      "data": null,
      "address": "/Notations-and-Macros/Macros/"}],
    "ex1":
-   [{"id": "ex1-next",
+   [{"id": "ex1", "data": null, "address": "/Notations-and-Macros/Macros/"},
+    {"id": "ex1-next",
      "data": null,
-     "address": "/Notations-and-Macros/Macros/"},
-    {"id": "ex1", "data": null, "address": "/Notations-and-Macros/Macros/"}],
+     "address": "/Notations-and-Macros/Macros/"}],
    "everyOther":
    [{"id": "everyOther",
      "data": null,
@@ -8787,17 +8872,17 @@ pre.toml {
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"}],
    "div.eq0":
-   [{"id": "div___eq2",
+   [{"id": "div___eq0",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "div___eq0",
+    {"id": "div___eq2",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"}],
    "div":
-   [{"id": "div-next",
+   [{"id": "div",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "div",
+    {"id": "div-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"}],
    "discardElems":
@@ -8809,23 +8894,23 @@ pre.toml {
      "data": null,
      "address": "/Type-Classes/Deriving-Instances/"}],
    "countdown'":
-   [{"id": "countdown___",
-     "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "countdown___-next",
+   [{"id": "countdown___-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
     {"id": "countdown___-next-next",
      "data": null,
+     "address": "/Definitions/Recursive-Definitions/"},
+    {"id": "countdown___",
+     "data": null,
      "address": "/Definitions/Recursive-Definitions/"}],
    "countdown":
-   [{"id": "countdown",
-     "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "runCountdown",
+   [{"id": "runCountdown",
      "data": null,
      "address": "/IO/Files___-File-Handles___-and-Streams/"},
     {"id": "countdown-next",
+     "data": null,
+     "address": "/Definitions/Recursive-Definitions/"},
+    {"id": "countdown",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"}],
    "count":
@@ -8847,10 +8932,10 @@ pre.toml {
      "data": null,
      "address": "/Type-Classes/Basic-Classes/"}],
    "boolCases":
-   [{"id": "boolCases", "data": null, "address": "/Terms/Pattern-Matching/"},
-    {"id": "boolCases-next",
+   [{"id": "boolCases-next",
      "data": null,
-     "address": "/Terms/Pattern-Matching/"}],
+     "address": "/Terms/Pattern-Matching/"},
+    {"id": "boolCases", "data": null, "address": "/Terms/Pattern-Matching/"}],
    "bogus": [{"id": "bogus", "data": null, "address": "/Introduction/"}],
    "binarySearch":
    [{"id": "binarySearch",
@@ -8881,10 +8966,10 @@ pre.toml {
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"}],
    "addPairs":
-   [{"id": "NatPair___x",
+   [{"id": "NatPair___x-next",
      "data": null,
      "address": "/Type-Classes/Instance-Synthesis/"},
-    {"id": "NatPair___x-next",
+    {"id": "NatPair___x",
      "data": null,
      "address": "/Type-Classes/Instance-Synthesis/"}],
    "addFirstThird":
@@ -8915,20 +9000,20 @@ pre.toml {
    [{"id": "add-next-next",
      "data": null,
      "address": "/Terms/Pattern-Matching/"},
-    {"id": "add",
-     "data": null,
-     "address": "/Definitions/Headers-and-Signatures/"},
     {"id": "add-next",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive-Definitions/"},
+    {"id": "add",
+     "data": null,
+     "address": "/Definitions/Headers-and-Signatures/"}],
    "ack":
    [{"id": "ack-next-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "ack-next",
+    {"id": "ack",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "ack",
+    {"id": "ack-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"}],
    "accessControl":
@@ -8979,8 +9064,8 @@ pre.toml {
    "Z'":
    [{"id": "Z___eq", "data": null, "address": "/The Type System/Quotients/"}],
    "Z":
-   [{"id": "Z", "data": null, "address": "/The Type System/Quotients/"},
-    {"id": "Z___a", "data": null, "address": "/The Type System/Quotients/"}],
+   [{"id": "Z___a", "data": null, "address": "/The Type System/Quotients/"},
+    {"id": "Z", "data": null, "address": "/The Type System/Quotients/"}],
    "Yes.intro":
    [{"id": "Yes___intro",
      "data": null,
@@ -9102,10 +9187,10 @@ pre.toml {
      "data": null,
      "address": "/Basic-Propositions/Propositional-Equality/"}],
    "Vector.append_associative":
-   [{"id": "Vector___append_associative-next",
+   [{"id": "Vector___append_associative",
      "data": null,
      "address": "/Basic-Propositions/Propositional-Equality/"},
-    {"id": "Vector___append_associative",
+    {"id": "Vector___append_associative-next",
      "data": null,
      "address": "/Basic-Propositions/Propositional-Equality/"}],
    "Vacant":
@@ -9125,24 +9210,24 @@ pre.toml {
      "data": null,
      "address": "/Terms/Function-Application/"}],
    "User.name":
-   [{"id": "main",
+   [{"id": "main-next",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
-    {"id": "main-next",
+    {"id": "main",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"}],
    "User.favoriteNat":
-   [{"id": "main",
+   [{"id": "main-next",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
-    {"id": "main-next",
+    {"id": "main",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"}],
    "User":
-   [{"id": "main",
+   [{"id": "main-next",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
-    {"id": "main-next",
+    {"id": "main",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"}],
    "Ty.nat":
@@ -9218,23 +9303,23 @@ pre.toml {
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"}],
    "Tree.map":
-   [{"id": "Tree___map-next-next",
+   [{"id": "Tree___map-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
     {"id": "Tree___map-next-next-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "Tree___map",
+    {"id": "Tree___map-next-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "Tree___map-next",
+    {"id": "Tree___map",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"}],
    "Tree.leaf":
-   [{"id": "Tree___node",
+   [{"id": "Tree",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "Tree",
+    {"id": "Tree___node",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"}],
    "Tree.fastBEq":
@@ -9262,10 +9347,10 @@ pre.toml {
      "data": null,
      "address": "/Interacting-with-Lean/"}],
    "Tree.branch":
-   [{"id": "Tree___empty",
+   [{"id": "Tree",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "Tree",
+    {"id": "Tree___empty",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"}],
    "Tree.big":
@@ -9287,13 +9372,13 @@ pre.toml {
     {"id": "Tree___branches",
      "data": null,
      "address": "/Interacting-with-Lean/"},
+    {"id": "Tree",
+     "data": null,
+     "address": "/Definitions/Recursive-Definitions/"},
     {"id": "Tree___empty",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
     {"id": "Tree___node",
-     "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "Tree",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"}],
    "Tm.zero":
@@ -9329,10 +9414,10 @@ pre.toml {
      "data": null,
      "address": "/Coercions/Coercing-to-Function-Types/"}],
    "Tm":
-   [{"id": "Tm", "data": null, "address": "/The Type System/Inductive Types/"},
-    {"id": "Tm-next",
+   [{"id": "Tm-next",
      "data": null,
-     "address": "/Coercions/Coercing-to-Function-Types/"}],
+     "address": "/Coercions/Coercing-to-Function-Types/"},
+    {"id": "Tm", "data": null, "address": "/The Type System/Inductive Types/"}],
    "ThreeChoices.yes":
    [{"id": "ThreeChoices___yes",
      "data": null,
@@ -9409,26 +9494,26 @@ pre.toml {
      "data": null,
      "address": "/Notations-and-Macros/Extending-Lean___s-Output/"}],
    "Solo":
-   [{"id": "Solo-next",
+   [{"id": "Solo",
      "data": null,
-     "address": "/Notations-and-Macros/Extending-Lean___s-Output/"},
-    {"id": "Solo",
+     "address": "/The Type System/Inductive Types/"},
+    {"id": "Solo-next",
      "data": null,
-     "address": "/The Type System/Inductive Types/"}],
+     "address": "/Notations-and-Macros/Extending-Lean___s-Output/"}],
    "SetTree":
    [{"id": "SetTree", "data": null, "address": "/The Type System/Quotients/"}],
    "Serialize.ser":
-   [{"id": "Serialize-next",
+   [{"id": "Serialize",
      "data": null,
      "address": "/Type-Classes/Instance-Synthesis/"},
-    {"id": "Serialize",
+    {"id": "Serialize-next",
      "data": null,
      "address": "/Type-Classes/Instance-Synthesis/"}],
    "Serialize":
-   [{"id": "Serialize-next",
+   [{"id": "Serialize",
      "data": null,
      "address": "/Type-Classes/Instance-Synthesis/"},
-    {"id": "Serialize",
+    {"id": "Serialize-next",
      "data": null,
      "address": "/Type-Classes/Instance-Synthesis/"}],
    "Sequence.ofList":
@@ -9623,10 +9708,10 @@ pre.toml {
      "data": null,
      "address": "/The Type System/Inductive Types/"}],
    "RLE":
-   [{"id": "RLE___run",
+   [{"id": "RunsMatch",
      "data": null,
      "address": "/The Type System/Inductive Types/"},
-    {"id": "RunsMatch",
+    {"id": "RLE___run",
      "data": null,
      "address": "/The Type System/Inductive Types/"}],
    "Quadrant.sw":
@@ -9730,12 +9815,12 @@ pre.toml {
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"}],
    "Pair.snd":
-   [{"id": "Pair___fst",
+   [{"id": "coords",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "coords",
+     "address": "/The Type System/Inductive Types/"},
+    {"id": "Pair___fst",
      "data": null,
-     "address": "/The Type System/Inductive Types/"}],
+     "address": "/Definitions/Recursive-Definitions/"}],
    "Pair.sizeOf_lt_of_mem":
    [{"id": "Pair___sizeOf_lt_of_mem",
      "data": null,
@@ -9753,12 +9838,12 @@ pre.toml {
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"}],
    "Pair.fst":
-   [{"id": "Pair___fst",
+   [{"id": "coords",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "coords",
+     "address": "/The Type System/Inductive Types/"},
+    {"id": "Pair___fst",
      "data": null,
-     "address": "/The Type System/Inductive Types/"}],
+     "address": "/Definitions/Recursive-Definitions/"}],
    "Pair.attach":
    [{"id": "Pair___attach",
      "data": null,
@@ -9776,12 +9861,12 @@ pre.toml {
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"}],
    "Pair":
-   [{"id": "Pair___fst",
+   [{"id": "coords",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "coords",
+     "address": "/The Type System/Inductive Types/"},
+    {"id": "Pair___fst",
      "data": null,
-     "address": "/The Type System/Inductive Types/"}],
+     "address": "/Definitions/Recursive-Definitions/"}],
    "PBool":
    [{"id": "PBool",
      "data": null,
@@ -9815,24 +9900,24 @@ pre.toml {
      "data": null,
      "address": "/The Type System/Inductive Types/"}],
    "OneSmaller.shrink":
-   [{"id": "OneSmaller-next",
+   [{"id": "OneSmaller",
      "data": null,
      "address": "/Type-Classes/Instance-Synthesis/"},
-    {"id": "OneSmaller",
+    {"id": "OneSmaller-next",
      "data": null,
      "address": "/Type-Classes/Instance-Synthesis/"}],
    "OneSmaller.biggest":
-   [{"id": "OneSmaller-next",
+   [{"id": "OneSmaller",
      "data": null,
      "address": "/Type-Classes/Instance-Synthesis/"},
-    {"id": "OneSmaller",
+    {"id": "OneSmaller-next",
      "data": null,
      "address": "/Type-Classes/Instance-Synthesis/"}],
    "OneSmaller":
-   [{"id": "OneSmaller-next",
+   [{"id": "OneSmaller",
      "data": null,
      "address": "/Type-Classes/Instance-Synthesis/"},
-    {"id": "OneSmaller",
+    {"id": "OneSmaller-next",
      "data": null,
      "address": "/Type-Classes/Instance-Synthesis/"}],
    "OddList.cons":
@@ -9874,13 +9959,13 @@ pre.toml {
      "data": null,
      "address": "/The Type System/Inductive Types/"}],
    "ONat":
-   [{"id": "ONat___mk-next",
+   [{"id": "ONat",
+     "data": null,
+     "address": "/The Type System/Inductive Types/"},
+    {"id": "ONat___mk-next",
      "data": null,
      "address": "/The Type System/Inductive Types/"},
     {"id": "ONat___mk",
-     "data": null,
-     "address": "/The Type System/Inductive Types/"},
-    {"id": "ONat",
      "data": null,
      "address": "/The Type System/Inductive Types/"}],
    "NotUnitLike.mk":
@@ -9925,24 +10010,24 @@ pre.toml {
    "No":
    [{"id": "No", "data": null, "address": "/The Type System/Inductive Types/"}],
    "NaturalNum":
-   [{"id": "NaturalNum",
+   [{"id": "NaturalNum-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "NaturalNum-next",
+    {"id": "NaturalNum",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"}],
    "NatWrapper.val":
-   [{"id": "NatWrapper___val",
+   [{"id": "NatWrapper___val-next",
      "data": null,
      "address": "/Type-Classes/Instance-Declarations/"},
-    {"id": "NatWrapper___val-next",
+    {"id": "NatWrapper___val",
      "data": null,
      "address": "/Type-Classes/Instance-Declarations/"}],
    "NatWrapper":
-   [{"id": "NatWrapper___val",
+   [{"id": "NatWrapper___val-next",
      "data": null,
      "address": "/Type-Classes/Instance-Declarations/"},
-    {"id": "NatWrapper___val-next",
+    {"id": "NatWrapper___val",
      "data": null,
      "address": "/Type-Classes/Instance-Declarations/"}],
    "NatTree.leaf":
@@ -10002,24 +10087,24 @@ pre.toml {
      "data": null,
      "address": "/Type-Classes/Instance-Declarations/"}],
    "NatPair.y":
-   [{"id": "NatPair___x",
+   [{"id": "NatPair___x-next",
      "data": null,
      "address": "/Type-Classes/Instance-Synthesis/"},
-    {"id": "NatPair___x-next",
+    {"id": "NatPair___x",
      "data": null,
      "address": "/Type-Classes/Instance-Synthesis/"}],
    "NatPair.x":
-   [{"id": "NatPair___x",
+   [{"id": "NatPair___x-next",
      "data": null,
      "address": "/Type-Classes/Instance-Synthesis/"},
-    {"id": "NatPair___x-next",
+    {"id": "NatPair___x",
      "data": null,
      "address": "/Type-Classes/Instance-Synthesis/"}],
    "NatPair":
-   [{"id": "NatPair___x",
+   [{"id": "NatPair___x-next",
      "data": null,
      "address": "/Type-Classes/Instance-Synthesis/"},
-    {"id": "NatPair___x-next",
+    {"id": "NatPair___x",
      "data": null,
      "address": "/Type-Classes/Instance-Synthesis/"}],
    "NatOrInt.nat":
@@ -10063,8 +10148,8 @@ pre.toml {
      "data": null,
      "address": "/Terms/Pattern-Matching/"}],
    "Nat.otherZero":
-   [{"id": "Nat___otherZero", "data": null, "address": "/Axioms/"},
-    {"id": "Nat___otherZero-next", "data": null, "address": "/Axioms/"}],
+   [{"id": "Nat___otherZero-next", "data": null, "address": "/Axioms/"},
+    {"id": "Nat___otherZero", "data": null, "address": "/Axioms/"}],
    "Nat.half":
    [{"id": "Nat___half",
      "data": null,
@@ -10202,16 +10287,16 @@ pre.toml {
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"}],
    "List.findIndex":
-   [{"id": "List___findIndex-next-next",
-     "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "List___findIndex-next",
-     "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "List___findIndex",
+   [{"id": "List___findIndex-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
     {"id": "List___findIndex-next-next-next",
+     "data": null,
+     "address": "/Definitions/Recursive-Definitions/"},
+    {"id": "List___findIndex-next-next",
+     "data": null,
+     "address": "/Definitions/Recursive-Definitions/"},
+    {"id": "List___findIndex",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"}],
    "List.brecOnTable":
@@ -10435,10 +10520,10 @@ pre.toml {
      "data": null,
      "address": "/Namespaces-and-Sections/"}],
    "Float.zero_eq_zero_plus_zero":
-   [{"id": "Float___zero_eq_zero_plus_zero",
+   [{"id": "Float___zero_eq_zero_plus_zero-next",
      "data": null,
      "address": "/Basic-Types/Floating-Point-Numbers/"},
-    {"id": "Float___zero_eq_zero_plus_zero-next",
+    {"id": "Float___zero_eq_zero_plus_zero",
      "data": null,
      "address": "/Basic-Types/Floating-Point-Numbers/"}],
    "Fix":
@@ -10562,17 +10647,17 @@ pre.toml {
      "data": null,
      "address": "/Type-Classes/Instance-Declarations/"}],
    "Even":
-   [{"id": "Even___number",
+   [{"id": "Even",
+     "data": null,
+     "address": "/Type-Classes/Instance-Declarations/"},
+    {"id": "Even___zero", "data": null, "address": "/Introduction/"},
+    {"id": "Even___number",
      "data": null,
      "address": "/Coercions/Coercing-Between-Types/"},
-    {"id": "Even___zero", "data": null, "address": "/Introduction/"},
     {"id": "Even___zero-next-next-next",
      "data": null,
      "address": "/The Type System/Inductive Types/"},
-    {"id": "Even___zero-next", "data": null, "address": "/Introduction/"},
-    {"id": "Even",
-     "data": null,
-     "address": "/Type-Classes/Instance-Declarations/"}],
+    {"id": "Even___zero-next", "data": null, "address": "/Introduction/"}],
    "Eq.unique":
    [{"id": "Eq___unique",
      "data": null,
@@ -10825,10 +10910,10 @@ pre.toml {
      "data": null,
      "address": "/Terms/Pattern-Matching/"}],
    "BalancedTree.filledWith":
-   [{"id": "BalancedTree___filledWith-next",
+   [{"id": "BalancedTree___filledWith",
      "data": null,
      "address": "/Terms/Pattern-Matching/"},
-    {"id": "BalancedTree___filledWith",
+    {"id": "BalancedTree___filledWith-next",
      "data": null,
      "address": "/Terms/Pattern-Matching/"}],
    "BalancedTree.empty":
@@ -10852,8 +10937,8 @@ pre.toml {
      "address": "/The Type System/Inductive Types/"}],
    "B.y": [{"id": "B", "data": null, "address": "/Terms/Identifiers/"}],
    "B.x":
-   [{"id": "A___x-next-next", "data": null, "address": "/Terms/Identifiers/"},
-    {"id": "A___x-next", "data": null, "address": "/Terms/Identifiers/"}],
+   [{"id": "A___x-next", "data": null, "address": "/Terms/Identifiers/"},
+    {"id": "A___x-next-next", "data": null, "address": "/Terms/Identifiers/"}],
    "B.a4":
    [{"id": "A___B___C___a3",
      "data": null,
@@ -10863,10 +10948,10 @@ pre.toml {
      "data": null,
      "address": "/Namespaces-and-Sections/"}],
    "B":
-   [{"id": "B-next",
+   [{"id": "B", "data": null, "address": "/Terms/Identifiers/"},
+    {"id": "B-next",
      "data": null,
-     "address": "/Type-Classes/Deriving-Instances/"},
-    {"id": "B", "data": null, "address": "/Terms/Identifiers/"}],
+     "address": "/Type-Classes/Deriving-Instances/"}],
    "AugmentedIntList.list":
    [{"id": "AugmentedIntList___list",
      "data": null,
@@ -11036,9 +11121,9 @@ pre.toml {
    [{"id": "ABC___c", "data": null, "address": "/Interacting-with-Lean/"}],
    "A.y": [{"id": "B", "data": null, "address": "/Terms/Identifiers/"}],
    "A.x":
-   [{"id": "A___x-next-next", "data": null, "address": "/Terms/Identifiers/"},
-    {"id": "A___x", "data": null, "address": "/Terms/Identifiers/"},
-    {"id": "A___x-next", "data": null, "address": "/Terms/Identifiers/"}],
+   [{"id": "A___x", "data": null, "address": "/Terms/Identifiers/"},
+    {"id": "A___x-next", "data": null, "address": "/Terms/Identifiers/"},
+    {"id": "A___x-next-next", "data": null, "address": "/Terms/Identifiers/"}],
    "A.a1":
    [{"id": "A___B___C___a3",
      "data": null,
@@ -11053,10 +11138,10 @@ pre.toml {
      "data": null,
      "address": "/Namespaces-and-Sections/"}],
    "A":
-   [{"id": "B-next",
+   [{"id": "B", "data": null, "address": "/Terms/Identifiers/"},
+    {"id": "B-next",
      "data": null,
-     "address": "/Type-Classes/Deriving-Instances/"},
-    {"id": "B", "data": null, "address": "/Terms/Identifiers/"}]}},
+     "address": "/Type-Classes/Deriving-Instances/"}]}},
  "Verso.Genre.Manual.doc.tech":
  {"title": "Terminology",
   "description": "Definitions of technical terms",
@@ -11406,10 +11491,10 @@ pre.toml {
      "data": {"term": "Right-associative"},
      "address": "/Notations-and-Macros/Custom-Operators/"}],
    "resolve":
-   [{"id": "--tech-term-resolving-next",
+   [{"id": "--tech-term-resolve",
      "data": {"term": "resolving"},
      "address": "/IO/Tasks-and-Threads/"},
-    {"id": "--tech-term-resolve",
+    {"id": "--tech-term-resolving-next",
      "data": {"term": "resolving"},
      "address": "/IO/Tasks-and-Threads/"},
     {"id": "--tech-term-resolving",
@@ -11805,12 +11890,12 @@ pre.toml {
      "data": {"term": "macro expansion"},
      "address": "/Notations-and-Macros/Macros/"}],
    "macro":
-   [{"id": "--tech-term-macro",
+   [{"id": "--tech-term-Macros",
      "data": {"term": "Macros"},
-     "address": "/Notations-and-Macros/Defining-New-Syntax/"},
-    {"id": "--tech-term-Macros",
+     "address": "/Notations-and-Macros/Macros/"},
+    {"id": "--tech-term-macro",
      "data": {"term": "Macros"},
-     "address": "/Notations-and-Macros/Macros/"}],
+     "address": "/Notations-and-Macros/Defining-New-Syntax/"}],
    "log":
    [{"id": "--tech-term-log",
      "data": {"term": "log"},
@@ -11840,12 +11925,12 @@ pre.toml {
      "data": {"term": "library directories"},
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "library":
-   [{"id": "--tech-term-Libraries",
+   [{"id": "--tech-term-libraries",
      "data": {"term": "Libraries"},
-     "address": "/Build-Tools-and-Distribution/Lake/"},
-    {"id": "--tech-term-libraries",
+     "address": "/Source-Files-and-Modules/"},
+    {"id": "--tech-term-Libraries",
      "data": {"term": "Libraries"},
-     "address": "/Source-Files-and-Modules/"}],
+     "address": "/Build-Tools-and-Distribution/Lake/"}],
    "left fold":
    [{"id": "--tech-term-Left-folds",
      "data": {"term": "Left folds"},
@@ -11900,12 +11985,12 @@ pre.toml {
      "data": {"term": "内涵性"},
      "address": "/The Type System/Functions/"}],
    "instance implicit":
-   [{"id": "--tech-term-instance-implicit-next",
+   [{"id": "--tech-term-instance-implicit",
      "data": {"term": "instance-implicit"},
-     "address": "/Type-Classes/"},
-    {"id": "--tech-term-instance-implicit",
+     "address": "/Terms/Functions/"},
+    {"id": "--tech-term-instance-implicit-next",
      "data": {"term": "instance-implicit"},
-     "address": "/Terms/Functions/"}],
+     "address": "/Type-Classes/"}],
    "instance":
    [{"id": "--tech-term-instances",
      "data": {"term": "instances"},
@@ -12154,12 +12239,12 @@ pre.toml {
      "data": {"term": "ellipsis"},
      "address": "/Terms/Function-Application/"}],
    "elaborator":
-   [{"id": "--tech-term-______",
+   [{"id": "--tech-term-elaborators",
      "data": {"term": "elaborators"},
-     "address": "/Elaboration and Compilation/"},
-    {"id": "--tech-term-elaborators",
+     "address": "/Notations-and-Macros/Elaborators/"},
+    {"id": "--tech-term-______",
      "data": {"term": "elaborators"},
-     "address": "/Notations-and-Macros/Elaborators/"}],
+     "address": "/Elaboration and Compilation/"}],
    "dynamic array":
    [{"id": "--tech-term-dynamic-arrays",
      "data": {"term": "dynamic arrays"},
@@ -12497,10 +12582,10 @@ pre.toml {
   "description": "Tactics for performing targeted rewriting of subterms",
   "contents":
   {"Lean.Parser.Tactic.Conv.«conv·._»":
-   [{"id": "Lean___Parser___Tactic___Conv____FLQQ_conv________FLQQ_-next",
+   [{"id": "Lean___Parser___Tactic___Conv____FLQQ_conv________FLQQ_",
      "data": {"userName": "· ..."},
      "address": "/Tactic-Proofs/Targeted-Rewriting-with--conv/"},
-    {"id": "Lean___Parser___Tactic___Conv____FLQQ_conv________FLQQ_",
+    {"id": "Lean___Parser___Tactic___Conv____FLQQ_conv________FLQQ_-next",
      "data": {"userName": "· ..."},
      "address": "/Tactic-Proofs/Targeted-Rewriting-with--conv/"}],
    "Lean.Parser.Tactic.Conv.«conv_<;>_»":
@@ -12759,12 +12844,12 @@ pre.toml {
      "data": {"userName": "with_unfolding_all"},
      "address": "/Tactic-Proofs/Tactic-Reference/"}],
    "Lean.Parser.Tactic.withReducibleAndInstances":
-   [{"id": "with_reducible_and_instances",
+   [{"id": "with_reducible_and_instances-next",
      "data": {"userName": "with_reducible_and_instances"},
-     "address": "/Tactic-Proofs/The-Tactic-Language/"},
-    {"id": "with_reducible_and_instances-next",
+     "address": "/Tactic-Proofs/Tactic-Reference/"},
+    {"id": "with_reducible_and_instances",
      "data": {"userName": "with_reducible_and_instances"},
-     "address": "/Tactic-Proofs/Tactic-Reference/"}],
+     "address": "/Tactic-Proofs/The-Tactic-Language/"}],
    "Lean.Parser.Tactic.withReducible":
    [{"id": "with_reducible-next",
      "data": {"userName": "with_reducible"},
@@ -13384,10 +13469,10 @@ pre.toml {
      "data": null,
      "address": "/Tactic-Proofs/Reading-Proof-States/"}],
    "«termΣ_,_»":
-   [{"id": "_FLQQ_term_________FLQQ_-next-next-next-next-next",
+   [{"id": "_FLQQ_term_________FLQQ_-next-next-next-next-next-next",
      "data": null,
      "address": "/Basic-Types/Tuples/"},
-    {"id": "_FLQQ_term_________FLQQ_-next-next-next-next-next-next",
+    {"id": "_FLQQ_term_________FLQQ_-next-next-next-next-next",
      "data": null,
      "address": "/Basic-Types/Tuples/"}],
    "«termΣ'_,_»":
@@ -13402,10 +13487,10 @@ pre.toml {
      "data": null,
      "address": "/Basic-Propositions/Logical-Connectives/"}],
    "«term{_:_//_}»":
-   [{"id": "_FLQQ_term___________________FLQQ_-next",
+   [{"id": "_FLQQ_term___________________FLQQ_",
      "data": null,
      "address": "/Basic-Types/Subtypes/"},
-    {"id": "_FLQQ_term___________________FLQQ_",
+    {"id": "_FLQQ_term___________________FLQQ_-next",
      "data": null,
      "address": "/Basic-Types/Subtypes/"}],
    "«term_⊕_»":
@@ -13529,26 +13614,26 @@ pre.toml {
      "data": null,
      "address": "/Basic-Types/Booleans/"}],
    "«term[_]»":
-   [{"id": "_FLQQ_term_LSQ___RSQ__FLQQ_",
+   [{"id": "_FLQQ_term_LSQ___RSQ__FLQQ_-next",
      "data": null,
-     "address": "/Terms/Literals/"},
-    {"id": "_FLQQ_term_LSQ___RSQ__FLQQ_-next",
+     "address": "/Basic-Types/Linked-Lists/"},
+    {"id": "_FLQQ_term_LSQ___RSQ__FLQQ_",
      "data": null,
-     "address": "/Basic-Types/Linked-Lists/"}],
+     "address": "/Terms/Literals/"}],
    "«termExists_,_»":
-   [{"id": "_FLQQ_termExists______FLQQ_-next",
+   [{"id": "_FLQQ_termExists______FLQQ_",
      "data": null,
      "address": "/Basic-Propositions/Quantifiers/"},
-    {"id": "_FLQQ_termExists______FLQQ_",
+    {"id": "_FLQQ_termExists______FLQQ_-next",
      "data": null,
      "address": "/Basic-Propositions/Quantifiers/"}],
    "«term#[_,]»":
-   [{"id": "_FLQQ_term____LSQ______RSQ__FLQQ_",
+   [{"id": "_FLQQ_term____LSQ______RSQ__FLQQ_-next",
      "data": null,
-     "address": "/Terms/Literals/"},
-    {"id": "_FLQQ_term____LSQ______RSQ__FLQQ_-next",
+     "address": "/Basic-Types/Arrays/"},
+    {"id": "_FLQQ_term____LSQ______RSQ__FLQQ_",
      "data": null,
-     "address": "/Basic-Types/Arrays/"}],
+     "address": "/Terms/Literals/"}],
    "«stx_<|>_»":
    [{"id": "_FLQQ_stx__LT_____GT___FLQQ_",
      "data": null,
@@ -13640,12 +13725,12 @@ pre.toml {
      "data": null,
      "address": "/Notations-and-Macros/Precedence/"}],
    "num.antiquot":
-   [{"id": "num___antiquot",
+   [{"id": "num___antiquot-next",
      "data": null,
-     "address": "/Type-Classes/Instance-Declarations/"},
-    {"id": "num___antiquot-next",
+     "address": "/Notations-and-Macros/Precedence/"},
+    {"id": "num___antiquot",
      "data": null,
-     "address": "/Notations-and-Macros/Precedence/"}],
+     "address": "/Type-Classes/Instance-Declarations/"}],
    "ident.antiquot":
    [{"id": "ident___antiquot", "data": null, "address": "/Terms/Functions/"}],
    "coeSortNotation":
@@ -13674,32 +13759,32 @@ pre.toml {
      "data": null,
      "address": "/Basic-Types/Maps-and-Sets/"}],
    "Manual.FreeSyntax.more":
-   [{"id": "Manual___FreeSyntax___more-next",
+   [{"id": "Manual___FreeSyntax___more-next-next-next",
+     "data": null,
+     "address": "/Notations-and-Macros/Macros/"},
+    {"id": "Manual___FreeSyntax___more-next-next",
+     "data": null,
+     "address": "/Notations-and-Macros/Macros/"},
+    {"id": "Manual___FreeSyntax___more-next",
      "data": null,
      "address": "/Terms/Function-Application/"},
     {"id": "Manual___FreeSyntax___more",
      "data": null,
-     "address": "/Terms/Function-Application/"},
-    {"id": "Manual___FreeSyntax___more-next-next",
-     "data": null,
-     "address": "/Notations-and-Macros/Macros/"},
-    {"id": "Manual___FreeSyntax___more-next-next-next",
-     "data": null,
-     "address": "/Notations-and-Macros/Macros/"}],
+     "address": "/Terms/Function-Application/"}],
    "Manual.FreeSyntax.embed":
    [{"id": "Manual___FreeSyntax___embed",
      "data": null,
      "address": "/Terms/Functions/"}],
    "Manual.FreeSyntax.done":
-   [{"id": "Manual___FreeSyntax___done-next-next",
+   [{"id": "Manual___FreeSyntax___done",
+     "data": null,
+     "address": "/Notations-and-Macros/Macros/"},
+    {"id": "Manual___FreeSyntax___done-next-next",
      "data": null,
      "address": "/Build-Tools-and-Distribution/Lake/"},
     {"id": "Manual___FreeSyntax___done-next",
      "data": null,
-     "address": "/Build-Tools-and-Distribution/Lake/"},
-    {"id": "Manual___FreeSyntax___done",
-     "data": null,
-     "address": "/Notations-and-Macros/Macros/"}],
+     "address": "/Build-Tools-and-Distribution/Lake/"}],
    "List.«term_~_»":
    [{"id": "List____FLQQ_term______FLQQ_",
      "data": null,
@@ -13778,10 +13863,10 @@ pre.toml {
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"}],
    "Lean.Parser.Termination.terminationBy":
-   [{"id": "Lean___Parser___Termination___terminationBy-next",
+   [{"id": "Lean___Parser___Termination___terminationBy-next-next-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "Lean___Parser___Termination___terminationBy-next-next-next",
+    {"id": "Lean___Parser___Termination___terminationBy-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"}],
    "Lean.Parser.Term.typeAscription":
@@ -13821,18 +13906,18 @@ pre.toml {
      "data": null,
      "address": "/The Type System/Inductive Types/"}],
    "Lean.Parser.Term.strictImplicitBinder":
-   [{"id": "Lean___Parser___Term___strictImplicitBinder-next-next",
+   [{"id": "Lean___Parser___Term___strictImplicitBinder-next-next-next",
      "data": null,
      "address": "/Terms/Functions/"},
-    {"id": "Lean___Parser___Term___strictImplicitBinder-next-next-next",
+    {"id": "Lean___Parser___Term___strictImplicitBinder",
      "data": null,
-     "address": "/Terms/Functions/"},
+     "address": "/Definitions/Headers-and-Signatures/"},
     {"id": "Lean___Parser___Term___strictImplicitBinder-next",
      "data": null,
      "address": "/Definitions/Headers-and-Signatures/"},
-    {"id": "Lean___Parser___Term___strictImplicitBinder",
+    {"id": "Lean___Parser___Term___strictImplicitBinder-next-next",
      "data": null,
-     "address": "/Definitions/Headers-and-Signatures/"}],
+     "address": "/Terms/Functions/"}],
    "Lean.Parser.Term.stateRefT":
    [{"id": "Lean___Parser___Term___stateRefT",
      "data": null,
@@ -13868,10 +13953,10 @@ pre.toml {
      "data": null,
      "address": "/Terms/Pattern-Matching/"}],
    "Lean.Parser.Term.namedPattern":
-   [{"id": "Lean___Parser___Term___namedPattern",
+   [{"id": "Lean___Parser___Term___namedPattern-next",
      "data": null,
      "address": "/Terms/Pattern-Matching/"},
-    {"id": "Lean___Parser___Term___namedPattern-next",
+    {"id": "Lean___Parser___Term___namedPattern",
      "data": null,
      "address": "/Terms/Pattern-Matching/"}],
    "Lean.Parser.Term.matchDiscr":
@@ -13886,12 +13971,12 @@ pre.toml {
      "data": null,
      "address": "/Terms/Pattern-Matching/"}],
    "Lean.Parser.Term.instBinder":
-   [{"id": "Lean___Parser___Term___instBinder-next",
-     "data": null,
-     "address": "/Terms/Functions/"},
-    {"id": "Lean___Parser___Term___instBinder",
+   [{"id": "Lean___Parser___Term___instBinder",
      "data": null,
      "address": "/Definitions/Headers-and-Signatures/"},
+    {"id": "Lean___Parser___Term___instBinder-next",
+     "data": null,
+     "address": "/Terms/Functions/"},
     {"id": "Lean___Parser___Term___instBinder-next-next",
      "data": null,
      "address": "/Terms/Functions/"}],
@@ -13900,10 +13985,10 @@ pre.toml {
      "data": null,
      "address": "/Terms/Pattern-Matching/"}],
    "Lean.Parser.Term.implicitBinder":
-   [{"id": "Lean___Parser___Term___implicitBinder-next-next",
+   [{"id": "Lean___Parser___Term___implicitBinder-next",
      "data": null,
      "address": "/Terms/Functions/"},
-    {"id": "Lean___Parser___Term___implicitBinder-next",
+    {"id": "Lean___Parser___Term___implicitBinder-next-next",
      "data": null,
      "address": "/Terms/Functions/"},
     {"id": "Lean___Parser___Term___implicitBinder",
@@ -13914,35 +13999,35 @@ pre.toml {
      "data": null,
      "address": "/Terms/Holes/"}],
    "Lean.Parser.Term.fun":
-   [{"id": "Lean___Parser___Term___fun",
+   [{"id": "Lean___Parser___Term___fun-next-next-next-next",
      "data": null,
      "address": "/Terms/Functions/"},
-    {"id": "Lean___Parser___Term___fun-next-next-next",
-     "data": null,
-     "address": "/Terms/Functions/"},
-    {"id": "Lean___Parser___Term___fun-next",
+    {"id": "Lean___Parser___Term___fun",
      "data": null,
      "address": "/Terms/Functions/"},
     {"id": "Lean___Parser___Term___fun-next-next",
      "data": null,
      "address": "/Terms/Functions/"},
+    {"id": "Lean___Parser___Term___fun-next-next-next",
+     "data": null,
+     "address": "/Terms/Functions/"},
     {"id": "Lean___Parser___Term___fun-next-next-next-next-next",
      "data": null,
      "address": "/Terms/Pattern-Matching/"},
-    {"id": "Lean___Parser___Term___fun-next-next-next-next",
+    {"id": "Lean___Parser___Term___fun-next",
      "data": null,
      "address": "/Terms/Functions/"}],
    "Lean.Parser.Term.forall":
-   [{"id": "Lean___Parser___Term___forall-next-next",
-     "data": null,
-     "address": "/Basic-Propositions/Quantifiers/"},
-    {"id": "Lean___Parser___Term___forall",
-     "data": null,
-     "address": "/Basic-Propositions/Quantifiers/"},
-    {"id": "Lean___Parser___Term___forall-next-next-next",
+   [{"id": "Lean___Parser___Term___forall-next-next-next",
      "data": null,
      "address": "/Basic-Propositions/Quantifiers/"},
     {"id": "Lean___Parser___Term___forall-next",
+     "data": null,
+     "address": "/Basic-Propositions/Quantifiers/"},
+    {"id": "Lean___Parser___Term___forall-next-next",
+     "data": null,
+     "address": "/Basic-Propositions/Quantifiers/"},
+    {"id": "Lean___Parser___Term___forall",
      "data": null,
      "address": "/Basic-Propositions/Quantifiers/"}],
    "Lean.Parser.Term.explicitBinder":
@@ -13954,26 +14039,6 @@ pre.toml {
      "address": "/Definitions/Headers-and-Signatures/"}],
    "Lean.Parser.Term.doSeqItem":
    [{"id":
-     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
-    {"id":
-     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
-    {"id":
-     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
-    {"id":
-     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
-    {"id":
-     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
-    {"id":
      "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
@@ -13982,18 +14047,7 @@ pre.toml {
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
     {"id":
-     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
-    {"id":
-     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
-    {"id": "Lean___Parser___Term___doSeqItem-next-next-next-next",
-     "data": null,
-     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
-    {"id":
-     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
     {"id": "Lean___Parser___Term___doSeqItem-next",
@@ -14003,6 +14057,10 @@ pre.toml {
      "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
+    {"id":
+     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
     {"id": "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
@@ -14010,11 +14068,38 @@ pre.toml {
      "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
-    {"id":
-     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next",
+    {"id": "Lean___Parser___Term___doSeqItem-next-next-next",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
-    {"id": "Lean___Parser___Term___doSeqItem-next-next-next",
+    {"id": "Lean___Parser___Term___doSeqItem-next-next-next-next",
+     "data": null,
+     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
+    {"id":
+     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
+    {"id":
+     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
+    {"id":
+     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
+    {"id":
+     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
+    {"id":
+     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
+    {"id":
+     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
+    {"id":
+     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
     {"id":
@@ -14022,17 +14107,17 @@ pre.toml {
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"}],
    "Lean.Parser.Term.doReassignArrow":
-   [{"id": "Lean___Parser___Term___doReassignArrow-next",
+   [{"id": "Lean___Parser___Term___doReassignArrow",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
-    {"id": "Lean___Parser___Term___doReassignArrow",
+    {"id": "Lean___Parser___Term___doReassignArrow-next",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"}],
    "Lean.Parser.Term.doReassign":
-   [{"id": "Lean___Parser___Term___doReassign-next",
+   [{"id": "Lean___Parser___Term___doReassign",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
-    {"id": "Lean___Parser___Term___doReassign",
+    {"id": "Lean___Parser___Term___doReassign-next",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"}],
    "Lean.Parser.Term.do":
@@ -14040,7 +14125,7 @@ pre.toml {
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"}],
    "Lean.Parser.Term.depArrow":
-   [{"id": "Lean___Parser___Term___depArrow",
+   [{"id": "Lean___Parser___Term___depArrow-next-next-next",
      "data": null,
      "address": "/Terms/Function-Types/"},
     {"id": "Lean___Parser___Term___depArrow-next-next-next-next-next-next",
@@ -14049,19 +14134,19 @@ pre.toml {
     {"id": "Lean___Parser___Term___depArrow-next",
      "data": null,
      "address": "/Terms/Function-Types/"},
-    {"id": "Lean___Parser___Term___depArrow-next-next-next-next-next-next-next",
+    {"id": "Lean___Parser___Term___depArrow",
      "data": null,
      "address": "/Terms/Function-Types/"},
     {"id": "Lean___Parser___Term___depArrow-next-next",
      "data": null,
      "address": "/Terms/Function-Types/"},
-    {"id": "Lean___Parser___Term___depArrow-next-next-next",
+    {"id": "Lean___Parser___Term___depArrow-next-next-next-next-next",
+     "data": null,
+     "address": "/Terms/Function-Types/"},
+    {"id": "Lean___Parser___Term___depArrow-next-next-next-next-next-next-next",
      "data": null,
      "address": "/Terms/Function-Types/"},
     {"id": "Lean___Parser___Term___depArrow-next-next-next-next",
-     "data": null,
-     "address": "/Terms/Function-Types/"},
-    {"id": "Lean___Parser___Term___depArrow-next-next-next-next-next",
      "data": null,
      "address": "/Terms/Function-Types/"}],
    "Lean.Parser.Term.byTactic":
@@ -14083,10 +14168,10 @@ pre.toml {
    [{"id": "Lean___Parser___Term___attrKind-next",
      "data": null,
      "address": "/Attributes/"},
-    {"id": "Lean___Parser___Term___attrKind",
+    {"id": "Lean___Parser___Term___attrKind-next-next",
      "data": null,
      "address": "/Attributes/"},
-    {"id": "Lean___Parser___Term___attrKind-next-next",
+    {"id": "Lean___Parser___Term___attrKind",
      "data": null,
      "address": "/Attributes/"}],
    "Lean.Parser.Term.attrInstance":
@@ -14110,36 +14195,36 @@ pre.toml {
      "data": null,
      "address": "/Tactic-Proofs/The-Tactic-Language/"}],
    "Lean.Parser.Tactic.configItem":
-   [{"id": "Lean___Parser___Tactic___configItem-next-next",
+   [{"id": "Lean___Parser___Tactic___configItem-next-next-next-next",
      "data": null,
      "address": "/Tactic-Proofs/The-Tactic-Language/"},
-    {"id": "Lean___Parser___Tactic___configItem-next-next-next-next",
+    {"id": "Lean___Parser___Tactic___configItem-next-next-next",
      "data": null,
      "address": "/Tactic-Proofs/The-Tactic-Language/"},
     {"id": "Lean___Parser___Tactic___configItem-next",
      "data": null,
      "address": "/Tactic-Proofs/The-Tactic-Language/"},
-    {"id": "Lean___Parser___Tactic___configItem-next-next-next",
+    {"id": "Lean___Parser___Tactic___configItem-next-next",
      "data": null,
      "address": "/Tactic-Proofs/The-Tactic-Language/"}],
    "Lean.Parser.Tactic.Conv.enterArg":
-   [{"id": "Lean___Parser___Tactic___Conv___enterArg-next",
+   [{"id": "Lean___Parser___Tactic___Conv___enterArg-next-next",
      "data": null,
      "address": "/Tactic-Proofs/Targeted-Rewriting-with--conv/"},
     {"id": "Lean___Parser___Tactic___Conv___enterArg-next-next-next",
      "data": null,
      "address": "/Tactic-Proofs/Targeted-Rewriting-with--conv/"},
-    {"id": "Lean___Parser___Tactic___Conv___enterArg-next-next",
+    {"id": "Lean___Parser___Tactic___Conv___enterArg-next",
      "data": null,
      "address": "/Tactic-Proofs/Targeted-Rewriting-with--conv/"}],
    "Lean.Parser.Syntax.unary":
    [{"id": "Lean___Parser___Syntax___unary-next",
      "data": null,
      "address": "/Notations-and-Macros/Defining-New-Syntax/"},
-    {"id": "Lean___Parser___Syntax___unary",
+    {"id": "Lean___Parser___Syntax___unary-next-next",
      "data": null,
      "address": "/Notations-and-Macros/Defining-New-Syntax/"},
-    {"id": "Lean___Parser___Syntax___unary-next-next",
+    {"id": "Lean___Parser___Syntax___unary",
      "data": null,
      "address": "/Notations-and-Macros/Defining-New-Syntax/"}],
    "Lean.Parser.Syntax.subPrio":
@@ -14161,13 +14246,13 @@ pre.toml {
      "data": null,
      "address": "/Notations-and-Macros/Defining-New-Syntax/"}],
    "Lean.Parser.Syntax.sepBy":
-   [{"id": "Lean___Parser___Syntax___sepBy",
+   [{"id": "Lean___Parser___Syntax___sepBy-next",
+     "data": null,
+     "address": "/Notations-and-Macros/Defining-New-Syntax/"},
+    {"id": "Lean___Parser___Syntax___sepBy",
      "data": null,
      "address": "/Notations-and-Macros/Defining-New-Syntax/"},
     {"id": "Lean___Parser___Syntax___sepBy-next-next",
-     "data": null,
-     "address": "/Notations-and-Macros/Defining-New-Syntax/"},
-    {"id": "Lean___Parser___Syntax___sepBy-next",
      "data": null,
      "address": "/Notations-and-Macros/Defining-New-Syntax/"}],
    "Lean.Parser.Syntax.paren":
@@ -14211,10 +14296,10 @@ pre.toml {
      "data": null,
      "address": "/Source-Files-and-Modules/"}],
    "Lean.Parser.Module.header":
-   [{"id": "Lean___Parser___Module___header-next-next",
+   [{"id": "Lean___Parser___Module___header-next",
      "data": null,
      "address": "/Source-Files-and-Modules/"},
-    {"id": "Lean___Parser___Module___header-next",
+    {"id": "Lean___Parser___Module___header-next-next",
      "data": null,
      "address": "/Source-Files-and-Modules/"}],
    "Lean.Parser.Command.where":
@@ -14315,13 +14400,13 @@ pre.toml {
    [{"id": "Lean___Parser___Command___mixfix-next",
      "data": null,
      "address": "/Notations-and-Macros/Custom-Operators/"},
-    {"id": "Lean___Parser___Command___mixfix-next-next-next-next",
-     "data": null,
-     "address": "/Notations-and-Macros/Custom-Operators/"},
     {"id": "Lean___Parser___Command___mixfix-next-next",
      "data": null,
      "address": "/Notations-and-Macros/Custom-Operators/"},
     {"id": "Lean___Parser___Command___mixfix",
+     "data": null,
+     "address": "/Notations-and-Macros/Custom-Operators/"},
+    {"id": "Lean___Parser___Command___mixfix-next-next-next-next",
      "data": null,
      "address": "/Notations-and-Macros/Custom-Operators/"},
     {"id": "Lean___Parser___Command___mixfix-next-next-next",
@@ -14390,10 +14475,10 @@ pre.toml {
      "data": null,
      "address": "/Attributes/"}],
    "Lean.Parser.Command.end":
-   [{"id": "Lean___Parser___Command___end-next",
+   [{"id": "Lean___Parser___Command___end",
      "data": null,
      "address": "/Namespaces-and-Sections/"},
-    {"id": "Lean___Parser___Command___end",
+    {"id": "Lean___Parser___Command___end-next",
      "data": null,
      "address": "/Namespaces-and-Sections/"}],
    "Lean.Parser.Command.elab_rules":
@@ -14409,48 +14494,15 @@ pre.toml {
      "data": null,
      "address": "/Type-Classes/Deriving-Instances/"}],
    "Lean.Parser.Command.declaration":
-   [{"id": "Lean___Parser___Command___declaration",
-     "data": null,
-     "address": "/The Type System/Inductive Types/"},
-    {"id": "Lean___Parser___Command___declaration-next-next-next-next-next",
-     "data": null,
-     "address": "/Definitions/Definitions/"},
-    {"id":
-     "Lean___Parser___Command___declaration-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/Definitions/Example-Declarations/"},
-    {"id": "Lean___Parser___Command___declaration-next-next-next-next",
-     "data": null,
-     "address": "/Definitions/Definitions/"},
-    {"id":
-     "Lean___Parser___Command___declaration-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/Definitions/Theorems/"},
-    {"id":
-     "Lean___Parser___Command___declaration-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/Definitions/Example-Declarations/"},
-    {"id":
-     "Lean___Parser___Command___declaration-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/Definitions/Definitions/"},
-    {"id":
+   [{"id":
      "Lean___Parser___Command___declaration-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/Type-Classes/Class-Declarations/"},
-    {"id": "Lean___Parser___Command___declaration-next",
+    {"id": "Lean___Parser___Command___declaration",
      "data": null,
      "address": "/The Type System/Inductive Types/"},
     {"id":
-     "Lean___Parser___Command___declaration-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/Type-Classes/Class-Declarations/"},
-    {"id":
      "Lean___Parser___Command___declaration-next-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/Definitions/Definitions/"},
-    {"id":
-     "Lean___Parser___Command___declaration-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/Definitions/Definitions/"},
     {"id":
@@ -14458,22 +14510,55 @@ pre.toml {
      "data": null,
      "address": "/Definitions/Example-Declarations/"},
     {"id":
+     "Lean___Parser___Command___declaration-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/Definitions/Definitions/"},
+    {"id":
      "Lean___Parser___Command___declaration-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/Definitions/Theorems/"},
-    {"id":
-     "Lean___Parser___Command___declaration-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+    {"id": "Lean___Parser___Command___declaration-next",
      "data": null,
-     "address": "/Definitions/Theorems/"},
+     "address": "/The Type System/Inductive Types/"},
+    {"id": "Lean___Parser___Command___declaration-next-next-next",
+     "data": null,
+     "address": "/Definitions/Definitions/"},
     {"id":
      "Lean___Parser___Command___declaration-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/Definitions/Definitions/"},
+    {"id":
+     "Lean___Parser___Command___declaration-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/Definitions/Theorems/"},
+    {"id": "Lean___Parser___Command___declaration-next-next-next-next-next",
      "data": null,
      "address": "/Definitions/Definitions/"},
     {"id":
      "Lean___Parser___Command___declaration-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/Definitions/Definitions/"},
-    {"id": "Lean___Parser___Command___declaration-next-next-next",
+    {"id":
+     "Lean___Parser___Command___declaration-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/Type-Classes/Class-Declarations/"},
+    {"id":
+     "Lean___Parser___Command___declaration-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/Definitions/Example-Declarations/"},
+    {"id":
+     "Lean___Parser___Command___declaration-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/Definitions/Example-Declarations/"},
+    {"id":
+     "Lean___Parser___Command___declaration-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/Definitions/Theorems/"},
+    {"id": "Lean___Parser___Command___declaration-next-next-next-next",
+     "data": null,
+     "address": "/Definitions/Definitions/"},
+    {"id":
+     "Lean___Parser___Command___declaration-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/Definitions/Definitions/"}],
    "Lean.Parser.Command.declSig":
@@ -14485,10 +14570,10 @@ pre.toml {
      "data": null,
      "address": "/Definitions/Modifiers/"}],
    "Lean.Parser.Command.declId":
-   [{"id": "Lean___Parser___Command___declId-next",
+   [{"id": "Lean___Parser___Command___declId",
      "data": null,
      "address": "/Definitions/Headers-and-Signatures/"},
-    {"id": "Lean___Parser___Command___declId",
+    {"id": "Lean___Parser___Command___declId-next",
      "data": null,
      "address": "/Definitions/Headers-and-Signatures/"}],
    "Lean.Parser.Command.check_failure":
@@ -14512,24 +14597,39 @@ pre.toml {
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"}],
    "Lean.Parser.Attr.simple":
-   [{"id":
-     "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+   [{"id": "Lean___Parser___Attr___simple-next-next-next-next-next",
+     "data": null,
+     "address": "/Terms/Pattern-Matching/"},
+    {"id":
+     "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/Tactic-Proofs/Tactic-Reference/"},
+    {"id": "Lean___Parser___Attr___simple-next-next-next-next",
+     "data": null,
+     "address": "/Terms/Function-Application/"},
+    {"id":
+     "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/Build-Tools-and-Distribution/Lake/"},
     {"id":
-     "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next-next",
+     "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/Notations-and-Macros/Extending-Lean___s-Output/"},
+    {"id":
+     "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/Notations-and-Macros/Elaborators/"},
     {"id": "Lean___Parser___Attr___simple-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
     {"id":
-     "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
-     "address": "/Build-Tools-and-Distribution/Lake/"},
-    {"id": "Lean___Parser___Attr___simple-next-next-next-next-next",
+     "address": "/Notations-and-Macros/Extending-Lean___s-Output/"},
+    {"id":
+     "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next-next",
      "data": null,
-     "address": "/Terms/Pattern-Matching/"},
+     "address": "/Notations-and-Macros/Elaborators/"},
     {"id": "Lean___Parser___Attr___simple",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
@@ -14537,49 +14637,34 @@ pre.toml {
      "data": null,
      "address": "/Tactic-Proofs/Tactic-Reference/"},
     {"id":
-     "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next",
+     "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
-     "address": "/Tactic-Proofs/Tactic-Reference/"},
-    {"id":
-     "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/Notations-and-Macros/Extending-Lean___s-Output/"},
-    {"id":
-     "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/Tactic-Proofs/Tactic-Reference/"},
+     "address": "/Notations-and-Macros/Elaborators/"},
     {"id": "Lean___Parser___Attr___simple-next-next-next-next-next-next-next",
      "data": null,
      "address": "/Tactic-Proofs/Tactic-Reference/"},
-    {"id":
-     "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/Notations-and-Macros/Extending-Lean___s-Output/"},
     {"id": "Lean___Parser___Attr___simple-next-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "Lean___Parser___Attr___simple-next-next-next-next",
-     "data": null,
-     "address": "/Terms/Function-Application/"},
-    {"id":
-     "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/Notations-and-Macros/Elaborators/"},
     {"id": "Lean___Parser___Attr___simple-next-next-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
     {"id":
-     "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next-next-next",
+     "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next",
      "data": null,
-     "address": "/Notations-and-Macros/Elaborators/"}],
+     "address": "/Tactic-Proofs/Tactic-Reference/"},
+    {"id":
+     "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/Build-Tools-and-Distribution/Lake/"}],
    "Lean.Parser.Attr.simp":
-   [{"id": "Lean___Parser___Attr___simp-next-next",
+   [{"id": "Lean___Parser___Attr___simp-next",
      "data": null,
      "address": "/The-Simplifier/Simp-sets/"},
     {"id": "Lean___Parser___Attr___simp-next-next-next",
      "data": null,
      "address": "/The-Simplifier/Simp-sets/"},
-    {"id": "Lean___Parser___Attr___simp-next",
+    {"id": "Lean___Parser___Attr___simp-next-next",
      "data": null,
      "address": "/The-Simplifier/Simp-sets/"},
     {"id": "Lean___Parser___Attr___simp",
@@ -14637,10 +14722,10 @@ pre.toml {
    [{"id": "Lake___DSL___packageCommand-next",
      "data": null,
      "address": "/Build-Tools-and-Distribution/Lake/"},
-    {"id": "Lake___DSL___packageCommand-next-next",
+    {"id": "Lake___DSL___packageCommand",
      "data": null,
      "address": "/Build-Tools-and-Distribution/Lake/"},
-    {"id": "Lake___DSL___packageCommand",
+    {"id": "Lake___DSL___packageCommand-next-next",
      "data": null,
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "Lake.DSL.moduleFacetDecl":
@@ -14666,13 +14751,13 @@ pre.toml {
      "data": null,
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "Lake.DSL.leanExeCommand":
-   [{"id": "Lake___DSL___leanExeCommand",
+   [{"id": "Lake___DSL___leanExeCommand-next",
+     "data": null,
+     "address": "/Build-Tools-and-Distribution/Lake/"},
+    {"id": "Lake___DSL___leanExeCommand",
      "data": null,
      "address": "/Build-Tools-and-Distribution/Lake/"},
     {"id": "Lake___DSL___leanExeCommand-next-next",
-     "data": null,
-     "address": "/Build-Tools-and-Distribution/Lake/"},
-    {"id": "Lake___DSL___leanExeCommand-next",
      "data": null,
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "Lake.DSL.getConfig":
@@ -14754,12 +14839,12 @@ pre.toml {
      "data": null,
      "address": "/Tactic-Proofs/Options/"}],
    "tactic.simp.trace":
-   [{"id": "tactic___simp___trace",
+   [{"id": "tactic___simp___trace-next",
      "data": null,
-     "address": "/Tactic-Proofs/Options/"},
-    {"id": "tactic___simp___trace-next",
+     "address": "/The-Simplifier/Configuring-Simplification/"},
+    {"id": "tactic___simp___trace",
      "data": null,
-     "address": "/The-Simplifier/Configuring-Simplification/"}],
+     "address": "/Tactic-Proofs/Options/"}],
    "tactic.hygienic":
    [{"id": "tactic___hygienic",
      "data": null,
@@ -15106,42 +15191,42 @@ pre.toml {
      "data": null,
      "address": "/Basic-Propositions/Logical-Connectives/"}],
    "[anonymous]":
-   [{"id": "IO___Process___SpawnArgs___mk",
-     "data": null,
-     "address": "/IO/Processes/"},
-    {"id": "LawfulMonad___mk",
-     "data": null,
-     "address": "/Functors___-Monads-and--do--Notation/Laws/"},
-    {"id": "LawfulApplicative___mk",
-     "data": null,
-     "address": "/Functors___-Monads-and--do--Notation/Laws/"},
-    {"id": "GetElem______mk",
-     "data": null,
-     "address": "/Type-Classes/Basic-Classes/"},
-    {"id": "Lake___LeanExeConfig___mk",
+   [{"id": "Lake___LeanExeConfig___mk",
      "data": null,
      "address": "/Build-Tools-and-Distribution/Lake/"},
-    {"id": "Lake___LeanLibConfig___mk",
-     "data": null,
-     "address": "/Build-Tools-and-Distribution/Lake/"},
-    {"id": "Lean___Order___CCPO___mk",
-     "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "Applicative___mk",
-     "data": null,
-     "address": "/Functors___-Monads-and--do--Notation/"},
-    {"id": "EquivBEq___mk",
-     "data": null,
-     "address": "/Type-Classes/Basic-Classes/"},
     {"id": "LawfulBEq___mk",
      "data": null,
      "address": "/Type-Classes/Basic-Classes/"},
+    {"id": "EquivBEq___mk",
+     "data": null,
+     "address": "/Type-Classes/Basic-Classes/"},
+    {"id": "IO___Process___SpawnArgs___mk",
+     "data": null,
+     "address": "/IO/Processes/"},
+    {"id": "GetElem______mk",
+     "data": null,
+     "address": "/Type-Classes/Basic-Classes/"},
+    {"id": "Lake___LeanLibConfig___mk",
+     "data": null,
+     "address": "/Build-Tools-and-Distribution/Lake/"},
+    {"id": "LawfulMonad___mk",
+     "data": null,
+     "address": "/Functors___-Monads-and--do--Notation/Laws/"},
+    {"id": "Alternative___mk",
+     "data": null,
+     "address": "/Functors___-Monads-and--do--Notation/"},
     {"id": "Monad___mk",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/"},
-    {"id": "Alternative___mk",
+    {"id": "LawfulApplicative___mk",
      "data": null,
-     "address": "/Functors___-Monads-and--do--Notation/"}],
+     "address": "/Functors___-Monads-and--do--Notation/Laws/"},
+    {"id": "Applicative___mk",
+     "data": null,
+     "address": "/Functors___-Monads-and--do--Notation/"},
+    {"id": "Lean___Order___CCPO___mk",
+     "data": null,
+     "address": "/Definitions/Recursive-Definitions/"}],
    "Zero.zero":
    [{"id": "Zero___mk",
      "data": null,
@@ -20144,10 +20229,10 @@ pre.toml {
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Varieties-of-Monads/"}],
    "MonadState.get":
-   [{"id": "MonadState___mk",
+   [{"id": "MonadState___get",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Varieties-of-Monads/"},
-    {"id": "MonadState___get",
+    {"id": "MonadState___mk",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Varieties-of-Monads/"}],
    "MonadState":
@@ -25788,8 +25873,8 @@ pre.toml {
      "data": null,
      "address": "/Basic-Types/Arrays/"}],
    "Array.toList":
-   [{"id": "Array___mk", "data": null, "address": "/Basic-Types/Arrays/"},
-    {"id": "Array___toList", "data": null, "address": "/Basic-Types/Arrays/"}],
+   [{"id": "Array___toList", "data": null, "address": "/Basic-Types/Arrays/"},
+    {"id": "Array___mk", "data": null, "address": "/Basic-Types/Arrays/"}],
    "Array.takeWhile":
    [{"id": "Array___takeWhile",
      "data": null,
@@ -27841,7 +27926,7 @@ pre.toml {
       "category": null},
      "address": "/Basic-Types/Booleans/"}],
    "«term[_]» [{\"string\": \"[\", \"kind\": \"keyword\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \"]\", \"kind\": \"keyword\"}]":
-   [{"id": "_FLQQ_term_LSQ___RSQ__FLQQ_",
+   [{"id": "_FLQQ_term_LSQ___RSQ__FLQQ_-next",
      "data":
      {"kind": "«term[_]»",
       "forms":
@@ -27849,8 +27934,8 @@ pre.toml {
        {"string": "…", "kind": "meta"},
        {"string": "]", "kind": "keyword"}],
       "category": null},
-     "address": "/Terms/Literals/"},
-    {"id": "_FLQQ_term_LSQ___RSQ__FLQQ_-next",
+     "address": "/Basic-Types/Linked-Lists/"},
+    {"id": "_FLQQ_term_LSQ___RSQ__FLQQ_",
      "data":
      {"kind": "«term[_]»",
       "forms":
@@ -27858,7 +27943,7 @@ pre.toml {
        {"string": "…", "kind": "meta"},
        {"string": "]", "kind": "keyword"}],
       "category": null},
-     "address": "/Basic-Types/Linked-Lists/"}],
+     "address": "/Terms/Literals/"}],
    "«termExists_,_» [{\"string\": \"exists\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \",\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"}]":
    [{"id": "_FLQQ_termExists______FLQQ_-next",
      "data":
@@ -27893,7 +27978,7 @@ pre.toml {
       "category": null},
      "address": "/Basic-Propositions/Quantifiers/"}],
    "«term#[_,]» [{\"string\": \"#[\", \"kind\": \"keyword\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \"]\", \"kind\": \"keyword\"}]":
-   [{"id": "_FLQQ_term____LSQ______RSQ__FLQQ_",
+   [{"id": "_FLQQ_term____LSQ______RSQ__FLQQ_-next",
      "data":
      {"kind": "«term#[_,]»",
       "forms":
@@ -27901,8 +27986,8 @@ pre.toml {
        {"string": "…", "kind": "meta"},
        {"string": "]", "kind": "keyword"}],
       "category": null},
-     "address": "/Terms/Literals/"},
-    {"id": "_FLQQ_term____LSQ______RSQ__FLQQ_-next",
+     "address": "/Basic-Types/Arrays/"},
+    {"id": "_FLQQ_term____LSQ______RSQ__FLQQ_",
      "data":
      {"kind": "«term#[_,]»",
       "forms":
@@ -27910,7 +27995,7 @@ pre.toml {
        {"string": "…", "kind": "meta"},
        {"string": "]", "kind": "keyword"}],
       "category": null},
-     "address": "/Basic-Types/Arrays/"}],
+     "address": "/Terms/Literals/"}],
    "«stx_<|>_» [{\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"<|>\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"}]":
    [{"id": "_FLQQ_stx__LT_____GT___FLQQ_",
      "data":
@@ -28159,18 +28244,18 @@ pre.toml {
       "category": null},
      "address": "/Notations-and-Macros/Precedence/"}],
    "num.antiquot [{\"string\": \"…\", \"kind\": \"meta\"}]":
-   [{"id": "num___antiquot",
+   [{"id": "num___antiquot-next",
      "data":
      {"kind": "num.antiquot",
       "forms": [{"string": "…", "kind": "meta"}],
       "category": null},
-     "address": "/Type-Classes/Instance-Declarations/"},
-    {"id": "num___antiquot-next",
+     "address": "/Notations-and-Macros/Precedence/"},
+    {"id": "num___antiquot",
      "data":
      {"kind": "num.antiquot",
       "forms": [{"string": "…", "kind": "meta"}],
       "category": null},
-     "address": "/Notations-and-Macros/Precedence/"}],
+     "address": "/Type-Classes/Instance-Declarations/"}],
    "ident.antiquot [{\"string\": \"…\", \"kind\": \"meta\"}]":
    [{"id": "ident___antiquot",
      "data":
@@ -28260,18 +28345,18 @@ pre.toml {
       "category": null},
      "address": "/Basic-Types/Maps-and-Sets/"}],
    "Manual.FreeSyntax.more []":
-   [{"id": "Manual___FreeSyntax___more-next",
+   [{"id": "Manual___FreeSyntax___more-next-next-next",
+     "data": {"kind": "Manual.FreeSyntax.more", "forms": [], "category": null},
+     "address": "/Notations-and-Macros/Macros/"},
+    {"id": "Manual___FreeSyntax___more-next-next",
+     "data": {"kind": "Manual.FreeSyntax.more", "forms": [], "category": null},
+     "address": "/Notations-and-Macros/Macros/"},
+    {"id": "Manual___FreeSyntax___more-next",
      "data": {"kind": "Manual.FreeSyntax.more", "forms": [], "category": null},
      "address": "/Terms/Function-Application/"},
     {"id": "Manual___FreeSyntax___more",
      "data": {"kind": "Manual.FreeSyntax.more", "forms": [], "category": null},
-     "address": "/Terms/Function-Application/"},
-    {"id": "Manual___FreeSyntax___more-next-next",
-     "data": {"kind": "Manual.FreeSyntax.more", "forms": [], "category": null},
-     "address": "/Notations-and-Macros/Macros/"},
-    {"id": "Manual___FreeSyntax___more-next-next-next",
-     "data": {"kind": "Manual.FreeSyntax.more", "forms": [], "category": null},
-     "address": "/Notations-and-Macros/Macros/"}],
+     "address": "/Terms/Function-Application/"}],
    "Manual.FreeSyntax.embed [{\"string\": \"fun \", \"kind\": \"keyword\"},\n {\"string\": \"(\", \"kind\": \"keyword\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \": \", \"kind\": \"keyword\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \")\", \"kind\": \"keyword\"},\n {\"string\": \" =>\", \"kind\": \"keyword\"},\n {\"string\": \"…\", \"kind\": \"meta\"}]":
    [{"id": "Manual___FreeSyntax___embed",
      "data":
@@ -28289,15 +28374,15 @@ pre.toml {
       "category": null},
      "address": "/Terms/Functions/"}],
    "Manual.FreeSyntax.done []":
-   [{"id": "Manual___FreeSyntax___done-next-next",
+   [{"id": "Manual___FreeSyntax___done",
+     "data": {"kind": "Manual.FreeSyntax.done", "forms": [], "category": null},
+     "address": "/Notations-and-Macros/Macros/"},
+    {"id": "Manual___FreeSyntax___done-next-next",
      "data": {"kind": "Manual.FreeSyntax.done", "forms": [], "category": null},
      "address": "/Build-Tools-and-Distribution/Lake/"},
     {"id": "Manual___FreeSyntax___done-next",
      "data": {"kind": "Manual.FreeSyntax.done", "forms": [], "category": null},
-     "address": "/Build-Tools-and-Distribution/Lake/"},
-    {"id": "Manual___FreeSyntax___done",
-     "data": {"kind": "Manual.FreeSyntax.done", "forms": [], "category": null},
-     "address": "/Notations-and-Macros/Macros/"}],
+     "address": "/Build-Tools-and-Distribution/Lake/"}],
    "List.«term_~_» [{\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"~\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"}]":
    [{"id": "List____FLQQ_term______FLQQ_",
      "data":
@@ -29045,7 +29130,20 @@ pre.toml {
       "category": null},
      "address": "/Terms/Holes/"}],
    "Lean.Parser.Term.fun [{\"string\": \"fun\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"=>\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"}]":
-   [{"id": "Lean___Parser___Term___fun",
+   [{"id": "Lean___Parser___Term___fun-next-next-next-next",
+     "data":
+     {"kind": "Lean.Parser.Term.fun",
+      "forms":
+      [{"string": "fun", "kind": "keyword"},
+       {"string": " ", "kind": "ws"},
+       {"string": "…", "kind": "meta"},
+       {"string": " ", "kind": "ws"},
+       {"string": "=>", "kind": "keyword"},
+       {"string": " ", "kind": "ws"},
+       {"string": "…", "kind": "meta"}],
+      "category": null},
+     "address": "/Terms/Functions/"},
+    {"id": "Lean___Parser___Term___fun",
      "data":
      {"kind": "Lean.Parser.Term.fun",
       "forms":
@@ -29059,19 +29157,6 @@ pre.toml {
       "category": null},
      "address": "/Terms/Functions/"},
     {"id": "Lean___Parser___Term___fun-next-next",
-     "data":
-     {"kind": "Lean.Parser.Term.fun",
-      "forms":
-      [{"string": "fun", "kind": "keyword"},
-       {"string": " ", "kind": "ws"},
-       {"string": "…", "kind": "meta"},
-       {"string": " ", "kind": "ws"},
-       {"string": "=>", "kind": "keyword"},
-       {"string": " ", "kind": "ws"},
-       {"string": "…", "kind": "meta"}],
-      "category": null},
-     "address": "/Terms/Functions/"},
-    {"id": "Lean___Parser___Term___fun-next-next-next-next",
      "data":
      {"kind": "Lean.Parser.Term.fun",
       "forms":
@@ -29565,7 +29650,7 @@ pre.toml {
       "category": null},
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"}],
    "Lean.Parser.Term.doReassign [{\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \"(\", \"kind\": \"meta\"},\n {\"string\": \":\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \")?\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \":=\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"}]":
-   [{"id": "Lean___Parser___Term___doReassign-next",
+   [{"id": "Lean___Parser___Term___doReassign",
      "data":
      {"kind": "Lean.Parser.Term.doReassign",
       "forms":
@@ -29581,7 +29666,7 @@ pre.toml {
        {"string": "…", "kind": "meta"}],
       "category": null},
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
-    {"id": "Lean___Parser___Term___doReassign",
+    {"id": "Lean___Parser___Term___doReassign-next",
      "data":
      {"kind": "Lean.Parser.Term.doReassign",
       "forms":
@@ -29676,7 +29761,7 @@ pre.toml {
       "category": null},
      "address": "/Terms/Function-Types/"}],
    "Lean.Parser.Term.depArrow [{\"string\": \"(\", \"kind\": \"keyword\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \":\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \")\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"→\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"}]":
-   [{"id": "Lean___Parser___Term___depArrow",
+   [{"id": "Lean___Parser___Term___depArrow-next",
      "data":
      {"kind": "Lean.Parser.Term.depArrow",
       "forms":
@@ -29693,7 +29778,7 @@ pre.toml {
        {"string": "…", "kind": "meta"}],
       "category": null},
      "address": "/Terms/Function-Types/"},
-    {"id": "Lean___Parser___Term___depArrow-next",
+    {"id": "Lean___Parser___Term___depArrow",
      "data":
      {"kind": "Lean.Parser.Term.depArrow",
       "forms":
@@ -29930,13 +30015,13 @@ pre.toml {
       "category": null},
      "address": "/Tactic-Proofs/The-Tactic-Language/"}],
    "Lean.Parser.Tactic.Conv.enterArg [{\"string\": \"…\", \"kind\": \"meta\"}]":
-   [{"id": "Lean___Parser___Tactic___Conv___enterArg-next",
+   [{"id": "Lean___Parser___Tactic___Conv___enterArg-next-next-next",
      "data":
      {"kind": "Lean.Parser.Tactic.Conv.enterArg",
       "forms": [{"string": "…", "kind": "meta"}],
       "category": null},
      "address": "/Tactic-Proofs/Targeted-Rewriting-with--conv/"},
-    {"id": "Lean___Parser___Tactic___Conv___enterArg-next-next-next",
+    {"id": "Lean___Parser___Tactic___Conv___enterArg-next",
      "data":
      {"kind": "Lean.Parser.Tactic.Conv.enterArg",
       "forms": [{"string": "…", "kind": "meta"}],
@@ -32513,91 +32598,6 @@ if(name) {
         document.querySelector("#message").innerHTML = "<p>This page expects a 'name' query parameter, along with documentation domains.</p>";
     });
 }
-</script>
-    <script>
-      
-window.addEventListener("load", () => {
-  const innerProps = {
-    onShow(inst) { console.log(inst); },
-    onHide(inst) { console.log(inst); },
-    content(tgt) {
-      const content = document.createElement("span");
-      const state = tgt.querySelector(".hover-info").cloneNode(true);
-      state.style.display = "block";
-      content.appendChild(state);
-      /* Render docstrings - TODO server-side */
-      if ('undefined' !== typeof marked) {
-          for (const d of content.querySelectorAll("code.docstring, pre.docstring")) {
-              const str = d.innerText;
-              const html = marked.parse(str);
-              const rendered = document.createElement("div");
-              rendered.classList.add("docstring");
-              rendered.innerHTML = html;
-              d.parentNode.replaceChild(rendered, d);
-          }
-      }
-      content.style.display = "block";
-      content.className = "hl lean popup";
-      return content;
-    }
-  };
-  const outerProps = {
-    allowHtml: true,
-    theme: "lean",
-    placement: 'bottom-start',
-    maxWidth: "none",
-    delay: 100,
-    moveTransition: 'transform 0.2s ease-out',
-    onTrigger(inst, event) {
-      const ref = event.currentTarget;
-      const block = ref.closest('.hl.lean');
-      block.querySelectorAll('.active').forEach((i) => i.classList.remove('active'));
-      ref.classList.add("active");
-    },
-    onUntrigger(inst, event) {
-      const ref = event.currentTarget;
-      const block = ref.closest('.hl.lean');
-      block.querySelectorAll('.active').forEach((i) => i.classList.remove('active'));
-    }
-  };
-  tippy.createSingleton(tippy('pre.grammar.hl.lean .nonterminal.documented, pre.grammar.hl.lean .from-nonterminal.documented, pre.grammar.hl.lean .local-name.documented', innerProps), outerProps);
-});
-</script>
-    <script>
-      
-window.addEventListener("load", () => {
-  tippy('.keyword-of.hl.lean', {
-    allowHtml: true,
-    /* DEBUG -- remove the space: * /
-    onHide(any) { return false; },
-    trigger: "click",
-    // */
-    maxWidth: "none",
-
-    theme: "lean",
-    placement: 'bottom-start',
-    content (tgt) {
-      const content = document.createElement("span");
-      const state = tgt.querySelector(".hover-info").cloneNode(true);
-      state.style.display = "block";
-      content.appendChild(state);
-      /* Render docstrings - TODO server-side */
-      if ('undefined' !== typeof marked) {
-          for (const d of content.querySelectorAll("code.docstring, pre.docstring")) {
-              const str = d.innerText;
-              const html = marked.parse(str);
-              const rendered = document.createElement("div");
-              rendered.classList.add("docstring");
-              rendered.innerHTML = html;
-              d.parentNode.replaceChild(rendered, d);
-          }
-      }
-      content.style.display = "block";
-      content.className = "hl lean popup";
-      return content;
-    }
-  });
-});
 </script>
     <script>
       
