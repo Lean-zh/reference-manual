@@ -200,9 +200,6 @@ inductive RTree (α : Type u) : Type u where
 ```lean (show := false)
 variable {n : Nat}
 ```
-This declaration of arbitrarily-branching rose trees tracks the depth of the tree using an index.
-The constructor `DRTree.node` has an {tech}[automatic implicit parameter] {lean}`n` that represents the depths of all sub-trees.
-However, local variables such as constructor parameters are not permitted as arguments to nested occurrences:
 
 这种定义方式用于通过一个索引追踪树的深度。构造子 `DRTree.node` 有一个 {tech key := "automatic implicit parameter"}[自动隐式参数] {lean}`n`，代表所有子树的深度。
 然而，像构造子参数这样本地变量，不允许作为嵌套递归出现的参数：

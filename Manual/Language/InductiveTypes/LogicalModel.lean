@@ -6,6 +6,8 @@ Author: David Thrane Christiansen
 
 import VersoManual
 import Manual.Meta
+import Manual.ZhDocString.Language.InductiveTypes.LogicalModel
+import Manual.ZhDocString.ZhDocString
 
 open Verso.Genre Manual
 open Verso.Genre.Manual.InlineLean
@@ -711,7 +713,7 @@ To define a subsingleton that can inhabit {lean}`Prop` or a {lean}`Type`, set th
 Lean 的标准库定义了 {name}`PUnit` 和 {name}`PEmpty`。
 若要定义既可属于 {lean}`Prop` 也可属于 {lean}`Type` 的子单元类型，可将选项 {option}`bootstrap.inductiveCheckResultingUniverse` 设为 {lean}`false`。
 
-{optionDocs bootstrap.inductiveCheckResultingUniverse}
+{zhOptionDocs bootstrap.inductiveCheckResultingUniverse ZhDoc.Option.bootstrap.inductiveCheckResultingUniverse}
 
 /-
 ::::keepEnv
@@ -792,4 +794,4 @@ This is captured in the {name}`SizeOf` class.
 对于{tech key := "well-founded recursion"}[良构递归]，通常还需要一个通用意义上的“大小”概念。
 这正是 {name}`SizeOf` 类型类所提供的。
 
-{docstring SizeOf}
+{zhdocstring SizeOf ZhDoc.SizeOf}
