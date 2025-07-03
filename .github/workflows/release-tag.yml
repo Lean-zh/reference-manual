@@ -1,6 +1,9 @@
 name: Deploy Tagged Version
 
 on:
+  # 手动trigger
+  workflow_dispatch:
+  # 自动trigger
   push:
     tags:
       - 'v*'  # Trigger on tags that start with 'v'
@@ -33,9 +36,9 @@ jobs:
           ./deploy/prep.sh
 
       - name: Install deps for figures (TeX)
-        uses: teatimeguest/setup-texlive-action@v3
+        uses: zauguin/install-texlive@v4
         with:
-          version: 2024
+          texlive_version: 2024
           packages: |
             scheme-small
             latex-bin
