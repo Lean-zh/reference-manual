@@ -10,7 +10,7 @@
 })()</script>
     <base href="./../"><meta charset="utf-8">
     <meta name="viewport" content="height=device-height, width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
-    <title>Source Files and Modules</title><link rel="stylesheet" href="book.css">
+    <title>源文件与模块</title><link rel="stylesheet" href="book.css">
     <script>
       const __versoSiteRoot = document.baseURI;</script>
     <script src="https://cdn.jsdelivr.net/npm/marked@11.1.1/marked.min.js" integrity="sha384-zbcZAIxlvJtNE3Dp5nxLXdXtXyxwOdnILY1TDPVmKFhl4r4nSUG1r8bcFXGVa4Te" crossorigin="anonymous"></script>
@@ -2145,37 +2145,35 @@ window.onload = () => {
             <div class="split-toc book">
               <div class="title">
                 <label for="--verso-manual-toc-----bookRoot" class="toggle-split-toc"><input type="checkbox" class="toggle-split-toc" id="--verso-manual-toc-----bookRoot" checked="checked"></label><span class="">Table of Contents</span></div>
-              <table><tr class="numbered"><td class="num">1.</td><td><a href="Introduction/#introduction">简介</a></td></tr><tr class="numbered"><td class="num">2.</td><td><a href="Elaboration and Compilation/#elaboration-and-compilation">繁释与编译</a></td></tr><tr class="numbered"><td class="num">3.</td><td><a href="Interacting-with-Lean/#interaction">Interacting with Lean</a></td></tr><tr class="numbered"><td class="num">4.</td><td><a href="The Type System/#type-system">类型系统</a></td></tr><tr class="current numbered"><td class="num">5.</td><td><a href="Source-Files-and-Modules/#files">Source Files and Modules</a></td></tr><tr class="numbered"><td class="num">6.</td><td><a href="Namespaces-and-Sections/#namespaces-sections">Namespaces and Sections</a></td></tr><tr class="numbered"><td class="num">7.</td><td><a href="Definitions/#definitions">Definitions</a></td></tr><tr class="numbered"><td class="num">8.</td><td><a href="Axioms/#axioms">Axioms</a></td></tr><tr class="numbered"><td class="num">9.</td><td><a href="Attributes/#attributes">Attributes</a></td></tr><tr class="numbered"><td class="num">10.</td><td><a href="Terms/#terms">Terms</a></td></tr><tr class="numbered"><td class="num">11.</td><td><a href="Type-Classes/#type-classes">Type Classes</a></td></tr><tr class="numbered"><td class="num">12.</td><td><a href="Coercions/#coercions">Coercions</a></td></tr><tr class="numbered"><td class="num">13.</td><td><a href="Tactic-Proofs/#tactics">Tactic Proofs</a></td></tr><tr class="numbered"><td class="num">14.</td><td><a href="Functors___-Monads-and--do--Notation/#monads-and-do">Functors, Monads and <code>do</code>-Notation</a></td></tr><tr class="numbered"><td class="num">15.</td><td><a href="IO/#io">IO</a></td></tr><tr class="numbered"><td class="num">16.</td><td><a href="The-Simplifier/#the-simplifier">The Simplifier</a></td></tr><tr class="numbered"><td class="num">17.</td><td><a href="Basic-Propositions/#basic-props">Basic Propositions</a></td></tr><tr class="numbered"><td class="num">18.</td><td><a href="Basic-Types/#basic-types">Basic Types</a></td></tr><tr class="numbered"><td class="num">19.</td><td><a href="Notations-and-Macros/#language-extension">Notations and Macros</a></td></tr><tr class="numbered"><td class="num">20.</td><td><a href="Run-Time-Code/#runtime">Run-Time Code</a></td></tr><tr class="numbered"><td class="num">21.</td><td><a href="Build-Tools-and-Distribution/#build-tools-and-distribution">Build Tools and Distribution</a></td></tr><tr class="unnumbered"><td class="num"><td><a href="releases/#release-notes">Release Notes</a></td></tr><tr class="unnumbered"><td class="num"><td><a href="the-index/#Lean-__________________--______">索引</a></td></tr></table></div>
+              <table><tr class="numbered"><td class="num">1.</td><td><a href="Introduction/#introduction">简介</a></td></tr><tr class="numbered"><td class="num">2.</td><td><a href="Elaboration and Compilation/#elaboration-and-compilation">繁释与编译</a></td></tr><tr class="numbered"><td class="num">3.</td><td><a href="Interacting-with-Lean/#interaction">Interacting with Lean</a></td></tr><tr class="numbered"><td class="num">4.</td><td><a href="The Type System/#type-system">类型系统</a></td></tr><tr class="current numbered"><td class="num">5.</td><td><a href="Source Files and Modules/#files">源文件与模块</a></td></tr><tr class="numbered"><td class="num">6.</td><td><a href="Namespaces-and-Sections/#namespaces-sections">Namespaces and Sections</a></td></tr><tr class="numbered"><td class="num">7.</td><td><a href="Definitions/#definitions">Definitions</a></td></tr><tr class="numbered"><td class="num">8.</td><td><a href="Axioms/#axioms">Axioms</a></td></tr><tr class="numbered"><td class="num">9.</td><td><a href="Attributes/#attributes">Attributes</a></td></tr><tr class="numbered"><td class="num">10.</td><td><a href="Terms/#terms">Terms</a></td></tr><tr class="numbered"><td class="num">11.</td><td><a href="Type-Classes/#type-classes">Type Classes</a></td></tr><tr class="numbered"><td class="num">12.</td><td><a href="Coercions/#coercions">Coercions</a></td></tr><tr class="numbered"><td class="num">13.</td><td><a href="Tactic-Proofs/#tactics">Tactic Proofs</a></td></tr><tr class="numbered"><td class="num">14.</td><td><a href="Functors___-Monads-and--do--Notation/#monads-and-do">Functors, Monads and <code>do</code>-Notation</a></td></tr><tr class="numbered"><td class="num">15.</td><td><a href="IO/#io">IO</a></td></tr><tr class="numbered"><td class="num">16.</td><td><a href="The-Simplifier/#the-simplifier">The Simplifier</a></td></tr><tr class="numbered"><td class="num">17.</td><td><a href="Basic-Propositions/#basic-props">Basic Propositions</a></td></tr><tr class="numbered"><td class="num">18.</td><td><a href="Basic-Types/#basic-types">Basic Types</a></td></tr><tr class="numbered"><td class="num">19.</td><td><a href="Notations-and-Macros/#language-extension">Notations and Macros</a></td></tr><tr class="numbered"><td class="num">20.</td><td><a href="Run-Time-Code/#runtime">Run-Time Code</a></td></tr><tr class="numbered"><td class="num">21.</td><td><a href="Build-Tools-and-Distribution/#build-tools-and-distribution">Build Tools and Distribution</a></td></tr><tr class="unnumbered"><td class="num"><td><a href="releases/#release-notes">Release Notes</a></td></tr><tr class="unnumbered"><td class="num"><td><a href="the-index/#Lean-__________________--______">索引</a></td></tr></table></div>
             <div class="split-toc">
               <div class="title">
-                <label for="--verso-manual-toc-files" class="toggle-split-toc"><input type="checkbox" class="toggle-split-toc" id="--verso-manual-toc-files" checked="checked"></label><span class="number">5.</span> <span class="current"><a href="Source-Files-and-Modules/#files">Source Files and Modules</a></span></div>
+                <label for="--verso-manual-toc-files" class="toggle-split-toc"><input type="checkbox" class="toggle-split-toc" id="--verso-manual-toc-files" checked="checked"></label><span class="number">5.</span> <span class="current"><a href="Source Files and Modules/#files">源文件与模块</a></span></div>
               <ol>
                 <li>
-                  <span class="header head-1"><span class="level-num">1.</span> <a href="Source-Files-and-Modules/#module-encoding">Encoding and Representation</a></span></li>
+                  <span class="header head-1"><span class="level-num">1.</span> <a href="Source Files and Modules/#module-encoding">编码与表示</a></span></li>
                 <li>
-                  <span class="header head-1"><span class="level-num">2.</span> <a href="Source-Files-and-Modules/#module-syntax">Concrete Syntax</a></span></li>
+                  <span class="header head-1"><span class="level-num">2.</span> <a href="Source Files and Modules/#module-syntax">具体语法</a></span></li>
                 <li>
-                  <span class="header head-2"><span class="level-num">2.1.</span> <a href="Source-Files-and-Modules/#whitespace">Whitespace</a></span></li>
+                  <span class="header head-2"><span class="level-num">2.1.</span> <a href="Source Files and Modules/#whitespace">空白符</a></span></li>
                 <li>
-                  <span class="header head-2"><span class="level-num">2.2.</span> <a href="Source-Files-and-Modules/#comments">Comments</a></span></li>
+                  <span class="header head-2"><span class="level-num">2.2.</span> <a href="Source Files and Modules/#comments">注释</a></span></li>
                 <li>
-                  <span class="header head-2"><span class="level-num">2.3.</span> <a href="Source-Files-and-Modules/#keywords-and-identifiers">Keywords and Identifiers</a></span></li>
+                  <span class="header head-2"><span class="level-num">2.3.</span> <a href="Source Files and Modules/#keywords-and-identifiers">关键字与标识符</a></span></li>
                 <li>
-                  <span class="header head-1"><span class="level-num">3.</span> <a href="Source-Files-and-Modules/#module-structure">Structure</a></span></li>
+                  <span class="header head-1"><span class="level-num">3.</span> <a href="Source Files and Modules/#module-structure">结构</a></span></li>
                 <li>
-                  <span class="header head-2"><span class="level-num">3.1.</span> <a href="Source-Files-and-Modules/#module-headers">Module Headers</a></span></li>
+                  <span class="header head-2"><span class="level-num">3.1.</span> <a href="Source Files and Modules/#module-headers">模块头</a></span></li>
                 <li>
-                  <a href="Source-Files-and-Modules/#Lean___Parser___Module___header-next-next"><span class="syntax"><span class="keyword">prelude</span><span class="ws"> </span><span class="meta">…</span></span></a></li>
+                  <a href="Source Files and Modules/#Lean___Parser___Module___header-next-next"><span class="syntax"><span class="keyword">prelude</span><span class="ws"> </span><span class="meta">…</span></span></a></li>
                 <li>
-                  <a href="Source-Files-and-Modules/#Lean___Parser___Module___prelude-next"><span class="syntax"><span class="keyword">prelude</span></span></a></li>
+                  <a href="Source Files and Modules/#Lean___Parser___Module___prelude-next"><span class="syntax"><span class="keyword">prelude</span></span></a></li>
                 <li>
-                  <a href="Source-Files-and-Modules/#Lean___Parser___Module___import-next"><span class="syntax"><span class="keyword">import</span><span class="ws"> </span><span class="meta">…</span></span></a></li>
+                  <a href="Source Files and Modules/#Lean___Parser___Module___import-next"><span class="syntax"><span class="keyword">import</span><span class="ws"> </span><span class="meta">…</span></span></a></li>
                 <li>
-                  <span class="header head-2"><span class="level-num">3.2.</span> <a href="Source-Files-and-Modules/#commands">Commands</a></span></li>
+                  <span class="header head-1"><span class="level-num">4.</span> <a href="Source Files and Modules/#module-contents">繁释后的模块</a></span></li>
                 <li>
-                  <span class="header head-1"><span class="level-num">4.</span> <a href="Source-Files-and-Modules/#module-contents">Elaborated Modules</a></span></li>
-                <li>
-                  <span class="header head-1"><span class="level-num">5.</span> <a href="Source-Files-and-Modules/#code-distribution">Packages, Libraries, and Targets</a></span></li>
+                  <span class="header head-1"><span class="level-num">5.</span> <a href="Source Files and Modules/#code-distribution">包、库与目标</a></span></li>
                 </ol>
               </div>
             </div>
@@ -2194,163 +2192,159 @@ window.onload = () => {
             <a class="local-button active" href="The Type System/Quotients/#quotients" rel="prev" title="4.5. 商类型"><span class="arrow">←</span><span class="where">4.5. 商类型</span></a><a class="local-button active" href="Namespaces-and-Sections/#namespaces-sections" rel="next" title="6. Namespaces and Sections"><span class="where">6. Namespaces and Sections</span><span class="arrow">→</span></a></nav>
           <section>
             <h1>
-              5. Source Files and Modules<span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=files" title="Permalink">🔗</a></span></h1>
+              5. 源文件与模块<span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=files" title="Permalink">🔗</a></span></h1>
             <p>
-              The smallest unit of compilation in Lean is a single <span id="--tech-term-module" class="def-technical-term">module</span>.
-Modules correspond to source files, and are imported into other modules based on their filenames.
-In other words, the names and folder structures of files are significant in Lean code.</p>
+              在 Lean 中，编译的最小单位是单个 <span id="--tech-term-______-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next" class="def-technical-term">模块</span>。
+模块对应于源代码文件，并且可以按文件名被其他模块导入。
+换句话说，文件的名称和文件夹结构在 Lean 代码中具有重要意义。</p>
             <p>
-              Every Lean file defines a module.
-A module's name is derived from a combination of its filename and the way in which Lean was invoked: Lean has a <em>root directory</em> in which it expects to find code, and the module's name is the names of the directories from the root to the filename, with dots (<code>.</code>) interspersed and <code>.lean</code> removed.
-For example, if Lean is invoked with <code>Projects/MyLib/src</code> as its root, the file <code>Projects/MyLib/src/Literature/Novel/SciFi.lean</code> would contain a module named <code>Literature.Novel.SciFi</code>.</p>
+              每个 Lean 文件都定义一个模块。
+模块名称由其文件名以及 Lean 启动时的方式共同决定：Lean 有一个<em>根目录</em>，它期望在该根目录下找到代码，模块的名称则是从根目录到文件名各级目录的名称，用点（.）隔开，并去掉 <code>.lean</code> 后缀。
+举例来说，如果 Lean 以 <code>Projects/MyLib/src</code> 作为根目录启动，那么文件 <code>Projects/MyLib/src/Literature/Novel/SciFi.lean</code> 中包含的模块名称就是 <code>Literature.Novel.SciFi</code>。</p>
             <section>
               <h2 id="module-encoding">
-                5.1. Encoding and Representation<span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=module-encoding" title="Permalink">🔗</a></span></h2>
+                5.1. 编码与表示<span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=module-encoding" title="Permalink">🔗</a></span></h2>
               <p>
-                Lean modules are Unicode text files encoded in UTF-8. 
-Lines may end either with newline characters (<code>"\n"</code>, Unicode <code>'LINE FEED (LF)' (U+000A)</code>) or with a form feed and newline sequence (<code>"\r\n"</code>, Unicode <code>'CARRIAGE RETURN (CR)' (U+000D)</code> followed by <code>'LINE FEED (LF)' (U+000A)</code>).
-However, Lean normalizes line endings when parsing or comparing files, so all files are compared as if all their line endings are <code>"\n"</code>.</p>
+                Lean 模块是采用 UTF-8 编码的 Unicode 文本文件。
+文件的每一行可以以换行字符（<code>\n</code>，Unicode <code>'LINE FEED (LF)' (U+000A)</code>）结尾，也可以以回车加换行序列（<code>\r\n</code>，即 Unicode <code>'CARRIAGE RETURN (CR)' (U+000D)</code> 加 <code>'LINE FEED (LF)' (U+000A)</code>）结尾。
+不过，在解析或比较文件时，Lean 会对行尾进行归一化，因此所有文件在比较时都视为全部是 <code>\n</code> 行尾。</p>
               </section>
             <section>
               <h2 id="module-syntax">
-                5.2. Concrete Syntax<span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=module-syntax" title="Permalink">🔗</a></span></h2>
+                5.2. 具体语法<span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=module-syntax" title="Permalink">🔗</a></span></h2>
               <p>
-                Lean's concrete syntax is <a href="Notations-and-Macros/#language-extension">extensible</a>.
-In a language like Lean, it's not possible to completely describe the syntax once and for all, because libraries may define syntax in addition to new constants or <a class="technical-term" href="The Type System/Inductive Types/#--tech-term-____________-next-next-next-next-next-next-next-next-next-next-next-next-next">inductive types</a>.
-Rather than completely describing the language here, the overall framework is described, while the syntax of each language construct is documented in the section to which it belongs.</p>
+                Lean 的具体语法是 <a href="Notations-and-Macros/#language-extension">可扩展的</a>。
+在 Lean 这样的语言中，无法一次性完整地描述所有语法，因为库中还可以定义新的语法、常量，或者 <a class="technical-term" href="The Type System/Inductive Types/#--tech-term-____________-next-next-next-next-next-next-next-next-next-next-next-next-next">归纳类型</a>。
+本节不会详尽描述整个语言，而是介绍整体框架；各个语言结构的具体语法则在其各自章节中详细说明。</p>
               <section>
                 <h3 id="whitespace">
-                  5.2.1. Whitespace<span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=whitespace" title="Permalink">🔗</a></span></h3>
+                  5.2.1. 空白符<span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=whitespace" title="Permalink">🔗</a></span></h3>
                 <p>
-                  Tokens in Lean may be separated by any number of <span id="--tech-term-whitespace" class="def-technical-term"><em>whitespace</em></span> character sequences.
-Whitespace may be a space (<code>" "</code>, Unicode <code>'SPACE (SP)' (U+0020)</code>), a valid newline sequence, or a comment. 
-Neither tab characters nor carriage returns not followed by newlines are valid whitespace sequences.</p>
+                  Lean 中的词法单元（token）之间可以用任意数量的 <span id="--tech-term-_________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next" class="def-technical-term"><em>空白符</em></span> 字符序列分隔。
+空白符可以是空格 (<code>" "</code>, Unicode <code>'SPACE (SP)' (U+0020)</code>)、合法的换行序列，或注释。
+制表符和单独的回车（CR，未跟随换行）不是合法的空白符序列。</p>
                 </section>
               <section>
                 <h3 id="comments">
-                  5.2.2. Comments<span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=comments" title="Permalink">🔗</a></span></h3>
+                  5.2.2. 注释<span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=comments" title="Permalink">🔗</a></span></h3>
                 <p>
-                  Comments are stretches of the file that, despite not being whitespace, are treated as such.
-Lean has two syntaxes for comments:</p>
-                <dl><dt> Line comments</dt><dd><p>
-                      A <code>--</code> that does not occur as part of a token begins a <em>line comment</em>. All characters from the initial <code>-</code> to the newline are treated as whitespace.<span id="--index--next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next"></span></p>
-                    </dd><dt> Block comments</dt><dd><p>
-                      A <code>/-</code> that does not occur as part of a token and is not immediately followed by a <code>-</code> character begins a <em>block comment</em>.<span id="--index--next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next"></span>
-  The block comment continues until a terminating <code>-/</code> is found.
-  Block comments may be nested; a <code>-/</code> only terminates the comment if prior nested block comment openers <code>/-</code> have been terminated by a matching <code>-/</code>.</p>
+                  注释是文件中虽然不是空白符，但被视为空白的部分。
+Lean 提供两种注释语法：</p>
+                <dl><dt> 行注释</dt><dd><p>
+                      当 <code>--</code> 不作为其他词法单元一部分出现时，表示行注释。该标记后的所有内容直到行尾都会被视为空白字符。<span id="--index--next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next"></span></p>
+                    </dd><dt> 块注释</dt><dd><p>
+                      当 <code>/-</code> 不作为其他词法单元一部分，且后面不是 <code>-</code> 字符时，表示块注释的开始。<span id="--index--next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next"></span>
+  块注释会一直持续到出现 <code>-/</code> 终止为止。
+  块注释允许嵌套；仅在所有内部嵌套的 <code>/-</code> 都被匹配的 <code>-/</code> 终止后，最外层才算结束。</p>
                     </dd></dl><p>
-                  <code>/--</code> and <code>/-!</code> begin <span id="--tech-term-documentation" class="def-technical-term"><em>documentation</em></span>  rather than comments, which are also terminated with <code>-/</code> and may contain nested block comments.
-Even though documentation resembles comments, they are their own syntactic category; their valid placement is determined by Lean's grammar.</p>
+                  <code>/--</code> 与 <code>/-!</code> 用于开始 <span id="--tech-term-____________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next" class="def-technical-term"><em>文档注释</em></span> ，它们同样以 <code>-/</code> 结束，并允许嵌套块注释。
+尽管文档注释看起来与普通注释类似，但在语法上它们属于不同类别；它们能出现的位置由 Lean 的语法决定。</p>
                 </section>
               <section>
                 <h3 id="keywords-and-identifiers">
-                  5.2.3. Keywords and Identifiers<span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=keywords-and-identifiers" title="Permalink">🔗</a></span></h3>
+                  5.2.3. 关键字与标识符<span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=keywords-and-identifiers" title="Permalink">🔗</a></span></h3>
                 <p>
-                  An <a class="technical-term" href="Notations-and-Macros/Defining-New-Syntax/#--tech-term-Identifiers">identifier</a> consists of one or more identifier components, separated by <code>'.'</code>.<span id="--index--next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next"></span></p>
+                  一个 <a class="technical-term" href="Notations-and-Macros/Defining-New-Syntax/#--tech-term-Identifiers">标识符</a> 由一个或多个标识符成分（component）组成，各部分用 <code>'.'</code> 分隔。<span id="--index--next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next"></span></p>
                 <p>
-                  <span id="--tech-term-Identifier-components" class="def-technical-term">Identifier components</span> consist of a letter or letter-like character or an underscore (<code>'_'</code>), followed by zero or more identifier continuation characters.
-Letters are English letters, upper- or lowercase, and the letter-like characters include a range of non-English alphabetic scripts, including the Greek script which is widely used in Lean, as well as the members of the Unicode letter-like symbol block, which contains a number of double-struck characters (including <code>ℕ</code> and <code>ℤ</code>) and abbreviations.
-Identifier continuation characters consist of letters, letter-like characters, underscores (<code>'_'</code>), exclamation marks (<code>!</code>), question marks (<code>?</code>), subscripts, and single quotes (<code>'</code>).
-As an exception, underscore alone is not a valid identifier.</p>
+                  <span id="--tech-term-_______________-next-next-next-next-next" class="def-technical-term">标识符成分</span> 由一个字母或类字母字符或下划线（<code>'_'</code>）开头，后面可以跟零个或多个标识符后续字符。
+字母包括英文大小写字母，而类字母字符还包含范围较广的非英语字母脚本，比如 Lean 中广泛采用的希腊字母、以及 Unicode 的字母符号区块（如 <code>ℕ</code>、<code>ℤ</code> 等粗体字符和缩写）。
+标识符的后续字符包括字母、类字母字符、下划线（<code>'_'</code>）、感叹号（<code>!</code>）、问号（<code>?</code>）、下标和单引号（<code>'</code>）。
+作为例外，单独下划线不是合法的标识符。</p>
                 <p>
-                  Identifiers components may also be surrounded by double <span id="--tech-term-guillemets" class="def-technical-term">guillemets</span> (<code>'«'</code> and <code>'»'</code>).
-Such identifier components may contain any character at all aside from <code>'»'</code>, even <code>'«'</code>, <code>'.'</code>, and newlines.
-The guillemets are not part of the resulting identifier component, so <code>«x»</code> and <code>x</code> denote the same identifier.
-<code>«Nat.add»</code>, on the other hand, is an identifier with a single component, while <code>Nat.add</code> has two.</p>
+                  标识符成分也可以用一对双 <span id="--tech-term-_________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next" class="def-technical-term">尖引号</span>（<code>'«'</code> 和 <code>'»'</code>）括起来。
+这样括起来的成分可以包含除 <code>'»'</code> 之外的任意字符，包括 <code>'«'</code>、<code>.</code> 和换行符。
+尖引号本身不计入标识符最终内容，所以 <code>«x»</code> 和 <code>x</code> 是同一个标识符。
+而 <code>«Nat.add»</code> 是一个包含一个成分的标识符，而 <code>Nat.add</code> 则包含两个成分。</p>
                 <p>
-                  Some potential identifier components may be reserved keywords.
-The specific set of reserved keywords depends on the set of active syntax extensions, which may depend on the set of imported modules and the currently-opened  namespaces; it is impossible to enumerate for Lean as a whole.
-These keywords must also be quoted with guillemets to be used as identifier components in most syntactic contexts.
-Contexts in which keywords may be used as identifiers without guillemets, such as constructor names in inductive types, are <span id="--tech-term-raw-identifier" class="def-technical-term"><em>raw identifier</em></span> contexts.<span id="--index--next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next"></span></p>
+                  可能的标识符成分中有一些属于保留关键字。
+具体的保留关键字集合取决于当前激活的语法扩展集合，后者又依赖于已导入的模块以及当前打开的  命名空间；因此无法为整个 Lean 语言列举一个完整集合。
+在大多数语法环境中，若要用关键字作为标识符成分，必须用尖引号括起来。
+在某些环境下（如归纳类型的构造子名称）关键字无需尖引号也能作为标识符使用，这些环境称为 <span id="--tech-term-_______________-next-next-next-next-next-next" class="def-technical-term"><em>原始标识符</em></span> 环境。<span id="--index--next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next"></span></p>
                 <p>
-                  Identifiers that contain one or more <code>'.'</code> characters, and thus consist of more than one identifier component, are called <span id="--tech-term-hierarchical-identifiers" class="def-technical-term">hierarchical identifiers</span>.
-Hierarchical identifiers are used to represent both module names and names in a namespace.</p>
+                  包含一个或多个 <code>'.'</code> 字符的标识符（因此包含多个标识符成分）被称为 <span id="--tech-term-_______________-next-next-next-next-next-next-next" class="def-technical-term">分层标识符</span>。
+分层标识符同时用于表示模块名称和命名空间中的名称。</p>
                 </section>
               </section>
             <section>
               <h2 id="module-structure">
-                5.3. Structure<span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=module-structure" title="Permalink">🔗</a></span></h2>
+                5.3. 结构<span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=module-structure" title="Permalink">🔗</a></span></h2>
               <div class="namedocs" id="Lean___Parser___Module___module">
                 <span class="label">syntax</span><span class="title">Modules</span><div class="text">
-                  <pre class="grammar hl lean" data-lean-context="--grammar" id="Lean___Parser___Module___module-next"><a href="Source-Files-and-Modules/#Lean___Parser___Module___module-next"><span class="nonterminal documented" data-kind="Lean.Parser.Module.module"><code class="hover-info"><code class="docstring">Parser for a Lean module. We never actually run this parser but instead use the imperative definitions below that
+                  <pre class="grammar hl lean" data-lean-context="--grammar" id="Lean___Parser___Module___module-next"><a href="Source Files and Modules/#Lean___Parser___Module___module-next"><span class="nonterminal documented" data-kind="Lean.Parser.Module.module"><code class="hover-info"><code class="docstring">Parser for a Lean module. We never actually run this parser but instead use the imperative definitions below that
 return the same syntax tree structure, but add error recovery. Still, it is helpful to have a `Parser` definition
 for it in order to auto-generate helpers such as the pretty printer. </code></code>module</span></a> <span class="bnf">::=</span>
     <span class="from-nonterminal documented" data-kind="Lean.Parser.Module.module"><code class="hover-info"><code class="docstring">Parser for a Lean module. We never actually run this parser but instead use the imperative definitions below that
 return the same syntax tree structure, but add error recovery. Still, it is helpful to have a `Parser` definition
 for it in order to auto-generate helpers such as the pretty printer. </code></code><span class="nonterminal" data-kind="Lean.Parser.Module.header">header</span> <span class="from-nonterminal" data-kind="null"><span class="nonterminal" data-kind="command.pseudo">command</span><span class="bnf">*</span></span></span></pre><p>
-                    A module consists of a <span id="--tech-term-module-header" class="def-technical-term"><em>module header</em></span> followed by a sequence of <span id="--tech-term-commands" class="def-technical-term"><em>commands</em></span>.</p>
+                    一个模块由一个 <span id="--tech-term-_________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next" class="def-technical-term"><em>模块头</em></span>，后面跟随一系列 <span id="--tech-term-______-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next" class="def-technical-term"><em>命令</em></span> 组成。</p>
                   </div>
                 </div>
               <section>
                 <h3 id="module-headers">
-                  5.3.1. Module Headers<span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=module-headers" title="Permalink">🔗</a></span></h3>
+                  5.3.1. 模块头<span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=module-headers" title="Permalink">🔗</a></span></h3>
                 <p>
-                  Module headers list the modules that should be elaborated prior to the current module.
-Their declarations are visible in the current module.</p>
+                  模块头列出在当前模块之前需要繁释的模块。
+它们的声明在当前模块中可见。</p>
                 <div class="namedocs" id="Lean___Parser___Module___header">
                   <span class="label">syntax</span><span class="title">Module Headers</span><div class="text">
                     <p>
-                      The module header consists of a sequence of <span id="--tech-term-import-statements" class="def-technical-term"><code>import</code> statements</span>:</p>
+                      模块头由一系列 <span id="--tech-term-import-______" class="def-technical-term"><code>import</code> 语句</span> 组成：</p>
                     <pre class="grammar hl lean" data-lean-context="--grammar" id="Lean___Parser___Module___header-next"><span class="nonterminal" data-kind="Lean.Parser.Module.header">header</span> <span class="bnf">::=</span>
-    <span class="from-nonterminal" data-kind="Lean.Parser.Module.header"><span class="from-nonterminal" data-kind="null"></span><span class="from-nonterminal" data-kind="null"></span><span class="from-nonterminal" data-kind="null"><a href="Source-Files-and-Modules/#Lean___Parser___Module___import-next"><span class="nonterminal" data-kind="Lean.Parser.Module.import">import</span></a><span class="bnf">*</span></span></span></pre><p>
-                      The optional <code class="plain-keyword">prelude</code> keyword should only be used in Lean's source code:</p>
+    <span class="from-nonterminal" data-kind="Lean.Parser.Module.header"><span class="from-nonterminal" data-kind="null"></span><span class="from-nonterminal" data-kind="null"></span><span class="from-nonterminal" data-kind="null"><a href="Source Files and Modules/#Lean___Parser___Module___import-next"><span class="nonterminal" data-kind="Lean.Parser.Module.import">import</span></a><span class="bnf">*</span></span></span></pre><p>
+                      可选的 <code class="plain-keyword">prelude</code> 关键字只应在 Lean 源码中出现：</p>
                     <pre class="grammar hl lean" data-lean-context="--grammar" id="Lean___Parser___Module___header-next-next"><span class="nonterminal" data-kind="Lean.Parser.Module.header">header</span> <span class="bnf">::=</span> ...
-    <span class="bnf">|</span> <span class="from-nonterminal" data-kind="Lean.Parser.Module.header"><span class="from-nonterminal" data-kind="null"></span><span class="from-nonterminal" data-kind="null"><span class="from-nonterminal" data-kind="Lean.Parser.Module.prelude"><a href="Source-Files-and-Modules/#Lean___Parser___Module___prelude-next"><span class="keyword">prelude</span></a>
-      </span></span><span class="from-nonterminal" data-kind="null"><a href="Source-Files-and-Modules/#Lean___Parser___Module___import-next"><span class="nonterminal" data-kind="Lean.Parser.Module.import">import</span></a><span class="bnf">*</span></span></span></pre></div>
+    <span class="bnf">|</span> <span class="from-nonterminal" data-kind="Lean.Parser.Module.header"><span class="from-nonterminal" data-kind="null"></span><span class="from-nonterminal" data-kind="null"><span class="from-nonterminal" data-kind="Lean.Parser.Module.prelude"><a href="Source Files and Modules/#Lean___Parser___Module___prelude-next"><span class="keyword">prelude</span></a>
+      </span></span><span class="from-nonterminal" data-kind="null"><a href="Source Files and Modules/#Lean___Parser___Module___import-next"><span class="nonterminal" data-kind="Lean.Parser.Module.import">import</span></a><span class="bnf">*</span></span></span></pre></div>
                   </div>
                 <p>
-                  If present, the <code class="plain-keyword">prelude</code> keyword indicates that the module is part of the implementation of the Lean <span id="--tech-term-prelude" class="def-technical-term"><em>prelude</em></span>, which is the code that is available without explicitly importing any modules—it should not be used outside of Lean's implementation.</p>
+                  如果存在 <code class="plain-keyword">prelude</code> 关键字，则表示该模块属于 Lean <span id="--tech-term-_________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next" class="def-technical-term"><em>前导库</em></span> 的实现部分，也就是无需显式导入任何模块即可用到的代码——不应在 Lean 实现之外使用。</p>
                 <div class="namedocs" id="Lean___Parser___Module___prelude">
-                  <span class="label">syntax</span><span class="title">Prelude Modules</span><div class="text">
-                    <pre class="grammar hl lean" data-lean-context="--grammar" id="Lean___Parser___Module___prelude-next"><a href="Source-Files-and-Modules/#Lean___Parser___Module___prelude-next"><span class="nonterminal" data-kind="Lean.Parser.Module.prelude">prelude</span></a> <span class="bnf">::=</span>
+                  <span class="label">syntax</span><span class="title">前导库模块</span><div class="text">
+                    <pre class="grammar hl lean" data-lean-context="--grammar" id="Lean___Parser___Module___prelude-next"><a href="Source Files and Modules/#Lean___Parser___Module___prelude-next"><span class="nonterminal" data-kind="Lean.Parser.Module.prelude">prelude</span></a> <span class="bnf">::=</span>
     <span class="from-nonterminal" data-kind="Lean.Parser.Module.prelude"><span class="keyword">prelude</span></span></pre></div>
                   </div>
                 <div class="namedocs" id="Lean___Parser___Module___import">
-                  <span class="label">syntax</span><span class="title">Imports</span><div class="text">
-                    <pre class="grammar hl lean" data-lean-context="--grammar" id="Lean___Parser___Module___import-next"><a href="Source-Files-and-Modules/#Lean___Parser___Module___import-next"><span class="nonterminal" data-kind="Lean.Parser.Module.import">import</span></a> <span class="bnf">::=</span> ...
+                  <span class="label">syntax</span><span class="title">导入</span><div class="text">
+                    <pre class="grammar hl lean" data-lean-context="--grammar" id="Lean___Parser___Module___import-next"><a href="Source Files and Modules/#Lean___Parser___Module___import-next"><span class="nonterminal" data-kind="Lean.Parser.Module.import">import</span></a> <span class="bnf">::=</span> ...
     <span class="bnf">|</span> <span class="from-nonterminal" data-kind="Lean.Parser.Module.import"><span class="from-nonterminal" data-kind="null"></span><span class="keyword">import</span> <span class="from-nonterminal" data-kind="null"></span><span class="nonterminal" data-kind="ident">ident</span><span class="from-nonterminal" data-kind="null"></span></span></pre><p>
-                      Imports the module.
-Importing a module makes its contents available in the current module, as well as those from modules transitively imported by its imports.</p>
+                      导入指定模块。
+导入模块会让其内容及其递归导入的所有模块的内容在当前模块中可见。</p>
                     <p>
-                      Modules do not necessarily correspond to namespaces.
-Modules may add names to any namespace, and importing a module has no effect on the set of currently open namespaces.</p>
+                      模块与命名空间不一定一一对应。
+模块可以向任意命名空间添加名称，而导入模块不会影响当前打开的命名空间集合。</p>
                     <p>
-                      The imported module name is translated to a filename by replacing dots (<code>'.'</code>) in its name with directory separators and appending <code>.lean</code> or <code>.olean</code>.
-Lean searches its include path for the corresponding intermediate build product or importable module file.</p>
+                      被导入模块的名称会通过将名称中的点（.）替换为路径分隔符，并加上 <code>.lean</code> 或 <code>.olean</code> 后缀，转成文件名。
+Lean 在其包含路径中搜索对应的中间构建产物或可导入的模块文件。</p>
                     </div>
                   </div>
-                </section>
-              <section>
-                <h3 id="commands">
-                  5.3.2. Commands<span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=commands" title="Permalink">🔗</a></span></h3>
                 <p>
-                  <a class="technical-term" href="Source-Files-and-Modules/#--tech-term-commands">Commands</a> are top-level statements in Lean.
-Some examples are inductive type declarations, theorems, function definitions, namespace modifiers like <code>open</code> or <code>variable</code>, and interactive queries such as <code>#check</code>.
-The syntax of commands is user-extensible, and commands may even <a href="Notations-and-Macros/#language-extension">add new syntax that is used to parse subsequent commands</a>.
-Specific Lean commands are documented in the corresponding chapters of this manual, rather than being listed here.</p>
+                  <a class="technical-term" href="Source Files and Modules/#--tech-term-______-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next">命令</a> 是 Lean 的顶级语句。
+例如归纳类型声明、定理、函数定义、像 <code>open</code> 或 <code>variable</code> 这样的命名空间修饰符，以及 <code>#check</code> 这样的交互查询，都是命令的例子。
+命令的语法是用户可扩展的，而且命令本身还可以 <a href="Notations-and-Macros/#language-extension">扩展用于解析后续命令的语法</a>。
+各类 Lean 命令的详细说明见手册相应章节，下文不再一一枚举。</p>
                 </section>
               </section>
             <section>
               <h2 id="module-contents">
-                5.4. Elaborated Modules<span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=module-contents" title="Permalink">🔗</a></span></h2>
+                5.4. 繁释后的模块<span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=module-contents" title="Permalink">🔗</a></span></h2>
               <p>
-                When Lean elaborates a module, the result is an  environment.
-The environment includes the constants, <a class="technical-term" href="The Type System/Inductive Types/#--tech-term-____________-next-next-next-next-next-next-next-next-next-next-next-next-next">inductive types</a>, <a class="technical-term" href="Definitions/Theorems/#--tech-term-theorems">theorems</a>, <a class="technical-term" href="Type-Classes/#--tech-term-type-class">type classes</a>, <a class="technical-term" href="Type-Classes/#--tech-term-instances">instances</a>, and everything else declared in the module, along with side tables that track data as diverse as <a class="technical-term" href="The-Simplifier/Simp-sets/#--tech-term-simp-set">simp sets</a>, namespace aliases, and <a class="technical-term" href="Definitions/Modifiers/#--tech-term-Documentation-comments">documentation comments</a>.</p>
+                Lean 在繁释一个模块时，最终会得到一个  环境。
+该环境包括本模块声明的常量、<a class="technical-term" href="The Type System/Inductive Types/#--tech-term-____________-next-next-next-next-next-next-next-next-next-next-next-next-next">归纳类型</a>、<a class="technical-term" href="Definitions/Theorems/#--tech-term-theorems">定理</a>、<a class="technical-term" href="Type-Classes/#--tech-term-type-class">类型类</a>、<a class="technical-term" href="Type-Classes/#--tech-term-instances">实例</a> 及其它所有声明，还有用于记录各种数据（如 <a class="technical-term" href="The-Simplifier/Simp-sets/#--tech-term-simp-set">simp 集</a>、命名空间别名、<a class="technical-term" href="Definitions/Modifiers/#--tech-term-Documentation-comments">文档注释</a>）的辅助表。</p>
               <p>
-                As the module is processed by Lean, commands add content to the environment.
-A module's environment can be serialized to a <span id="--tech-term-___olean-file" class="def-technical-term"><code>.olean</code> file</span>, which contains both the environment and a compacted heap region with the run-time objects needed by the environment.
-This means that an imported module can be loaded without re-executing all of its commands.</p>
+                Lean 处理模块时，命令会不断向环境中添加内容。
+模块的环境可以被序列化为一个 <span id="--tech-term-___olean-______-next" class="def-technical-term"><code>.olean</code> 文件</span>，其中即包含环境，也包含环境所需的运行时对象压缩堆区。
+这意味着被导入的模块无需重新执行所有命令即可被加载。</p>
               </section>
             <section>
               <h2 id="code-distribution">
-                5.5. Packages, Libraries, and Targets<span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=code-distribution" title="Permalink">🔗</a></span></h2>
+                5.5. 包、库与目标<span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=code-distribution" title="Permalink">🔗</a></span></h2>
               <p>
-                Lean modules are organized into <span id="--tech-term-packages" class="def-technical-term"><em>packages</em></span>, which are units of code distribution.
-A <a class="technical-term" href="Build-Tools-and-Distribution/Lake/#--tech-term-package">package</a> may contain multiple libraries or executables.</p>
+                Lean 模块被组织为 <span id="--tech-term-___-next" class="def-technical-term"><em>包</em></span>，包是代码分发的单位。
+一个 <a class="technical-term" href="Build-Tools-and-Distribution/Lake/#--tech-term-package">包</a> 可以包含多个库或可执行文件。</p>
               <p>
-                Code in a package that is intended for use by other Lean packages is organized into <span id="--tech-term-libraries" class="def-technical-term">libraries</span>.
-Code that is intended to be compiled and run as independent programs is organized into <span id="--tech-term-executables" class="def-technical-term">executables</span>.
-Packages, libraries, and executables are described in detail in the section on <a href="Build-Tools-and-Distribution/Lake/#lake">Lake, the standard Lean build tool</a>.
+                包中面向其他 Lean 包复用的代码会被组织为 <span id="--tech-term-___-next-next" class="def-technical-term">库</span>。
+面向编译并作为独立程序运行的代码被组织为 <span id="--tech-term-_______________-next-next-next-next-next-next-next-next" class="def-technical-term">可执行文件</span>。
+包、库、可执行文件将在 <a href="Build-Tools-and-Distribution/Lake/#lake">Lake，Lean 标准构建工具</a> 一节中详细介绍。
 </p>
               </section>
             </section>
