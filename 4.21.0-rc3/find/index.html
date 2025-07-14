@@ -1927,6 +1927,202 @@ window.addEventListener("load", () => {
 });
 </script>
     <script>
+      
+window.onload = () => {
+
+    // Don't show hovers inside of closed tactic states
+    function blockedByTactic(elem) {
+      let parent = elem.parentNode;
+      while (parent && "classList" in parent) {
+        if (parent.classList.contains("tactic")) {
+          const toggle = parent.querySelector("input.tactic-toggle");
+          if (toggle) {
+            return !toggle.checked;
+          }
+        }
+        parent = parent.parentNode;
+      }
+      return false;
+    }
+
+    function blockedByTippy(elem) {
+      // Don't show a new hover until the old ones are all closed.
+      // Scoped to the nearest "top-level block" to avoid being O(n) in the size of the document.
+      var block = elem;
+      const topLevel = new Set(["section", "body", "html", "nav", "header"]);
+      while (block.parentNode && !topLevel.has(block.parentNode.nodeName.toLowerCase())) {
+        block = block.parentNode;
+      }
+      for (const child of block.querySelectorAll(".token, .has-info")) {
+        if (child._tippy && child._tippy.state.isVisible) { return true };
+      }
+      return false;
+    }
+
+    for (const c of document.querySelectorAll(".hl.lean .token")) {
+        if (c.dataset.binding != "") {
+            c.addEventListener("mouseover", (event) => {
+                if (blockedByTactic(c)) {return;}
+                const context = c.closest(".hl.lean").dataset.leanContext;
+                for (const example of document.querySelectorAll(".hl.lean")) {
+                    if (example.dataset.leanContext == context) {
+                        for (const tok of example.querySelectorAll(".token")) {
+                            if (c.dataset.binding == tok.dataset.binding) {
+                                tok.classList.add("binding-hl");
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        c.addEventListener("mouseout", (event) => {
+            for (const tok of document.querySelectorAll(".hl.lean .token")) {
+                tok.classList.remove("binding-hl");
+            }
+        });
+    }
+    /* Render docstrings */
+    if ('undefined' !== typeof marked) {
+        for (const d of document.querySelectorAll("code.docstring, pre.docstring")) {
+            const str = d.innerText;
+            const html = marked.parse(str);
+            const rendered = document.createElement("div");
+            rendered.classList.add("docstring");
+            rendered.innerHTML = html;
+            d.parentNode.replaceChild(rendered, d);
+        }
+    }
+    // Add hovers
+    let siteRoot = typeof __versoSiteRoot !== 'undefined' ? __versoSiteRoot : "/";
+    let docsJson = siteRoot + "-verso-docs.json";
+    fetch(docsJson).then((resp) => resp.json()).then((versoDocData) => {
+
+      function hideParentTooltips(element) {
+        let parent = element.parentElement;
+        while (parent) {
+          const tippyInstance = parent._tippy;
+          if (tippyInstance) {
+            tippyInstance.hide();
+          }
+          parent = parent.parentElement;
+        }
+      }
+
+
+
+      const defaultTippyProps = {
+        /* DEBUG -- remove the space: * /
+        onHide(any) { return false; },
+        trigger: "click",
+        // */
+        /* theme: "lean", */
+        maxWidth: "none",
+        appendTo: () => document.body,
+        interactive: true,
+        delay: [100, null],
+        /* ignoreAttributes: true, */
+        followCursor: 'initial',
+        onShow(inst) {
+          if (inst.reference.className == 'tactic') {
+
+            const toggle = inst.reference.querySelector("input.tactic-toggle");
+            if (toggle && toggle.checked) {
+              return false;
+            }
+            hideParentTooltips(inst.reference);
+            //if (blockedByTippy(inst.reference)) { return false; }
+
+          } else if (inst.reference.querySelector(".hover-info") || "versoHover" in inst.reference.dataset) {
+            if (blockedByTactic(inst.reference)) { return false };
+            if (blockedByTippy(inst.reference)) { return false; }
+          } else { // Nothing to show here!
+            return false;
+          }
+        },
+        content (tgt) {
+          const content = document.createElement("span");
+          if (tgt.className == 'tactic') {
+            const state = tgt.querySelector(".tactic-state").cloneNode(true);
+            state.style.display = "block";
+            content.appendChild(state);
+            content.style.display = "block";
+            content.className = "hl lean popup";
+          } else {
+            content.className = "hl lean";
+            content.style.display = "block";
+            content.style.maxHeight = "300px";
+            content.style.overflowY = "auto";
+            content.style.overflowX = "hidden";
+            const hoverId = tgt.dataset.versoHover;
+            const hoverInfo = tgt.querySelector(".hover-info");
+            if (hoverId) { // Docstrings from the table
+              // TODO stop doing an implicit conversion from string to number here
+              let data = versoDocData[hoverId];
+              if (data) {
+                const info = document.createElement("span");
+                info.className = "hover-info";
+                info.style.display = "block";
+                info.innerHTML = data;
+                content.appendChild(info);
+                /* Render docstrings - TODO server-side */
+                if ('undefined' !== typeof marked) {
+                    for (const d of content.querySelectorAll("code.docstring, pre.docstring")) {
+                        const str = d.innerText;
+                        const html = marked.parse(str);
+                        const rendered = document.createElement("div");
+                        rendered.classList.add("docstring");
+                        rendered.innerHTML = html;
+                        d.parentNode.replaceChild(rendered, d);
+                    }
+                }
+              } else {
+                content.innerHTML = "Failed to load doc ID: " + hoverId;
+              }
+            } else if (hoverInfo) { // The inline info, still used for compiler messages
+              content.appendChild(hoverInfo.cloneNode(true));
+            }
+            const extraLinks = tgt.parentElement.dataset['versoLinks'];
+            if (extraLinks) {
+              try {
+                const extras = JSON.parse(extraLinks);
+                const links = document.createElement('ul');
+                links.className = 'extra-doc-links';
+                extras.forEach((l) => {
+                  const li = document.createElement('li');
+                  li.innerHTML = "<a href=\"" + l['href'] + "\" title=\"" + l.long + "\">" + l.short + "</a>";
+                  links.appendChild(li);
+                });
+                content.appendChild(links);
+              } catch (error) {
+                console.error(error);
+              }
+            }
+          }
+          return content;
+        }
+      };
+
+
+      document.querySelectorAll('.hl.lean .const.token, .hl.lean .keyword.token, .hl.lean .literal.token, .hl.lean .option.token, .hl.lean .var.token, .hl.lean .typed.token, .hl.lean .level-var, .hl.lean .level-const, .hl.lean .level-op, .hl.lean .sort').forEach(element => {
+        element.setAttribute('data-tippy-theme', 'lean');
+      });
+      document.querySelectorAll('.hl.lean .has-info.warning').forEach(element => {
+        element.setAttribute('data-tippy-theme', 'warning message');
+      });
+      document.querySelectorAll('.hl.lean .has-info.info').forEach(element => {
+        element.setAttribute('data-tippy-theme', 'info message');
+      });
+      document.querySelectorAll('.hl.lean .has-info.error').forEach(element => {
+        element.setAttribute('data-tippy-theme', 'error message');
+      });
+      document.querySelectorAll('.hl.lean .tactic').forEach(element => {
+        element.setAttribute('data-tippy-theme', 'tactic');
+      });
+      let insts = tippy('.hl.lean .const.token, .hl.lean .keyword.token, .hl.lean .literal.token, .hl.lean .option.token, .hl.lean .var.token, .hl.lean .typed.token, .hl.lean .has-info, .hl.lean .tactic, .hl.lean .level-var, .hl.lean .level-const, .hl.lean .level-op, .hl.lean .sort', defaultTippyProps);
+  });
+}
+</script>
+    <script>
       let xref = {"Verso.Genre.Manual.section":
  {"title": "Sections or chapters of the manual",
   "description": null,
@@ -3459,26 +3655,28 @@ window.addEventListener("load", () => {
    "section-variables":
    [{"id": "section-variables",
      "data":
-     {"title": "Section Variables",
+     {"title": "区段变量（Section Variables）",
       "shortTitle": null,
       "sectionNum": "6.2.2.",
       "context":
       [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Namespaces and Sections", "shortTitle": null, "number": "6"},
-       {"title": "Section Scopes", "shortTitle": null, "number": "2"},
-       {"title": "Section Variables", "shortTitle": null, "number": "2"}]},
-     "address": "/Namespaces-and-Sections/"}],
+       {"title": "命名空间与区段", "shortTitle": null, "number": "6"},
+       {"title": "区段作用域（Section Scopes）", "shortTitle": null, "number": "2"},
+       {"title": "区段变量（Section Variables）",
+        "shortTitle": null,
+        "number": "2"}]},
+     "address": "/Namespaces and Sections/"}],
    "scopes":
    [{"id": "scopes",
      "data":
-     {"title": "Section Scopes",
+     {"title": "区段作用域（Section Scopes）",
       "shortTitle": null,
       "sectionNum": "6.2.",
       "context":
       [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Namespaces and Sections", "shortTitle": null, "number": "6"},
-       {"title": "Section Scopes", "shortTitle": null, "number": "2"}]},
-     "address": "/Namespaces-and-Sections/"}],
+       {"title": "命名空间与区段", "shortTitle": null, "number": "6"},
+       {"title": "区段作用域（Section Scopes）", "shortTitle": null, "number": "2"}]},
+     "address": "/Namespaces and Sections/"}],
    "scoped-attributes":
    [{"id": "scoped-attributes",
      "data":
@@ -3493,17 +3691,15 @@ window.addEventListener("load", () => {
    "scope-commands":
    [{"id": "scope-commands",
      "data":
-     {"title": "Controlling Section Scopes",
+     {"title": "控制区段作用域",
       "shortTitle": null,
       "sectionNum": "6.2.1.",
       "context":
       [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Namespaces and Sections", "shortTitle": null, "number": "6"},
-       {"title": "Section Scopes", "shortTitle": null, "number": "2"},
-       {"title": "Controlling Section Scopes",
-        "shortTitle": null,
-        "number": "1"}]},
-     "address": "/Namespaces-and-Sections/"}],
+       {"title": "命名空间与区段", "shortTitle": null, "number": "6"},
+       {"title": "区段作用域（Section Scopes）", "shortTitle": null, "number": "2"},
+       {"title": "控制区段作用域", "shortTitle": null, "number": "1"}]},
+     "address": "/Namespaces and Sections/"}],
    "runtime":
    [{"id": "runtime",
      "data":
@@ -4870,26 +5066,24 @@ window.addEventListener("load", () => {
    "namespaces-sections":
    [{"id": "namespaces-sections",
      "data":
-     {"title": "Namespaces and Sections",
+     {"title": "命名空间与区段",
       "shortTitle": null,
       "sectionNum": "6.",
       "context":
       [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Namespaces and Sections",
-        "shortTitle": null,
-        "number": "6"}]},
-     "address": "/Namespaces-and-Sections/"}],
+       {"title": "命名空间与区段", "shortTitle": null, "number": "6"}]},
+     "address": "/Namespaces and Sections/"}],
    "namespaces":
    [{"id": "namespaces",
      "data":
-     {"title": "Namespaces",
+     {"title": "命名空间",
       "shortTitle": null,
       "sectionNum": "6.1.",
       "context":
       [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Namespaces and Sections", "shortTitle": null, "number": "6"},
-       {"title": "Namespaces", "shortTitle": null, "number": "1"}]},
-     "address": "/Namespaces-and-Sections/"}],
+       {"title": "命名空间与区段", "shortTitle": null, "number": "6"},
+       {"title": "命名空间", "shortTitle": null, "number": "1"}]},
+     "address": "/Namespaces and Sections/"}],
    "mutual-well-founded-recursion":
    [{"id": "mutual-well-founded-recursion",
      "data":
@@ -8024,10 +8218,10 @@ window.addEventListener("load", () => {
   "description": null,
   "contents":
   {"α":
-   [{"id": "___",
+   [{"id": "___-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "___-next",
+    {"id": "___",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"}],
    "ys":
@@ -8039,11 +8233,11 @@ window.addEventListener("load", () => {
    "xs":
    [{"id": "xs", "data": null, "address": "/Basic-Types/Lazy-Computations/"}],
    "x":
-   [{"id": "x-next-next",
+   [{"id": "x-next", "data": null, "address": "/Terms/Identifiers/"},
+    {"id": "x", "data": null, "address": "/Namespaces and Sections/"},
+    {"id": "x-next-next",
      "data": null,
-     "address": "/Coercions/Coercing-to-Sorts/"},
-    {"id": "x", "data": null, "address": "/Namespaces-and-Sections/"},
-    {"id": "x-next", "data": null, "address": "/Terms/Identifiers/"}],
+     "address": "/Coercions/Coercing-to-Sorts/"}],
    "wednesday":
    [{"id": "wednesday",
      "data": null,
@@ -8129,13 +8323,13 @@ window.addEventListener("load", () => {
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"}],
    "ten": [{"id": "ten", "data": null, "address": "/Basic-Types/Arrays/"}],
    "tally_eq_add":
-   [{"id": "tally_eq_add-next",
+   [{"id": "tally_eq_add-next-next",
+     "data": null,
+     "address": "/Definitions/Recursive-Definitions/"},
+    {"id": "tally_eq_add-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
     {"id": "tally_eq_add",
-     "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "tally_eq_add-next-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"}],
    "tally":
@@ -8143,10 +8337,10 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"}],
    "synack":
-   [{"id": "synack-next",
+   [{"id": "synack",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "synack",
+    {"id": "synack-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"}],
    "sweetPotato":
@@ -8236,18 +8430,24 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"}],
    "s2":
-   [{"id": "NonEmptyString", "data": null, "address": "/Basic-Types/Subtypes/"},
-    {"id": "NonEmptyString-next",
+   [{"id": "NonEmptyString-next",
+     "data": null,
+     "address": "/Basic-Types/Subtypes/"},
+    {"id": "NonEmptyString",
      "data": null,
      "address": "/Basic-Types/Subtypes/"}],
    "s1_eq_s2":
-   [{"id": "NonEmptyString", "data": null, "address": "/Basic-Types/Subtypes/"},
-    {"id": "NonEmptyString-next",
+   [{"id": "NonEmptyString-next",
+     "data": null,
+     "address": "/Basic-Types/Subtypes/"},
+    {"id": "NonEmptyString",
      "data": null,
      "address": "/Basic-Types/Subtypes/"}],
    "s1":
-   [{"id": "NonEmptyString", "data": null, "address": "/Basic-Types/Subtypes/"},
-    {"id": "NonEmptyString-next",
+   [{"id": "NonEmptyString-next",
+     "data": null,
+     "address": "/Basic-Types/Subtypes/"},
+    {"id": "NonEmptyString",
      "data": null,
      "address": "/Basic-Types/Subtypes/"}],
    "runCountdown":
@@ -8335,9 +8535,9 @@ window.addEventListener("load", () => {
    "p_all":
    [{"id": "p_all-next-next",
      "data": null,
-     "address": "/Namespaces-and-Sections/"},
-    {"id": "p_all", "data": null, "address": "/Namespaces-and-Sections/"},
-    {"id": "p_all-next", "data": null, "address": "/Namespaces-and-Sections/"}],
+     "address": "/Namespaces and Sections/"},
+    {"id": "p_all", "data": null, "address": "/Namespaces and Sections/"},
+    {"id": "p_all-next", "data": null, "address": "/Namespaces and Sections/"}],
    "oneTwoThree'":
    [{"id": "oneTwoThree___",
      "data": null,
@@ -8412,10 +8612,10 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Coercions/Coercing-to-Function-Types/"}],
    "n":
-   [{"id": "NaturalNum",
+   [{"id": "NaturalNum-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "NaturalNum-next",
+    {"id": "NaturalNum",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"}],
    "mustBeEqual":
@@ -8428,85 +8628,85 @@ window.addEventListener("load", () => {
    [{"id": "min___-next-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
+    {"id": "min___-next-next-next",
+     "data": null,
+     "address": "/Definitions/Recursive-Definitions/"},
     {"id": "min___-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
     {"id": "min___",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "min___-next-next-next",
-     "data": null,
      "address": "/Definitions/Recursive-Definitions/"}],
    "map":
-   [{"id": "map-next-next-next-next",
+   [{"id": "map-next", "data": null, "address": "/The Type System/Universe/"},
+    {"id": "map-next-next-next",
      "data": null,
      "address": "/Definitions/Headers-and-Signatures/"},
     {"id": "map-next-next",
      "data": null,
      "address": "/Definitions/Headers-and-Signatures/"},
-    {"id": "map-next-next-next",
+    {"id": "map", "data": null, "address": "/The Type System/Universe/"},
+    {"id": "map-next-next-next-next",
      "data": null,
-     "address": "/Definitions/Headers-and-Signatures/"},
-    {"id": "map-next", "data": null, "address": "/The Type System/Universe/"},
-    {"id": "map", "data": null, "address": "/The Type System/Universe/"}],
+     "address": "/Definitions/Headers-and-Signatures/"}],
    "main":
    [{"id":
      "main-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/Run-Time-Code/Reference-Counting/"},
+    {"id": "main-next-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/IO/Files___-File-Handles___-and-Streams/"},
     {"id":
      "main-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/Run-Time-Code/Reference-Counting/"},
-    {"id": "main-next",
-     "data": null,
-     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
-    {"id": "main-next-next-next-next-next",
-     "data": null,
-     "address": "/IO/Mutable-References/"},
-    {"id": "main-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/IO/Files___-File-Handles___-and-Streams/"},
-    {"id": "main-next-next-next-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/IO/Processes/"},
-    {"id": "main-next-next-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/IO/Processes/"},
-    {"id":
-     "main-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/IO/Processes/"},
-    {"id": "main-next-next-next",
-     "data": null,
-     "address": "/IO/Logical-Model/"},
-    {"id": "main",
-     "data": null,
-     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
-    {"id": "main-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/IO/Mutable-References/"},
-    {"id": "main-next-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/IO/Files___-File-Handles___-and-Streams/"},
-    {"id": "main-next-next-next-next",
-     "data": null,
-     "address": "/IO/Console-Output/"},
     {"id":
      "main-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/Basic-Types/Tuples/"},
+    {"id":
+     "main-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/IO/Processes/"},
     {"id": "main-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/IO/Processes/"},
+    {"id": "main",
+     "data": null,
+     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
+    {"id": "main-next",
+     "data": null,
+     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
+    {"id":
+     "main-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/IO/Processes/"},
     {"id": "main-next-next",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/API-Reference/"},
-    {"id":
-     "main-next-next-next-next-next-next-next-next-next-next-next-next-next",
+    {"id": "main-next-next-next-next",
+     "data": null,
+     "address": "/IO/Console-Output/"},
+    {"id": "main-next-next-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/IO/Processes/"},
+    {"id": "main-next-next-next",
+     "data": null,
+     "address": "/IO/Logical-Model/"},
+    {"id": "main-next-next-next-next-next",
+     "data": null,
+     "address": "/IO/Mutable-References/"},
+    {"id": "main-next-next-next-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/IO/Processes/"},
+    {"id": "main-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/IO/Files___-File-Handles___-and-Streams/"},
     {"id": "main-next-next-next-next-next-next",
+     "data": null,
+     "address": "/IO/Mutable-References/"},
+    {"id": "main-next-next-next-next-next-next-next",
      "data": null,
      "address": "/IO/Mutable-References/"}],
    "lsts": [{"id": "lsts", "data": null, "address": "/Interacting-with-Lean/"}],
@@ -8568,10 +8768,10 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/The Type System/Universe/"}],
    "identity":
-   [{"id": "___",
+   [{"id": "___-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "___-next",
+    {"id": "___",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"}],
    "id'":
@@ -8581,28 +8781,28 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"}],
    "hello":
-   [{"id": "hello", "data": null, "address": "/Introduction/"},
-    {"id": "hello-next",
+   [{"id": "hello-next",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive-Definitions/"},
+    {"id": "hello", "data": null, "address": "/Introduction/"}],
    "half'''":
    [{"id": "half_________",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"}],
    "half''":
-   [{"id": "half______",
+   [{"id": "half______-next-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "half______-next",
+    {"id": "half______",
+     "data": null,
+     "address": "/Definitions/Recursive-Definitions/"},
+    {"id": "half______-next-next-next-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
     {"id": "half______-next-next-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "half______-next-next",
-     "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "half______-next-next-next-next",
+    {"id": "half______-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"}],
    "half'":
@@ -8613,34 +8813,34 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"}],
    "half":
-   [{"id": "half-next-next-next-next-next-next",
-     "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "half-next-next-next",
-     "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "half-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "half-next-next",
-     "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "half",
-     "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "half-next-next-next-next",
-     "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "half-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "half-next-next-next-next-next-next-next-next-next",
+   [{"id": "half-next-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/Terms/Pattern-Matching/"},
     {"id": "half-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
+    {"id": "half",
+     "data": null,
+     "address": "/Definitions/Recursive-Definitions/"},
+    {"id": "half-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/Definitions/Recursive-Definitions/"},
+    {"id": "half-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/Definitions/Recursive-Definitions/"},
+    {"id": "half-next-next-next-next",
+     "data": null,
+     "address": "/Definitions/Recursive-Definitions/"},
+    {"id": "half-next-next-next-next-next-next",
+     "data": null,
+     "address": "/Definitions/Recursive-Definitions/"},
     {"id": "half-next-next-next-next-next",
+     "data": null,
+     "address": "/Definitions/Recursive-Definitions/"},
+    {"id": "half-next-next",
+     "data": null,
+     "address": "/Definitions/Recursive-Definitions/"},
+    {"id": "half-next-next-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"}],
    "grouped":
@@ -8659,11 +8859,11 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Basic-Types/Tuples/"}],
    "getThird":
-   [{"id": "getThird", "data": null, "address": "/Terms/Conditionals/"},
-    {"id": "getThird-next", "data": null, "address": "/Terms/Conditionals/"},
+   [{"id": "getThird-next", "data": null, "address": "/Terms/Conditionals/"},
     {"id": "getThird-next-next",
      "data": null,
-     "address": "/Terms/Conditionals/"}],
+     "address": "/Terms/Conditionals/"},
+    {"id": "getThird", "data": null, "address": "/Terms/Conditionals/"}],
    "getPPContext":
    [{"id": "getPPContext",
      "data": null,
@@ -8706,14 +8906,14 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Basic-Types/Optional-Values/"}],
    "g":
-   [{"id": "g", "data": null, "address": "/Basic-Propositions/Truth/"},
-    {"id": "g-next", "data": null, "address": "/Basic-Types/The-Empty-Type/"},
+   [{"id": "f-next-next-next-next",
+     "data": null,
+     "address": "/Definitions/Recursive-Definitions/"},
     {"id": "f-next-next-next-next-next",
      "data": null,
      "address": "/Terms/Functions/"},
-    {"id": "f-next-next-next-next",
-     "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+    {"id": "g-next", "data": null, "address": "/Basic-Types/The-Empty-Type/"},
+    {"id": "g", "data": null, "address": "/Basic-Propositions/Truth/"}],
    "funext'":
    [{"id": "funext___",
      "data": null,
@@ -8741,19 +8941,19 @@ window.addEventListener("load", () => {
    "filled":
    [{"id": "grouped", "data": null, "address": "/Interacting-with-Lean/"}],
    "fib":
-   [{"id": "fib-next-next-next",
+   [{"id": "fib-next-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
     {"id": "fib-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "fib",
-     "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
     {"id": "fib-next-next-next-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "fib-next-next",
+    {"id": "fib-next-next-next",
+     "data": null,
+     "address": "/Definitions/Recursive-Definitions/"},
+    {"id": "fib",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"}],
    "false_is_true":
@@ -8763,34 +8963,34 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Notations-and-Macros/Custom-Operators/"}],
    "f":
-   [{"id": "f-next-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/Notations-and-Macros/Macros/"},
-    {"id": "f-next",
-     "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "f-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/Basic-Types/The-Empty-Type/"},
-    {"id": "f-next-next-next-next-next-next",
-     "data": null,
-     "address": "/Terms/Pattern-Matching/"},
-    {"id": "f-next-next",
-     "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "f-next-next-next",
-     "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "f-next-next-next-next-next",
-     "data": null,
-     "address": "/Terms/Functions/"},
-    {"id": "f-next-next-next-next",
+   [{"id": "f-next-next-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
     {"id": "f", "data": null, "address": "/Definitions/Recursive-Definitions/"},
     {"id": "f-next-next-next-next-next-next-next",
      "data": null,
-     "address": "/Basic-Propositions/Truth/"}],
+     "address": "/Basic-Propositions/Truth/"},
+    {"id": "f-next-next-next-next",
+     "data": null,
+     "address": "/Definitions/Recursive-Definitions/"},
+    {"id": "f-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/Basic-Types/The-Empty-Type/"},
+    {"id": "f-next-next-next-next-next",
+     "data": null,
+     "address": "/Terms/Functions/"},
+    {"id": "f-next",
+     "data": null,
+     "address": "/Definitions/Recursive-Definitions/"},
+    {"id": "f-next-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/Notations-and-Macros/Macros/"},
+    {"id": "f-next-next-next-next-next-next",
+     "data": null,
+     "address": "/Terms/Pattern-Matching/"},
+    {"id": "f-next-next",
+     "data": null,
+     "address": "/Definitions/Recursive-Definitions/"}],
    "extEq":
    [{"id": "ExtFun", "data": null, "address": "/The Type System/Quotients/"}],
    "extApp":
@@ -8810,15 +9010,15 @@ window.addEventListener("load", () => {
    "ex3":
    [{"id": "ex3", "data": null, "address": "/Notations-and-Macros/Macros/"}],
    "ex2":
-   [{"id": "ex2-next",
+   [{"id": "ex2", "data": null, "address": "/Notations-and-Macros/Macros/"},
+    {"id": "ex2-next",
      "data": null,
-     "address": "/Notations-and-Macros/Macros/"},
-    {"id": "ex2", "data": null, "address": "/Notations-and-Macros/Macros/"}],
+     "address": "/Notations-and-Macros/Macros/"}],
    "ex1":
-   [{"id": "ex1-next",
+   [{"id": "ex1", "data": null, "address": "/Notations-and-Macros/Macros/"},
+    {"id": "ex1-next",
      "data": null,
-     "address": "/Notations-and-Macros/Macros/"},
-    {"id": "ex1", "data": null, "address": "/Notations-and-Macros/Macros/"}],
+     "address": "/Notations-and-Macros/Macros/"}],
    "everyOther":
    [{"id": "everyOther",
      "data": null,
@@ -8878,12 +9078,12 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"}],
    "countdown":
-   [{"id": "countdown-next",
-     "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "runCountdown",
+   [{"id": "runCountdown",
      "data": null,
      "address": "/IO/Files___-File-Handles___-and-Streams/"},
+    {"id": "countdown-next",
+     "data": null,
+     "address": "/Definitions/Recursive-Definitions/"},
     {"id": "countdown",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"}],
@@ -8900,16 +9100,16 @@ window.addEventListener("load", () => {
    "color":
    [{"id": "Forest___statement",
      "data": null,
-     "address": "/Namespaces-and-Sections/"}],
+     "address": "/Namespaces and Sections/"}],
    "broccoli":
    [{"id": "sweetPotato",
      "data": null,
      "address": "/Type-Classes/Basic-Classes/"}],
    "boolCases":
-   [{"id": "boolCases", "data": null, "address": "/Terms/Pattern-Matching/"},
-    {"id": "boolCases-next",
+   [{"id": "boolCases-next",
      "data": null,
-     "address": "/Terms/Pattern-Matching/"}],
+     "address": "/Terms/Pattern-Matching/"},
+    {"id": "boolCases", "data": null, "address": "/Terms/Pattern-Matching/"}],
    "bogus": [{"id": "bogus", "data": null, "address": "/Introduction/"}],
    "binarySearch":
    [{"id": "binarySearch",
@@ -8951,10 +9151,10 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Notations-and-Macros/Macros/"}],
    "addAll":
-   [{"id": "addAll", "data": null, "address": "/Namespaces-and-Sections/"},
+   [{"id": "addAll", "data": null, "address": "/Namespaces and Sections/"},
     {"id": "addAll-next",
      "data": null,
-     "address": "/Namespaces-and-Sections/"}],
+     "address": "/Namespaces and Sections/"}],
    "addAlias''":
    [{"id": "addAlias______",
      "data": null,
@@ -8966,25 +9166,25 @@ window.addEventListener("load", () => {
    "addAlias":
    [{"id": "addAlias", "data": null, "address": "/Basic-Types/Maps-and-Sets/"}],
    "add'":
-   [{"id": "add___-next",
+   [{"id": "add___", "data": null, "address": "/The Type System/Quotients/"},
+    {"id": "add___-next",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "add___", "data": null, "address": "/The Type System/Quotients/"}],
+     "address": "/Definitions/Recursive-Definitions/"}],
    "add":
-   [{"id": "add-next",
-     "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "add-next-next",
+   [{"id": "add-next-next",
      "data": null,
      "address": "/Terms/Pattern-Matching/"},
+    {"id": "add-next",
+     "data": null,
+     "address": "/Definitions/Recursive-Definitions/"},
     {"id": "add",
      "data": null,
      "address": "/Definitions/Headers-and-Signatures/"}],
    "ack":
-   [{"id": "ack",
+   [{"id": "ack-next-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "ack-next-next",
+    {"id": "ack",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
     {"id": "ack-next",
@@ -9147,24 +9347,24 @@ window.addEventListener("load", () => {
    "Veg.Leafy.spinach":
    [{"id": "Veg___Leafy___cabbage",
      "data": null,
-     "address": "/Namespaces-and-Sections/"}],
+     "address": "/Namespaces and Sections/"}],
    "Veg.Leafy.cabbage":
    [{"id": "Veg___Leafy___cabbage",
      "data": null,
-     "address": "/Namespaces-and-Sections/"}],
+     "address": "/Namespaces and Sections/"}],
    "Veg.Leafy":
    [{"id": "Veg___Leafy___cabbage",
      "data": null,
-     "address": "/Namespaces-and-Sections/"}],
+     "address": "/Namespaces and Sections/"}],
    "Vector.append_associative'":
    [{"id": "Vector___append_associative___",
      "data": null,
      "address": "/Basic-Propositions/Propositional-Equality/"}],
    "Vector.append_associative":
-   [{"id": "Vector___append_associative-next",
+   [{"id": "Vector___append_associative",
      "data": null,
      "address": "/Basic-Propositions/Propositional-Equality/"},
-    {"id": "Vector___append_associative",
+    {"id": "Vector___append_associative-next",
      "data": null,
      "address": "/Basic-Propositions/Propositional-Equality/"}],
    "Vacant":
@@ -9283,10 +9483,10 @@ window.addEventListener("load", () => {
     {"id": "Tree___map-next-next-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "Tree___map",
+    {"id": "Tree___map-next-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "Tree___map-next-next",
+    {"id": "Tree___map",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"}],
    "Tree.leaf":
@@ -9321,10 +9521,10 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Interacting-with-Lean/"}],
    "Tree.branch":
-   [{"id": "Tree___empty",
+   [{"id": "Tree",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "Tree",
+    {"id": "Tree___empty",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"}],
    "Tree.big":
@@ -9340,19 +9540,19 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"}],
    "Tree":
-   [{"id": "Tree___empty",
-     "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "Tree",
+   [{"id": "Tree___rev___",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
     {"id": "Tree___branches",
      "data": null,
      "address": "/Interacting-with-Lean/"},
-    {"id": "Tree___node",
+    {"id": "Tree",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "Tree___rev___",
+    {"id": "Tree___empty",
+     "data": null,
+     "address": "/Definitions/Recursive-Definitions/"},
+    {"id": "Tree___node",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"}],
    "Tm.zero":
@@ -9388,10 +9588,10 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Coercions/Coercing-to-Function-Types/"}],
    "Tm":
-   [{"id": "Tm", "data": null, "address": "/The Type System/Inductive Types/"},
-    {"id": "Tm-next",
+   [{"id": "Tm-next",
      "data": null,
-     "address": "/Coercions/Coercing-to-Function-Types/"}],
+     "address": "/Coercions/Coercing-to-Function-Types/"},
+    {"id": "Tm", "data": null, "address": "/The Type System/Inductive Types/"}],
    "ThreeChoices.yes":
    [{"id": "ThreeChoices___yes",
      "data": null,
@@ -9789,12 +9989,12 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"}],
    "Pair.snd":
-   [{"id": "Pair___fst",
+   [{"id": "coords",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "coords",
+     "address": "/The Type System/Inductive Types/"},
+    {"id": "Pair___fst",
      "data": null,
-     "address": "/The Type System/Inductive Types/"}],
+     "address": "/Definitions/Recursive-Definitions/"}],
    "Pair.sizeOf_lt_of_mem":
    [{"id": "Pair___sizeOf_lt_of_mem",
      "data": null,
@@ -9812,12 +10012,12 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"}],
    "Pair.fst":
-   [{"id": "Pair___fst",
+   [{"id": "coords",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "coords",
+     "address": "/The Type System/Inductive Types/"},
+    {"id": "Pair___fst",
      "data": null,
-     "address": "/The Type System/Inductive Types/"}],
+     "address": "/Definitions/Recursive-Definitions/"}],
    "Pair.attach":
    [{"id": "Pair___attach",
      "data": null,
@@ -9835,12 +10035,12 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"}],
    "Pair":
-   [{"id": "Pair___fst",
+   [{"id": "coords",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "coords",
+     "address": "/The Type System/Inductive Types/"},
+    {"id": "Pair___fst",
      "data": null,
-     "address": "/The Type System/Inductive Types/"}],
+     "address": "/Definitions/Recursive-Definitions/"}],
    "PBool":
    [{"id": "PBool",
      "data": null,
@@ -9955,8 +10155,10 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/The Type System/Inductive Types/"}],
    "NonEmptyString":
-   [{"id": "NonEmptyString", "data": null, "address": "/Basic-Types/Subtypes/"},
-    {"id": "NonEmptyString-next",
+   [{"id": "NonEmptyString-next",
+     "data": null,
+     "address": "/Basic-Types/Subtypes/"},
+    {"id": "NonEmptyString",
      "data": null,
      "address": "/Basic-Types/Subtypes/"}],
    "NonEmptyList.non_empty":
@@ -9982,10 +10184,10 @@ window.addEventListener("load", () => {
    "No":
    [{"id": "No", "data": null, "address": "/The Type System/Inductive Types/"}],
    "NaturalNum":
-   [{"id": "NaturalNum",
+   [{"id": "NaturalNum-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "NaturalNum-next",
+    {"id": "NaturalNum",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"}],
    "NatWrapper.val":
@@ -10120,8 +10322,8 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Terms/Pattern-Matching/"}],
    "Nat.otherZero":
-   [{"id": "Nat___otherZero", "data": null, "address": "/Axioms/"},
-    {"id": "Nat___otherZero-next", "data": null, "address": "/Axioms/"}],
+   [{"id": "Nat___otherZero-next", "data": null, "address": "/Axioms/"},
+    {"id": "Nat___otherZero", "data": null, "address": "/Axioms/"}],
    "Nat.half":
    [{"id": "Nat___half",
      "data": null,
@@ -10143,7 +10345,7 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Coercions/Coercing-to-Function-Types/"}],
    "NS.three":
-   [{"id": "NS___three", "data": null, "address": "/Namespaces-and-Sections/"}],
+   [{"id": "NS___three", "data": null, "address": "/Namespaces and Sections/"}],
    "NS.interestingName":
    [{"id": "interestingName",
      "data": null,
@@ -10410,27 +10612,27 @@ window.addEventListener("load", () => {
    "HotDrink.toString":
    [{"id": "ColdDrink___toString",
      "data": null,
-     "address": "/Namespaces-and-Sections/"}],
+     "address": "/Namespaces and Sections/"}],
    "HotDrink.tea":
    [{"id": "HotDrink___cocoa",
      "data": null,
-     "address": "/Namespaces-and-Sections/"}],
+     "address": "/Namespaces and Sections/"}],
    "HotDrink.ofString?":
    [{"id": "HotDrink___ofString___",
      "data": null,
-     "address": "/Namespaces-and-Sections/"}],
+     "address": "/Namespaces and Sections/"}],
    "HotDrink.coffee":
    [{"id": "HotDrink___cocoa",
      "data": null,
-     "address": "/Namespaces-and-Sections/"}],
+     "address": "/Namespaces and Sections/"}],
    "HotDrink.cocoa":
    [{"id": "HotDrink___cocoa",
      "data": null,
-     "address": "/Namespaces-and-Sections/"}],
+     "address": "/Namespaces and Sections/"}],
    "HotDrink":
    [{"id": "HotDrink___cocoa",
      "data": null,
-     "address": "/Namespaces-and-Sections/"}],
+     "address": "/Namespaces and Sections/"}],
    "Heap.insert":
    [{"id": "Heap___insert",
      "data": null,
@@ -10466,7 +10668,7 @@ window.addEventListener("load", () => {
    "Greetings.english":
    [{"id": "Greetings___english",
      "data": null,
-     "address": "/Namespaces-and-Sections/"}],
+     "address": "/Namespaces and Sections/"}],
    "Graph.empty":
    [{"id": "Graph",
      "data": null,
@@ -10482,15 +10684,15 @@ window.addEventListener("load", () => {
    "Forest.statement":
    [{"id": "Forest___statement",
      "data": null,
-     "address": "/Namespaces-and-Sections/"}],
+     "address": "/Namespaces and Sections/"}],
    "Forest.nextStatement":
    [{"id": "Forest___nextStatement",
      "data": null,
-     "address": "/Namespaces-and-Sections/"}],
+     "address": "/Namespaces and Sections/"}],
    "Forest.color":
    [{"id": "Forest___statement",
      "data": null,
-     "address": "/Namespaces-and-Sections/"}],
+     "address": "/Namespaces and Sections/"}],
    "Float.zero_eq_zero_plus_zero":
    [{"id": "Float___zero_eq_zero_plus_zero-next",
      "data": null,
@@ -10622,10 +10824,10 @@ window.addEventListener("load", () => {
    [{"id": "Even",
      "data": null,
      "address": "/Type-Classes/Instance-Declarations/"},
+    {"id": "Even___zero", "data": null, "address": "/Introduction/"},
     {"id": "Even___number",
      "data": null,
      "address": "/Coercions/Coercing-Between-Types/"},
-    {"id": "Even___zero", "data": null, "address": "/Introduction/"},
     {"id": "Even___zero-next-next-next",
      "data": null,
      "address": "/The Type System/Inductive Types/"},
@@ -10710,7 +10912,7 @@ window.addEventListener("load", () => {
    "Dessert.cupcake":
    [{"id": "Dessert___cupcake",
      "data": null,
-     "address": "/Namespaces-and-Sections/"}],
+     "address": "/Namespaces and Sections/"}],
    "Decision.yes":
    [{"id": "Decision",
      "data": null,
@@ -10746,15 +10948,15 @@ window.addEventListener("load", () => {
    "CustomUnit":
    [{"id": "AlsoUnit", "data": null, "address": "/Basic-Types/The-Unit-Type/"}],
    "ColdDrink.water":
-   [{"id": "ColdDrink", "data": null, "address": "/Namespaces-and-Sections/"}],
+   [{"id": "ColdDrink", "data": null, "address": "/Namespaces and Sections/"}],
    "ColdDrink.toString":
    [{"id": "ColdDrink___toString",
      "data": null,
-     "address": "/Namespaces-and-Sections/"}],
+     "address": "/Namespaces and Sections/"}],
    "ColdDrink.juice":
-   [{"id": "ColdDrink", "data": null, "address": "/Namespaces-and-Sections/"}],
+   [{"id": "ColdDrink", "data": null, "address": "/Namespaces and Sections/"}],
    "ColdDrink":
-   [{"id": "ColdDrink", "data": null, "address": "/Namespaces-and-Sections/"}],
+   [{"id": "ColdDrink", "data": null, "address": "/Namespaces and Sections/"}],
    "Codec.type":
    [{"id": "Codec___encode",
      "data": null,
@@ -10839,7 +11041,7 @@ window.addEventListener("load", () => {
    "C.a6":
    [{"id": "A___B___C___a3",
      "data": null,
-     "address": "/Namespaces-and-Sections/"}],
+     "address": "/Namespaces and Sections/"}],
    "Book.title":
    [{"id": "AcademicWork___author",
      "data": null,
@@ -10914,11 +11116,11 @@ window.addEventListener("load", () => {
    "B.a4":
    [{"id": "A___B___C___a3",
      "data": null,
-     "address": "/Namespaces-and-Sections/"}],
+     "address": "/Namespaces and Sections/"}],
    "B.C.a5":
    [{"id": "A___B___C___a3",
      "data": null,
-     "address": "/Namespaces-and-Sections/"}],
+     "address": "/Namespaces and Sections/"}],
    "B":
    [{"id": "B", "data": null, "address": "/Terms/Identifiers/"},
     {"id": "B-next",
@@ -11093,22 +11295,22 @@ window.addEventListener("load", () => {
    [{"id": "ABC___c", "data": null, "address": "/Interacting-with-Lean/"}],
    "A.y": [{"id": "B", "data": null, "address": "/Terms/Identifiers/"}],
    "A.x":
-   [{"id": "A___x-next", "data": null, "address": "/Terms/Identifiers/"},
-    {"id": "A___x", "data": null, "address": "/Terms/Identifiers/"},
+   [{"id": "A___x", "data": null, "address": "/Terms/Identifiers/"},
+    {"id": "A___x-next", "data": null, "address": "/Terms/Identifiers/"},
     {"id": "A___x-next-next", "data": null, "address": "/Terms/Identifiers/"}],
    "A.a1":
    [{"id": "A___B___C___a3",
      "data": null,
-     "address": "/Namespaces-and-Sections/"}],
+     "address": "/Namespaces and Sections/"}],
    "A.B.a2":
    [{"id": "A___B___C___a3",
      "data": null,
-     "address": "/Namespaces-and-Sections/"}],
+     "address": "/Namespaces and Sections/"}],
    "A.B.C.x": [{"id": "A___x", "data": null, "address": "/Terms/Identifiers/"}],
    "A.B.C.a3":
    [{"id": "A___B___C___a3",
      "data": null,
-     "address": "/Namespaces-and-Sections/"}],
+     "address": "/Namespaces and Sections/"}],
    "A":
    [{"id": "B", "data": null, "address": "/Terms/Identifiers/"},
     {"id": "B-next",
@@ -11277,12 +11479,12 @@ window.addEventListener("load", () => {
      "data": {"term": "Term elaborators"},
      "address": "/Notations-and-Macros/Elaborators/"}],
    "term":
-   [{"id": "--tech-term-___",
+   [{"id": "--tech-term-Terms",
      "data": {"term": "Terms"},
-     "address": "/The Type System/"},
-    {"id": "--tech-term-Terms",
+     "address": "/Terms/"},
+    {"id": "--tech-term-___",
      "data": {"term": "Terms"},
-     "address": "/Terms/"}],
+     "address": "/The Type System/"}],
    "task":
    [{"id": "--tech-term-Tasks",
      "data": {"term": "Tasks"},
@@ -11428,17 +11630,20 @@ window.addEventListener("load", () => {
      "data": {"term": "Semi-output parameters"},
      "address": "/Type-Classes/Instance-Synthesis/"}],
    "section variable":
-   [{"id": "--tech-term-Section-variables",
-     "data": {"term": "Section variables"},
-     "address": "/Namespaces-and-Sections/"}],
+   [{"id":
+     "--tech-term-____________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": {"term": "区段变量"},
+     "address": "/Namespaces and Sections/"}],
    "section scope":
-   [{"id": "--tech-term-section-scope",
-     "data": {"term": "section scope"},
-     "address": "/Namespaces-and-Sections/"}],
+   [{"id":
+     "--tech-term-_______________-next-next-next-next-next-next-next-next-next",
+     "data": {"term": "区段作用域"},
+     "address": "/Namespaces and Sections/"}],
    "section":
-   [{"id": "--tech-term-section",
-     "data": {"term": "section"},
-     "address": "/Namespaces-and-Sections/"}],
+   [{"id":
+     "--tech-term-______-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": {"term": "区段"},
+     "address": "/Namespaces and Sections/"}],
    "scientific literal":
    [{"id": "--tech-term-scientific-literals",
      "data": {"term": "scientific literals"},
@@ -11464,15 +11669,15 @@ window.addEventListener("load", () => {
      "data": {"term": "Right-associative"},
      "address": "/Notations-and-Macros/Custom-Operators/"}],
    "resolve":
-   [{"id": "--tech-term-resolving-next",
+   [{"id": "--tech-term-resolve",
+     "data": {"term": "resolving"},
+     "address": "/IO/Tasks-and-Threads/"},
+    {"id": "--tech-term-resolving-next",
      "data": {"term": "resolving"},
      "address": "/IO/Tasks-and-Threads/"},
     {"id": "--tech-term-resolving",
      "data": {"term": "resolving"},
-     "address": "/Terms/Identifiers/"},
-    {"id": "--tech-term-resolve",
-     "data": {"term": "resolving"},
-     "address": "/IO/Tasks-and-Threads/"}],
+     "address": "/Terms/Identifiers/"}],
    "require":
    [{"id": "--tech-term-require",
      "data": {"term": "require"},
@@ -11541,9 +11746,10 @@ window.addEventListener("load", () => {
      "data": {"term": "Quasiquotation"},
      "address": "/Notations-and-Macros/Macros/"}],
    "protected":
-   [{"id": "--tech-term-protected",
-     "data": {"term": "protected"},
-     "address": "/Namespaces-and-Sections/"}],
+   [{"id":
+     "--tech-term-_________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": {"term": "受保护"},
+     "address": "/Namespaces and Sections/"}],
    "propositional extensionality":
    [{"id":
      "--tech-term-_________-next-next-next-next-next-next-next-next-next-next",
@@ -11687,13 +11893,14 @@ window.addEventListener("load", () => {
      "data": {"term": "optional parameters"},
      "address": "/Definitions/Headers-and-Signatures/"}],
    "opened namespace":
-   [{"id": "--tech-term-opened-namespaces",
-     "data": {"term": "opened namespaces"},
-     "address": "/Namespaces-and-Sections/"}],
+   [{"id": "--tech-term-_____________________-next",
+     "data": {"term": "已打开命名空间"},
+     "address": "/Namespaces and Sections/"}],
    "opened":
-   [{"id": "--tech-term-opened",
-     "data": {"term": "opened"},
-     "address": "/Namespaces-and-Sections/"}],
+   [{"id":
+     "--tech-term-______-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": {"term": "开放"},
+     "address": "/Namespaces and Sections/"}],
    "opaque constant":
    [{"id": "--tech-term-Opaque-constants",
      "data": {"term": "Opaque constants"},
@@ -11703,10 +11910,10 @@ window.addEventListener("load", () => {
      "data": {"term": ".olean 文件"},
      "address": "/Source Files and Modules/"}],
    "notation item":
-   [{"id": "--tech-term-notation-items",
+   [{"id": "--tech-term-notation-items-next",
      "data": {"term": "notation items"},
      "address": "/Notations-and-Macros/Notations/"},
-    {"id": "--tech-term-notation-items-next",
+    {"id": "--tech-term-notation-items",
      "data": {"term": "notation items"},
      "address": "/Notations-and-Macros/Notations/"}],
    "notation":
@@ -11742,9 +11949,10 @@ window.addEventListener("load", () => {
      "data": {"term": "natural numbers"},
      "address": "/Basic-Types/Natural-Numbers/"}],
    "namespace":
-   [{"id": "--tech-term-namespaces",
-     "data": {"term": "namespaces"},
-     "address": "/Namespaces-and-Sections/"}],
+   [{"id":
+     "--tech-term-____________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": {"term": "命名空间"},
+     "address": "/Namespaces and Sections/"}],
    "named pattern":
    [{"id": "--tech-term-Named-patterns",
      "data": {"term": "Named patterns"},
@@ -11826,12 +12034,12 @@ window.addEventListener("load", () => {
      "data": {"term": "message log"},
      "address": "/Interacting-with-Lean/"}],
    "measure":
-   [{"id": "--tech-term-______-next-next-next",
+   [{"id": "--tech-term-measure",
      "data": {"term": "measure"},
-     "address": "/Elaboration and Compilation/"},
-    {"id": "--tech-term-measure",
+     "address": "/Definitions/Recursive-Definitions/"},
+    {"id": "--tech-term-______-next-next-next",
      "data": {"term": "measure"},
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Elaboration and Compilation/"}],
    "match discriminant":
    [{"id": "--tech-term-match-discriminants",
      "data": {"term": "match discriminants"},
@@ -11866,12 +12074,12 @@ window.addEventListener("load", () => {
      "data": {"term": "macro expansion"},
      "address": "/Notations-and-Macros/Macros/"}],
    "macro":
-   [{"id": "--tech-term-macro",
+   [{"id": "--tech-term-Macros",
      "data": {"term": "Macros"},
-     "address": "/Notations-and-Macros/Defining-New-Syntax/"},
-    {"id": "--tech-term-Macros",
+     "address": "/Notations-and-Macros/Macros/"},
+    {"id": "--tech-term-macro",
      "data": {"term": "Macros"},
-     "address": "/Notations-and-Macros/Macros/"}],
+     "address": "/Notations-and-Macros/Defining-New-Syntax/"}],
    "log":
    [{"id": "--tech-term-log",
      "data": {"term": "log"},
@@ -11901,12 +12109,12 @@ window.addEventListener("load", () => {
      "data": {"term": "library directories"},
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "library":
-   [{"id": "--tech-term-Libraries",
+   [{"id": "--tech-term-___-next-next",
      "data": {"term": "Libraries"},
-     "address": "/Build-Tools-and-Distribution/Lake/"},
-    {"id": "--tech-term-___-next-next",
+     "address": "/Source Files and Modules/"},
+    {"id": "--tech-term-Libraries",
      "data": {"term": "Libraries"},
-     "address": "/Source Files and Modules/"}],
+     "address": "/Build-Tools-and-Distribution/Lake/"}],
    "left fold":
    [{"id": "--tech-term-Left-folds",
      "data": {"term": "Left folds"},
@@ -12164,9 +12372,10 @@ window.addEventListener("load", () => {
      "data": {"term": "表达式"},
      "address": "/The Type System/"}],
    "exporting":
-   [{"id": "--tech-term-Exporting",
-     "data": {"term": "Exporting"},
-     "address": "/Namespaces-and-Sections/"}],
+   [{"id":
+     "--tech-term-______-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": {"term": "导出"},
+     "address": "/Namespaces and Sections/"}],
    "expected type's namespace":
    [{"id": "--tech-term-expected-type___s-namespace",
      "data": {"term": "expected type's namespace"},
@@ -12176,13 +12385,13 @@ window.addEventListener("load", () => {
      "data": {"term": "expansion"},
      "address": "/Notations-and-Macros/Custom-Operators/"}],
    "executable":
-   [{"id":
+   [{"id": "--tech-term-Executables",
+     "data": {"term": "Executables"},
+     "address": "/Build-Tools-and-Distribution/Lake/"},
+    {"id":
      "--tech-term-_______________-next-next-next-next-next-next-next-next",
      "data": {"term": "Executables"},
-     "address": "/Source Files and Modules/"},
-    {"id": "--tech-term-Executables",
-     "data": {"term": "Executables"},
-     "address": "/Build-Tools-and-Distribution/Lake/"}],
+     "address": "/Source Files and Modules/"}],
    "exception monad":
    [{"id": "--tech-term-Exception-monads",
      "data": {"term": "Exception monads"},
@@ -12371,12 +12580,12 @@ window.addEventListener("load", () => {
      "data": {"term": "柯里化"},
      "address": "/The Type System/Functions/"}],
    "current namespace":
-   [{"id": "--tech-term-current-namespace",
-     "data": {"term": "current namespace"},
-     "address": "/Namespaces-and-Sections/"},
-    {"id": "--tech-term-current-namespace-next",
-     "data": {"term": "current namespace"},
-     "address": "/Namespaces-and-Sections/"}],
+   [{"id": "--tech-term-__________________-next-next-next-next-next",
+     "data": {"term": "当前命名空间"},
+     "address": "/Namespaces and Sections/"},
+    {"id": "--tech-term-__________________-next-next-next-next",
+     "data": {"term": "当前命名空间"},
+     "address": "/Namespaces and Sections/"}],
    "current do block":
    [{"id": "--tech-term-current-do-block",
      "data": {"term": "current do block"},
@@ -12562,10 +12771,10 @@ window.addEventListener("load", () => {
   "description": "Tactics for performing targeted rewriting of subterms",
   "contents":
   {"Lean.Parser.Tactic.Conv.«conv·._»":
-   [{"id": "Lean___Parser___Tactic___Conv____FLQQ_conv________FLQQ_-next",
+   [{"id": "Lean___Parser___Tactic___Conv____FLQQ_conv________FLQQ_",
      "data": {"userName": "· ..."},
      "address": "/Tactic-Proofs/Targeted-Rewriting-with--conv/"},
-    {"id": "Lean___Parser___Tactic___Conv____FLQQ_conv________FLQQ_",
+    {"id": "Lean___Parser___Tactic___Conv____FLQQ_conv________FLQQ_-next",
      "data": {"userName": "· ..."},
      "address": "/Tactic-Proofs/Targeted-Rewriting-with--conv/"}],
    "Lean.Parser.Tactic.Conv.«conv_<;>_»":
@@ -12817,26 +13026,26 @@ window.addEventListener("load", () => {
      "data": {"userName": "exists"},
      "address": "/Tactic-Proofs/Tactic-Reference/"}],
    "Lean.Parser.Tactic.withUnfoldingAll":
-   [{"id": "with_unfolding_all-next",
+   [{"id": "with_unfolding_all",
      "data": {"userName": "with_unfolding_all"},
-     "address": "/Tactic-Proofs/Tactic-Reference/"},
-    {"id": "with_unfolding_all",
+     "address": "/Tactic-Proofs/The-Tactic-Language/"},
+    {"id": "with_unfolding_all-next",
      "data": {"userName": "with_unfolding_all"},
-     "address": "/Tactic-Proofs/The-Tactic-Language/"}],
+     "address": "/Tactic-Proofs/Tactic-Reference/"}],
    "Lean.Parser.Tactic.withReducibleAndInstances":
-   [{"id": "with_reducible_and_instances",
+   [{"id": "with_reducible_and_instances-next",
      "data": {"userName": "with_reducible_and_instances"},
-     "address": "/Tactic-Proofs/The-Tactic-Language/"},
-    {"id": "with_reducible_and_instances-next",
+     "address": "/Tactic-Proofs/Tactic-Reference/"},
+    {"id": "with_reducible_and_instances",
      "data": {"userName": "with_reducible_and_instances"},
-     "address": "/Tactic-Proofs/Tactic-Reference/"}],
+     "address": "/Tactic-Proofs/The-Tactic-Language/"}],
    "Lean.Parser.Tactic.withReducible":
-   [{"id": "with_reducible",
+   [{"id": "with_reducible-next",
      "data": {"userName": "with_reducible"},
-     "address": "/Tactic-Proofs/The-Tactic-Language/"},
-    {"id": "with_reducible-next",
+     "address": "/Tactic-Proofs/Tactic-Reference/"},
+    {"id": "with_reducible",
      "data": {"userName": "with_reducible"},
-     "address": "/Tactic-Proofs/Tactic-Reference/"}],
+     "address": "/Tactic-Proofs/The-Tactic-Language/"}],
    "Lean.Parser.Tactic.unfold":
    [{"id": "unfold",
      "data": {"userName": "unfold"},
@@ -13438,10 +13647,10 @@ window.addEventListener("load", () => {
   "description": null,
   "contents":
   {"«term∃_,_»":
-   [{"id": "_FLQQ_term_________FLQQ_-next",
+   [{"id": "_FLQQ_term_________FLQQ_",
      "data": null,
      "address": "/Basic-Propositions/Quantifiers/"},
-    {"id": "_FLQQ_term_________FLQQ_",
+    {"id": "_FLQQ_term_________FLQQ_-next",
      "data": null,
      "address": "/Basic-Propositions/Quantifiers/"}],
    "«term‹_›»":
@@ -13449,10 +13658,10 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Tactic-Proofs/Reading-Proof-States/"}],
    "«termΣ_,_»":
-   [{"id": "_FLQQ_term_________FLQQ_-next-next-next-next-next",
+   [{"id": "_FLQQ_term_________FLQQ_-next-next-next-next-next-next",
      "data": null,
      "address": "/Basic-Types/Tuples/"},
-    {"id": "_FLQQ_term_________FLQQ_-next-next-next-next-next-next",
+    {"id": "_FLQQ_term_________FLQQ_-next-next-next-next-next",
      "data": null,
      "address": "/Basic-Types/Tuples/"}],
    "«termΣ'_,_»":
@@ -13467,10 +13676,10 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Basic-Propositions/Logical-Connectives/"}],
    "«term{_:_//_}»":
-   [{"id": "_FLQQ_term___________________FLQQ_-next",
+   [{"id": "_FLQQ_term___________________FLQQ_",
      "data": null,
      "address": "/Basic-Types/Subtypes/"},
-    {"id": "_FLQQ_term___________________FLQQ_",
+    {"id": "_FLQQ_term___________________FLQQ_-next",
      "data": null,
      "address": "/Basic-Types/Subtypes/"}],
    "«term_⊕_»":
@@ -13594,12 +13803,12 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Basic-Types/Booleans/"}],
    "«term[_]»":
-   [{"id": "_FLQQ_term_LSQ___RSQ__FLQQ_",
+   [{"id": "_FLQQ_term_LSQ___RSQ__FLQQ_-next",
      "data": null,
-     "address": "/Terms/Literals/"},
-    {"id": "_FLQQ_term_LSQ___RSQ__FLQQ_-next",
+     "address": "/Basic-Types/Linked-Lists/"},
+    {"id": "_FLQQ_term_LSQ___RSQ__FLQQ_",
      "data": null,
-     "address": "/Basic-Types/Linked-Lists/"}],
+     "address": "/Terms/Literals/"}],
    "«termExists_,_»":
    [{"id": "_FLQQ_termExists______FLQQ_",
      "data": null,
@@ -13608,12 +13817,12 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Basic-Propositions/Quantifiers/"}],
    "«term#[_,]»":
-   [{"id": "_FLQQ_term____LSQ______RSQ__FLQQ_",
+   [{"id": "_FLQQ_term____LSQ______RSQ__FLQQ_-next",
      "data": null,
-     "address": "/Terms/Literals/"},
-    {"id": "_FLQQ_term____LSQ______RSQ__FLQQ_-next",
+     "address": "/Basic-Types/Arrays/"},
+    {"id": "_FLQQ_term____LSQ______RSQ__FLQQ_",
      "data": null,
-     "address": "/Basic-Types/Arrays/"}],
+     "address": "/Terms/Literals/"}],
    "«stx_<|>_»":
    [{"id": "_FLQQ_stx__LT_____GT___FLQQ_",
      "data": null,
@@ -13705,12 +13914,12 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Notations-and-Macros/Precedence/"}],
    "num.antiquot":
-   [{"id": "num___antiquot",
+   [{"id": "num___antiquot-next",
      "data": null,
-     "address": "/Type-Classes/Instance-Declarations/"},
-    {"id": "num___antiquot-next",
+     "address": "/Notations-and-Macros/Precedence/"},
+    {"id": "num___antiquot",
      "data": null,
-     "address": "/Notations-and-Macros/Precedence/"}],
+     "address": "/Type-Classes/Instance-Declarations/"}],
    "ident.antiquot":
    [{"id": "ident___antiquot", "data": null, "address": "/Terms/Functions/"}],
    "coeSortNotation":
@@ -13739,15 +13948,15 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Basic-Types/Maps-and-Sets/"}],
    "Manual.FreeSyntax.more":
-   [{"id": "Manual___FreeSyntax___more-next",
-     "data": null,
-     "address": "/Terms/Function-Application/"},
-    {"id": "Manual___FreeSyntax___more-next-next-next",
+   [{"id": "Manual___FreeSyntax___more-next-next-next",
      "data": null,
      "address": "/Notations-and-Macros/Macros/"},
     {"id": "Manual___FreeSyntax___more-next-next",
      "data": null,
      "address": "/Notations-and-Macros/Macros/"},
+    {"id": "Manual___FreeSyntax___more-next",
+     "data": null,
+     "address": "/Terms/Function-Application/"},
     {"id": "Manual___FreeSyntax___more",
      "data": null,
      "address": "/Terms/Function-Application/"}],
@@ -13756,13 +13965,13 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Terms/Functions/"}],
    "Manual.FreeSyntax.done":
-   [{"id": "Manual___FreeSyntax___done-next",
-     "data": null,
-     "address": "/Build-Tools-and-Distribution/Lake/"},
-    {"id": "Manual___FreeSyntax___done",
+   [{"id": "Manual___FreeSyntax___done",
      "data": null,
      "address": "/Notations-and-Macros/Macros/"},
     {"id": "Manual___FreeSyntax___done-next-next",
+     "data": null,
+     "address": "/Build-Tools-and-Distribution/Lake/"},
+    {"id": "Manual___FreeSyntax___done-next",
      "data": null,
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "List.«term_~_»":
@@ -13861,10 +14070,10 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Basic-Types/Tuples/"}],
    "Lean.Parser.Term.syntheticHole":
-   [{"id": "Lean___Parser___Term___syntheticHole-next",
+   [{"id": "Lean___Parser___Term___syntheticHole",
      "data": null,
      "address": "/Terms/Holes/"},
-    {"id": "Lean___Parser___Term___syntheticHole",
+    {"id": "Lean___Parser___Term___syntheticHole-next",
      "data": null,
      "address": "/Terms/Holes/"}],
    "Lean.Parser.Term.subst":
@@ -13886,18 +14095,18 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/The Type System/Inductive Types/"}],
    "Lean.Parser.Term.strictImplicitBinder":
-   [{"id": "Lean___Parser___Term___strictImplicitBinder-next",
-     "data": null,
-     "address": "/Definitions/Headers-and-Signatures/"},
-    {"id": "Lean___Parser___Term___strictImplicitBinder-next-next",
-     "data": null,
-     "address": "/Terms/Functions/"},
-    {"id": "Lean___Parser___Term___strictImplicitBinder-next-next-next",
+   [{"id": "Lean___Parser___Term___strictImplicitBinder-next-next-next",
      "data": null,
      "address": "/Terms/Functions/"},
     {"id": "Lean___Parser___Term___strictImplicitBinder",
      "data": null,
-     "address": "/Definitions/Headers-and-Signatures/"}],
+     "address": "/Definitions/Headers-and-Signatures/"},
+    {"id": "Lean___Parser___Term___strictImplicitBinder-next",
+     "data": null,
+     "address": "/Definitions/Headers-and-Signatures/"},
+    {"id": "Lean___Parser___Term___strictImplicitBinder-next-next",
+     "data": null,
+     "address": "/Terms/Functions/"}],
    "Lean.Parser.Term.stateRefT":
    [{"id": "Lean___Parser___Term___stateRefT",
      "data": null,
@@ -13933,17 +14142,17 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Terms/Pattern-Matching/"}],
    "Lean.Parser.Term.namedPattern":
-   [{"id": "Lean___Parser___Term___namedPattern",
+   [{"id": "Lean___Parser___Term___namedPattern-next",
      "data": null,
      "address": "/Terms/Pattern-Matching/"},
-    {"id": "Lean___Parser___Term___namedPattern-next",
+    {"id": "Lean___Parser___Term___namedPattern",
      "data": null,
      "address": "/Terms/Pattern-Matching/"}],
    "Lean.Parser.Term.matchDiscr":
-   [{"id": "Lean___Parser___Term___matchDiscr-next",
+   [{"id": "Lean___Parser___Term___matchDiscr",
      "data": null,
      "address": "/Terms/Pattern-Matching/"},
-    {"id": "Lean___Parser___Term___matchDiscr",
+    {"id": "Lean___Parser___Term___matchDiscr-next",
      "data": null,
      "address": "/Terms/Pattern-Matching/"}],
    "Lean.Parser.Term.match":
@@ -13951,13 +14160,13 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Terms/Pattern-Matching/"}],
    "Lean.Parser.Term.instBinder":
-   [{"id": "Lean___Parser___Term___instBinder-next-next",
-     "data": null,
-     "address": "/Terms/Functions/"},
-    {"id": "Lean___Parser___Term___instBinder",
+   [{"id": "Lean___Parser___Term___instBinder",
      "data": null,
      "address": "/Definitions/Headers-and-Signatures/"},
     {"id": "Lean___Parser___Term___instBinder-next",
+     "data": null,
+     "address": "/Terms/Functions/"},
+    {"id": "Lean___Parser___Term___instBinder-next-next",
      "data": null,
      "address": "/Terms/Functions/"}],
    "Lean.Parser.Term.inaccessible":
@@ -13965,49 +14174,49 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Terms/Pattern-Matching/"}],
    "Lean.Parser.Term.implicitBinder":
-   [{"id": "Lean___Parser___Term___implicitBinder",
+   [{"id": "Lean___Parser___Term___implicitBinder-next",
      "data": null,
-     "address": "/Definitions/Headers-and-Signatures/"},
+     "address": "/Terms/Functions/"},
     {"id": "Lean___Parser___Term___implicitBinder-next-next",
      "data": null,
      "address": "/Terms/Functions/"},
-    {"id": "Lean___Parser___Term___implicitBinder-next",
+    {"id": "Lean___Parser___Term___implicitBinder",
      "data": null,
-     "address": "/Terms/Functions/"}],
+     "address": "/Definitions/Headers-and-Signatures/"}],
    "Lean.Parser.Term.hole":
    [{"id": "Lean___Parser___Term___hole",
      "data": null,
      "address": "/Terms/Holes/"}],
    "Lean.Parser.Term.fun":
-   [{"id": "Lean___Parser___Term___fun-next-next",
-     "data": null,
-     "address": "/Terms/Functions/"},
-    {"id": "Lean___Parser___Term___fun-next",
-     "data": null,
-     "address": "/Terms/Functions/"},
-    {"id": "Lean___Parser___Term___fun-next-next-next-next",
-     "data": null,
-     "address": "/Terms/Functions/"},
-    {"id": "Lean___Parser___Term___fun-next-next-next",
+   [{"id": "Lean___Parser___Term___fun-next-next-next-next",
      "data": null,
      "address": "/Terms/Functions/"},
     {"id": "Lean___Parser___Term___fun",
      "data": null,
      "address": "/Terms/Functions/"},
+    {"id": "Lean___Parser___Term___fun-next-next",
+     "data": null,
+     "address": "/Terms/Functions/"},
+    {"id": "Lean___Parser___Term___fun-next-next-next",
+     "data": null,
+     "address": "/Terms/Functions/"},
     {"id": "Lean___Parser___Term___fun-next-next-next-next-next",
      "data": null,
-     "address": "/Terms/Pattern-Matching/"}],
+     "address": "/Terms/Pattern-Matching/"},
+    {"id": "Lean___Parser___Term___fun-next",
+     "data": null,
+     "address": "/Terms/Functions/"}],
    "Lean.Parser.Term.forall":
-   [{"id": "Lean___Parser___Term___forall-next-next",
-     "data": null,
-     "address": "/Basic-Propositions/Quantifiers/"},
-    {"id": "Lean___Parser___Term___forall",
-     "data": null,
-     "address": "/Basic-Propositions/Quantifiers/"},
-    {"id": "Lean___Parser___Term___forall-next-next-next",
+   [{"id": "Lean___Parser___Term___forall-next-next-next",
      "data": null,
      "address": "/Basic-Propositions/Quantifiers/"},
     {"id": "Lean___Parser___Term___forall-next",
+     "data": null,
+     "address": "/Basic-Propositions/Quantifiers/"},
+    {"id": "Lean___Parser___Term___forall-next-next",
+     "data": null,
+     "address": "/Basic-Propositions/Quantifiers/"},
+    {"id": "Lean___Parser___Term___forall",
      "data": null,
      "address": "/Basic-Propositions/Quantifiers/"}],
    "Lean.Parser.Term.explicitBinder":
@@ -14019,6 +14228,50 @@ window.addEventListener("load", () => {
      "address": "/Definitions/Headers-and-Signatures/"}],
    "Lean.Parser.Term.doSeqItem":
    [{"id":
+     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
+    {"id":
+     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
+    {"id":
+     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
+    {"id": "Lean___Parser___Term___doSeqItem-next",
+     "data": null,
+     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
+    {"id":
+     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
+    {"id":
+     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
+    {"id": "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next",
+     "data": null,
+     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
+    {"id":
+     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
+    {"id": "Lean___Parser___Term___doSeqItem-next-next-next",
+     "data": null,
+     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
+    {"id": "Lean___Parser___Term___doSeqItem-next-next-next-next",
+     "data": null,
+     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
+    {"id":
+     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
+    {"id":
+     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
+    {"id":
      "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
@@ -14031,15 +14284,7 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
     {"id":
-     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
-    {"id":
-     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
-    {"id":
-     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next",
+     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
     {"id":
@@ -14047,50 +14292,14 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
     {"id":
-     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
-    {"id":
-     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
-    {"id":
-     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
-    {"id": "Lean___Parser___Term___doSeqItem-next-next-next",
-     "data": null,
-     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
-    {"id":
-     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
-    {"id": "Lean___Parser___Term___doSeqItem-next",
-     "data": null,
-     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
-    {"id": "Lean___Parser___Term___doSeqItem-next-next-next-next",
-     "data": null,
-     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
-    {"id":
-     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
-    {"id":
-     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
-    {"id": "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next",
-     "data": null,
-     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
-    {"id":
-     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"}],
    "Lean.Parser.Term.doReassignArrow":
-   [{"id": "Lean___Parser___Term___doReassignArrow-next",
+   [{"id": "Lean___Parser___Term___doReassignArrow",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
-    {"id": "Lean___Parser___Term___doReassignArrow",
+    {"id": "Lean___Parser___Term___doReassignArrow-next",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"}],
    "Lean.Parser.Term.doReassign":
@@ -14105,35 +14314,35 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"}],
    "Lean.Parser.Term.depArrow":
-   [{"id": "Lean___Parser___Term___depArrow-next-next-next-next",
-     "data": null,
-     "address": "/Terms/Function-Types/"},
-    {"id": "Lean___Parser___Term___depArrow-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/Terms/Function-Types/"},
-    {"id": "Lean___Parser___Term___depArrow-next-next-next",
+   [{"id": "Lean___Parser___Term___depArrow-next-next-next",
      "data": null,
      "address": "/Terms/Function-Types/"},
     {"id": "Lean___Parser___Term___depArrow-next-next-next-next-next-next",
      "data": null,
      "address": "/Terms/Function-Types/"},
-    {"id": "Lean___Parser___Term___depArrow-next-next",
+    {"id": "Lean___Parser___Term___depArrow-next",
      "data": null,
      "address": "/Terms/Function-Types/"},
-    {"id": "Lean___Parser___Term___depArrow-next",
+    {"id": "Lean___Parser___Term___depArrow",
+     "data": null,
+     "address": "/Terms/Function-Types/"},
+    {"id": "Lean___Parser___Term___depArrow-next-next",
      "data": null,
      "address": "/Terms/Function-Types/"},
     {"id": "Lean___Parser___Term___depArrow-next-next-next-next-next",
      "data": null,
      "address": "/Terms/Function-Types/"},
-    {"id": "Lean___Parser___Term___depArrow",
+    {"id": "Lean___Parser___Term___depArrow-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/Terms/Function-Types/"},
+    {"id": "Lean___Parser___Term___depArrow-next-next-next-next",
      "data": null,
      "address": "/Terms/Function-Types/"}],
    "Lean.Parser.Term.byTactic":
-   [{"id": "Lean___Parser___Term___byTactic-next",
+   [{"id": "Lean___Parser___Term___byTactic-next-next",
      "data": null,
      "address": "/Tactic-Proofs/Running-Tactics/"},
-    {"id": "Lean___Parser___Term___byTactic-next-next",
+    {"id": "Lean___Parser___Term___byTactic-next",
      "data": null,
      "address": "/Tactic-Proofs/Running-Tactics/"}],
    "Lean.Parser.Term.borrowed":
@@ -14145,13 +14354,13 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Attributes/"}],
    "Lean.Parser.Term.attrKind":
-   [{"id": "Lean___Parser___Term___attrKind-next-next",
+   [{"id": "Lean___Parser___Term___attrKind-next",
+     "data": null,
+     "address": "/Attributes/"},
+    {"id": "Lean___Parser___Term___attrKind-next-next",
      "data": null,
      "address": "/Attributes/"},
     {"id": "Lean___Parser___Term___attrKind",
-     "data": null,
-     "address": "/Attributes/"},
-    {"id": "Lean___Parser___Term___attrKind-next",
      "data": null,
      "address": "/Attributes/"}],
    "Lean.Parser.Term.attrInstance":
@@ -14178,23 +14387,23 @@ window.addEventListener("load", () => {
    [{"id": "Lean___Parser___Tactic___configItem-next-next-next-next",
      "data": null,
      "address": "/Tactic-Proofs/The-Tactic-Language/"},
-    {"id": "Lean___Parser___Tactic___configItem-next-next",
+    {"id": "Lean___Parser___Tactic___configItem-next-next-next",
      "data": null,
      "address": "/Tactic-Proofs/The-Tactic-Language/"},
     {"id": "Lean___Parser___Tactic___configItem-next",
      "data": null,
      "address": "/Tactic-Proofs/The-Tactic-Language/"},
-    {"id": "Lean___Parser___Tactic___configItem-next-next-next",
+    {"id": "Lean___Parser___Tactic___configItem-next-next",
      "data": null,
      "address": "/Tactic-Proofs/The-Tactic-Language/"}],
    "Lean.Parser.Tactic.Conv.enterArg":
-   [{"id": "Lean___Parser___Tactic___Conv___enterArg-next-next-next",
+   [{"id": "Lean___Parser___Tactic___Conv___enterArg-next-next",
+     "data": null,
+     "address": "/Tactic-Proofs/Targeted-Rewriting-with--conv/"},
+    {"id": "Lean___Parser___Tactic___Conv___enterArg-next-next-next",
      "data": null,
      "address": "/Tactic-Proofs/Targeted-Rewriting-with--conv/"},
     {"id": "Lean___Parser___Tactic___Conv___enterArg-next",
-     "data": null,
-     "address": "/Tactic-Proofs/Targeted-Rewriting-with--conv/"},
-    {"id": "Lean___Parser___Tactic___Conv___enterArg-next-next",
      "data": null,
      "address": "/Tactic-Proofs/Targeted-Rewriting-with--conv/"}],
    "Lean.Parser.Syntax.unary":
@@ -14216,23 +14425,23 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Notations-and-Macros/Precedence/"}],
    "Lean.Parser.Syntax.sepBy1":
-   [{"id": "Lean___Parser___Syntax___sepBy1-next-next",
-     "data": null,
-     "address": "/Notations-and-Macros/Defining-New-Syntax/"},
-    {"id": "Lean___Parser___Syntax___sepBy1-next",
+   [{"id": "Lean___Parser___Syntax___sepBy1-next",
      "data": null,
      "address": "/Notations-and-Macros/Defining-New-Syntax/"},
     {"id": "Lean___Parser___Syntax___sepBy1",
      "data": null,
+     "address": "/Notations-and-Macros/Defining-New-Syntax/"},
+    {"id": "Lean___Parser___Syntax___sepBy1-next-next",
+     "data": null,
      "address": "/Notations-and-Macros/Defining-New-Syntax/"}],
    "Lean.Parser.Syntax.sepBy":
-   [{"id": "Lean___Parser___Syntax___sepBy-next-next",
-     "data": null,
-     "address": "/Notations-and-Macros/Defining-New-Syntax/"},
-    {"id": "Lean___Parser___Syntax___sepBy-next",
+   [{"id": "Lean___Parser___Syntax___sepBy-next",
      "data": null,
      "address": "/Notations-and-Macros/Defining-New-Syntax/"},
     {"id": "Lean___Parser___Syntax___sepBy",
+     "data": null,
+     "address": "/Notations-and-Macros/Defining-New-Syntax/"},
+    {"id": "Lean___Parser___Syntax___sepBy-next-next",
      "data": null,
      "address": "/Notations-and-Macros/Defining-New-Syntax/"}],
    "Lean.Parser.Syntax.paren":
@@ -14293,7 +14502,7 @@ window.addEventListener("load", () => {
    "Lean.Parser.Command.variable":
    [{"id": "Lean___Parser___Command___variable",
      "data": null,
-     "address": "/Namespaces-and-Sections/"}],
+     "address": "/Namespaces and Sections/"}],
    "Lean.Parser.Command.universe":
    [{"id": "Lean___Parser___Command___universe-next",
      "data": null,
@@ -14313,7 +14522,7 @@ window.addEventListener("load", () => {
    "Lean.Parser.Command.section":
    [{"id": "Lean___Parser___Command___section",
      "data": null,
-     "address": "/Namespaces-and-Sections/"}],
+     "address": "/Namespaces and Sections/"}],
    "Lean.Parser.Command.printEqns":
    [{"id": "Lean___Parser___Command___printEqns",
      "data": null,
@@ -14343,27 +14552,27 @@ window.addEventListener("load", () => {
    "Lean.Parser.Command.openSimple":
    [{"id": "Lean___Parser___Command___openSimple",
      "data": null,
-     "address": "/Namespaces-and-Sections/"}],
+     "address": "/Namespaces and Sections/"}],
    "Lean.Parser.Command.openScoped":
    [{"id": "Lean___Parser___Command___openScoped",
      "data": null,
-     "address": "/Namespaces-and-Sections/"}],
+     "address": "/Namespaces and Sections/"}],
    "Lean.Parser.Command.openRenaming":
    [{"id": "Lean___Parser___Command___openRenaming",
      "data": null,
-     "address": "/Namespaces-and-Sections/"}],
+     "address": "/Namespaces and Sections/"}],
    "Lean.Parser.Command.openOnly":
    [{"id": "Lean___Parser___Command___openOnly",
      "data": null,
-     "address": "/Namespaces-and-Sections/"}],
+     "address": "/Namespaces and Sections/"}],
    "Lean.Parser.Command.openHiding":
    [{"id": "Lean___Parser___Command___openHiding",
      "data": null,
-     "address": "/Namespaces-and-Sections/"}],
+     "address": "/Namespaces and Sections/"}],
    "Lean.Parser.Command.open":
    [{"id": "Lean___Parser___Command___open",
      "data": null,
-     "address": "/Namespaces-and-Sections/"}],
+     "address": "/Namespaces and Sections/"}],
    "Lean.Parser.Command.notation":
    [{"id": "Lean___Parser___Command___notation",
      "data": null,
@@ -14371,25 +14580,25 @@ window.addEventListener("load", () => {
    "Lean.Parser.Command.namespace":
    [{"id": "Lean___Parser___Command___namespace",
      "data": null,
-     "address": "/Namespaces-and-Sections/"}],
+     "address": "/Namespaces and Sections/"}],
    "Lean.Parser.Command.mutual":
    [{"id": "Lean___Parser___Command___mutual",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"}],
    "Lean.Parser.Command.mixfix":
-   [{"id": "Lean___Parser___Command___mixfix",
-     "data": null,
-     "address": "/Notations-and-Macros/Custom-Operators/"},
-    {"id": "Lean___Parser___Command___mixfix-next",
+   [{"id": "Lean___Parser___Command___mixfix-next",
      "data": null,
      "address": "/Notations-and-Macros/Custom-Operators/"},
     {"id": "Lean___Parser___Command___mixfix-next-next",
      "data": null,
      "address": "/Notations-and-Macros/Custom-Operators/"},
-    {"id": "Lean___Parser___Command___mixfix-next-next-next",
+    {"id": "Lean___Parser___Command___mixfix",
      "data": null,
      "address": "/Notations-and-Macros/Custom-Operators/"},
     {"id": "Lean___Parser___Command___mixfix-next-next-next-next",
+     "data": null,
+     "address": "/Notations-and-Macros/Custom-Operators/"},
+    {"id": "Lean___Parser___Command___mixfix-next-next-next",
      "data": null,
      "address": "/Notations-and-Macros/Custom-Operators/"}],
    "Lean.Parser.Command.macro_rules":
@@ -14433,7 +14642,7 @@ window.addEventListener("load", () => {
    "Lean.Parser.Command.in":
    [{"id": "Lean___Parser___Command___in",
      "data": null,
-     "address": "/Namespaces-and-Sections/"}],
+     "address": "/Namespaces and Sections/"}],
    "Lean.Parser.Command.identPrec":
    [{"id": "Lean___Parser___Command___identPrec",
      "data": null,
@@ -14441,7 +14650,7 @@ window.addEventListener("load", () => {
    "Lean.Parser.Command.export":
    [{"id": "Lean___Parser___Command___export",
      "data": null,
-     "address": "/Namespaces-and-Sections/"}],
+     "address": "/Namespaces and Sections/"}],
    "Lean.Parser.Command.evalBang":
    [{"id": "Lean___Parser___Command___evalBang",
      "data": null,
@@ -14455,12 +14664,12 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Attributes/"}],
    "Lean.Parser.Command.end":
-   [{"id": "Lean___Parser___Command___end-next",
+   [{"id": "Lean___Parser___Command___end",
      "data": null,
-     "address": "/Namespaces-and-Sections/"},
-    {"id": "Lean___Parser___Command___end",
+     "address": "/Namespaces and Sections/"},
+    {"id": "Lean___Parser___Command___end-next",
      "data": null,
-     "address": "/Namespaces-and-Sections/"}],
+     "address": "/Namespaces and Sections/"}],
    "Lean.Parser.Command.elab_rules":
    [{"id": "Lean___Parser___Command___elab_rules",
      "data": null,
@@ -14474,44 +14683,11 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Type-Classes/Deriving-Instances/"}],
    "Lean.Parser.Command.declaration":
-   [{"id": "Lean___Parser___Command___declaration-next-next-next",
-     "data": null,
-     "address": "/Definitions/Definitions/"},
-    {"id":
+   [{"id":
      "Lean___Parser___Command___declaration-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/Type-Classes/Class-Declarations/"},
-    {"id":
-     "Lean___Parser___Command___declaration-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/Definitions/Example-Declarations/"},
     {"id": "Lean___Parser___Command___declaration",
-     "data": null,
-     "address": "/The Type System/Inductive Types/"},
-    {"id":
-     "Lean___Parser___Command___declaration-next-next-next-next-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/Definitions/Definitions/"},
-    {"id": "Lean___Parser___Command___declaration-next-next-next-next-next",
-     "data": null,
-     "address": "/Definitions/Definitions/"},
-    {"id":
-     "Lean___Parser___Command___declaration-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/Definitions/Example-Declarations/"},
-    {"id":
-     "Lean___Parser___Command___declaration-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/Definitions/Definitions/"},
-    {"id":
-     "Lean___Parser___Command___declaration-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/Definitions/Definitions/"},
-    {"id":
-     "Lean___Parser___Command___declaration-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/Definitions/Theorems/"},
-    {"id": "Lean___Parser___Command___declaration-next",
      "data": null,
      "address": "/The Type System/Inductive Types/"},
     {"id":
@@ -14519,9 +14695,38 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Definitions/Definitions/"},
     {"id":
-     "Lean___Parser___Command___declaration-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "Lean___Parser___Command___declaration-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/Definitions/Example-Declarations/"},
+    {"id":
+     "Lean___Parser___Command___declaration-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/Definitions/Definitions/"},
+    {"id":
+     "Lean___Parser___Command___declaration-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/Definitions/Theorems/"},
+    {"id": "Lean___Parser___Command___declaration-next",
+     "data": null,
+     "address": "/The Type System/Inductive Types/"},
+    {"id": "Lean___Parser___Command___declaration-next-next-next",
+     "data": null,
+     "address": "/Definitions/Definitions/"},
+    {"id":
+     "Lean___Parser___Command___declaration-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/Definitions/Definitions/"},
+    {"id":
+     "Lean___Parser___Command___declaration-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/Definitions/Theorems/"},
+    {"id": "Lean___Parser___Command___declaration-next-next-next-next-next",
+     "data": null,
+     "address": "/Definitions/Definitions/"},
+    {"id":
+     "Lean___Parser___Command___declaration-next-next-next-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/Definitions/Definitions/"},
     {"id":
      "Lean___Parser___Command___declaration-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
@@ -14531,14 +14736,18 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Definitions/Example-Declarations/"},
     {"id":
-     "Lean___Parser___Command___declaration-next-next-next-next-next-next-next-next-next-next-next",
+     "Lean___Parser___Command___declaration-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
-     "address": "/Definitions/Definitions/"},
+     "address": "/Definitions/Example-Declarations/"},
     {"id":
-     "Lean___Parser___Command___declaration-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "Lean___Parser___Command___declaration-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/Definitions/Theorems/"},
     {"id": "Lean___Parser___Command___declaration-next-next-next-next",
+     "data": null,
+     "address": "/Definitions/Definitions/"},
+    {"id":
+     "Lean___Parser___Command___declaration-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/Definitions/Definitions/"}],
    "Lean.Parser.Command.declSig":
@@ -14577,48 +14786,29 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"}],
    "Lean.Parser.Attr.simple":
-   [{"id":
+   [{"id": "Lean___Parser___Attr___simple-next-next-next-next-next",
+     "data": null,
+     "address": "/Terms/Pattern-Matching/"},
+    {"id":
      "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/Tactic-Proofs/Tactic-Reference/"},
-    {"id": "Lean___Parser___Attr___simple-next-next-next-next-next",
-     "data": null,
-     "address": "/Terms/Pattern-Matching/"},
-    {"id": "Lean___Parser___Attr___simple-next-next-next-next-next-next",
-     "data": null,
-     "address": "/Tactic-Proofs/Tactic-Reference/"},
-    {"id":
-     "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/Build-Tools-and-Distribution/Lake/"},
-    {"id": "Lean___Parser___Attr___simple-next-next",
-     "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
     {"id": "Lean___Parser___Attr___simple-next-next-next-next",
      "data": null,
      "address": "/Terms/Function-Application/"},
     {"id":
-     "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next-next",
+     "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
-     "address": "/Notations-and-Macros/Elaborators/"},
+     "address": "/Build-Tools-and-Distribution/Lake/"},
     {"id":
-     "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next-next-next",
+     "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
-     "address": "/Notations-and-Macros/Elaborators/"},
-    {"id": "Lean___Parser___Attr___simple-next",
-     "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
+     "address": "/Notations-and-Macros/Extending-Lean___s-Output/"},
     {"id":
      "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/Notations-and-Macros/Elaborators/"},
-    {"id": "Lean___Parser___Attr___simple-next-next-next",
-     "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "Lean___Parser___Attr___simple-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/Tactic-Proofs/Tactic-Reference/"},
-    {"id": "Lean___Parser___Attr___simple",
+    {"id": "Lean___Parser___Attr___simple-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
     {"id":
@@ -14626,28 +14816,47 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Notations-and-Macros/Extending-Lean___s-Output/"},
     {"id":
-     "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next-next",
      "data": null,
-     "address": "/Notations-and-Macros/Extending-Lean___s-Output/"},
+     "address": "/Notations-and-Macros/Elaborators/"},
+    {"id": "Lean___Parser___Attr___simple",
+     "data": null,
+     "address": "/Definitions/Recursive-Definitions/"},
+    {"id": "Lean___Parser___Attr___simple-next-next-next-next-next-next",
+     "data": null,
+     "address": "/Tactic-Proofs/Tactic-Reference/"},
     {"id":
-     "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
-     "address": "/Build-Tools-and-Distribution/Lake/"},
+     "address": "/Notations-and-Macros/Elaborators/"},
+    {"id": "Lean___Parser___Attr___simple-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/Tactic-Proofs/Tactic-Reference/"},
+    {"id": "Lean___Parser___Attr___simple-next-next",
+     "data": null,
+     "address": "/Definitions/Recursive-Definitions/"},
+    {"id": "Lean___Parser___Attr___simple-next-next-next",
+     "data": null,
+     "address": "/Definitions/Recursive-Definitions/"},
     {"id":
      "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next",
      "data": null,
-     "address": "/Tactic-Proofs/Tactic-Reference/"}],
-   "Lean.Parser.Attr.simp":
-   [{"id": "Lean___Parser___Attr___simp-next-next",
+     "address": "/Tactic-Proofs/Tactic-Reference/"},
+    {"id":
+     "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
-     "address": "/The-Simplifier/Simp-sets/"},
-    {"id": "Lean___Parser___Attr___simp",
+     "address": "/Build-Tools-and-Distribution/Lake/"}],
+   "Lean.Parser.Attr.simp":
+   [{"id": "Lean___Parser___Attr___simp-next",
      "data": null,
      "address": "/The-Simplifier/Simp-sets/"},
     {"id": "Lean___Parser___Attr___simp-next-next-next",
      "data": null,
      "address": "/The-Simplifier/Simp-sets/"},
-    {"id": "Lean___Parser___Attr___simp-next",
+    {"id": "Lean___Parser___Attr___simp-next-next",
+     "data": null,
+     "address": "/The-Simplifier/Simp-sets/"},
+    {"id": "Lean___Parser___Attr___simp",
      "data": null,
      "address": "/The-Simplifier/Simp-sets/"}],
    "Lean.Parser.Attr.macro":
@@ -14699,13 +14908,13 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "Lake.DSL.packageCommand":
-   [{"id": "Lake___DSL___packageCommand-next-next",
+   [{"id": "Lake___DSL___packageCommand-next",
      "data": null,
      "address": "/Build-Tools-and-Distribution/Lake/"},
     {"id": "Lake___DSL___packageCommand",
      "data": null,
      "address": "/Build-Tools-and-Distribution/Lake/"},
-    {"id": "Lake___DSL___packageCommand-next",
+    {"id": "Lake___DSL___packageCommand-next-next",
      "data": null,
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "Lake.DSL.moduleFacetDecl":
@@ -14721,23 +14930,23 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "Lake.DSL.leanLibCommand":
-   [{"id": "Lake___DSL___leanLibCommand-next",
-     "data": null,
-     "address": "/Build-Tools-and-Distribution/Lake/"},
-    {"id": "Lake___DSL___leanLibCommand",
+   [{"id": "Lake___DSL___leanLibCommand",
      "data": null,
      "address": "/Build-Tools-and-Distribution/Lake/"},
     {"id": "Lake___DSL___leanLibCommand-next-next",
      "data": null,
+     "address": "/Build-Tools-and-Distribution/Lake/"},
+    {"id": "Lake___DSL___leanLibCommand-next",
+     "data": null,
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "Lake.DSL.leanExeCommand":
-   [{"id": "Lake___DSL___leanExeCommand-next-next",
-     "data": null,
-     "address": "/Build-Tools-and-Distribution/Lake/"},
-    {"id": "Lake___DSL___leanExeCommand-next",
+   [{"id": "Lake___DSL___leanExeCommand-next",
      "data": null,
      "address": "/Build-Tools-and-Distribution/Lake/"},
     {"id": "Lake___DSL___leanExeCommand",
+     "data": null,
+     "address": "/Build-Tools-and-Distribution/Lake/"},
+    {"id": "Lake___DSL___leanExeCommand-next-next",
      "data": null,
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "Lake.DSL.getConfig":
@@ -14745,10 +14954,10 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "Lake.DSL.fromClause":
-   [{"id": "Lake___DSL___fromClause",
+   [{"id": "Lake___DSL___fromClause-next",
      "data": null,
      "address": "/Build-Tools-and-Distribution/Lake/"},
-    {"id": "Lake___DSL___fromClause-next",
+    {"id": "Lake___DSL___fromClause",
      "data": null,
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "Lake.DSL.externLibCommand":
@@ -14764,10 +14973,10 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "Lake.DSL.cmdDo":
-   [{"id": "Lake___DSL___cmdDo",
+   [{"id": "Lake___DSL___cmdDo-next",
      "data": null,
      "address": "/Build-Tools-and-Distribution/Lake/"},
-    {"id": "Lake___DSL___cmdDo-next",
+    {"id": "Lake___DSL___cmdDo",
      "data": null,
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "Int.«term-[_+1]»":
@@ -15171,42 +15380,42 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Basic-Propositions/Logical-Connectives/"}],
    "[anonymous]":
-   [{"id": "Lean___Order___CCPO___mk",
+   [{"id": "Lake___LeanExeConfig___mk",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "LawfulApplicative___mk",
+     "address": "/Build-Tools-and-Distribution/Lake/"},
+    {"id": "LawfulBEq___mk",
      "data": null,
-     "address": "/Functors___-Monads-and--do--Notation/Laws/"},
+     "address": "/Type-Classes/Basic-Classes/"},
     {"id": "EquivBEq___mk",
      "data": null,
      "address": "/Type-Classes/Basic-Classes/"},
     {"id": "IO___Process___SpawnArgs___mk",
      "data": null,
      "address": "/IO/Processes/"},
-    {"id": "LawfulMonad___mk",
+    {"id": "GetElem______mk",
      "data": null,
-     "address": "/Functors___-Monads-and--do--Notation/Laws/"},
+     "address": "/Type-Classes/Basic-Classes/"},
     {"id": "Lake___LeanLibConfig___mk",
      "data": null,
      "address": "/Build-Tools-and-Distribution/Lake/"},
-    {"id": "Applicative___mk",
+    {"id": "LawfulMonad___mk",
+     "data": null,
+     "address": "/Functors___-Monads-and--do--Notation/Laws/"},
+    {"id": "Alternative___mk",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/"},
     {"id": "Monad___mk",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/"},
-    {"id": "Alternative___mk",
+    {"id": "LawfulApplicative___mk",
+     "data": null,
+     "address": "/Functors___-Monads-and--do--Notation/Laws/"},
+    {"id": "Applicative___mk",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/"},
-    {"id": "Lake___LeanExeConfig___mk",
+    {"id": "Lean___Order___CCPO___mk",
      "data": null,
-     "address": "/Build-Tools-and-Distribution/Lake/"},
-    {"id": "GetElem______mk",
-     "data": null,
-     "address": "/Type-Classes/Basic-Classes/"},
-    {"id": "LawfulBEq___mk",
-     "data": null,
-     "address": "/Type-Classes/Basic-Classes/"}],
+     "address": "/Definitions/Recursive-Definitions/"}],
    "Zero.zero":
    [{"id": "Zero___mk",
      "data": null,
@@ -20198,10 +20407,10 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Varieties-of-Monads/"}],
    "MonadState.modifyGet":
-   [{"id": "MonadState___modifyGet",
+   [{"id": "MonadState___mk",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Varieties-of-Monads/"},
-    {"id": "MonadState___mk",
+    {"id": "MonadState___modifyGet",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Varieties-of-Monads/"}],
    "MonadState.mk":
@@ -20209,10 +20418,10 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Varieties-of-Monads/"}],
    "MonadState.get":
-   [{"id": "MonadState___mk",
+   [{"id": "MonadState___get",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Varieties-of-Monads/"},
-    {"id": "MonadState___get",
+    {"id": "MonadState___mk",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Varieties-of-Monads/"}],
    "MonadState":
@@ -22070,10 +22279,10 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "Lake.ScriptM":
-   [{"id": "Lake___ScriptM-next",
+   [{"id": "Lake___ScriptM",
      "data": null,
      "address": "/Build-Tools-and-Distribution/Lake/"},
-    {"id": "Lake___ScriptM",
+    {"id": "Lake___ScriptM-next",
      "data": null,
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "Lake.MonadWorkspace.mk":
@@ -25853,8 +26062,8 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Basic-Types/Arrays/"}],
    "Array.toList":
-   [{"id": "Array___mk", "data": null, "address": "/Basic-Types/Arrays/"},
-    {"id": "Array___toList", "data": null, "address": "/Basic-Types/Arrays/"}],
+   [{"id": "Array___toList", "data": null, "address": "/Basic-Types/Arrays/"},
+    {"id": "Array___mk", "data": null, "address": "/Basic-Types/Arrays/"}],
    "Array.takeWhile":
    [{"id": "Array___takeWhile",
      "data": null,
@@ -27212,12 +27421,13 @@ window.addEventListener("load", () => {
      "data": null,
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "ELAN_HOME":
-   [{"id": "ELAN_HOME-next",
+   [{"id": "ELAN_HOME",
      "data": null,
-     "address": "/Build-Tools-and-Distribution/Managing-Toolchains-with-Elan/"},
-    {"id": "ELAN_HOME",
+     "address": "/Build-Tools-and-Distribution/Lake/"},
+    {"id": "ELAN_HOME-next",
      "data": null,
-     "address": "/Build-Tools-and-Distribution/Lake/"}],
+     "address":
+     "/Build-Tools-and-Distribution/Managing-Toolchains-with-Elan/"}],
    "ELAN":
    [{"id": "ELAN",
      "data": null,
@@ -27905,7 +28115,7 @@ window.addEventListener("load", () => {
       "category": null},
      "address": "/Basic-Types/Booleans/"}],
    "«term[_]» [{\"string\": \"[\", \"kind\": \"keyword\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \"]\", \"kind\": \"keyword\"}]":
-   [{"id": "_FLQQ_term_LSQ___RSQ__FLQQ_",
+   [{"id": "_FLQQ_term_LSQ___RSQ__FLQQ_-next",
      "data":
      {"kind": "«term[_]»",
       "forms":
@@ -27913,8 +28123,8 @@ window.addEventListener("load", () => {
        {"string": "…", "kind": "meta"},
        {"string": "]", "kind": "keyword"}],
       "category": null},
-     "address": "/Terms/Literals/"},
-    {"id": "_FLQQ_term_LSQ___RSQ__FLQQ_-next",
+     "address": "/Basic-Types/Linked-Lists/"},
+    {"id": "_FLQQ_term_LSQ___RSQ__FLQQ_",
      "data":
      {"kind": "«term[_]»",
       "forms":
@@ -27922,7 +28132,7 @@ window.addEventListener("load", () => {
        {"string": "…", "kind": "meta"},
        {"string": "]", "kind": "keyword"}],
       "category": null},
-     "address": "/Basic-Types/Linked-Lists/"}],
+     "address": "/Terms/Literals/"}],
    "«termExists_,_» [{\"string\": \"exists\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \",\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"}]":
    [{"id": "_FLQQ_termExists______FLQQ_-next",
      "data":
@@ -27957,7 +28167,7 @@ window.addEventListener("load", () => {
       "category": null},
      "address": "/Basic-Propositions/Quantifiers/"}],
    "«term#[_,]» [{\"string\": \"#[\", \"kind\": \"keyword\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \"]\", \"kind\": \"keyword\"}]":
-   [{"id": "_FLQQ_term____LSQ______RSQ__FLQQ_",
+   [{"id": "_FLQQ_term____LSQ______RSQ__FLQQ_-next",
      "data":
      {"kind": "«term#[_,]»",
       "forms":
@@ -27965,8 +28175,8 @@ window.addEventListener("load", () => {
        {"string": "…", "kind": "meta"},
        {"string": "]", "kind": "keyword"}],
       "category": null},
-     "address": "/Terms/Literals/"},
-    {"id": "_FLQQ_term____LSQ______RSQ__FLQQ_-next",
+     "address": "/Basic-Types/Arrays/"},
+    {"id": "_FLQQ_term____LSQ______RSQ__FLQQ_",
      "data":
      {"kind": "«term#[_,]»",
       "forms":
@@ -27974,7 +28184,7 @@ window.addEventListener("load", () => {
        {"string": "…", "kind": "meta"},
        {"string": "]", "kind": "keyword"}],
       "category": null},
-     "address": "/Basic-Types/Arrays/"}],
+     "address": "/Terms/Literals/"}],
    "«stx_<|>_» [{\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"<|>\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"}]":
    [{"id": "_FLQQ_stx__LT_____GT___FLQQ_",
      "data":
@@ -28223,18 +28433,18 @@ window.addEventListener("load", () => {
       "category": null},
      "address": "/Notations-and-Macros/Precedence/"}],
    "num.antiquot [{\"string\": \"…\", \"kind\": \"meta\"}]":
-   [{"id": "num___antiquot",
+   [{"id": "num___antiquot-next",
      "data":
      {"kind": "num.antiquot",
       "forms": [{"string": "…", "kind": "meta"}],
       "category": null},
-     "address": "/Type-Classes/Instance-Declarations/"},
-    {"id": "num___antiquot-next",
+     "address": "/Notations-and-Macros/Precedence/"},
+    {"id": "num___antiquot",
      "data":
      {"kind": "num.antiquot",
       "forms": [{"string": "…", "kind": "meta"}],
       "category": null},
-     "address": "/Notations-and-Macros/Precedence/"}],
+     "address": "/Type-Classes/Instance-Declarations/"}],
    "ident.antiquot [{\"string\": \"…\", \"kind\": \"meta\"}]":
    [{"id": "ident___antiquot",
      "data":
@@ -28324,15 +28534,15 @@ window.addEventListener("load", () => {
       "category": null},
      "address": "/Basic-Types/Maps-and-Sets/"}],
    "Manual.FreeSyntax.more []":
-   [{"id": "Manual___FreeSyntax___more-next",
-     "data": {"kind": "Manual.FreeSyntax.more", "forms": [], "category": null},
-     "address": "/Terms/Function-Application/"},
-    {"id": "Manual___FreeSyntax___more-next-next-next",
+   [{"id": "Manual___FreeSyntax___more-next-next-next",
      "data": {"kind": "Manual.FreeSyntax.more", "forms": [], "category": null},
      "address": "/Notations-and-Macros/Macros/"},
     {"id": "Manual___FreeSyntax___more-next-next",
      "data": {"kind": "Manual.FreeSyntax.more", "forms": [], "category": null},
      "address": "/Notations-and-Macros/Macros/"},
+    {"id": "Manual___FreeSyntax___more-next",
+     "data": {"kind": "Manual.FreeSyntax.more", "forms": [], "category": null},
+     "address": "/Terms/Function-Application/"},
     {"id": "Manual___FreeSyntax___more",
      "data": {"kind": "Manual.FreeSyntax.more", "forms": [], "category": null},
      "address": "/Terms/Function-Application/"}],
@@ -28353,13 +28563,13 @@ window.addEventListener("load", () => {
       "category": null},
      "address": "/Terms/Functions/"}],
    "Manual.FreeSyntax.done []":
-   [{"id": "Manual___FreeSyntax___done-next",
-     "data": {"kind": "Manual.FreeSyntax.done", "forms": [], "category": null},
-     "address": "/Build-Tools-and-Distribution/Lake/"},
-    {"id": "Manual___FreeSyntax___done",
+   [{"id": "Manual___FreeSyntax___done",
      "data": {"kind": "Manual.FreeSyntax.done", "forms": [], "category": null},
      "address": "/Notations-and-Macros/Macros/"},
     {"id": "Manual___FreeSyntax___done-next-next",
+     "data": {"kind": "Manual.FreeSyntax.done", "forms": [], "category": null},
+     "address": "/Build-Tools-and-Distribution/Lake/"},
+    {"id": "Manual___FreeSyntax___done-next",
      "data": {"kind": "Manual.FreeSyntax.done", "forms": [], "category": null},
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "List.«term_~_» [{\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"~\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"}]":
@@ -29109,20 +29319,7 @@ window.addEventListener("load", () => {
       "category": null},
      "address": "/Terms/Holes/"}],
    "Lean.Parser.Term.fun [{\"string\": \"fun\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"=>\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"}]":
-   [{"id": "Lean___Parser___Term___fun-next-next",
-     "data":
-     {"kind": "Lean.Parser.Term.fun",
-      "forms":
-      [{"string": "fun", "kind": "keyword"},
-       {"string": " ", "kind": "ws"},
-       {"string": "…", "kind": "meta"},
-       {"string": " ", "kind": "ws"},
-       {"string": "=>", "kind": "keyword"},
-       {"string": " ", "kind": "ws"},
-       {"string": "…", "kind": "meta"}],
-      "category": null},
-     "address": "/Terms/Functions/"},
-    {"id": "Lean___Parser___Term___fun-next-next-next-next",
+   [{"id": "Lean___Parser___Term___fun-next-next-next-next",
      "data":
      {"kind": "Lean.Parser.Term.fun",
       "forms":
@@ -29147,9 +29344,22 @@ window.addEventListener("load", () => {
        {"string": " ", "kind": "ws"},
        {"string": "…", "kind": "meta"}],
       "category": null},
+     "address": "/Terms/Functions/"},
+    {"id": "Lean___Parser___Term___fun-next-next",
+     "data":
+     {"kind": "Lean.Parser.Term.fun",
+      "forms":
+      [{"string": "fun", "kind": "keyword"},
+       {"string": " ", "kind": "ws"},
+       {"string": "…", "kind": "meta"},
+       {"string": " ", "kind": "ws"},
+       {"string": "=>", "kind": "keyword"},
+       {"string": " ", "kind": "ws"},
+       {"string": "…", "kind": "meta"}],
+      "category": null},
      "address": "/Terms/Functions/"}],
    "Lean.Parser.Term.fun [{\"string\": \"fun\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \":\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"=>\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"}]":
-   [{"id": "Lean___Parser___Term___fun-next",
+   [{"id": "Lean___Parser___Term___fun-next-next-next",
      "data":
      {"kind": "Lean.Parser.Term.fun",
       "forms":
@@ -29166,7 +29376,7 @@ window.addEventListener("load", () => {
        {"string": "…", "kind": "meta"}],
       "category": null},
      "address": "/Terms/Functions/"},
-    {"id": "Lean___Parser___Term___fun-next-next-next",
+    {"id": "Lean___Parser___Term___fun-next",
      "data":
      {"kind": "Lean.Parser.Term.fun",
       "forms":
@@ -30306,7 +30516,7 @@ window.addEventListener("load", () => {
        {"string": " ", "kind": "ws"},
        {"string": "…", "kind": "meta"}],
       "category": null},
-     "address": "/Namespaces-and-Sections/"}],
+     "address": "/Namespaces and Sections/"}],
    "Lean.Parser.Command.universe [{\"string\": \"universe\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"}]":
    [{"id": "Lean___Parser___Command___universe-next",
      "data":
@@ -30395,7 +30605,7 @@ window.addEventListener("load", () => {
        {"string": " ", "kind": "ws"},
        {"string": "…", "kind": "meta"}],
       "category": null},
-     "address": "/Namespaces-and-Sections/"}],
+     "address": "/Namespaces and Sections/"}],
    "Lean.Parser.Command.printEqns [{\"string\": \"#print\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"equations\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"}]":
    [{"id": "Lean___Parser___Command___printEqns",
      "data":
@@ -30483,7 +30693,7 @@ window.addEventListener("load", () => {
      {"kind": "Lean.Parser.Command.openSimple",
       "forms": [{"string": "…", "kind": "meta"}],
       "category": null},
-     "address": "/Namespaces-and-Sections/"}],
+     "address": "/Namespaces and Sections/"}],
    "Lean.Parser.Command.openScoped [{\"string\": \"scoped\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"}]":
    [{"id": "Lean___Parser___Command___openScoped",
      "data":
@@ -30493,7 +30703,7 @@ window.addEventListener("load", () => {
        {"string": " ", "kind": "ws"},
        {"string": "…", "kind": "meta"}],
       "category": null},
-     "address": "/Namespaces-and-Sections/"}],
+     "address": "/Namespaces and Sections/"}],
    "Lean.Parser.Command.openRenaming [{\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"renaming\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"(\", \"kind\": \"meta\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"→\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \"),*\", \"kind\": \"meta\"}]":
    [{"id": "Lean___Parser___Command___openRenaming",
      "data":
@@ -30511,7 +30721,7 @@ window.addEventListener("load", () => {
        {"string": "…", "kind": "meta"},
        {"string": "),*", "kind": "meta"}],
       "category": null},
-     "address": "/Namespaces-and-Sections/"}],
+     "address": "/Namespaces and Sections/"}],
    "Lean.Parser.Command.openOnly [{\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"(\", \"kind\": \"keyword\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \")\", \"kind\": \"keyword\"}]":
    [{"id": "Lean___Parser___Command___openOnly",
      "data":
@@ -30524,7 +30734,7 @@ window.addEventListener("load", () => {
        {"string": " ", "kind": "ws"},
        {"string": ")", "kind": "keyword"}],
       "category": null},
-     "address": "/Namespaces-and-Sections/"}],
+     "address": "/Namespaces and Sections/"}],
    "Lean.Parser.Command.openHiding [{\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"hiding\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"}]":
    [{"id": "Lean___Parser___Command___openHiding",
      "data":
@@ -30536,7 +30746,7 @@ window.addEventListener("load", () => {
        {"string": " ", "kind": "ws"},
        {"string": "…", "kind": "meta"}],
       "category": null},
-     "address": "/Namespaces-and-Sections/"}],
+     "address": "/Namespaces and Sections/"}],
    "Lean.Parser.Command.open [{\"string\": \"open\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"}]":
    [{"id": "Lean___Parser___Command___open",
      "data":
@@ -30546,7 +30756,7 @@ window.addEventListener("load", () => {
        {"string": " ", "kind": "ws"},
        {"string": "…", "kind": "meta"}],
       "category": null},
-     "address": "/Namespaces-and-Sections/"}],
+     "address": "/Namespaces and Sections/"}],
    "Lean.Parser.Command.notation [{\"string\": \"notation\", \"kind\": \"keyword\"},\n {\"string\": \"(\", \"kind\": \"meta\"},\n {\"string\": \":\", \"kind\": \"keyword\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \")?\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"(\", \"kind\": \"meta\"},\n {\"string\": \"(\", \"kind\": \"keyword\"},\n {\"string\": \"name\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \":=\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \")\", \"kind\": \"keyword\"},\n {\"string\": \")?\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"(\", \"kind\": \"meta\"},\n {\"string\": \"(\", \"kind\": \"keyword\"},\n {\"string\": \"priority\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \":=\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \")\", \"kind\": \"keyword\"},\n {\"string\": \")?\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"=>\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"}]":
    [{"id": "Lean___Parser___Command___notation",
      "data":
@@ -30594,7 +30804,7 @@ window.addEventListener("load", () => {
        {"string": " ", "kind": "ws"},
        {"string": "…", "kind": "meta"}],
       "category": null},
-     "address": "/Namespaces-and-Sections/"}],
+     "address": "/Namespaces and Sections/"}],
    "Lean.Parser.Command.mutual [{\"string\": \"mutual\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"end\", \"kind\": \"keyword\"}]":
    [{"id": "Lean___Parser___Command___mutual",
      "data":
@@ -31040,7 +31250,7 @@ window.addEventListener("load", () => {
        {"string": " ", "kind": "ws"},
        {"string": "…", "kind": "meta"}],
       "category": null},
-     "address": "/Namespaces-and-Sections/"}],
+     "address": "/Namespaces and Sections/"}],
    "Lean.Parser.Command.identPrec [{\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \"(\", \"kind\": \"meta\"},\n {\"string\": \":\", \"kind\": \"keyword\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \")?\", \"kind\": \"meta\"}]":
    [{"id": "Lean___Parser___Command___identPrec",
      "data":
@@ -31066,7 +31276,7 @@ window.addEventListener("load", () => {
        {"string": "…", "kind": "meta"},
        {"string": ")", "kind": "keyword"}],
       "category": null},
-     "address": "/Namespaces-and-Sections/"}],
+     "address": "/Namespaces and Sections/"}],
    "Lean.Parser.Command.evalBang [{\"string\": \"#eval!\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"}]":
    [{"id": "Lean___Parser___Command___evalBang",
      "data":
@@ -31101,7 +31311,7 @@ window.addEventListener("load", () => {
      {"kind": "Lean.Parser.Command.end",
       "forms": [{"string": "end", "kind": "keyword"}],
       "category": null},
-     "address": "/Namespaces-and-Sections/"}],
+     "address": "/Namespaces and Sections/"}],
    "Lean.Parser.Command.end [{\"string\": \"end\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"}]":
    [{"id": "Lean___Parser___Command___end-next",
      "data":
@@ -31111,7 +31321,7 @@ window.addEventListener("load", () => {
        {"string": " ", "kind": "ws"},
        {"string": "…", "kind": "meta"}],
       "category": null},
-     "address": "/Namespaces-and-Sections/"}],
+     "address": "/Namespaces and Sections/"}],
    "Lean.Parser.Command.elab_rules [{\"string\": \"(\", \"kind\": \"meta\"},\n {\"string\": \"@[\", \"kind\": \"keyword\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \"]\", \"kind\": \"keyword\"},\n {\"string\": \")?\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"elab_rules\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"(\", \"kind\": \"meta\"},\n {\"string\": \"(\", \"kind\": \"keyword\"},\n {\"string\": \"kind\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \":=\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \")\", \"kind\": \"keyword\"},\n {\"string\": \")?\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"(\", \"kind\": \"meta\"},\n {\"string\": \":\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \")?\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"(\", \"kind\": \"meta\"},\n {\"string\": \"<=\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \")?\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"(\", \"kind\": \"meta\"},\n {\"string\": \"|\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"`(\", \"kind\": \"keyword\"},\n {\"string\": \"(\", \"kind\": \"meta\"},\n {\"string\": \":\", \"kind\": \"meta\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \"|\", \"kind\": \"keyword\"},\n {\"string\": \")?\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \")\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"=>\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \")*\", \"kind\": \"meta\"}]":
    [{"id": "Lean___Parser___Command___elab_rules",
      "data":
@@ -32578,202 +32788,6 @@ if(name) {
     });
 }
 </script>
-    <script>
-      
-window.onload = () => {
-
-    // Don't show hovers inside of closed tactic states
-    function blockedByTactic(elem) {
-      let parent = elem.parentNode;
-      while (parent && "classList" in parent) {
-        if (parent.classList.contains("tactic")) {
-          const toggle = parent.querySelector("input.tactic-toggle");
-          if (toggle) {
-            return !toggle.checked;
-          }
-        }
-        parent = parent.parentNode;
-      }
-      return false;
-    }
-
-    function blockedByTippy(elem) {
-      // Don't show a new hover until the old ones are all closed.
-      // Scoped to the nearest "top-level block" to avoid being O(n) in the size of the document.
-      var block = elem;
-      const topLevel = new Set(["section", "body", "html", "nav", "header"]);
-      while (block.parentNode && !topLevel.has(block.parentNode.nodeName.toLowerCase())) {
-        block = block.parentNode;
-      }
-      for (const child of block.querySelectorAll(".token, .has-info")) {
-        if (child._tippy && child._tippy.state.isVisible) { return true };
-      }
-      return false;
-    }
-
-    for (const c of document.querySelectorAll(".hl.lean .token")) {
-        if (c.dataset.binding != "") {
-            c.addEventListener("mouseover", (event) => {
-                if (blockedByTactic(c)) {return;}
-                const context = c.closest(".hl.lean").dataset.leanContext;
-                for (const example of document.querySelectorAll(".hl.lean")) {
-                    if (example.dataset.leanContext == context) {
-                        for (const tok of example.querySelectorAll(".token")) {
-                            if (c.dataset.binding == tok.dataset.binding) {
-                                tok.classList.add("binding-hl");
-                            }
-                        }
-                    }
-                }
-            });
-        }
-        c.addEventListener("mouseout", (event) => {
-            for (const tok of document.querySelectorAll(".hl.lean .token")) {
-                tok.classList.remove("binding-hl");
-            }
-        });
-    }
-    /* Render docstrings */
-    if ('undefined' !== typeof marked) {
-        for (const d of document.querySelectorAll("code.docstring, pre.docstring")) {
-            const str = d.innerText;
-            const html = marked.parse(str);
-            const rendered = document.createElement("div");
-            rendered.classList.add("docstring");
-            rendered.innerHTML = html;
-            d.parentNode.replaceChild(rendered, d);
-        }
-    }
-    // Add hovers
-    let siteRoot = typeof __versoSiteRoot !== 'undefined' ? __versoSiteRoot : "/";
-    let docsJson = siteRoot + "-verso-docs.json";
-    fetch(docsJson).then((resp) => resp.json()).then((versoDocData) => {
-
-      function hideParentTooltips(element) {
-        let parent = element.parentElement;
-        while (parent) {
-          const tippyInstance = parent._tippy;
-          if (tippyInstance) {
-            tippyInstance.hide();
-          }
-          parent = parent.parentElement;
-        }
-      }
-
-
-
-      const defaultTippyProps = {
-        /* DEBUG -- remove the space: * /
-        onHide(any) { return false; },
-        trigger: "click",
-        // */
-        /* theme: "lean", */
-        maxWidth: "none",
-        appendTo: () => document.body,
-        interactive: true,
-        delay: [100, null],
-        /* ignoreAttributes: true, */
-        followCursor: 'initial',
-        onShow(inst) {
-          if (inst.reference.className == 'tactic') {
-
-            const toggle = inst.reference.querySelector("input.tactic-toggle");
-            if (toggle && toggle.checked) {
-              return false;
-            }
-            hideParentTooltips(inst.reference);
-            //if (blockedByTippy(inst.reference)) { return false; }
-
-          } else if (inst.reference.querySelector(".hover-info") || "versoHover" in inst.reference.dataset) {
-            if (blockedByTactic(inst.reference)) { return false };
-            if (blockedByTippy(inst.reference)) { return false; }
-          } else { // Nothing to show here!
-            return false;
-          }
-        },
-        content (tgt) {
-          const content = document.createElement("span");
-          if (tgt.className == 'tactic') {
-            const state = tgt.querySelector(".tactic-state").cloneNode(true);
-            state.style.display = "block";
-            content.appendChild(state);
-            content.style.display = "block";
-            content.className = "hl lean popup";
-          } else {
-            content.className = "hl lean";
-            content.style.display = "block";
-            content.style.maxHeight = "300px";
-            content.style.overflowY = "auto";
-            content.style.overflowX = "hidden";
-            const hoverId = tgt.dataset.versoHover;
-            const hoverInfo = tgt.querySelector(".hover-info");
-            if (hoverId) { // Docstrings from the table
-              // TODO stop doing an implicit conversion from string to number here
-              let data = versoDocData[hoverId];
-              if (data) {
-                const info = document.createElement("span");
-                info.className = "hover-info";
-                info.style.display = "block";
-                info.innerHTML = data;
-                content.appendChild(info);
-                /* Render docstrings - TODO server-side */
-                if ('undefined' !== typeof marked) {
-                    for (const d of content.querySelectorAll("code.docstring, pre.docstring")) {
-                        const str = d.innerText;
-                        const html = marked.parse(str);
-                        const rendered = document.createElement("div");
-                        rendered.classList.add("docstring");
-                        rendered.innerHTML = html;
-                        d.parentNode.replaceChild(rendered, d);
-                    }
-                }
-              } else {
-                content.innerHTML = "Failed to load doc ID: " + hoverId;
-              }
-            } else if (hoverInfo) { // The inline info, still used for compiler messages
-              content.appendChild(hoverInfo.cloneNode(true));
-            }
-            const extraLinks = tgt.parentElement.dataset['versoLinks'];
-            if (extraLinks) {
-              try {
-                const extras = JSON.parse(extraLinks);
-                const links = document.createElement('ul');
-                links.className = 'extra-doc-links';
-                extras.forEach((l) => {
-                  const li = document.createElement('li');
-                  li.innerHTML = "<a href=\"" + l['href'] + "\" title=\"" + l.long + "\">" + l.short + "</a>";
-                  links.appendChild(li);
-                });
-                content.appendChild(links);
-              } catch (error) {
-                console.error(error);
-              }
-            }
-          }
-          return content;
-        }
-      };
-
-
-      document.querySelectorAll('.hl.lean .const.token, .hl.lean .keyword.token, .hl.lean .literal.token, .hl.lean .option.token, .hl.lean .var.token, .hl.lean .typed.token, .hl.lean .level-var, .hl.lean .level-const, .hl.lean .level-op, .hl.lean .sort').forEach(element => {
-        element.setAttribute('data-tippy-theme', 'lean');
-      });
-      document.querySelectorAll('.hl.lean .has-info.warning').forEach(element => {
-        element.setAttribute('data-tippy-theme', 'warning message');
-      });
-      document.querySelectorAll('.hl.lean .has-info.info').forEach(element => {
-        element.setAttribute('data-tippy-theme', 'info message');
-      });
-      document.querySelectorAll('.hl.lean .has-info.error').forEach(element => {
-        element.setAttribute('data-tippy-theme', 'error message');
-      });
-      document.querySelectorAll('.hl.lean .tactic').forEach(element => {
-        element.setAttribute('data-tippy-theme', 'tactic');
-      });
-      let insts = tippy('.hl.lean .const.token, .hl.lean .keyword.token, .hl.lean .literal.token, .hl.lean .option.token, .hl.lean .var.token, .hl.lean .typed.token, .hl.lean .has-info, .hl.lean .tactic, .hl.lean .level-var, .hl.lean .level-const, .hl.lean .level-op, .hl.lean .sort', defaultTippyProps);
-  });
-}
-</script>
     <script type="module" src="static/search/search-init.js"></script>
     <script defer="defer" data-domain="lean-lang.org/doc/reference/latest" src="https://plausible.io/js/script.outbound-links.js"></script>
     </head>
@@ -32796,7 +32810,7 @@ window.onload = () => {
             <div class="split-toc book">
               <div class="title">
                 <label for="--verso-manual-toc-----bookRoot" class="toggle-split-toc"><input type="checkbox" class="toggle-split-toc" id="--verso-manual-toc-----bookRoot" checked="checked"></label><span class="">Table of Contents</span></div>
-              <table><tr class="numbered"><td class="num">1.</td><td><a href="Introduction/#introduction">简介</a></td></tr><tr class="numbered"><td class="num">2.</td><td><a href="Elaboration and Compilation/#elaboration-and-compilation">繁释与编译</a></td></tr><tr class="numbered"><td class="num">3.</td><td><a href="Interacting-with-Lean/#interaction">Interacting with Lean</a></td></tr><tr class="numbered"><td class="num">4.</td><td><a href="The Type System/#type-system">类型系统</a></td></tr><tr class="numbered"><td class="num">5.</td><td><a href="Source Files and Modules/#files">源文件与模块</a></td></tr><tr class="numbered"><td class="num">6.</td><td><a href="Namespaces-and-Sections/#namespaces-sections">Namespaces and Sections</a></td></tr><tr class="numbered"><td class="num">7.</td><td><a href="Definitions/#definitions">Definitions</a></td></tr><tr class="numbered"><td class="num">8.</td><td><a href="Axioms/#axioms">Axioms</a></td></tr><tr class="numbered"><td class="num">9.</td><td><a href="Attributes/#attributes">Attributes</a></td></tr><tr class="numbered"><td class="num">10.</td><td><a href="Terms/#terms">Terms</a></td></tr><tr class="numbered"><td class="num">11.</td><td><a href="Type-Classes/#type-classes">Type Classes</a></td></tr><tr class="numbered"><td class="num">12.</td><td><a href="Coercions/#coercions">Coercions</a></td></tr><tr class="numbered"><td class="num">13.</td><td><a href="Tactic-Proofs/#tactics">Tactic Proofs</a></td></tr><tr class="numbered"><td class="num">14.</td><td><a href="Functors___-Monads-and--do--Notation/#monads-and-do">Functors, Monads and <code>do</code>-Notation</a></td></tr><tr class="numbered"><td class="num">15.</td><td><a href="IO/#io">IO</a></td></tr><tr class="numbered"><td class="num">16.</td><td><a href="The-Simplifier/#the-simplifier">The Simplifier</a></td></tr><tr class="numbered"><td class="num">17.</td><td><a href="Basic-Propositions/#basic-props">Basic Propositions</a></td></tr><tr class="numbered"><td class="num">18.</td><td><a href="Basic-Types/#basic-types">Basic Types</a></td></tr><tr class="numbered"><td class="num">19.</td><td><a href="Notations-and-Macros/#language-extension">Notations and Macros</a></td></tr><tr class="numbered"><td class="num">20.</td><td><a href="Run-Time-Code/#runtime">Run-Time Code</a></td></tr><tr class="numbered"><td class="num">21.</td><td><a href="Build-Tools-and-Distribution/#build-tools-and-distribution">Build Tools and Distribution</a></td></tr><tr class="unnumbered"><td class="num"><td><a href="releases/#release-notes">Release Notes</a></td></tr><tr class="unnumbered"><td class="num"><td><a href="the-index/#Lean-__________________--______">索引</a></td></tr></table></div>
+              <table><tr class="numbered"><td class="num">1.</td><td><a href="Introduction/#introduction">简介</a></td></tr><tr class="numbered"><td class="num">2.</td><td><a href="Elaboration and Compilation/#elaboration-and-compilation">繁释与编译</a></td></tr><tr class="numbered"><td class="num">3.</td><td><a href="Interacting-with-Lean/#interaction">Interacting with Lean</a></td></tr><tr class="numbered"><td class="num">4.</td><td><a href="The Type System/#type-system">类型系统</a></td></tr><tr class="numbered"><td class="num">5.</td><td><a href="Source Files and Modules/#files">源文件与模块</a></td></tr><tr class="numbered"><td class="num">6.</td><td><a href="Namespaces and Sections/#namespaces-sections">命名空间与区段</a></td></tr><tr class="numbered"><td class="num">7.</td><td><a href="Definitions/#definitions">Definitions</a></td></tr><tr class="numbered"><td class="num">8.</td><td><a href="Axioms/#axioms">Axioms</a></td></tr><tr class="numbered"><td class="num">9.</td><td><a href="Attributes/#attributes">Attributes</a></td></tr><tr class="numbered"><td class="num">10.</td><td><a href="Terms/#terms">Terms</a></td></tr><tr class="numbered"><td class="num">11.</td><td><a href="Type-Classes/#type-classes">Type Classes</a></td></tr><tr class="numbered"><td class="num">12.</td><td><a href="Coercions/#coercions">Coercions</a></td></tr><tr class="numbered"><td class="num">13.</td><td><a href="Tactic-Proofs/#tactics">Tactic Proofs</a></td></tr><tr class="numbered"><td class="num">14.</td><td><a href="Functors___-Monads-and--do--Notation/#monads-and-do">Functors, Monads and <code>do</code>-Notation</a></td></tr><tr class="numbered"><td class="num">15.</td><td><a href="IO/#io">IO</a></td></tr><tr class="numbered"><td class="num">16.</td><td><a href="The-Simplifier/#the-simplifier">The Simplifier</a></td></tr><tr class="numbered"><td class="num">17.</td><td><a href="Basic-Propositions/#basic-props">Basic Propositions</a></td></tr><tr class="numbered"><td class="num">18.</td><td><a href="Basic-Types/#basic-types">Basic Types</a></td></tr><tr class="numbered"><td class="num">19.</td><td><a href="Notations-and-Macros/#language-extension">Notations and Macros</a></td></tr><tr class="numbered"><td class="num">20.</td><td><a href="Run-Time-Code/#runtime">Run-Time Code</a></td></tr><tr class="numbered"><td class="num">21.</td><td><a href="Build-Tools-and-Distribution/#build-tools-and-distribution">Build Tools and Distribution</a></td></tr><tr class="unnumbered"><td class="num"><td><a href="releases/#release-notes">Release Notes</a></td></tr><tr class="unnumbered"><td class="num"><td><a href="the-index/#Lean-__________________--______">索引</a></td></tr></table></div>
             </div>
           </div>
         <div class="last">
