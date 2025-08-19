@@ -481,7 +481,7 @@ The environment includes the constants, {tech}[inductive types], {tech}[theorems
 -/
 
 Lean 在繁释一个模块时，最终会得到一个 {TODO}[def 和交叉引用] 环境。
-该环境包括本模块声明的常量、{tech key := "inductive type"}[归纳类型]、{tech key := "theorem"}[定理]、{tech key := "type class"}[类型类]、{tech key := "instance"}[实例] 及其它所有声明，还有用于记录各种数据（如 {tech key := "simp set"}[simp 集]、命名空间别名、{tech key := "documentation comment"}[文档注释]）的辅助表。
+该环境包括本模块声明的常量、{tech key := "inductive type"}[归纳类型]、{tech key := "theorems"}[定理]、{tech key := "type class"}[类型类]、{tech key := "instance"}[实例] 及其它所有声明，还有用于记录各种数据（如 {tech key := "simp set"}[simp 集]、命名空间别名、{tech key := "documentation comment"}[文档注释]）的辅助表。
 
 /-
 As the module is processed by Lean, commands add content to the environment.
