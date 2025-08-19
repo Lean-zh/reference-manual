@@ -22,11 +22,11 @@
       "sectionNum": "7.6.3.1.",
       "context":
       [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Definitions", "shortTitle": null, "number": "7"},
+       {"title": "定义", "shortTitle": null, "number": "7"},
        {"title": "Recursive Definitions", "shortTitle": null, "number": "6"},
        {"title": "Well-Founded Recursion", "shortTitle": null, "number": "3"},
        {"title": "Well-Founded Relations", "shortTitle": null, "number": "1"}]},
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "well-founded-recursion":
    [{"id": "well-founded-recursion",
      "data":
@@ -35,10 +35,10 @@
       "sectionNum": "7.6.3.",
       "context":
       [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Definitions", "shortTitle": null, "number": "7"},
+       {"title": "定义", "shortTitle": null, "number": "7"},
        {"title": "Recursive Definitions", "shortTitle": null, "number": "6"},
        {"title": "Well-Founded Recursion", "shortTitle": null, "number": "3"}]},
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "well-founded-preprocessing":
    [{"id": "well-founded-preprocessing",
      "data":
@@ -47,13 +47,13 @@
       "sectionNum": "7.6.3.6.",
       "context":
       [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Definitions", "shortTitle": null, "number": "7"},
+       {"title": "定义", "shortTitle": null, "number": "7"},
        {"title": "Recursive Definitions", "shortTitle": null, "number": "6"},
        {"title": "Well-Founded Recursion", "shortTitle": null, "number": "3"},
        {"title": "Preprocessing Function Definitions",
         "shortTitle": null,
         "number": "6"}]},
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "well-formed-inductives":
    [{"id": "well-formed-inductives",
      "data":
@@ -75,13 +75,13 @@
       "sectionNum": "7.6.5.2.",
       "context":
       [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Definitions", "shortTitle": null, "number": "7"},
+       {"title": "定义", "shortTitle": null, "number": "7"},
        {"title": "Recursive Definitions", "shortTitle": null, "number": "6"},
        {"title": "Partial and Unsafe Definitions",
         "shortTitle": null,
         "number": "5"},
        {"title": "Unsafe Definitions", "shortTitle": null, "number": "2"}]},
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "universe":
    [{"id": "universe",
      "data":
@@ -1030,10 +1030,10 @@
       "sectionNum": "7.6.2.",
       "context":
       [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Definitions", "shortTitle": null, "number": "7"},
+       {"title": "定义", "shortTitle": null, "number": "7"},
        {"title": "Recursive Definitions", "shortTitle": null, "number": "6"},
        {"title": "Structural Recursion", "shortTitle": null, "number": "2"}]},
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "string-syntax":
    [{"id": "string-syntax",
      "data":
@@ -1495,14 +1495,16 @@
    "signature-syntax":
    [{"id": "signature-syntax",
      "data":
-     {"title": "Headers and Signatures",
+     {"title": "头部与签名（Headers and Signatures）",
       "shortTitle": null,
       "sectionNum": "7.2.",
       "context":
       [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Definitions", "shortTitle": null, "number": "7"},
-       {"title": "Headers and Signatures", "shortTitle": null, "number": "2"}]},
-     "address": "/Definitions/Headers-and-Signatures/"}],
+       {"title": "定义", "shortTitle": null, "number": "7"},
+       {"title": "头部与签名（Headers and Signatures）",
+        "shortTitle": null,
+        "number": "2"}]},
+     "address": "/Definitions/Headers and Signatures/"}],
    "sigma-types":
    [{"id": "sigma-types",
      "data":
@@ -2039,10 +2041,10 @@
       "sectionNum": "7.6.6.",
       "context":
       [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Definitions", "shortTitle": null, "number": "7"},
+       {"title": "定义", "shortTitle": null, "number": "7"},
        {"title": "Recursive Definitions", "shortTitle": null, "number": "6"},
        {"title": "Controlling Reduction", "shortTitle": null, "number": "6"}]},
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "recursors":
    [{"id": "recursors",
      "data":
@@ -2103,9 +2105,9 @@
       "sectionNum": "7.6.",
       "context":
       [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Definitions", "shortTitle": null, "number": "7"},
+       {"title": "定义", "shortTitle": null, "number": "7"},
        {"title": "Recursive Definitions", "shortTitle": null, "number": "6"}]},
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "reader-monad":
    [{"id": "reader-monad",
      "data":
@@ -2452,12 +2454,12 @@
       "sectionNum": "7.6.5.",
       "context":
       [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Definitions", "shortTitle": null, "number": "7"},
+       {"title": "定义", "shortTitle": null, "number": "7"},
        {"title": "Recursive Definitions", "shortTitle": null, "number": "6"},
        {"title": "Partial and Unsafe Definitions",
         "shortTitle": null,
         "number": "5"}]},
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "partial-functions":
    [{"id": "partial-functions",
      "data":
@@ -2466,13 +2468,13 @@
       "sectionNum": "7.6.5.1.",
       "context":
       [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Definitions", "shortTitle": null, "number": "7"},
+       {"title": "定义", "shortTitle": null, "number": "7"},
        {"title": "Recursive Definitions", "shortTitle": null, "number": "6"},
        {"title": "Partial and Unsafe Definitions",
         "shortTitle": null,
         "number": "5"},
        {"title": "Partial Functions", "shortTitle": null, "number": "1"}]},
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "partial-fixpoint-theory":
    [{"id": "partial-fixpoint-theory",
      "data":
@@ -2481,7 +2483,7 @@
       "sectionNum": "7.6.4.5.",
       "context":
       [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Definitions", "shortTitle": null, "number": "7"},
+       {"title": "定义", "shortTitle": null, "number": "7"},
        {"title": "Recursive Definitions", "shortTitle": null, "number": "6"},
        {"title": "Partial Fixpoint Recursion",
         "shortTitle": null,
@@ -2489,7 +2491,7 @@
        {"title": "Theory and Construction",
         "shortTitle": null,
         "number": "5"}]},
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "partial-fixpoint-tailrec":
    [{"id": "partial-fixpoint-tailrec",
      "data":
@@ -2498,7 +2500,7 @@
       "sectionNum": "7.6.4.1.",
       "context":
       [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Definitions", "shortTitle": null, "number": "7"},
+       {"title": "定义", "shortTitle": null, "number": "7"},
        {"title": "Recursive Definitions", "shortTitle": null, "number": "6"},
        {"title": "Partial Fixpoint Recursion",
         "shortTitle": null,
@@ -2506,7 +2508,7 @@
        {"title": "Tail-Recursive Functions",
         "shortTitle": null,
         "number": "1"}]},
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "partial-fixpoint-monadic":
    [{"id": "partial-fixpoint-monadic",
      "data":
@@ -2515,13 +2517,13 @@
       "sectionNum": "7.6.4.2.",
       "context":
       [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Definitions", "shortTitle": null, "number": "7"},
+       {"title": "定义", "shortTitle": null, "number": "7"},
        {"title": "Recursive Definitions", "shortTitle": null, "number": "6"},
        {"title": "Partial Fixpoint Recursion",
         "shortTitle": null,
         "number": "4"},
        {"title": "Monadic functions", "shortTitle": null, "number": "2"}]},
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "partial-fixpoint":
    [{"id": "partial-fixpoint",
      "data":
@@ -2530,12 +2532,12 @@
       "sectionNum": "7.6.4.",
       "context":
       [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Definitions", "shortTitle": null, "number": "7"},
+       {"title": "定义", "shortTitle": null, "number": "7"},
        {"title": "Recursive Definitions", "shortTitle": null, "number": "6"},
        {"title": "Partial Fixpoint Recursion",
         "shortTitle": null,
         "number": "4"}]},
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "partial-correctness-theorem":
    [{"id": "partial-correctness-theorem",
      "data":
@@ -2544,7 +2546,7 @@
       "sectionNum": "7.6.4.3.",
       "context":
       [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Definitions", "shortTitle": null, "number": "7"},
+       {"title": "定义", "shortTitle": null, "number": "7"},
        {"title": "Recursive Definitions", "shortTitle": null, "number": "6"},
        {"title": "Partial Fixpoint Recursion",
         "shortTitle": null,
@@ -2552,7 +2554,7 @@
        {"title": "Partial Correctness Theorems",
         "shortTitle": null,
         "number": "3"}]},
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "parser":
    [{"id": "parser",
      "data":
@@ -2567,15 +2569,19 @@
    "parameter-syntax":
    [{"id": "parameter-syntax",
      "data":
-     {"title": "Parameters and Types",
+     {"title": "参数与类型（Parameters and Types）",
       "shortTitle": null,
       "sectionNum": "7.2.2.",
       "context":
       [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Definitions", "shortTitle": null, "number": "7"},
-       {"title": "Headers and Signatures", "shortTitle": null, "number": "2"},
-       {"title": "Parameters and Types", "shortTitle": null, "number": "2"}]},
-     "address": "/Definitions/Headers-and-Signatures/"}],
+       {"title": "定义", "shortTitle": null, "number": "7"},
+       {"title": "头部与签名（Headers and Signatures）",
+        "shortTitle": null,
+        "number": "2"},
+       {"title": "参数与类型（Parameters and Types）",
+        "shortTitle": null,
+        "number": "2"}]},
+     "address": "/Definitions/Headers and Signatures/"}],
    "pairs":
    [{"id": "pairs",
      "data":
@@ -2967,13 +2973,13 @@
       "sectionNum": "7.6.3.5.",
       "context":
       [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Definitions", "shortTitle": null, "number": "7"},
+       {"title": "定义", "shortTitle": null, "number": "7"},
        {"title": "Recursive Definitions", "shortTitle": null, "number": "6"},
        {"title": "Well-Founded Recursion", "shortTitle": null, "number": "3"},
        {"title": "Mutual Well-Founded Recursion",
         "shortTitle": null,
         "number": "5"}]},
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "mutual-syntax":
    [{"id": "mutual-syntax",
      "data":
@@ -2982,10 +2988,10 @@
       "sectionNum": "7.6.1.",
       "context":
       [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Definitions", "shortTitle": null, "number": "7"},
+       {"title": "定义", "shortTitle": null, "number": "7"},
        {"title": "Recursive Definitions", "shortTitle": null, "number": "6"},
        {"title": "Mutual Recursion", "shortTitle": null, "number": "1"}]},
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "mutual-structural-recursion":
    [{"id": "mutual-structural-recursion",
      "data":
@@ -2994,13 +3000,13 @@
       "sectionNum": "7.6.2.2.",
       "context":
       [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Definitions", "shortTitle": null, "number": "7"},
+       {"title": "定义", "shortTitle": null, "number": "7"},
        {"title": "Recursive Definitions", "shortTitle": null, "number": "6"},
        {"title": "Structural Recursion", "shortTitle": null, "number": "2"},
        {"title": "Mutual Structural Recursion",
         "shortTitle": null,
         "number": "2"}]},
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "mutual-partial-fixpoint":
    [{"id": "mutual-partial-fixpoint",
      "data":
@@ -3009,7 +3015,7 @@
       "sectionNum": "7.6.4.4.",
       "context":
       [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Definitions", "shortTitle": null, "number": "7"},
+       {"title": "定义", "shortTitle": null, "number": "7"},
        {"title": "Recursive Definitions", "shortTitle": null, "number": "6"},
        {"title": "Partial Fixpoint Recursion",
         "shortTitle": null,
@@ -3017,7 +3023,7 @@
        {"title": "Mutual Recursion with Partial Fixpoints",
         "shortTitle": null,
         "number": "4"}]},
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "mutual-inductive-types-same-universe":
    [{"id": "mutual-inductive-types-same-universe",
      "data":
@@ -3951,13 +3957,13 @@
       "sectionNum": "7.6.3.4.",
       "context":
       [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Definitions", "shortTitle": null, "number": "7"},
+       {"title": "定义", "shortTitle": null, "number": "7"},
        {"title": "Recursive Definitions", "shortTitle": null, "number": "6"},
        {"title": "Well-Founded Recursion", "shortTitle": null, "number": "3"},
        {"title": "Inferring Well-Founded Recursion",
         "shortTitle": null,
         "number": "4"}]},
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "inferring-structural-recursion":
    [{"id": "inferring-structural-recursion",
      "data":
@@ -3966,13 +3972,13 @@
       "sectionNum": "7.6.2.3.",
       "context":
       [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Definitions", "shortTitle": null, "number": "7"},
+       {"title": "定义", "shortTitle": null, "number": "7"},
        {"title": "Recursive Definitions", "shortTitle": null, "number": "6"},
        {"title": "Structural Recursion", "shortTitle": null, "number": "2"},
        {"title": "Inferring Structural Recursion",
         "shortTitle": null,
         "number": "3"}]},
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "inductive-types-trivial-wrappers":
    [{"id": "inductive-types-trivial-wrappers",
      "data":
@@ -4884,13 +4890,13 @@
       "sectionNum": "7.6.2.4.",
       "context":
       [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Definitions", "shortTitle": null, "number": "7"},
+       {"title": "定义", "shortTitle": null, "number": "7"},
        {"title": "Recursive Definitions", "shortTitle": null, "number": "6"},
        {"title": "Structural Recursion", "shortTitle": null, "number": "2"},
        {"title": "Elaboration Using Course-of-Values Recursion",
         "shortTitle": null,
         "number": "4"}]},
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "do-notation":
    [{"id": "do-notation",
      "data":
@@ -4969,12 +4975,12 @@
    "definitions":
    [{"id": "definitions",
      "data":
-     {"title": "Definitions",
+     {"title": "定义",
       "shortTitle": null,
       "sectionNum": "7.",
       "context":
       [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Definitions", "shortTitle": null, "number": "7"}]},
+       {"title": "定义", "shortTitle": null, "number": "7"}]},
      "address": "/Definitions/"}],
    "defining-macros":
    [{"id": "defining-macros",
@@ -5015,13 +5021,13 @@
    "declaration-modifiers":
    [{"id": "declaration-modifiers",
      "data":
-     {"title": "Modifiers",
+     {"title": "修饰符（Modifiers）",
       "shortTitle": null,
       "sectionNum": "7.1.",
       "context":
       [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Definitions", "shortTitle": null, "number": "7"},
-       {"title": "Modifiers", "shortTitle": null, "number": "1"}]},
+       {"title": "定义", "shortTitle": null, "number": "7"},
+       {"title": "修饰符（Modifiers）", "shortTitle": null, "number": "1"}]},
      "address": "/Definitions/Modifiers/"}],
    "decidable-propositions":
    [{"id": "decidable-propositions",
@@ -5495,17 +5501,19 @@
    "bracketed-parameter-syntax":
    [{"id": "bracketed-parameter-syntax",
      "data":
-     {"title": "Bracketed Parameter Bindings",
+     {"title": "带括号参数绑定（Bracketed Parameter Bindings）",
       "shortTitle": null,
       "sectionNum": "7.2.3.",
       "context":
       [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Definitions", "shortTitle": null, "number": "7"},
-       {"title": "Headers and Signatures", "shortTitle": null, "number": "2"},
-       {"title": "Bracketed Parameter Bindings",
+       {"title": "定义", "shortTitle": null, "number": "7"},
+       {"title": "头部与签名（Headers and Signatures）",
+        "shortTitle": null,
+        "number": "2"},
+       {"title": "带括号参数绑定（Bracketed Parameter Bindings）",
         "shortTitle": null,
         "number": "3"}]},
-     "address": "/Definitions/Headers-and-Signatures/"}],
+     "address": "/Definitions/Headers and Signatures/"}],
    "bound-variable-name-hints":
    [{"id": "bound-variable-name-hints",
      "data":
@@ -5611,17 +5619,19 @@
    "automatic-implicit-parameters":
    [{"id": "automatic-implicit-parameters",
      "data":
-     {"title": "Automatic Implicit Parameters",
+     {"title": "自动隐式参数（Automatic Implicit Parameters）",
       "shortTitle": null,
       "sectionNum": "7.2.4.",
       "context":
       [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Definitions", "shortTitle": null, "number": "7"},
-       {"title": "Headers and Signatures", "shortTitle": null, "number": "2"},
-       {"title": "Automatic Implicit Parameters",
+       {"title": "定义", "shortTitle": null, "number": "7"},
+       {"title": "头部与签名（Headers and Signatures）",
+        "shortTitle": null,
+        "number": "2"},
+       {"title": "自动隐式参数（Automatic Implicit Parameters）",
         "shortTitle": null,
         "number": "4"}]},
-     "address": "/Definitions/Headers-and-Signatures/"}],
+     "address": "/Definitions/Headers and Signatures/"}],
    "attributes":
    [{"id": "attributes",
      "data":
@@ -6095,10 +6105,10 @@
   {"α":
    [{"id": "___-next",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
+     "address": "/Definitions/Recursive Definitions/"},
     {"id": "___",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "ys":
    [{"id": "xs", "data": null, "address": "/Basic-Types/Lazy-Computations/"}],
    "y.y": [{"id": "B", "data": null, "address": "/Terms/Identifiers/"}],
@@ -6134,15 +6144,15 @@
    "unFin_length_eq_length":
    [{"id": "unFin_length_eq_length",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "unFinImpl":
    [{"id": "unFin",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "unFin":
    [{"id": "unFin",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "two_eq_five": [{"id": "two_eq_five", "data": null, "address": "/Axioms/"}],
    "twoHundredThirteen":
    [{"id": "twoHundredThirteen", "data": null, "address": "/Coercions/"}],
@@ -6200,24 +6210,24 @@
    "tally_eq_add":
    [{"id": "tally_eq_add-next-next",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
+     "address": "/Definitions/Recursive Definitions/"},
     {"id": "tally_eq_add-next",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
+     "address": "/Definitions/Recursive Definitions/"},
     {"id": "tally_eq_add",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "tally":
    [{"id": "tally",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "synack":
    [{"id": "synack",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
+     "address": "/Definitions/Recursive Definitions/"},
     {"id": "synack-next",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "sweetPotato":
    [{"id": "sweetPotato",
      "data": null,
@@ -6232,10 +6242,10 @@
    "sum_eq_add":
    [{"id": "sum_eq_add-next",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
+     "address": "/Definitions/Recursive Definitions/"},
     {"id": "sum_eq_add",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "sumUntilFive":
    [{"id": "sumUntilFive",
      "data": null,
@@ -6249,7 +6259,7 @@
    "sum":
    [{"id": "tally",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "succ_not_zero":
    [{"id": "NoConfusion",
      "data": null,
@@ -6290,16 +6300,16 @@
    "select":
    [{"id": "select-next-next",
      "data": null,
-     "address": "/Definitions/Headers-and-Signatures/"},
+     "address": "/Definitions/Headers and Signatures/"},
     {"id": "select-next-next-next",
      "data": null,
-     "address": "/Definitions/Headers-and-Signatures/"},
+     "address": "/Definitions/Headers and Signatures/"},
     {"id": "select-next",
      "data": null,
-     "address": "/Definitions/Headers-and-Signatures/"},
+     "address": "/Definitions/Headers and Signatures/"},
     {"id": "select",
      "data": null,
-     "address": "/Definitions/Headers-and-Signatures/"}],
+     "address": "/Definitions/Headers and Signatures/"}],
    "satisfyingIndices":
    [{"id": "satisfyingIndices",
      "data": null,
@@ -6384,7 +6394,7 @@
    "plus_eq_add":
    [{"id": "plus_eq_add",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "plusTimes2":
    [{"id": "AddMul",
      "data": null,
@@ -6396,7 +6406,7 @@
    "plus":
    [{"id": "tally",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
+     "address": "/Definitions/Recursive Definitions/"},
     {"id": "plus",
      "data": null,
      "address": "/Coercions/Coercing-to-Function-Types/"}],
@@ -6443,7 +6453,7 @@
    "odd":
    [{"id": "odd",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "observe":
    [{"id": "observe",
      "data": null,
@@ -6452,11 +6462,11 @@
    "notInductive":
    [{"id": "notInductive",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "notAck":
    [{"id": "notAck",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "nonzero":
    [{"id": "nonzero", "data": null, "address": "/Terms/Pattern-Matching/"}],
    "nonParametric":
@@ -6474,7 +6484,7 @@
    "nextPrime":
    [{"id": "nextPrime",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "nextOdd": [{"id": "nextOdd", "data": null, "address": "/Axioms/"}],
    "neg0":
    [{"id": "neg0",
@@ -6489,41 +6499,41 @@
    "n":
    [{"id": "NaturalNum-next",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
+     "address": "/Definitions/Recursive Definitions/"},
     {"id": "NaturalNum",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "mustBeEqual":
    [{"id": "mustBeEqual",
      "data": null,
-     "address": "/Definitions/Headers-and-Signatures/"}],
+     "address": "/Definitions/Headers and Signatures/"}],
    "mkStx":
    [{"id": "mkStx", "data": null, "address": "/Notations-and-Macros/Macros/"}],
    "min'":
    [{"id": "min___-next-next",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
+     "address": "/Definitions/Recursive Definitions/"},
     {"id": "min___-next-next-next",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
+     "address": "/Definitions/Recursive Definitions/"},
     {"id": "min___-next",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
+     "address": "/Definitions/Recursive Definitions/"},
     {"id": "min___",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "map":
    [{"id": "map-next", "data": null, "address": "/The Type System/Universe/"},
     {"id": "map-next-next-next",
      "data": null,
-     "address": "/Definitions/Headers-and-Signatures/"},
+     "address": "/Definitions/Headers and Signatures/"},
     {"id": "map-next-next",
      "data": null,
-     "address": "/Definitions/Headers-and-Signatures/"},
+     "address": "/Definitions/Headers and Signatures/"},
     {"id": "map", "data": null, "address": "/The Type System/Universe/"},
     {"id": "map-next-next-next-next",
      "data": null,
-     "address": "/Definitions/Headers-and-Signatures/"}],
+     "address": "/Definitions/Headers and Signatures/"}],
    "main":
    [{"id":
      "main-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
@@ -6589,7 +6599,7 @@
    "loop":
    [{"id": "loop",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "location":
    [{"id": "location",
      "data": null,
@@ -6597,7 +6607,7 @@
    "listLen":
    [{"id": "listLen",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "last?'":
    [{"id": "last______", "data": null, "address": "/Terms/Pattern-Matching/"}],
    "last?":
@@ -6609,7 +6619,7 @@
    "isPrime":
    [{"id": "nextPrime",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "intersperse":
    [{"id": "intersperse", "data": null, "address": "/Interacting-with-Lean/"}],
    "interestingName":
@@ -6645,89 +6655,89 @@
    "identity":
    [{"id": "___-next",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
+     "address": "/Definitions/Recursive Definitions/"},
     {"id": "___",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "id'":
    [{"id": "id___", "data": null, "address": "/The Type System/Universe/"}],
    "helper":
    [{"id": "half___",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "hello":
    [{"id": "hello-next",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
+     "address": "/Definitions/Recursive Definitions/"},
     {"id": "hello", "data": null, "address": "/Introduction/"}],
    "half'''":
    [{"id": "half_________",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "half''":
    [{"id": "half______-next-next",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
+     "address": "/Definitions/Recursive Definitions/"},
     {"id": "half______",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
+     "address": "/Definitions/Recursive Definitions/"},
     {"id": "half______-next-next-next-next",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
+     "address": "/Definitions/Recursive Definitions/"},
     {"id": "half______-next-next-next",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
+     "address": "/Definitions/Recursive Definitions/"},
     {"id": "half______-next",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "half'":
    [{"id": "half___-next",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
+     "address": "/Definitions/Recursive Definitions/"},
     {"id": "half___",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "half":
    [{"id": "half-next-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/Terms/Pattern-Matching/"},
     {"id": "half-next",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
+     "address": "/Definitions/Recursive Definitions/"},
     {"id": "half",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
+     "address": "/Definitions/Recursive Definitions/"},
     {"id": "half-next-next-next-next-next-next-next",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
+     "address": "/Definitions/Recursive Definitions/"},
     {"id": "half-next-next-next-next-next-next-next-next",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
+     "address": "/Definitions/Recursive Definitions/"},
     {"id": "half-next-next-next-next",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
+     "address": "/Definitions/Recursive Definitions/"},
     {"id": "half-next-next-next-next-next-next",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
+     "address": "/Definitions/Recursive Definitions/"},
     {"id": "half-next-next-next-next-next",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
+     "address": "/Definitions/Recursive Definitions/"},
     {"id": "half-next-next",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
+     "address": "/Definitions/Recursive Definitions/"},
     {"id": "half-next-next-next",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "grouped":
    [{"id": "grouped", "data": null, "address": "/Interacting-with-Lean/"}],
    "goodMorning":
    [{"id": "hello-next",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "goodEvening":
    [{"id": "goodEvening",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "getValues":
    [{"id":
      "main-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
@@ -6783,7 +6793,7 @@
    "g":
    [{"id": "f-next-next-next-next",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
+     "address": "/Definitions/Recursive Definitions/"},
     {"id": "f-next-next-next-next-next",
      "data": null,
      "address": "/Terms/Functions/"},
@@ -6808,29 +6818,29 @@
    "fooInst":
    [{"id": "fooInst",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "find":
    [{"id": "find",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "filled":
    [{"id": "grouped", "data": null, "address": "/Interacting-with-Lean/"}],
    "fib":
    [{"id": "fib-next-next",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
+     "address": "/Definitions/Recursive Definitions/"},
     {"id": "fib-next",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
+     "address": "/Definitions/Recursive Definitions/"},
     {"id": "fib-next-next-next-next",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
+     "address": "/Definitions/Recursive Definitions/"},
     {"id": "fib-next-next-next",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
+     "address": "/Definitions/Recursive Definitions/"},
     {"id": "fib",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "false_is_true":
    [{"id": "two_eq_five", "data": null, "address": "/Axioms/"}],
    "fact":
@@ -6840,14 +6850,14 @@
    "f":
    [{"id": "f-next-next-next",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "f", "data": null, "address": "/Definitions/Recursive-Definitions/"},
+     "address": "/Definitions/Recursive Definitions/"},
+    {"id": "f", "data": null, "address": "/Definitions/Recursive Definitions/"},
     {"id": "f-next-next-next-next-next-next-next",
      "data": null,
      "address": "/Basic-Propositions/Truth/"},
     {"id": "f-next-next-next-next",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
+     "address": "/Definitions/Recursive Definitions/"},
     {"id": "f-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/Basic-Types/The-Empty-Type/"},
@@ -6856,7 +6866,7 @@
      "address": "/Terms/Functions/"},
     {"id": "f-next",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
+     "address": "/Definitions/Recursive Definitions/"},
     {"id": "f-next-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/Notations-and-Macros/Macros/"},
@@ -6865,7 +6875,7 @@
      "address": "/Terms/Pattern-Matching/"},
     {"id": "f-next-next",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "extEq":
    [{"id": "ExtFun", "data": null, "address": "/The Type System/Quotients/"}],
    "extApp":
@@ -6901,7 +6911,7 @@
    "even":
    [{"id": "odd",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "emptyIsEmpty":
    [{"id": "emptyIsEmpty",
      "data": null,
@@ -6915,25 +6925,25 @@
    "div.eq2":
    [{"id": "div___eq2",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "div.eq1":
    [{"id": "div___eq2",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "div.eq0":
    [{"id": "div___eq0",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
+     "address": "/Definitions/Recursive Definitions/"},
     {"id": "div___eq2",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "div":
    [{"id": "div",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
+     "address": "/Definitions/Recursive Definitions/"},
     {"id": "div-next",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "discardElems":
    [{"id": "discardElems",
      "data": null,
@@ -6945,23 +6955,23 @@
    "countdown'":
    [{"id": "countdown___-next",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
+     "address": "/Definitions/Recursive Definitions/"},
     {"id": "countdown___-next-next",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
+     "address": "/Definitions/Recursive Definitions/"},
     {"id": "countdown___",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "countdown":
    [{"id": "runCountdown",
      "data": null,
      "address": "/IO/Files___-File-Handles___-and-Streams/"},
     {"id": "countdown-next",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
+     "address": "/Definitions/Recursive Definitions/"},
     {"id": "countdown",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "count":
    [{"id": "count", "data": null, "address": "/The Type System/Universe/"}],
    "coords":
@@ -6971,7 +6981,7 @@
    "constantIndex":
    [{"id": "Fin______zero",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "color":
    [{"id": "Forest___statement",
      "data": null,
@@ -6989,7 +6999,7 @@
    "binarySearch":
    [{"id": "binarySearch",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "asString":
    [{"id": "succ",
      "data": null,
@@ -7001,19 +7011,19 @@
    "answer_eq_other":
    [{"id": "answer_eq_other",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "answerUser":
    [{"id": "answerUser",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "answerOtherUser":
    [{"id": "answerUser",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "afterVarying":
    [{"id": "WithParam______zero",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "addPairs":
    [{"id": "NatPair___x-next",
      "data": null,
@@ -7044,27 +7054,27 @@
    [{"id": "add___", "data": null, "address": "/The Type System/Quotients/"},
     {"id": "add___-next",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "add":
    [{"id": "add-next-next",
      "data": null,
      "address": "/Terms/Pattern-Matching/"},
     {"id": "add-next",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
+     "address": "/Definitions/Recursive Definitions/"},
     {"id": "add",
      "data": null,
-     "address": "/Definitions/Headers-and-Signatures/"}],
+     "address": "/Definitions/Headers and Signatures/"}],
    "ack":
    [{"id": "ack-next-next",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
+     "address": "/Definitions/Recursive Definitions/"},
     {"id": "ack",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
+     "address": "/Definitions/Recursive Definitions/"},
     {"id": "ack-next",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "accessControl":
    [{"id": "main-next-next-next",
      "data": null,
@@ -7142,15 +7152,15 @@
    "WithParam'.zero":
    [{"id": "WithParam______zero",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "WithParam'.succ":
    [{"id": "WithParam______zero",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "WithParam'":
    [{"id": "WithParam______zero",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "WithParam":
    [{"id": "WithParam___mk",
      "data": null,
@@ -7249,7 +7259,7 @@
    "Utterance":
    [{"id": "Clause",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "Username.validate":
    [{"id": "Username___validate",
      "data": null,
@@ -7342,55 +7352,55 @@
    "Tree.rev'":
    [{"id": "Tree___rev___",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "Tree.rev":
    [{"id": "Tree___rev___",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "Tree.node":
    [{"id": "Tree___node",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "Tree.map":
    [{"id": "Tree___map-next",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
+     "address": "/Definitions/Recursive Definitions/"},
     {"id": "Tree___map-next-next-next",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
+     "address": "/Definitions/Recursive Definitions/"},
     {"id": "Tree___map-next-next",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
+     "address": "/Definitions/Recursive Definitions/"},
     {"id": "Tree___map",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "Tree.leaf":
    [{"id": "Tree",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
+     "address": "/Definitions/Recursive Definitions/"},
     {"id": "Tree___node",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "Tree.fastBEq":
    [{"id": "Tree___fastBEq",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "Tree.empty":
    [{"id": "Tree___empty",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "Tree.cs":
    [{"id": "Tree___rev___",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "Tree.brecOnTable":
    [{"id": "Tree___brecOnTable",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "Tree.brecOn'":
    [{"id": "Tree___brecOn___",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "Tree.branches":
    [{"id": "Tree___branches",
      "data": null,
@@ -7398,10 +7408,10 @@
    "Tree.branch":
    [{"id": "Tree",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
+     "address": "/Definitions/Recursive Definitions/"},
     {"id": "Tree___empty",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "Tree.big":
    [{"id": "Tree___branches",
      "data": null,
@@ -7409,27 +7419,27 @@
    "Tree.beq":
    [{"id": "Tree___beq",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "Tree.below'":
    [{"id": "Tree___below___",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "Tree":
    [{"id": "Tree___rev___",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
+     "address": "/Definitions/Recursive Definitions/"},
     {"id": "Tree___branches",
      "data": null,
      "address": "/Interacting-with-Lean/"},
     {"id": "Tree",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
+     "address": "/Definitions/Recursive Definitions/"},
     {"id": "Tree___empty",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
+     "address": "/Definitions/Recursive Definitions/"},
     {"id": "Tree___node",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "Tm.zero":
    [{"id": "Tm-next",
      "data": null,
@@ -7568,11 +7578,11 @@
    "Sequence.ofList":
    [{"id": "Sequence___ofList",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "Sequence":
    [{"id": "Sequence___ofList",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "S.usize_2":
    [{"id": "S___ptr_2",
      "data": null,
@@ -7806,7 +7816,7 @@
    "Phrase":
    [{"id": "Clause",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "Permissions.writable":
    [{"id": "Permissions___encode",
      "data": null,
@@ -7862,60 +7872,60 @@
    "Pair.unattach":
    [{"id": "Pair___attach",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "Pair.snd":
    [{"id": "coords",
      "data": null,
      "address": "/The Type System/Inductive Types/"},
     {"id": "Pair___fst",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "Pair.sizeOf_lt_of_mem":
    [{"id": "Pair___sizeOf_lt_of_mem",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "Pair.map_wfParam":
    [{"id": "Pair___map_unattach",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "Pair.map_unattach":
    [{"id": "Pair___map_unattach",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "Pair.map":
    [{"id": "Pair___fst",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "Pair.fst":
    [{"id": "coords",
      "data": null,
      "address": "/The Type System/Inductive Types/"},
     {"id": "Pair___fst",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "Pair.attach":
    [{"id": "Pair___attach",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "Pair.Mem.snd":
    [{"id": "Pair___Mem___snd",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "Pair.Mem.fst":
    [{"id": "Pair___Mem___snd",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "Pair.Mem":
    [{"id": "Pair___Mem___snd",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "Pair":
    [{"id": "coords",
      "data": null,
      "address": "/The Type System/Inductive Types/"},
     {"id": "Pair___fst",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "PBool":
    [{"id": "PBool",
      "data": null,
@@ -8061,10 +8071,10 @@
    "NaturalNum":
    [{"id": "NaturalNum-next",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
+     "address": "/Definitions/Recursive Definitions/"},
     {"id": "NaturalNum",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "NatWrapper.val":
    [{"id": "NatWrapper___val-next",
      "data": null,
@@ -8328,38 +8338,38 @@
    "List.myMap":
    [{"id": "f-next-next",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "List.free_theorem":
    [{"id": "List___free_theorem", "data": null, "address": "/Axioms/"}],
    "List.findIndex_implies_pred":
    [{"id": "List___findIndex_implies_pred",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "List.findIndex":
    [{"id": "List___findIndex-next",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
+     "address": "/Definitions/Recursive Definitions/"},
     {"id": "List___findIndex-next-next-next",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
+     "address": "/Definitions/Recursive Definitions/"},
     {"id": "List___findIndex-next-next",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
+     "address": "/Definitions/Recursive Definitions/"},
     {"id": "List___findIndex",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "List.brecOnTable":
    [{"id": "List___brecOnTable",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "List.brecOn'":
    [{"id": "List___brecOn___",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "List.below'":
    [{"id": "List___below___",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "LengthList":
    [{"id": "LengthList", "data": null, "address": "/The Type System/"}],
    "LenList.zipWith":
@@ -8582,15 +8592,15 @@
    "Fin'.zero":
    [{"id": "Fin______zero",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "Fin'.succ":
    [{"id": "Fin______zero",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "Fin'":
    [{"id": "Fin______zero",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "FamilyBike":
    [{"id": "ElectricVehicle",
      "data": null,
@@ -8600,19 +8610,19 @@
    "Exp.var":
    [{"id": "Exp___app",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "Exp.size":
    [{"id": "Exp___app",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "Exp.app":
    [{"id": "Exp___app",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "Exp":
    [{"id": "Exp___app",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "EvenPrime.notOne":
    [{"id": "EvenNumber",
      "data": null,
@@ -8851,7 +8861,7 @@
    "Clause":
    [{"id": "Clause",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "Children":
    [{"id": "Children",
      "data": null,
@@ -9048,19 +9058,19 @@
    "AtLeast.val_gt_i":
    [{"id": "AtLeast___val",
      "data": null,
-     "address": "/Definitions/Headers-and-Signatures/"}],
+     "address": "/Definitions/Headers and Signatures/"}],
    "AtLeast.val":
    [{"id": "AtLeast___val",
      "data": null,
-     "address": "/Definitions/Headers-and-Signatures/"}],
+     "address": "/Definitions/Headers and Signatures/"}],
    "AtLeast.add":
    [{"id": "AtLeast___add",
      "data": null,
-     "address": "/Definitions/Headers-and-Signatures/"}],
+     "address": "/Definitions/Headers and Signatures/"}],
    "AtLeast":
    [{"id": "AtLeast___val",
      "data": null,
-     "address": "/Definitions/Headers-and-Signatures/"}],
+     "address": "/Definitions/Headers and Signatures/"}],
    "ArraySized.size_eq_length":
    [{"id": "ArraySized___array",
      "data": null,
@@ -9076,43 +9086,43 @@
    "Array.find":
    [{"id": "Array___find",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "App.size":
    [{"id": "Exp___app",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "App.numArgs":
    [{"id": "App___numArgs",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "App.fn":
    [{"id": "Exp___app",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "App.app":
    [{"id": "Exp___app",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "App":
    [{"id": "Exp___app",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "Answer.yes":
    [{"id": "Answer",
      "data": null,
-     "address": "/Definitions/Headers-and-Signatures/"}],
+     "address": "/Definitions/Headers and Signatures/"}],
    "Answer.no":
    [{"id": "Answer",
      "data": null,
-     "address": "/Definitions/Headers-and-Signatures/"}],
+     "address": "/Definitions/Headers and Signatures/"}],
    "Answer.maybe":
    [{"id": "Answer",
      "data": null,
-     "address": "/Definitions/Headers-and-Signatures/"}],
+     "address": "/Definitions/Headers and Signatures/"}],
    "Answer":
    [{"id": "Answer",
      "data": null,
-     "address": "/Definitions/Headers-and-Signatures/"}],
+     "address": "/Definitions/Headers and Signatures/"}],
    "AlsoUnit":
    [{"id": "AlsoUnit", "data": null, "address": "/Basic-Types/The-Unit-Type/"}],
    "AllNonZero":
@@ -9195,11 +9205,7 @@
  {"title": "Terminology",
   "description": "Definitions of technical terms",
   "contents":
-  {"技术术语":
-   [{"id": "--tech-term-____________",
-     "data": {"term": "技术术语"},
-     "address": "/Introduction/"}],
-   "ι reduction":
+  {"ι reduction":
    [{"id": "--tech-term-___-______-next-next-next-next-next",
      "data": {"term": "ι-规约"},
      "address": "/The Type System/Inductive Types/"}],
@@ -9247,11 +9253,11 @@
    "well founded relation":
    [{"id": "--tech-term-well-founded-relation",
      "data": {"term": "well-founded relation"},
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "well founded recursion":
    [{"id": "--tech-term-well-founded-recursion",
      "data": {"term": "well-founded recursion"},
-     "address": "/Definitions/Recursive-Definitions/"},
+     "address": "/Definitions/Recursive Definitions/"},
     {"id": "--tech-term-____________-next-next-next",
      "data": {"term": "well-founded recursion"},
      "address": "/Elaboration and Compilation/"}],
@@ -9342,9 +9348,10 @@
      "data": {"term": "thunk"},
      "address": "/Basic-Types/Lazy-Computations/"}],
    "theorem":
-   [{"id": "--tech-term-theorems",
-     "data": {"term": "theorems"},
-     "address": "/Definitions/Theorems/"}],
+   [{"id":
+     "--tech-term-______-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": {"term": "定理"},
+     "address": "/Definitions/_________Theorems___/"}],
    "test driver":
    [{"id": "--tech-term-test-driver",
      "data": {"term": "test driver"},
@@ -9360,6 +9367,10 @@
     {"id": "--tech-term-___",
      "data": {"term": "Terms"},
      "address": "/The Type System/"}],
+   "technical terminology":
+   [{"id": "--tech-term-____________",
+     "data": {"term": "技术术语"},
+     "address": "/Introduction/"}],
    "task":
    [{"id": "--tech-term-Tasks",
      "data": {"term": "Tasks"},
@@ -9371,7 +9382,7 @@
    "tail position":
    [{"id": "--tech-term-tail-position",
      "data": {"term": "tail position"},
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "synthetic hole":
    [{"id": "--tech-term-synthetic-holes",
      "data": {"term": "synthetic holes"},
@@ -9426,7 +9437,7 @@
    "strict sub term":
    [{"id": "--tech-term-strict-sub-term",
      "data": {"term": "strict sub-term"},
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "strict implicit":
    [{"id": "--tech-term-Strict-implicit",
      "data": {"term": "Strict implicit"},
@@ -9484,9 +9495,10 @@
      "data": {"term": "simp normal form"},
      "address": "/The-Simplifier/Simp-Normal-Forms/"}],
    "signature":
-   [{"id": "--tech-term-signature",
-     "data": {"term": "signature"},
-     "address": "/Definitions/Headers-and-Signatures/"}],
+   [{"id":
+     "--tech-term-______-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": {"term": "签名"},
+     "address": "/Definitions/Headers and Signatures/"}],
    "severity":
    [{"id": "--tech-term-severity",
      "data": {"term": "severity"},
@@ -9497,9 +9509,10 @@
      "data": {"term": "集合体"},
      "address": "/The Type System/Quotients/"}],
    "semireducible":
-   [{"id": "--tech-term-Semireducible",
-     "data": {"term": "Semireducible"},
-     "address": "/Definitions/Recursive-Definitions/"}],
+   [{"id":
+     "--tech-term-_________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": {"term": "半可约"},
+     "address": "/Definitions/Recursive Definitions/"}],
    "semi output parameter":
    [{"id": "--tech-term-Semi-output-parameters",
      "data": {"term": "Semi-output parameters"},
@@ -9575,13 +9588,15 @@
      "data": {"term": "规约"},
      "address": "/The Type System/"}],
    "reducible":
-   [{"id": "--tech-term-Reducible",
-     "data": {"term": "Reducible"},
-     "address": "/Definitions/Recursive-Definitions/"}],
+   [{"id":
+     "--tech-term-______-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": {"term": "可约"},
+     "address": "/Definitions/Recursive Definitions/"}],
    "reducibility":
-   [{"id": "--tech-term-reducibility",
-     "data": {"term": "reducibility"},
-     "address": "/Definitions/Recursive-Definitions/"}],
+   [{"id":
+     "--tech-term-_________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": {"term": "可约性"},
+     "address": "/Definitions/Recursive Definitions/"}],
    "recursor":
    [{"id":
      "--tech-term-_________-next-next-next-next-next-next-next-next-next-next-next-next-next",
@@ -9716,11 +9731,11 @@
    "partial fixpoint":
    [{"id": "--tech-term-partial-fixpoint",
      "data": {"term": "partial fixpoint"},
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "partial correctness theorem":
    [{"id": "--tech-term-partial-correctness-theorem",
      "data": {"term": "partial correctness theorem"},
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "parent projection":
    [{"id":
      "--tech-term-_________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
@@ -9764,9 +9779,10 @@
      "address":
      "/Build-Tools-and-Distribution/Managing-Toolchains-with-Elan/"}],
    "optional parameter":
-   [{"id": "--tech-term-optional-parameters",
-     "data": {"term": "optional parameters"},
-     "address": "/Definitions/Headers-and-Signatures/"}],
+   [{"id":
+     "--tech-term-____________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": {"term": "可选参数"},
+     "address": "/Definitions/Headers and Signatures/"}],
    "opened namespace":
    [{"id": "--tech-term-_____________________-next",
      "data": {"term": "已打开命名空间"},
@@ -9777,9 +9793,10 @@
      "data": {"term": "开放"},
      "address": "/Namespaces and Sections/"}],
    "opaque constant":
-   [{"id": "--tech-term-Opaque-constants",
-     "data": {"term": "Opaque constants"},
-     "address": "/Definitions/Definitions/"}],
+   [{"id":
+     "--tech-term-_______________-next-next-next-next-next-next-next-next-next-next-next",
+     "data": {"term": "不透明常量"},
+     "address": "/Definitions/_________Definitions___/"}],
    "olean":
    [{"id": "--tech-term-___olean-______-next",
      "data": {"term": ".olean 文件"},
@@ -9837,13 +9854,15 @@
      "data": {"term": "named arguments"},
      "address": "/Terms/Function-Application/"}],
    "mutually recursive":
-   [{"id": "--tech-term-mutually-recursive",
-     "data": {"term": "mutually recursive"},
-     "address": "/Definitions/Recursive-Definitions/"}],
+   [{"id":
+     "--tech-term-_________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": {"term": "互递归"},
+     "address": "/Definitions/Recursive Definitions/"}],
    "mutual block":
-   [{"id": "--tech-term-mutual-block",
-     "data": {"term": "mutual block"},
-     "address": "/Definitions/Recursive-Definitions/"}],
+   [{"id":
+     "--tech-term-____________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": {"term": "互递归块"},
+     "address": "/Definitions/Recursive Definitions/"}],
    "motive":
    [{"id":
      "--tech-term-______-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
@@ -9884,8 +9903,9 @@
      "data": {"term": "模块"},
      "address": "/Source Files and Modules/"}],
    "modifier":
-   [{"id": "--tech-term-modifiers",
-     "data": {"term": "modifiers"},
+   [{"id":
+     "--tech-term-_________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": {"term": "修饰符"},
      "address": "/Definitions/Modifiers/"}],
    "mixfix":
    [{"id": "--tech-term-mixfix",
@@ -9911,7 +9931,7 @@
    "measure":
    [{"id": "--tech-term-measure",
      "data": {"term": "measure"},
-     "address": "/Definitions/Recursive-Definitions/"},
+     "address": "/Definitions/Recursive Definitions/"},
     {"id": "--tech-term-______-next-next-next",
      "data": {"term": "measure"},
      "address": "/Elaboration and Compilation/"}],
@@ -10032,9 +10052,10 @@
      "data": {"term": "无关类型"},
      "address": "/The Type System/Inductive Types/"}],
    "irreducible":
-   [{"id": "--tech-term-Irreducible",
-     "data": {"term": "Irreducible"},
-     "address": "/Definitions/Recursive-Definitions/"}],
+   [{"id":
+     "--tech-term-_________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": {"term": "不可约"},
+     "address": "/Definitions/Recursive Definitions/"}],
    "interpolated string":
    [{"id": "--tech-term-interpolated-string",
      "data": {"term": "interpolated string"},
@@ -10142,9 +10163,10 @@
      "data": {"term": "Heterogeneous equality"},
      "address": "/Basic-Propositions/Propositional-Equality/"}],
    "header":
-   [{"id": "--tech-term-header",
-     "data": {"term": "header"},
-     "address": "/Definitions/Headers-and-Signatures/"}],
+   [{"id":
+     "--tech-term-______-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": {"term": "头部"},
+     "address": "/Definitions/Headers and Signatures/"}],
    "guillemet":
    [{"id":
      "--tech-term-_________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
@@ -10201,11 +10223,11 @@
    "fixed prefix":
    [{"id": "--tech-term-fixed-prefix",
      "data": {"term": "fixed prefix"},
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "fixed parameter":
    [{"id": "--tech-term-fixed-parameter",
      "data": {"term": "fixed parameter"},
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "file handle":
    [{"id": "--tech-term-File-Handles",
      "data": {"term": "File Handles"},
@@ -10272,9 +10294,10 @@
      "data": {"term": "Exception monads"},
      "address": "/Functors___-Monads-and--do--Notation/Varieties-of-Monads/"}],
    "example":
-   [{"id": "--tech-term-example",
-     "data": {"term": "example"},
-     "address": "/Definitions/Example-Declarations/"}],
+   [{"id":
+     "--tech-term-______-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": {"term": "示例"},
+     "address": "/Definitions/_______________Example-Declarations___/"}],
    "erasing":
    [{"id": "--tech-term-erasing",
      "data": {"term": "erasing"},
@@ -10316,8 +10339,9 @@
      "data": {"term": "定义域"},
      "address": "/The Type System/Functions/"}],
    "documentation comment":
-   [{"id": "--tech-term-Documentation-comments",
-     "data": {"term": "Documentation comments"},
+   [{"id":
+     "--tech-term-____________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": {"term": "文档注释"},
      "address": "/Definitions/Modifiers/"}],
    "documentation":
    [{"id":
@@ -10420,11 +10444,12 @@
    "decreasing parameter":
    [{"id": "--tech-term-decreasing-parameter",
      "data": {"term": "decreasing parameter"},
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "declaration name":
-   [{"id": "--tech-term-declaration-name",
-     "data": {"term": "declaration name"},
-     "address": "/Definitions/Headers-and-Signatures/"}],
+   [{"id":
+     "--tech-term-____________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": {"term": "声明名称"},
+     "address": "/Definitions/Headers and Signatures/"}],
    "decidable":
    [{"id": "--tech-term-decidable",
      "data": {"term": "decidable"},
@@ -10473,7 +10498,7 @@
    "course of values recursion":
    [{"id": "--tech-term-course-of-values-recursion",
      "data": {"term": "course-of-values recursion"},
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "constructor":
    [{"id":
      "--tech-term-_________-next-next-next-next-next-next-next-next-next-next-next-next",
@@ -10536,7 +10561,7 @@
    "candidate measure":
    [{"id": "--tech-term-Candidate-measures",
      "data": {"term": "Candidate measures"},
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "cancel":
    [{"id": "--tech-term-cancelled",
      "data": {"term": "cancelled"},
@@ -10554,9 +10579,10 @@
      "data": {"term": "buffered"},
      "address": "/IO/Files___-File-Handles___-and-Streams/"}],
    "bracketed binder":
-   [{"id": "--tech-term-bracketed-binders",
-     "data": {"term": "bracketed binders"},
-     "address": "/Definitions/Headers-and-Signatures/"}],
+   [{"id":
+     "--tech-term-_______________-next-next-next-next-next-next-next-next-next-next",
+     "data": {"term": "带括号参数"},
+     "address": "/Definitions/Headers and Signatures/"}],
    "borrowed":
    [{"id": "--tech-term-borrowed",
      "data": {"term": "borrowed"},
@@ -10568,7 +10594,7 @@
    "basic termination measure":
    [{"id": "--tech-term-basic-termination-measures",
      "data": {"term": "basic termination measures"},
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "axiom":
    [{"id": "--tech-term-Axioms",
      "data": {"term": "Axioms"},
@@ -10578,13 +10604,14 @@
      "data": {"term": "辅助匹配函数"},
      "address": "/Elaboration and Compilation/"}],
    "automatic parameter":
-   [{"id": "--tech-term-automatic-parameters",
-     "data": {"term": "automatic parameters"},
-     "address": "/Definitions/Headers-and-Signatures/"}],
+   [{"id":
+     "--tech-term-____________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": {"term": "自动参数"},
+     "address": "/Definitions/Headers and Signatures/"}],
    "automatic implicit parameter":
-   [{"id": "--tech-term-automatic-implicit-parameters",
-     "data": {"term": "automatic implicit parameters"},
-     "address": "/Definitions/Headers-and-Signatures/"}],
+   [{"id": "--tech-term-__________________-next-next-next-next-next-next",
+     "data": {"term": "自动隐式参数"},
+     "address": "/Definitions/Headers and Signatures/"}],
    "attribute instance":
    [{"id": "--tech-term-attribute-instances",
      "data": {"term": "attribute instances"},
@@ -10867,11 +10894,11 @@
    "tacticDecreasing_trivial":
    [{"id": "decreasing_trivial",
      "data": {"userName": "decreasing_trivial"},
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "tacticDecreasing_tactic":
    [{"id": "decreasing_tactic",
      "data": {"userName": "decreasing_tactic"},
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "Lean.solveTactic":
    [{"id": "solve",
      "data": {"userName": "solve"},
@@ -11921,18 +11948,18 @@
    "Lean.Parser.commandUnseal__":
    [{"id": "Lean___Parser___commandUnseal__",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "Lean.Parser.commandSeal__":
    [{"id": "Lean___Parser___commandSeal__",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "Lean.Parser.Termination.terminationBy":
    [{"id": "Lean___Parser___Termination___terminationBy-next-next-next",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
+     "address": "/Definitions/Recursive Definitions/"},
     {"id": "Lean___Parser___Termination___terminationBy-next",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "Lean.Parser.Term.typeAscription":
    [{"id": "Lean___Parser___Term___typeAscription-next",
      "data": null,
@@ -11975,10 +12002,10 @@
      "address": "/Terms/Functions/"},
     {"id": "Lean___Parser___Term___strictImplicitBinder",
      "data": null,
-     "address": "/Definitions/Headers-and-Signatures/"},
+     "address": "/Definitions/Headers and Signatures/"},
     {"id": "Lean___Parser___Term___strictImplicitBinder-next",
      "data": null,
-     "address": "/Definitions/Headers-and-Signatures/"},
+     "address": "/Definitions/Headers and Signatures/"},
     {"id": "Lean___Parser___Term___strictImplicitBinder-next-next",
      "data": null,
      "address": "/Terms/Functions/"}],
@@ -12037,7 +12064,7 @@
    "Lean.Parser.Term.instBinder":
    [{"id": "Lean___Parser___Term___instBinder",
      "data": null,
-     "address": "/Definitions/Headers-and-Signatures/"},
+     "address": "/Definitions/Headers and Signatures/"},
     {"id": "Lean___Parser___Term___instBinder-next",
      "data": null,
      "address": "/Terms/Functions/"},
@@ -12057,7 +12084,7 @@
      "address": "/Terms/Functions/"},
     {"id": "Lean___Parser___Term___implicitBinder",
      "data": null,
-     "address": "/Definitions/Headers-and-Signatures/"}],
+     "address": "/Definitions/Headers and Signatures/"}],
    "Lean.Parser.Term.hole":
    [{"id": "Lean___Parser___Term___hole",
      "data": null,
@@ -12097,10 +12124,10 @@
    "Lean.Parser.Term.explicitBinder":
    [{"id": "Lean___Parser___Term___explicitBinder",
      "data": null,
-     "address": "/Definitions/Headers-and-Signatures/"},
+     "address": "/Definitions/Headers and Signatures/"},
     {"id": "Lean___Parser___Term___explicitBinder-next",
      "data": null,
-     "address": "/Definitions/Headers-and-Signatures/"}],
+     "address": "/Definitions/Headers and Signatures/"}],
    "Lean.Parser.Term.doSeqItem":
    [{"id":
      "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
@@ -12423,7 +12450,7 @@
    "Lean.Parser.Command.optDeclSig":
    [{"id": "Lean___Parser___Command___optDeclSig",
      "data": null,
-     "address": "/Definitions/Headers-and-Signatures/"}],
+     "address": "/Definitions/Headers and Signatures/"}],
    "Lean.Parser.Command.openSimple":
    [{"id": "Lean___Parser___Command___openSimple",
      "data": null,
@@ -12459,7 +12486,7 @@
    "Lean.Parser.Command.mutual":
    [{"id": "Lean___Parser___Command___mutual",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "Lean.Parser.Command.mixfix":
    [{"id": "Lean___Parser___Command___mixfix-next",
      "data": null,
@@ -12568,40 +12595,40 @@
     {"id":
      "Lean___Parser___Command___declaration-next-next-next-next-next-next-next-next-next",
      "data": null,
-     "address": "/Definitions/Definitions/"},
+     "address": "/Definitions/_________Definitions___/"},
     {"id":
      "Lean___Parser___Command___declaration-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
-     "address": "/Definitions/Example-Declarations/"},
+     "address": "/Definitions/_______________Example-Declarations___/"},
     {"id":
      "Lean___Parser___Command___declaration-next-next-next-next-next-next-next",
      "data": null,
-     "address": "/Definitions/Definitions/"},
+     "address": "/Definitions/_________Definitions___/"},
     {"id":
      "Lean___Parser___Command___declaration-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
-     "address": "/Definitions/Theorems/"},
+     "address": "/Definitions/_________Theorems___/"},
     {"id": "Lean___Parser___Command___declaration-next",
      "data": null,
      "address": "/The Type System/Inductive Types/"},
     {"id": "Lean___Parser___Command___declaration-next-next-next",
      "data": null,
-     "address": "/Definitions/Definitions/"},
+     "address": "/Definitions/_________Definitions___/"},
     {"id":
      "Lean___Parser___Command___declaration-next-next-next-next-next-next-next-next",
      "data": null,
-     "address": "/Definitions/Definitions/"},
+     "address": "/Definitions/_________Definitions___/"},
     {"id":
      "Lean___Parser___Command___declaration-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
-     "address": "/Definitions/Theorems/"},
+     "address": "/Definitions/_________Theorems___/"},
     {"id": "Lean___Parser___Command___declaration-next-next-next-next-next",
      "data": null,
-     "address": "/Definitions/Definitions/"},
+     "address": "/Definitions/_________Definitions___/"},
     {"id":
      "Lean___Parser___Command___declaration-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
-     "address": "/Definitions/Definitions/"},
+     "address": "/Definitions/_________Definitions___/"},
     {"id":
      "Lean___Parser___Command___declaration-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
@@ -12609,26 +12636,26 @@
     {"id":
      "Lean___Parser___Command___declaration-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
-     "address": "/Definitions/Example-Declarations/"},
+     "address": "/Definitions/_______________Example-Declarations___/"},
     {"id":
      "Lean___Parser___Command___declaration-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
-     "address": "/Definitions/Example-Declarations/"},
+     "address": "/Definitions/_______________Example-Declarations___/"},
     {"id":
      "Lean___Parser___Command___declaration-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
-     "address": "/Definitions/Theorems/"},
+     "address": "/Definitions/_________Theorems___/"},
     {"id": "Lean___Parser___Command___declaration-next-next-next-next",
      "data": null,
-     "address": "/Definitions/Definitions/"},
+     "address": "/Definitions/_________Definitions___/"},
     {"id":
      "Lean___Parser___Command___declaration-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
-     "address": "/Definitions/Definitions/"}],
+     "address": "/Definitions/_________Definitions___/"}],
    "Lean.Parser.Command.declSig":
    [{"id": "Lean___Parser___Command___declSig",
      "data": null,
-     "address": "/Definitions/Headers-and-Signatures/"}],
+     "address": "/Definitions/Headers and Signatures/"}],
    "Lean.Parser.Command.declModifiers":
    [{"id": "Lean___Parser___Command___declModifiers",
      "data": null,
@@ -12636,10 +12663,10 @@
    "Lean.Parser.Command.declId":
    [{"id": "Lean___Parser___Command___declId",
      "data": null,
-     "address": "/Definitions/Headers-and-Signatures/"},
+     "address": "/Definitions/Headers and Signatures/"},
     {"id": "Lean___Parser___Command___declId-next",
      "data": null,
-     "address": "/Definitions/Headers-and-Signatures/"}],
+     "address": "/Definitions/Headers and Signatures/"}],
    "Lean.Parser.Command.check_failure":
    [{"id": "Lean___Parser___Command___check_failure",
      "data": null,
@@ -12659,7 +12686,7 @@
    "Lean.Parser.Attr.wf_preprocess":
    [{"id": "Lean___Parser___Attr___wf_preprocess",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "Lean.Parser.Attr.simple":
    [{"id": "Lean___Parser___Attr___simple-next-next-next-next-next",
      "data": null,
@@ -12685,7 +12712,7 @@
      "address": "/Notations-and-Macros/Elaborators/"},
     {"id": "Lean___Parser___Attr___simple-next",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
+     "address": "/Definitions/Recursive Definitions/"},
     {"id":
      "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
@@ -12696,7 +12723,7 @@
      "address": "/Notations-and-Macros/Elaborators/"},
     {"id": "Lean___Parser___Attr___simple",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
+     "address": "/Definitions/Recursive Definitions/"},
     {"id": "Lean___Parser___Attr___simple-next-next-next-next-next-next",
      "data": null,
      "address": "/Tactic-Proofs/Tactic-Reference/"},
@@ -12709,10 +12736,10 @@
      "address": "/Tactic-Proofs/Tactic-Reference/"},
     {"id": "Lean___Parser___Attr___simple-next-next",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
+     "address": "/Definitions/Recursive Definitions/"},
     {"id": "Lean___Parser___Attr___simple-next-next-next",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
+     "address": "/Definitions/Recursive Definitions/"},
     {"id":
      "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next",
      "data": null,
@@ -12897,7 +12924,7 @@
    "trace.Elab.definition.wf":
    [{"id": "trace___Elab___definition___wf",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "tactic.skipAssignedInstances":
    [{"id": "tactic___skipAssignedInstances",
      "data": null,
@@ -12932,7 +12959,7 @@
    "relaxedAutoImplicit":
    [{"id": "relaxedAutoImplicit",
      "data": null,
-     "address": "/Definitions/Headers-and-Signatures/"}],
+     "address": "/Definitions/Headers and Signatures/"}],
    "pp.proofs.threshold":
    [{"id": "pp___proofs___threshold",
      "data": null,
@@ -13000,11 +13027,11 @@
    "autoImplicit":
    [{"id": "autoImplicit",
      "data": null,
-     "address": "/Definitions/Headers-and-Signatures/"}],
+     "address": "/Definitions/Headers and Signatures/"}],
    "allowUnsafeReducibility":
    [{"id": "allowUnsafeReducibility",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}]}},
+     "address": "/Definitions/Recursive Definitions/"}]}},
  "Verso.Genre.Manual.doc":
  {"title": "Lean constant reference",
   "description": "Documentation for Lean constants",
@@ -13016,23 +13043,23 @@
    "wfParam":
    [{"id": "wfParam",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "unsafeIO":
    [{"id": "unsafeIO",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "unsafeEIO":
    [{"id": "unsafeEIO",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "unsafeCast":
    [{"id": "unsafeCast",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "unsafeBaseIO":
    [{"id": "unsafeBaseIO",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "type_eq_of_heq":
    [{"id": "type_eq_of_heq",
      "data": null,
@@ -13080,15 +13107,15 @@
    "ptrEqList":
    [{"id": "ptrEqList",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "ptrEq":
    [{"id": "ptrEq",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "ptrAddrUnsafe":
    [{"id": "ptrAddrUnsafe",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "propext":
    [{"id": "propext",
      "data": null,
@@ -13140,11 +13167,11 @@
    "isExclusiveUnsafe":
    [{"id": "isExclusiveUnsafe",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "invImage":
    [{"id": "invImage",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "inferInstanceAs":
    [{"id": "inferInstanceAs",
      "data": null,
@@ -13290,7 +13317,7 @@
      "address": "/Functors___-Monads-and--do--Notation/"},
     {"id": "Lean___Order___CCPO___mk",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "Zero.zero":
    [{"id": "Zero___mk",
      "data": null,
@@ -13306,31 +13333,31 @@
    "WellFoundedRelation.wf":
    [{"id": "WellFoundedRelation___mk",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "WellFoundedRelation.rel":
    [{"id": "WellFoundedRelation___mk",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "WellFoundedRelation.mk":
    [{"id": "WellFoundedRelation___mk",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "WellFoundedRelation":
    [{"id": "WellFoundedRelation___mk",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "WellFounded.intro":
    [{"id": "WellFounded___intro",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "WellFounded.fix":
    [{"id": "WellFounded___fix",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "WellFounded":
    [{"id": "WellFounded___intro",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "Unit.unit":
    [{"id": "Unit___unit",
      "data": null,
@@ -19552,51 +19579,51 @@
    "Lean.Order.monotone":
    [{"id": "Lean___Order___monotone",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "Lean.Order.fix_eq":
    [{"id": "Lean___Order___fix_eq",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "Lean.Order.fix":
    [{"id": "Lean___Order___fix",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "Lean.Order.PartialOrder.rel_trans":
    [{"id": "Lean___Order___PartialOrder___mk",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "Lean.Order.PartialOrder.rel_refl":
    [{"id": "Lean___Order___PartialOrder___mk",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "Lean.Order.PartialOrder.rel_antisymm":
    [{"id": "Lean___Order___PartialOrder___mk",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "Lean.Order.PartialOrder.rel":
    [{"id": "Lean___Order___PartialOrder___mk",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "Lean.Order.PartialOrder.mk":
    [{"id": "Lean___Order___PartialOrder___mk",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "Lean.Order.PartialOrder":
    [{"id": "Lean___Order___PartialOrder___mk",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "Lean.Order.CCPO.toPartialOrder":
    [{"id": "Lean___Order___CCPO___mk",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "Lean.Order.CCPO.mk":
    [{"id": "Lean___Order___CCPO___mk",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "Lean.Order.CCPO":
    [{"id": "Lean___Order___CCPO___mk",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "Lean.Meta.registerSimpAttr":
    [{"id": "Lean___Meta___registerSimpAttr",
      "data": null,
@@ -24366,11 +24393,11 @@
    "Acc.intro":
    [{"id": "Acc___intro",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "Acc":
    [{"id": "Acc___intro",
      "data": null,
-     "address": "/Definitions/Recursive-Definitions/"}]}},
+     "address": "/Definitions/Recursive Definitions/"}]}},
  "Manual.parserAlias":
  {"title": "Parser Alias Documentation",
   "description": "Detailed descriptions of parser aliases",
@@ -26682,7 +26709,7 @@
        {"string": " ", "kind": "ws"},
        {"string": "…", "kind": "meta"}],
       "category": null},
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "Lean.Parser.commandSeal__ [{\"string\": \"seal\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"}]":
    [{"id": "Lean___Parser___commandSeal__",
      "data":
@@ -26692,7 +26719,7 @@
        {"string": " ", "kind": "ws"},
        {"string": "…", "kind": "meta"}],
       "category": null},
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "Lean.Parser.Termination.terminationBy [{\"string\": \"termination_by\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"structural\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"(\", \"kind\": \"meta\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"=>\", \"kind\": \"keyword\"},\n {\"string\": \")?\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"}]":
    [{"id": "Lean___Parser___Termination___terminationBy-next",
      "data":
@@ -26710,7 +26737,7 @@
        {"string": " ", "kind": "ws"},
        {"string": "…", "kind": "meta"}],
       "category": null},
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "Lean.Parser.Termination.terminationBy [{\"string\": \"termination_by\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"(\", \"kind\": \"meta\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"=>\", \"kind\": \"keyword\"},\n {\"string\": \")?\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"}]":
    [{"id": "Lean___Parser___Termination___terminationBy-next-next-next",
      "data":
@@ -26726,7 +26753,7 @@
        {"string": " ", "kind": "ws"},
        {"string": "…", "kind": "meta"}],
       "category": null},
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "Lean.Parser.Term.typeAscription [{\"string\": \"(\", \"kind\": \"keyword\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \":\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \")\", \"kind\": \"keyword\"}]":
    [{"id": "Lean___Parser___Term___typeAscription-next",
      "data":
@@ -26878,7 +26905,7 @@
        {"string": "…", "kind": "meta"},
        {"string": "⦄", "kind": "keyword"}],
       "category": null},
-     "address": "/Definitions/Headers-and-Signatures/"}],
+     "address": "/Definitions/Headers and Signatures/"}],
    "Lean.Parser.Term.strictImplicitBinder [{\"string\": \"⦃\", \"kind\": \"keyword\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \":\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \"⦄\", \"kind\": \"keyword\"}]":
    [{"id": "Lean___Parser___Term___strictImplicitBinder-next-next-next",
      "data":
@@ -26910,7 +26937,7 @@
        {"string": "}", "kind": "keyword"},
        {"string": "}", "kind": "keyword"}],
       "category": null},
-     "address": "/Definitions/Headers-and-Signatures/"}],
+     "address": "/Definitions/Headers and Signatures/"}],
    "Lean.Parser.Term.stateRefT [{\"string\": \"StateRefT\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"}]":
    [{"id": "Lean___Parser___Term___stateRefT",
      "data":
@@ -27134,7 +27161,7 @@
        {"string": "…", "kind": "meta"},
        {"string": "]", "kind": "keyword"}],
       "category": null},
-     "address": "/Definitions/Headers-and-Signatures/"}],
+     "address": "/Definitions/Headers and Signatures/"}],
    "Lean.Parser.Term.inaccessible [{\"string\": \".(\", \"kind\": \"keyword\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \")\", \"kind\": \"keyword\"}]":
    [{"id": "Lean___Parser___Term___inaccessible",
      "data":
@@ -27160,7 +27187,7 @@
        {"string": "…", "kind": "meta"},
        {"string": "}", "kind": "keyword"}],
       "category": null},
-     "address": "/Definitions/Headers-and-Signatures/"}],
+     "address": "/Definitions/Headers and Signatures/"}],
    "Lean.Parser.Term.implicitBinder [{\"string\": \"{\", \"kind\": \"keyword\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"}\", \"kind\": \"keyword\"}]":
    [{"id": "Lean___Parser___Term___implicitBinder-next",
      "data":
@@ -27369,7 +27396,7 @@
        {"string": "…", "kind": "meta"},
        {"string": ")", "kind": "keyword"}],
       "category": null},
-     "address": "/Definitions/Headers-and-Signatures/"}],
+     "address": "/Definitions/Headers and Signatures/"}],
    "Lean.Parser.Term.explicitBinder [{\"string\": \"(\", \"kind\": \"keyword\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \":\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \":=\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \")\", \"kind\": \"keyword\"}]":
    [{"id": "Lean___Parser___Term___explicitBinder-next",
      "data":
@@ -27389,7 +27416,7 @@
        {"string": "…", "kind": "meta"},
        {"string": ")", "kind": "keyword"}],
       "category": null},
-     "address": "/Definitions/Headers-and-Signatures/"}],
+     "address": "/Definitions/Headers and Signatures/"}],
    "Lean.Parser.Term.doSeqItem [{\"string\": \"…\", \"kind\": \"meta\"}]":
    [{"id": "Lean___Parser___Term___doSeqItem-next",
      "data":
@@ -28561,7 +28588,7 @@
        {"string": "…", "kind": "meta"},
        {"string": ")?", "kind": "meta"}],
       "category": null},
-     "address": "/Definitions/Headers-and-Signatures/"}],
+     "address": "/Definitions/Headers and Signatures/"}],
    "Lean.Parser.Command.openSimple [{\"string\": \"…\", \"kind\": \"meta\"}]":
    [{"id": "Lean___Parser___Command___openSimple",
      "data":
@@ -28691,7 +28718,7 @@
        {"string": " ", "kind": "ws"},
        {"string": "end", "kind": "keyword"}],
       "category": null},
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "Lean.Parser.Command.mixfix [{\"string\": \"prefix\", \"kind\": \"keyword\"},\n {\"string\": \":\", \"kind\": \"keyword\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"(\", \"kind\": \"meta\"},\n {\"string\": \"(\", \"kind\": \"keyword\"},\n {\"string\": \"name\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \":=\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \")\", \"kind\": \"keyword\"},\n {\"string\": \")?\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"(\", \"kind\": \"meta\"},\n {\"string\": \"(\", \"kind\": \"keyword\"},\n {\"string\": \"priority\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \":=\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \")\", \"kind\": \"keyword\"},\n {\"string\": \")?\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"=>\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"}]":
    [{"id": "Lean___Parser___Command___mixfix-next-next-next",
      "data":
@@ -29294,7 +29321,7 @@
        {"string": " ", "kind": "ws"},
        {"string": "…", "kind": "meta"}],
       "category": null},
-     "address": "/Definitions/Theorems/"}],
+     "address": "/Definitions/_________Theorems___/"}],
    "Lean.Parser.Command.declaration [{\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"theorem\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \":=\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"}]":
    [{"id":
      "Lean___Parser___Command___declaration-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
@@ -29311,7 +29338,7 @@
        {"string": " ", "kind": "ws"},
        {"string": "…", "kind": "meta"}],
       "category": null},
-     "address": "/Definitions/Theorems/"}],
+     "address": "/Definitions/_________Theorems___/"}],
    "Lean.Parser.Command.declaration [{\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"theorem\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"(\", \"kind\": \"meta\"},\n {\"string\": \"|\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"=>\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \")*\", \"kind\": \"meta\"}]":
    [{"id":
      "Lean___Parser___Command___declaration-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
@@ -29334,7 +29361,7 @@
        {"string": "…", "kind": "meta"},
        {"string": ")*", "kind": "meta"}],
       "category": null},
-     "address": "/Definitions/Theorems/"}],
+     "address": "/Definitions/_________Theorems___/"}],
    "Lean.Parser.Command.declaration [{\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"opaque\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"}]":
    [{"id":
      "Lean___Parser___Command___declaration-next-next-next-next-next-next-next-next-next-next-next-next",
@@ -29347,7 +29374,7 @@
        {"string": " ", "kind": "ws"},
        {"string": "…", "kind": "meta"}],
       "category": null},
-     "address": "/Definitions/Definitions/"}],
+     "address": "/Definitions/_________Definitions___/"}],
    "Lean.Parser.Command.declaration [{\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"opaque\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \":=\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"}]":
    [{"id":
      "Lean___Parser___Command___declaration-next-next-next-next-next-next-next-next-next-next-next",
@@ -29364,7 +29391,7 @@
        {"string": " ", "kind": "ws"},
        {"string": "…", "kind": "meta"}],
       "category": null},
-     "address": "/Definitions/Definitions/"}],
+     "address": "/Definitions/_________Definitions___/"}],
    "Lean.Parser.Command.declaration [{\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"example\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"where\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"}]":
    [{"id":
      "Lean___Parser___Command___declaration-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
@@ -29381,7 +29408,7 @@
        {"string": " ", "kind": "ws"},
        {"string": "…", "kind": "meta"}],
       "category": null},
-     "address": "/Definitions/Example-Declarations/"}],
+     "address": "/Definitions/_______________Example-Declarations___/"}],
    "Lean.Parser.Command.declaration [{\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"example\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \":=\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"}]":
    [{"id":
      "Lean___Parser___Command___declaration-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
@@ -29398,7 +29425,7 @@
        {"string": " ", "kind": "ws"},
        {"string": "…", "kind": "meta"}],
       "category": null},
-     "address": "/Definitions/Example-Declarations/"}],
+     "address": "/Definitions/_______________Example-Declarations___/"}],
    "Lean.Parser.Command.declaration [{\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"example\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"(\", \"kind\": \"meta\"},\n {\"string\": \"|\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"=>\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \")*\", \"kind\": \"meta\"}]":
    [{"id":
      "Lean___Parser___Command___declaration-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
@@ -29421,7 +29448,7 @@
        {"string": "…", "kind": "meta"},
        {"string": ")*", "kind": "meta"}],
       "category": null},
-     "address": "/Definitions/Example-Declarations/"}],
+     "address": "/Definitions/_______________Example-Declarations___/"}],
    "Lean.Parser.Command.declaration [{\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"def\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"where\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"}]":
    [{"id": "Lean___Parser___Command___declaration-next-next-next-next-next",
      "data":
@@ -29437,7 +29464,7 @@
        {"string": " ", "kind": "ws"},
        {"string": "…", "kind": "meta"}],
       "category": null},
-     "address": "/Definitions/Definitions/"}],
+     "address": "/Definitions/_________Definitions___/"}],
    "Lean.Parser.Command.declaration [{\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"def\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \":=\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"}]":
    [{"id": "Lean___Parser___Command___declaration-next-next-next",
      "data":
@@ -29453,7 +29480,7 @@
        {"string": " ", "kind": "ws"},
        {"string": "…", "kind": "meta"}],
       "category": null},
-     "address": "/Definitions/Definitions/"}],
+     "address": "/Definitions/_________Definitions___/"}],
    "Lean.Parser.Command.declaration [{\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"def\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"(\", \"kind\": \"meta\"},\n {\"string\": \"|\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"=>\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \")*\", \"kind\": \"meta\"}]":
    [{"id": "Lean___Parser___Command___declaration-next-next-next-next",
      "data":
@@ -29475,7 +29502,7 @@
        {"string": "…", "kind": "meta"},
        {"string": ")*", "kind": "meta"}],
       "category": null},
-     "address": "/Definitions/Definitions/"}],
+     "address": "/Definitions/_________Definitions___/"}],
    "Lean.Parser.Command.declaration [{\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"class\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"inductive\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"where\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"(\", \"kind\": \"meta\"},\n {\"string\": \"|\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \")*\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"(\", \"kind\": \"meta\"},\n {\"string\": \"deriving\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \")?\", \"kind\": \"meta\"}]":
    [{"id":
      "Lean___Parser___Command___declaration-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
@@ -29522,7 +29549,7 @@
        {"string": " ", "kind": "ws"},
        {"string": "…", "kind": "meta"}],
       "category": null},
-     "address": "/Definitions/Definitions/"}],
+     "address": "/Definitions/_________Definitions___/"}],
    "Lean.Parser.Command.declaration [{\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"abbrev\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \":=\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"}]":
    [{"id":
      "Lean___Parser___Command___declaration-next-next-next-next-next-next-next",
@@ -29539,7 +29566,7 @@
        {"string": " ", "kind": "ws"},
        {"string": "…", "kind": "meta"}],
       "category": null},
-     "address": "/Definitions/Definitions/"}],
+     "address": "/Definitions/_________Definitions___/"}],
    "Lean.Parser.Command.declaration [{\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"abbrev\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"(\", \"kind\": \"meta\"},\n {\"string\": \"|\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"=>\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \")*\", \"kind\": \"meta\"}]":
    [{"id":
      "Lean___Parser___Command___declaration-next-next-next-next-next-next-next-next",
@@ -29562,7 +29589,7 @@
        {"string": "…", "kind": "meta"},
        {"string": ")*", "kind": "meta"}],
       "category": null},
-     "address": "/Definitions/Definitions/"}],
+     "address": "/Definitions/_________Definitions___/"}],
    "Lean.Parser.Command.declaration [{\"string\": \"structure\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"(\", \"kind\": \"meta\"},\n {\"string\": \":\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \")?\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"(\", \"kind\": \"meta\"},\n {\"string\": \"extends\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"(\", \"kind\": \"meta\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \":\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \")?\", \"kind\": \"meta\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \")?\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"where\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"(\", \"kind\": \"meta\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"::\", \"kind\": \"keyword\"},\n {\"string\": \")?\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"(\", \"kind\": \"meta\"},\n {\"string\": \"deriving\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \")?\", \"kind\": \"meta\"}]":
    [{"id": "Lean___Parser___Command___declaration-next",
      "data":
@@ -29688,7 +29715,7 @@
        {"string": " ", "kind": "ws"},
        {"string": "…", "kind": "meta"}],
       "category": null},
-     "address": "/Definitions/Headers-and-Signatures/"}],
+     "address": "/Definitions/Headers and Signatures/"}],
    "Lean.Parser.Command.declModifiers [{\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"(\", \"kind\": \"meta\"},\n {\"string\": \"private\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"|\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"protected\", \"kind\": \"keyword\"},\n {\"string\": \")\", \"kind\": \"meta\"},\n {\"string\": \"?\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"noncomputable\", \"kind\": \"keyword\"},\n {\"string\": \"?\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"unsafe\", \"kind\": \"keyword\"},\n {\"string\": \"?\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"(\", \"kind\": \"meta\"},\n {\"string\": \"partial\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"|\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"nonrec\", \"kind\": \"keyword\"},\n {\"string\": \")\", \"kind\": \"meta\"},\n {\"string\": \"?\", \"kind\": \"meta\"}]":
    [{"id": "Lean___Parser___Command___declModifiers",
      "data":
@@ -29727,7 +29754,7 @@
      {"kind": "Lean.Parser.Command.declId",
       "forms": [{"string": "…", "kind": "meta"}],
       "category": null},
-     "address": "/Definitions/Headers-and-Signatures/"}],
+     "address": "/Definitions/Headers and Signatures/"}],
    "Lean.Parser.Command.declId [{\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \".{\", \"kind\": \"keyword\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \",\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \"}\", \"kind\": \"keyword\"}]":
    [{"id": "Lean___Parser___Command___declId-next",
      "data":
@@ -29741,7 +29768,7 @@
        {"string": "…", "kind": "meta"},
        {"string": "}", "kind": "keyword"}],
       "category": null},
-     "address": "/Definitions/Headers-and-Signatures/"}],
+     "address": "/Definitions/Headers and Signatures/"}],
    "Lean.Parser.Command.check_failure [{\"string\": \"#check_failure\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"}]":
    [{"id": "Lean___Parser___Command___check_failure",
      "data":
@@ -29792,7 +29819,7 @@
      {"kind": "Lean.Parser.Attr.wf_preprocess",
       "forms": [{"string": "wf_preprocess", "kind": "keyword"}],
       "category": null},
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "Lean.Parser.Attr.simple [{\"string\": \"term_elab\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"}]":
    [{"id":
      "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next-next",
@@ -29828,7 +29855,7 @@
      {"kind": "Lean.Parser.Attr.simple",
       "forms": [{"string": "semireducible", "kind": "keyword"}],
       "category": null},
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "Lean.Parser.Attr.simple [{\"string\": \"refl\", \"kind\": \"keyword\"}]":
    [{"id": "Lean___Parser___Attr___simple-next-next-next-next-next-next",
      "data":
@@ -29842,7 +29869,7 @@
      {"kind": "Lean.Parser.Attr.simple",
       "forms": [{"string": "reducible", "kind": "keyword"}],
       "category": null},
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "Lean.Parser.Attr.simple [{\"string\": \"pp_nodot\", \"kind\": \"keyword\"}]":
    [{"id": "Lean___Parser___Attr___simple-next-next-next-next",
      "data":
@@ -29863,7 +29890,7 @@
      {"kind": "Lean.Parser.Attr.simple",
       "forms": [{"string": "irreducible", "kind": "keyword"}],
       "category": null},
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "Lean.Parser.Attr.simple [{\"string\": \"induction_eliminator\", \"kind\": \"keyword\"}]":
    [{"id":
      "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next",
@@ -29881,7 +29908,7 @@
        {"string": " ", "kind": "ws"},
        {"string": "…", "kind": "meta"}],
       "category": null},
-     "address": "/Definitions/Recursive-Definitions/"}],
+     "address": "/Definitions/Recursive Definitions/"}],
    "Lean.Parser.Attr.simple [{\"string\": \"delab\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"}]":
    [{"id":
      "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
