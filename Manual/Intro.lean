@@ -266,8 +266,8 @@ tag := "technical-terms"
 Uses of {tech}[technical terminology] are frequently hyperlinked to their definition sites, using links like this one.
 -/
 
-{deftech}_技术术语_是指在撰写技术资料时以非常特定的含义使用的术语，例如本参考资料中的术语。
-{tech}[技术术语]通常会通过类似这样的链接超链接到其定义页面。
+{deftech key:= "Technical terminology"}_技术术语_是指在撰写技术资料时以非常特定的含义使用的术语，例如本参考资料中的术语。
+{tech key := "Technical terminology"}[技术术语]通常会通过类似这样的链接超链接到其定义页面。
 
 (译者注: 由于翻译进度的原因, 部分技术术语会以 中文(英文) 或 英文(中文) 的方式展示, 括号内的部分是超链接)
 
