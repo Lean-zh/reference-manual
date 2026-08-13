@@ -113,7 +113,7 @@ tag := "keywords-and-identifiers"
 
 
 {deftech (key := "identifier component")}[标识符成分] 由一个字母或类字母字符或下划线（`'_'`）开头，后面可以跟零个或多个标识符后续字符。
-字母包括英文大小写字母，而类字母字符还包含范围较广的非英语字母脚本，比如 Lean 中广泛采用的希腊字母、以及 Unicode 的字母符号区块（如 `ℕ`、`ℤ` 等粗体字符和缩写）。
+字母包括英文大小写字母，而类字母字符还包含范围较广的非英语字母脚本，包括 Lean 中广泛采用的希腊字母、科普特字母、Unicode 类字母符号区块（其中包含 `ℕ`、`ℤ` 等双线体字符和缩写）、Latin-1 补充字母（`×` 和 `÷` 除外），以及拉丁字母扩展 A 区块。
 标识符的后续字符包括字母、类字母字符、下划线（`'_'`）、感叹号（`!`）、问号（`?`）、下标和单引号（`'`）。
 作为例外，单独下划线不是合法的标识符。
 
@@ -275,12 +275,6 @@ import $mod:ident
 
 In source files that are not modules, this imports the specified Lean file.
 Importing a file makes its contents available in the current source file, as well as those from source files transitively imported by its imports.
-
-Source file names do not necessarily correspond to namespaces.
-Source files may add names to any namespace, and importing a source file has no effect on the set of currently open namespaces.
-
-The {tech}[import name] is translated to a filename by replacing dots (`'.'`) in its name with directory separators and appending `.lean` or `.olean`.
-Lean searches its include path for the corresponding intermediate build product or importable module file.
 
 {tech}[Modules] may use the following import syntax:
 ```grammar
@@ -832,7 +826,7 @@ This module should use {keywordOf Lean.Parser.Module.import}`public meta import`
 
 
 
-# 精译后的源文件
+# 精译后的模块
 %%%
 tag := "module-contents"
 %%%

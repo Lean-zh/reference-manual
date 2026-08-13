@@ -133,7 +133,7 @@ Lean 解析一条 {tech (key := "command")}[命令]（顶层声明）、对其�
 
 
 每当对一个命令进行精译时，Lean 的状态都会改变。
-新定义或类型会被保存以备后续使用，语法也可能被扩展，或着没有显示指定的限定式的名称集合会发生变化。
+新定义或类型会被保存以备后续使用，语法也可能被扩展，或者无需显式限定即可引用的名称集合可能发生变化。
 下一个命令会在状态更新后被解析与精译，并为后续命令更新状态。
 
 
@@ -189,7 +189,7 @@ _精译_的确切含义取决于被精译的对象：命令精译会对 Lean 状
 命令精译可以对环境产生副作用，并可在 {lean}`IO` 中执行任意计算。
 Lean {deftech (key := "environment")}[环境]不仅含有从名字到定义的映射，还包括通过 {deftech (key := "environment extensions")}[环境扩展](environment extensions) 定义的其它数据——这是一种与环境关联的附加表；环境扩展可用于追踪大多数其它 Lean 代码信息，包括 {tactic}`simp` 引理、自定义美化输出器、以及编译器中间表示等内部实现。
 命令精译还维护消息日志（包含编译器输出、警告、错误）、{tech (key := "info trees")}[信息树]（info trees, 用于各种交互特性，如显示证明状态、标识符补全、显示文档）、汇集的调试追踪、打开的 {tech (key := "section scopes")}[区段作用域]，以及与宏展开有关的内部状态。
-项精译可以修改除开放作用域外所有这些域。此外，它还可使用所有工具实现从简洁友好的 Lean 语法构造出完整显式核心项，包括归一、类型类实例合成、类型检查等。
+项精译可以修改除开放作用域外所有这些域。此外，它还可使用所有工具实现从简洁友好的 Lean 语法构造出完整显式核心项，包括合一、类型类实例合成、类型检查等。
 
 
 项与命令的精译第一步都是宏展开。
@@ -234,7 +234,7 @@ open Lean.Elab (Info)
 
 
 Lean 值得信任的 {deftech (key := "kernel")}_内核_ 是一个小型、健壮的核心类型理论类型检查器实现。
-它不包括语法层面的终止性检查，也不执行归一；终止性通过将所有递归函数精译为使用原语 {tech (key := "recursors")}[归递子] 得以保证，而归一在精译器阶段已执行。
+它不包括语法层面的终止性检查，也不执行合一；终止性通过将所有递归函数精译为使用原语 {tech (key := "recursors")}[归递子] 得以保证，而合一在精译器阶段已完成。
 在命令或项精译器向环境中加入新的归纳类型或定义之前，必须先通过内核检查，以防止精译过程中的潜在 bug。
 
 
@@ -242,16 +242,16 @@ Lean 的内核使用 C++ 实现。
 另有 [Rust](https://github.com/ammkrn/nanoda_lib) 和 [Lean](https://github.com/digama0/lean4lean) 的独立重写版本。Lean 项目鼓励具有多种实现，以便相互交叉校验。
 
 
-内核实现的语言是构造演算的一个变体，这是一种依值类型论，具备如下特性(译者注: 由于下列特性有过多的专有名词，故同时列出英文以便更好理解)：
- * 完整依值类型 / Full dependent types
- * 可互递归且可嵌套递归的归纳类型 / Inductively-defined types that may be mutually inductive or include recursion nested under other inductive types
- * 一个 {tech (key := "impredicative")}[不可谓词化](impredicative)、定义上证据无关(proof-irrelevant)且外延的 {tech (key := "propositions")}[命题] {tech (key := "universe")}[宇宙] / An {tech}[impredicative], definitionally proof-irrelevant, extensional {tech}[universe] of {tech}[propositions]
- * 一个 {tech (key := "predicative")}[谓词化]、非累积的数据宇宙层级 / A {tech}[predicative], non-cumulative hierarchy of universes of data
- * 含有定义化计算规则的 {ref "quotients"}[商类型] / {ref "quotients"}[Quotient types] with a definitional computation rule
- * 命题的函数外延性 / Propositional function extensionality{margin}[函数外延性可通过商类型作为定理证明，但它过于重要，以致需要特别列出。]
- * 函数与乘积的定义性 {tech (key := "η-equivalence")}[η-等价](η-equality) / Definitional {tech (key := "η-equivalence")}[η-equality] for functions and products
- * 宇宙多态定义 / Universe-polymorphic definitions
- * 一致性：不存在无公理闭项类型为 {lean}`False` 的情况 / Consistency: there is no axiom-free closed term of type {lean}`False`
+内核实现的语言是构造演算的一个变体，这是一种依值类型论，具备如下特性：
+ * 完整依值类型
+ * 可互递归且可嵌套递归的归纳类型
+ * 一个 {tech (key := "impredicative")}[不可谓词化]、定义上证据无关且外延的 {tech (key := "propositions")}[命题] {tech (key := "universe")}[宇宙]
+ * 一个 {tech (key := "predicative")}[谓词化]、非累积的数据宇宙层级
+ * 含有定义化计算规则的 {ref "quotients"}[商类型]
+ * 命题的函数外延性{margin}[函数外延性可通过商类型作为定理证明，但它过于重要，以致需要特别列出。]
+ * 函数与乘积的定义性 {tech (key := "η-equivalence")}[η-等价]
+ * 宇宙多态定义
+ * 一致性：不存在类型为 {lean}`False` 的无公理闭项
 
 
 ```lean -show -keep
@@ -285,7 +285,7 @@ Lean 的类型理论不具备主题归约(subject reduction)、定义等价不�
 然而，这些元理论特性在实际中不会造成问题——传递性失败极为罕见，据现有资料，不终止只会在有意为之的代码中出现。
 更重要的是，逻辑一致性不受影响。
 实际中，表面上的不终止很难和程序太慢进行区分——后者才是问题出现的主因。
-这些元理论性质瑟是不可谓词化、可计算的商类型、定义性证据无关和命题外延性等特性造成——这些特性对于支持数学实践与实现自动化都非常有价值。
+这些元理论性质是不可谓词化、可计算的商类型、定义性证据无关和命题外延性等特性造成——这些特性对于支持数学实践与实现自动化都非常有价值。
 
 
 # 精译结果
