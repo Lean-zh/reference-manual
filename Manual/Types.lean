@@ -117,7 +117,7 @@ def LengthList (α : Type u) : Nat → Type u
   | n + 1 => α × LengthList α n
 ```
 
-Because Lean's tuples nest to the right, multiple nested parentheses are not needed:
+由于 Lean 的元组按右结合嵌套，因此无需多层括号：
 ```lean
 
 example : LengthList Int 0 := ()
@@ -126,7 +126,7 @@ example : LengthList String 2 :=
   ("Hello", "there", ())
 ```
 
-If the length does not match the number of entries, then the computed type will not match the term:
+如果长度与元素项数不匹配，则计算出的类型与项类型不符合：
 ```lean +error (name := wrongNum)
 
 example : LengthList String 5 :=
@@ -181,7 +181,7 @@ tag := "propositions"
 
 : 受限消去
 
-  除了 {tech (key := "subsingleton")}[子单元] 外，命题不能被消除到非命题类型。
+  除了 {tech (key := "subsingleton")}[子单元]外，命题不能被消去到非命题类型。
 
 : {deftech (key := "propositional extensionality")}[外延性] {index (subterm := "of propositions")}[外延性]
 
@@ -210,7 +210,7 @@ example : Sort 5 := Sort 4
 example : Sort 2 := Sort 1
 ```
 
-On the other hand, {lean}`Sort 3` is not an element of {lean}`Sort 5`:
+但 {lean}`Sort 3` 不属于 {lean}`Sort 5`：
 ```lean +error (name := sort3)
 
 example : Sort 5 := Sort 3
@@ -250,8 +250,10 @@ of sort `Type 2`
 {lean}`Prop` 是 {lean}`Sort 0` 的缩写。
 
 
-## 直谓性(Predicativity)
-
+## 直谓性（Predicativity）
+%%%
+tag := "predicativity"
+%%%
 
 谓词,即返回命题的函数（即结果为 `Prop` 中类型的函数）可以拥有任意宇宙的参数类型，但这类函数本身还是属于 `Prop`。
 换言之，命题具有 {deftech (key := "impredicative")}[_非直谓性的_](impredicative){index}[impredicative]{index (subterm := "impredicative")}[quantification] 量化， 因为命题本身可以是关于所有命题（以及所有其他类型）的陈述。
@@ -282,8 +284,8 @@ example (α : Type 2) (β : Type 1) : Type 2 := α → β
 ```
 :::
 
-:::Manual.example "Predicativity of {lean}`Type`"
-This example is not accepted, because `α`'s level is greater than `1`. In other words, the annotated universe is smaller than the function type's universe:
+:::Manual.example "{lean}`Type` 的直谓性"
+下例会出错，因为 `α` 的层级大于 1。换句话说，标注的宇宙低于函数类型的宇宙：
 ```lean +error (name := toosmall)
 
 example (α : Type 2) (β : Type 1) : Type 1 := α → β
@@ -300,8 +302,8 @@ of sort `Type 2`
 :::
 
 
-:::Manual.example "No cumulativity"
-This example is not accepted because the annotated universe is larger than the function type's universe:
+:::Manual.example "无累积性"
+下例不可通过，因为标注的宇宙层级比实际函数类型要大：
 ```lean +error (name := toobig)
 
 example (α : Type 2) (β : Type 1) : Type 3 := α → β
@@ -319,6 +321,9 @@ of sort `Type 4`
 
 
 ## 多态性（Polymorphism）
+%%%
+tag := "polymorphism"
+%%%
 
 Lean 支持 {deftech (key := "universe polymorphism")}_宇宙多态_，{index (subterm := "universe")}[polymorphism]{index}[universe polymorphism]，即 Lean 环境中的常量可以带有 {deftech (key := "universe parameter")}[宇宙参数]。
 这些参数可在使用常量时以具体宇宙层级实例化。
@@ -349,8 +354,8 @@ structure Codec.{u} : Type (u + 1) where
   decode : Array UInt32 → Nat → Option (type × Nat)
 ```
 
-Lean automatically infers most level parameters.
-In the following example, it is not necessary to annotate the type as {lean}`Codec.{0}`, because {lean}`Char`'s type is {lean}`Type 0`, so `u` must be `0`:
+Lean 会自动推断大多数层级参数。
+如下例中无需手工注明 {lean}`Codec.{0}`，因为 {lean}`Char` 属于 {lean}`Type 0`，所以 `u` 必然为 `0`：
 ```lean
 
 def Codec.char : Codec where
@@ -368,15 +373,15 @@ def Codec.char : Codec where
 ::::
 
 
-宇宙多态定义实际上创造了一个 _严谨的定义_，可在不同宇宙层级实例化，不同实例产生的值并不兼容。
+宇宙多态定义实际上会创建一个_模式化定义_，它可在不同宇宙层级实例化，而不同宇宙实例所产生的值并不兼容。
 
 
 ::::keepEnv
 :::Manual.example "宇宙多态 与 定义等价"
 
-This can be seen in the following example, in which {lean}`T` is a gratuitously-universe-polymorphic function that always returns {lean}`true`.
-Because it is marked {keywordOf Lean.Parser.Command.declaration}`opaque`, Lean can't check equality by unfolding the definitions.
-Both instantiations of {lean}`T` have the parameters and the same type, but their differing universe instantiations make them incompatible.
+如下例中，{lean}`T` 是一个过度宇宙多态的始终返回 {lean}`true` 的函数。
+由于被标记为 {keywordOf Lean.Parser.Command.declaration}`opaque`，Lean 无法通过展开定义检查等价。
+尽管两次实例化有同样的参数与类型，但由于宇宙实参不同，它们互不兼容。
 ```lean +error (name := uniIncomp)
 
 opaque T.{u} (_ : Nat) : Bool :=
@@ -465,7 +470,9 @@ $$`\mathtt{imax}\ u\ v = \begin{cases}0 & \mathrm{when\ }v = 0\\\mathtt{max}\ u\
 
 
 ### 宇宙变量绑定
-
+%%%
+tag := "universe-variable-bindings"
+%%%
 
 宇宙多态定义绑定宇宙变量。
 这些绑定可以是显式的也可以是隐式的。
@@ -487,8 +494,12 @@ def map.{u, v} {α : Type u} {β : Type v}
 ::::
 
 
-:::Manual.example "Automatic Implicit Parameters and Universe Polymorphism"
-When `autoImplicit` is {lean}`true` (which is the default setting), this definition is accepted even though it does not bind its universe parameters:
+就如 Lean 会自动实例化隐式参数，它也会自动实例化宇宙参数。
+当开启 {ref "automatic-implicit-parameters"}[自动插入隐式参数]功能（即 {option}`autoImplicit` 设为 {lean}`true`，默认即如此），无需显式绑定宇宙变量，它们会自动插入。
+若设为 {lean}`false`，则需手动写明或用 `universe` 命令声明。{TODO}[xref]
+
+:::Manual.example "自动隐式参数与宇宙多态"
+当 `autoImplicit` 设为 {lean}`true`（默认设置），该代码可通过，即使没显式绑定宇宙参数：
 ```lean -keep
 
 set_option autoImplicit true
@@ -497,7 +508,7 @@ def map {α : Type u} {β : Type v} (f : α → β) : List α → List β
   | x :: xs => f x :: map f xs
 ```
 
-When `autoImplicit` is {lean}`false`, the definition is rejected because `u` and `v` are not in scope:
+设为 {lean}`false` 时，定义因 `u`、`v` 不在作用域而报错：
 ```lean +error (name := uv)
 
 set_option autoImplicit false
@@ -524,10 +535,10 @@ universe $x:ident $xs:ident*
 
 声明若干宇宙变量，本作用域内有效。
 
-Just as the `variable` command causes a particular identifier to be treated as a parameter with a particular type, the `universe` command causes the subsequent identifiers to be implicitly quantified as universe parameters in declarations that mention them, even if the option `autoImplicit` is {lean}`false`.
+如同 `variable` 命令将某标识符视为带类型的参数，`universe` 命令可以让标识符在后续声明中作为宇宙参数，即使 {option}`autoImplicit` 为 {lean}`false` 也无需显式指明。
 :::
 
-:::Manual.example "The `universe` command when `autoImplicit` is `false`"
+:::Manual.example "`autoImplicit = false` 时的 `universe` 命令"
 ```lean -keep
 
 set_option autoImplicit false
@@ -536,19 +547,16 @@ def id₃ (α : Type u) (a : α) := a
 ```
 :::
 
-Because the automatic implicit parameter feature only inserts parameters that are used in the declaration's {tech}[header], universe variables that occur only on the right-hand side of a definition are not inserted as arguments unless they have been declared with `universe` even when `autoImplicit` is `true`.
-
-
-自动隐式参数功能只会为声明 {tech (key := "header")}[头部] 中用到的参数插入参数，若宇宙变量只出现在定义右侧而非头部，除非已用 `universe` 声明，否则即使 `autoImplicit` 为 {lean}`true` 也不会被自动补齐。
+自动隐式参数功能只会为声明 {tech (key := "header")}[头部]中用到的参数插入参数，若宇宙变量只出现在定义右侧而非头部，除非已用 `universe` 声明，否则即使 `autoImplicit` 为 {lean}`true` 也不会被自动补齐。
 
 
 :::Manual.example "自动宇宙参数与 `universe` 命令"
 
-This definition with an explicit universe parameter is accepted:
+下定义带显式宇宙参数可通过：
 ```lean -keep
 def L.{u} := List (Type u)
 ```
-Even with automatic implicit parameters, this definition is rejected, because `u` is not mentioned in the header, which precedes the `:=`:
+即使自动隐式参数开启，下定义因未在头部声明 `u` 而报错：
 ```lean +error (name := unknownUni) -keep
 
 set_option autoImplicit true
@@ -557,7 +565,7 @@ def L := List (Type u)
 ```leanOutput unknownUni
 unknown universe level `u`
 ```
-With a universe declaration, `u` is accepted as a parameter even on the right-hand side:
+用 `universe` 声明后，右侧用到的 `u` 可被接受：
 ```lean -keep
 
 universe u
@@ -574,23 +582,25 @@ def L := List (Type 0)
 :::
 
 
-### 宇宙归一（Unification）
+### 宇宙合一（Unification）
 %%%
+tag := "universe-unification"
 draft := true
 %%%
 
 
 
 :::planned 99
- * 归一规则与算法性质
+ * 合一规则与算法性质
  * 非单射性
  * 归纳类型的省略注解的宇宙推断
 :::
 
 
 ### 宇宙提升（Universe Lifting）
-
-
+%%%
+tag := "universe-lifting"
+%%%
 
 当某类型所在宇宙低于实际应用要求时，可以用 {deftech (key := "universe lifting")}_宇宙提升_ 操作符补足。
 这类操作会用包裹的方式让某类型提升至更高宇宙。

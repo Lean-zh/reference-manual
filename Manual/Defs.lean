@@ -33,9 +33,9 @@ Lean 中以下命令属于“定义式（definition-like）”：{TODO}[以命�
  * {keyword}`theorem`
  * {keyword}`opaque`
 
-All of these commands cause Lean to {tech (key := "elaborator") -normalize}[elaborate] a term based on a {tech}[signature].
-With the exception of {keywordOf Lean.Parser.Command.example}`example`, which discards the result, the resulting expression in Lean's core language is saved for future use in the environment.
-The {keywordOf Lean.Parser.Command.declaration}`instance` command is described in the {ref "instance-declarations"}[section on instance declarations].
+这些命令都会促使 Lean 的 {tech (key := "elaborator") -normalize}[精译器]基于其 {tech (key := "signature")}[签名]对一个项进行精译。
+除 {keywordOf Lean.Parser.Command.example}`example`（其结果会被丢弃）之外，精译得到的 Lean 核心语言表达式都会保存到环境中以供后续使用。
+{keywordOf Lean.Parser.Command.declaration}`instance` 命令见 {ref "instance-declarations"}[实例声明]一节。
 
 
 
@@ -46,18 +46,18 @@ file := "Modifiers"
 tag := "declaration-modifiers"
 %%%
 
-Declarations accept a consistent set of {deftech}_modifiers_, all of which are optional.
-Modifiers change some aspect of the declaration's interpretation; for example, they can add documentation or change its scope.
-The order of modifiers is fixed, but not every kind of declaration accepts every kind of modifier.
+声明支持一组一致的 {deftech (key := "modifiers")}_修饰符_，它们均为可选。
+修饰符会改变声明在解释上的某些方面；例如可以添加文档，或改变其作用域。
+修饰符的顺序是固定的，但并非所有种类的声明都接受所有种类的修饰符。
 
-:::syntax declModifiers -open (alias:=Lean.Parser.Command.declModifiers) (title := "Declaration Modifiers")
-Modifiers consist of the following, in order, all of which are optional:
- 1. a documentation comment,
- 2. a list of {tech}[attributes],
- 3. namespace control, specifying whether the resulting name is {tech}[private] or {tech}[protected],
- 4. the {keyword}`noncomputable` keyword, which exempts a definition from compilation,
- 5. the {keyword}`unsafe` keyword, and
- 6. a recursion modifier {keyword}`partial` or {keyword}`nonrec`, which disable termination proofs or disallow recursion entirely.
+:::syntax declModifiers -open (alias:=Lean.Parser.Command.declModifiers) (title := "声明修饰符")
+修饰符按如下顺序出现，且均为可选：
+ 1. 文档注释；
+ 2. {tech (key := "attributes")}[属性]列表；
+ 3. 命名空间控制，指定结果名字是否为 {tech (key := "private")}[私有]或 {tech (key := "protected")}[受保护]；
+ 4. {keyword}`noncomputable` 关键字，将定义排除在编译之外；
+ 5. {keyword}`unsafe` 关键字；
+ 6. 递归修饰符 {keyword}`partial` 或 {keyword}`nonrec`，分别禁用终止性证明或完全禁止递归。
 
 ```grammar
 $[$_:docComment]?
@@ -84,9 +84,15 @@ $[$_]?
 :::
 
 
-If a declaration is marked {deftech (key := "private")}[{keyword}`private`], then it is not accessible outside the module in which it is defined.
-If it is {keyword}`protected`, then opening its namespace does not bring it into scope.
+属性是可扩展的一类修饰符，用于将附加信息关联到声明上。
+它们在 {ref "attributes"}[属性专章]中有详细说明。
 
+若声明被标记为 {deftech (key := "private")}[{keyword}`private`]，则无法在其定义所在模块之外访问。
+若声明为 {keyword}`protected`，则打开其命名空间时不会将该名字带入作用域。
+
+被标记为 {keyword}`noncomputable` 的函数不会被编译，因而也不能执行。
+当函数使用了非可计算的推理原则（例如选择公理或排中律）来产生与其返回结果相关的数据，或使用了因效率原因而不参与代码生成的 Lean 特性（如 {tech (key := "recursor")}[递归子]）时，该函数必须是 noncomputable。
+即使无法编译和执行，noncomputable 函数在规范化与推理中依然十分有用。
 
 {keyword}`unsafe` 标记会使定义跳过内核检查，并允许其访问可能破坏 Lean 保证的功能。
 使用该标记务必小心，仅在深入理解 Lean 内部机制时使用。
@@ -106,13 +112,15 @@ tag := "signature-syntax"
 
 
 ## 声明名称（Declaration Names）
+%%%
+tag := "declaration-names"
+%%%
 
 大多数头部以一个 {deftech (key := "declaration name")}_声明名称_ 开始，随后是其真正的签名：参数列表以及结果类型。
 一个声明名称可以可选地包含宇宙层级参数。
 
-:::syntax declId -open (title := "Declaration Names")
-Declaration names without universe parameters consist of an identifier:
-
+:::syntax declId -open (title := "声明名称")
+不带宇宙参数的声明名称仅由一个标识符组成：
 ```grammar
 $_:ident
 ```
@@ -141,10 +149,9 @@ $_* : $_
 ```
 :::
 
-:::syntax optDeclSig -open (title := "Optional Signatures")
-Signatures are often optional.
-In these cases, parameters may be supplied even if the type is omitted.
-
+:::syntax optDeclSig -open (title := "可选签名")
+许多情况下签名本身是可选的。
+这时即便省略类型，也可以仅提供参数：
 ```grammar
 $_* $[: $_]?
 ```
@@ -178,10 +185,9 @@ tag := "bracketed-parameter-syntax"
 用下划线（`_`）替代参数名表示匿名参数。
 
 
-:::syntax bracketedBinder -open (title := "Explicit Parameters")
-Parenthesized parameters indicate explicit parameters.
-If more than one identifier or underscore is provided, then all of them become parameters with the same type.
-
+:::syntax bracketedBinder -open (title := "显式参数")
+使用圆括号括起的参数表示显式参数。
+如果提供了多个标识符或下划线，则它们都会成为具有相同类型的多个参数：
 ```grammar
 ($x $x* : $t)
 ```
@@ -226,9 +232,8 @@ If more than one identifier or underscore is provided, then all of them become p
 
 :::
 
-:::syntax bracketedBinder (title := "Instance Implicit Parameters")
-Parameters in square brackets indicate {tech}[instance implicit] parameters, which are synthesized at call sites using {tech (key := "synthesis")}[instance synthesis].
-
+:::syntax bracketedBinder (title := "实例隐式参数")
+使用方括号的参数表示 {tech (key := "instance implicit")}[实例隐式]参数，它们会在调用点通过 {tech (key := "synthesis")}[实例合成]被推导：
 ```grammar
 [$[$x :]? $t]
 ```
@@ -354,7 +359,7 @@ Note: It is not possible to treat `β` as an implicitly bound variable here beca
 :::
 
 
-The full signature allows the definition to be accepted:
+给出完整签名即可通过：
 ```lean -keep
 
 set_option autoImplicit false
@@ -366,8 +371,8 @@ def map.{u, v} {α : Type u} {β : Type v}
   | x :: xs => f x :: map f xs
 ```
 
-Universe parameters are inserted automatically for parameters without explicit type annotations.
-The type parameters' universes can be inferred, and the appropriate universe parameters inserted, even when {option}`autoImplicit` is disabled:
+对于未显式标注类型的参数，其宇宙参数会被自动插入。
+即便禁用了 {option}`autoImplicit`，类型参数所处的宇宙也可被推断，并插入相应的宇宙参数：
 ```lean -keep
 
 set_option autoImplicit false
@@ -389,7 +394,7 @@ def map {α β} (f : α → β) :
 ```lean -show
 variable (i : Fin n)
 ```
-Given a number bounded by {lean}`n`, represented by the type `Fin n`, an {lean}`AtLeast i` is a natural number paired with a proof that it is at least as large as `i`.
+给定一个以上界 {lean}`n`（类型 `Fin n`）约束的数，一个 {lean}`AtLeast i` 表示一个自然数以及它不少于 `i` 的证明。
 
 :::
 ```lean
@@ -413,11 +418,11 @@ def AtLeast.add (x y : AtLeast i) : AtLeast i :=
 ```lean -show
 variable (i : Fin n)
 ```
-The signature of {lean}`AtLeast.add` requires multiple rounds of automatic implicit parameter insertion.
-First, {lean}`i` is inserted; but its type depends on the upper bound {lean}`n` of {lean}`Fin n`.
-In the second round, {lean}`n` is inserted, using a machine-chosen name.
-Because {lean}`n`'s type is {lean}`Nat`, which has no dependencies, the process terminates.
-The final signature can be seen with {keywordOf Lean.Parser.Command.check}`#check`:
+{lean}`AtLeast.add` 的签名需要多轮自动隐式参数插入。
+首先插入 {lean}`i`；但它的类型依赖于 {lean}`Fin n` 的上界 {lean}`n`。
+第二轮插入 {lean}`n`（名字由系统选择）。
+由于 {lean}`n` 的类型为 {lean}`Nat`，没有进一步依赖，过程终止。
+可以用 {keywordOf Lean.Parser.Command.check}`#check` 查看最终签名：
 
 :::
 ```lean (name := checkAdd)
@@ -527,6 +532,9 @@ Note: It is not possible to treat `α` as an implicitly bound variable here beca
 
 
 # 定义（Definitions）
+%%%
+tag := "definitions-command"
+%%%
 
 “定义”会向全局环境添加一个常量，使其名称代表某个项。
 作为内核定义等价的一部分，该常量可通过 {tech (key := "δ")}[δ-归约] 被替换为其所代表的项。
@@ -541,10 +549,10 @@ Note: It is not possible to treat `α` as an implicitly bound variable here beca
 不过，{tech (key := "instance implicit")}[实例隐式]参数必须在头部显式给出，或作为 {tech (key := "section variable")}[区段变量]指定。
 
 
-:::syntax Lean.Parser.Command.declaration (alias := Lean.Parser.Command.definition) (title := "Definitions")
-Definitions that use `:=` associate the term on the right-hand side with the constant's name.
-The term is wrapped in a {keywordOf Lean.Parser.Term.fun}`fun` for each parameter, and the type is found by binding the parameters in a function type.
-Definitions with {keyword}`def` are {tech}[semireducible].
+:::syntax Lean.Parser.Command.declaration (alias := Lean.Parser.Command.definition) (title := "定义")
+使用 `:=` 的定义会将右侧的项与该常量的名字相关联。
+对于每个参数，定义体外层会包裹一个 {keywordOf Lean.Parser.Term.fun}`fun`，而类型则通过将参数绑定在函数类型中获得。
+使用 {keyword}`def` 的定义是 {tech (key := "semireducible")}[半可约（semireducible）]的。
 
 
 ```grammar
@@ -569,11 +577,11 @@ def $_ $_ where
   $_*
 ```
 
-In {tech}[modules], the bodies of definitions defined with {keyword}`def` are not exposed by default.
+在 {tech (key := "module")}[模块]中，使用 {keyword}`def` 定义的主体默认不会对外公开。
 :::
 
-:::syntax Lean.Parser.Command.declaration (alias := Lean.Parser.Command.abbrev) (title := "Abbreviations")
-{deftech}[Abbreviations] are identical to definitions with {keyword}`def`, except they are {tech}[reducible].
+:::syntax Lean.Parser.Command.declaration (alias := Lean.Parser.Command.abbrev) (title := "缩写（Abbreviations）")
+{deftech (key := "abbreviation")}[缩写]与使用 {keyword}`def` 的定义完全一致，区别仅在于它们是 {tech (key := "reducible")}[可约（reducible）]的。
 
 
 ```grammar
@@ -593,19 +601,19 @@ abbrev $_ $_ where
   $_*
 ```
 
-In {tech}[modules], the bodies of definitions defined with {keyword}`abbrev` are exposed by default.
+在 {tech (key := "module")}[模块]中，使用 {keyword}`abbrev` 定义的主体默认会对外公开。
 :::
 
 
-{deftech}_Opaque constants_ are defined constants that are not subject to {tech (key := "δ")}[δ-reduction] in the kernel.
-They are useful for specifying the existence of some function.
-Unlike {tech}[axioms], opaque declarations can only be used for types that are inhabited, so they do not risk introducing inconsistency.
-Also unlike axioms, the inhabitant of the type is used in compiled code.
-The {attr}`implemented_by` attribute can be used to instruct the compiler to emit a call to some other function as the compilation of an opaque constant.
+{deftech (key := "opaque constant")}_不透明常量_是在内核中不受 {tech (key := "δ")}[δ-归约]约束的已定义常量。
+它们对于仅陈述某个函数的存在性很有用。
+与 {tech (key := "axiom")}[公理]不同，不透明声明只能用于可被占据（inhabited）的类型，因此不会带来不一致风险。
+亦不同于公理的是，该类型的占据元会在已编译代码中被实际使用。
+还可以使用 {attr}`implemented_by` 属性指示编译器在编译该不透明常量时发出对其他函数的调用。
 
-:::syntax Lean.Parser.Command.declaration (alias := Lean.Parser.Command.opaque) (title := "Opaque Constants")
-Opaque definitions with right-hand sides are elaborated like other definitions.
-This demonstrates that the type is inhabited; the inhabitant plays no further role.
+:::syntax Lean.Parser.Command.declaration (alias := Lean.Parser.Command.opaque) (title := "不透明常量（Opaque Constants）")
+带右侧定义式的不透明常量会像其他定义一样被精译。
+这表明该类型可被占据；该占据元本身不再扮演后续角色。
 
 ```grammar
 $_:declModifiers
@@ -622,25 +630,29 @@ opaque $_ $_
 
 
 # 定理（Theorems）
+%%%
+tag := "theorems"
+%%%
 
 
 :::paragraph
-Because {tech}[propositions] are types whose inhabitants count as proofs, {deftech}[theorems] and definitions are technically very similar.
-However, because their use cases are quite different, they differ in many details:
+由于 {tech (key := "proposition")}[命题]是其占据元可作为证明的类型，{deftech (key := "theorem")}[定理]与“定义”在技术上非常相似。
+然而，由于它们的使用场景不同，许多细节上有所差异：
 
-* The theorem statement must be a proposition.
-  The types of definitions may inhabit any {tech}[universe].
-* A theorem's header (that is, the theorem statement) is completely elaborated before the body is elaborated.
-  Section variables only become parameters to the theorem if they (or their dependents) are mentioned in the header.
-  This prevents changes to a proof from unintentionally changing the theorem statement.
-* Theorems are {tech}[irreducible] by default.
-  Because all proofs of the same proposition are {tech (key := "definitional equality")}[definitionally equal], there are few reasons to unfold a theorem.
-
+* 定理陈述必须是一个命题；
+  而定义的类型可以属于任意 {tech (key := "universe")}[宇宙]。
+* 定理的头部（即定理陈述）会在定理主体之前被完全精译。
+  只有当区段变量（或依赖于它们的变量）出现在头部时，它们才会成为定理的参数。
+  这可以避免更改证明时无意间改变定理陈述本身。
+* 定理默认是 {tech (key := "irreducible")}[不可约（irreducible）]的。
+  由于对同一命题的所有证明在 {tech (key := "definitional equality")}[定义相等]下是相等的，几乎没有理由去展开一个定理。
 :::
 
+定理也可以是递归的，但需满足与 {ref "recursive-definitions"}[递归函数定义]相同的条件。
+不过，更常见的做法是使用 {tactic}`induction` 或 {tactic}`fun_induction` 等策略来完成证明。
 
-:::syntax Lean.Parser.Command.declaration (alias := Lean.Parser.Command.theorem) (title := "Theorems")
-The syntax of theorems is like that of definitions, except the codomain (that is, the theorem statement) in the signature is mandatory.
+:::syntax Lean.Parser.Command.declaration (alias := Lean.Parser.Command.theorem) (title := "定理（Theorems）")
+定理的语法与定义类似，但签名中的余类型（即定理陈述）是强制的。
 
 ```grammar
 $_:declModifiers
@@ -659,20 +671,23 @@ theorem $_ $_ where
   $_*
 ```
 
-In {tech}[modules], proofs of theorems are not exposed by default.
+在 {tech (key := "module")}[模块]中，定理的证明默认不会对外公开。
 :::
 
 
 
 
 # 示例声明（Example Declarations）
+%%%
+tag := "example-declarations"
+%%%
 
 
 {deftech (key := "example")}[示例] 是一种匿名定义：会被精译，但随后丢弃。
 示例有助于在开发过程中进行增量测试，也有助于读者更容易理解一个文件。
 
 
-:::syntax Lean.Parser.Command.declaration (alias := Lean.Parser.Command.example) (title := "Examples")
+:::syntax Lean.Parser.Command.declaration (alias := Lean.Parser.Command.example) (title := "示例（Examples）")
 
 ```grammar
 $_:declModifiers

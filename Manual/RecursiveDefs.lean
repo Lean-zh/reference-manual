@@ -26,18 +26,14 @@ tag := "recursive-definitions"
 file := "Recursive Definitions"
 %%%
 
-Allowing arbitrary recursive function definitions would make Lean's logic inconsistent.
-General recursion makes it possible to write circular proofs: “{tech}[proposition] $`P` is true because proposition $`P` is true”.
-Outside of proofs, an infinite loop could be assigned the type {name}`Empty`, which can be used with {keywordOf Lean.Parser.Term.nomatch}`nomatch` or {name Empty.rec}`Empty.rec` to prove any theorem.
-
-
 允许任意递归函数定义会使 Lean 的逻辑不一致。一般递归使得可以写出环形证明：“{tech (key := "proposition")}[命题] $`P` 为真，因为命题 $`P` 为真”。在证明之外，一个无限循环可以被赋予类型 {name}`Empty`，再结合 {keywordOf Lean.Parser.Term.nomatch}`nomatch` 或 {name Empty.rec}`Empty.rec`，即可“证明”任意定理。
 
-There are six main kinds of recursive functions that can be defined:
+直接禁止递归函数定义将大幅降低 Lean 的实用性：{tech (key := "inductive type")}[归纳类型]是定义谓词与数据的关键，而它们本身具有递归结构。
+此外，多数有用的递归函数并不威胁自洽性，而无限循环通常意味着定义有误而非有意为之。
+Lean 并未一禁了之，而是要求每个递归函数都以安全的方式定义。
+在精译递归定义的过程中，Lean 的精译器还会同时给出该定义安全的理由。{margin}[可参阅精译概览中的 {ref "elaboration-results"}[精译器的输出]一节，了解递归定义精译在整体精译流程中的位置。]
 
-
-
-可以定义的递归函数主要有五类：
+可以定义的递归函数主要有六类：
 
 : 结构化递归函数
 
@@ -47,13 +43,13 @@ There are six main kinds of recursive functions that can be defined:
   通过递归器定义的函数应用在定义上等同于递归结果，并且在内核中通常较为高效。
 
 
-: 良构关系上的递归
+: 良基关系上的递归
 
   有些函数也难以改写为结构化递归；例如，某个函数之所以终止，是因为随着数组索引增大，索引与数组长度之差在减小，但此时由于增长的是函数的实参本身，{name}`Nat.rec` 并不适用。
   在这种情形下，存在一个随每次递归调用而减少的终止{tech (key := "measure")}[度量]，但该度量本身并非函数的一个实参。
-  这时可以使用 {tech (key := "well-founded recursion")}[良构递归] 来定义函数。
-  良构递归是一种技术：系统地把“伴随度量递减的递归函数”转化为“基于证明的递归函数”，该证明表明任意度量递减序列最终会在最小值处终止。
-  用良构递归定义的函数应用不一定与其返回值在定义上相等，但这种相等可以作为命题来证明。
+  这时可以使用 {tech (key := "well-founded recursion")}[良基递归] 来定义函数。
+  良基递归是一种技术：系统地把“伴随度量递减的递归函数”转化为“基于证明的递归函数”，该证明表明任意度量递减序列最终会在最小值处终止。
+  用良基递归定义的函数应用不一定与其返回值在定义上相等，但这种相等可以作为命题来证明。
   即便存在定义相等，这类函数在计算上仍常常较慢，因为它们需要归约通常很大的证明项。
 
 : 作为偏不动点的递归函数
@@ -65,7 +61,7 @@ There are six main kinds of recursive functions that can be defined:
 
   尤其是，返回类型位于某些单子中的函数（例如 {name}`Option`）可以用该策略来定义。
   对这类单子函数，Lean 还会生成额外的偏正确性定理。
-  与良构递归类似，按偏不动点定义的函数应用在定义上不等同于其返回值，但 Lean 会生成定理，在命题层面将该函数与其展开式以及定义中所给的归约行为相等同。
+  与良基递归类似，按偏不动点定义的函数应用在定义上不等同于其返回值，但 Lean 会生成定理，在命题层面将该函数与其展开式以及定义中所给的归约行为相等同。
 
 : 作为不动点的余归纳与归纳谓词
 
@@ -431,8 +427,8 @@ htmlSplit := .never
   类型类实例合成、定义相等性检查以及语言的其余部分，基本都会把这种定义视作缩写。
   {keywordOf Lean.Parser.Command.declaration}`abbrev` 命令创建的定义采用这一等级。
 
-:::example "Reducibility and Instance Synthesis"
-These three aliases for {lean}`String` are respectively reducible, semireducible, and irreducible.
+:::example "可约性与实例合成"
+下面这三个 {lean}`String` 的别名分别是可约、半可约与不可约：
 
 ```lean
 abbrev Phrase := String
@@ -449,7 +445,7 @@ def hello : Phrase := "Hello"
 
 def goodMorning : Clause := "Good morning"
 ```
-The irreducible alias, on the other hand, is rejected as the type for a string, because the elaborator's definitional equality test does not unfold it:
+相对地，不可约别名不会在定义相等测试中被展开，因此作为字符串的类型会被拒绝：
 ```lean +error (name := irred)
 
 def goodEvening : Utterance := "Good evening"
@@ -468,7 +464,7 @@ but is expected to have type
 #synth ToString Phrase
 ```
 
-However, {lean}`Clause` is semireducible, so the {inst}`ToString String` instance cannot be used:
+然而 {lean}`Clause` 是半可约的，因此不能直接使用 {inst}`ToString String` 实例：
 ```lean +error (name := toStringClause)
 
 #synth ToString Clause
@@ -502,7 +498,7 @@ def Sequence.ofList (xs : List α) : Sequence α := xs
 #check let xs : Sequence Nat := .ofList [1,2,3]; xs.reverse
 ```
 
-However, declaring {name}`Sequence` to be irreducible prevents the unfolding:
+然而，一旦将 {name}`Sequence` 声明为不可约，就会阻止展开：
 ```lean +error (name := irredSeq)
 
 attribute [irreducible] Sequence
@@ -516,8 +512,8 @@ of type `Sequence Nat`
 ```
 :::
 
-:::syntax attr (title := "Reducibility Annotations")
-A definition's reducibility can be set using one of the five reducibility attributes:
+:::syntax attr (title := "可约性标注")
+可以使用如下五种可约性属性之一来设置某个定义的可约性：
 
 
 ```grammar
@@ -535,7 +531,7 @@ semireducible
 ```grammar
 irreducible
 ```
-These attributes can only be applied globally in the same file as the definition being modified, but they may be {keywordOf attrInst (parser := Lean.Parser.Term.attrKind)}`local`ly applied anywhere.
+这些属性只能在被修改定义所在的同一文件中全局应用；不过，它们也可以在任意位置以 {keywordOf attrInst (parser := Lean.Parser.Term.attrKind)}`local` 方式应用。
 
 :::
 
@@ -545,8 +541,8 @@ These attributes can only be applied globally in the same file as the definition
 下面这些战术可控制大多数战术会展开哪些定义：{tactic}`with_reducible`、{tactic}`with_reducible_and_instances` 与 {tactic}`with_unfolding_all`。
 
 
-:::example "Reducibility and Tactics"
-The functions {lean}`plus`, {lean}`sum`, and {lean}`tally` are all synonyms for {lean}`Nat.add` that are respectively reducible, semireducible, and irreducible:
+:::example "可约性与战术"
+函数 {lean}`plus`、{lean}`sum` 与 {lean}`tally` 都是 {lean}`Nat.add` 的同义名，且分别为可约、半可约与不可约：
 
 ```lean
 abbrev plus := Nat.add
@@ -562,7 +558,7 @@ def tally := Nat.add
 theorem plus_eq_add : plus x y = x + y := by simp
 ```
 
-The semireducible synonym is not, however, unfolded by {tactic}`simp`:
+半可约同义名则不会被 {tactic}`simp` 展开：
 ```lean -keep +error (name := simpSemi)
 
 theorem sum_eq_add : sum x y = x + y := by simp
@@ -571,11 +567,11 @@ theorem sum_eq_add : sum x y = x + y := by simp
 ```lean
 theorem sum_eq_add : sum x y = x + y := by rfl
 ```
-The irreducible {lean}`tally`, however, is not reduced by definitional equality.
+不可约的 {lean}`tally` 不会被定义相等所化简。
 ```lean  -keep +error (name := reflIr)
 theorem tally_eq_add : tally x y = x + y := by rfl
 ```
-The {tactic}`simp` tactic can unfold any definition, even irreducible ones, when they are explicitly provided:
+当显式提供时，{tactic}`simp` 可以展开任意定义，甚至包括不可约的：
 ```lean  -keep (name := simpName)
 
 theorem tally_eq_add : tally x y = x + y := by simp [tally]
