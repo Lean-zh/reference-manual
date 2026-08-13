@@ -1,252 +1,66 @@
-# External Contribution Guidelines
+# 中文参考手册贡献说明
 
-Thank you for helping out with the Lean reference manual!
+感谢参与 Lean 语言参考手册中文翻译。
 
-In the interest of getting as much documentation as possible written
-quickly, while still maintaining a consistent voice and style and
-keeping the technical quality high, all contributions will be
-carefully reviewed. However, because review can be very time
-consuming, we may decline to review some contributions. This means
-that slow-to-review PRs may just be closed. Nobody wants this to
-happen, so please get in touch to discuss your plans to contribute
-ahead of time so we can agree on suitable parameters.
+## 开始之前
 
-## Issues
+- 先在 issue 中认领范围；大型改动先讨论拆分方式。
+- 从最新 `main` 开始，不要用旧中文仓库的整章文件覆盖最新上游。
+- 一个 PR 聚焦一个章节或一类基础设施改动，便于审阅和回滚。
+- 不要编辑与当前任务无关的章节、生成物或上游 CI。
 
-Issues are a great way to communicate your priorities and needs for
-documentation, and they are an important input into our planning and
-prioritization process as we write the Lean reference manual. Please
-upvote issues that are important to you. Pithy technical examples as
-comments to documentation requests are also an incredibly useful
-contribution.
+## 翻译要求
 
-## Small Fixes
+- 保留 Lean、Verso 标记、代码和示例结构；所有示例仍须通过类型检查。
+- 一句一行，减少 diff 冲突。
+- 技术术语采用 [TERMINOLOGY.md](TERMINOLOGY.md)。本项目统一将 elaboration 译为“精译”，elaborator 译为“精译器”。
+- 术语引用写作 ``{tech (key := "English term")}[中文术语]``；定义写作 ``{deftech (key := "English term")}_中文术语_``。若原文没有术语角色，不要擅自添加。
+- `{index}[...]` 的索引键保持英文。
+- `:::`、`::::` 等 Verso 容器必须整体保持嵌套平衡。
+- 中文标题必须设置稳定的 ASCII `file` 与 `tag`，不要让输出路径依赖中文标题。例如：
 
-Pull requests that fix typos and small mistakes are welcome. Please
-don't group too many in one PR, which makes them difficult to review.
+  ```text
+  #doc (Manual) "简介" =>
+  %%%
+  file := some "introduction"
+  tag := "introduction"
+  %%%
+  ```
 
-## Substantial Content
+## Docstring 翻译
 
-Please remember to get in touch ahead of time to plan a larger
-contribution. In general, text included in the reference manual should
-live up to the following:
+中文文档载体定义在 `Manual/ZhDocString/`。用法见 [README](README.md#中文-docstring)。
 
-- Empirical claims about Lean should be tested, either via examples or
-  hidden test cases.
-- Examples should be clearly marked as such, separating the
-  description of the system from the illustrative examples.
-- Technical terms should be introduced using the `deftech` role and
-  referred to using the `tech` role.
-- Write in US English, deferring to the Chicago Manual of Style 18
-  (CMS) when in doubt. Exceptions to this style may be added and
-  documented.
-- One sentence per line, to make diffs easier to follow.
+- 载体声明只用于携带中文 docstring，不应改变手册描述的真实 API。
+- 结构体字段和归纳类型构造子应与英文声明一一对应；映射不匹配必须修正，不能靠调整顺序掩盖。
+- 新增模块后更新 `Manual/ZhDocString.lean`，确保 `Manual.lean` 的 import DAG 可以构建全部中文模块。
 
-### Style
+## 检查
 
-Automated tooling is not yet capable of implementing these rules
-perfectly, so pull requests that bring text into compliance with this
-guide are very welcome. If complying with style guidelines makes the
-text more difficult to understand, prioritize the understandability of
-the text.
+先运行与改动最接近的目标：
 
-#### Typographical Unicode
-
-In English-language text, use the appropriate Unicode characters for
-left and right quotation marks (both single and double) and em dashes.
-
-#### Headings
-
-Headings should be set in title case, rather than just capitalizing
-the first word. This is defined in CMS rule 8.160, but a good first
-approximation is to capitalize the first and last words, plus all
-words other than the following:
-
-- prepositions less than five letters when not used as adverbs or
-  adjectives
-- "a", "an", "the", "to" (infinitive marker), "and", "but", "for",
-  "or", "nor"
-- conventionally lower-case components of names, like "de" or "van"
-
-The [Title Case Converter](https://titlecaseconverter.com/) is useful
-if in doubt. Remember to select "Chicago" from the list of styles.
-
-#### Lists
-
-Numbered or bulleted lists should be introduced by a
-grammatically-complete sentence that is terminated with a colon,
-follow one of two options:
-
-- All list items contain one or more complete sentences that start
-  with a capital letter and are punctuated accordingly.
-
-- All list items contain noun phrases or sentence fragments that begin
-  with a lower-case letter and do not end with punctuation.
-
-That is to say, lists may consist of:
-
-1.  complete sentences, punctuated accordingly
-
-2.  non-sentences, punctuated accordingly
-
-In Verso, the list and the sentence with the colon should be grouped
-with the `paragraph` directive.
-
-If necessary for emphasis, a sentence that contains a list may be
-broken up into a vertical list element (cf Chicago rule 6.142). In
-this case, punctuate the list items as though they were inline in the
-sentence, without using a colon at the start. When using this style in
-this document, remember to
-
-- use the `paragraph` directive so the list is typeset together with
-  its sentence,
-- punctuate with semicolons if the list items themselves contain
-  commas, and
-- remember the trailing "and" and period in the penultimate and final
-  items.
-
-## Markup
-
-The reference manual is written in Verso's manual genre. In addition
-to what Verso provides, there are a number of additional roles, code
-block styles, and directives:
-
-### Roles
-
-Please use the following roles where they make sense:
-
-- `` {lean}`TERM` `` - `TERM` is a Lean term, to be elaborated as such
-  and included it in the rendered document with appropriate
-  highlighting. The optional named argument `type` specifies an
-  expected type, e.g. `` {lean  (type := "Nat")}`.succ .zero` ``
-
-- `` {name}`X` `` - `X` is a constant in the Lean environment. The
-  optional positional argument can be used to override name
-  resolution; if it is provided, then the positional argument is used
-  to resolve the name but the contents of the directive are rendered.
-  `` {name Lean.Elab.Command.CommandElabM}`CommandElabM` `` renders as
-  `CommandElabM` with the metadata from the full name.
-
-- `` {keywordOf KIND}`KW` `` - `KW` is an atom from the syntax kind
-  `KIND`.
-
-- `` {keyword}`KW` `` - `KW` is an atom from an unspecified syntax
-  kind.
-
-- `` {tactic}`TAC` `` - `TAC` is a tactic name
-
-- `` {option}`OPT` `` - `OPT` is the name of an option
-
-- `{TODO}[...]` specifies a task to be rendered in draft versions of
-  the manual
-
-### Code Blocks
-
-- `lean` specifies that the code block contains Lean commands. The
-  named arguments are:
-    - `name` - names the code block for later reference in
-      `leanOutput`
-    - `keep` - whether to keep or discard changes made to the
-      environment (default: `true`)
-    - `error` - the code is expected to contain an error (default:
-      `false`)
-
-- `leanTerm` specifies that the code block contains a Lean term. The
-  named arguments are:
-    - `name` - names the code block for later reference in
-      `leanOutput`
-    - `keep` - whether to keep or discard changes made to the
-      environment (default: `true`)
-    - `error` - the code is expected to contain an error (default:
-      `false`)
-
-- `leanOutput NAME` specifies that the code block contains an output
-  from a prior `lean` block. The optional named argument `severity`
-  restricts the output to information, warning, or error output.
-- `signature` specifies that the code block contains the signature of
-  an existing constant.
-
-- `syntaxError NAME` specifies that the code block contains invalid
-  Lean syntax, and saves the message under `NAME` for `leanOutput`.
-  The optional named argument `category` specifies the syntactic
-  category (default: `term`).
-
-### Directives
-
-- `:::TODO` specifies a task to be rendered in draft versions of the
-  manual
-- `:::example NAME` indicates an example. `NAME` is a string literal
-  that contains valid Verso inline markup. Unless the named argument
-  `keep` is `true`, changes made to the Lean environment in the
-  example are discarded. Within an `example`, `lean` blocks are
-  elaborated before paragraphs, so inline `lean` roles can refer to
-  names defined later in the example.
-- `:::planned N` describes content that is not yet written, tracked at
-  issue `N` in this repository
-- `:::syntax` describes the syntax of a Lean construct, using a custom
-  DSL based on Lean's quasiquotation mechanism. This allows the Lean
-  parser to validate the description, while at the same time
-  decoupling the specifics of the implementation from the structure of
-  the documentation.
-
-## CI
-
-The CI requires that various checks are passed.
-
-One of them is that the text must live up to a number of rules written
-with Vale. The style implementation is still quite incomplete; just
-because your prose passes the linter doesn't mean it will necessarily
-be accepted!
-
-To run the check, first install Vale. The next step is to preprocess
-the generated HTML to remove features that Vale can't cope with.
-Finally, Vale itself can be run.
-
-To preprocess the HTML, use the script
-`.vale/scripts/rewrite_html.py`. It requires BeautifulSoup, so here's
-the overall steps to get it working the first time:
-
-```
-$ cd .vale/scripts
-$ python3 -m venv venv
-$ . ./venv/bin/activate # or the appropriate script for your shell, e.g. activate.fish
-$ pip install beautifulsoup4
+```sh
+lake build Manual.ZhDocString
+lake build Manual
 ```
 
-After that, just run
+涉及完整站点、链接、教程或发布脚本时再运行：
 
-```
-$ . .vale/scripts/venv/bin/activate
-```
-
-to set up the Python environment.
-
-The next step is to run this on Verso's output. If it's in
-`_out/html-multi`, do this via:
-
-```
-$ cd _out
-$ python ../.vale/scripts/rewrite_html.py html-multi html-vale
+```sh
+lake build
+./generate-html.sh --mode preview
+scripts/check-examples-isolated.sh
 ```
 
-Now, run `vale`:
+提交前还应运行：
 
+```sh
+git diff --check
+git status --short
 ```
-$ vale html-vale
-```
 
-### Deployments from PRs
+CI 的 `Build` 步骤必须保留。不要以只生成 HTML 代替 `lake build`。
 
-To enable contributions from external forks while allowing HTML
-previews, the CI does the following:
+## AI 辅助翻译
 
-1.  `ci.yml` builds the HTML for the pull request and saves it to
-    artifact storage
-2.  `label-pr.yml` is triggered when `ci.yml` completes. It (re)labels
-    the PR with `HTML available` to indicate that the artifact was
-    built.
-3.  Whenever the label is added, `pr-deploy.yml` runs _in the context
-    of `main`_ with access to secrets. It can deploy the previews.
-
-The second two steps run the CI code on `main`, not the config from
-the PR.
+允许使用 AI 辅助，但提交者必须逐句校对、验证术语和运行构建。具体流程见 [AIAgentTranslatorPrompt.md](AIAgentTranslatorPrompt.md)。AI 生成内容不降低贡献者对技术正确性和版权合规性的责任。

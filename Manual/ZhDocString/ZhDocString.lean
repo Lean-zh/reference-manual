@@ -1,0 +1,218 @@
+import VersoManual
+
+open Lean
+open Verso ArgParse Doc Elab Code
+open Verso.Doc.Elab.PartElabM
+open Verso.Code.Highlighted.WebAssets
+open SubVerso.Highlighting
+
+namespace Verso.Genre.Manual
+
+section
+variable {m}
+variable [Monad m] [MonadError m] [MonadLiftT CoreM m] [MonadLiftT MetaM m] [MonadEnv m]
+variable [MonadLog m] [AddMessageContext m] [MonadOptions m] [MonadWithOptions m]
+variable [Lean.Elab.MonadInfoTree m]
+
+structure ZhDocstringOpts where
+  enName : Ident × Name
+  zhName : Ident × Name
+  label : Option String := none
+
+meta def ZhDocstringOpts.parse : ArgParse m ZhDocstringOpts :=
+  ZhDocstringOpts.mk <$>
+    .positional `enName .documentableName <*>
+    .positional `zhName .documentableName <*>
+    .named `label .string true
+
+meta instance : FromArgs ZhDocstringOpts m := ⟨ZhDocstringOpts.parse⟩
+end
+
+private meta def translatedBlocks (names : List Name) (blame : Syntax)
+    (docs? : Option String) : DocElabM (Array Term) := do
+  let some docs := docs? | return #[]
+  let some ast := MD4Lean.parse docs
+    | throwErrorAt blame "无法将中文文档字符串解析为 Markdown"
+  ast.blocks.mapM (blockFromMarkdownWithLean names)
+
+/--
+Render the declaration and signatures of `enName`, using documentation text from `zhName`.
+The two declarations must have matching constructors and fields; mismatches are errors rather than
+silently attaching a translation to the wrong declaration.
+-/
+@[block_command]
+meta def zhdocstring : BlockCommandOf ZhDocstringOpts
+  | ⟨(enStx, enName), (zhStx, zhName), customLabel⟩ => do
+    Doc.PointOfInterest.save (← getRef) enName.toString (detail? := some "中文文档")
+    let body ← translatedBlocks [enName, zhName] zhStx (← getDocString? (← getEnv) zhName)
+    let enDeclType ← Block.Docstring.DeclType.ofName enName
+    let zhDeclType ← Block.Docstring.DeclType.ofName zhName
+    let enSignature ← Signature.forName enName
+    let extras ← translatedExtras enStx enName zhName enDeclType zhDeclType
+    ``(Verso.Doc.Block.other
+        (Verso.Genre.Manual.Block.docstring $(quote enName) $(quote enDeclType)
+          $(quote enSignature) $(quote customLabel) #[])
+        #[$(body ++ extras),*])
+where
+  translatedExtras (blame : Syntax) (enName zhName : Name)
+      (enDeclType zhDeclType : Block.Docstring.DeclType) : DocElabM (Array Term) := do
+    match enDeclType, zhDeclType with
+    | .structure enIsClass enCtor? _ enFields enParents _,
+      .structure _ zhCtor? _ zhFields _ _ =>
+      if enCtor?.isSome != zhCtor?.isSome then
+        throwErrorAt blame "中英文结构体的构造子可见性不匹配：{enName} / {zhName}"
+      let ctorRow : Option Term ← match enCtor?, zhCtor? with
+        | some enCtor, some zhCtor => do
+          let header := if enIsClass then "实例构造子" else "构造子"
+          let desc ← translatedBlocks [enName, enCtor.name, zhName, zhCtor.name]
+            blame zhCtor.docstring?
+          let sig ← `(Verso.Doc.Block.other
+            (Verso.Genre.Manual.Block.internalSignature $(quote enCtor.hlName) none) #[$desc,*])
+          some <$> ``(Verso.Doc.Block.other
+            (Verso.Genre.Manual.Block.docstringSection $(quote header)) #[$sig])
+        | none, none => pure none
+        | _, _ => throwErrorAt blame "中英文结构体的构造子不匹配：{enName} / {zhName}"
+
+      let parentsRow : Option Term ← do
+        if enParents.isEmpty then pure none
+        else
+          let inh ← ``(Verso.Doc.Block.other
+            (Verso.Genre.Manual.Block.inheritance $(quote enName) $(quote enParents)) #[])
+          some <$> ``(Verso.Doc.Block.other
+            (Verso.Genre.Manual.Block.docstringSection "扩展") #[$inh])
+
+      let enFields := enFields.filter (·.subobject?.isNone)
+      let zhFields := zhFields.filter (·.subobject?.isNone)
+      if enFields.size != zhFields.size then
+        throwErrorAt blame "中英文结构体字段数不匹配：{enName} / {zhName}"
+      let fieldSigs : Array Term ← (enFields.zip zhFields).mapM fun (enField, zhField) => do
+        if enField.projFn.getString! != zhField.projFn.getString! then
+          throwErrorAt blame "中英文字段映射不匹配：{enField.projFn} / {zhField.projFn}"
+        let inheritedFrom : Option Nat :=
+          enField.fieldFrom.head?.bind (fun n => enParents.findIdx? (·.name == n.name))
+        let desc ← translatedBlocks
+          [enName, enField.projFn, zhName, zhField.projFn] blame zhField.docString?
+        ``(Verso.Doc.Block.other
+          (Verso.Genre.Manual.Block.fieldSignature $(quote enField.visibility)
+            $(quote enField.fieldName) $(quote enField.type) $(quote inheritedFrom)
+            $(quote <| enParents.map (·.parent))) #[$desc,*])
+      let fieldsRow : Option Term ←
+        if fieldSigs.isEmpty then pure none
+        else some <$> ``(Verso.Doc.Block.other
+          (Verso.Genre.Manual.Block.docstringSection $(quote <|
+            if enIsClass then "方法" else "字段")) #[$fieldSigs,*])
+      pure <| ctorRow.toArray ++ parentsRow.toArray ++ fieldsRow.toArray
+
+    | .inductive enCtors .., .inductive zhCtors .. => do
+      if enCtors.size != zhCtors.size then
+        throwErrorAt blame "中英文归纳类型构造子数量不匹配：{enName} / {zhName}"
+      let ctorSigs : Array Term ← (enCtors.zip zhCtors).mapM fun (enCtor, zhCtor) => do
+        if enCtor.name.getString! != zhCtor.name.getString! then
+          throwErrorAt blame "中英文构造子映射不匹配：{enCtor.name} / {zhCtor.name}"
+        let desc ← translatedBlocks [enName, enCtor.name, zhName, zhCtor.name]
+          blame zhCtor.docstring?
+        ``(Verso.Doc.Block.other
+          (Verso.Genre.Manual.Block.constructorSignature $(quote enCtor.signature)) #[$desc,*])
+      pure #[← ``(Verso.Doc.Block.other
+        (Verso.Genre.Manual.Block.docstringSection "构造子") #[$ctorSigs,*])]
+
+    | .structure .., _ =>
+      throwErrorAt blame "{enName} 是结构体，但中文文档载体 {zhName} 不是结构体"
+    | .inductive .., _ =>
+      throwErrorAt blame "{enName} 是归纳类型，但中文文档载体 {zhName} 不是归纳类型"
+    | _, .structure .. =>
+      throwErrorAt blame "中文文档载体 {zhName} 是结构体，但 {enName} 不是结构体"
+    | _, .inductive .. =>
+      throwErrorAt blame "中文文档载体 {zhName} 是归纳类型，但 {enName} 不是归纳类型"
+    | _, _ => pure #[]
+
+section
+variable {m}
+variable [Monad m] [MonadError m] [MonadLiftT CoreM m] [MonadLiftT MetaM m] [MonadEnv m]
+variable [MonadLog m] [AddMessageContext m] [MonadOptions m] [MonadWithOptions m]
+variable [Lean.Elab.MonadInfoTree m]
+
+structure ZhOptionDocsOpts where
+  enName : Ident
+  zhName : Ident × Name
+
+meta def ZhOptionDocsOpts.parse : ArgParse m ZhOptionDocsOpts :=
+  ZhOptionDocsOpts.mk <$>
+    .positional `enName .ident "选项名" <*>
+    .positional `zhName .documentableName
+
+meta instance : FromArgs ZhOptionDocsOpts m := ⟨ZhOptionDocsOpts.parse⟩
+end
+
+def Block.zhOptionDocs (name : Name) (defaultValue : Option Highlighted) : Block where
+  name := `Verso.Genre.Manual.zhOptionDocs
+  data := ToJson.toJson (name, defaultValue)
+
+/-- Render an option's real name and default value with a translated documentation carrier. -/
+@[block_command]
+meta def zhOptionDocs : BlockCommandOf ZhOptionDocsOpts
+  | ⟨enName, (zhStx, zhName)⟩ => do
+    let optDecl ← getOptionDecl enName.getId
+    Doc.PointOfInterest.save enName.raw optDecl.declName.toString
+    let contents ← translatedBlocks [zhName] zhStx (← getDocString? (← getEnv) zhName)
+    ``(Verso.Doc.Block.other
+      (Verso.Genre.Manual.Block.zhOptionDocs $(quote enName.getId)
+        $(quote <| highlightDataValue optDecl.defValue)) #[$contents,*])
+
+open Verso.Search in
+def zhOptionDomainMapper : DomainMapper :=
+  DomainMapper.withDefaultJs optionDomain "编译器选项" "doc-option-domain"
+    |>.setFont { family := .code }
+
+open Verso.Genre.Manual.Markdown in
+@[block_extension zhOptionDocs]
+def zhOptionDocs.descr : BlockDescr := withHighlighting {
+  init st := st
+    |>.setDomainTitle optionDomain "编译器选项"
+    |>.addQuickJumpMapper optionDomain zhOptionDomainMapper
+
+  traverse id info _ := do
+    let .ok (name, _defaultValue) := FromJson.fromJson? (α := Name × Highlighted) info
+      | do reportError "遍历选项时无法反序列化中文文档数据"; pure none
+    let path ← (·.path) <$> read
+    let _ ← Verso.Genre.Manual.externalTag id path name.toString
+    Index.addEntry id {term := Doc.Inline.code name.toString}
+    if name.getPrefix != .anonymous then
+      Index.addEntry id {
+        term := Doc.Inline.code name.getString!
+        subterm := some <| Doc.Inline.code name.toString
+      }
+    modify fun st => st.saveDomainObject optionDomain name.toString id
+    pure none
+
+  toHtml := some <| fun _goI goB id info contents =>
+    open Verso.Doc.Html in
+    open Verso.Output Html in do
+      let .ok (name, defaultValue) := FromJson.fromJson? (α := Name × Highlighted) info
+        | do reportError "生成 HTML 时无法反序列化中文选项文档数据"; pure .empty
+      let x : Html := Html.text true name.toString
+      let xref ← HtmlT.state
+      let idAttr := xref.htmlId id
+      return {{
+        <div class="namedocs" {{idAttr}}>
+          {{permalink id xref false}}
+          <span class="label">"选项"</span>
+          <pre class="signature hl lean block">{{x}}</pre>
+          <div class="text">
+            <p>"默认值：" <code class="hl lean inline">{{← defaultValue.toHtml (g := Manual)}}</code></p>
+            {{← contents.mapM goB}}
+          </div>
+        </div>
+      }}
+
+  localContentItem := fun _id info _contents => open Verso.Output.Html in do
+    let (name, _defaultValue) ← FromJson.fromJson? (α := Name × Highlighted) info
+    pure #[
+      (name.toString, {{<code>{{name.toString}}</code>}}),
+      (s!"{name}（选项）", {{<code>{{name.toString}}</code>"（选项）"}})
+    ]
+  toTeX := some <| fun _goI goB _id _info contents => contents.mapM goB
+  extraCss := [docstringStyle]
+}
+
+end Verso.Genre.Manual

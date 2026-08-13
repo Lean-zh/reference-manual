@@ -13,7 +13,7 @@ open Verso.Genre.Manual.InlineLean
 
 open Verso.Output.Html in
 def plausible := {{
-    <script defer="defer" data-domain="lean-lang.org" src="https://plausible.io/js/script.outbound-links.js"></script>
+    <script defer="defer" data-domain="www.leanprover.cn" src="https://plausible.io/js/script.outbound-links.js"></script>
   }}
 
 open Verso.Output.Html in
@@ -46,8 +46,8 @@ where
     emitTeX := false,
     emitHtmlSingle := .no, -- for proofreading
     logo := some "/static/lean_logo.svg",
-    sourceLink := some "https://github.com/leanprover/reference-manual",
-    issueLink := some "https://github.com/leanprover/reference-manual/issues",
+    sourceLink := some "https://github.com/Lean-zh/reference-manual",
+    issueLink := some "https://github.com/Lean-zh/reference-manual/issues",
     searchPriorities := {
       domains := .ofList [
         (`Verso.Genre.Manual.doc.tech,        65),

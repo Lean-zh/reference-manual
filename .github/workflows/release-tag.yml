@@ -1,44 +1,36 @@
-name: Deploy Tagged Version
+name: Deploy Tagged Chinese Reference Manual
 
 on:
+    workflow_dispatch:
     push:
         tags:
-            - "v*" # Trigger on tags that start with 'v'
+            - "v*"
 
 jobs:
     deploy:
         runs-on: ubuntu-latest
         permissions:
-            contents: write # This allows pushing to the repository
+            contents: write
+        env:
+            PUBLIC_URL: "https://www.leanprover.cn/reference-manual/"
         steps:
             - name: Checkout repository
               uses: actions/checkout@v4
               with:
-                  fetch-depth: 0 # Fetch all history for all tags and branches
+                  fetch-depth: 0
 
             - name: Set up Python
               uses: actions/setup-python@v5
               with:
                   python-version: "3.10"
 
-            - name: Extract version from tag
-              id: get_version
-              run: |
-                  # Remove 'v' prefix from tag name
-                  VERSION=${GITHUB_REF#refs/tags/v}
-                  echo "VERSION=$VERSION" >> $GITHUB_ENV
-                  echo "Version extracted: $VERSION"
-
             - name: Configure Git
-              # These values are recommended at:
-              #   https://github.com/actions/checkout?tab=readme-ov-file#push-a-commit-using-the-built-in-token
               run: |
                   git config --global user.name "github-actions[bot]"
                   git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-            - name: Run setup script prep.sh
-              run: |
-                  ./deploy/prep.sh
+            - name: Prepare build environment
+              run: ./deploy/prep.sh
 
             - name: Install elan
               run: |
@@ -47,29 +39,34 @@ jobs:
                   ./elan-init -y --default-toolchain none
                   echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
 
-            - name: Lean Version
-              run: |
-                  lean --version
+            - name: Lean version
+              run: lean --version
 
-            - name: Cache .lake
+            - name: Determine Lean manual version
+              run: |
+                  VERSION=$(lean --version | sed -E 's/^.*version[[:space:]]+([^,]+).*/\1/')
+                  test -n "$VERSION"
+                  echo "VERSION=$VERSION" >> "$GITHUB_ENV"
+                  echo "Publishing Lean $VERSION to $PUBLIC_URL"
+
+            - name: Restore Lake cache
               uses: actions/cache/restore@v4
               with:
-                  path: .lake
-                  key:
-                      ${{ runner.os }}-${{ hashFiles('lean-toolchain') }}-${{
-                      hashFiles('lake-manifest.json') }}-${{ hashFiles('lakefile.lean') }}-${{
-                      github.sha }}
+                  path: |
+                      .lake/packages
+                      .lake/build/bin
+                      .lake/build/ir
+                      .lake/build/lib
+                  key: ${{ runner.os }}-${{ hashFiles('lean-toolchain') }}-${{ hashFiles('lake-manifest.json') }}-${{ hashFiles('lakefile.lean') }}-${{ github.sha }}
                   restore-keys: |
-                      ${{ runner.os }}-${{ hashFiles('lean-toolchain') }}-${{ hashFiles('lake-manifest.json') }}-${{ hashFiles('lakefile.lean') }}-${{ github.sha }}
                       ${{ runner.os }}-${{ hashFiles('lean-toolchain') }}-${{ hashFiles('lake-manifest.json') }}-${{ hashFiles('lakefile.lean') }}
-                      ${{ runner.os }}-${{ hashFiles('lean-toolchain') }}-${{ hashFiles('lake-manifest.json') }}-
                       ${{ runner.os }}-${{ hashFiles('lean-toolchain') }}-
 
-            - name: Run build script build.sh
-              run: |
-                  ./deploy/build.sh
+            # Keep an explicit build check before generation and deployment.
+            - name: Build and check
+              run: ./deploy/build.sh
 
-            - name: Save cache for .lake
+            - name: Save Lake cache
               uses: actions/cache/save@v4
               with:
                   path: |
@@ -77,48 +74,15 @@ jobs:
                       .lake/build/bin
                       .lake/build/ir
                       .lake/build/lib
-                  key:
-                      ${{ runner.os }}-${{ hashFiles('lean-toolchain') }}-${{
-                      hashFiles('lake-manifest.json') }}-${{ hashFiles('lakefile.lean') }}-${{
-                      github.sha }}
+                  key: ${{ runner.os }}-${{ hashFiles('lean-toolchain') }}-${{ hashFiles('lake-manifest.json') }}-${{ hashFiles('lakefile.lean') }}-${{ github.sha }}
 
-            - name: Generate HTML using generate.sh (output goes into /html in repo root)
+            - name: Generate production HTML
+              run: ./deploy/generate.sh
+
+            - name: Update deploy branch
               run: |
-                  ./deploy/generate.sh
+                  test -d html/site/reference
+                  python deploy/release.py html/site/reference "$VERSION" "$GITHUB_SHA" deploy
 
-            - name: Detect deployment structure
-              id: detect-structure
-              run: |
-                  # Check if we have the new combined site structure or old single-site structure.
-                  # The single-site structure is used for older builds that don't have tutorials.
-                  # Because this workflow runs on tag push, it runs in the context of the tagged
-                  # commit; after tutorial deployments are confirmed working, we can get rid of this
-                  # conditional and just assume the new structure in this workflow.
-                  if [ -d "html/site/reference" ]; then
-                      STRUCTURE="new"
-                      REFERENCE_DIR="html/site/reference"
-                  else
-                      STRUCTURE="old"
-                      REFERENCE_DIR="html/html-multi"
-                  fi
-                  echo "structure=$STRUCTURE" >> "$GITHUB_OUTPUT"
-                  echo "reference_dir=$REFERENCE_DIR" >> "$GITHUB_OUTPUT"
-                  echo "Detected $STRUCTURE structure, using $REFERENCE_DIR"
-
-            - name: Run deployment script
-              run: |
-                  # The tag name is simply GITHUB_REF_NAME
-                  TAG_NAME=$GITHUB_REF_NAME
-                  echo "Making deployment from tag: '$TAG_NAME'"
-
-                  python deploy/release.py ${{ steps.detect-structure.outputs.reference_dir }} "$VERSION" "$GITHUB_SHA" deploy
-                  if [ "${{ steps.detect-structure.outputs.structure }}" = "new" ]; then
-                      python deploy/release.py html/site/tutorials "$VERSION" "$GITHUB_SHA" deploy-tutorials
-                  fi
-
-            - name: Push deploy branch
-              run: |
-                  git push origin deploy
-                  if [ "${{ steps.detect-structure.outputs.structure }}" = "new" ]; then
-                      git push origin deploy-tutorials
-                  fi
+            - name: Push deploy branch to Lean-zh/reference-manual
+              run: git push origin deploy
