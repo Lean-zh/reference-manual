@@ -89,8 +89,8 @@ def AllNonZero (xs : Array Nat) : Prop :=
 :::
 
 :::keepEnv
-This is because the elaborator for array access requires a proof that the index is in bounds.
-The non-dependent version of the statement does not introduce this assumption:
+这是因为精译器在访问数组时需要一个下标未越界的证明。
+非依值版本的陈述不会引入这个假设：
 ```lean +error (name := nondepOops)
 
 def AllNonZero (xs : Array Nat) : Prop :=
@@ -216,13 +216,6 @@ Lean 支持用 {keywordOf Lean.Parser.Command.declaration}`def` 来递归定义�
 还有些函数被标记为 unsafe，不可用于 Lean 逻辑。
 有关递归函数的更多细节，见 {ref "partial-unsafe"}[偏函数和 unsafe 函数定义] 小节。
 
-While the logical model of Lean considers all functions to be total, Lean is also a practical programming language that provides certain “escape hatches”.
-Functions that have not been proven to terminate can still be used in Lean's logic as long as their {tech}[codomain] is proven nonempty.
-These functions are treated as uninterpreted functions by Lean's logic, and their computational behavior is ignored.
-In compiled code, these functions are treated just like any others.
-Other functions may be marked unsafe; these functions are not available to Lean's logic at all.
-The section on {ref "partial-unsafe"}[partial and unsafe function definitions] contains more detail on programming with recursive functions.
-
 
 同理，某些编译期可运行失败的操作（如数组越界访问）在已知结果类型 inhabitable（可被占用）时可以正常使用。
 此时，逻辑层面这些操作会返回一个任意选定的该类型 inhabitant（具体是类型 {name}`Inhabited` 实例指定的值）。
@@ -260,9 +253,9 @@ tag := "function-api"
 
 {zhdocstring Function.curry ZhDoc.Function.curry}
 
-{docstring Function.uncurry}
+{zhdocstring Function.uncurry ZhDoc.Function.uncurry}
 
-## Properties
+## 性质
 %%%
 tag := "function-api-properties"
 %%%

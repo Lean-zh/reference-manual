@@ -76,10 +76,6 @@ $[deriving $[$x:ident],*]?
 归纳类型声明还必须满足一系列 {ref "well-formed-inductives"}[良构性要求] 以确保逻辑系统的一致性。
 
 
-The new inductive type's name is defined in the {tech}[current namespace].
-Each constructor's name is in the inductive type's namespace.{index (subterm := "of inductive type")}[namespace]
-
-
 
 构造子定义在 {keywordOf Lean.Parser.Command.declaration (parser:=«inductive»)}`where`后边。
 构造子并非必需，比如像 {lean}`False` 和 {lean}`Empty` 这样没有构造子的归纳类型是完全合理的。
@@ -111,6 +107,7 @@ tag := "inductive-datatypes-parameters-and-indices"
 但如果 {option}`inductive.autoPromoteIndices` 选项为 {lean}`true`，则本来可以作为参数的语法层面的索引会被自动提升为参数。
 当一个索引的所有类型依赖全都是参数类型，且它在所有构造子的类型构造子调用中始终未实例化、未变化，那么它就可以被当作参数。
 
+{zhOptionDocs inductive.autoPromoteIndices ZhDoc.Option.inductive.autoPromoteIndices}
 
 索引实际上定义了一个_类型族_。
 每次索引取值确定，就从族中选出一个类型，该类型有它各自的构造子。
@@ -159,8 +156,8 @@ inductive Solo where
 ```leanOutput OneTy
 Solo : Type
 ```
-The constructor is named {lean}`Solo.solo`, because constructor names are in the type constructor's namespace.
-Because {lean}`Solo` expects no arguments, the signature inferred for {lean}`Solo.solo` is:
+构造子的名字是 {lean}`Solo.solo`，因为构造子的名字位于类型构造子的命名空间下。
+由于 {lean}`Solo` 无需参数，Lean 自动推断 {lean}`Solo.solo` 的签名为：
 
 ```lean (name := oneTy)
 #check Solo.solo
@@ -226,7 +223,7 @@ example : EvenOddList String true :=
   .cons "a" (.cons "b" .nil)
 ```
 
-This example is not well typed because there are three entries in the list:
+以下例子类型不合法，因为列表有三个元素：
 ```lean +error (name := evenOddOops)
 
 example : EvenOddList String true :=
@@ -278,7 +275,7 @@ inductive Either (α : Type u) (β : Type v) : Type (max u v) where
   | right : β → Either α β
 ```
 
-In this version, there are two types named `α` that might not be identical:
+在下面这个版本中，有两个名为 `α` 的类型，它们可能并不相同：
 ```lean (name := Either') +error
 
 inductive Either' (α : Type u) (β : Type v) : Type (max u v) where
@@ -409,11 +406,11 @@ axiom α : Prop
 
  * {lean}`Char` 用 `uint32_t` 表示。由于 {lean}`Char` 取值不超过 21 位，所以总是无箱。
 
- * {lean}`Float` is represented by a pointer to a Lean object that contains a “double”.
+ * {lean}`Float` 由指向包含 `double` 的 Lean 对象的指针表示。
 
- * An {deftech}_enum inductive_ type of at least 2 and at most $`2^{32}` constructors, each of which has no parameters, is represented by the first type of {C}`uint8_t`, {C}`uint16_t`, {C}`uint32_t` that is sufficient to assign a unique value to each constructor. For example, the type {lean}`Bool` is represented by {C}`uint8_t`, with values {C}`0` for {lean}`false` and {C}`1` for {lean}`true`. {TODO}[Find out whether this should say “no relevant parameters”]
+ * {deftech (key := "enum inductive")}_枚举归纳类型_，即至少有 2 个、至多有 $`2^{32}` 个构造子且每个构造子都无参数的类型，用 {C}`uint8_t`、{C}`uint16_t`、{C}`uint32_t` 中足以为每个构造子分配唯一值的最小类型表示。例如，{lean}`Bool` 用 {C}`uint8_t` 表示，{lean}`false` 为 {C}`0`，{lean}`true` 为 {C}`1`。{TODO}[需确认此处是否应写成“无相关参数”]
 
- * {lean}`Decidable α` is represented the same way as `Bool` {TODO}[Aren't Decidable and Bool just special cases of the rules for trivial constructors and irrelevance?]
+ * {lean}`Decidable α` 的表示与 `Bool` 相同。{TODO}[`Decidable` 和 `Bool` 是否只是平凡构造子与无关性规则的特例？]
 
  * {lean}`Nat` and {lean}`Int` are represented by {C}`lean_object *`.
   Their representations are described in more detail in {ref "nat-runtime"}[the section on natural numbers] and {ref "int-runtime"}[the section on integers].
@@ -485,9 +482,9 @@ Subtype.mk.{u} {α : Sort u} {p : α → Prop}
 因此，子类型在编译后不带来运行时额外开销，其表示和 {name Subtype.val}`val` 字段的类型完全一致。
 :::
 
-:::example "Signed Integers"
-The signed integer types {lean}`Int8`, ..., {lean}`Int64`, {lean}`ISize` are structures with a single field that wraps the corresponding unsigned integer type.
-They are represented by the unsigned C types {C}`uint8_t`, ..., {C}`uint64_t`, {C}`size_t`, respectively, because they have a trivial structure.
+:::example "带符号整数"
+有符号整数类型 {lean}`Int8`、...、{lean}`Int64`、{lean}`ISize` 是只带唯一字段、该字段包装了对应无符号整数类型的结构体。
+因为结构体本身是平凡包装，它们分别表示为无符号 C 类型 {C}`uint8_t`、...、{C}`uint64_t`、{C}`size_t`。
 
 :::
 
@@ -578,8 +575,8 @@ tag := "mutual-inductive-types-dependencies"
 %%%
 
 
-:::example "Mutual inductive type constructors may not mention each other"
-These inductive types are not accepted by Lean:
+:::example "类型构造子之间不能互相引用"
+Lean 不接受下述归纳类型：
 ```lean +error (name := mutualNoMention)
 
 mutual
@@ -635,9 +632,9 @@ Note: All inductive types declared in the same `mutual` block must have the same
 
 
 ::::keepEnv
-::: example "Differing parameter types"
-Even though `Many` and `Optional` are not mutually recursive, they are declared in the same `mutual` block and must therefore have identical parameters.
-They both have exactly one parameter, but `Many`'s parameter is not necessarily in the same universe as `Optional`'s:
+::: example "参数类型不一致"
+即使 `Many` 和 `Optional` 并非互递归，只要在同一个 `mutual` 块中声明，它们也必须具有完全相同的参数。
+两者都只有一个参数，但 `Many` 的参数未必与 `Optional` 的参数处于同一宇宙：
 ```lean (name := manyOptional) +error
 
 mutual
@@ -768,8 +765,8 @@ tag := "mutual-inductive-types-positivity"
 %%%
 
 
-::: example "Mutual strict positivity"
-In the following mutual group, `Tm` occurs in a negative position in the argument to `Binding.scope`:
+::: example "互递归条件下的严格正性"
+在下面的 mutual 组中，`Tm` 在 `Binding.scope` 的参数类型里出现在负位置：
 ```lean +error (name := mutualHoas)
 
 mutual

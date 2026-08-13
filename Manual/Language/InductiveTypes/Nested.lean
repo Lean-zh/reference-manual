@@ -84,7 +84,7 @@ inductive DRTree (α : Type u) : Nat → Type u where
 
 ::::
 
-This declaration includes a non-strictly-positive occurrence of the inductive type, nested under an {name}`Option`:
+下面的声明包含一个嵌套在 {name}`Option` 下、并非严格正向的归纳类型出现：
 ```lean +error (name := nonPos)
 
 inductive WithCheck where

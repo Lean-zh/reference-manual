@@ -281,6 +281,8 @@ tag := "quotient-intro"
 
 {zhdocstring Quotient.mk ZhDoc.Quotient.mk}
 
+{zhdocstring Quotient.mk' ZhDoc.Quotient.mk'}
+
 :::example "用商类型定义整数"
 整数可定义为一对自然数，并通过它们的差值来表示。该表示不是唯一的，比如 {lean}`(4, 7)` 和 {lean}`(1, 4)` 都表示 {lean (type := "Int")}`-3`。
 
@@ -389,8 +391,7 @@ def Z : Type := Quotient Z.instSetoid
 
 def Z.mk (n : Z') : Z := Quotient.mk _ n
 ```
-对于给定的由一对自然数编码而成的整数{lean}`Z`, 取负操作就是交换两分量：
-Given the encoding {lean}`Z` of integers as a quotient of pairs of natural numbers, negation can be implemented by swapping the first and second projections:
+对于给定的由一对自然数编码而成的整数 {lean}`Z`，取负操作就是交换两分量：
 ```lean
 def neg' : Z' → Z
   | (x, y) => .mk (y, x)
@@ -444,11 +445,6 @@ file := "Proofs About Quotients"
 tag := "quotient-proofs"
 %%%
 
-
-The fundamental tools for proving properties of elements of quotient types are the soundness axiom and the induction principle.
-The soundness axiom states that if two elements of the underlying type are related by the quotient's equivalence relation, then they are equal in the quotient type.
-The induction principle follows the structure of recursors for inductive types: in order to prove that a predicate holds for all elements of a quotient type, it suffices to prove that it holds for an application of {name}`Quotient.mk` to each element of the underlying type.
-Because {name}`Quotient` is not an {tech}[inductive type], tactics such as {tactic}`cases` and {tactic}`induction` require that {name}`Quotient.ind` be specified explicitly with the {keyword}`using` modifier.
 
 
 在商类型上证明性质，主要工具是 soundness 公理和归纳原理。
@@ -600,8 +596,8 @@ variable
   (resp : ∀ x y, r x y → f x = f y)
   (x : α)
 ```
-In addition to the above constants, Lean's kernel contains a reduction rule for {name}`Quot.lift` that causes it to reduce when used with {name}`Quot.mk`, analogous to {tech}[ι-reduction] for inductive types.
-Given a relation {lean}`r` over {lean}`α`, a function {lean}`f` from {lean}`α` to {lean}`β`, and a proof {lean}`resp` that {lean}`f` respects {lean}`r`, the term {lean}`Quot.lift f resp (Quot.mk r x)` is {tech (key := "definitional equality")}[definitionally equal] to {lean}`f x`.
+除了上述常量外，Lean 的内核还包含一条关于 {name}`Quot.lift` 的规约规则，使它与 {name}`Quot.mk` 一起使用时能够规约，类似于归纳类型的 {tech (key := "ι-reduction")}[ι-规约]。
+给定 {lean}`α` 上的关系 {lean}`r`、从 {lean}`α` 到 {lean}`β` 的函数 {lean}`f`，以及证明 {lean}`f` 保持 {lean}`r` 的 {lean}`resp`，项 {lean}`Quot.lift f resp (Quot.mk r x)` 与 {lean}`f x` {tech (key := "definitional equality")}[定义等价]。
 
 
 ```lean -show
@@ -646,7 +642,7 @@ inductive RoseTree (α : Type u) where
   | branch : List (RoseTree α) → RoseTree α
 ```
 
-However, taking a quotient of the {name}`List` that identifies all elements in the style of {ref "squash-types"}[squash types] causes Lean to reject the declaration:
+然而，对 {name}`List` 按照 {ref "squash-types"}[压缩类型] 的方式取商、将所有元素视为相同，会导致 Lean 拒绝该声明：
 ```lean +error (name := nestedquot)
 
 inductive SetTree (α : Type u) where
@@ -664,6 +660,9 @@ inductive SetTree (α : Type u) where
 
 
 ## 底层商类型 API
+%%%
+tag := "quot-api"
+%%%
 
 {name}`Quot.liftOn` 是 {name}`Quot.lift` 的变体，将商类型值放参数首，与 {name}`Quotient.liftOn` 类似。
 

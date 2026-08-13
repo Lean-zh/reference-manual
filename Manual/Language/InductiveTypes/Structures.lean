@@ -76,7 +76,7 @@ file := "Fields"
 tag := "structure-fields"
 %%%
 
-Each field of a structure declaration corresponds to a parameter of the constructor.
+结构体声明的每个字段都对应构造子的一个参数。
 
 ::::example "Inferring Universes"
 
@@ -214,14 +214,14 @@ structure Palindrome where
 
 :::
 
-::: example "Modifiers on structure constructor"
+::: example "结构体构造子的修饰符"
 ```imports -show
 import Std
 ```
-The structure {lean}`NatStringBimap` maintains a finite bijection between natural numbers and strings.
-It consists of a pair of maps, such that the keys each occur as values exactly once in the other map.
-Because the constructor is private, code outside the defining module can't construct new instances and must use the provided API, which maintains the invariants of the type.
-Additionally, providing the default constructor name explicitly is an opportunity to attach a {tech}[documentation comment] to the constructor.
+结构体 {lean}`NatStringBimap` 维护自然数与字符串之间的有限双射。
+它由一对映射组成，每个映射的键在另一个映射的值中恰好出现一次。
+由于构造子是 private，定义模块之外的代码不能直接构造新实例，而必须使用维护类型不变式的 API。
+此外，显式给出默认构造子名称也提供了为构造子附加 {tech (key := "documentation comment")}[文档注释] 的机会。
 
 
 ```lean
@@ -294,11 +294,11 @@ The value is wrapped in a public but non-exposed helper definition.
 This is particularly useful with instances of type classes, because the implementation of {tech}[methods] in public {tech}[instances] of type classes are {tech}[exposed] by default.
 This modifier allows them to be made private.
 
-The optional type annotation allows the structure type to be specified in contexts where it is not otherwise determined.
+可选的类型标注允许在无法由上下文确定时显式指定结构体类型。
 ::::
 
-::::example "Patterns and default values"
-The structure {name}`AugmentedIntList` contains a list together with some extra information, which is empty if omitted:
+::::example "模式与默认值"
+结构体 {name}`AugmentedIntList` 包含一个列表及一些额外信息；省略时额外信息为空：
 
 ```lean
 structure AugmentedIntList where
@@ -306,8 +306,6 @@ structure AugmentedIntList where
   augmentation : String := ""
 ```
 在测试列表是否为空时，函数 {name AugmentedIntList.isEmpty}`isEmpty` 还会检测字段 {name AugmentedIntList.augmentation}`augmentation` 是否为空；因为忽略字段会采用默认值，模式匹配同样如此：
-
-When testing whether the list is empty, the function {name AugmentedIntList.isEmpty}`isEmpty` must explicitly match the {name AugmentedIntList.augmentation}`augmentation` field, even though it has a default value:
 
 ```lean (name := isEmptyDefaults)
 def AugmentedIntList.isEmpty : AugmentedIntList → Bool
@@ -633,7 +631,7 @@ deriving Repr
 def coords : Triple Nat := {fst := 17, snd := 2, thd := 95}
 ```
 
-Evaluating the first field index of {name}`coords` yields the underlying {name}`Pair`, rather than the contents of the field `fst`:
+对 {name}`coords` 的第一个字段索引求值时，得到的是底层的 {name}`Pair`，而不是字段 `fst` 的内容：
 ```lean (name := coords1)
 
 #eval coords.1
@@ -672,7 +670,7 @@ def two : EvenPrime where
 def printEven (num : EvenNumber) : IO Unit :=
   IO.print num.val
 ```
-it is a type error to apply {name}`printEven` directly to {name}`two`:
+直接将 {name}`printEven` 应用于 {name}`two` 会产生类型错误：
 ```lean +error (name := printTwo)
 
 #check printEven two

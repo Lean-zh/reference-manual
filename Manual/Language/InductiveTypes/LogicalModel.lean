@@ -242,12 +242,12 @@ tag := "iota-reduction"
 %%%
 
 
-In addition to adding new constants to the logic, inductive type declarations also add new reduction rules.
-These rules govern the interaction between recursors and constructors; specifically recursors that have constructors as their major premise.
-This form of reduction is called {deftech}_ι-reduction_ (iota reduction){index}[ι-reduction]{index (subterm:="ι (iota)")}[reduction].
+归纳类型声明除了为逻辑添加新常量外，还会引入新的规约规则。
+这些规则负责处理递归子与构造子之间的互动，尤其是以构造子为主要前提的递归子应用。
+这种规约形式称为 {deftech (key := "ι-reduction")}_ι-规约_（iota reduction）{index}[ι-规约]{index (subterm:="ι (iota)")}[规约]。
 
-When the recursor's major premise is a constructor with no recursive parameters, the recursor application reduces to an application of the constructor's minor premise to the constructor's arguments.
-If there are recursive parameters, then these arguments to the minor premise are found by applying the recursor to the recursive occurrence.
+当递归子的主要前提是没有递归参数的构造子时，递归子应用会规约为将该构造子的次要前提应用于构造子的参数。
+如果存在递归参数，则传给次要前提的对应参数由递归子应用于递归出现而得到。
 
 
 # 良构性约束
@@ -314,7 +314,7 @@ tag := "strict-positivity"
 :::::example "非严格正性的归纳类型"
 ::::keepEnv
 :::keepEnv
-The type `Bad` would make Lean inconsistent if it were not rejected:
+如果不拒绝类型 `Bad`，它会导致 Lean 不一致：
 ```lean (name := Bad) +error
 
 inductive Bad where
@@ -335,7 +335,7 @@ axiom Bad.bad : (Bad → Bad) → Bad
 :::
 
 :::keepEnv
-This declaration of a fixed point operator is rejected, because `Fix` occurs as an argument to `f`:
+下面这个不动点算子的声明会被拒绝，因为 `Fix` 作为参数出现在 `f` 中：
 ```lean (name := Fix) +error
 
 inductive Fix (f : Type u → Type u) where
@@ -346,8 +346,8 @@ inductive Fix (f : Type u → Type u) where
 ```
 :::
 
-`Fix.fix` is rejected because `f` is not a type constructor of an inductive type, but `Fix` itself occurs as an argument to it.
-In this case, `Fix` is also sufficient to construct a type equivalent to `Bad`:
+`Fix.fix` 会被拒绝，因为 `f` 不是归纳类型的类型构造子，而 `Fix` 本身却作为它的参数出现。
+在这种情况下，`Fix` 也足以构造一个等价于 `Bad` 的类型：
 ```lean -show
 
 axiom Fix : (Type → Type) → Type
@@ -364,12 +364,6 @@ def Bad : Type := Fix fun t => t → t
 tag := "prop-vs-type"
 %%%
 
-Lean rejects universe-polymorphic types that could not, in practice, be used polymorphically.
-This could arise if certain instantiations of the universe parameters would cause the type itself to be a {lean}`Prop`.
-If this type is not a {tech}[subsingleton], then its recursor can only target propositions (that is, the {tech}[motive] must return a {lean}`Prop`).
-These types only really make sense as {lean}`Prop`s themselves, so the universe polymorphism is probably a mistake.
-Because they are largely useless, Lean's inductive type elaborator has not been designed to support these types.
-
 
 Lean 会拒绝那些实际上无法多态使用的宇宙多态类型。
 例如，如果对宇宙参数的部分实例化会导致类型变成 {lean}`Prop`，而该类型又不是{tech (key := "subsingleton")}[子单元]，则其递归子只允许针对命题（即{tech (key := "motive")}[动机]只能返回 {lean}`Prop`）。
@@ -385,8 +379,8 @@ Lean 的标准库定义了 {name}`PUnit` 和 {name}`PEmpty`。
 
 
 ::::keepEnv
-:::example "Overly-universe-polymorphic {lean}`Bool`"
-Defining a version of {lean}`Bool` that can be in any universe is not allowed:
+:::example "过度使用宇宙多态的 {lean}`Bool`"
+不允许定义可处于任意宇宙中的 {lean}`Bool` 版本：
 ```lean +error (name := PBool)
 
 inductive PBool : Sort u where
@@ -410,15 +404,6 @@ Hint: A possible solution is to use levels of the form `max 1 _` or `_ + 1` to e
 file := "Constructions for Termination Checking"
 tag := "recursor-elaboration-helpers"
 %%%
-
-In addition to the type constructor, constructors, and recursors that Lean's core type theory prescribes for inductive types, Lean constructs a number of useful helpers.
-First, the equation compiler (which translates recursive functions with pattern matching in to applications of recursors) makes use of these additional constructs:
- * `recOn` is a version of the recursor in which the major premise is prior to the minor premise for each constructor.
- * `casesOn` is a version of the recursor in which the major premise is prior to the minor premise for each constructor, and recursive arguments do not yield induction hypotheses. It expresses case analysis rather than primitive recursion.
- * `below` computes a type that, for some motive, expresses that _all_ inhabitants of the inductive type that are subtrees of the major premise satisfy the motive. It transforms a motive for induction or primitive recursion into a motive for strong recursion or strong induction.
- * `brecOn` is a version of the recursor in which `below` is used to provide access to all subtrees, rather than just immediate recursive parameters. It represents strong induction.
- * `noConfusion` is a general statement from which injectivity and disjointness of constructors can be derived.
- * `noConfusionType` is the motive used for `noConfusion` that determines what the consequences of two constructors being equal would be. For separate constructors, this is {lean}`False`; if both constructors are the same, then the consequence is the equality of their respective parameters.
 
 
 These constructions follow the description in {citet constructionsOnConstructors}[].
