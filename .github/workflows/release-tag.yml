@@ -1,4 +1,4 @@
-name: Deploy Tagged Chinese Reference Manual
+name: Deploy Tagged Version
 
 on:
     workflow_dispatch:
@@ -46,6 +46,12 @@ jobs:
               run: |
                   VERSION=$(lean --version | sed -E 's/^.*version[[:space:]]+([^,]+).*/\1/')
                   test -n "$VERSION"
+                  if [ "${GITHUB_EVENT_NAME}" = "push" ]; then
+                      test "${GITHUB_REF_NAME}" = "v${VERSION}" || {
+                          echo "Tag ${GITHUB_REF_NAME} does not match Lean version v${VERSION}" >&2
+                          exit 1
+                      }
+                  fi
                   echo "VERSION=$VERSION" >> "$GITHUB_ENV"
                   echo "Publishing Lean $VERSION to $PUBLIC_URL"
 

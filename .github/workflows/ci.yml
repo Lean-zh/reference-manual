@@ -61,6 +61,7 @@ jobs:
               id: build
               run: |
                   lake --no-ansi build 2>&1 | tee build.log
+                  lake --no-ansi build Manual.ZhDocString.Smoke
             - name: Generate build time summary
               if: always() # Run even if build fails
               run: |

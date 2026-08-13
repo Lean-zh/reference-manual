@@ -2,7 +2,7 @@
   "version": 0,
   "sources": {
     "tutorials": {
-      "root": "/doc/tutorials/__VERSION__",
+      "root": "https://lean-lang.org/doc/tutorials/__VERSION__",
       "shortName": "tutorials",
       "longName": "Lean Tutorials",
       "updateFrequency": "always",

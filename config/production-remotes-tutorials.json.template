@@ -2,7 +2,7 @@
   "version": 0,
   "sources": {
     "reference": {
-      "root": "/doc/reference/__VERSION__",
+      "root": "https://www.leanprover.cn/reference-manual/__VERSION__",
       "updateFrequency": "always",
       "shortName": "ref",
       "longName": "Lean Language Reference",

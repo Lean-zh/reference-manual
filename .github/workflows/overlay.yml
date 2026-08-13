@@ -23,6 +23,9 @@ on:
 jobs:
     apply-overlays:
         runs-on: ubuntu-latest
+        # Lean-zh publishes its deploy branch through the existing leanprover.cn
+        # mirror. The postdeploy/Netlify branch topology belongs to upstream.
+        if: github.repository == 'leanprover/reference-manual'
         permissions:
             contents: write # This allows pushing to the repository
         steps:

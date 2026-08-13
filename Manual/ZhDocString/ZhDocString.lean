@@ -49,20 +49,24 @@ meta def zhdocstring : BlockCommandOf ZhDocstringOpts
     let zhDeclType ← Block.Docstring.DeclType.ofName zhName
     let enSignature ← Signature.forName enName
     let extras ← translatedExtras enStx enName zhName enDeclType zhDeclType
+    let altNames ← getStoredSuggestions enName
     ``(Verso.Doc.Block.other
         (Verso.Genre.Manual.Block.docstring $(quote enName) $(quote enDeclType)
-          $(quote enSignature) $(quote customLabel) #[])
+          $(quote enSignature) $(quote customLabel) $(quote altNames.toArray))
         #[$(body ++ extras),*])
 where
   translatedExtras (blame : Syntax) (enName zhName : Name)
       (enDeclType zhDeclType : Block.Docstring.DeclType) : DocElabM (Array Term) := do
     match enDeclType, zhDeclType with
     | .structure enIsClass enCtor? _ enFields enParents _,
-      .structure _ zhCtor? _ zhFields _ _ =>
+      .structure _ zhCtor? _ zhFields zhParents _ =>
       if enCtor?.isSome != zhCtor?.isSome then
         throwErrorAt blame "中英文结构体的构造子可见性不匹配：{enName} / {zhName}"
       let ctorRow : Option Term ← match enCtor?, zhCtor? with
         | some enCtor, some zhCtor => do
+          if enCtor.name.getString! != zhCtor.name.getString! then
+            throwErrorAt blame
+              "中英文结构体构造子映射不匹配：{enCtor.name} / {zhCtor.name}"
           let header := if enIsClass then "实例构造子" else "构造子"
           let desc ← translatedBlocks [enName, enCtor.name, zhName, zhCtor.name]
             blame zhCtor.docstring?
@@ -72,6 +76,13 @@ where
             (Verso.Genre.Manual.Block.docstringSection $(quote header)) #[$sig])
         | none, none => pure none
         | _, _ => throwErrorAt blame "中英文结构体的构造子不匹配：{enName} / {zhName}"
+
+      if enParents.size != zhParents.size then
+        throwErrorAt blame "中英文结构体父类型数量不匹配：{enName} / {zhName}"
+      for (enParent, zhParent) in enParents.zip zhParents do
+        if enParent.name.getString! != zhParent.name.getString! then
+          throwErrorAt blame
+            "中英文结构体父类型映射不匹配：{enParent.name} / {zhParent.name}"
 
       let parentsRow : Option Term ← do
         if enParents.isEmpty then pure none
@@ -106,13 +117,14 @@ where
     | .inductive enCtors .., .inductive zhCtors .. => do
       if enCtors.size != zhCtors.size then
         throwErrorAt blame "中英文归纳类型构造子数量不匹配：{enName} / {zhName}"
-      let ctorSigs : Array Term ← (enCtors.zip zhCtors).mapM fun (enCtor, zhCtor) => do
-        if enCtor.name.getString! != zhCtor.name.getString! then
-          throwErrorAt blame "中英文构造子映射不匹配：{enCtor.name} / {zhCtor.name}"
-        let desc ← translatedBlocks [enName, enCtor.name, zhName, zhCtor.name]
-          blame zhCtor.docstring?
-        ``(Verso.Doc.Block.other
-          (Verso.Genre.Manual.Block.constructorSignature $(quote enCtor.signature)) #[$desc,*])
+      let ctorSigs : Array Term ← (enCtors.zip zhCtors).mapM fun (enCtor, zhCtor) =>
+        withTheReader Core.Context ({· with currNamespace := enName}) do
+          if enCtor.name.getString! != zhCtor.name.getString! then
+            throwErrorAt blame "中英文构造子映射不匹配：{enCtor.name} / {zhCtor.name}"
+          let desc ← translatedBlocks [enName, enCtor.name, zhName, zhCtor.name]
+            blame zhCtor.docstring?
+          ``(Verso.Doc.Block.other
+            (Verso.Genre.Manual.Block.constructorSignature $(quote enCtor.signature)) #[$desc,*])
       pure #[← ``(Verso.Doc.Block.other
         (Verso.Genre.Manual.Block.docstringSection "构造子") #[$ctorSigs,*])]
 

@@ -1,6 +1,6 @@
 # Lean 语言参考手册（中文）
 
-本仓库是 [Lean 语言参考手册](https://github.com/leanprover/reference-manual) 的中文版本，基于 Lean 4.34 的上游源码持续同步。手册面向需要精确查阅语言行为的读者；中文站点发布于 <https://www.leanprover.cn/reference-manual/>。
+本仓库是 [Lean 语言参考手册](https://github.com/leanprover/reference-manual) 的中文版本，当前迁移基线为 Lean 4.34.0-rc1，并随上游源码持续同步。手册面向需要精确查阅语言行为的读者；中文站点发布于 <https://www.leanprover.cn/reference-manual/>。
 
 ## 翻译贡献
 
