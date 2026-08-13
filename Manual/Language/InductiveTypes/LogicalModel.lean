@@ -7,6 +7,8 @@ Author: David Thrane Christiansen
 import VersoManual
 import Manual.Meta
 import Manual.Papers
+import Manual.ZhDocString.ZhDocString
+import Manual.ZhDocString.Language.InductiveTypes.LogicalModel
 
 
 open Verso.Genre Manual
@@ -32,7 +34,7 @@ tag := "recursors"
 %%%
 
 
-每一个归纳类型都拥有一个{tech key := "recursor"}[递归子]。
+每一个归纳类型都拥有一个{tech (key := "recursor")}[递归子]。
 递归子的定义完全由类型构造子和数据构造子的类型签名所决定。
 递归子的类型是函数类型，但它们是原语级别的，不能用 `fun` 来定义。
 
@@ -45,23 +47,23 @@ tag := "recursor-types"
 
 :::paragraph
 递归子接收以下参数：
-: 归纳类型的{tech key := "parameters"}[参数]
+: 归纳类型的{tech (key := "parameters")}[参数]
 
   由于参数在整个定义中保持一致，因此递归子可以统一对这些参数进行抽象。
 
 
-: {deftech key := "motive"}_动机_(motive)
+: {deftech (key := "motive")}_动机_(motive)
 
-  动机决定了递归子的应用结果的类型。动机是一个函数，其参数是类型的指标及其具体实例。动机决定的类型所处的具体宇宙由归纳类型的宇宙层级和具体的数据构造子决定——详见{ref "subsingleton-elimination"}[{tech key := "subsingleton"}[子单元] 消去]部分。
+  动机决定了递归子的应用结果的类型。动机是一个函数，其参数是类型的指标及其具体实例。动机决定的类型所处的具体宇宙由归纳类型的宇宙层级和具体的数据构造子决定——详见{ref "subsingleton-elimination"}[{tech (key := "subsingleton")}[子单元] 消去]部分。
 
-: 每个构造子的{deftech key := "minor premise"}_次要前提_(minor premise)
+: 每个构造子的{deftech (key := "minor premise")}_次要前提_(minor premise)
 
   对每个构造子，递归子都要求一个函数，证明动机对该构造子的任意应用成立。
   每个次要前提都会对该构造子的所有参数进行抽象。
   如果构造子的某个参数类型就是该归纳类型本身，那么次要前提还会接收一个额外参数，其类型是动机应用于该参数值的结果；它将接收递归处理这一递归参数所得的结果。
 
 
-: {deftech key := "major premise"}_主要前提_，或称 目标
+: {deftech (key := "major premise")}_主要前提_，或称 目标
 
   最后，递归子接收一个该类型的实例作为参数，以及所有指标的值。
 
@@ -163,7 +165,7 @@ Lean 中的证明是计算无关的。
 这种思想体现在归纳定义的命题或谓词的递归子的类型中。
 对于这些类型，如果定理存在多种可能的证明方式，那么 motive 只能返回另一个 {lean}`Prop`。
 如果类型的结构保证了至多只存在一个证明，那么 motive 可以返回任意宇宙中的类型。
-拥有至多一个元素的命题被称为 {deftech key := "subsingleton"}_子单元_。
+拥有至多一个元素的命题被称为 {deftech (key := "subsingleton")}_子单元_。
 Lean 并不会强制用户去*证明*某命题只有唯一的证明，而是采用了一种保守的语法近似方法来检测一个命题是否为子单元。
 满足以下两个条件的命题会被视为子单元（subsingleton）：
  * 至多只有一个构造子。
@@ -266,9 +268,9 @@ tag := "inductive-type-universe-levels"
 %%%
 
 
-归纳类型的类型构造子必须处于某个{tech key := "universe"}[宇宙]中，或是返回类型为宇宙的函数类型。
+归纳类型的类型构造子必须处于某个{tech (key := "universe")}[宇宙]中，或是返回类型为宇宙的函数类型。
 每个数据构造子的类型必须是返回饱和应用归纳类型的函数类型。
-如果归纳类型的宇宙是 {lean}`Prop`，则对宇宙没有进一步的限制，因为 {lean}`Prop` 是{tech key := "impredicative"}[非直谓的]。
+如果归纳类型的宇宙是 {lean}`Prop`，则对宇宙没有进一步的限制，因为 {lean}`Prop` 是{tech (key := "impredicative")}[非直谓的]。
 如果宇宙不是 {lean}`Prop`，那么以下要求必须成立，对每一个数据构造子的参数都适用：
  * 若构造子的参数是归纳类型的参数（即参数 vs 索引），则该参数类型不能超过类型构造子的宇宙层级。
  * 其它所有构造子参数的类型都必须严格小于类型构造子的宇宙层级。
@@ -304,7 +306,7 @@ tag := "strict-positivity"
 %%%
 
 
-所有定义中的类型在构造子参数类型中的出现都必须处于{deftech key := "strictly positive"}_严格正性_的位置。
+所有定义中的类型在构造子参数类型中的出现都必须处于{deftech (key := "strictly positive")}_严格正性_的位置。
 如果一个类型不处于函数的参数类型里（无论嵌套了多少层函数类型），也不作为任何表达式（除归纳类型的类型构造子外）的参数，那它就是严格正性的位置。
 该限制用来排除不安全的归纳类型定义，虽有可能因此排除掉某些良构类型。
 
@@ -370,9 +372,9 @@ Because they are largely useless, Lean's inductive type elaborator has not been 
 
 
 Lean 会拒绝那些实际上无法多态使用的宇宙多态类型。
-例如，如果对宇宙参数的部分实例化会导致类型变成 {lean}`Prop`，而该类型又不是{tech key := "subsingleton"}[子单元]，则其递归子只允许针对命题（即{tech key := "motive"}[动机]只能返回 {lean}`Prop`）。
+例如，如果对宇宙参数的部分实例化会导致类型变成 {lean}`Prop`，而该类型又不是{tech (key := "subsingleton")}[子单元]，则其递归子只允许针对命题（即{tech (key := "motive")}[动机]只能返回 {lean}`Prop`）。
 这些类型实际上只适合充当 {lean}`Prop` 本身，所以宇宙多态很可能本就是错误。
-由于这种类型几乎无实际意义，Lean 的归纳类型{tech key := "elaborator"}[繁释器]并未设计为支持它们。
+由于这种类型几乎无实际意义，Lean 的归纳类型{tech (key := "elaborator")}[精译器]并未设计为支持它们。
 
 
 如果这种宇宙多态归纳类型本身是子单元，则这样的定义还是有意义的。
@@ -430,7 +432,7 @@ These constructions follow the description in {citet constructionsOnConstructors
  * `noConfusion` 是一个通用语句，可据此推出构造子的单射性和互斥性。
  * `noConfusionType` 是为 `noConfusion` 设计的动机，用以描述两个构造子相等时的推论。对不同构造子而言这是 {lean}`False`；相同构造子则为各自参数的等式。
 
-对于{tech key := "well-founded recursion"}[良构递归]，通常还需要一个通用意义上的“大小”概念。
+对于{tech (key := "well-founded recursion")}[良构递归]，通常还需要一个通用意义上的“大小”概念。
 这正是 {name}`SizeOf` 类型类所提供的。
 
 {zhdocstring SizeOf ZhDoc.SizeOf}

@@ -28,51 +28,44 @@ tag := "type-system"
 shortContextTitle := "Type System"
 %%%
 
-{deftech}_Terms_, also known as {deftech}_expressions_, are the fundamental units of meaning in Lean's core language.
-They are produced from user-written syntax by the {tech (key := "Lean elaborator")}[elaborator].
-Lean's type system relates terms to their _types_, which are also themselves terms.
-Types can be thought of as denoting sets, while terms denote individual elements of these sets.
-A term is {deftech}_well-typed_ if it has a type under the rules of Lean's type theory.
-Only well-typed terms have a meaning.
 
-
-{deftech key := "terms"}_项_，也称为{deftech key := "expressions"}_表达式_，是 Lean 核心语言中最基本的语义单元。
-它们由用户编写的语法经过{tech key := "elaborator"}[繁释器]生成。
+{deftech (key := "terms")}_项_，也称为{deftech (key := "expressions")}_表达式_，是 Lean 核心语言中最基本的语义单元。
+它们由用户编写的语法经过{tech (key := "elaborator")}[精译器]生成。
 Lean 的类型系统将各项和它们的_类型(type)_关联起来，而类型本身也是项。
 类型可以被看作是表示一个集合，而项表示该集合中的具体元素。
-如果某个项根据 Lean 的类型论规则有一个类型，则称它是{deftech key := "well-typed"}_良型的_（well-typed）。
+如果某个项根据 Lean 的类型论规则有一个类型，则称它是{deftech (key := "well-typed")}_良型的_（well-typed）。
 只有良型的项才有意义。
 
 
 项是一种依值类型 λ-演算：它们包含函数抽象、应用、变量以及 `let`-绑定。
-除了绑定变量外，项语言中的变量还可以引用{tech key := "constructor"}[构造子]、{tech key := "type constructor"}[类型构造子]、{tech key := "recursor"}[递归子]、{deftech key := "defined constant"}[已定义常量]或者不透明常量（opaque constant）。
+除了绑定变量外，项语言中的变量还可以引用{tech (key := "constructor")}[构造子]、{tech (key := "type constructor")}[类型构造子]、{tech (key := "recursor")}[递归子]、{deftech (key := "defined constant")}[已定义常量]或者不透明常量（opaque constant）。
 数据构造子、类型构造子、递归子和不透明常量不会被代换，而已定义常量可以被其定义替换。
 
 
-一个{deftech key := "derivation"}_演绎_（derivation）通过明确地指明具体应用了哪些推断规则，来展示某项的良型性。
+一个{deftech (key := "derivation")}_演绎_（derivation）通过明确地指明具体应用了哪些推断规则，来展示某项的良型性。
 在实际使用中，良型的项本身就代表了证明其良型性的推理过程。
 Lean 的类型论可以由良型的项完全可以重建出对应的演绎过程，这大大减少了存储完整演绎所需的开销，而同时仍然能够表达现代数学中的推理。
 这意味着证明项已足以作为定理成立的证据，并且可以被独立的系统验证。
 
 
-除了拥有类型，项之间还存在{deftech key := "definitional equality"}_定义等价_关系。
+除了拥有类型，项之间还存在{deftech (key := "definitional equality")}_定义等价_关系。
 定义等价是可机械化检验的关系，用于在语法上将项根据其计算行为视作等价。
-定义等价包含如下几种{deftech key := "reduction"}_规约_形式：
+定义等价包含如下几种{deftech (key := "reduction")}_规约_形式：
 
 
- : {deftech key := "β"}[β-规约]（beta）
+ : {deftech (key := "β")}[β-规约]（beta）
 
     将函数抽象应用到实参时，通过对绑定变量做代换来实现
 
- : {deftech key := "δ"}[δ-规约]（delta）
+ : {deftech (key := "δ")}[δ-规约]（delta）
 
-    将{tech key := "defined constant"}[已定义常量]出现的地方用其定义值替换
+    将{tech (key := "defined constant")}[已定义常量]出现的地方用其定义值替换
 
- : {deftech key := "ι"}[ι-规约]（iota）
+ : {deftech (key := "ι")}[ι-规约]（iota）
 
     归约以构造子为目标的递归器（即原始递归）
 
- : {deftech key := "ζ"}[ζ-规约]（zeta）
+ : {deftech (key := "ζ")}[ζ-规约]（zeta）
 
      用定义值替换被 `let` 绑定的变量
 
@@ -80,7 +73,7 @@ Lean 的类型论可以由良型的项完全可以重建出对应的演绎过程
 
      应用于商的元素时{ref "quotient-model"}[规约商类型函数的提升算子(lifting operator)]
 
-若项中所有可能的规约都已执行完毕，则该项处于 {deftech key := "normal form"}_规范形式_。
+若项中所有可能的规约都已执行完毕，则该项处于 {deftech (key := "normal form")}_规范形式_。
 
 
 ::::keepEnv
@@ -102,9 +95,9 @@ example : S.mk x.f1 x.f2 = x := by rfl
 
 export S (f1 f2)
 ```
-定义等价包括函数和单构造子归纳类型的 {deftech key := "η-equivalence"}[η-等价]。
+定义等价包括函数和单构造子归纳类型的 {deftech (key := "η-equivalence")}[η-等价]。
 也就是说，{lean}`fun x => f x` 与 {lean}`f` 是定义等价的；而若 {lean}`S` 是一个带有字段 {lean}`f1` 和 {lean}`f2` 的结构体，那么 {lean}`S.mk x.f1 x.f2` 与 {lean}`x` 定义等价。
-同时还具备 {deftech key := "proof irrelevance"}_证明无关性_：同一命题的任意两个证明项是定义等价的。
+同时还具备 {deftech (key := "proof irrelevance")}_证明无关性_：同一命题的任意两个证明项是定义等价的。
 定义等价关系具有自反性、对称性，但并不具有传递性。
 ::::
 
@@ -153,8 +146,8 @@ in the application
 ::::
 
 
-Lean 的基本类型包括 {tech key := "universe"}[宇宙]、{tech key := "function"}[函数]类型、商类型构造器 {name}`Quot`，以及 {tech key := "inductive type"}[归纳类型]的 {tech key := "type constructor"}[类型构造子]。
-{tech key := "defined constant"}[已定义常量]、{tech key := "recursor"}[递归子]的应用、函数应用、{tech key := "axiom"}[公理] 或 {tech key := "opaque constant"}[不透明常量](opaque constant) 也都可以作为类型出现，就像它们能出现在普通项的位置一样。
+Lean 的基本类型包括 {tech (key := "universe")}[宇宙]、{tech (key := "function")}[函数]类型、商类型构造器 {name}`Quot`，以及 {tech (key := "inductive type")}[归纳类型]的 {tech (key := "type constructor")}[类型构造子]。
+{tech (key := "defined constant")}[已定义常量]、{tech (key := "recursor")}[递归子]的应用、函数应用、{tech (key := "axiom")}[公理] 或 {tech (key := "opaque constant")}[不透明常量](opaque constant) 也都可以作为类型出现，就像它们能出现在普通项的位置一样。
 
 
 {include Manual.Language.Functions}
@@ -167,7 +160,7 @@ tag := "propositions"
 %%%
 
 
-{deftech key := "proposition"}[命题] 是带有意义、可被证明的陈述。{index}[proposition]
+{deftech (key := "proposition")}[命题] 是带有意义、可被证明的陈述。{index}[proposition]
 没有意义的说法不是命题，但不正确/错误的说法依然是命题。
 所有命题都属于 {lean}`Prop` 这一类型。
 
@@ -182,26 +175,17 @@ tag := "propositions"
 
   编译生成的代码中，命题会被擦除。
 
-: 非限定性
+: 非直谓性
 
   命题可以对任意宇宙中的类型进行量化。
 
-: {deftech (key := "propositional extensionality")}[Extensionality] {index (subterm := "of propositions")}[extensionality]
+: 受限消去
 
+  除了 {tech (key := "subsingleton")}[子单元] 外，命题不能被消除到非命题类型。
 
-  除了 {tech key := "subsingleton"}[子单元] 外，命题不能被消除到非命题类型。
-
-: {deftech key:="propositional extensionality"}[外延性] {index subterm:="of propositions"}[外延性]
+: {deftech (key := "propositional extensionality")}[外延性] {index (subterm := "of propositions")}[外延性]
 
   任意两个逻辑等价的命题，可以用公理 {lean}`propext` 证明它们相等。
-
-Types are classified by {deftech}_universes_. {index}[universe]{margin}[Universes are also referred to as {deftech}_sorts_.]
-Each universe has a {deftech (key:="universe level")}_level_, {index (subterm := "of universe")}[level] which is a natural number.
-The {lean}`Sort` operator constructs a universe from a given level. {index}[`Sort`]
-If the level of a universe is smaller than that of another, the universe itself is said to be smaller.
-With the exception of propositions (described later in this chapter), types in a given universe may only quantify over types in smaller universes.
-{lean}`Sort 0` is the type of propositions, while each `Sort (u + 1)` is a type that describes data.
-
 
 {zhdocstring propext ZhDoc.propext }
 
@@ -212,8 +196,8 @@ file := "Universe"
 tag := "universe"
 %%%
 
-类型由 {deftech key := "universes"}_宇宙_ 分类。{index}[universe]{margin}[宇宙有时也称为 {deftech key := "sorts"}_类别(sort)_。]
-每个宇宙都有一个 自然数{deftech key := "universe level"}_层级(level)_。{index subterm := "of universe"}[level]
+类型由 {deftech (key := "universes")}_宇宙_ 分类。{index}[universe]{margin}[宇宙有时也称为 {deftech (key := "sorts")}_类别(sort)_。]
+每个宇宙都有一个 自然数{deftech (key := "universe level")}_层级(level)_。{index (subterm := "of universe")}[level]
 {lean}`Sort` 操作符可根据给定层级构造出一个宇宙。{index}[`Sort`]
 若一个宇宙的层级小于另一个，则该宇宙本身也小于后者。
 除命题外（将在本章后面介绍），某宇宙内的类型只可以对更小宇宙内的类型进行量化。
@@ -269,13 +253,8 @@ of sort `Type 2`
 ## 直谓性(Predicativity)
 
 
-Predicates, which are functions that return propositions (that is, where the result of the function is some type in `Prop`) may have argument types in any universe whatsoever, but the function type itself remains in `Prop`.
-In other words, propositions feature {deftech}[_impredicative_] {index}[impredicative]{index (subterm := "impredicative")}[quantification] quantification, because propositions can themselves be statements about all propositions (and all other types).
-
-
-
 谓词,即返回命题的函数（即结果为 `Prop` 中类型的函数）可以拥有任意宇宙的参数类型，但这类函数本身还是属于 `Prop`。
-换言之，命题具有 {deftech key := "impredicative"}[_非直谓性的_](impredicative){index}[impredicative]{index subterm := "impredicative"}[quantification] 量化， 因为命题本身可以是关于所有命题（以及所有其他类型）的陈述。
+换言之，命题具有 {deftech (key := "impredicative")}[_非直谓性的_](impredicative){index}[impredicative]{index (subterm := "impredicative")}[quantification] 量化， 因为命题本身可以是关于所有命题（以及所有其他类型）的陈述。
 
 
 :::Manual.example "非直谓性"
@@ -291,11 +270,7 @@ example : Prop := ∀ (α : Type 5), ∀ (x : α), x = x
 ```
 :::
 
-For universes at {tech (key := "universe level")}[level] `1` and higher (that is, the `Type u` hierarchy), quantification is {deftech}[_predicative_]. {index}[predicative]{index (subterm := "predicative")}[quantification]
-For these universes, the universe of a function type is the least upper bound of the argument and return types' universes.
-
-
-对于 1 及以上层级（即 `Type u` 层级）中的宇宙，量化是 {deftech key := "predicative"}[_直谓性_] 的。{index}[predicative]{index subterm := "predicative"}[quantification]
+对于 1 及以上层级（即 `Type u` 层级）中的宇宙，量化是 {deftech (key := "predicative")}[_直谓性_] 的。{index}[predicative]{index (subterm := "predicative")}[quantification]
 在这一范围内，函数类型所属宇宙为参数类型和返回类型宇宙的最小上界。
 
 
@@ -343,9 +318,11 @@ of sort `Type 4`
 :::
 
 
-Lean supports {deftech}_universe polymorphism_, {index (subterm := "universe")}[polymorphism] {index}[universe polymorphism] which means that constants defined in the Lean environment can take {deftech}[universe parameters].
-These parameters can then be instantiated with universe levels when the constant is used.
-Universe parameters are written in curly braces following a dot after a constant name.
+## 多态性（Polymorphism）
+
+Lean 支持 {deftech (key := "universe polymorphism")}_宇宙多态_，{index (subterm := "universe")}[polymorphism]{index}[universe polymorphism]，即 Lean 环境中的常量可以带有 {deftech (key := "universe parameter")}[宇宙参数]。
+这些参数可在使用常量时以具体宇宙层级实例化。
+宇宙参数通过在常量名后以点号加花括号写成。
 
 
 
@@ -444,13 +421,13 @@ partial def count [Monad m] (p : α → Bool) (act : m α) : m Nat := do
 
 ```lean -show -keep
 /-- info: Nat : Type -/
-#guard_msgs in
+#check_msgs in
 #check Nat
 
 /--
 info: count.{u_1} {m : Type → Type u_1} {α : Type} [Monad m] (p : α → Bool) (act : m α) : m Nat
 -/
-#guard_msgs in
+#check_msgs in
 #check count
 ```
 :::
@@ -482,7 +459,7 @@ Level ::= 0 | 1 | 2 | ...  -- Concrete levels
 $$`\mathtt{imax}\ u\ v = \begin{cases}0 & \mathrm{when\ }v = 0\\\mathtt{max}\ u\ v&\mathrm{otherwise}\end{cases}`
 
 
-`imax` 用于实现 {tech key := "impredicative"}[非直谓性] 的 {lean}`Prop` 量化。
+`imax` 用于实现 {tech (key := "impredicative")}[非直谓性] 的 {lean}`Prop` 量化。
 具体而言，若 `A : Sort u`, `B : Sort v`，则有 `(x : A) → B : Sort (imax u v)`。
 若 `B : Prop`，则函数类型本身为 {lean}`Prop`；否则类型层级为 `u` 与 `v` 的最大值。
 
@@ -537,7 +514,7 @@ unknown universe level `v`
 :::
 
 
-除使用 `autoImplicit` 外，也可以用 `universe` 命令在特定 {tech key := "section scope"}[作用域] 下声明特定标识符为宇宙变量。
+除使用 `autoImplicit` 外，也可以用 `universe` 命令在特定 {tech (key := "section scope")}[作用域] 下声明特定标识符为宇宙变量。
 
 
 :::syntax Lean.Parser.Command.universe (title := "声明宇宙参数")
@@ -562,7 +539,7 @@ def id₃ (α : Type u) (a : α) := a
 Because the automatic implicit parameter feature only inserts parameters that are used in the declaration's {tech}[header], universe variables that occur only on the right-hand side of a definition are not inserted as arguments unless they have been declared with `universe` even when `autoImplicit` is `true`.
 
 
-自动隐式参数功能只会为声明 {tech key := "header"}[头部] 中用到的参数插入参数，若宇宙变量只出现在定义右侧而非头部，除非已用 `universe` 声明，否则即使 `autoImplicit` 为 {lean}`true` 也不会被自动补齐。
+自动隐式参数功能只会为声明 {tech (key := "header")}[头部] 中用到的参数插入参数，若宇宙变量只出现在定义右侧而非头部，除非已用 `universe` 声明，否则即使 `autoImplicit` 为 {lean}`true` 也不会被自动补齐。
 
 
 :::Manual.example "自动宇宙参数与 `universe` 命令"
@@ -615,11 +592,11 @@ draft := true
 
 
 
-当某类型所在宇宙低于实际应用要求时，可以用 {deftech key := "universe lifting"}_宇宙提升_ 操作符补足。
+当某类型所在宇宙低于实际应用要求时，可以用 {deftech (key := "universe lifting")}_宇宙提升_ 操作符补足。
 这类操作会用包裹的方式让某类型提升至更高宇宙。
 主要有两种提升操作：
 
- * {name}`PLift` 可将任意类型（包括 {tech key := "proposition"}[命题]）提升一级。它可用于将证明项包含进数据结构（如列表）中。
+ * {name}`PLift` 可将任意类型（包括 {tech (key := "proposition")}[命题]）提升一级。它可用于将证明项包含进数据结构（如列表）中。
  * {name}`ULift` 可将任意非命题类型提升任意层级。
 
 {zhdocstring PLift ZhDoc.PLift}

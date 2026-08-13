@@ -21,10 +21,10 @@ tag := "nested-inductive-types"
 %%%
 
 
-{deftech key := "nested inductive types"}_嵌套归纳类型_是指这些归纳类型在定义中出现了递归自身类型，并且这些递归出现作为其他归纳类型构造子的参数。
+{deftech (key := "nested inductive types")}_嵌套归纳类型_是指这些归纳类型在定义中出现了递归自身类型，并且这些递归出现作为其他归纳类型构造子的参数。
 这些递归出现是“嵌套”在其他类型构造子之下的。
 只要满足一定条件，嵌套归纳类型就可以转换为互递归归纳类型；这种转换说明它们是可靠的。
-在内部，{tech key := "kernel"}[内核]会执行这种转换；如果转换成功，那么原有的嵌套归纳类型会被接受。
+在内部，{tech (key := "kernel")}[内核]会执行这种转换；如果转换成功，那么原有的嵌套归纳类型会被接受。
 这样可以避免直接暴露内部转换细节而产生的性能和易用性问题。
 
 
@@ -72,7 +72,7 @@ inductive RTree (α : Type u) : Type u where
 variable {n : Nat}
 ```
 
-这种定义方式用于通过一个索引追踪树的深度。构造子 `DRTree.node` 有一个 {tech key := "automatic implicit parameter"}[自动隐式参数] {lean}`n`，代表所有子树的深度。
+这种定义方式用于通过一个索引追踪树的深度。构造子 `DRTree.node` 有一个 {tech (key := "automatic implicit parameter")}[自动隐式参数] {lean}`n`，代表所有子树的深度。
 然而，像构造子参数这样本地变量，不允许作为嵌套递归出现的参数：
 
 :::
@@ -145,7 +145,7 @@ In this case, the function applies equally well to the translated version as it 
 : 递归子重建
 
   嵌套归纳类型的递归子则是结合翻译后类型的递归子而实现的。
-  在这一步，嵌套出现的目标会先套上转换函数，而{tech key := "minor premises"}[次要前提]会以它们作为参数。
+  在这一步，嵌套出现的目标会先套上转换函数，而{tech (key := "minor premises")}[次要前提]会以它们作为参数。
   构造子之间的互逆性证明是必要的，因为封装后的构造子是单方向转换，但在组合递归结构时需要转换后的结果。
 
 

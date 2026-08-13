@@ -29,16 +29,16 @@ tag := "inductive-types"
 %%%
 
 
-{deftech key := "inductive types"}_归纳类型_ 是在 Lean 中引入新类型的主要方式。
-虽然 {tech key := "universes"}[宇宙]、{tech key := "functions"}[函数] 以及 {tech key := "quotient types"}[商类型] 是内置的原语类型，用户无法自行添加，但 Lean 里的其它类型要么是归纳类型，要么是基于宇宙、函数与归纳类型定义的。
-归纳类型的定义依赖于它们的 {deftech key := "type constructor"}_类型构造子_ 和 {deftech key := "constructor"}_构造子_ ；{index}[constructor]它们的其它性质也由这些定义推导而来。
-每个归纳类型有唯一的类型构造子，这个构造子可能带有 {tech key := "universe parameter"}[宇宙参数] 和普通参数。
+{deftech (key := "inductive types")}_归纳类型_ 是在 Lean 中引入新类型的主要方式。
+虽然 {tech (key := "universes")}[宇宙]、{tech (key := "functions")}[函数] 以及 {tech (key := "quotient types")}[商类型] 是内置的原语类型，用户无法自行添加，但 Lean 里的其它类型要么是归纳类型，要么是基于宇宙、函数与归纳类型定义的。
+归纳类型的定义依赖于它们的 {deftech (key := "type constructor")}_类型构造子_ 和 {deftech (key := "constructor")}_构造子_ ；{index}[constructor]它们的其它性质也由这些定义推导而来。
+每个归纳类型有唯一的类型构造子，这个构造子可能带有 {tech (key := "universe parameter")}[宇宙参数] 和普通参数。
 归纳类型可以拥有任意数量的构造子；这些构造子用于生成新的值，其类型由归纳类型的类型构造子决定。
 
 
 
 
-根据归纳类型的类型构造子和构造子，Lean 会自动生成一个 {deftech key := "recursor"}_递归子_{index}[递归子]{see "recursor"}[消去子]。
+根据归纳类型的类型构造子和构造子，Lean 会自动生成一个 {deftech (key := "recursor")}_递归子_{index}[递归子]{see "recursor"}[消去子]。
 从逻辑上讲，递归子代表归纳原则或消去规则；从计算角度看，它们表示原始递归计算。
 递归函数的终止性由其翻译为递归子的调用来保证，因此 Lean 的内核只需对递归子的应用做类型检查，而无需单独进行终止性分析。
 除此之外，Lean 还根据递归子生成很多辅助结构{margin}[无论类型是否递归，递归子总会被用到]，这些结构被系统的其他部分使用。
@@ -84,13 +84,13 @@ Each constructor's name is in the inductive type's namespace.{index (subterm := 
 构造子定义在 {keywordOf Lean.Parser.Command.declaration (parser:=«inductive»)}`where`后边。
 构造子并非必需，比如像 {lean}`False` 和 {lean}`Empty` 这样没有构造子的归纳类型是完全合理的。
 每个构造子定义以竖线 (`'|'`, Unicode `'VERTICAL BAR' (U+007c)`)、声明修饰词和名字。
-名字是 {tech key := "raw identifier"}[原始标识符]。
+名字是 {tech (key := "raw identifier")}[原始标识符]。
 名字后接声明签名。
 签名可以包含任意参数，但需满足归纳类型声明的良构性要求，返回类型必须是归纳类型的类型构造子的饱和应用。
 如果未指定签名，则 Lean 会插入足够的隐式参数来推断出良构的返回类型。
 
-新归纳类型的名字定义在{tech key := "current namespace"}[当前命名空间]中。
-每个构造子的名字位于该归纳类型的命名空间下。{index subterm:="of inductive type"}[namespace]
+新归纳类型的名字定义在{tech (key := "current namespace")}[当前命名空间]中。
+每个构造子的名字位于该归纳类型的命名空间下。{index (subterm := "of inductive type")}[namespace]
 
 
 ## 参数与索引
@@ -98,13 +98,8 @@ Each constructor's name is in the inductive type's namespace.{index (subterm := 
 tag := "inductive-datatypes-parameters-and-indices"
 %%%
 
-Type constructors may take two kinds of arguments: {deftech}_parameters_ {index (subterm := "of inductive type")}[parameter] and {deftech (key := "index")}_indices_.{index (subterm := "of inductive type")}[index]
-Parameters must be used consistently in the entire definition; all occurrences of the type constructor in each constructor in the declaration must take precisely the same argument.
-Indices may vary among the occurrences of the type constructor.
-All parameters must precede all indices in the type constructor's signature.
 
-
-类型构造子可以接收两类参数：{deftech key:= "parameters"}_参数_ {index subterm:="of inductive type"}[parameter] 和 {deftech key:="index"}_索引_ {index subterm:="of inductive type"}[index]。
+类型构造子可以接收两类参数：{deftech (key := "parameters")}_参数_ {index (subterm := "of inductive type")}[parameter] 和 {deftech (key := "index")}_索引_ {index (subterm := "of inductive type")}[index]。
 定义中，参数必须在整个归纳类型定义中保持一致；所有构造子中出现的类型构造子，参数必须一模一样。
 索引则可以在不同构造子的类型构造子的具体应用中变化。
 所有参数在类型构造子的签名中必须排在索引的前面。
@@ -116,15 +111,10 @@ All parameters must precede all indices in the type constructor's signature.
 但如果 {option}`inductive.autoPromoteIndices` 选项为 {lean}`true`，则本来可以作为参数的语法层面的索引会被自动提升为参数。
 当一个索引的所有类型依赖全都是参数类型，且它在所有构造子的类型构造子调用中始终未实例化、未变化，那么它就可以被当作参数。
 
-Indices can be seen as defining a _family_ of types.
-Each choice of indices selects a type from the family, which has its own set of available constructors.
-Type constructors with indices are said to specify {deftech}_indexed families_ {index (subterm := "of types")}[indexed family] of types.
-
-
 
 索引实际上定义了一个_类型族_。
 每次索引取值确定，就从族中选出一个类型，该类型有它各自的构造子。
-含索引的类型构造子即定义了一个 {deftech key:="indexed family"}_索引族_ {index subterm:="of types"}[带索引类型族]。
+含索引的类型构造子即定义了一个 {deftech (key := "indexed family")}_索引族_ {index (subterm := "of types")}[带索引类型族]。
 
 
 ## 归纳类型样例
@@ -257,8 +247,8 @@ universe u
 axiom α : Type u
 axiom b : Bool
 ```
-在本声明中，{lean}`α` 是 {tech key := "parameter"}[参数]，
-因为它在 {name}`EvenOddList` 的每次出现都保持一致；{lean}`b` 是 {tech key := "index"}[索引]，因为它在不同出现中可取不同值。
+在本声明中，{lean}`α` 是 {tech (key := "parameter")}[参数]，
+因为它在 {name}`EvenOddList` 的每次出现都保持一致；{lean}`b` 是 {tech (key := "index")}[索引]，因为它在不同出现中可取不同值。
 :::
 
 
@@ -313,7 +303,7 @@ inductive Either'' : Type u → Type v → Type (max u v + 1) where
   | right : β → Either'' α β
 ```
 此时需要更大的宇宙层级，因为 {ref "inductive-type-universe-levels"}[构造子的参数必须处于比归纳类型本身更低的宇宙]。
-{name}`Either''.right` 的类型参数会按 Lean 的 {tech key := "automatic implicit parameters"}[自动隐式参数] 规则推断。
+{name}`Either''.right` 的类型参数会按 Lean 的 {tech (key := "automatic implicit parameters")}[自动隐式参数] 规则推断。
 ::::
 :::::
 
@@ -325,7 +315,7 @@ tag := "anonymous-constructor-syntax"
 %%%
 
 
-如果归纳类型只有一个构造子，则这个构造子可以使用 {deftech key:="anonymous constructor syntax"}_匿名构造子语法_。
+如果归纳类型只有一个构造子，则这个构造子可以使用 {deftech (key := "anonymous constructor syntax")}_匿名构造子语法_。
 即，不必写出构造子的名字并将其应用到参数上，而直接把所有显式参数用尖括号（`'⟨'` 和 `'⟩'`, Unicode `MATHEMATICAL LEFT ANGLE BRACKET (U+0x27e8)` 和 `MATHEMATICAL RIGHT ANGLE BRACKET (U+0x27e9)`）括起来，并用逗号分隔即可。
 这种语法可以用于模式匹配和表达式。
 若想按照参数名字提供参数，或将所有隐式参数变为显式，则需使用普通构造子语法。
@@ -397,7 +387,7 @@ tag := "run-time-inductives"
 %%%
 
 
-归纳类型的运行时表示取决于构造子的数量、每个构造子参数的数量，以及参数是否 {tech key := "relevant"}[相关]。
+归纳类型的运行时表示取决于构造子的数量、每个构造子参数的数量，以及参数是否 {tech (key := "relevant")}[相关]。
 
 
 ## 特例
@@ -427,9 +417,6 @@ axiom α : Prop
 
  * {lean}`Nat` and {lean}`Int` are represented by {C}`lean_object *`.
   Their representations are described in more detail in {ref "nat-runtime"}[the section on natural numbers] and {ref "int-runtime"}[the section on integers].
-
-
- * {lean}`Nat` 和 {lean}`Int` 由 {c}`lean_object *` 表示。运行时的 {lean}`Nat` 或 {lean}`Int`，要么是指向任意精度整数对象的指针，要么（如“指针”的最低位为 1，经 {c}`lean_is_scalar` 检查）为 unbox 编码的无箱自然数或整数（相应转换用 {c}`lean_box`/{c}`lean_unbox`）。{TODO}[应移动到 FFI 章节或 Nat 章节]
 :::
 
 
@@ -442,7 +429,7 @@ tag := "inductive-types-runtime-relevance"
 类型和证明在运行时没有表示形式。
 也就是说，若归纳类型处于 `Prop`，则其值会在编译前被抹除。
 同理，所有定理的陈述和类型都会被抹除。
-具有运行时表示的类型称为 {deftech key:= "relevant"}_相关类型_，反之则为 {deftech key:="irrelevant"}_无关类型_。
+具有运行时表示的类型称为 {deftech (key := "relevant")}_相关类型_，反之则为 {deftech (key := "irrelevant")}_无关类型_。
 
 
 :::example "类型是无关的"
@@ -620,7 +607,7 @@ tag := "mutual-inductive-types-same-parameters"
 %%%
 
 
-同一个 mutual 组中的所有归纳类型，{tech key := "parameter"}[参数] 必须类型完全一致。
+同一个 mutual 组中的所有归纳类型，{tech (key := "parameter")}[参数] 必须类型完全一致。
 索引可以不同。
 
 

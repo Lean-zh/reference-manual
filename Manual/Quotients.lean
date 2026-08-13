@@ -24,7 +24,7 @@ open Verso.Genre.Manual.InlineLean
 file := "Quotients"
 tag := "quotients"
 %%%
-{deftech key := "quotient types"}_商类型_ 允许通过降低现有类型的{tech key := "propositional equality"}[命题等价]的细粒度来构造新类型。
+{deftech (key := "quotient types")}_商类型_ 允许通过降低现有类型的{tech (key := "propositional equality")}[命题等价]的细粒度来构造新类型。
 具体来说，给定一个类型 $`A` 和一个等价关系 $`\sim`，商 $`A / \sim` 拥有与 $`A` 相同的元素，但每对被 $`\sim` 相关联的元素在新类型中都被视为相等。
 等价性在全局范围内都被满足：Lean 的逻辑中任何事物都无法察觉两个被判等的项的不同。
 因此，商类型为我们构建一种不可穿透的抽象屏障提供了途径。
@@ -33,7 +33,7 @@ tag := "quotients"
 {zhdocstring Quotient ZhDoc.Quotient}
 
 只要能够证明底层类型的两个元素通过等价关系相关联，那么它们在{name}`Quotient` 中就是相等的。
-然而，{tech key := "definitional equality"}[定义等价]不会因使用 {lean}`Quotient` 而改变：两个商中的元素只有当它们本就在底层类型中定义等价时，才在商类型中定义等价。
+然而，{tech (key := "definitional equality")}[定义等价]不会因使用 {lean}`Quotient` 而改变：两个商中的元素只有当它们本就在底层类型中定义等价时，才在商类型中定义等价。
 
 
 :::paragraph
@@ -76,19 +76,19 @@ tag := "quotient-alternatives"
 一般来说，当一个类型 $`Q` 满足商的普适性质时，它被称为 $`A` 关于等价关系 $`\sim` 的商类型：存在一个函数 $`q : A \to Q`，使得 $`\forall a, b \in A, q(a) = q(b) \iff a \sim b`。
 
 
-由 {name}`Quotient` 形成的商只在{tech key := "propositional equality"}[命题等价]意义下满足这一性质：被 $`\sim`$ 相关联的 $`A` 的元素在商类型中也是等价的，因此无法区分。
-然而，同一个等价类中的成员在商类型中不一定{tech key:="definitional equality"}[定义等价]。
+由 {name}`Quotient` 形成的商只在{tech (key := "propositional equality")}[命题等价]意义下满足这一性质：被 $`\sim`$ 相关联的 $`A` 的元素在商类型中也是等价的，因此无法区分。
+然而，同一个等价类中的成员在商类型中不一定{tech (key := "definitional equality")}[定义等价]。
 
 商类型也可以通过在 $`A` 中为每个等价类指定唯一的标准代表来实现：将 $`Q` 定义为由 $`A` 中的元素及其确为标准代表的证明所组成的配对。
 再给出一个把 $`A` 中每个 $`a` 映射到其标准代表的函数，$`Q` 就是 $`A` 的一个商。
-由于{tech key := "proof irrelevance"}[证明无关性]，$`Q` 中同一等价类的代表在{tech key := "definitional equality"}[定义等价]意义下相等。
+由于{tech (key := "proof irrelevance")}[证明无关性]，$`Q` 中同一等价类的代表在{tech (key := "definitional equality")}[定义等价]意义下相等。
 
 
 
 这种手工实现的商类型 $Q$ 往往比 {name}`Quotient` 更好用。
 特别是，由于每个等价类由唯一标准代表表示，定义自商类型的函数再不需要证明其尊重等价关系。
 这样也常带来更好的计算效果（商类型下同一个元素可能有多种表现形式，而手工商类型始终规范）。
-最后，手工商类型是{tech key:="inductive type"}[归纳类型]，因此能在某些场景用作嵌套归纳类型等用途，而 {name}`Quotient` 却不能。
+最后，手工商类型是{tech (key := "inductive type")}[归纳类型]，因此能在某些场景用作嵌套归纳类型等用途，而 {name}`Quotient` 却不能。
 然而，并非所有商类型都能手工实现。
 
 
@@ -100,7 +100,7 @@ structure Z where
   b : Nat
   canonical : a = 0 ∨ b = 0
 ```
-因{tech key := "proof irrelevance"}[证明无关性]，该结构类型中表示相同整数的每个值_已经_等价。用自然数截断于零的减法自动化证明构建，包装器使{lean}`Z`构造更便利：
+因{tech (key := "proof irrelevance")}[证明无关性]，该结构类型中表示相同整数的每个值_已经_等价。用自然数截断于零的减法自动化证明构建，包装器使{lean}`Z`构造更便利：
 ```lean
 def Z.mk' (n k : Nat) : Z where
   a := n - k
@@ -195,7 +195,7 @@ tag := "setoids"
 
 
 商类型基于集合体（setoid）概念。
-{deftech key := "setoid"}_集合体_ 指一个类型和其上选定的等价关系的配对。
+{deftech (key := "setoid")}_集合体_ 指一个类型和其上选定的等价关系的配对。
 不同于商类型，集合体并不强制抽象屏障，对等价关系的自动化证明（如简化）不能直接用集合体中的等价关系。
 除了作为商类型的基础结构外，集合体本身也有其用途。
 
@@ -216,11 +216,11 @@ tag := "equivalence-relations"
 %%%
 
 
-{deftech key := "equivalence relation"}_等价关系_ 指的是自反、对称且传递的关系。
+{deftech (key := "equivalence relation")}_等价关系_ 指的是自反、对称且传递的关系。
 
 
 :::syntax term (title := "等价关系")
-某个类型上的“标准”等价关系记为 `≈`，它是通过 {tech key := "type class"}[类型类] {name}`HasEquiv` 重载的。
+某个类型上的“标准”等价关系记为 `≈`，它是通过 {tech (key := "type class")}[类型类] {name}`HasEquiv` 重载的。
 ```grammar
 $_ ≈ $_
 ```
@@ -272,7 +272,7 @@ tag := "quotient-intro"
 %%%
 
 
-{lean}`Quotient` 类型需要以普通参数形式显式传入 {lean}`Setoid` 实例（而不是作为 {tech key := "instance implicit"}[隐式实例] 参数）。
+{lean}`Quotient` 类型需要以普通参数形式显式传入 {lean}`Setoid` 实例（而不是作为 {tech (key := "instance implicit")}[隐式实例] 参数）。
 这样可以保证商类型使用的是期望的等价关系。
 该实例可通过取名或用 {name}`inferInstance` 获得。
 
@@ -281,14 +281,8 @@ tag := "quotient-intro"
 
 {zhdocstring Quotient.mk ZhDoc.Quotient.mk}
 
-:::example "The Integers as a Quotient Type"
-The integers, defined as pairs of natural numbers where the represented integer is the difference of the two numbers, can be represented via a quotient type.
-This representation is not unique: both {lean}`(4, 7)` and {lean}`(1, 4)` represent {lean  (type := "Int")}`-3`.
-
-
-
 :::example "用商类型定义整数"
-整数可定义为一对自然数，并通过它们的差值来表示。该表示不是唯一的，比如 {lean}`(4, 7)` 和 {lean}`(1, 4)` 都表示 {lean type:="Int"}`-3`。
+整数可定义为一对自然数，并通过它们的差值来表示。该表示不是唯一的，比如 {lean}`(4, 7)` 和 {lean}`(1, 4)` 都表示 {lean (type := "Int")}`-3`。
 
 
 两个整数编码在何时相等由 {name}`Z.eq` 决定：
@@ -436,7 +430,7 @@ instance : Add Z where
 :::
 
 
-若函数的返回类型是 {tech key := "subsingleton"}[子单元]，可用 {name}`Quotient.recOnSubsingleton` 或 {name}`Quotient.recOnSubsingleton₂` 直接定义。
+若函数的返回类型是 {tech (key := "subsingleton")}[子单元]，可用 {name}`Quotient.recOnSubsingleton` 或 {name}`Quotient.recOnSubsingleton₂` 直接定义。
 因为目标类型的所有元素都已相等，函数自然保持等价关系。
 
 {zhdocstring Quotient.recOnSubsingleton ZhDoc.Quotient.recOnSubsingleton}
@@ -460,7 +454,7 @@ Because {name}`Quotient` is not an {tech}[inductive type], tactics such as {tact
 在商类型上证明性质，主要工具是 soundness 公理和归纳原理。
 soundness 公理表明，如果两个底层类型中的元素满足等价关系，则在商类型中相等。
 归纳原理类似于归纳类型的递归：若要证明某谓词对全部商类型元素成立，只需证明对每个 {name}`Quotient.mk` 形式的元素成立即可。
-由于 {name}`Quotient` 不是 {tech key := "inductive type"}[归纳类型]，使用如 {tactic}`cases` 或 {tactic}`induction` 时需显式指定 {name}`Quotient.ind` 并用 {keyword}`using` 修饰。
+由于 {name}`Quotient` 不是 {tech (key := "inductive type")}[归纳类型]，使用如 {tactic}`cases` 或 {tactic}`induction` 时需显式指定 {name}`Quotient.ind` 并用 {keyword}`using` 修饰。
 
 
 {zhdocstring Quotient.sound ZhDoc.Quotient.sound}
@@ -669,11 +663,13 @@ inductive SetTree (α : Type u) where
 
 
 
+## 底层商类型 API
+
 {name}`Quot.liftOn` 是 {name}`Quot.lift` 的变体，将商类型值放参数首，与 {name}`Quotient.liftOn` 类似。
 
 {zhdocstring Quot.liftOn ZhDoc.Quot.liftOn}
 
-Lean 还提供了从 {name}`Quot` 到任意 {tech key := "subsingleton"}[子单元] 的消解，无需额外证明，以及与 {name}`Quotient` 相对应的依赖消解原理。
+Lean 还提供了从 {name}`Quot` 到任意 {tech (key := "subsingleton")}[子单元] 的消解，无需额外证明，以及与 {name}`Quotient` 相对应的依赖消解原理。
 
 {zhdocstring Quot.recOnSubsingleton ZhDoc.Quot.recOnSubsingleton}
 
@@ -733,7 +729,7 @@ extApp (Quot.mk _ f)
 ```leanTerm
 fun x => (Quot.mk extEq f).lift (· x) (fun _ _ h => h x)
 ```
-定义上等价于 {lean}`fun x => f x`，而根据 {tech key := "η-equivalence"}[η-等价]，又等价于 {lean}`f`。
+定义上等价于 {lean}`fun x => f x`，而根据 {tech (key := "η-equivalence")}[η-等价]，又等价于 {lean}`f`。
 如果 {name}`Quot.lift` 的计算规则只是命题形式，而不是定义等价的形式，那就不满足，因为规约表达式会出现在函数体里，按等式重写一整个函数本身就需要函数外延性。
 
 ```lean -show
@@ -777,7 +773,7 @@ variable {α : Sort u}
 ```
 
 
-压缩类型（Squash types）是以“所有元素互相关联”的关系取商后的类型，这样得到的就是一个 {tech key := "subsingleton"}[子单元]。
+压缩类型（Squash types）是以“所有元素互相关联”的关系取商后的类型，这样得到的就是一个 {tech (key := "subsingleton")}[子单元]。
 换句话说，如果 {lean}`α` 中有元素，那么 {lean}`Squash α` 就只有一个元素；如果 {lean}`α` 为空，则 {lean}`Squash α` 也为空。
 和 {lean}`Nonempty α` 不同，后者只是一个“{lean}`α` 非空”这一命题，在运行时只表现为一个占位值；而 {lean}`Squash α` 是类型层面的，它在表示层和 {lean}`α` 完全一样。
 并且由于 {lean}`Squash α` 和 {lean}`α` 处在同一个宇宙层级，它不受“不能从命题中计算数据”的限制。

@@ -24,18 +24,18 @@ tag := "functions"
 
 
 Lean 内建支持函数类型。
-{deftech key := "Functions"}[函数] 将一个类型的值（称为 {deftech key := "domain"}_定义域_）映射到另一个类型的值（称为 {deftech key := "codomain"}_陪域_），
-而 {deftech key := "function types"}_函数类型_ 用于指定函数的定义域与陪域。
+{deftech (key := "Functions")}[函数] 将一个类型的值（称为 {deftech (key := "domain")}_定义域_）映射到另一个类型的值（称为 {deftech (key := "codomain")}_陪域_），
+而 {deftech (key := "function types")}_函数类型_ 用于指定函数的定义域与陪域。
 
 
 函数类型有两种形式：
 
-: {deftech key := "Dependent"}[依值]
+: {deftech (key := "Dependent")}[依值]
 
    依值函数类型会显式命名参数，并允许函数的陪域类型显式地引用该名称。
-   由于类型可以依赖于值，依值函数可根据输入参数返回不同类型的值。{margin}[依值函数有时也被称为 {deftech key := "dependent products"}_依值积_，因为它们对应于集合的索引积。]
+   由于类型可以依赖于值，依值函数可根据输入参数返回不同类型的值。{margin}[依值函数有时也被称为 {deftech (key := "dependent products")}_依值积_，因为它们对应于集合的索引积。]
 
-: {deftech key := "Non-Dependent"}[非依值]
+: {deftech (key := "Non-Dependent")}[非依值]
 
    非依值函数类型不会为参数命名，并且陪域类型不依赖于具体参数。
 
@@ -58,9 +58,9 @@ def two : (b : Bool) → if b then Unit × Unit else String :=
 ::::
 
 
-在 Lean 的核心语言中，所有函数类型实际上都是依值的：非依值函数类型只是参数名未出现在 {tech key := "codomain"}[陪域] 中的依值函数类型而已。
+在 Lean 的核心语言中，所有函数类型实际上都是依值的：非依值函数类型只是参数名未出现在 {tech (key := "codomain")}[陪域] 中的依值函数类型而已。
 此外，只要名称变换后一致，使用不同参数名的两个依值函数类型可以是定义等价的。
-不过，Lean 的繁释器不会为非依值函数的参数引入局部绑定。
+不过，Lean 的精译器不会为非依值函数的参数引入局部绑定。
 
 
 :::example "依值函数与非依值函数的定义等价性"
@@ -111,8 +111,8 @@ i : Nat
 :::::
 
 
-虽然核心类型理论没有 {tech key := "implicit"}[隐式] 参数功能，函数类型仍可记录参数是否为隐式。
-这一属性仅被 Lean 的繁释器利用，对核心的类型检查和定义等价完全无影响，因此思考核心理论时可以忽略这一信息。
+虽然核心类型理论没有 {tech (key := "implicit")}[隐式] 参数功能，函数类型仍可记录参数是否为隐式。
+这一属性仅被 Lean 的精译器利用，对核心的类型检查和定义等价完全无影响，因此思考核心理论时可以忽略这一信息。
 
 
 :::example "隐式和显式函数类型的定义等价性"
@@ -128,16 +128,22 @@ example :
 :::
 
 
-In Lean's type theory, functions are created using {deftech}_function abstractions_ that bind a variable.
-{margin}[In various communities, function abstractions are also known as _lambdas_, due to Alonzo Church's notation for them, or _anonymous functions_ because they don't need to be defined with a name in the global environment.]
-When the function is applied, the result is found by {tech (key := "β")}[β-reduction]: substituting the argument for the bound variable.
-In compiled code, this happens strictly: the argument must already be a value.
-When type checking, there are no such restrictions; the equational theory of definitional equality allows β-reduction with any term.
+# 函数抽象
+%%%
+file := "Function Abstractions"
+tag := "function-abstractions"
+%%%
+
+在 Lean 的类型理论中，函数是通过 {deftech (key := "function abstractions")}_函数抽象_ 来创建的，它会绑定一个变量。
+{margin}[在某些社区里，这一概念又被称为 _λ 表达式（lambda）_（源于 Alonzo Church 的记号），或 _匿名函数_（因其无需在全局环境中指定名称）。]
+应用函数时，Lean 通过 {tech (key := "β")}[β-规约]，用实参替换被绑定的变量。
+在编译代码时，这是严格发生的——参数须先被求值为值。
+类型检查阶段则没有这样的限制，定义等价的等式理论允许对任意项做 β-规约。
 
 
 在 Lean 的 {ref "function-terms"}[项语言] 中，函数抽象可以接收多个参数或在参数位置用模式匹配。
 这些高级特性会被翻译为底层核心语言中的简单操作，核心语言中每次函数抽象严格只接收一个参数。
-此外，并非所有函数都由函数抽象构建：{tech key := "type constructor"}[类型构造子]、{tech key := "constructor"}[构造子]、{tech key := "recursor"}[递归子] 都可能拥有函数类型，但不能仅通过函数抽象定义。
+此外，并非所有函数都由函数抽象构建：{tech (key := "type constructor")}[类型构造子]、{tech (key := "constructor")}[构造子]、{tech (key := "recursor")}[递归子] 都可能拥有函数类型，但不能仅通过函数抽象定义。
 
 
 # 柯里化
@@ -147,11 +153,11 @@ tag := "currying"
 %%%
 
 
-在 Lean 的核心类型理论中，每个函数都仅将 {tech key := "domain"}[定义域] 的每一个元素映射到 {tech key := "codomain"}[陪域] 的单个元素。
+在 Lean 的核心类型理论中，每个函数都仅将 {tech (key := "domain")}[定义域] 的每一个元素映射到 {tech (key := "codomain")}[陪域] 的单个元素。
 换言之，函数实际上只接受一个参数。
 多参数函数实现时，实际上是通过定义高阶函数——先接收第一个参数，返回一个新函数，该新函数再接收剩余参数。
-这样的编码方式称为 {deftech key := "currying"}_柯里化_，此术语由并以 Haskell B. Curry 命名、推广。
-Lean 提供的函数定义、类型声明与应用语法表现为多参数函数，但繁释之后的本质都是只带一个参数的函数抽象。
+这样的编码方式称为 {deftech (key := "currying")}_柯里化_，此术语由并以 Haskell B. Curry 命名、推广。
+Lean 提供的函数定义、类型声明与应用语法表现为多参数函数，但精译之后的本质都是只带一个参数的函数抽象。
 
 
 # 外延性
@@ -161,14 +167,14 @@ tag := "function-extensionality"
 %%%
 
 
-Lean 中函数的定义等价是 {deftech key := "intensional"}_内涵性_的。
-也就是说，定义等价的判定本质是基于语法的（仅考虑绑定变量的重命名及 {tech key := "reduction"}[规约]）。
+Lean 中函数的定义等价是 {deftech (key := "intensional")}_内涵性_的。
+也就是说，定义等价的判定本质是基于语法的（仅考虑绑定变量的重命名及 {tech (key := "reduction")}[规约]）。
 粗略而言，只有当两个函数本质上实现了“同一算法”时，才被认为定义等价；而数学上通常的函数相等——即若它们对所有相同输入都有相同输出——则不一定如此。
 
 
 定义等价是类型检查器赖以工作的基础，因此需要可预测性。
 内涵等价中的语法特征，使得验证算法容易形式化；而若要求外延等价则意味着答案可能要靠证明任意的函数相等性定理，无法提出规范的检查算法，因此不适合作为类型检查依据。
-函数的外延性被设计为一种可供推理用的原则——可在证明两个函数相等的 {tech key := "proposition"}[命题] 时调用。
+函数的外延性被设计为一种可供推理用的原则——可在证明两个函数相等的 {tech (key := "proposition")}[命题] 时调用。
 
 
 
@@ -182,7 +188,7 @@ axiom f : (x : α) → β x
 example : (fun x => f x) = f := by rfl
 ```
 
-除了规约与绑定变量重命名外，Lean 的定义等价还支持一种特殊形式的外延性，即 {tech key := "η-equivalence"}[η-等价]：一个函数与“把它作用于参数后返回”的函数抽象定义等价。
+除了规约与绑定变量重命名外，Lean 的定义等价还支持一种特殊形式的外延性，即 {tech (key := "η-equivalence")}[η-等价]：一个函数与“把它作用于参数后返回”的函数抽象定义等价。
 对于 {lean}`(x : α) → β x` 类型的 {lean}`f`，{lean}`f` 与 {lean}`fun x => f x` 是定义等价的。
 ::::
 
@@ -200,12 +206,12 @@ tag := "totality"
 
 
 Lean 支持用 {keywordOf Lean.Parser.Command.declaration}`def` 来递归定义函数。
-从 Lean 逻辑的角度看，所有函数都是 {deftech key := "total"}_完全_ 的：即每个 {tech key := "domain"}[定义域] 元素都能在有限步之内映射为 {tech key := "codomain"}[陪域] 的某个元素。{margin}[某些编程语言社区对“完全”的定义略有不同，仅要求不因未覆盖所有可能而崩溃，允许不终止。]
+从 Lean 逻辑的角度看，所有函数都是 {deftech (key := "total")}_完全_ 的：即每个 {tech (key := "domain")}[定义域] 元素都能在有限步之内映射为 {tech (key := "codomain")}[陪域] 的某个元素。{margin}[某些编程语言社区对“完全”的定义略有不同，仅要求不因未覆盖所有可能而崩溃，允许不终止。]
 完全函数对所有类型正确参数都有定义，并且不会因模式匹配遗漏或无限递归而导致崩溃或无终止。
 
 
 尽管 Lean 的逻辑模型要求函数完全，Lean 作为实用编程语言也提供了若干“逃生口”：
-那些未被证明终止的函数，只要其 {tech key := "codomain"}[陪域] 被证明是非空的，也可用于 Lean 的逻辑中。
+那些未被证明终止的函数，只要其 {tech (key := "codomain")}[陪域] 被证明是非空的，也可用于 Lean 的逻辑中。
 此类函数逻辑层面会被视作“未解释函数”，其计算行为在推理中被忽略；但在编译后照常可被调用。
 还有些函数被标记为 unsafe，不可用于 Lean 逻辑。
 有关递归函数的更多细节，见 {ref "partial-unsafe"}[偏函数和 unsafe 函数定义] 小节。

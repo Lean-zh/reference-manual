@@ -53,12 +53,15 @@ if [ "$MODE" = "preview" ]; then
   REF_REMOTE_CONFIG="test-data/reference-remotes.json"
   TUT_REMOTE_CONFIG="test-data/tutorial-remotes.json"
 else
-  # Production mode: generate temporary configs from templates
-  REF_REMOTE_CONFIG="_build/production-remotes-reference.json"
-  TUT_REMOTE_CONFIG="_build/production-remotes-tutorials.json"
+  # Production mode: generate temporary configs outside the project's build
+  # directories.  The documentation executables clear their own temporary
+  # build output before reading the remote config, so putting these files in
+  # `_build` makes them disappear between argument parsing and rendering.
+  CONFIG_TMPDIR="${RUNNER_TEMP:-${TMPDIR:-/tmp}}"
+  REF_REMOTE_CONFIG="$CONFIG_TMPDIR/reference-manual-production-remotes-reference.json"
+  TUT_REMOTE_CONFIG="$CONFIG_TMPDIR/reference-manual-production-remotes-tutorials.json"
 
-  # Replace __VERSION__ in templates and write to temporary files
-  mkdir -p _build
+  # Replace __VERSION__ in templates and write to temporary files.
   sed "s/__VERSION__/$VERSION/g" config/production-remotes-reference.json.template > "$REF_REMOTE_CONFIG"
   sed "s/__VERSION__/$VERSION/g" config/production-remotes-tutorials.json.template > "$TUT_REMOTE_CONFIG"
 

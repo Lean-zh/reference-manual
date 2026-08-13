@@ -39,7 +39,7 @@ $[deriving $[$_],*]?
 :::
 
 
-{deftech key := "Structures"}_结构体_ 是只有一个构造子、无下标的归纳类型。
+{deftech (key := "Structures")}_结构体_ 是只有一个构造子、无下标的归纳类型。
 作为这些约束的交换，Lean 会为结构体自动生成一些便捷功能：为每个字段生成投影函数、允许基于字段名（而非位置参数）的新构造语法、同样可以按指定字段名修改值，并且结构体可以扩展其它结构体。
 结构体和其它归纳类型一样，可以递归定义；它们必须遵守严格正性限制。
 结构体本身并没有带来 Lean 表达力的增强；它们的所有特性都是通过代码生成机制实现的。
@@ -52,7 +52,7 @@ $[deriving $[$_],*]?
 /--
 error: (kernel) arg #1 of 'RecStruct.mk' has a non positive occurrence of the datatypes being declared
 -/
-#guard_msgs in
+#check_msgs in
 structure RecStruct where
   next : RecStruct → RecStruct
 
@@ -67,7 +67,7 @@ tag := "structure-params"
 
 
 与普通归纳类型声明相同，结构体声明的头部可以包含参数和结果宇宙层级。
-结构体不能定义 {tech key := "indexed families"}[索引族]。
+结构体不能定义 {tech (key := "indexed families")}[索引族]。
 
 
 # 字段
@@ -140,9 +140,9 @@ MyStructure : Type
 ::::
 
 
-对于每个字段，都会自动生成一个 {deftech key := "projection function"}_投影函数_，用于从构造子中提取字段的值。
+对于每个字段，都会自动生成一个 {deftech (key := "projection function")}_投影函数_，用于从构造子中提取字段的值。
 这个函数在结构体名称对应的命名空间中。
-结构体字段投影由繁释器特别处理（具体见 {ref "structure-inheritance"}[结构体继承]），其行为比仅查找命名空间要复杂。
+结构体字段投影由精译器特别处理（具体见 {ref "structure-inheritance"}[结构体继承]），其行为比仅查找命名空间要复杂。
 当字段类型依赖于之前字段时，依赖型投影函数的类型会使用之前的投影表达，而不是显式模式匹配。
 
 
@@ -251,8 +251,8 @@ def NatStringBimap.insert
 :::
 
 
-由于结构体本质上就是单构造子的归纳类型，其构造子既可以直接调用或用于{tech key := "anonymous constructor syntax"}[匿名构造子语法]下的模式匹配,
-也可以用 {deftech key := "structure instance"}_结构体实例_ 记法（含有实字段名和值）进行构造或模式匹配。
+由于结构体本质上就是单构造子的归纳类型，其构造子既可以直接调用或用于{tech (key := "anonymous constructor syntax")}[匿名构造子语法]下的模式匹配,
+也可以用 {deftech (key := "structure instance")}_结构体实例_ 记法（含有实字段名和值）进行构造或模式匹配。
 
 
 
@@ -275,7 +275,7 @@ $f:ident
 {syntaxKind}`structInstLVal` 可以是字段名（标识符）、字段索引（自然数），或带中括号的项，并可接零个或多个子字段。
 子字段可以是带点的字段名或索引，也可以是带中括号的项。
 
-该语法在繁释时会转换为结构体构造子的应用。
+该语法在精译时会转换为结构体构造子的应用。
 字段以名称分配，顺序不限。
 子字段赋值用于初始化嵌套在字段中的结构体的字段。
 在构造结构体时不允许带中括号的项，中括号用于结构体更新。
@@ -284,7 +284,7 @@ $f:ident
 此时，标识符 `f` 等价于 `f := f`，即作用域中的 `f` 会被用于字段赋值。
 
 所有无默认值的字段，都需要明确提供。
-如果默认参数指定为 tactic，那么在繁释阶段会运行 tactic 求得参数值。
+如果默认参数指定为 tactic，那么在精译阶段会运行 tactic 求得参数值。
 
 在模式匹配语境下，字段名映射到能匹配相应投影的模式，字段缩写可直接绑定同名模式变量。
 默认参数同样适用于模式；如果模式未指定带默认值字段的值，则模式只匹配默认值。
@@ -457,7 +457,7 @@ tag := "structure-inheritance"
 如果父结构体字段有重名，所有同名字段必须同类型。
 
 
-继承结果结构体有一个 {deftech key := "field resolution order"}_字段解析顺序_，决定字段的最终取值。
+继承结果结构体有一个 {deftech (key := "field resolution order")}_字段解析顺序_，决定字段的最终取值。
 一般来说，该顺序采用 [C3 线性化](https://en.wikipedia.org/wiki/C3_linearization)。
 即字段解析顺序是所有父结构体列表的一个全序排列（保留 extends 语句顺序），如果无法形成 C3 线性化，则采用启发式算法排序。
 结构体自身在解析顺序中最前。
@@ -497,11 +497,11 @@ constructor:
 field notation resolution order:
   Q'', Q, Q'
 -/
-#guard_msgs in
+#check_msgs in
 #print Q''
 
 /-- info: 0 -/
-#guard_msgs in
+#check_msgs in
 #eval ({} : Q'').x
 
 /--
@@ -518,11 +518,11 @@ constructor:
 field notation resolution order:
   Q''', Q', Q
 -/
-#guard_msgs in
+#check_msgs in
 #print Q'''
 
 /-- info: 3 -/
-#guard_msgs in
+#check_msgs in
 #eval ({} : Q''').x
 
 -- 默认值使用本地值
@@ -558,7 +558,7 @@ deriving Repr
 父类型与子类型之间没有子类型关系。
 即使结构体 `B` 继承于 `A`，期望 `A` 的函数也不会接受 `B` 类型。
 但系统会自动生成转换函数，将结构体转为各自的父结构体类型。
-这些转换函数称为 {deftech key := "parent projections"}_父投影_。
+这些转换函数称为 {deftech (key := "parent projections")}_父投影_。
 父投影函数定义在子结构体的命名空间中，形式为父类型名加前缀 `to`。
 
 
@@ -613,9 +613,9 @@ example : toAcademicWork = Textbook.toAcademicWork := by
 
 
 最终结构体的投影用法上就像字段是所有父结构体字段的并集一样。
-Lean 的繁释器会在使用字段时自动生成合适的投影。
+Lean 的精译器会在使用字段时自动生成合适的投影。
 同样，基于字段的初始化与结构体更新语法可以隐藏继承实现的细节。
-但如果直接使用构造子名称、{tech key := "anonymous constructor syntax"}[匿名构造子语法]，或者按索引而非字段名称引用字段时，这些细节是可见的。
+但如果直接使用构造子名称、{tech (key := "anonymous constructor syntax")}[匿名构造子语法]，或者按索引而非字段名称引用字段时，这些细节是可见的。
 
 
 :::: example "字段索引与结构体继承"
@@ -642,7 +642,7 @@ Evaluating the first field index of {name}`coords` yields the underlying {name}`
 { fst := 17, snd := 2 }
 ```
 
-繁释器会自动将 {lean}`coords.fst` 转换为 {lean}`coords.toPair.fst`。
+精译器会自动将 {lean}`coords.fst` 转换为 {lean}`coords.toPair.fst`。
 
 ```lean -show -keep
 example (t : Triple α) : t.fst = t.toPair.fst := rfl
@@ -745,7 +745,7 @@ structure F extends A, A' where
 ```
 
 
-{keywordOf Lean.Parser.Command.print}`#print` 命令能展示所有结构体类型的重要信息，包括 {tech key := "parent projections"}[父投影]、所有字段（含默认值）、构造子及 {tech key := "field resolution order"}[字段解析顺序]。
+{keywordOf Lean.Parser.Command.print}`#print` 命令能展示所有结构体类型的重要信息，包括 {tech (key := "parent projections")}[父投影]、所有字段（含默认值）、构造子及 {tech (key := "field resolution order")}[字段解析顺序]。
 对于包含复杂继承菱形的层次结构而言，这些信息非常有用。
 
 

@@ -31,7 +31,7 @@ General recursion makes it possible to write circular proofs: “{tech}[proposit
 Outside of proofs, an infinite loop could be assigned the type {name}`Empty`, which can be used with {keywordOf Lean.Parser.Term.nomatch}`nomatch` or {name Empty.rec}`Empty.rec` to prove any theorem.
 
 
-允许任意递归函数定义会使 Lean 的逻辑不一致。一般递归使得可以写出环形证明：“{tech key := "proposition"}[命题] $`P` 为真，因为命题 $`P` 为真”。在证明之外，一个无限循环可以被赋予类型 {name}`Empty`，再结合 {keywordOf Lean.Parser.Term.nomatch}`nomatch` 或 {name Empty.rec}`Empty.rec`，即可“证明”任意定理。
+允许任意递归函数定义会使 Lean 的逻辑不一致。一般递归使得可以写出环形证明：“{tech (key := "proposition")}[命题] $`P` 为真，因为命题 $`P` 为真”。在证明之外，一个无限循环可以被赋予类型 {name}`Empty`，再结合 {keywordOf Lean.Parser.Term.nomatch}`nomatch` 或 {name Empty.rec}`Empty.rec`，即可“证明”任意定理。
 
 There are six main kinds of recursive functions that can be defined:
 
@@ -41,8 +41,8 @@ There are six main kinds of recursive functions that can be defined:
 
 : 结构化递归函数
 
-  结构化递归函数接收某个实参，并且仅在该实参的真子项上进行递归调用。{margin}[严格来说，类型为 {tech key := "indexed families"}[索引族] 的实参会与其索引成组，把整个集合视作一个整体。]
-  繁释器会把递归翻译成对该实参的 {tech key := "recursor"}[递归器] 的调用。
+  结构化递归函数接收某个实参，并且仅在该实参的真子项上进行递归调用。{margin}[严格来说，类型为 {tech (key := "indexed families")}[索引族] 的实参会与其索引成组，把整个集合视作一个整体。]
+  精译器会把递归翻译成对该实参的 {tech (key := "recursor")}[递归器] 的调用。
   由于每个类型正确的递归器使用都保证避免无限回归，这样的翻译即构成函数终止性的证据。
   通过递归器定义的函数应用在定义上等同于递归结果，并且在内核中通常较为高效。
 
@@ -50,32 +50,28 @@ There are six main kinds of recursive functions that can be defined:
 : 良构关系上的递归
 
   有些函数也难以改写为结构化递归；例如，某个函数之所以终止，是因为随着数组索引增大，索引与数组长度之差在减小，但此时由于增长的是函数的实参本身，{name}`Nat.rec` 并不适用。
-  在这种情形下，存在一个随每次递归调用而减少的终止{tech key := "measure"}[度量]，但该度量本身并非函数的一个实参。
-  这时可以使用 {tech key := "well-founded recursion"}[良构递归] 来定义函数。
+  在这种情形下，存在一个随每次递归调用而减少的终止{tech (key := "measure")}[度量]，但该度量本身并非函数的一个实参。
+  这时可以使用 {tech (key := "well-founded recursion")}[良构递归] 来定义函数。
   良构递归是一种技术：系统地把“伴随度量递减的递归函数”转化为“基于证明的递归函数”，该证明表明任意度量递减序列最终会在最小值处终止。
   用良构递归定义的函数应用不一定与其返回值在定义上相等，但这种相等可以作为命题来证明。
   即便存在定义相等，这类函数在计算上仍常常较慢，因为它们需要归约通常很大的证明项。
-
-: Coinductive and inductive predicates as fixpoints
-
-  Recursive {lean}`Prop`-valued functions can be defined as greatest or least fixpoints of monotone operators on complete lattices.
-  Coinductive predicates, defined using {keywordOf Lean.Parser.Command.declaration}`coinductive_fixpoint` or the {keywordOf Lean.Parser.Command.declaration}`coinductive` command, describe potentially infinite behavior such as infinite sequences or bisimulation.
-  Inductive predicates, defined using {keywordOf Lean.Parser.Command.declaration}`inductive_fixpoint`, provide an alternative to standard inductive types that is compatible with mixed inductive-coinductive mutual blocks.
-
-: Partial functions with nonempty codomains
-
 
 : 作为偏不动点的递归函数
 
   一个函数的定义可以理解为一条给出其行为的方程。
   在某些情况下，即使该递归函数对所有输入未必终止，仍可证明存在一个满足此规格的函数。
   该策略甚至适用于某些函数定义对所有输入未必终止的情形。
-  由此得到的偏函数作为这些方程的不动点而出现，被称为 {tech key := "partial fixpoints"}[偏不动点]。
+  由此得到的偏函数作为这些方程的不动点而出现，被称为 {tech (key := "partial fixpoints")}[偏不动点]。
 
   尤其是，返回类型位于某些单子中的函数（例如 {name}`Option`）可以用该策略来定义。
   对这类单子函数，Lean 还会生成额外的偏正确性定理。
   与良构递归类似，按偏不动点定义的函数应用在定义上不等同于其返回值，但 Lean 会生成定理，在命题层面将该函数与其展开式以及定义中所给的归约行为相等同。
 
+: 作为不动点的余归纳与归纳谓词
+
+  取值于 {lean}`Prop` 的递归函数，可以定义为完备格上单调算子的最大不动点或最小不动点。
+  余归纳谓词使用 {keywordOf Lean.Parser.Command.declaration}`coinductive_fixpoint` 或 {keywordOf Lean.Parser.Command.declaration}`coinductive` 命令定义，用来描述无限序列、互模拟等潜在的无限行为。
+  归纳谓词使用 {keywordOf Lean.Parser.Command.declaration}`inductive_fixpoint` 定义；它提供了标准归纳类型之外的另一种选择，并可用于归纳—余归纳混合互递归块。
 
 : 余域非空的偏函数
 
@@ -86,11 +82,10 @@ There are six main kinds of recursive functions that can be defined:
   为保持自洽性，唯一的要求是其返回类型可被占据（inhabited）。
   偏函数在编译后的代码中仍可照常使用，也可出现在命题与证明中；只是它们在 Lean 逻辑中的等式理论非常薄弱。
 
-
 : 不安全的递归定义
 
   不安全定义不受偏定义的任何限制。
-  它们可自由使用一般递归，并可使用会打破等式理论假设的 Lean 特性，例如强制转换原语（{name}`unsafeCast`）、检查指针相等（{name}`ptrAddrUnsafe`），以及观察{tech key := "reference counts"}[引用计数]（{name}`isExclusiveUnsafe`）。
+  它们可自由使用一般递归，并可使用会打破等式理论假设的 Lean 特性，例如强制转换原语（{name}`unsafeCast`）、检查指针相等（{name}`ptrAddrUnsafe`），以及观察{tech (key := "reference counts")}[引用计数]（{name}`isExclusiveUnsafe`）。
   但凡引用不安全定义的声明本身也必须标记为 {keywordOf Lean.Parser.Command.declaration}`unsafe`，以清楚表明此处不保证逻辑自洽。
   在编译后的代码中，不安全操作可用于以更高效的实现替换其他函数的实现，而内核仍然使用原始定义。
   被替换的函数可以是不透明的，此时该函数名在逻辑中的等式理论是平凡的；也可以是普通函数，此时逻辑中仍会使用该函数。
@@ -104,15 +99,16 @@ There are six main kinds of recursive functions that can be defined:
 :::
 
 
- 2. A termination analysis attempts to use the five techniques to justify the function to Lean's kernel.
-    If the definition is marked {keywordOf Lean.Parser.Command.declaration}`unsafe` or {keywordOf Lean.Parser.Command.declaration}`partial`, then that technique is used.
-    If an explicit {keywordOf Lean.Parser.Command.declaration}`termination_by`, {keywordOf Lean.Parser.Command.declaration}`partial_fixpoint`, {keywordOf Lean.Parser.Command.declaration}`coinductive_fixpoint`, or {keywordOf Lean.Parser.Command.declaration}`inductive_fixpoint` clause is present, then the indicated technique is the only one attempted.
-    If there is no such clause, then the elaborator performs a search, testing each parameter to the function as a candidate for structural recursion, and attempting to find a measure with a well-founded relation that decreases at each recursive call.
+如{ref "elaboration-results"}[精译器输出概览]所述，递归函数的精译分为两个阶段：
+ 1. 先假定 Lean 的内核类型论允许递归定义，对定义进行精译。
+    除递归调用外，这个临时定义已被完整精译；编译器也从这些临时定义生成代码。
 
+ 2. 随后进行终止性分析，尝试使用五种技术向 Lean 内核说明该函数是安全的。
+    若定义标有 {keywordOf Lean.Parser.Command.declaration}`unsafe` 或 {keywordOf Lean.Parser.Command.declaration}`partial`，则采用相应技术。
+    若存在显式的 {keywordOf Lean.Parser.Command.declaration}`termination_by`、{keywordOf Lean.Parser.Command.declaration}`partial_fixpoint`、{keywordOf Lean.Parser.Command.declaration}`coinductive_fixpoint` 或 {keywordOf Lean.Parser.Command.declaration}`inductive_fixpoint` 子句，则只尝试该子句指定的技术。
+    若不存在这些子句，精译器会进行搜索：依次把函数的每个形参作为结构化递归候选，并尝试寻找一个在每次递归调用时沿良构关系递减的度量。
 
- 2. 随后进行终止性分析，尝试用四种技术之一向 Lean 内核证明该函数是可接受的。若定义被标记为 {keywordOf Lean.Parser.Command.declaration}`unsafe` 或 {keywordOf Lean.Parser.Command.declaration}`partial`，则直接采用相应技术。若给出了显式的 {keywordOf Lean.Parser.Command.declaration}`termination_by` 子句，则只尝试其中指明的技术。若无此类子句，繁释器会进行搜索：依次尝试将每个形参作为结构化递归的候选，并尝试寻找某个随每次递归调用而减少、且具良构关系的度量。
-
-本节描述支配递归函数的规则。介绍互递归之后，将逐一给出这五类递归定义的规范，并讨论各自的推理能力与灵活性之间的权衡。
+本节描述支配递归函数的规则。介绍互递归之后，将逐一说明五种递归定义技术，并讨论各自推理能力与灵活性之间的权衡。
 
 # Mutual Recursion
 %%%
@@ -120,8 +116,8 @@ tag := "mutual-syntax"
 %%%
 
 
-就像递归定义是在其定义体中提到正在被定义的名字一样，{deftech key := "mutually recursive"}_互递归_ 的定义指的是：它们本身可以是递归的，或彼此相互引用。
-要在多个声明之间使用互递归，必须把它们放入一个 {deftech key := "mutual block"}[互递归块] 中。
+就像递归定义是在其定义体中提到正在被定义的名字一样，{deftech (key := "mutually recursive")}_互递归_ 的定义指的是：它们本身可以是递归的，或彼此相互引用。
+要在多个声明之间使用互递归，必须把它们放入一个 {deftech (key := "mutual block")}[互递归块] 中。
 
 
 :::syntax command (title := "互递声明块")
@@ -184,12 +180,12 @@ end
 :::
 
 
-递归定义的繁释总是在互递块这一粒度上进行；即便某个声明并不处在互递块中，也会好比其周围包了一层单元素的互递块。
+递归定义的精译总是在互递块这一粒度上进行；即便某个声明并不处在互递块中，也会好比其周围包了一层单元素的互递块。
 通过 {keywordOf Lean.Parser.Term.letrec}`let rec` 与
 {keywordOf Lean.Parser.Command.declaration}`where` 引入的局部定义会被从其上下文提升出去；必要时为捕获到的自由变量引入参数；并被视作 {keywordOf Lean.Parser.Command.mutual}`mutual` 块中的独立定义。 {TODO}[Explain this mechanism in more detail, here or in the term section.]
 因此，写在 {keywordOf Lean.Parser.Command.declaration}`where` 块中的辅助定义，既可以彼此互递归，也可以和所在的主体定义互递归，但它们不能在彼此的类型签名中相互引用。
 
-在繁释的第一步结束后（此时定义仍是递归的），在使用上述技术消解递归之前，Lean 会在互递块中的这些定义里识别出真正（互相）递归的团簇{TODO}[define this term, it's useful]，并按照依赖顺序分别处理它们。
+在精译的第一步结束后（此时定义仍是递归的），在使用上述技术消解递归之前，Lean 会在互递块中的这些定义里识别出真正（互相）递归的团簇{TODO}[define this term, it's useful]，并按照依赖顺序分别处理它们。
 
 {include 0 Manual.RecursiveDefs.Structural}
 
@@ -221,7 +217,7 @@ tag := "partial-functions"
 {keyword}`partial` 修饰符只能用于函数定义。
 偏函数无需展示终止性，Lean 也不会尝试证明它终止。
 之所以称为“偏”，是因为它们未必为定义域中的每个元素指定到余域元素的映射：对某些（乃至所有）输入，它们可能无法终止。
-这类定义会被繁释为包含显式递归的 {tech key := "pre-definitions"}[预定义] 并由内核进行类型检查；不过在逻辑层面它们随后会被当作不透明常量。
+这类定义会被精译为包含显式递归的 {tech (key := "pre-definitions")}[预定义] 并由内核进行类型检查；不过在逻辑层面它们随后会被当作不透明常量。
 
 函数的返回类型必须是可被占据（inhabited）的；这可确保自洽性。
 否则，偏函数就可能拥有诸如 {lean}`Unit → Empty` 的类型。
@@ -236,7 +232,7 @@ tag := "partial-functions"
 尽管递归定义不是内核类型论的一部分，仍然可以用内核来检查定义体是否具有正确的类型。
 其工作方式与其他函数式语言相同：在一个“该定义已与其类型绑定”的环境中检查定义体，从而为递归的使用做类型检查。
 一旦确认通过类型检查，定义体会被丢弃，内核仅保留那个不透明常量。
-与所有 Lean 函数一样，编译器会基于繁释得到的 {tech key := "pre-definitions"}[预定义] 生成代码。
+与所有 Lean 函数一样，编译器会基于精译得到的 {tech (key := "pre-definitions")}[预定义] 生成代码。
 
 即便内核不会对偏函数展开，仍可以在不依赖其具体实现的前提下，对调用它们的其他函数开展推理。
 
@@ -402,36 +398,38 @@ htmlSplit := .never
 %%%
 
 
-There are five levels of reducibility:
+在检查证明与程序时，Lean 会考虑 {deftech (key := "reducibility")}_可约性_，它也称为_透明性_。
+定义的可约性决定精译和证明执行过程中可以在哪些上下文展开它。
 
-: {deftech}[Irreducible]
+可约性分为五个等级：
 
-  Irreducible definitions are not unfolded at all during elaboration.
-  Definitions can be made irreducible by applying the {attr}`irreducible` attribute.
+: {deftech (key := "irreducible")}[不可约（Irreducible）]
 
+  在精译过程中，不可约定义完全不会被展开。
+  对定义应用 {attr}`irreducible` 属性可使其不可约。
 
-  半可约定义不会被潜在昂贵的自动化流程（如类型类实例合成或 {tactic}`simp`）展开，但在进行定义相等性检查或解析{tech key := "generalized field notation"}[广义字段记法]时会展开。
-  {keywordOf Lean.Parser.Command.declaration}`def` 命令通常会创建半可约定义，除非通过属性显式指定了不同的可约性；不过，采用{tech key := "well-founded recursion"}[良构递归]的定义默认是不可约的。
+: {deftech (key := "semireducible")}[半可约（Semireducible）]
 
-: {deftech key := "Irreducible"}[不可约]
+  半可约定义不会被类型类实例合成或 {tactic}`simp` 等潜在代价较高的自动化过程展开，但在检查定义相等性和解析{tech (key := "generalized field notation")}[广义字段记法]时会展开。
+  {keywordOf Lean.Parser.Command.declaration}`def` 命令通常创建半可约定义，除非属性指定了不同等级；不过，采用{tech (key := "well-founded recursion")}[良基递归]的定义默认不可约。
 
-: {deftech}[Implicit reducible]
+: {deftech (key := "implicit reducible")}[隐式参数可约（Implicit reducible）]
 
-  Implicit-reducible definitions are unfolded while checking {tech}[definitional equality] of implicit arguments to functions.
-  This includes ordinary {tech}[implicit] arguments, {tech}[instance implicit] arguments, and {tech}[strict implicit] arguments.
-  Definitions that appear in the types of implicit arguments and are intended to reduce should be implicit-reducible.
+  检查函数隐式实参的{tech (key := "definitional equality")}[定义相等性]时，会展开隐式参数可约的定义。
+  这里的隐式实参包括普通{tech (key := "implicit")}[隐式]实参、{tech (key := "instance implicit")}[实例隐式]实参和{tech (key := "strict implicit")}[严格隐式]实参。
+  如果某个定义出现在隐式实参的类型中，并且预期它能够归约，就应将其设为隐式参数可约。
 
-: {deftech}[Instance reducible]
+: {deftech (key := "instance reducible")}[实例可约（Instance reducible）]
 
-  Instance-reducible definitions are unfolded during type class {tech (key := "synthesis")}[instance synthesis].
-  All type class instances should be instance-reducible or reducible.
-  Instances that are created by the {keywordOf Lean.Parser.Command.instance}`instance` command are automatically marked instance-reducible.
+  类型类{tech (key := "synthesis")}[实例合成]期间会展开实例可约的定义。
+  所有类型类实例都应当是实例可约或完全可约的。
+  由 {keywordOf Lean.Parser.Command.instance}`instance` 命令创建的实例会自动标记为实例可约。
 
-: {deftech}[Reducible]
+: {deftech (key := "reducible")}[可约（Reducible）]
 
-  Reducible definitions are unfolded essentially everywhere, on demand.
-  Type class instance synthesis, definitional equality checks, and the rest of the language treat the definition as being essentially an abbreviation.
-  This is the setting applied by the {keywordOf Lean.Parser.Command.declaration}`abbrev` command.
+  可约定义几乎会在所有场合按需展开。
+  类型类实例合成、定义相等性检查以及语言的其余部分，基本都会把这种定义视作缩写。
+  {keywordOf Lean.Parser.Command.declaration}`abbrev` 命令创建的定义采用这一等级。
 
 :::example "Reducibility and Instance Synthesis"
 These three aliases for {lean}`String` are respectively reducible, semireducible, and irreducible.
@@ -445,7 +443,7 @@ def Clause := String
 def Utterance := String
 ```
 
-在繁释器进行定义相等检查时，可约与半可约别名会被展开，从而被视为与 {lean}`String` 等价：
+在精译器进行定义相等检查时，可约与半可约别名会被展开，从而被视为与 {lean}`String` 等价：
 ```lean
 def hello : Phrase := "Hello"
 
@@ -492,7 +490,7 @@ instance : ToString Clause := inferInstanceAs (ToString String)
 
 
 :::example "可约性与广义字段记法"
-在查找匹配名称时，{tech key := "generalized field notation"}[广义字段记法] 会展开可约与半可约的声明。
+在查找匹配名称时，{tech (key := "generalized field notation")}[广义字段记法] 会展开可约与半可约的声明。
 给定 {name}`List` 的一个半可约别名 {name}`Sequence`：
 ```lean
 def Sequence := List
@@ -679,7 +677,7 @@ unseal $_:ident $_*
 ## Options
 
 
-出于性能考虑，繁释器与许多战术会构建索引与缓存。
+出于性能考虑，精译器与许多战术会构建索引与缓存。
 其中不少会考虑可约性；而一旦全局改变了可约性，就无法使这些索引/缓存失效并重新生成。
 默认情况下，会禁止对可约性进行可能带来不可预测结果的不安全修改；不过，可通过 {option}`allowUnsafeReducibility` 选项启用之。
 

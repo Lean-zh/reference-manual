@@ -462,7 +462,7 @@ protected abbrev recOn
 
  * `Quotient.lift` 适合定义非依值函数。
  * `Quotient.ind` 适合用于对商类型证明定理。
- * 每当目标类型为 {tech key := "subsingleton"}[子单元] 时，可以使用 `Quotient.recOnSubsingleton`。
+ * 每当目标类型为 {tech (key := "subsingleton")}[子单元] 时，可以使用 `Quotient.recOnSubsingleton`。
  * `Quotient.hrecOn` 使用异质等价，而不是通过 `Quotient.sound` 进行重写。
 
 `Quotient.rec` 是该递归子的一个变体，不同之处在于它将商类型参数放在最后。
@@ -904,7 +904,7 @@ be easier to use:
  * `Quot.lift` 适用于定义非依值的函数。
  * `Quot.ind` 适用于证明关于商类型的定理。
  * 只要目标类型是一个 `Subsingleton`（子单元），就可以使用 `Quot.recOnSubsingleton`。
- * `Quot.hrecOn` 使用了 {tech key := "heterogeneous equality"}[异质等价]，而不是用 `Quot.sound` 进行重写。
+ * `Quot.hrecOn` 使用了 {tech (key := "heterogeneous equality")}[异质等价]，而不是用 `Quot.sound` 进行重写。
 
 `Quot.recOn` 是该递归子的一种变体，它首先传入商类型参数。
 -/
