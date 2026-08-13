@@ -13,35 +13,37 @@ open Verso.Genre.Manual.InlineLean
 
 set_option guard_msgs.diff true
 
-#doc (Manual) "Nested Inductive Types" =>
+
+#doc (Manual) "嵌套归纳类型" =>
 %%%
+file := "Nested Inductive Types"
 tag := "nested-inductive-types"
 %%%
 
-{deftech}_Nested inductive types_ are inductive types in which recursive occurrences of the type being defined are parameters to other inductive type constructors.
-These recursive occurrences are “nested” underneath the other type constructors.
-Nested inductive types that satisfy certain requirements can be translated into mutual inductive types; this translation demonstrates that they are sound.
-Internally, the {tech}[kernel] performs this translation; if it succeeds, then the _original_ nested inductive type is accepted.
-This avoids performance and usability issues that would arise from details of the translation surfacing.
+
+{deftech key := "nested inductive types"}_嵌套归纳类型_是指这些归纳类型在定义中出现了递归自身类型，并且这些递归出现作为其他归纳类型构造子的参数。
+这些递归出现是“嵌套”在其他类型构造子之下的。
+只要满足一定条件，嵌套归纳类型就可以转换为互递归归纳类型；这种转换说明它们是可靠的。
+在内部，{tech key := "kernel"}[内核]会执行这种转换；如果转换成功，那么原有的嵌套归纳类型会被接受。
+这样可以避免直接暴露内部转换细节而产生的性能和易用性问题。
+
 
 :::paragraph
-Nested recursive occurrences must satisfy the following requirements:
-* They must be nested _directly_ under an inductive type's type constructor.
-  Terms that reduce to such nested occurrences are not accepted.
-* Local variables such as the constructor's parameters may not occur in the arguments to the nested occurrence.
-* The nested occurrences must occur strictly positively. They must occur strictly positively in the position in which they are nested, and the type constructor in which they are nested must itself occur in a strictly positive position.
-* Constructor parameters whose types include nested occurrences may not be used in ways that rely on the specific choice of outer type constructor. The translated version will not be usable in those contexts.
-* Nested occurrences may not be used as parameters to the outer type constructor that occur in the types of the outer type's indices.
+嵌套递归出现必须满足以下要求：
+* 它们必须直接嵌套在某个归纳类型的类型构造子之下。对于通过规约才变成嵌套出现的情况是不被接受的。
+* 像构造子的参数这样的本地变量，不允许出现在嵌套递归出现的参数中。
+* 嵌套递归出现必须处于严格正向位置。
 :::
 
-:::example "Nested Inductive Types"
-Instead of using two constructors, the natural numbers can be defined using {name}`Option`:
+
+:::example "嵌套归纳类型"
+自然数除了用两个构造子定义，也可以通过 {name}`Option` 来定义：
 ```lean
 inductive ONat : Type where
   | mk (pred : Option ONat)
 ```
 
-Arbitrarily-branching trees, also known as _rose trees_, are nested inductive types:
+可以有任意分支数的树，也叫 _rose trees_，它就是一种嵌套归纳类型：
 ```lean
 inductive RTree (α : Type u) : Type u where
   | empty
@@ -49,10 +51,11 @@ inductive RTree (α : Type u) : Type u where
 ```
 :::
 
-:::::example "Invalid Nested Inductive Types"
 
-This declaration of arbitrarily-branching rose trees declares an alias for {name}`List`, rather than using {name}`List` directly:
+:::::example "非法的嵌套归纳类型"
+这个任意分支的蔷薇树声明使用了 {name}`List` 的别名，而不是直接使用 {name}`List`：
 ```lean +error (name := viaAlias)
+
 abbrev Children := List
 
 inductive RTree (α : Type u) : Type u where
@@ -68,9 +71,10 @@ inductive RTree (α : Type u) : Type u where
 ```lean -show
 variable {n : Nat}
 ```
-This declaration of arbitrarily-branching rose trees tracks the depth of the tree using an index.
-The constructor `DRTree.node` has an {tech}[automatic implicit parameter] {lean}`n` that represents the depths of all sub-trees.
-However, local variables such as constructor parameters are not permitted as arguments to nested occurrences:
+
+这种定义方式用于通过一个索引追踪树的深度。构造子 `DRTree.node` 有一个 {tech key := "automatic implicit parameter"}[自动隐式参数] {lean}`n`，代表所有子树的深度。
+然而，像构造子参数这样本地变量，不允许作为嵌套递归出现的参数：
+
 :::
 ```lean +error (name := localVar)
 inductive DRTree (α : Type u) : Nat → Type u where
@@ -82,6 +86,7 @@ inductive DRTree (α : Type u) : Nat → Type u where
 
 This declaration includes a non-strictly-positive occurrence of the inductive type, nested under an {name}`Option`:
 ```lean +error (name := nonPos)
+
 inductive WithCheck where
   | done
   | check (f : Option WithCheck → Bool)
@@ -122,42 +127,42 @@ In this case, the function applies equally well to the translated version as it 
 :::
 :::::
 
-The translation from nested inductive types to mutual inductive types proceeds as follows:
 
-: Nested occurrences become inductive types
+: 嵌套出现变为新的归纳类型
 
-  Nested occurrences of the inductive type are translated into new inductive types in the same mutual group, which replace the original nested occurrences.
-  These new inductive types have the same constructors as the outer inductive type, except the original parameters are instantiated by the translated version of the type.
-  The original inductive type becomes an alias for the version in which the nested occurrences have been rewritten.
-  This process is repeated if the resulting type is also a nested inductive type (e.g. a type nested under {name}`Array` becomes a type nested under {name}`List`, because {name}`Array`'s constructor takes a {name}`List`).
+  对嵌套出现的归纳类型会翻译为同一互递归组里的新归纳类型，替换原先的嵌套出现。
+  这些新归纳类型拥有与外层归纳类型一样的构造子，只是在原参数位置用刚刚翻译后的新类型替代。
+  原始归纳类型本身定义为重写后类型的别名。如果新类型依然是嵌套归纳类型（比如在 {name}`Array` 下嵌套，因其构造子要用 {name}`List`，就需要再次翻译到 {name}`List`），则重复此流程。
 
-: Conversions to and from the nested types
+: 构造嵌套类型之间的转换
 
-  Conversions between the outer inductive type applied to the new alias and the generated auxiliary types are generated.
-  These conversions are then proved to be mutual inverses.
+  在外层归纳类型和新别名，及辅助类型之间，分别自动生成互相转换的函数，这些转换将被证明为互逆关系。
 
-: Constructor reconstruction
+: 构造子重建
 
-  Each constructor of the original type is defined as a function that returns the constructor of the translated type, after applying the appropriate conversions.
+  原始类型的每个构造子定义为一个函数，返回翻译后类型的相应构造子，调用时会自动应用必要的转换。
 
-: Recursor reconstruction
+: 递归子重建
 
-  The recursor for the nested inductive type is constructed from the recursor for the translated type.
-  In the translation, the motives for the nested occurrences are composed with the conversion functions and the {tech}[minor premises] use them as needed.
-  The proofs that the conversion functions are mutually inverse are needed because the encoded constructors convert in one direction, but end up applied to the result of the conversion in the other direction.
+  嵌套归纳类型的递归子则是结合翻译后类型的递归子而实现的。
+  在这一步，嵌套出现的目标会先套上转换函数，而{tech key := "minor premises"}[次要前提]会以它们作为参数。
+  构造子之间的互逆性证明是必要的，因为封装后的构造子是单方向转换，但在组合递归结构时需要转换后的结果。
 
 
-::::example "Translating Nested Inductive Types"
-This nested inductive type represents the natural numbers:
+
+::::example "翻译嵌套归纳类型"
+下面这个嵌套归纳类型表示自然数：
 ```lean -keep
+
 inductive ONat where
   | mk (pred : Option ONat) : ONat
 
 #check ONat.rec
 ```
 
-The first step in the internal translation is to replace the nested occurrences with auxiliary inductive types that “inline” the resulting type.
-In this case, the nested occurrence is under {name}`Option`; thus, the auxiliary type has the constructors of {name}`Option`, with {name}`ONat'` substituted for the type parameter:
+内部翻译的第一步，是用辅助归纳类型“内联”嵌套出现的位置。
+这里嵌套发生在 {name}`Option` 之下，所以辅助类型拥有 {name}`Option` 的构造子，但其类型参数用 {name}`ONat'` 替代：
+
 ```lean
 mutual
 inductive ONat' where
@@ -169,12 +174,12 @@ inductive OptONat where
 end
 ```
 
-{lean}`ONat'` is the encoding of {lean}`ONat`:
+{lean}`ONat'` 就是 {lean}`ONat` 经过编码后的版本：
 ```lean
 def ONat := ONat'
 ```
 
-The next step is to define conversion functions that translate the original nested type to and from the auxiliary type:
+下一步是定义转换函数，用于在原始嵌套类型和辅助类型之间相互转换：
 ```lean
 def OptONat.ofOption : Option ONat → OptONat
   | Option.none => OptONat.none
@@ -184,7 +189,7 @@ def OptONat.toOption : OptONat → Option ONat
   | OptONat.some o => Option.some o
 ```
 
-These conversion functions are mutually inverse:
+这些相互转换的函数是互逆的：
 ```lean
 def OptONat.to_of_eq_id o :
     OptONat.toOption (ofOption o) = o := by
@@ -194,15 +199,15 @@ def OptONat.of_to_eq_id o :
   cases o <;> rfl
 ```
 
-The original constructor is translated to an application of the translation's corresponding constructor, with the appropriate conversion applied for the nested occurrence:
+原始的构造子被翻译成对翻译后类型的构造子的调用，同时会对嵌套递归部分做适当类型转换：
 ```lean
 def ONat.mk (pred : Option ONat) : ONat :=
   ONat'.mk (.ofOption pred)
 ```
 
-Finally, the original type's recursor can be translated.
-The translated recursor uses the translated type's recursor.
-The original nested occurrences are translated using the conversions, and the proofs that the conversions are mutually inverse are used to rewrite types as needed.
+最后，原类型的递归子也可以翻译。
+翻译后的递归子会通过翻译后类型的递归子来实现。
+原本嵌套递归位置会采用相应的转换函数，并且互逆性的证明可以在需要时重写类型：
 ```lean
 noncomputable def ONat.rec
     {motive1 : ONat → Sort u}
