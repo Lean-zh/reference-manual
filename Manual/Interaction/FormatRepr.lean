@@ -5,6 +5,7 @@ Author: David Thrane Christiansen
 -/
 
 import VersoManual
+import Manual.ZhDocString.Interaction
 
 import Std.Data.HashSet
 
@@ -386,11 +387,11 @@ It is:  abc
 tag := "format-api"
 %%%
 
-{docstring Std.Format}
+{zhdocstring Std.Format ZhDoc.Std.Format}
 
-{docstring Std.Format.FlattenBehavior}
+{zhdocstring Std.Format.FlattenBehavior ZhDoc.Std.Format.FlattenBehavior}
 
-{docstring Std.Format.fill}
+{zhdocstring Std.Format.fill ZhDoc.Std.Format.fill}
 
 ## 空文档
 %%%
@@ -410,9 +411,9 @@ tag := "format-empty"
 使用 {name}`Std.Format.isEmpty` 检查文档是否包含零个字符；若要专门检查它是否为构造器 {lean}`Std.Format.nil`，则使用 {name}`Std.Format.isNil`。
 :::
 
-{docstring Std.Format.isEmpty}
+{zhdocstring Std.Format.isEmpty ZhDoc.Std.Format.isEmpty}
 
-{docstring Std.Format.isNil}
+{zhdocstring Std.Format.isNil ZhDoc.Std.Format.isNil}
 
 
 
@@ -424,13 +425,13 @@ tag := "format-join"
 当存在某种重复内容（例如列表元素）时，本节中的运算符很有用。
 通常的做法是在分隔符参数中包含 {name Std.Format.line}`line`，并使用{ref "format-brackets"}[括起运算符]。
 
-{docstring Std.Format.join}
+{zhdocstring Std.Format.join ZhDoc.Std.Format.join}
 
-{docstring Std.Format.joinSep}
+{zhdocstring Std.Format.joinSep ZhDoc.Std.Format.joinSep}
 
-{docstring Std.Format.prefixJoin}
+{zhdocstring Std.Format.prefixJoin ZhDoc.Std.Format.prefixJoin}
 
-{docstring Std.Format.joinSuffix}
+{zhdocstring Std.Format.joinSuffix ZhDoc.Std.Format.joinSuffix}
 
 ## 缩进
 %%%
@@ -439,11 +440,11 @@ tag := "format-indent"
 
 这些运算符使得在 {name}`Std.Format.nest` 之上实现一致的缩进风格更加容易。
 
-{docstring Std.Format.nestD}
+{zhdocstring Std.Format.nestD ZhDoc.Std.Format.nestD}
 
-{docstring Std.Format.defIndent}
+{zhdocstring Std.Format.defIndent ZhDoc.Std.Format.defIndent}
 
-{docstring Std.Format.indentD}
+{zhdocstring Std.Format.indentD ZhDoc.Std.Format.indentD}
 
 ## 方括号与圆括号
 %%%
@@ -452,13 +453,13 @@ tag := "format-brackets"
 
 这些运算符使实现一致的圆括号风格更加容易。
 
-{docstring Std.Format.bracket}
+{zhdocstring Std.Format.bracket ZhDoc.Std.Format.bracket}
 
-{docstring Std.Format.sbracket}
+{zhdocstring Std.Format.sbracket ZhDoc.Std.Format.sbracket}
 
-{docstring Std.Format.paren}
+{zhdocstring Std.Format.paren ZhDoc.Std.Format.paren}
 
-{docstring Std.Format.bracketFill}
+{zhdocstring Std.Format.bracketFill ZhDoc.Std.Format.bracketFill}
 
 ## 渲染
 %%%
@@ -474,20 +475,20 @@ tag := "format-render"
   每一行一经渲染就会被发出。
   这适用于流式输出。
 
-{docstring Std.Format.pretty}
+{zhdocstring Std.Format.pretty ZhDoc.Std.Format.pretty}
 
-{docstring Std.Format.defWidth}
+{zhdocstring Std.Format.defWidth ZhDoc.Std.Format.defWidth}
 
-{docstring Std.Format.prettyM}
+{zhdocstring Std.Format.prettyM ZhDoc.Std.Format.prettyM}
 
-{docstring Std.Format.MonadPrettyFormat}
+{zhdocstring Std.Format.MonadPrettyFormat ZhDoc.Std.Format.MonadPrettyFormat}
 
 ## `ToFormat` 类
 
 {name}`Std.ToFormat` 类用于提供一种格式化值的标准方式，并不要求这种格式是有效的 Lean 语法。
 错误消息和某些{ref "format-join"}[序列连接运算符]会使用这些实例。
 
-{docstring Std.ToFormat}
+{zhdocstring Std.ToFormat ZhDoc.Std.ToFormat}
 
 # `Repr`
 %%%
@@ -498,11 +499,11 @@ tag := "repr"
 因为它们应当发出有效的 Lean 语法，所以这些实例需要考虑{tech (key := "precedence")}[优先级]。
 插入最大数量的圆括号确实可行，但会使人类更难阅读所得输出。
 
-{docstring Repr}
+{zhdocstring Repr ZhDoc.Repr}
 
-{docstring repr}
+{zhdocstring repr ZhDoc.repr}
 
-{docstring reprStr}
+{zhdocstring reprStr ZhDoc.reprStr}
 
 :::example "最多的圆括号"
 类型 {name}`NatOrInt` 可以包含一个 {name}`Nat` 或一个 {name}`Int`：
@@ -617,9 +618,9 @@ deriving Repr
   这些运算符对带圆括号或方括号表达式的内容进行对齐，其方式与 Lean 相同。
   结尾的圆括号和方括号不应单独占一行，而应与其内容保持在一起。
 
-{docstring Repr.addAppParen}
+{zhdocstring Repr.addAppParen ZhDoc.Repr.addAppParen}
 
-{docstring reprArg}
+{zhdocstring reprArg ZhDoc.reprArg}
 
 
 :::example "带构造器的归纳类型"
@@ -844,7 +845,7 @@ open Lean Elab Command in
       Term.synthesizeSyntheticMVarsNoPostponing
 ```
 
-{docstring ReprAtom}
+{zhdocstring ReprAtom ZhDoc.ReprAtom}
 
 ::::example "原子类型与 `Repr`"
 

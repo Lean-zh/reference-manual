@@ -5,6 +5,7 @@ Author: David Thrane Christiansen
 -/
 
 import VersoManual
+import Manual.ZhDocString.Interaction
 
 import Manual.Meta
 import Manual.Interaction.FormatRepr
@@ -53,7 +54,7 @@ tag := "hash-eval"
 #eval! $t
 ```
 
-{includeDocstring Lean.Parser.Command.eval}
+{zhincludeDocstring Lean.Parser.Command.eval ZhDoc.eval}
 
 :::
 
@@ -182,19 +183,19 @@ Could not synthesize a `ToExpr`, `Repr`, or `ToString` instance for type
 
 :::
 
-{optionDocs eval.pp}
+{zhOptionDocs eval.pp ZhDoc.Option.eval.pp}
 
-{optionDocs eval.type}
+{zhOptionDocs eval.type ZhDoc.Option.eval.type}
 
-{optionDocs eval.derive.repr}
+{zhOptionDocs eval.derive.repr ZhDoc.Option.eval.derive.repr}
 
 为单子定义合适的 {lean}`MonadLift`{margin}[{ref "lifting-monads"}[关于提升单子的章节]介绍了 {lean}`MonadLift`。]或 {lean}`MonadEval` 实例，即可使其能够在 {keywordOf Lean.Parser.Command.eval}`#eval` 中执行。
 正如 {name}`MonadLiftT` 是 {name}`MonadLift` 实例的传递闭包，{name}`MonadEvalT` 也是 {name}`MonadEval` 实例的传递闭包。
 与 {name}`MonadLiftT` 一样，用户不应直接定义额外的 {name}`MonadEvalT` 实例。
 
-{docstring MonadEval}
+{zhdocstring MonadEval ZhDoc.MonadEval}
 
-{docstring MonadEvalT}
+{zhdocstring MonadEvalT ZhDoc.MonadEvalT}
 
 # 归约项
 %%%
@@ -213,7 +214,7 @@ tag := "hash-reduce"
 #reduce $[($ident := $tm)]* $t
 ```
 
-{includeDocstring Lean.reduceCmd}
+{zhincludeDocstring Lean.reduceCmd ZhDoc.reduceCmd}
 
 :::
 
@@ -495,7 +496,7 @@ intersperse.eq_unfold.{u_1} :
 
 :::syntax command (title := "作用域信息")
 
-{includeDocstring Lean.Parser.Command.where}
+{zhincludeDocstring Lean.Parser.Command.where ZhDoc.«where»}
 
 ```grammar
 #where
@@ -537,7 +538,7 @@ set_option pp.tagAppFns true
 
 :::syntax command (title := "检查 Lean 版本")
 
-{includeDocstring Lean.Parser.Command.version}
+{zhincludeDocstring Lean.Parser.Command.version ZhDoc.version}
 
 ```grammar
 #version
@@ -560,7 +561,7 @@ $[$_:docComment]?
 $c:command
 ```
 
-{includeDocstring Lean.guardMsgsCmd}
+{zhincludeDocstring Lean.guardMsgsCmd ZhDoc.guardMsgsCmd}
 
 :::
 
@@ -628,7 +629,7 @@ $[drop]? warning
 $[drop]? error
 ```
 
-{includeDocstring Lean.guardMsgsFilter}
+{zhincludeDocstring Lean.guardMsgsFilter ZhDoc.guardMsgsFilter}
 
 :::
 
@@ -661,7 +662,7 @@ normalized
 将 {option}`guard_msgs.diff` 设为 `false` 后，{keywordOf Lean.guardMsgsCmd}`#guard_msgs` 将只显示实际产生的消息，可将它与源文件中的预期消息进行比较。
 如果消息之间的差异令人困惑或信息过载，这样做会比较方便。
 
-{optionDocs guard_msgs.diff}
+{zhOptionDocs guard_msgs.diff ZhDoc.Option.guard_msgs.diff}
 
 :::example "显示差异"
 {keywordOf Lean.guardMsgsCmd}`#guard_msgs` 命令可用于测试玫瑰树 {lean}`Tree` 的定义，以及创建这种树的函数 {lean}`Tree.big`：
