@@ -183,7 +183,7 @@ variable {a b p : α} [Field α]
 ```
 `ring` 求解器也支持 {name}`Field`。
 如果有可用的 {name}`Field` 实例，求解器会将项 `a / b` 预处理为 `a * b⁻¹`。
-它还会将每个不等式 `p ≠ 0` 重写为等式 `p * p⁻¹ = 1`。
+它还会将每个不等关系 `p ≠ 0` 重写为等式 `p * p⁻¹ = 1`。
 :::
 
 ::::example "域与 `grind`"
@@ -282,7 +282,7 @@ example [Field α] (a : α) : (2 * a)⁻¹ = a⁻¹ / 2 := by grind
 ```
 
 在以下示例中，`ring` 无需进行任何情形拆分，因为
-目标包含不等式 `y ≠ 0` 和 `w ≠ 0`。
+目标包含不等关系 `y ≠ 0` 和 `w ≠ 0`。
 
 ```lean
 example [Field α] {x y z w : α} :
