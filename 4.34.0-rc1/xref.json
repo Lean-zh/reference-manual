@@ -23841,7 +23841,7 @@
      "address": "/Error-Explanations/About___--dependsOnNoncomputable/"}],
    "transform (in Necessarily Noncomputable Function Not Appropriately Marked)":
    [{"id":
-     "transform-_LPAR_in-Necessarily-Noncomputable-Function-Not-Appropriately-Marked_RPAR_",
+     "transform-_LPAR_in-Necessarily-Noncomputable-Function-Not-Appropriately-Marked_RPAR_-next",
      "data":
      {"/Error-Explanations/About___--dependsOnNoncomputable/#transform-_LPAR_in-Necessarily-Noncomputable-Function-Not-Appropriately-Marked_RPAR_-next":
       {"display": "transform",
@@ -23861,7 +23861,7 @@
         "Necessarily Noncomputable Function Not Appropriately Marked"]}},
      "address": "/Error-Explanations/About___--dependsOnNoncomputable/"},
     {"id":
-     "transform-_LPAR_in-Necessarily-Noncomputable-Function-Not-Appropriately-Marked_RPAR_-next",
+     "transform-_LPAR_in-Necessarily-Noncomputable-Function-Not-Appropriately-Marked_RPAR_",
      "data":
      {"/Error-Explanations/About___--dependsOnNoncomputable/#transform-_LPAR_in-Necessarily-Noncomputable-Function-Not-Appropriately-Marked_RPAR_-next":
       {"display": "transform",
@@ -24005,7 +24005,7 @@
         "Auto-bound variables"]}},
      "address": "/Error-Explanations/About___--unknownIdentifier/"}],
    "thisAlsoWorks (in Auto-bound variables)":
-   [{"id": "thisAlsoWorks-_LPAR_in-Auto-bound-variables_RPAR_-next",
+   [{"id": "thisAlsoWorks-_LPAR_in-Auto-bound-variables_RPAR_",
      "data":
      {"/Error-Explanations/About___--unknownIdentifier/#thisAlsoWorks-_LPAR_in-Auto-bound-variables_RPAR_-next":
       {"display": "thisAlsoWorks",
@@ -24024,7 +24024,7 @@
         "Examples",
         "Auto-bound variables"]}},
      "address": "/Error-Explanations/About___--unknownIdentifier/"},
-    {"id": "thisAlsoWorks-_LPAR_in-Auto-bound-variables_RPAR_",
+    {"id": "thisAlsoWorks-_LPAR_in-Auto-bound-variables_RPAR_-next",
      "data":
      {"/Error-Explanations/About___--unknownIdentifier/#thisAlsoWorks-_LPAR_in-Auto-bound-variables_RPAR_-next":
       {"display": "thisAlsoWorks",
@@ -24843,7 +24843,7 @@
         "宽松 vs 非宽松的自动隐式参数（Relaxed vs Non-Relaxed Automatic Implicit Parameters）"]}},
      "address": "/Definitions/Headers and Signatures/"}],
    "seconds (in Incorrect Ordering of Pattern Matches)":
-   [{"id": "seconds-_LPAR_in-Incorrect-Ordering-of-Pattern-Matches_RPAR_-next",
+   [{"id": "seconds-_LPAR_in-Incorrect-Ordering-of-Pattern-Matches_RPAR_",
      "data":
      {"/Error-Explanations/About___--redundantMatchAlt/#seconds-_LPAR_in-Incorrect-Ordering-of-Pattern-Matches_RPAR_-next":
       {"display": "seconds",
@@ -24862,7 +24862,7 @@
         "Examples",
         "Incorrect Ordering of Pattern Matches"]}},
      "address": "/Error-Explanations/About___--redundantMatchAlt/"},
-    {"id": "seconds-_LPAR_in-Incorrect-Ordering-of-Pattern-Matches_RPAR_",
+    {"id": "seconds-_LPAR_in-Incorrect-Ordering-of-Pattern-Matches_RPAR_-next",
      "data":
      {"/Error-Explanations/About___--redundantMatchAlt/#seconds-_LPAR_in-Incorrect-Ordering-of-Pattern-Matches_RPAR_-next":
       {"display": "seconds",
@@ -25035,7 +25035,7 @@
         "Testing Return Values"]}},
      "address": "/Interacting-with-Lean/"}],
    "rev_correct (in 缺少  WPMonad  实例)":
-   [{"id": "rev_correct-_LPAR_in-______--WPMonad--_______RPAR_-next",
+   [{"id": "rev_correct-_LPAR_in-______--WPMonad--_______RPAR_",
      "data":
      {"/The--mvcgen--tactic/Predicate-Transformers/#rev_correct-_LPAR_in-______--WPMonad--_______RPAR_-next":
       {"display": "rev_correct",
@@ -25056,7 +25056,7 @@
         "最弱前置条件单子态射",
         "缺少  WPMonad  实例"]}},
      "address": "/The--mvcgen--tactic/Predicate-Transformers/"},
-    {"id": "rev_correct-_LPAR_in-______--WPMonad--_______RPAR_",
+    {"id": "rev_correct-_LPAR_in-______--WPMonad--_______RPAR_-next",
      "data":
      {"/The--mvcgen--tactic/Predicate-Transformers/#rev_correct-_LPAR_in-______--WPMonad--_______RPAR_-next":
       {"display": "rev_correct",
@@ -25153,34 +25153,7 @@
         "Iterator State Types"]}},
      "address": "/Iterators/Iterator-Definitions/"}],
    "red (in Missing Namespace)":
-   [{"id": "red-_LPAR_in-Missing-Namespace_RPAR_-next",
-     "data":
-     {"/Error-Explanations/About___--unknownIdentifier/#red-_LPAR_in-Missing-Namespace_RPAR_-next-next":
-      {"display": "red",
-       "context":
-       ["Lean 语言参考手册",
-        "Error Explanations",
-        "About:  unknownIdentifier",
-        "Examples",
-        "Missing Namespace"]},
-      "/Error-Explanations/About___--unknownIdentifier/#red-_LPAR_in-Missing-Namespace_RPAR_-next":
-      {"display": "red",
-       "context":
-       ["Lean 语言参考手册",
-        "Error Explanations",
-        "About:  unknownIdentifier",
-        "Examples",
-        "Missing Namespace"]},
-      "/Error-Explanations/About___--unknownIdentifier/#red-_LPAR_in-Missing-Namespace_RPAR_":
-      {"display": "red",
-       "context":
-       ["Lean 语言参考手册",
-        "Error Explanations",
-        "About:  unknownIdentifier",
-        "Examples",
-        "Missing Namespace"]}},
-     "address": "/Error-Explanations/About___--unknownIdentifier/"},
-    {"id": "red-_LPAR_in-Missing-Namespace_RPAR_-next-next",
+   [{"id": "red-_LPAR_in-Missing-Namespace_RPAR_-next-next",
      "data":
      {"/Error-Explanations/About___--unknownIdentifier/#red-_LPAR_in-Missing-Namespace_RPAR_-next-next":
       {"display": "red",
@@ -25208,6 +25181,33 @@
         "Missing Namespace"]}},
      "address": "/Error-Explanations/About___--unknownIdentifier/"},
     {"id": "red-_LPAR_in-Missing-Namespace_RPAR_",
+     "data":
+     {"/Error-Explanations/About___--unknownIdentifier/#red-_LPAR_in-Missing-Namespace_RPAR_-next-next":
+      {"display": "red",
+       "context":
+       ["Lean 语言参考手册",
+        "Error Explanations",
+        "About:  unknownIdentifier",
+        "Examples",
+        "Missing Namespace"]},
+      "/Error-Explanations/About___--unknownIdentifier/#red-_LPAR_in-Missing-Namespace_RPAR_-next":
+      {"display": "red",
+       "context":
+       ["Lean 语言参考手册",
+        "Error Explanations",
+        "About:  unknownIdentifier",
+        "Examples",
+        "Missing Namespace"]},
+      "/Error-Explanations/About___--unknownIdentifier/#red-_LPAR_in-Missing-Namespace_RPAR_":
+      {"display": "red",
+       "context":
+       ["Lean 语言参考手册",
+        "Error Explanations",
+        "About:  unknownIdentifier",
+        "Examples",
+        "Missing Namespace"]}},
+     "address": "/Error-Explanations/About___--unknownIdentifier/"},
+    {"id": "red-_LPAR_in-Missing-Namespace_RPAR_-next",
      "data":
      {"/Error-Explanations/About___--unknownIdentifier/#red-_LPAR_in-Missing-Namespace_RPAR_-next-next":
       {"display": "red",
@@ -25449,7 +25449,7 @@
      "address": "/Definitions/Recursive Definitions/"}],
    "plusTwo (in Uninferred Binder Type Due to Resulting Type Annotation)":
    [{"id":
-     "plusTwo-_LPAR_in-Uninferred-Binder-Type-Due-to-Resulting-Type-Annotation_RPAR_-next",
+     "plusTwo-_LPAR_in-Uninferred-Binder-Type-Due-to-Resulting-Type-Annotation_RPAR_",
      "data":
      {"/Error-Explanations/About___--inferBinderTypeFailed/#plusTwo-_LPAR_in-Uninferred-Binder-Type-Due-to-Resulting-Type-Annotation_RPAR_-next":
       {"display": "plusTwo",
@@ -25469,7 +25469,7 @@
         "Uninferred Binder Type Due to Resulting Type Annotation"]}},
      "address": "/Error-Explanations/About___--inferBinderTypeFailed/"},
     {"id":
-     "plusTwo-_LPAR_in-Uninferred-Binder-Type-Due-to-Resulting-Type-Annotation_RPAR_",
+     "plusTwo-_LPAR_in-Uninferred-Binder-Type-Due-to-Resulting-Type-Annotation_RPAR_-next",
      "data":
      {"/Error-Explanations/About___--inferBinderTypeFailed/#plusTwo-_LPAR_in-Uninferred-Binder-Type-Due-to-Resulting-Type-Annotation_RPAR_-next":
       {"display": "plusTwo",
@@ -27205,7 +27205,7 @@
         "Proofs are Private"]}},
      "address": "/Source Files and Modules/"}],
    "incrOrFail (in Lifting Transformed Monads)":
-   [{"id": "incrOrFail-_LPAR_in-Lifting-Transformed-Monads_RPAR_-next",
+   [{"id": "incrOrFail-_LPAR_in-Lifting-Transformed-Monads_RPAR_",
      "data":
      {"/Functors___-Monads-and--do--Notation/Lifting-Monads/#incrOrFail-_LPAR_in-Lifting-Transformed-Monads_RPAR_-next":
       {"display": "incrOrFail",
@@ -27222,7 +27222,7 @@
         "Lifting Monads",
         "Lifting Transformed Monads"]}},
      "address": "/Functors___-Monads-and--do--Notation/Lifting-Monads/"},
-    {"id": "incrOrFail-_LPAR_in-Lifting-Transformed-Monads_RPAR_",
+    {"id": "incrOrFail-_LPAR_in-Lifting-Transformed-Monads_RPAR_-next",
      "data":
      {"/Functors___-Monads-and--do--Notation/Lifting-Monads/#incrOrFail-_LPAR_in-Lifting-Transformed-Monads_RPAR_-next":
       {"display": "incrOrFail",
@@ -28475,8 +28475,7 @@
         "Defining Coercions"]}},
      "address": "/Coercions/Coercing-Between-Types/"}],
    "forceColor (in Missing Type Class Instance)":
-   [{"id":
-     "forceColor-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next-next-next",
+   [{"id": "forceColor-_LPAR_in-Missing-Type-Class-Instance_RPAR_",
      "data":
      {"/Error-Explanations/About___--synthInstanceFailed/#forceColor-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next-next-next":
       {"display": "forceColor",
@@ -28581,7 +28580,8 @@
         "Examples",
         "Missing Type Class Instance"]}},
      "address": "/Error-Explanations/About___--synthInstanceFailed/"},
-    {"id": "forceColor-_LPAR_in-Missing-Type-Class-Instance_RPAR_",
+    {"id":
+     "forceColor-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next-next-next",
      "data":
      {"/Error-Explanations/About___--synthInstanceFailed/#forceColor-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next-next-next":
       {"display": "forceColor",
@@ -29294,7 +29294,7 @@
         "Noncomputable Dependency Can Be Made Computable"]}},
      "address": "/Error-Explanations/About___--dependsOnNoncomputable/"}],
    "emptyNats (in Implicit Argument Cannot be Inferred)":
-   [{"id": "emptyNats-_LPAR_in-Implicit-Argument-Cannot-be-Inferred_RPAR_",
+   [{"id": "emptyNats-_LPAR_in-Implicit-Argument-Cannot-be-Inferred_RPAR_-next",
      "data":
      {"/Error-Explanations/About___--inferDefTypeFailed/#emptyNats-_LPAR_in-Implicit-Argument-Cannot-be-Inferred_RPAR_-next":
       {"display": "emptyNats",
@@ -29313,7 +29313,7 @@
         "Examples",
         "Implicit Argument Cannot be Inferred"]}},
      "address": "/Error-Explanations/About___--inferDefTypeFailed/"},
-    {"id": "emptyNats-_LPAR_in-Implicit-Argument-Cannot-be-Inferred_RPAR_-next",
+    {"id": "emptyNats-_LPAR_in-Implicit-Argument-Cannot-be-Inferred_RPAR_",
      "data":
      {"/Error-Explanations/About___--inferDefTypeFailed/#emptyNats-_LPAR_in-Implicit-Argument-Cannot-be-Inferred_RPAR_-next":
       {"display": "emptyNats",
@@ -29776,7 +29776,7 @@
      "address": "/Definitions/Recursive Definitions/"}],
    "disjoinToNat (in Unresolvable Name Inferred by Dotted-Identifier Notation)":
    [{"id":
-     "disjoinToNat-_LPAR_in-Unresolvable-Name-Inferred-by-Dotted-Identifier-Notation_RPAR_-next",
+     "disjoinToNat-_LPAR_in-Unresolvable-Name-Inferred-by-Dotted-Identifier-Notation_RPAR_",
      "data":
      {"/Error-Explanations/About___--unknownIdentifier/#disjoinToNat-_LPAR_in-Unresolvable-Name-Inferred-by-Dotted-Identifier-Notation_RPAR_-next-next":
       {"display": "disjoinToNat",
@@ -29804,7 +29804,7 @@
         "Unresolvable Name Inferred by Dotted-Identifier Notation"]}},
      "address": "/Error-Explanations/About___--unknownIdentifier/"},
     {"id":
-     "disjoinToNat-_LPAR_in-Unresolvable-Name-Inferred-by-Dotted-Identifier-Notation_RPAR_",
+     "disjoinToNat-_LPAR_in-Unresolvable-Name-Inferred-by-Dotted-Identifier-Notation_RPAR_-next",
      "data":
      {"/Error-Explanations/About___--unknownIdentifier/#disjoinToNat-_LPAR_in-Unresolvable-Name-Inferred-by-Dotted-Identifier-Notation_RPAR_-next-next":
       {"display": "disjoinToNat",
@@ -30633,7 +30633,7 @@
         "Implementing Ranges"]}},
      "address": "/Basic-Types/Ranges/"}],
    "allNats (in Converting Infinite Iterators to Lists)":
-   [{"id": "allNats-_LPAR_in-Converting-Infinite-Iterators-to-Lists_RPAR_",
+   [{"id": "allNats-_LPAR_in-Converting-Infinite-Iterators-to-Lists_RPAR_-next",
      "data":
      {"/Iterators/Consuming-Iterators/#allNats-_LPAR_in-Converting-Infinite-Iterators-to-Lists_RPAR_-next":
       {"display": "allNats",
@@ -30650,7 +30650,7 @@
         "Consuming Iterators",
         "Converting Infinite Iterators to Lists"]}},
      "address": "/Iterators/Consuming-Iterators/"},
-    {"id": "allNats-_LPAR_in-Converting-Infinite-Iterators-to-Lists_RPAR_-next",
+    {"id": "allNats-_LPAR_in-Converting-Infinite-Iterators-to-Lists_RPAR_",
      "data":
      {"/Iterators/Consuming-Iterators/#allNats-_LPAR_in-Converting-Infinite-Iterators-to-Lists_RPAR_-next":
       {"display": "allNats",
@@ -34800,7 +34800,7 @@
      "address": "/Definitions/Recursive Definitions/"}],
    "Person.givenName (in Attempting to Define Multiple Structure Fields on the Same Line)":
    [{"id":
-     "Person___givenName-_LPAR_in-Attempting-to-Define-Multiple-Structure-Fields-on-the-Same-Line_RPAR_",
+     "Person___givenName-_LPAR_in-Attempting-to-Define-Multiple-Structure-Fields-on-the-Same-Line_RPAR_-next",
      "data":
      {"/Error-Explanations/About___--inferBinderTypeFailed/#Person___givenName-_LPAR_in-Attempting-to-Define-Multiple-Structure-Fields-on-the-Same-Line_RPAR_-next":
       {"display": "givenName",
@@ -34820,7 +34820,7 @@
         "Attempting to Define Multiple Structure Fields on the Same Line"]}},
      "address": "/Error-Explanations/About___--inferBinderTypeFailed/"},
     {"id":
-     "Person___givenName-_LPAR_in-Attempting-to-Define-Multiple-Structure-Fields-on-the-Same-Line_RPAR_-next",
+     "Person___givenName-_LPAR_in-Attempting-to-Define-Multiple-Structure-Fields-on-the-Same-Line_RPAR_",
      "data":
      {"/Error-Explanations/About___--inferBinderTypeFailed/#Person___givenName-_LPAR_in-Attempting-to-Define-Multiple-Structure-Fields-on-the-Same-Line_RPAR_-next":
       {"display": "givenName",
@@ -34882,7 +34882,7 @@
      "address": "/Error-Explanations/About___--inferBinderTypeFailed/"}],
    "Person.age (in Attempting to Define Multiple Structure Fields on the Same Line)":
    [{"id":
-     "Person___age-_LPAR_in-Attempting-to-Define-Multiple-Structure-Fields-on-the-Same-Line_RPAR_-next",
+     "Person___age-_LPAR_in-Attempting-to-Define-Multiple-Structure-Fields-on-the-Same-Line_RPAR_",
      "data":
      {"/Error-Explanations/About___--inferBinderTypeFailed/#Person___age-_LPAR_in-Attempting-to-Define-Multiple-Structure-Fields-on-the-Same-Line_RPAR_-next":
       {"display": "age",
@@ -34902,7 +34902,7 @@
         "Attempting to Define Multiple Structure Fields on the Same Line"]}},
      "address": "/Error-Explanations/About___--inferBinderTypeFailed/"},
     {"id":
-     "Person___age-_LPAR_in-Attempting-to-Define-Multiple-Structure-Fields-on-the-Same-Line_RPAR_",
+     "Person___age-_LPAR_in-Attempting-to-Define-Multiple-Structure-Fields-on-the-Same-Line_RPAR_-next",
      "data":
      {"/Error-Explanations/About___--inferBinderTypeFailed/#Person___age-_LPAR_in-Attempting-to-Define-Multiple-Structure-Fields-on-the-Same-Line_RPAR_-next":
       {"display": "age",
@@ -36551,6 +36551,42 @@
         "Missing Type Class Instance"]}},
      "address": "/Error-Explanations/About___--synthInstanceFailed/"},
     {"id":
+     "MyColor___thistle-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next-next",
+     "data":
+     {"/Error-Explanations/About___--synthInstanceFailed/#MyColor___thistle-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next-next-next":
+      {"display": "thistle",
+       "context":
+       ["Lean 语言参考手册",
+        "Error Explanations",
+        "About:  synthInstanceFailed",
+        "Examples",
+        "Missing Type Class Instance"]},
+      "/Error-Explanations/About___--synthInstanceFailed/#MyColor___thistle-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next-next":
+      {"display": "thistle",
+       "context":
+       ["Lean 语言参考手册",
+        "Error Explanations",
+        "About:  synthInstanceFailed",
+        "Examples",
+        "Missing Type Class Instance"]},
+      "/Error-Explanations/About___--synthInstanceFailed/#MyColor___thistle-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next":
+      {"display": "thistle",
+       "context":
+       ["Lean 语言参考手册",
+        "Error Explanations",
+        "About:  synthInstanceFailed",
+        "Examples",
+        "Missing Type Class Instance"]},
+      "/Error-Explanations/About___--synthInstanceFailed/#MyColor___thistle-_LPAR_in-Missing-Type-Class-Instance_RPAR_":
+      {"display": "thistle",
+       "context":
+       ["Lean 语言参考手册",
+        "Error Explanations",
+        "About:  synthInstanceFailed",
+        "Examples",
+        "Missing Type Class Instance"]}},
+     "address": "/Error-Explanations/About___--synthInstanceFailed/"},
+    {"id":
      "MyColor___thistle-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next-next-next",
      "data":
      {"/Error-Explanations/About___--synthInstanceFailed/#MyColor___thistle-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next-next-next":
@@ -36620,116 +36656,9 @@
         "About:  synthInstanceFailed",
         "Examples",
         "Missing Type Class Instance"]}},
-     "address": "/Error-Explanations/About___--synthInstanceFailed/"},
-    {"id":
-     "MyColor___thistle-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next-next",
-     "data":
-     {"/Error-Explanations/About___--synthInstanceFailed/#MyColor___thistle-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next-next-next":
-      {"display": "thistle",
-       "context":
-       ["Lean 语言参考手册",
-        "Error Explanations",
-        "About:  synthInstanceFailed",
-        "Examples",
-        "Missing Type Class Instance"]},
-      "/Error-Explanations/About___--synthInstanceFailed/#MyColor___thistle-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next-next":
-      {"display": "thistle",
-       "context":
-       ["Lean 语言参考手册",
-        "Error Explanations",
-        "About:  synthInstanceFailed",
-        "Examples",
-        "Missing Type Class Instance"]},
-      "/Error-Explanations/About___--synthInstanceFailed/#MyColor___thistle-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next":
-      {"display": "thistle",
-       "context":
-       ["Lean 语言参考手册",
-        "Error Explanations",
-        "About:  synthInstanceFailed",
-        "Examples",
-        "Missing Type Class Instance"]},
-      "/Error-Explanations/About___--synthInstanceFailed/#MyColor___thistle-_LPAR_in-Missing-Type-Class-Instance_RPAR_":
-      {"display": "thistle",
-       "context":
-       ["Lean 语言参考手册",
-        "Error Explanations",
-        "About:  synthInstanceFailed",
-        "Examples",
-        "Missing Type Class Instance"]}},
      "address": "/Error-Explanations/About___--synthInstanceFailed/"}],
    "MyColor.sienna (in Missing Type Class Instance)":
-   [{"id": "MyColor___sienna-_LPAR_in-Missing-Type-Class-Instance_RPAR_",
-     "data":
-     {"/Error-Explanations/About___--synthInstanceFailed/#MyColor___sienna-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next-next-next":
-      {"display": "sienna",
-       "context":
-       ["Lean 语言参考手册",
-        "Error Explanations",
-        "About:  synthInstanceFailed",
-        "Examples",
-        "Missing Type Class Instance"]},
-      "/Error-Explanations/About___--synthInstanceFailed/#MyColor___sienna-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next-next":
-      {"display": "sienna",
-       "context":
-       ["Lean 语言参考手册",
-        "Error Explanations",
-        "About:  synthInstanceFailed",
-        "Examples",
-        "Missing Type Class Instance"]},
-      "/Error-Explanations/About___--synthInstanceFailed/#MyColor___sienna-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next":
-      {"display": "sienna",
-       "context":
-       ["Lean 语言参考手册",
-        "Error Explanations",
-        "About:  synthInstanceFailed",
-        "Examples",
-        "Missing Type Class Instance"]},
-      "/Error-Explanations/About___--synthInstanceFailed/#MyColor___sienna-_LPAR_in-Missing-Type-Class-Instance_RPAR_":
-      {"display": "sienna",
-       "context":
-       ["Lean 语言参考手册",
-        "Error Explanations",
-        "About:  synthInstanceFailed",
-        "Examples",
-        "Missing Type Class Instance"]}},
-     "address": "/Error-Explanations/About___--synthInstanceFailed/"},
-    {"id":
-     "MyColor___sienna-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next-next",
-     "data":
-     {"/Error-Explanations/About___--synthInstanceFailed/#MyColor___sienna-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next-next-next":
-      {"display": "sienna",
-       "context":
-       ["Lean 语言参考手册",
-        "Error Explanations",
-        "About:  synthInstanceFailed",
-        "Examples",
-        "Missing Type Class Instance"]},
-      "/Error-Explanations/About___--synthInstanceFailed/#MyColor___sienna-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next-next":
-      {"display": "sienna",
-       "context":
-       ["Lean 语言参考手册",
-        "Error Explanations",
-        "About:  synthInstanceFailed",
-        "Examples",
-        "Missing Type Class Instance"]},
-      "/Error-Explanations/About___--synthInstanceFailed/#MyColor___sienna-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next":
-      {"display": "sienna",
-       "context":
-       ["Lean 语言参考手册",
-        "Error Explanations",
-        "About:  synthInstanceFailed",
-        "Examples",
-        "Missing Type Class Instance"]},
-      "/Error-Explanations/About___--synthInstanceFailed/#MyColor___sienna-_LPAR_in-Missing-Type-Class-Instance_RPAR_":
-      {"display": "sienna",
-       "context":
-       ["Lean 语言参考手册",
-        "Error Explanations",
-        "About:  synthInstanceFailed",
-        "Examples",
-        "Missing Type Class Instance"]}},
-     "address": "/Error-Explanations/About___--synthInstanceFailed/"},
-    {"id": "MyColor___sienna-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next",
+   [{"id": "MyColor___sienna-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next",
      "data":
      {"/Error-Explanations/About___--synthInstanceFailed/#MyColor___sienna-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next-next-next":
       {"display": "sienna",
@@ -36799,36 +36728,35 @@
         "About:  synthInstanceFailed",
         "Examples",
         "Missing Type Class Instance"]}},
-     "address": "/Error-Explanations/About___--synthInstanceFailed/"}],
-   "MyColor.chartreuse (in Missing Type Class Instance)":
-   [{"id": "MyColor___chartreuse-_LPAR_in-Missing-Type-Class-Instance_RPAR_",
+     "address": "/Error-Explanations/About___--synthInstanceFailed/"},
+    {"id": "MyColor___sienna-_LPAR_in-Missing-Type-Class-Instance_RPAR_",
      "data":
-     {"/Error-Explanations/About___--synthInstanceFailed/#MyColor___chartreuse-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next-next-next":
-      {"display": "chartreuse",
+     {"/Error-Explanations/About___--synthInstanceFailed/#MyColor___sienna-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next-next-next":
+      {"display": "sienna",
        "context":
        ["Lean 语言参考手册",
         "Error Explanations",
         "About:  synthInstanceFailed",
         "Examples",
         "Missing Type Class Instance"]},
-      "/Error-Explanations/About___--synthInstanceFailed/#MyColor___chartreuse-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next-next":
-      {"display": "chartreuse",
+      "/Error-Explanations/About___--synthInstanceFailed/#MyColor___sienna-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next-next":
+      {"display": "sienna",
        "context":
        ["Lean 语言参考手册",
         "Error Explanations",
         "About:  synthInstanceFailed",
         "Examples",
         "Missing Type Class Instance"]},
-      "/Error-Explanations/About___--synthInstanceFailed/#MyColor___chartreuse-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next":
-      {"display": "chartreuse",
+      "/Error-Explanations/About___--synthInstanceFailed/#MyColor___sienna-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next":
+      {"display": "sienna",
        "context":
        ["Lean 语言参考手册",
         "Error Explanations",
         "About:  synthInstanceFailed",
         "Examples",
         "Missing Type Class Instance"]},
-      "/Error-Explanations/About___--synthInstanceFailed/#MyColor___chartreuse-_LPAR_in-Missing-Type-Class-Instance_RPAR_":
-      {"display": "chartreuse",
+      "/Error-Explanations/About___--synthInstanceFailed/#MyColor___sienna-_LPAR_in-Missing-Type-Class-Instance_RPAR_":
+      {"display": "sienna",
        "context":
        ["Lean 语言参考手册",
         "Error Explanations",
@@ -36837,7 +36765,44 @@
         "Missing Type Class Instance"]}},
      "address": "/Error-Explanations/About___--synthInstanceFailed/"},
     {"id":
-     "MyColor___chartreuse-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next",
+     "MyColor___sienna-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next-next",
+     "data":
+     {"/Error-Explanations/About___--synthInstanceFailed/#MyColor___sienna-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next-next-next":
+      {"display": "sienna",
+       "context":
+       ["Lean 语言参考手册",
+        "Error Explanations",
+        "About:  synthInstanceFailed",
+        "Examples",
+        "Missing Type Class Instance"]},
+      "/Error-Explanations/About___--synthInstanceFailed/#MyColor___sienna-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next-next":
+      {"display": "sienna",
+       "context":
+       ["Lean 语言参考手册",
+        "Error Explanations",
+        "About:  synthInstanceFailed",
+        "Examples",
+        "Missing Type Class Instance"]},
+      "/Error-Explanations/About___--synthInstanceFailed/#MyColor___sienna-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next":
+      {"display": "sienna",
+       "context":
+       ["Lean 语言参考手册",
+        "Error Explanations",
+        "About:  synthInstanceFailed",
+        "Examples",
+        "Missing Type Class Instance"]},
+      "/Error-Explanations/About___--synthInstanceFailed/#MyColor___sienna-_LPAR_in-Missing-Type-Class-Instance_RPAR_":
+      {"display": "sienna",
+       "context":
+       ["Lean 语言参考手册",
+        "Error Explanations",
+        "About:  synthInstanceFailed",
+        "Examples",
+        "Missing Type Class Instance"]}},
+     "address": "/Error-Explanations/About___--synthInstanceFailed/"}],
+   "MyColor.chartreuse (in Missing Type Class Instance)":
+   [{"id":
+     "MyColor___chartreuse-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next-next",
      "data":
      {"/Error-Explanations/About___--synthInstanceFailed/#MyColor___chartreuse-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next-next-next":
       {"display": "chartreuse",
@@ -36908,8 +36873,43 @@
         "Examples",
         "Missing Type Class Instance"]}},
      "address": "/Error-Explanations/About___--synthInstanceFailed/"},
+    {"id": "MyColor___chartreuse-_LPAR_in-Missing-Type-Class-Instance_RPAR_",
+     "data":
+     {"/Error-Explanations/About___--synthInstanceFailed/#MyColor___chartreuse-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next-next-next":
+      {"display": "chartreuse",
+       "context":
+       ["Lean 语言参考手册",
+        "Error Explanations",
+        "About:  synthInstanceFailed",
+        "Examples",
+        "Missing Type Class Instance"]},
+      "/Error-Explanations/About___--synthInstanceFailed/#MyColor___chartreuse-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next-next":
+      {"display": "chartreuse",
+       "context":
+       ["Lean 语言参考手册",
+        "Error Explanations",
+        "About:  synthInstanceFailed",
+        "Examples",
+        "Missing Type Class Instance"]},
+      "/Error-Explanations/About___--synthInstanceFailed/#MyColor___chartreuse-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next":
+      {"display": "chartreuse",
+       "context":
+       ["Lean 语言参考手册",
+        "Error Explanations",
+        "About:  synthInstanceFailed",
+        "Examples",
+        "Missing Type Class Instance"]},
+      "/Error-Explanations/About___--synthInstanceFailed/#MyColor___chartreuse-_LPAR_in-Missing-Type-Class-Instance_RPAR_":
+      {"display": "chartreuse",
+       "context":
+       ["Lean 语言参考手册",
+        "Error Explanations",
+        "About:  synthInstanceFailed",
+        "Examples",
+        "Missing Type Class Instance"]}},
+     "address": "/Error-Explanations/About___--synthInstanceFailed/"},
     {"id":
-     "MyColor___chartreuse-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next-next",
+     "MyColor___chartreuse-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next",
      "data":
      {"/Error-Explanations/About___--synthInstanceFailed/#MyColor___chartreuse-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next-next-next":
       {"display": "chartreuse",
@@ -36980,7 +36980,7 @@
         "Examples",
         "Missing Type Class Instance"]}},
      "address": "/Error-Explanations/About___--synthInstanceFailed/"},
-    {"id": "MyColor-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next-next",
+    {"id": "MyColor-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next-next-next",
      "data":
      {"/Error-Explanations/About___--synthInstanceFailed/#MyColor-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next-next-next":
       {"display": "MyColor",
@@ -37050,7 +37050,7 @@
         "Examples",
         "Missing Type Class Instance"]}},
      "address": "/Error-Explanations/About___--synthInstanceFailed/"},
-    {"id": "MyColor-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next-next-next",
+    {"id": "MyColor-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next-next",
      "data":
      {"/Error-Explanations/About___--synthInstanceFailed/#MyColor-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next-next-next":
       {"display": "MyColor",
@@ -37226,8 +37226,7 @@
         "Nested Inductive Types with  Std.HashMap"]}},
      "address": "/Basic-Types/Maps-and-Sets/"}],
    "Maze (in Nested Inductive Types with  Std.HashMap)":
-   [{"id":
-     "Maze-_LPAR_in-Nested-Inductive-Types-with--Std___HashMap_RPAR_-next",
+   [{"id": "Maze-_LPAR_in-Nested-Inductive-Types-with--Std___HashMap_RPAR_",
      "data":
      {"/Basic-Types/Maps-and-Sets/#Maze-_LPAR_in-Nested-Inductive-Types-with--Std___HashMap_RPAR_-next":
       {"display": "Maze",
@@ -37248,7 +37247,8 @@
         "Raw Data and Invariants",
         "Nested Inductive Types with  Std.HashMap"]}},
      "address": "/Basic-Types/Maps-and-Sets/"},
-    {"id": "Maze-_LPAR_in-Nested-Inductive-Types-with--Std___HashMap_RPAR_",
+    {"id":
+     "Maze-_LPAR_in-Nested-Inductive-Types-with--Std___HashMap_RPAR_-next",
      "data":
      {"/Basic-Types/Maps-and-Sets/#Maze-_LPAR_in-Nested-Inductive-Types-with--Std___HashMap_RPAR_-next":
       {"display": "Maze",
@@ -37588,7 +37588,7 @@
      "address": "/Definitions/Recursive Definitions/"}],
    "List.All.nil (in Omitting Parameter in Argument to Higher-Order Predicate)":
    [{"id":
-     "List___All___nil-_LPAR_in-Omitting-Parameter-in-Argument-to-Higher-Order-Predicate_RPAR_",
+     "List___All___nil-_LPAR_in-Omitting-Parameter-in-Argument-to-Higher-Order-Predicate_RPAR_-next",
      "data":
      {"/Error-Explanations/About___--inductiveParamMissing/#List___All___nil-_LPAR_in-Omitting-Parameter-in-Argument-to-Higher-Order-Predicate_RPAR_-next":
       {"display": "nil",
@@ -37608,7 +37608,7 @@
         "Omitting Parameter in Argument to Higher-Order Predicate"]}},
      "address": "/Error-Explanations/About___--inductiveParamMissing/"},
     {"id":
-     "List___All___nil-_LPAR_in-Omitting-Parameter-in-Argument-to-Higher-Order-Predicate_RPAR_-next",
+     "List___All___nil-_LPAR_in-Omitting-Parameter-in-Argument-to-Higher-Order-Predicate_RPAR_",
      "data":
      {"/Error-Explanations/About___--inductiveParamMissing/#List___All___nil-_LPAR_in-Omitting-Parameter-in-Argument-to-Higher-Order-Predicate_RPAR_-next":
       {"display": "nil",
@@ -37629,7 +37629,7 @@
      "address": "/Error-Explanations/About___--inductiveParamMissing/"}],
    "List.All.cons (in Omitting Parameter in Argument to Higher-Order Predicate)":
    [{"id":
-     "List___All___cons-_LPAR_in-Omitting-Parameter-in-Argument-to-Higher-Order-Predicate_RPAR_",
+     "List___All___cons-_LPAR_in-Omitting-Parameter-in-Argument-to-Higher-Order-Predicate_RPAR_-next",
      "data":
      {"/Error-Explanations/About___--inductiveParamMissing/#List___All___cons-_LPAR_in-Omitting-Parameter-in-Argument-to-Higher-Order-Predicate_RPAR_-next":
       {"display": "cons",
@@ -37649,7 +37649,7 @@
         "Omitting Parameter in Argument to Higher-Order Predicate"]}},
      "address": "/Error-Explanations/About___--inductiveParamMissing/"},
     {"id":
-     "List___All___cons-_LPAR_in-Omitting-Parameter-in-Argument-to-Higher-Order-Predicate_RPAR_-next",
+     "List___All___cons-_LPAR_in-Omitting-Parameter-in-Argument-to-Higher-Order-Predicate_RPAR_",
      "data":
      {"/Error-Explanations/About___--inductiveParamMissing/#List___All___cons-_LPAR_in-Omitting-Parameter-in-Argument-to-Higher-Order-Predicate_RPAR_-next":
       {"display": "cons",
@@ -37670,7 +37670,7 @@
      "address": "/Error-Explanations/About___--inductiveParamMissing/"}],
    "List.All (in Omitting Parameter in Argument to Higher-Order Predicate)":
    [{"id":
-     "List___All-_LPAR_in-Omitting-Parameter-in-Argument-to-Higher-Order-Predicate_RPAR_",
+     "List___All-_LPAR_in-Omitting-Parameter-in-Argument-to-Higher-Order-Predicate_RPAR_-next",
      "data":
      {"/Error-Explanations/About___--inductiveParamMissing/#List___All-_LPAR_in-Omitting-Parameter-in-Argument-to-Higher-Order-Predicate_RPAR_-next":
       {"display": "List.All",
@@ -37690,7 +37690,7 @@
         "Omitting Parameter in Argument to Higher-Order Predicate"]}},
      "address": "/Error-Explanations/About___--inductiveParamMissing/"},
     {"id":
-     "List___All-_LPAR_in-Omitting-Parameter-in-Argument-to-Higher-Order-Predicate_RPAR_-next",
+     "List___All-_LPAR_in-Omitting-Parameter-in-Argument-to-Higher-Order-Predicate_RPAR_",
      "data":
      {"/Error-Explanations/About___--inductiveParamMissing/#List___All-_LPAR_in-Omitting-Parameter-in-Argument-to-Higher-Order-Predicate_RPAR_-next":
       {"display": "List.All",
@@ -40398,7 +40398,7 @@
      "address": "/Basic-Types/The-Unit-Type/"}],
    "Credential.pin (in Missing Resulting Type After Constructor Parameter)":
    [{"id":
-     "Credential___pin-_LPAR_in-Missing-Resulting-Type-After-Constructor-Parameter_RPAR_",
+     "Credential___pin-_LPAR_in-Missing-Resulting-Type-After-Constructor-Parameter_RPAR_-next",
      "data":
      {"/Error-Explanations/About___--ctorResultingTypeMismatch/#Credential___pin-_LPAR_in-Missing-Resulting-Type-After-Constructor-Parameter_RPAR_-next":
       {"display": "pin",
@@ -40418,7 +40418,7 @@
         "Missing Resulting Type After Constructor Parameter"]}},
      "address": "/Error-Explanations/About___--ctorResultingTypeMismatch/"},
     {"id":
-     "Credential___pin-_LPAR_in-Missing-Resulting-Type-After-Constructor-Parameter_RPAR_-next",
+     "Credential___pin-_LPAR_in-Missing-Resulting-Type-After-Constructor-Parameter_RPAR_",
      "data":
      {"/Error-Explanations/About___--ctorResultingTypeMismatch/#Credential___pin-_LPAR_in-Missing-Resulting-Type-After-Constructor-Parameter_RPAR_-next":
       {"display": "pin",
@@ -40439,7 +40439,7 @@
      "address": "/Error-Explanations/About___--ctorResultingTypeMismatch/"}],
    "Credential.password (in Missing Resulting Type After Constructor Parameter)":
    [{"id":
-     "Credential___password-_LPAR_in-Missing-Resulting-Type-After-Constructor-Parameter_RPAR_-next",
+     "Credential___password-_LPAR_in-Missing-Resulting-Type-After-Constructor-Parameter_RPAR_",
      "data":
      {"/Error-Explanations/About___--ctorResultingTypeMismatch/#Credential___password-_LPAR_in-Missing-Resulting-Type-After-Constructor-Parameter_RPAR_-next":
       {"display": "password",
@@ -40459,7 +40459,7 @@
         "Missing Resulting Type After Constructor Parameter"]}},
      "address": "/Error-Explanations/About___--ctorResultingTypeMismatch/"},
     {"id":
-     "Credential___password-_LPAR_in-Missing-Resulting-Type-After-Constructor-Parameter_RPAR_",
+     "Credential___password-_LPAR_in-Missing-Resulting-Type-After-Constructor-Parameter_RPAR_-next",
      "data":
      {"/Error-Explanations/About___--ctorResultingTypeMismatch/#Credential___password-_LPAR_in-Missing-Resulting-Type-After-Constructor-Parameter_RPAR_-next":
       {"display": "password",
@@ -40480,7 +40480,7 @@
      "address": "/Error-Explanations/About___--ctorResultingTypeMismatch/"}],
    "Credential (in Missing Resulting Type After Constructor Parameter)":
    [{"id":
-     "Credential-_LPAR_in-Missing-Resulting-Type-After-Constructor-Parameter_RPAR_-next",
+     "Credential-_LPAR_in-Missing-Resulting-Type-After-Constructor-Parameter_RPAR_-next-next",
      "data":
      {"/Error-Explanations/About___--ctorResultingTypeMismatch/#Credential-_LPAR_in-Missing-Resulting-Type-After-Constructor-Parameter_RPAR_-next-next":
       {"display": "Credential",
@@ -40536,7 +40536,7 @@
         "Missing Resulting Type After Constructor Parameter"]}},
      "address": "/Error-Explanations/About___--ctorResultingTypeMismatch/"},
     {"id":
-     "Credential-_LPAR_in-Missing-Resulting-Type-After-Constructor-Parameter_RPAR_-next-next",
+     "Credential-_LPAR_in-Missing-Resulting-Type-After-Constructor-Parameter_RPAR_-next",
      "data":
      {"/Error-Explanations/About___--ctorResultingTypeMismatch/#Credential-_LPAR_in-Missing-Resulting-Type-After-Constructor-Parameter_RPAR_-next-next":
       {"display": "Credential",
@@ -40625,7 +40625,7 @@
         "Postfix Ascription vs  show"]}},
      "address": "/Terms/Type-Ascription/"}],
    "Color.rgb (in Missing Namespace)":
-   [{"id": "Color___rgb-_LPAR_in-Missing-Namespace_RPAR_-next",
+   [{"id": "Color___rgb-_LPAR_in-Missing-Namespace_RPAR_-next-next",
      "data":
      {"/Error-Explanations/About___--unknownIdentifier/#Color___rgb-_LPAR_in-Missing-Namespace_RPAR_-next-next":
       {"display": "rgb",
@@ -40652,7 +40652,7 @@
         "Examples",
         "Missing Namespace"]}},
      "address": "/Error-Explanations/About___--unknownIdentifier/"},
-    {"id": "Color___rgb-_LPAR_in-Missing-Namespace_RPAR_-next-next",
+    {"id": "Color___rgb-_LPAR_in-Missing-Namespace_RPAR_-next",
      "data":
      {"/Error-Explanations/About___--unknownIdentifier/#Color___rgb-_LPAR_in-Missing-Namespace_RPAR_-next-next":
       {"display": "rgb",
@@ -40707,7 +40707,34 @@
         "Missing Namespace"]}},
      "address": "/Error-Explanations/About___--unknownIdentifier/"}],
    "Color.grayscale (in Missing Namespace)":
-   [{"id": "Color___grayscale-_LPAR_in-Missing-Namespace_RPAR_-next",
+   [{"id": "Color___grayscale-_LPAR_in-Missing-Namespace_RPAR_-next-next",
+     "data":
+     {"/Error-Explanations/About___--unknownIdentifier/#Color___grayscale-_LPAR_in-Missing-Namespace_RPAR_-next-next":
+      {"display": "grayscale",
+       "context":
+       ["Lean 语言参考手册",
+        "Error Explanations",
+        "About:  unknownIdentifier",
+        "Examples",
+        "Missing Namespace"]},
+      "/Error-Explanations/About___--unknownIdentifier/#Color___grayscale-_LPAR_in-Missing-Namespace_RPAR_-next":
+      {"display": "grayscale",
+       "context":
+       ["Lean 语言参考手册",
+        "Error Explanations",
+        "About:  unknownIdentifier",
+        "Examples",
+        "Missing Namespace"]},
+      "/Error-Explanations/About___--unknownIdentifier/#Color___grayscale-_LPAR_in-Missing-Namespace_RPAR_":
+      {"display": "grayscale",
+       "context":
+       ["Lean 语言参考手册",
+        "Error Explanations",
+        "About:  unknownIdentifier",
+        "Examples",
+        "Missing Namespace"]}},
+     "address": "/Error-Explanations/About___--unknownIdentifier/"},
+    {"id": "Color___grayscale-_LPAR_in-Missing-Namespace_RPAR_-next",
      "data":
      {"/Error-Explanations/About___--unknownIdentifier/#Color___grayscale-_LPAR_in-Missing-Namespace_RPAR_-next-next":
       {"display": "grayscale",
@@ -40735,33 +40762,6 @@
         "Missing Namespace"]}},
      "address": "/Error-Explanations/About___--unknownIdentifier/"},
     {"id": "Color___grayscale-_LPAR_in-Missing-Namespace_RPAR_",
-     "data":
-     {"/Error-Explanations/About___--unknownIdentifier/#Color___grayscale-_LPAR_in-Missing-Namespace_RPAR_-next-next":
-      {"display": "grayscale",
-       "context":
-       ["Lean 语言参考手册",
-        "Error Explanations",
-        "About:  unknownIdentifier",
-        "Examples",
-        "Missing Namespace"]},
-      "/Error-Explanations/About___--unknownIdentifier/#Color___grayscale-_LPAR_in-Missing-Namespace_RPAR_-next":
-      {"display": "grayscale",
-       "context":
-       ["Lean 语言参考手册",
-        "Error Explanations",
-        "About:  unknownIdentifier",
-        "Examples",
-        "Missing Namespace"]},
-      "/Error-Explanations/About___--unknownIdentifier/#Color___grayscale-_LPAR_in-Missing-Namespace_RPAR_":
-      {"display": "grayscale",
-       "context":
-       ["Lean 语言参考手册",
-        "Error Explanations",
-        "About:  unknownIdentifier",
-        "Examples",
-        "Missing Namespace"]}},
-     "address": "/Error-Explanations/About___--unknownIdentifier/"},
-    {"id": "Color___grayscale-_LPAR_in-Missing-Namespace_RPAR_-next-next",
      "data":
      {"/Error-Explanations/About___--unknownIdentifier/#Color___grayscale-_LPAR_in-Missing-Namespace_RPAR_-next-next":
       {"display": "grayscale",
@@ -42017,6 +42017,34 @@
      "address": "/Terms/Identifiers/"}],
    "A.x (in Protected Constant Name Without Namespace Prefix)":
    [{"id":
+     "A___x-_LPAR_in-Protected-Constant-Name-Without-Namespace-Prefix_RPAR_",
+     "data":
+     {"/Error-Explanations/About___--unknownIdentifier/#A___x-_LPAR_in-Protected-Constant-Name-Without-Namespace-Prefix_RPAR_-next-next":
+      {"display": "A.x",
+       "context":
+       ["Lean 语言参考手册",
+        "Error Explanations",
+        "About:  unknownIdentifier",
+        "Examples",
+        "Protected Constant Name Without Namespace Prefix"]},
+      "/Error-Explanations/About___--unknownIdentifier/#A___x-_LPAR_in-Protected-Constant-Name-Without-Namespace-Prefix_RPAR_-next":
+      {"display": "A.x",
+       "context":
+       ["Lean 语言参考手册",
+        "Error Explanations",
+        "About:  unknownIdentifier",
+        "Examples",
+        "Protected Constant Name Without Namespace Prefix"]},
+      "/Error-Explanations/About___--unknownIdentifier/#A___x-_LPAR_in-Protected-Constant-Name-Without-Namespace-Prefix_RPAR_":
+      {"display": "A.x",
+       "context":
+       ["Lean 语言参考手册",
+        "Error Explanations",
+        "About:  unknownIdentifier",
+        "Examples",
+        "Protected Constant Name Without Namespace Prefix"]}},
+     "address": "/Error-Explanations/About___--unknownIdentifier/"},
+    {"id":
      "A___x-_LPAR_in-Protected-Constant-Name-Without-Namespace-Prefix_RPAR_-next",
      "data":
      {"/Error-Explanations/About___--unknownIdentifier/#A___x-_LPAR_in-Protected-Constant-Name-Without-Namespace-Prefix_RPAR_-next-next":
@@ -42046,34 +42074,6 @@
      "address": "/Error-Explanations/About___--unknownIdentifier/"},
     {"id":
      "A___x-_LPAR_in-Protected-Constant-Name-Without-Namespace-Prefix_RPAR_-next-next",
-     "data":
-     {"/Error-Explanations/About___--unknownIdentifier/#A___x-_LPAR_in-Protected-Constant-Name-Without-Namespace-Prefix_RPAR_-next-next":
-      {"display": "A.x",
-       "context":
-       ["Lean 语言参考手册",
-        "Error Explanations",
-        "About:  unknownIdentifier",
-        "Examples",
-        "Protected Constant Name Without Namespace Prefix"]},
-      "/Error-Explanations/About___--unknownIdentifier/#A___x-_LPAR_in-Protected-Constant-Name-Without-Namespace-Prefix_RPAR_-next":
-      {"display": "A.x",
-       "context":
-       ["Lean 语言参考手册",
-        "Error Explanations",
-        "About:  unknownIdentifier",
-        "Examples",
-        "Protected Constant Name Without Namespace Prefix"]},
-      "/Error-Explanations/About___--unknownIdentifier/#A___x-_LPAR_in-Protected-Constant-Name-Without-Namespace-Prefix_RPAR_":
-      {"display": "A.x",
-       "context":
-       ["Lean 语言参考手册",
-        "Error Explanations",
-        "About:  unknownIdentifier",
-        "Examples",
-        "Protected Constant Name Without Namespace Prefix"]}},
-     "address": "/Error-Explanations/About___--unknownIdentifier/"},
-    {"id":
-     "A___x-_LPAR_in-Protected-Constant-Name-Without-Namespace-Prefix_RPAR_",
      "data":
      {"/Error-Explanations/About___--unknownIdentifier/#A___x-_LPAR_in-Protected-Constant-Name-Without-Namespace-Prefix_RPAR_-next-next":
       {"display": "A.x",
@@ -42893,10 +42893,10 @@
      "data": {"term": ".olean 文件"},
      "address": "/Source Files and Modules/"}],
    "notation item":
-   [{"id": "--tech-term-notation-items",
+   [{"id": "--tech-term-notation-items-next",
      "data": {"term": "notation items"},
      "address": "/Notations-and-Macros/Notations/"},
-    {"id": "--tech-term-notation-items-next",
+    {"id": "--tech-term-notation-items",
      "data": {"term": "notation items"},
      "address": "/Notations-and-Macros/Notations/"}],
    "notation":
@@ -45000,10 +45000,10 @@
   "description": null,
   "contents":
   {"«term∃_,_»":
-   [{"id": "_FLQQ_term_________FLQQ_-next",
+   [{"id": "_FLQQ_term_________FLQQ_",
      "data": null,
      "address": "/Basic-Propositions/Quantifiers/"},
-    {"id": "_FLQQ_term_________FLQQ_",
+    {"id": "_FLQQ_term_________FLQQ_-next",
      "data": null,
      "address": "/Basic-Propositions/Quantifiers/"}],
    "«term‹_›»":
@@ -45018,10 +45018,10 @@
      "data": null,
      "address": "/Basic-Types/Tuples/"}],
    "«termΣ'_,_»":
-   [{"id": "_FLQQ_term____________FLQQ_-next",
+   [{"id": "_FLQQ_term____________FLQQ_",
      "data": null,
      "address": "/Basic-Types/Tuples/"},
-    {"id": "_FLQQ_term____________FLQQ_",
+    {"id": "_FLQQ_term____________FLQQ_-next",
      "data": null,
      "address": "/Basic-Types/Tuples/"}],
    "«term¬_»":
@@ -45029,10 +45029,10 @@
      "data": null,
      "address": "/Basic-Propositions/Logical-Connectives/"}],
    "«term{_:_//_}»":
-   [{"id": "_FLQQ_term___________________FLQQ_",
+   [{"id": "_FLQQ_term___________________FLQQ_-next",
      "data": null,
      "address": "/Basic-Types/Subtypes/"},
-    {"id": "_FLQQ_term___________________FLQQ_-next",
+    {"id": "_FLQQ_term___________________FLQQ_",
      "data": null,
      "address": "/Basic-Types/Subtypes/"}],
    "«term_⊕_»":
@@ -45170,12 +45170,12 @@
      "data": null,
      "address": "/Basic-Propositions/Quantifiers/"}],
    "«term#[_,]»":
-   [{"id": "_FLQQ_term____LSQ______RSQ__FLQQ_",
+   [{"id": "_FLQQ_term____LSQ______RSQ__FLQQ_-next",
      "data": null,
-     "address": "/Terms/Numeric-Literals/"},
-    {"id": "_FLQQ_term____LSQ______RSQ__FLQQ_-next",
+     "address": "/Basic-Types/Arrays/"},
+    {"id": "_FLQQ_term____LSQ______RSQ__FLQQ_",
      "data": null,
-     "address": "/Basic-Types/Arrays/"}],
+     "address": "/Terms/Numeric-Literals/"}],
    "«stx_<|>_»":
    [{"id": "_FLQQ_stx__LT_____GT___FLQQ_",
      "data": null,
@@ -45397,51 +45397,17 @@
      "address": "/The--mvcgen--tactic/Predicate-Transformers/"}],
    "Std.Do.«termSpred(_)»":
    [{"id":
-     "Std___Do____FLQQ_termSpred_LPAR___RPAR__FLQQ_-next-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/The--mvcgen--tactic/Predicate-Transformers/"},
-    {"id": "Std___Do____FLQQ_termSpred_LPAR___RPAR__FLQQ_-next-next",
-     "data": null,
-     "address": "/The--mvcgen--tactic/Predicate-Transformers/"},
-    {"id":
-     "Std___Do____FLQQ_termSpred_LPAR___RPAR__FLQQ_-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/The--mvcgen--tactic/Predicate-Transformers/"},
-    {"id": "Std___Do____FLQQ_termSpred_LPAR___RPAR__FLQQ_-next",
-     "data": null,
-     "address": "/The--mvcgen--tactic/Predicate-Transformers/"},
-    {"id":
-     "Std___Do____FLQQ_termSpred_LPAR___RPAR__FLQQ_-next-next-next-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/The--mvcgen--tactic/Predicate-Transformers/"},
-    {"id":
-     "Std___Do____FLQQ_termSpred_LPAR___RPAR__FLQQ_-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/The--mvcgen--tactic/Predicate-Transformers/"},
-    {"id":
-     "Std___Do____FLQQ_termSpred_LPAR___RPAR__FLQQ_-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "Std___Do____FLQQ_termSpred_LPAR___RPAR__FLQQ_-next-next-next-next-next-next",
      "data": null,
      "address": "/The--mvcgen--tactic/Predicate-Transformers/"},
     {"id":
      "Std___Do____FLQQ_termSpred_LPAR___RPAR__FLQQ_-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/The--mvcgen--tactic/Predicate-Transformers/"},
-    {"id": "Std___Do____FLQQ_termSpred_LPAR___RPAR__FLQQ_-next-next-next",
-     "data": null,
-     "address": "/The--mvcgen--tactic/Predicate-Transformers/"},
     {"id": "Std___Do____FLQQ_termSpred_LPAR___RPAR__FLQQ_-next-next-next-next",
      "data": null,
      "address": "/The--mvcgen--tactic/Predicate-Transformers/"},
-    {"id":
-     "Std___Do____FLQQ_termSpred_LPAR___RPAR__FLQQ_-next-next-next-next-next-next",
-     "data": null,
-     "address": "/The--mvcgen--tactic/Predicate-Transformers/"},
-    {"id":
-     "Std___Do____FLQQ_termSpred_LPAR___RPAR__FLQQ_-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/The--mvcgen--tactic/Predicate-Transformers/"},
-    {"id":
-     "Std___Do____FLQQ_termSpred_LPAR___RPAR__FLQQ_-next-next-next-next-next-next-next-next-next-next",
+    {"id": "Std___Do____FLQQ_termSpred_LPAR___RPAR__FLQQ_-next-next-next",
      "data": null,
      "address": "/The--mvcgen--tactic/Predicate-Transformers/"},
     {"id":
@@ -45449,10 +45415,38 @@
      "data": null,
      "address": "/The--mvcgen--tactic/Predicate-Transformers/"},
     {"id":
-     "Std___Do____FLQQ_termSpred_LPAR___RPAR__FLQQ_-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "Std___Do____FLQQ_termSpred_LPAR___RPAR__FLQQ_-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/The--mvcgen--tactic/Predicate-Transformers/"},
+    {"id":
+     "Std___Do____FLQQ_termSpred_LPAR___RPAR__FLQQ_-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/The--mvcgen--tactic/Predicate-Transformers/"},
     {"id": "Std___Do____FLQQ_termSpred_LPAR___RPAR__FLQQ_",
+     "data": null,
+     "address": "/The--mvcgen--tactic/Predicate-Transformers/"},
+    {"id":
+     "Std___Do____FLQQ_termSpred_LPAR___RPAR__FLQQ_-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/The--mvcgen--tactic/Predicate-Transformers/"},
+    {"id":
+     "Std___Do____FLQQ_termSpred_LPAR___RPAR__FLQQ_-next-next-next-next-next",
+     "data": null,
+     "address": "/The--mvcgen--tactic/Predicate-Transformers/"},
+    {"id":
+     "Std___Do____FLQQ_termSpred_LPAR___RPAR__FLQQ_-next-next-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/The--mvcgen--tactic/Predicate-Transformers/"},
+    {"id":
+     "Std___Do____FLQQ_termSpred_LPAR___RPAR__FLQQ_-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/The--mvcgen--tactic/Predicate-Transformers/"},
+    {"id":
+     "Std___Do____FLQQ_termSpred_LPAR___RPAR__FLQQ_-next-next-next-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/The--mvcgen--tactic/Predicate-Transformers/"},
+    {"id":
+     "Std___Do____FLQQ_termSpred_LPAR___RPAR__FLQQ_-next-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/The--mvcgen--tactic/Predicate-Transformers/"},
     {"id":
@@ -45460,7 +45454,13 @@
      "data": null,
      "address": "/The--mvcgen--tactic/Predicate-Transformers/"},
     {"id":
-     "Std___Do____FLQQ_termSpred_LPAR___RPAR__FLQQ_-next-next-next-next-next",
+     "Std___Do____FLQQ_termSpred_LPAR___RPAR__FLQQ_-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/The--mvcgen--tactic/Predicate-Transformers/"},
+    {"id": "Std___Do____FLQQ_termSpred_LPAR___RPAR__FLQQ_-next",
+     "data": null,
+     "address": "/The--mvcgen--tactic/Predicate-Transformers/"},
+    {"id": "Std___Do____FLQQ_termSpred_LPAR___RPAR__FLQQ_-next-next",
      "data": null,
      "address": "/The--mvcgen--tactic/Predicate-Transformers/"}],
    "Std.Do.triple":
@@ -45472,7 +45472,7 @@
      "data": null,
      "address": "/Basic-Types/Maps-and-Sets/"}],
    "Manual.FreeSyntax.more":
-   [{"id": "Manual___FreeSyntax___more-next-next-next",
+   [{"id": "Manual___FreeSyntax___more-next-next",
      "data": null,
      "address": "/Notations-and-Macros/Macros/"},
     {"id": "Manual___FreeSyntax___more-next",
@@ -45481,7 +45481,7 @@
     {"id": "Manual___FreeSyntax___more",
      "data": null,
      "address": "/Terms/Function-Application/"},
-    {"id": "Manual___FreeSyntax___more-next-next",
+    {"id": "Manual___FreeSyntax___more-next-next-next",
      "data": null,
      "address": "/Notations-and-Macros/Macros/"}],
    "Manual.FreeSyntax.embed":
@@ -45489,15 +45489,15 @@
      "data": null,
      "address": "/Terms/Functions/"}],
    "Manual.FreeSyntax.done":
-   [{"id": "Manual___FreeSyntax___done",
+   [{"id": "Manual___FreeSyntax___done-next-next",
      "data": null,
-     "address": "/Notations-and-Macros/Macros/"},
+     "address": "/Build-Tools-and-Distribution/Lake/"},
     {"id": "Manual___FreeSyntax___done-next",
      "data": null,
      "address": "/Build-Tools-and-Distribution/Lake/"},
-    {"id": "Manual___FreeSyntax___done-next-next",
+    {"id": "Manual___FreeSyntax___done",
      "data": null,
-     "address": "/Build-Tools-and-Distribution/Lake/"}],
+     "address": "/Notations-and-Macros/Macros/"}],
    "List.«term_~_»":
    [{"id": "List____FLQQ_term______FLQQ_",
      "data": null,
@@ -45752,13 +45752,13 @@
    [{"id": "Lean___Parser___Term___forall-next",
      "data": null,
      "address": "/Basic-Propositions/Quantifiers/"},
+    {"id": "Lean___Parser___Term___forall-next-next-next",
+     "data": null,
+     "address": "/Basic-Propositions/Quantifiers/"},
     {"id": "Lean___Parser___Term___forall",
      "data": null,
      "address": "/Basic-Propositions/Quantifiers/"},
     {"id": "Lean___Parser___Term___forall-next-next",
-     "data": null,
-     "address": "/Basic-Propositions/Quantifiers/"},
-    {"id": "Lean___Parser___Term___forall-next-next-next",
      "data": null,
      "address": "/Basic-Propositions/Quantifiers/"}],
    "Lean.Parser.Term.explicitBinder":
@@ -45770,29 +45770,7 @@
      "address": "/Definitions/Headers and Signatures/"}],
    "Lean.Parser.Term.doSeqItem":
    [{"id":
-     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
-    {"id":
-     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
-    {"id": "Lean___Parser___Term___doSeqItem-next-next-next",
-     "data": null,
-     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
-    {"id":
-     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
-    {"id": "Lean___Parser___Term___doSeqItem-next",
-     "data": null,
-     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
-    {"id":
-     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
-    {"id":
-     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
     {"id":
@@ -45800,11 +45778,29 @@
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
     {"id":
-     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
+    {"id": "Lean___Parser___Term___doSeqItem-next-next-next-next",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
     {"id":
-     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next",
+     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
+    {"id":
+     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
+    {"id":
+     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
+    {"id":
+     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
+    {"id": "Lean___Parser___Term___doSeqItem-next-next-next",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
     {"id":
@@ -45812,29 +45808,33 @@
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
     {"id":
+     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
+    {"id":
      "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
     {"id":
-     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
-    {"id":
-     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+    {"id": "Lean___Parser___Term___doSeqItem-next",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
     {"id":
      "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
-    {"id":
-     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
     {"id": "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
-    {"id": "Lean___Parser___Term___doSeqItem-next-next-next-next",
+    {"id":
+     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
+    {"id":
+     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"}],
    "Lean.Parser.Term.doReassignArrow":
@@ -45845,10 +45845,10 @@
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"}],
    "Lean.Parser.Term.doReassign":
-   [{"id": "Lean___Parser___Term___doReassign-next",
+   [{"id": "Lean___Parser___Term___doReassign",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
-    {"id": "Lean___Parser___Term___doReassign",
+    {"id": "Lean___Parser___Term___doReassign-next",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"}],
    "Lean.Parser.Term.do":
@@ -45971,23 +45971,23 @@
      "data": null,
      "address": "/Notations-and-Macros/Precedence/"}],
    "Lean.Parser.Syntax.sepBy1":
-   [{"id": "Lean___Parser___Syntax___sepBy1",
+   [{"id": "Lean___Parser___Syntax___sepBy1-next",
+     "data": null,
+     "address": "/Notations-and-Macros/Defining-New-Syntax/"},
+    {"id": "Lean___Parser___Syntax___sepBy1",
      "data": null,
      "address": "/Notations-and-Macros/Defining-New-Syntax/"},
     {"id": "Lean___Parser___Syntax___sepBy1-next-next",
      "data": null,
-     "address": "/Notations-and-Macros/Defining-New-Syntax/"},
-    {"id": "Lean___Parser___Syntax___sepBy1-next",
-     "data": null,
      "address": "/Notations-and-Macros/Defining-New-Syntax/"}],
    "Lean.Parser.Syntax.sepBy":
-   [{"id": "Lean___Parser___Syntax___sepBy",
-     "data": null,
-     "address": "/Notations-and-Macros/Defining-New-Syntax/"},
-    {"id": "Lean___Parser___Syntax___sepBy-next-next",
+   [{"id": "Lean___Parser___Syntax___sepBy-next-next",
      "data": null,
      "address": "/Notations-and-Macros/Defining-New-Syntax/"},
     {"id": "Lean___Parser___Syntax___sepBy-next",
+     "data": null,
+     "address": "/Notations-and-Macros/Defining-New-Syntax/"},
+    {"id": "Lean___Parser___Syntax___sepBy",
      "data": null,
      "address": "/Notations-and-Macros/Defining-New-Syntax/"}],
    "Lean.Parser.Syntax.paren":
@@ -46139,19 +46139,19 @@
      "data": null,
      "address": "/Definitions/Recursive Definitions/"}],
    "Lean.Parser.Command.mixfix":
-   [{"id": "Lean___Parser___Command___mixfix-next-next",
+   [{"id": "Lean___Parser___Command___mixfix-next",
      "data": null,
      "address": "/Notations-and-Macros/Custom-Operators/"},
     {"id": "Lean___Parser___Command___mixfix-next-next-next-next",
      "data": null,
      "address": "/Notations-and-Macros/Custom-Operators/"},
-    {"id": "Lean___Parser___Command___mixfix-next-next-next",
-     "data": null,
-     "address": "/Notations-and-Macros/Custom-Operators/"},
     {"id": "Lean___Parser___Command___mixfix",
      "data": null,
      "address": "/Notations-and-Macros/Custom-Operators/"},
-    {"id": "Lean___Parser___Command___mixfix-next",
+    {"id": "Lean___Parser___Command___mixfix-next-next",
+     "data": null,
+     "address": "/Notations-and-Macros/Custom-Operators/"},
+    {"id": "Lean___Parser___Command___mixfix-next-next-next",
      "data": null,
      "address": "/Notations-and-Macros/Custom-Operators/"}],
    "Lean.Parser.Command.macro_rules":
@@ -46159,10 +46159,10 @@
      "data": null,
      "address": "/Notations-and-Macros/Macros/"}],
    "Lean.Parser.Command.macroArg":
-   [{"id": "Lean___Parser___Command___macroArg-next",
+   [{"id": "Lean___Parser___Command___macroArg-next-next",
      "data": null,
      "address": "/Notations-and-Macros/Macros/"},
-    {"id": "Lean___Parser___Command___macroArg-next-next",
+    {"id": "Lean___Parser___Command___macroArg-next",
      "data": null,
      "address": "/Notations-and-Macros/Macros/"}],
    "Lean.Parser.Command.macro":
@@ -46355,17 +46355,9 @@
      "address": "/The--mvcgen--tactic/Predicate-Transformers/"}],
    "Lean.Parser.Attr.simple":
    [{"id":
-     "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/Notations-and-Macros/Extending-Lean___s-Output/"},
-    {"id":
      "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/Tactic-Proofs/Tactic-Reference/"},
-    {"id":
-     "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/Build-Tools-and-Distribution/Lake/"},
     {"id": "Lean___Parser___Attr___simple-next-next-next-next-next-next",
      "data": null,
      "address": "/Terms/Function-Application/"},
@@ -46373,13 +46365,13 @@
      "data": null,
      "address": "/Terms/Pattern-Matching/"},
     {"id":
+     "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/Notations-and-Macros/Extending-Lean___s-Output/"},
+    {"id":
      "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/Tactic-Proofs/Tactic-Reference/"},
-    {"id":
-     "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/Notations-and-Macros/Elaborators/"},
     {"id": "Lean___Parser___Attr___simple-next-next-next",
      "data": null,
      "address": "/Definitions/Recursive Definitions/"},
@@ -46387,33 +46379,41 @@
      "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/Tactic-Proofs/Tactic-Reference/"},
-    {"id": "Lean___Parser___Attr___simple-next-next-next-next",
-     "data": null,
-     "address": "/Definitions/Recursive Definitions/"},
     {"id":
-     "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
-     "address": "/Notations-and-Macros/Extending--do--Notation/"},
-    {"id": "Lean___Parser___Attr___simple-next-next-next-next-next",
-     "data": null,
-     "address": "/Definitions/Recursive Definitions/"},
-    {"id": "Lean___Parser___Attr___simple-next-next",
-     "data": null,
-     "address": "/Definitions/Recursive Definitions/"},
+     "address": "/Build-Tools-and-Distribution/Lake/"},
     {"id":
      "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/Notations-and-Macros/Extending--do--Notation/"},
     {"id":
+     "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/Notations-and-Macros/Elaborators/"},
+    {"id": "Lean___Parser___Attr___simple-next-next-next-next",
+     "data": null,
+     "address": "/Definitions/Recursive Definitions/"},
+    {"id": "Lean___Parser___Attr___simple-next-next-next-next-next",
+     "data": null,
+     "address": "/Definitions/Recursive Definitions/"},
+    {"id":
+     "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/Build-Tools-and-Distribution/Lake/"},
+    {"id":
+     "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/Notations-and-Macros/Elaborators/"},
+    {"id": "Lean___Parser___Attr___simple-next-next",
+     "data": null,
+     "address": "/Definitions/Recursive Definitions/"},
+    {"id":
      "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/Tactic-Proofs/Tactic-Reference/"},
     {"id":
-     "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/Notations-and-Macros/Elaborators/"},
-    {"id":
-     "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/Notations-and-Macros/Extending-Lean___s-Output/"},
     {"id":
@@ -46427,13 +46427,13 @@
      "data": null,
      "address": "/Definitions/Recursive Definitions/"},
     {"id":
-     "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
-     "address": "/Build-Tools-and-Distribution/Lake/"},
+     "address": "/Notations-and-Macros/Elaborators/"},
     {"id":
-     "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
-     "address": "/Notations-and-Macros/Elaborators/"}],
+     "address": "/Notations-and-Macros/Extending--do--Notation/"}],
    "Lean.Parser.Attr.simp":
    [{"id": "Lean___Parser___Attr___simp-next",
      "data": null,
@@ -46615,13 +46615,13 @@
      "data": null,
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "Lake.DSL.packageCommand":
-   [{"id": "Lake___DSL___packageCommand",
+   [{"id": "Lake___DSL___packageCommand-next",
      "data": null,
      "address": "/Build-Tools-and-Distribution/Lake/"},
     {"id": "Lake___DSL___packageCommand-next-next",
      "data": null,
      "address": "/Build-Tools-and-Distribution/Lake/"},
-    {"id": "Lake___DSL___packageCommand-next",
+    {"id": "Lake___DSL___packageCommand",
      "data": null,
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "Lake.DSL.moduleFacetDecl":
@@ -46647,10 +46647,10 @@
      "data": null,
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "Lake.DSL.leanExeCommand":
-   [{"id": "Lake___DSL___leanExeCommand-next",
+   [{"id": "Lake___DSL___leanExeCommand",
      "data": null,
      "address": "/Build-Tools-and-Distribution/Lake/"},
-    {"id": "Lake___DSL___leanExeCommand",
+    {"id": "Lake___DSL___leanExeCommand-next",
      "data": null,
      "address": "/Build-Tools-and-Distribution/Lake/"},
     {"id": "Lake___DSL___leanExeCommand-next-next",
@@ -46661,10 +46661,10 @@
      "data": null,
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "Lake.DSL.fromClause":
-   [{"id": "Lake___DSL___fromClause",
+   [{"id": "Lake___DSL___fromClause-next",
      "data": null,
      "address": "/Build-Tools-and-Distribution/Lake/"},
-    {"id": "Lake___DSL___fromClause-next",
+    {"id": "Lake___DSL___fromClause",
      "data": null,
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "Lake.DSL.externLibCommand":
@@ -46680,10 +46680,10 @@
      "data": null,
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "Lake.DSL.cmdDo":
-   [{"id": "Lake___DSL___cmdDo-next",
+   [{"id": "Lake___DSL___cmdDo",
      "data": null,
      "address": "/Build-Tools-and-Distribution/Lake/"},
-    {"id": "Lake___DSL___cmdDo",
+    {"id": "Lake___DSL___cmdDo-next",
      "data": null,
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "Int.«term-[_+1]»":
@@ -47253,77 +47253,77 @@
      "data": null,
      "address": "/Basic-Propositions/Logical-Connectives/"}],
    "[anonymous]":
-   [{"id": "Alternative___mk",
+   [{"id": "LawfulApplicative___mk",
      "data": null,
-     "address": "/Functors___-Monads-and--do--Notation/"},
+     "address": "/Functors___-Monads-and--do--Notation/Laws/"},
     {"id": "Lean___Grind___Field___mk",
      "data": null,
      "address":
      "/The--grind--tactic/Algebraic-Solver-_LPAR_Commutative-Rings___-Fields_RPAR_/"},
+    {"id": "IO___Process___SpawnArgs___mk",
+     "data": null,
+     "address": "/IO/Processes/"},
+    {"id": "LawfulMonad___mk",
+     "data": null,
+     "address": "/Functors___-Monads-and--do--Notation/Laws/"},
+    {"id": "Alternative___mk",
+     "data": null,
+     "address": "/Functors___-Monads-and--do--Notation/"},
     {"id": "Lean___Grind___CommSemiring___mk",
      "data": null,
      "address":
      "/The--grind--tactic/Algebraic-Solver-_LPAR_Commutative-Rings___-Fields_RPAR_/"},
-    {"id": "LawfulMonad___mk",
-     "data": null,
-     "address": "/Functors___-Monads-and--do--Notation/Laws/"},
     {"id": "Lean___Grind___OrderedRing___mk",
      "data": null,
      "address": "/The--grind--tactic/Linear-Arithmetic-Solver/"},
     {"id": "Lean___Grind___NatModule___mk",
      "data": null,
      "address": "/The--grind--tactic/Linear-Arithmetic-Solver/"},
-    {"id": "Lake___LeanExeConfig___mk",
-     "data": null,
-     "address": "/Build-Tools-and-Distribution/Lake/"},
     {"id": "Lean___Order___CompleteLattice___mk",
      "data": null,
      "address": "/Definitions/Recursive Definitions/"},
     {"id": "GetElem______mk",
      "data": null,
      "address": "/Type-Classes/Basic-Classes/"},
-    {"id": "Monad___mk",
+    {"id": "Lake___LeanLibConfig___mk",
      "data": null,
-     "address": "/Functors___-Monads-and--do--Notation/"},
-    {"id": "Lean___Grind___Semiring___mk",
+     "address": "/Build-Tools-and-Distribution/Lake/"},
+    {"id": "Std___Do___WPMonad___mk",
+     "data": null,
+     "address": "/The--mvcgen--tactic/Predicate-Transformers/"},
+    {"id": "Lean___Grind___Ring___mk",
      "data": null,
      "address":
      "/The--grind--tactic/Algebraic-Solver-_LPAR_Commutative-Rings___-Fields_RPAR_/"},
-    {"id": "Lean___Grind___Ring___mk",
+    {"id": "Lean___Grind___Semiring___mk",
      "data": null,
      "address":
      "/The--grind--tactic/Algebraic-Solver-_LPAR_Commutative-Rings___-Fields_RPAR_/"},
     {"id": "Lean___Grind___IntModule___mk",
      "data": null,
      "address": "/The--grind--tactic/Linear-Arithmetic-Solver/"},
-    {"id": "Std___Do___WPMonad___mk",
-     "data": null,
-     "address": "/The--mvcgen--tactic/Predicate-Transformers/"},
-    {"id": "LawfulBEq___mk",
-     "data": null,
-     "address": "/Type-Classes/Basic-Classes/"},
-    {"id": "LawfulApplicative___mk",
-     "data": null,
-     "address": "/Functors___-Monads-and--do--Notation/Laws/"},
-    {"id": "Lean___Order___CCPO___mk",
-     "data": null,
-     "address": "/Definitions/Recursive Definitions/"},
-    {"id": "Lake___LeanLibConfig___mk",
-     "data": null,
-     "address": "/Build-Tools-and-Distribution/Lake/"},
-    {"id": "EquivBEq___mk",
-     "data": null,
-     "address": "/Type-Classes/Basic-Classes/"},
-    {"id": "IO___Process___SpawnArgs___mk",
-     "data": null,
-     "address": "/IO/Processes/"},
     {"id": "Applicative___mk",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/"},
+    {"id": "LawfulBEq___mk",
+     "data": null,
+     "address": "/Type-Classes/Basic-Classes/"},
+    {"id": "Lake___LeanExeConfig___mk",
+     "data": null,
+     "address": "/Build-Tools-and-Distribution/Lake/"},
+    {"id": "Lean___Order___CCPO___mk",
+     "data": null,
+     "address": "/Definitions/Recursive Definitions/"},
+    {"id": "EquivBEq___mk",
+     "data": null,
+     "address": "/Type-Classes/Basic-Classes/"},
     {"id": "Lean___Grind___CommRing___mk",
      "data": null,
      "address":
-     "/The--grind--tactic/Algebraic-Solver-_LPAR_Commutative-Rings___-Fields_RPAR_/"}],
+     "/The--grind--tactic/Algebraic-Solver-_LPAR_Commutative-Rings___-Fields_RPAR_/"},
+    {"id": "Monad___mk",
+     "data": null,
+     "address": "/Functors___-Monads-and--do--Notation/"}],
    "Zero.zero":
    [{"id": "Zero___mk",
      "data": null,
@@ -48710,8 +48710,10 @@
      "data": null,
      "address": "/Basic-Types/Strings/"}],
    "String.toList":
-   [{"id": "String___toList", "data": null, "address": "/Basic-Types/Strings/"},
-    {"id": "String___toList-next",
+   [{"id": "String___toList-next",
+     "data": null,
+     "address": "/Basic-Types/Strings/"},
+    {"id": "String___toList",
      "data": null,
      "address": "/Basic-Types/Strings/"}],
    "String.toInt?":
@@ -48871,10 +48873,10 @@
      "data": null,
      "address": "/Basic-Types/Strings/"}],
    "String.find":
-   [{"id": "String___find", "data": null, "address": "/Basic-Types/Strings/"},
-    {"id": "String___find-next",
+   [{"id": "String___find-next",
      "data": null,
-     "address": "/Basic-Types/Strings/"}],
+     "address": "/Basic-Types/Strings/"},
+    {"id": "String___find", "data": null, "address": "/Basic-Types/Strings/"}],
    "String.extract":
    [{"id": "String___extract",
      "data": null,
@@ -51129,12 +51131,12 @@
      "data": null,
      "address": "/Iterators/Iterator-Definitions/"}],
    "Std.IterM.mk":
-   [{"id": "Std___IterM___mk-next",
+   [{"id": "Std___IterM___mk",
      "data": null,
-     "address": "/Iterators/Iterator-Combinators/"},
-    {"id": "Std___IterM___mk",
+     "address": "/Iterators/Iterator-Definitions/"},
+    {"id": "Std___IterM___mk-next",
      "data": null,
-     "address": "/Iterators/Iterator-Definitions/"}],
+     "address": "/Iterators/Iterator-Combinators/"}],
    "Std.IterM.mapWithPostcondition":
    [{"id": "Std___IterM___mapWithPostcondition",
      "data": null,
@@ -54440,10 +54442,10 @@
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Varieties-of-Monads/"}],
    "MonadState.get":
-   [{"id": "MonadState___mk",
+   [{"id": "MonadState___get",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Varieties-of-Monads/"},
-    {"id": "MonadState___get",
+    {"id": "MonadState___mk",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Varieties-of-Monads/"}],
    "MonadState":
@@ -61560,8 +61562,8 @@
      "data": null,
      "address": "/Basic-Types/Arrays/"}],
    "Array.toList":
-   [{"id": "Array___mk", "data": null, "address": "/Basic-Types/Arrays/"},
-    {"id": "Array___toList", "data": null, "address": "/Basic-Types/Arrays/"}],
+   [{"id": "Array___toList", "data": null, "address": "/Basic-Types/Arrays/"},
+    {"id": "Array___mk", "data": null, "address": "/Basic-Types/Arrays/"}],
    "Array.takeWhile":
    [{"id": "Array___takeWhile",
      "data": null,
@@ -64541,7 +64543,7 @@
       "category": null},
      "address": "/Basic-Propositions/Quantifiers/"}],
    "«term#[_,]» [{\"string\": \"#[\", \"kind\": \"keyword\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \"]\", \"kind\": \"keyword\"}]":
-   [{"id": "_FLQQ_term____LSQ______RSQ__FLQQ_",
+   [{"id": "_FLQQ_term____LSQ______RSQ__FLQQ_-next",
      "data":
      {"kind": "«term#[_,]»",
       "forms":
@@ -64549,8 +64551,8 @@
        {"string": "…", "kind": "meta"},
        {"string": "]", "kind": "keyword"}],
       "category": null},
-     "address": "/Terms/Numeric-Literals/"},
-    {"id": "_FLQQ_term____LSQ______RSQ__FLQQ_-next",
+     "address": "/Basic-Types/Arrays/"},
+    {"id": "_FLQQ_term____LSQ______RSQ__FLQQ_",
      "data":
      {"kind": "«term#[_,]»",
       "forms":
@@ -64558,7 +64560,7 @@
        {"string": "…", "kind": "meta"},
        {"string": "]", "kind": "keyword"}],
       "category": null},
-     "address": "/Basic-Types/Arrays/"}],
+     "address": "/Terms/Numeric-Literals/"}],
    "«stx_<|>_» [{\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"<|>\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"}]":
    [{"id": "_FLQQ_stx__LT_____GT___FLQQ_",
      "data":
@@ -65517,7 +65519,7 @@
       "category": null},
      "address": "/Basic-Types/Maps-and-Sets/"}],
    "Manual.FreeSyntax.more []":
-   [{"id": "Manual___FreeSyntax___more-next-next-next",
+   [{"id": "Manual___FreeSyntax___more-next-next",
      "data": {"kind": "Manual.FreeSyntax.more", "forms": [], "category": null},
      "address": "/Notations-and-Macros/Macros/"},
     {"id": "Manual___FreeSyntax___more-next",
@@ -65526,7 +65528,7 @@
     {"id": "Manual___FreeSyntax___more",
      "data": {"kind": "Manual.FreeSyntax.more", "forms": [], "category": null},
      "address": "/Terms/Function-Application/"},
-    {"id": "Manual___FreeSyntax___more-next-next",
+    {"id": "Manual___FreeSyntax___more-next-next-next",
      "data": {"kind": "Manual.FreeSyntax.more", "forms": [], "category": null},
      "address": "/Notations-and-Macros/Macros/"}],
    "Manual.FreeSyntax.embed [{\"string\": \"fun \", \"kind\": \"keyword\"},\n {\"string\": \"(\", \"kind\": \"keyword\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \": \", \"kind\": \"keyword\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \")\", \"kind\": \"keyword\"},\n {\"string\": \" =>\", \"kind\": \"keyword\"},\n {\"string\": \"…\", \"kind\": \"meta\"}]":
@@ -65546,15 +65548,15 @@
       "category": null},
      "address": "/Terms/Functions/"}],
    "Manual.FreeSyntax.done []":
-   [{"id": "Manual___FreeSyntax___done",
+   [{"id": "Manual___FreeSyntax___done-next-next",
      "data": {"kind": "Manual.FreeSyntax.done", "forms": [], "category": null},
-     "address": "/Notations-and-Macros/Macros/"},
+     "address": "/Build-Tools-and-Distribution/Lake/"},
     {"id": "Manual___FreeSyntax___done-next",
      "data": {"kind": "Manual.FreeSyntax.done", "forms": [], "category": null},
      "address": "/Build-Tools-and-Distribution/Lake/"},
-    {"id": "Manual___FreeSyntax___done-next-next",
+    {"id": "Manual___FreeSyntax___done",
      "data": {"kind": "Manual.FreeSyntax.done", "forms": [], "category": null},
-     "address": "/Build-Tools-and-Distribution/Lake/"}],
+     "address": "/Notations-and-Macros/Macros/"}],
    "List.«term_~_» [{\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"~\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"}]":
    [{"id": "List____FLQQ_term______FLQQ_",
      "data":
@@ -66899,7 +66901,7 @@
       "category": null},
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"}],
    "Lean.Parser.Term.doReassign [{\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \"(\", \"kind\": \"meta\"},\n {\"string\": \":\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \")?\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \":=\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"}]":
-   [{"id": "Lean___Parser___Term___doReassign-next",
+   [{"id": "Lean___Parser___Term___doReassign",
      "data":
      {"kind": "Lean.Parser.Term.doReassign",
       "forms":
@@ -66915,7 +66917,7 @@
        {"string": "…", "kind": "meta"}],
       "category": null},
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
-    {"id": "Lean___Parser___Term___doReassign",
+    {"id": "Lean___Parser___Term___doReassign-next",
      "data":
      {"kind": "Lean.Parser.Term.doReassign",
       "forms":
