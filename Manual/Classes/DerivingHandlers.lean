@@ -7,6 +7,7 @@ Author: David Thrane Christiansen
 import VersoManual
 
 import Manual.Meta
+import Manual.ZhDocString.Classes.DerivingHandlers
 
 
 open Manual
@@ -93,7 +94,7 @@ Lean 为以下类内置了派生处理器：
 :::derivableClassList
 :::
 
-{docstring Lean.Elab.registerDerivingHandler}
+{zhdocstring Lean.Elab.registerDerivingHandler ZhDoc.Classes.DerivingHandlers.registerDerivingHandler}
 
 
 ::::keepEnv

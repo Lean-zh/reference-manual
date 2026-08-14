@@ -7,6 +7,7 @@ Author: David Thrane Christiansen
 import VersoManual
 
 import Manual.Meta
+import Manual.ZhDocString.Classes.InstanceSynth
 import Manual.Papers
 
 
@@ -36,9 +37,9 @@ file := "Instance-Synthesis"
 此外，可以在需要实例本身的位置使用 {name}`inferInstance` 和 {name}`inferInstanceAs` 合成实例。
 带类型标注的 {name}`inferInstance` 与 {name}`inferInstanceAs` 并不等价；{name}`inferInstanceAs` 会{ref "instance-wrapping"}[预处理合成出的实例]，以防实现细节无意间泄漏到接口中。
 
-{docstring inferInstance}
+{zhdocstring inferInstance ZhDoc.Classes.InstanceSynth.inferInstance}
 
-{docstring inferInstanceAs}
+{zhdocstring inferInstanceAs ZhDoc.Classes.InstanceSynth.inferInstanceAs}
 
 # 实例搜索概要
 %%%
@@ -293,7 +294,7 @@ Membership.{u, v} (α : outParam (Type u)) (γ : Type v) : Type (max u v)
 会选中第一个匹配输入参数的实例，并将该实例为输出参数指定的值作为其值。
 如果原先已有值，则在合成完成后将其与指定值比较；二者不匹配即为错误。
 
-{docstring outParam}
+{zhdocstring outParam ZhDoc.Classes.InstanceSynth.outParam}
 
 ::::example "输出参数与卡住的搜索"
 :::keepEnv
@@ -393,7 +394,7 @@ Hint: Type class instance resolution failures can be inspected with the `set_opt
 
 {deftech (key := "semi-output parameters")}_半输出参数_与输出参数相似，都无需在合成开始前已知；但与输出参数不同，选择实例时会考虑半输出参数的值。
 
-{docstring semiOutParam}
+{zhdocstring semiOutParam ZhDoc.Classes.InstanceSynth.semiOutParam}
 
 半输出参数对实例施加了一项要求：带有半输出参数的类的每个实例，都应当确定其半输出参数的值。
 :::TODO
@@ -490,16 +491,16 @@ tag := "instance-wrapping"
 tag := "The-Lean-Language-Reference--Type-Classes--Instance-Synthesis--Options"
 %%%
 
-{optionDocs backward.synthInstance.canonInstances}
+{zhOptionDocs backward.synthInstance.canonInstances ZhDoc.Classes.InstanceSynth.Option.backward.synthInstance.canonInstances}
 
-{optionDocs synthInstance.maxHeartbeats}
+{zhOptionDocs synthInstance.maxHeartbeats ZhDoc.Classes.InstanceSynth.Option.synthInstance.maxHeartbeats}
 
-{optionDocs synthInstance.maxSize}
+{zhOptionDocs synthInstance.maxSize ZhDoc.Classes.InstanceSynth.Option.synthInstance.maxSize}
 
-{optionDocs backward.inferInstanceAs.wrap}
+{zhOptionDocs backward.inferInstanceAs.wrap ZhDoc.Classes.InstanceSynth.Option.backward.inferInstanceAs.wrap}
 
-{optionDocs backward.inferInstanceAs.wrap.reuseSubInstances}
+{zhOptionDocs backward.inferInstanceAs.wrap.reuseSubInstances ZhDoc.Classes.InstanceSynth.Option.backward.inferInstanceAs.wrap.reuseSubInstances}
 
-{optionDocs backward.inferInstanceAs.wrap.instances}
+{zhOptionDocs backward.inferInstanceAs.wrap.instances ZhDoc.Classes.InstanceSynth.Option.backward.inferInstanceAs.wrap.instances}
 
-{optionDocs backward.inferInstanceAs.wrap.data}
+{zhOptionDocs backward.inferInstanceAs.wrap.data ZhDoc.Classes.InstanceSynth.Option.backward.inferInstanceAs.wrap.data}

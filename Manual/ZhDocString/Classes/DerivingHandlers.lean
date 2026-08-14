@@ -1,4 +1,5 @@
 import Lean
+import Manual.ZhDocString.ZhDocString
 
 namespace ZhDoc.Classes.DerivingHandlers
 

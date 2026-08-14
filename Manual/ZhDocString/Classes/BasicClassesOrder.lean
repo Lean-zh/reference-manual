@@ -1,4 +1,5 @@
 import VersoManual
+import Manual.ZhDocString.ZhDocString
 
 namespace ZhDoc.Classes.BasicClasses
 

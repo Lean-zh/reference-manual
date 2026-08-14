@@ -7,6 +7,8 @@ Author: David Thrane Christiansen
 import VersoManual
 
 import Manual.Meta
+import Manual.ZhDocString.Classes.BasicClassesCore
+import Manual.ZhDocString.Classes.BasicClassesOrder
 
 
 open Manual
@@ -33,21 +35,21 @@ tag := "The-Lean-Language-Reference--Type-Classes--Basic-Classes--Boolean-Equali
 配套的 {name}`Hashable` 类为类型指定哈希过程。
 当某个类型同时具有 {name}`BEq` 和 {name}`Hashable` 实例时，计算出的哈希值应当遵循 {name}`BEq` 实例：被 {name}`BEq.beq` 判为相等的两个值应始终具有相同的哈希值。
 
-{docstring BEq}
+{zhdocstring BEq ZhDoc.Classes.BasicClasses.BEq}
 
-{docstring Hashable}
+{zhdocstring Hashable ZhDoc.Classes.BasicClasses.Hashable}
 
-{docstring mixHash}
+{zhdocstring mixHash ZhDoc.Classes.BasicClasses.mixHash}
 
-{docstring LawfulBEq}
+{zhdocstring LawfulBEq ZhDoc.Classes.BasicClasses.LawfulBEq}
 
-{docstring ReflBEq}
+{zhdocstring ReflBEq ZhDoc.Classes.BasicClasses.ReflBEq}
 
-{docstring EquivBEq}
+{zhdocstring EquivBEq ZhDoc.Classes.BasicClasses.EquivBEq}
 
-{docstring LawfulHashable}
+{zhdocstring LawfulHashable ZhDoc.Classes.BasicClasses.LawfulHashable}
 
-{docstring hash_eq}
+{zhdocstring hash_eq ZhDoc.Classes.BasicClasses.hash_eq}
 
 # 排序关系
 %%%
@@ -58,37 +60,37 @@ tag := "The-Lean-Language-Reference--Type-Classes--Basic-Classes--Ordering"
  * {name}`Ord` 类型类提供三路比较运算符 {name}`compare`，它可以指出一个值小于、等于或大于另一个值。它返回一个 {name}`Ordering`。
  * {name}`LT` 和 {name}`LE` 类为类型提供取值于 {lean}`Prop` 的典范排序关系，且这些关系不必是可判定的。它们用于重载 `<` 和 `≤` 运算符。
 
-{docstring Ord}
+{zhdocstring Ord ZhDoc.Classes.BasicClasses.Ord}
 
 {name}`compare` 方法已被导出，因此使用它时无需显式写出 `Ord` 命名空间。
 
-{docstring compareOn}
+{zhdocstring compareOn ZhDoc.Classes.BasicClasses.compareOn}
 
-{docstring Ord.opposite}
+{zhdocstring Ord.opposite ZhDoc.Classes.BasicClasses.Ord.opposite}
 
-{docstring Ordering}
+{zhdocstring Ordering ZhDoc.Classes.BasicClasses.Ordering}
 
-{docstring Ordering.swap}
+{zhdocstring Ordering.swap ZhDoc.Classes.BasicClasses.Ordering.swap}
 
-{docstring Ordering.then}
+{zhdocstring Ordering.then ZhDoc.Classes.BasicClasses.Ordering.then}
 
-{docstring Ordering.isLT}
+{zhdocstring Ordering.isLT ZhDoc.Classes.BasicClasses.Ordering.isLT}
 
-{docstring Ordering.isLE}
+{zhdocstring Ordering.isLE ZhDoc.Classes.BasicClasses.Ordering.isLE}
 
-{docstring Ordering.isEq}
+{zhdocstring Ordering.isEq ZhDoc.Classes.BasicClasses.Ordering.isEq}
 
-{docstring Ordering.isNe}
+{zhdocstring Ordering.isNe ZhDoc.Classes.BasicClasses.Ordering.isNe}
 
-{docstring Ordering.isGE}
+{zhdocstring Ordering.isGE ZhDoc.Classes.BasicClasses.Ordering.isGE}
 
-{docstring Ordering.isGT}
+{zhdocstring Ordering.isGT ZhDoc.Classes.BasicClasses.Ordering.isGT}
 
-{docstring compareOfLessAndEq}
+{zhdocstring compareOfLessAndEq ZhDoc.Classes.BasicClasses.compareOfLessAndEq}
 
-{docstring compareOfLessAndBEq}
+{zhdocstring compareOfLessAndBEq ZhDoc.Classes.BasicClasses.compareOfLessAndBEq}
 
-{docstring compareLex}
+{zhdocstring compareLex ZhDoc.Classes.BasicClasses.compareLex}
 
 :::syntax term (title := "排序运算符")
 
@@ -116,22 +118,22 @@ $_ ≥ $_
 
 :::
 
-{docstring LT}
+{zhdocstring LT ZhDoc.Classes.BasicClasses.LT}
 
-{docstring LE}
+{zhdocstring LE ZhDoc.Classes.BasicClasses.LE}
 
 可以用以下辅助函数从 {name}`Ord` 构造 {name}`BEq`、{name}`LT` 和 {name}`LE` 实例。
 这些辅助函数不会自动成为实例，因为对许多类型而言，自定义关系更为合适。
 
-{docstring ltOfOrd}
+{zhdocstring ltOfOrd ZhDoc.Classes.BasicClasses.ltOfOrd}
 
-{docstring leOfOrd}
+{zhdocstring leOfOrd ZhDoc.Classes.BasicClasses.leOfOrd}
 
-{docstring Ord.toBEq}
+{zhdocstring Ord.toBEq ZhDoc.Classes.BasicClasses.Ord.toBEq}
 
-{docstring Ord.toLE}
+{zhdocstring Ord.toLE ZhDoc.Classes.BasicClasses.Ord.toLE}
 
-{docstring Ord.toLT}
+{zhdocstring Ord.toLT ZhDoc.Classes.BasicClasses.Ord.toLT}
 
 :::example "使用 `Ord` 实例构造 `LT` 和 `LE` 实例"
 
@@ -195,11 +197,11 @@ true
 tag := "The-Lean-Language-Reference--Type-Classes--Basic-Classes--Ordering--Instance-Construction"
 %%%
 
-{docstring Ord.lex}
+{zhdocstring Ord.lex ZhDoc.Classes.BasicClasses.Ord.lex}
 
-{docstring Ord.lex'}
+{zhdocstring Ord.lex' ZhDoc.Classes.BasicClasses.Ord.lex'}
 
-{docstring Ord.on}
+{zhdocstring Ord.on ZhDoc.Classes.BasicClasses.Ord.on}
 
 # 最小值与最大值
 %%%
@@ -209,9 +211,9 @@ tag := "The-Lean-Language-Reference--Type-Classes--Basic-Classes--Minimum-and-Ma
 类 `Max` 和 `Min` 提供重载运算符，用于从两个值中选择较大者或较小者。
 若 `Ord`、`LT` 和 `LE` 实例存在，它们应当与这些运算符保持一致，但并没有强制这一点的机制。
 
-{docstring Min}
+{zhdocstring Min ZhDoc.Classes.BasicClasses.Min}
 
-{docstring Max}
+{zhdocstring Max ZhDoc.Classes.BasicClasses.Max}
 
 :::leanSection
 
@@ -222,9 +224,9 @@ variable {α : Type u} [LE α]
 给定一个 {name}`LE.le` 可判定的 {inst}`LE α` 实例，可以使用辅助函数 {name}`minOfLe` 和 {name}`maxOfLe` 创建合适的 {lean}`Min α` 与 {lean}`Max α` 实例。
 它们可以用作 {keywordOf Lean.Parser.Command.declaration}`instance` 声明的右侧。
 
-{docstring minOfLe}
+{zhdocstring minOfLe ZhDoc.Classes.BasicClasses.minOfLe}
 
-{docstring maxOfLe}
+{zhdocstring maxOfLe ZhDoc.Classes.BasicClasses.maxOfLe}
 
 :::
 
@@ -237,21 +239,21 @@ tag := "decidable-propositions"
 排中律意味着每个命题非真即假，但它没有提供检查究竟是哪种情形成立的方法；而这种检查往往很有用。
 默认情况下，作用域中只有可生成代码的算法式 {lean}`Decidable` 实例；打开 `Classical` 命名空间则会使每个命题都可判定。
 
-{docstring Decidable}
+{zhdocstring Decidable ZhDoc.Classes.BasicClasses.Decidable}
 
-{docstring DecidablePred}
+{zhdocstring DecidablePred ZhDoc.Classes.BasicClasses.DecidablePred}
 
-{docstring DecidableRel}
+{zhdocstring DecidableRel ZhDoc.Classes.BasicClasses.DecidableRel}
 
-{docstring DecidableEq}
+{zhdocstring DecidableEq ZhDoc.Classes.BasicClasses.DecidableEq}
 
-{docstring DecidableLT}
+{zhdocstring DecidableLT ZhDoc.Classes.BasicClasses.DecidableLT}
 
-{docstring DecidableLE}
+{zhdocstring DecidableLE ZhDoc.Classes.BasicClasses.DecidableLE}
 
-{docstring Decidable.decide}
+{zhdocstring Decidable.decide ZhDoc.Classes.BasicClasses.Decidable.decide}
 
-{docstring Decidable.byCases}
+{zhdocstring Decidable.byCases ZhDoc.Classes.BasicClasses.Decidable.byCases}
 
 ::::keepEnv
 :::example "排中律与 {lean}`Decidable`"
@@ -282,20 +284,20 @@ noncomputable example (f g : Nat → Nat) : Decidable (f = g) :=
 tag := "The-Lean-Language-Reference--Type-Classes--Basic-Classes--Inhabited-Types"
 %%%
 
-{docstring Inhabited}
+{zhdocstring Inhabited ZhDoc.Classes.BasicClasses.Inhabited}
 
-{docstring Nonempty}
+{zhdocstring Nonempty ZhDoc.Classes.BasicClasses.Nonempty}
 
 # 至多单元素类型
 %%%
 tag := "The-Lean-Language-Reference--Type-Classes--Basic-Classes--Subsingleton-Types"
 %%%
 
-{docstring Subsingleton}
+{zhdocstring Subsingleton ZhDoc.Classes.BasicClasses.Subsingleton}
 
-{docstring Subsingleton.elim}
+{zhdocstring Subsingleton.elim ZhDoc.Classes.BasicClasses.Subsingleton.elim}
 
-{docstring Subsingleton.helim}
+{zhdocstring Subsingleton.helim ZhDoc.Classes.BasicClasses.Subsingleton.helim}
 
 # 可见表示
 %%%
@@ -309,87 +311,87 @@ draft := true
 :::
 
 
-{docstring ToString +allowMissing}
+{zhdocstring ToString ZhDoc.Classes.BasicClasses.ToString}
 
 # 算术与位运算符
 %%%
 tag := "The-Lean-Language-Reference--Type-Classes--Basic-Classes--Arithmetic-and-Bitwise-Operators"
 %%%
 
-{docstring Zero}
+{zhdocstring Zero ZhDoc.Classes.BasicClasses.Zero}
 
-{docstring NeZero}
+{zhdocstring NeZero ZhDoc.Classes.BasicClasses.NeZero}
 
-{docstring HAdd}
+{zhdocstring HAdd ZhDoc.Classes.BasicClasses.HAdd}
 
-{docstring Add}
+{zhdocstring Add ZhDoc.Classes.BasicClasses.Add}
 
-{docstring HSub}
+{zhdocstring HSub ZhDoc.Classes.BasicClasses.HSub}
 
-{docstring Sub}
+{zhdocstring Sub ZhDoc.Classes.BasicClasses.Sub}
 
-{docstring HMul}
+{zhdocstring HMul ZhDoc.Classes.BasicClasses.HMul}
 
-{docstring SMul}
+{zhdocstring SMul ZhDoc.Classes.BasicClasses.SMul}
 
-{docstring Mul}
+{zhdocstring Mul ZhDoc.Classes.BasicClasses.Mul}
 
-{docstring HDiv}
+{zhdocstring HDiv ZhDoc.Classes.BasicClasses.HDiv}
 
-{docstring Div}
+{zhdocstring Div ZhDoc.Classes.BasicClasses.Div}
 
-{docstring Dvd}
+{zhdocstring Dvd ZhDoc.Classes.BasicClasses.Dvd}
 
-{docstring HMod}
+{zhdocstring HMod ZhDoc.Classes.BasicClasses.HMod}
 
-{docstring Mod}
+{zhdocstring Mod ZhDoc.Classes.BasicClasses.Mod}
 
-{docstring HPow}
+{zhdocstring HPow ZhDoc.Classes.BasicClasses.HPow}
 
-{docstring Pow}
+{zhdocstring Pow ZhDoc.Classes.BasicClasses.Pow}
 
-{docstring NatPow}
+{zhdocstring NatPow ZhDoc.Classes.BasicClasses.NatPow}
 
-{docstring HomogeneousPow}
+{zhdocstring HomogeneousPow ZhDoc.Classes.BasicClasses.HomogeneousPow}
 
-{docstring HShiftLeft}
+{zhdocstring HShiftLeft ZhDoc.Classes.BasicClasses.HShiftLeft}
 
-{docstring ShiftLeft}
+{zhdocstring ShiftLeft ZhDoc.Classes.BasicClasses.ShiftLeft}
 
-{docstring HShiftRight}
+{zhdocstring HShiftRight ZhDoc.Classes.BasicClasses.HShiftRight}
 
-{docstring ShiftRight}
+{zhdocstring ShiftRight ZhDoc.Classes.BasicClasses.ShiftRight}
 
-{docstring Neg}
+{zhdocstring Neg ZhDoc.Classes.BasicClasses.Neg}
 
-{docstring HAnd}
+{zhdocstring HAnd ZhDoc.Classes.BasicClasses.HAnd}
 
-{docstring AndOp}
+{zhdocstring AndOp ZhDoc.Classes.BasicClasses.AndOp}
 
-{docstring HOr}
+{zhdocstring HOr ZhDoc.Classes.BasicClasses.HOr}
 
-{docstring OrOp}
+{zhdocstring OrOp ZhDoc.Classes.BasicClasses.OrOp}
 
-{docstring HXor}
+{zhdocstring HXor ZhDoc.Classes.BasicClasses.HXor}
 
-{docstring XorOp}
+{zhdocstring XorOp ZhDoc.Classes.BasicClasses.XorOp}
 
 # 追加
 %%%
 tag := "The-Lean-Language-Reference--Type-Classes--Basic-Classes--Append"
 %%%
 
-{docstring HAppend}
+{zhdocstring HAppend ZhDoc.Classes.BasicClasses.HAppend}
 
-{docstring Append}
+{zhdocstring Append ZhDoc.Classes.BasicClasses.Append}
 
 # 数据查找
 %%%
 tag := "The-Lean-Language-Reference--Type-Classes--Basic-Classes--Data-Lookups"
 %%%
 
-{docstring GetElem}
+{zhdocstring GetElem ZhDoc.Classes.BasicClasses.GetElem}
 
-{docstring GetElem?}
+{zhdocstring GetElem? ZhDoc.Classes.BasicClasses.GetElem?}
 
-{docstring LawfulGetElem}
+{zhdocstring LawfulGetElem ZhDoc.Classes.BasicClasses.LawfulGetElem}
