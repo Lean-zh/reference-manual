@@ -830,11 +830,11 @@ tag := "grind-limits"
 E-匹配可能生成无界数量的定理 {tech (key := "e-matching instance")}[实例]。
 出于效率和终止性的双重考虑，{tactic}`grind` 通过两种机制限制 E-匹配的运行次数：
 
-: 代数层级
+: 生成层级
 
-  每个项都会被赋予一个 {deftech (key := "generation")}_generation_，而由 E-匹配生成的项，其 generation 会比所有用于实例化该定理的项中的最大 generation 大 1。
-  E-匹配只会考虑 generation 低于某个可配置阈值的项。
-  {tactic}`grind` 的 `gen` 选项控制这个 generation 阈值。
+  每个项都会被赋予一个 {deftech (key := "generation")}_生成层级_，而由 E-匹配生成的项，其生成层级会比所有用于实例化该定理的项中的最大生成层级大 1。
+  E-匹配只会考虑生成层级低于某个可配置阈值的项。
+  {tactic}`grind` 的 `gen` 选项控制这个生成层级阈值。
 
 : 轮数限制
 
@@ -892,7 +892,7 @@ h : s 0 = 0
 [grind] Diagnostics
 ```
 
-把轮数上限提高到 20 后，E-匹配会因为默认的 generation 上限 8 而终止：
+把轮数上限提高到 20 后，E-匹配会因为默认的生成层级上限 8 而终止：
 ```lean +error (name := ematchUnbounded2)
 example : s 0 > 0 := by
   grind (ematch := 20)

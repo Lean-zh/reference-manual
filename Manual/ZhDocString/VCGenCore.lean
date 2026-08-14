@@ -21,7 +21,7 @@ namespace SPred
 -/
 def pure : Unit := ()
 
-/-- 将纯 Lean 值嵌入 `SVal`。这是 `SPred.pure` 的别名。 -/
+/-- 将纯 Lean 命题嵌入 `SPred`；这是 `SPred.pure` 的语法糖。 -/
 def embedSyntax : Unit := ()
 
 /--

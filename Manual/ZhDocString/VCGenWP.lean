@@ -175,7 +175,7 @@ namespace Invariant
 /--
 用于为带提前返回的循环指定循环不变式的辅助定义。
 
-返回类型为 `γ` 的 `for ... in ...` 循环会细化为如下调用：
+返回类型为 `γ` 的 `for ... in ...` 循环会精译为如下调用：
 ```lean
 forIn (β := MProd (Option γ) ...) (b := ⟨none, ...⟩) collection loopBody
 ```
