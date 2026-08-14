@@ -9,6 +9,8 @@ import VersoManual
 
 -- TODO generalize upstream - this is based on the one in the blog genre.
 namespace Manual
+open Verso
+open Lean.Doc.Syntax
 
 abbrev LexedText.Highlighted := Array (Option String × String)
 
@@ -42,29 +44,29 @@ def highlight (hl : Highlighter) (str : String) : IO LexedText := do
   let pmctx : ParserModuleContext := {env := env, options := {}}
   let mut s := mkParserState str
   repeat
-    if str.atEnd s.pos then
+    if s.pos.atEnd str then
       if let some txt := unHl then
         out := out.push (none, txt)
       break
     let s' := hl.lexer.run ictx pmctx {} s
     if s'.hasError then
-      let c := str.get! s.pos
+      let c := s.pos.get! str
       unHl := unHl.getD "" |>.push c
       s := {s with pos := s.pos + c}
     else
       let stk := s'.stxStack.extract 0 s'.stxStack.size
       if stk.size ≠ 1 then
-        unHl := unHl.getD "" ++ str.extract s.pos s'.pos
+        unHl := unHl.getD "" ++ s.pos.extract str s'.pos
         s := s'.restore 0 s'.pos
       else
         let stx := stk[0]!
         match hl.tokenClass stx with
-        | none => unHl := unHl.getD "" ++ str.extract s.pos s'.pos
+        | none => unHl := unHl.getD "" ++ s.pos.extract str s'.pos
         | some tok =>
           if let some ws := unHl then
             out := out.push (none, ws)
             unHl := none
-          out := out.push (some tok, str.extract s.pos s'.pos)
+          out := out.push (some tok, s.pos.extract str s'.pos)
         s := s'.restore 0 s'.pos
   pure ⟨hl.name, out⟩
 
@@ -125,53 +127,51 @@ r##"
 "##
 
 def Block.c (value : LexedText) : Block where
-  name := `Manual.c
   data := toJson value
 
 def Inline.c (value : LexedText) : Inline where
-  name := `Manual.c
   data := toJson value
 
 def lexedText := ()
 
-@[code_block_expander c]
-def c : CodeBlockExpander
-  | args, str => do
-    ArgParse.done.run args
-    let toks ← LexedText.highlight hlC str.getString
-    pure #[← ``(Block.other (Block.c $(quote toks)) #[])]
+@[code_block]
+def C : CodeBlockExpanderOf Unit
+  | (), str => do
+    let codeStr := str.getString
+    let toks ← LexedText.highlight hlC codeStr
+    ``(Block.other (Block.c $(quote toks)) #[Block.code $(quote codeStr)])
 
 open Verso.Output Html in
 open Verso.Doc.Html in
-@[block_extension c]
+@[block_extension Block.c]
 def c.descr : BlockDescr where
   traverse _ _ _ := pure none
   toTeX := none
   toHtml := some <| fun _ _ _ info _ => do
     let .ok (v : LexedText) := fromJson? info
-      | HtmlT.logError s!"Failed to deserialize {info} as lexer-enhanced text"; pure .empty
+      | reportError s!"Failed to deserialize {info} as lexer-enhanced text"; pure .empty
     pure {{<pre class="c">{{v.toHtml}}</pre>}}
   extraCss := [c.css]
 
 open Verso.Output Html in
 open Verso.Doc.Html in
-@[inline_extension c]
+@[inline_extension Inline.c]
 def c.idescr : InlineDescr where
   traverse _ _ _ := pure none
   toTeX := none
   toHtml := some <| fun _ _ info _ => do
     let .ok (v : LexedText) := fromJson? info
-      | HtmlT.logError s!"Failed to deserialize {info} as lexer-enhanced text"; pure .empty
+      | reportError s!"Failed to deserialize {info} as lexer-enhanced text"; pure .empty
     pure {{<code class="c">{{v.toHtml}}</code>}}
   extraCss := [c.css]
 
-@[role_expander c]
-def cInline : RoleExpander
-  | args, contents => do
-    ArgParse.done.run args
+@[role C]
+def cInline : RoleExpanderOf Unit
+  | (), contents => do
     let #[x] := contents
       | throwError "Expected exactly one parameter"
     let `(inline|code($str)) := x
       | throwError "Expected exactly one code item"
-    let toks ← LexedText.highlight hlC str.getString
-    pure #[← ``(Inline.other (Inline.c $(quote toks)) #[])]
+    let codeStr := str.getString
+    let toks ← LexedText.highlight hlC codeStr
+    ``(Inline.other (Inline.c $(quote toks)) #[Inline.code $(quote codeStr)])

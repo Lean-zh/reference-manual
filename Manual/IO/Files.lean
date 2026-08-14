@@ -118,7 +118,7 @@ In this case, the buffers don't need to be flushed during execution because modi
 open IO.FS (Handle)
 
 def main : IO Unit := do
-  IO.println s!"Starting contents: '{(← IO.FS.readFile "data").trim}'"
+  IO.println s!"Starting contents: '{(← IO.FS.readFile "data").trimAscii}'"
 
   let h ← Handle.mk "data" .read
   let h' ← Handle.mk "data" .readWrite
@@ -137,7 +137,7 @@ def main : IO Unit := do
   h'.flush
 
   IO.println s!"Count: {count}"
-  IO.println s!"Contents: '{(← IO.FS.readFile "data").trim}'"
+  IO.println s!"Contents: '{(← IO.FS.readFile "data").trimAscii}'"
 ```
 
 When run on this file:
@@ -151,7 +151,7 @@ Starting contents: 'AABAABCDAB'
 Count: 5
 Contents: '!!B!!BCD!B'
 ```
-```stderr (show := false)
+```stderr -show
 ```
 
 Afterwards, the file contains:
@@ -189,7 +189,7 @@ Avoid hard-coding these rules.
 
 There is an instance of the {lean}`Div` type class for {name System.FilePath}`FilePath` which allows the slash operator to be used to concatenate paths.
 
-{docstring System.FilePath (allowMissing := true)}
+{docstring System.FilePath +allowMissing}
 
 {docstring System.mkFilePath}
 
@@ -233,6 +233,8 @@ Some operations on paths consult the filesystem.
 
 {docstring System.FilePath.metadata}
 
+{docstring System.FilePath.symlinkMetadata}
+
 {docstring System.FilePath.pathExists}
 
 {docstring System.FilePath.isDir}
@@ -245,7 +247,7 @@ Some operations on paths consult the filesystem.
 
 {docstring System.FilePath.walkDir}
 
-{docstring IO.AccessRight (allowMissing := true)}
+{docstring IO.AccessRight +allowMissing}
 
 {docstring IO.AccessRight.flags}
 

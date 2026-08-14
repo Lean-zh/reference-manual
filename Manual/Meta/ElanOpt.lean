@@ -18,9 +18,10 @@ import Manual.Meta.Basic
 
 -- TODO: this is copied from LakeOpt for reasons of expediency. Factor out the common parts to a library!
 
-open Lean Elab
-open Verso ArgParse Doc Elab Genre.Manual Html Code Highlighted.WebAssets
 
+open Verso ArgParse Doc Elab Genre.Manual Html Code Highlighted.WebAssets
+open Lean.Doc.Syntax
+open Lean Elab
 namespace Manual
 
 inductive ElanOptKind where
@@ -35,8 +36,8 @@ def ElanOptKind.ns : ElanOptKind → String
 open ElanOptKind in
 instance : Quote ElanOptKind where
   quote
-    | .flag => Syntax.mkCApp ``flag #[]
-    | .option => Syntax.mkCApp ``option #[]
+    | .flag => Syntax.mkCApp ``ElanOptKind.flag #[]
+    | .option => Syntax.mkCApp ``ElanOptKind.option #[]
 
 def Inline.elanOptDef (name : String) (kind : ElanOptKind) (argMeta : Option String) : Inline where
   name := `Manual.elanOptDef
@@ -56,6 +57,7 @@ def ElanOptDefOpts.parse [Monad m] [MonadError m] : ArgParse m ElanOptDefOpts :=
 where
   optKind : ValDesc m ElanOptKind := {
     description := "'flag' or 'option'",
+    signature := .Ident
     get
       | .name x =>
         match x.getId with
@@ -86,17 +88,24 @@ def elanOptDef : RoleExpander
       | throwErrorAt arg "Expected code literal with the option or flag"
     let origName := name.getString
     let name := origName.takeWhile fun c => c == '-' || c.isAlphanum
-    let valMeta := origName.drop name.length |>.dropWhile fun c => !c.isAlphanum
+    let name := name.copy
+    let valMeta := origName.drop name.length |>.dropWhile fun (c : Char) => !c.isAlphanum
 
-    pure #[← `(show Verso.Doc.Inline Verso.Genre.Manual from .other (Manual.Inline.elanOptDef $(quote name) $(quote kind) $(quote (if valMeta.isEmpty then none else some valMeta : Option String))) #[Inline.code $(quote name)])]
+    pure #[← `(show Verso.Doc.Inline Verso.Genre.Manual from .other (Manual.Inline.elanOptDef $(quote name) $(quote kind) $(quote (if valMeta.isEmpty then none else some valMeta.copy : Option String))) #[Inline.code $(quote name)])]
+
+open Verso.Search in
+def elanOptDomainMapper : DomainMapper :=
+  DomainMapper.withDefaultJs elanOptDomain "Elan Command-Line Option" "elan-option-domain" |>.setFont { family := .code }
 
 @[inline_extension elanOptDef]
 def elanOptDef.descr : InlineDescr where
+  init s := s.addQuickJumpMapper elanOptDomain elanOptDomainMapper
+
   traverse id data _ := do
     let .arr #[.str name, jsonKind, _] := data
-      | logError s!"Failed to deserialize metadata for Elan option def: {data}"; return none
+      | reportError s!"Failed to deserialize metadata for Elan option def: {data}"; return none
     let .ok kind := fromJson? (α := ElanOptKind) jsonKind
-      | logError s!"Failed to deserialize metadata for Elan option def '{name}' kind: {jsonKind}"; return none
+      | reportError s!"Failed to deserialize metadata for Elan option def '{name}' kind: {jsonKind}"; return none
     modify fun s =>
       s |>.saveDomainObject elanOptDomain name id |>.saveDomainObjectData elanOptDomain name jsonKind
 
@@ -109,15 +118,15 @@ def elanOptDef.descr : InlineDescr where
   toHtml :=
     open Verso.Output.Html in
     some <| fun goB id data content => do
-      let .arr #[.str name, _jsonKind, meta] := data
-        | HtmlT.logError s!"Failed to deserialize metadata for Elan option def: {data}"; content.mapM goB
+      let .arr #[.str name, _jsonKind, metadata] := data
+        | reportError s!"Failed to deserialize metadata for Elan option def: {data}"; content.mapM goB
 
       let idAttr := (← read).traverseState.htmlId id
 
-      let .ok meta := FromJson.fromJson? (α := Option String) meta
-        | HtmlT.logError s!"Failed to deserialize argument metadata for Elan option def: {meta}"; content.mapM goB
+      let .ok metadata := FromJson.fromJson? (α := Option String) metadata
+        | reportError s!"Failed to deserialize argument metadata for Elan option def: {metadata}"; content.mapM goB
 
-      if let some mv := meta then
+      if let some mv := metadata then
         pure {{<code {{idAttr}} class="elan-opt">{{name}}" "{{mv}}</code>}}
       else
         pure {{<code {{idAttr}} class="elan-opt">{{name}}</code>}}
@@ -137,6 +146,7 @@ def elanOpt : RoleExpander
     let `(inline|code( $name:str )) := arg
       | throwErrorAt arg "Expected code literal with the option or flag"
     let optName := name.getString.takeWhile fun c => c == '-' || c.isAlphanum
+    let optName := optName.copy
 
     pure #[← `(show Verso.Doc.Inline Verso.Genre.Manual from .other (Manual.Inline.elanOpt $(quote optName) $(quote name.getString)) #[Inline.code $(quote name.getString)])]
 
@@ -153,11 +163,11 @@ def elanOpt.descr : InlineDescr where
     open Verso.Output.Html in
     some <| fun goB _id data content => do
       let .arr #[.str name, .str original] := data
-        | HtmlT.logError s!"Failed to deserialize metadata for Elan option ref: {data}"; content.mapM goB
+        | reportError s!"Failed to deserialize metadata for Elan option ref: {data}"; content.mapM goB
 
       if let some obj := (← read).traverseState.getDomainObject? elanOptDomain name then
         for id in obj.ids do
           if let some dest := (← read).traverseState.externalTags[id]? then
-            return {{<code class="elan-opt"><a href={{dest.link}} class="elan-command">{{name}}</a>{{original.drop name.length}}</code>}}
+            return {{<code class="elan-opt"><a href={{dest.link}} class="elan-command">{{name}}</a>{{original.drop name.length |>.copy}}</code>}}
 
       pure {{<code class="elan-opt">{{original}}</code>}}

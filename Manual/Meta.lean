@@ -25,25 +25,66 @@ import Manual.Meta.Example
 import Manual.Meta.Figure
 import Manual.Meta.LakeCheck
 import Manual.Meta.LakeCmd
+import Manual.Meta.LakeLean
+import Manual.Meta.LakeManifest
+import Manual.Meta.LakeSession
 import Manual.Meta.LakeOpt
 import Manual.Meta.LakeToml
+import Manual.Meta.Lean
+import Manual.Meta.ListBullet
+import Manual.Meta.ModuleExample
 import Manual.Meta.ParserAlias
 import Manual.Meta.Syntax
 import Manual.Meta.Tactics
 import Manual.Meta.SpliceContents
 import Manual.Meta.Markdown
+import Manual.Meta.Namespace
+import Manual.Meta.SectionNotes
+import Manual.Meta.ConfigFile
+import Manual.Meta.Diagram
 
-open Lean Elab
+
 open Verso ArgParse Doc Elab Genre.Manual Html Code Highlighted.WebAssets
 open SubVerso.Highlighting Highlighted
-
+open Lean Elab
 open Lean.Elab.Tactic.GuardMsgs
+
+open scoped Lean.Doc.Syntax
 
 namespace Manual
 
-@[directive_expander comment]
-def comment : DirectiveExpander
+/--
+Comments out some content.
+-/
+@[role_expander comment]
+def comment : RoleExpander
   | _, _ => pure #[]
+
+@[code_block_expander comment]
+def commentCode : CodeBlockExpander
+  | _, _ => pure #[]
+
+@[directive_expander comment]
+def commentDirective : DirectiveExpander
+  | _, _ => pure #[]
+
+-- These are part commands rather than block expanders so that it can be used in contexts where
+-- block content doesn't fit, like right after an include. However, the blocks are still needed
+-- for contexts where part commands aren't run.
+@[part_command Lean.Doc.Syntax.codeblock, part_command Lean.Doc.Syntax.directive]
+def commentBlock : PartCommand
+  | `(block| ::: $commentId $_* { $_* } )
+  | `(block| ``` $commentId $_* | $_ ``` ) => do
+    try
+      let n ← realizeGlobalConstNoOverloadWithInfo commentId
+      if n == ``comment then
+        return ()
+      else
+        throwUnsupportedSyntax
+    catch | _ => throwUnsupportedSyntax
+  | _ => throwUnsupportedSyntax
+
+
 
 def Block.TODO : Block where
   name := `Manual.TODO
@@ -59,7 +100,7 @@ def TODO : DirectiveExpander
       (kind := .null)
       (detail? := some "Author's note")
     let content ← blocks.mapM elabBlock
-    pure #[← `(Doc.Block.other Block.TODO #[$content,*])]
+    pure #[← `(Block.other Block.TODO #[$content,*])]
 
 @[role_expander TODO]
 def TODOinline : RoleExpander
@@ -69,7 +110,7 @@ def TODOinline : RoleExpander
       (kind := .null)
       (detail? := some "Author's note")
     let content ← inlines.mapM elabInline
-    pure #[← `(Doc.Inline.other Inline.TODO #[$content,*])]
+    pure #[← `(Inline.other Inline.TODO #[$content,*])]
 
 
 @[block_extension TODO]
@@ -123,6 +164,37 @@ span.TODO {
     some <| fun go _ _ content => do
       pure {{<span class="TODO">{{← content.mapM go}}</span>}}
 
+def Block.warn : Block where
+  name := `Manual.warn
+
+@[directive_expander warn]
+def warn : DirectiveExpander
+  | args, blocks => do
+    ArgParse.done.run args
+    let content ← blocks.mapM elabBlock
+    pure #[← `(Block.other Block.warn #[$content,*])]
+
+@[block_extension warn]
+def warn.descr : BlockDescr where
+  traverse _ _ _ := pure none
+  toTeX := none
+  extraCss := [r#"
+.namedocs.warn { border-color: #cc3333; }
+.namedocs.warn > .label { border-color: #cc3333; color: #a02020; }
+.namedocs.warn > .text { border-top: none; }
+"#]
+  toHtml :=
+    open Verso.Output.Html in
+    some <| fun _ goB _ _ content => do
+      pure {{
+        <div class="namedocs warn">
+          <span class="label">"Warning"</span>
+          <div class="text">
+            {{← content.mapM goB}}
+          </div>
+        </div>
+      }}
+
 def Inline.noVale : Inline where
   name := `Manual.noVale
 
@@ -169,7 +241,7 @@ def planned : DirectiveExpander
     let loc : Option (Nat × String) :=
       ((·.line, System.FilePath.normalize fileName |>.toString) ∘ fileMap.utf8PosToLspPos) <$> (← getRef).getPos?
     let content ← blocks.mapM elabBlock
-    pure #[← `(Doc.Block.other {Block.planned with data := ToJson.toJson (α := Option Nat × Option (Nat × String)) ($(quote issue), $(quote loc))} #[$content,*])]
+    pure #[← `(Block.other {Block.planned with data := ToJson.toJson (α := Option Nat × Option (Nat × String)) ($(quote issue), $(quote loc))} #[$content,*])]
 
 @[block_extension planned]
 def planned.descr : BlockDescr where
@@ -178,18 +250,18 @@ def planned.descr : BlockDescr where
     | .ok (none, loc?) | .ok (some 0, loc?) =>
        -- TODO add source locations to Verso ASTs upstream, then report here
       if let some (line, file) := loc? then
-        logError s!"Missing issue number for planned content indicator at {file} line {line}"
+        reportError s!"Missing issue number for planned content indicator at {file} line {line}"
       else
-        logError s!"Missing issue number for planned content indicator"
+        reportError s!"Missing issue number for planned content indicator"
     | .ok (some n, loc?) =>
       if !(← isDraft) then
         let loc := loc?.map (fun (l, f) => s!" at {f} line {l}") |>.getD ""
-        logError s!"Planned content {n} in final rendering{loc}"
+        reportError s!"Planned content {n} in final rendering{loc}"
       else
         pure ()
 
     | .error e =>
-      logError s!"Failed to deserialize issue number from {data} during traversal: {e}"
+      reportError s!"Failed to deserialize issue number from {data} during traversal: {e}"
     pure none
   toTeX := none
   extraCss := [r#"
@@ -209,7 +281,7 @@ div.planned .label {
         match FromJson.fromJson? (α := Option Nat × Option (Nat × String)) data with
         | .ok v => pure v.1
         | .error e =>
-          HtmlT.logError s!"Failed to deserialize issue number from {data}: {e}"
+          reportError s!"Failed to deserialize issue number from {data}: {e}"
           pure none
       pure {{
         <div class="planned">
@@ -252,19 +324,20 @@ structure FFIConfig where
   name : String
   kind : FFIDocType := .function
 
+open FFIDocType in
 def FFIConfig.parse [Monad m] [MonadError m] [MonadLiftT CoreM m] : ArgParse m FFIConfig :=
   FFIConfig.mk <$> .positional `name .string <*> ((·.getD .function) <$> .named `kind kind true)
 where
   kind : ValDesc m FFIDocType := {
-    description := m!"{true} or {false}"
+    description := doc!"{function} or {type}",
+    signature := .Ident
     get := fun
-      | .name b => open FFIDocType in do
+      | .name b => do
         let b' ← liftM <| realizeGlobalConstNoOverloadWithInfo b
-
         if b' == ``function then pure .function
         else if b' == ``type then pure .type
-        else throwErrorAt b "Expected 'true' or 'false'"
-      | other => throwError "Expected Boolean, got {repr other}"
+        else throwErrorAt b "Expected {``function} or {``type}"
+      | _ => throwError "Expected identifier"
   }
 
 /--
@@ -328,16 +401,16 @@ def ffi : DirectiveExpander
 def ffi.descr : BlockDescr where
   traverse id info _ := do
     let .ok (name, _declType, _signature) := FromJson.fromJson? (α := String × FFIDocType × String) info
-      | do logError "Failed to deserialize FFI doc data"; pure none
+      | do reportError "Failed to deserialize FFI doc data"; pure none
     let path ← (·.path) <$> read
     let _ ← Verso.Genre.Manual.externalTag id path name
-    Index.addEntry id {term := Doc.Inline.code name}
+    Index.addEntry id {term := .code name}
     pure none
   toHtml := some <| fun _goI goB id info contents =>
     open Verso.Doc.Html in
     open Verso.Output Html in do
       let .ok (_name, ffiType, signature) := FromJson.fromJson? (α := String × FFIDocType × String) info
-        | do Verso.Doc.Html.HtmlT.logError "Failed to deserialize FFI doc data"; pure .empty
+        | do reportError "Failed to deserialize FFI doc data"; pure .empty
       let sig : Html := {{<pre>{{signature}}</pre>}}
 
       let xref ← HtmlT.state
@@ -355,6 +428,15 @@ def ffi.descr : BlockDescr where
   toTeX := some <| fun _goI goB _ _ contents =>
     contents.mapM goB -- TODO
 
+open Verso.Output.Html in
+inline_extension Inline.multiCode where
+  traverse _ _ _ := pure none
+  toHtml := some <| fun goI _id _data contents => do return {{<span class="multi-code">{{← contents.mapM goI}}</span>}}
+  toTeX := none
+
+@[role]
+def multiCode : RoleExpanderOf Unit
+  | (), contents => do ``(Inline.other Inline.multiCode #[$(← contents.mapM elabInline),*])
 
 
 structure LeanSectionConfig where

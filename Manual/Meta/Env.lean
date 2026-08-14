@@ -18,10 +18,11 @@ import SubVerso.Examples
 
 import Manual.Meta.Basic
 
-open Lean Elab
+
+open Lean.Doc.Syntax
 open Verso ArgParse Doc Elab Genre.Manual Html Code Highlighted.WebAssets
 open SubVerso.Highlighting Highlighted
-
+open Lean Elab
 open Lean.Elab.Tactic.GuardMsgs
 
 namespace Manual
@@ -43,21 +44,27 @@ def envVar : RoleExpander
 
     pure #[← `(.other {Manual.Inline.envVar with data := Json.arr #[.str $(quote v), .bool $(quote isDef)] } #[Inline.code $(quote v)])]
   where
-    parseOpts : ArgParse DocElabM Bool := .named `def .bool true <&> (·.getD false)
+    parseOpts : ArgParse DocElabM Bool := .flag `def false "If true, this is the definition site (i.e. the link target) for the variable"
 
 def envVarDomain := `Manual.envVar
 
+open Verso.Search in
+def envVarDomainMapper : DomainMapper :=
+  DomainMapper.withDefaultJs envVarDomain "Environment Variable" "env-var-domain" |>.setFont { family := .code }
+
 @[inline_extension envVar]
 def envVar.descr : InlineDescr where
-  init s := s |>.setDomainTitle envVarDomain "Environment Variables"
+  init s :=
+    s |>.setDomainTitle envVarDomain "Environment Variables"
+      |>.addQuickJumpMapper envVarDomain envVarDomainMapper
 
   traverse id data _ := do
     let .arr #[.str var, .bool isDef] := data
-      | logError s!"Couldn't deserialize environment variable info from {data}"; return none
+      | reportError s!"Couldn't deserialize environment variable info from {data}"; return none
     if isDef then
       let path ← (·.path) <$> read
       let _ ← Verso.Genre.Manual.externalTag id path var
-      Index.addEntry id {term := Doc.Inline.concat #[.code var, .text " (environment variable)"]}
+      Index.addEntry id {term := Inline.concat #[.code var, .text " (environment variable)"]}
       modify fun s =>
         s.saveDomainObject envVarDomain var id
     return none
@@ -83,7 +90,7 @@ r#"
       let (var, isDef) ←
         match data with
         | .arr #[.str var, .bool isDef] => pure (var, isDef)
-        | _ => HtmlT.logError s!"Couldn't deserialize environment var info from {data}"; return .empty
+        | _ => reportError s!"Couldn't deserialize environment var info from {data}"; return .empty
 
       if let some dest := (← read).traverseState.getDomainObject? envVarDomain var then
         for id in dest.ids do

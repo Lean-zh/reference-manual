@@ -27,7 +27,7 @@ tag := "lifting-monads"
 
 ::::keepEnv
 
-```lean (show := false)
+```lean -show
 variable {m m' n : Type u → Type v} [Monad m] [Monad m'] [Monad n] [MonadLift m n]
 variable {α β : Type u}
 ```
@@ -39,7 +39,7 @@ Automatic monad lifting is attempted before the general {tech}[coercion] mechani
 
 {docstring MonadLift}
 
-{tech key:="lift"}[Lifting] between monads is reflexive and transitive:
+{tech (key := "lift")}[Lifting] between monads is reflexive and transitive:
  * Any monad can run its own actions.
  * Lifts from {lean}`m` to {lean}`m'` and from {lean}`m'` to {lean}`n` can be composed to yield a lift from {lean}`m` to {lean}`n`.
 The utility type class {name}`MonadLiftT` constructs lifts via the reflexive and transitive closure of {name}`MonadLift` instances.
@@ -47,7 +47,7 @@ Users should not define new instances of {name}`MonadLiftT`, but it is useful as
 
 {docstring MonadLiftT}
 
-```lean (show := false)
+```lean -show
 section
 variable {m : Type → Type u}
 ```
@@ -64,7 +64,7 @@ Because it doesn't require its parameter to precisely be in {name}`IO`, it can b
 The instance implicit parameter {lean}`MonadLiftT BaseIO m` allows the reflexive transitive closure of {name}`MonadLift` to be used to assemble the lift.
 :::
 
-```lean (show := false)
+```lean -show
 end
 ```
 
@@ -72,7 +72,7 @@ end
 When a term of type {lean}`n β` is expected, but the provided term has type {lean}`m α`, and the two types are not definitionally equal, Lean attempts to insert lifts and coercions before reporting an error.
 There are the following possibilities:
  1. If {lean}`m` and {lean}`n` can be unified to the same monad, then {lean}`α` and {lean}`β` are not the same.
-    In this case, no monad lifts are necessary, but the value in the monad must be {tech key:="coercion"}[coerced].
+    In this case, no monad lifts are necessary, but the value in the monad must be {tech (key := "coercion")}[coerced].
     If the appropriate coercion is found, then a call to {name}`Lean.Internal.coeM` is inserted, which has the following signature:
     ```signature
     Lean.Internal.coeM.{u, v} {m : Type u → Type v} {α β : Type u}
@@ -89,7 +89,7 @@ There are the following possibilities:
       [self : MonadLiftT m n] {α : Type u} :
       m α → n α
     ```
- 3. If neither {lean}`m` and {lean}`n` nor {lean}`α` and {lean}`β` can be unified, but {lean}`m` can be lifted into {lean}`n` and {lean}`α` can be {tech key:="coercion"}[coerced] to {lean}`β`, then a lift and a coercion can be combined.
+ 3. If neither {lean}`m` and {lean}`n` nor {lean}`α` and {lean}`β` can be unified, but {lean}`m` can be lifted into {lean}`n` and {lean}`α` can be {tech (key := "coercion")}[coerced] to {lean}`β`, then a lift and a coercion can be combined.
     This is done by inserting a call to {name}`Lean.Internal.liftCoeM`:
     ```signature
     Lean.Internal.liftCoeM.{u, v, w}
@@ -125,16 +125,16 @@ fun {α} act => liftM act : {α : Type} → BaseIO α → EIO IO.Error α
 ::::example "Lifting Transformed Monads"
 There are also instances of {name}`MonadLift` for most of the standard library's {tech}[monad transformers], so base monad actions can be used in transformed monads without additional work.
 For example, state monad actions can be lifted across reader and exception transformers, allowing compatible monads to be intermixed freely:
-````lean (keep := false)
+```lean -keep
 def incrBy (n : Nat) : StateM Nat Unit := modify (· + n)
 
 def incrOrFail : ReaderT Nat (ExceptT String (StateM Nat)) Unit := do
   if (← read) > 5 then throw "Too much!"
   incrBy (← read)
-````
+```
 
 Disabling lifting causes an error:
-````lean (name := noLift) (error := true)
+```lean (name := noLift) +error
 set_option autoLift false
 
 def incrBy (n : Nat) : StateM Nat Unit := modify (. + n)
@@ -142,14 +142,14 @@ def incrBy (n : Nat) : StateM Nat Unit := modify (. + n)
 def incrOrFail : ReaderT Nat (ExceptT String (StateM Nat)) Unit := do
   if (← read) > 5 then throw "Too much!"
   incrBy (← read)
-````
+```
 ```leanOutput noLift
-type mismatch
+Type mismatch
   incrBy __do_lift✝
 has type
-  StateM Nat Unit : Type
+  StateM Nat Unit
 but is expected to have type
-  ReaderT Nat (ExceptT String (StateM Nat)) Unit : Type
+  ReaderT Nat (ExceptT String (StateM Nat)) Unit
 ```
 
 ::::
@@ -162,7 +162,7 @@ Automatic lifting can be disabled by setting {option}`autoLift` to {lean}`false`
 
 # Reversing Lifts
 
-```lean (show := false)
+```lean -show
 variable {m n : Type u → Type v} {α ε : Type u}
 ```
 
@@ -172,7 +172,7 @@ Even if these operations are lifted to some more powerful monad, their arguments
 
 There are two type classes that support this kind of “reverse lifting”: {name}`MonadFunctor` and {name}`MonadControl`.
 An instance of {lean}`MonadFunctor m n` explains how to interpret a fully-polymorphic function in {lean}`m` into {lean}`n`.
-This polymorphic function must work for _all_ types {lean}`α`: it has type {lean}`{α : Type u} → m α → m α`.
+This polymorphic function must work for _all_ types {lean}`α`: it has type {lean}`{α : Type u} → m α → n α`.
 Such a function can be thought of as one that may have effects, but can't do so based on specific values that are provided.
 An instance of {lean}`MonadControl m n` explains how to interpret an arbitrary action from {lean}`m` into {lean}`n`, while at the same time providing a “reverse interpreter” that allows the {lean}`m` action to run {lean}`n` actions.
 
@@ -212,7 +212,8 @@ def getByte (n : Nat) : Except String UInt8 :=
     pure n.toUInt8
   else throw s!"Out of range: {n}"
 
-def getBytes (input : Array Nat) : StateT (Array UInt8) (Except String) Unit := do
+def getBytes (input : Array Nat) :
+    StateT (Array UInt8) (Except String) Unit := do
   input.forM fun i =>
     liftM (Except.tryCatch (some <$> getByte i) fun _ => pure none) >>=
       fun
@@ -232,8 +233,11 @@ Ideally, state updates would be performed within the {name}`tryCatch` call direc
 
 
 Attempting to save bytes and handled exceptions does not work, however, because the arguments to {name}`Except.tryCatch` have type {lean}`Except String Unit`:
-```lean (error := true) (name := getBytesErr) (keep := false)
-def getBytes' (input : Array Nat) : StateT (Array String) (StateT (Array UInt8) (Except String)) Unit := do
+```lean +error (name := getBytesErr) -keep
+def getBytes' (input : Array Nat) :
+    StateT (Array String)
+      (StateT (Array UInt8)
+        (Except String)) Unit := do
   input.forM fun i =>
     liftM
       (Except.tryCatch
@@ -243,10 +247,10 @@ def getBytes' (input : Array Nat) : StateT (Array String) (StateT (Array UInt8) 
           modifyThe (Array String) (·.push e))
 ```
 ```leanOutput getBytesErr
-failed to synthesize
+failed to synthesize instance of type class
   MonadStateOf (Array String) (Except String)
 
-Additional diagnostic information may be available using the `set_option diagnostics true` command.
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
 ```
 
 Because {name}`StateT` has a {name}`MonadControl` instance, {name}`control` can be used instead of {name}`liftM`.
@@ -254,7 +258,10 @@ It provides the inner action with an interpreter for the outer monad.
 In the case of {name}`StateT`, this interpreter expects that the inner monad returns a tuple that includes the updated state, and takes care of providing the initial state and extracting the updated state from the tuple.
 
 ```lean
-def getBytes' (input : Array Nat) : StateT (Array String) (StateT (Array UInt8) (Except String)) Unit := do
+def getBytes' (input : Array Nat) :
+    StateT (Array String)
+      (StateT (Array UInt8)
+        (Except String)) Unit := do
   input.forM fun i =>
     control fun run =>
       (Except.tryCatch

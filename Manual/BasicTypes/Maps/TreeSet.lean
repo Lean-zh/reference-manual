@@ -22,7 +22,7 @@ set_option pp.rawOnError true
 tag := "TreeSet"
 %%%
 
-{docstring Std.TreeSet (hideStructureConstructor := true) (hideFields := true)}
+{docstring Std.TreeSet +hideStructureConstructor +hideFields}
 
 # Creation
 
@@ -56,11 +56,15 @@ tag := "TreeSet"
 
 {docstring Std.TreeSet.atIdxD}
 
+{docstring Std.TreeSet.getGE}
+
 {docstring Std.TreeSet.getGE!}
 
 {docstring Std.TreeSet.getGE?}
 
 {docstring Std.TreeSet.getGED}
+
+{docstring Std.TreeSet.getGT}
 
 {docstring Std.TreeSet.getGT!}
 
@@ -68,11 +72,15 @@ tag := "TreeSet"
 
 {docstring Std.TreeSet.getGTD}
 
+{docstring Std.TreeSet.getLE}
+
 {docstring Std.TreeSet.getLE!}
 
 {docstring Std.TreeSet.getLE?}
 
 {docstring Std.TreeSet.getLED}
+
+{docstring Std.TreeSet.getLT}
 
 {docstring Std.TreeSet.getLT!}
 
@@ -118,6 +126,8 @@ tag := "TreeSet"
 
 
 # Iteration
+
+{docstring Std.TreeSet.iter}
 
 {docstring Std.TreeSet.all}
 

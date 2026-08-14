@@ -18,9 +18,11 @@ import SubVerso.Examples
 
 import Manual.Meta.Basic
 
-open Lean Elab
+
 open Verso ArgParse Doc Elab Genre.Manual Html Code Highlighted.WebAssets
+open Lean Elab
 open SubVerso.Highlighting Highlighted
+open Lean.Doc.Syntax
 
 open Lean.Elab.Tactic.GuardMsgs
 
@@ -44,7 +46,7 @@ end
 
 mutual
   partial def Item.toHighlighted : Item → Highlighted
-    | .metavar x => .token ⟨.var ⟨x.toName⟩ x, x⟩ -- Hack: abusing FVarId here
+    | .metavar x => .token ⟨.var ⟨x.toName⟩ x none, x⟩ -- Hack: abusing FVarId here
     | .literalSyntax s => .token ⟨.keyword none none none, s⟩
     | .ellipses => .token ⟨.unknown, "..."⟩
     | .or => .token ⟨.keyword none none none, "|"⟩
@@ -137,17 +139,16 @@ partial def LakeCommandOptions.parse [Monad m] [MonadError m] : ArgParse m LakeC
     many1 (.positional `name .name) <*>
     (.positional `spec strLit <|>
      (pure (Syntax.mkStrLit ""))) <*>
-    many (.named `alias .name false)
+    .many (.named `alias .name false)
 
 where
-  many {α} (p : ArgParse m α) : ArgParse m (List α) :=
-    ((· :: ·) <$> p <*> many p) <|> pure []
 
   many1 {α} (p : ArgParse m α) : ArgParse m (List α) :=
-    (· :: ·) <$> p <*> many p
+    (· :: ·) <$> p <*> .many p
 
   strLit : ValDesc m StrLit := {
     description := "string literal containing a Lake command spec",
+    signature := .String
     get
       | .str s => pure s
       | other => throwError "Expected string, got {repr other}"
@@ -206,7 +207,7 @@ def lake : DirectiveExpander
   | args, contents => do
     let {name, spec, aliases} ← LakeCommandOptions.parse.run args
     let spec ←
-      if spec.getString.trim.isEmpty then
+      if spec.getString.trimAscii.isEmpty then
         pure []
       else
         match Parser.runParserCategory (← getEnv) `lake_cmd_spec spec.getString (← getFileName) with
@@ -221,25 +222,39 @@ def lake : DirectiveExpander
 
 def lakeCommandDomain : Name := `Manual.lakeCommand
 
+open Verso.Search in
+def lakeCommandDomainMapper : DomainMapper where
+  displayName := "Lake Command"
+  className := "lake-command-domain"
+  dataToSearchables :=
+  "(domainData) =>
+  Object.entries(domainData.contents).map(([key, value]) => ({
+    searchKey: `lake ${key}`,
+    address: `${value[0].address}#${value[0].id}`,
+    domainId: 'Manual.lakeCommand',
+    ref: value,
+  }))"
+
 open Verso.Genre.Manual.Markdown in
-open Lean Elab Term Parser Tactic Doc in
+open Lean Elab Term Parser Tactic in
 @[block_extension Block.lakeCommand]
 def lakeCommand.descr : BlockDescr where
   init st := st
     |>.setDomainTitle lakeCommandDomain "Lake commands"
     |>.setDomainDescription lakeCommandDomain "Detailed descriptions of Lake commands"
+    |>.addQuickJumpMapper lakeCommandDomain (lakeCommandDomainMapper.setFont { family := .code })
 
   traverse id info _ := do
     let Json.arr #[Json.str name, aliases, _] := info
-      | do logError s!"Failed to deserialize data while traversing a Lake command, expected 3-element array startign with string but got {info}"; pure none
+      | do reportError s!"Failed to deserialize data while traversing a Lake command, expected 3-element array starting with string but got {info}"; pure none
     let aliases : List String ←
       match fromJson? (α := List String) aliases with
       | .ok v => pure v
       | .error e =>
-        logError s!"Failed to deserialize aliases while traversing a Lake command: {e}"; pure []
+        reportError s!"Failed to deserialize aliases while traversing a Lake command: {e}"; pure []
     let path ← (·.path) <$> read
     let _ ← Verso.Genre.Manual.externalTag id path name
-    Index.addEntry id {term := Doc.Inline.concat #[.code name, .text " (Lake command)"]}
+    Index.addEntry id {term := Inline.concat #[.code name, .text " (Lake command)"]}
     modify fun st => st.saveDomainObject lakeCommandDomain name id
     for a in aliases do
       modify fun st => st.saveDomainObject lakeCommandDomain a id
@@ -249,11 +264,11 @@ def lakeCommand.descr : BlockDescr where
     open Verso.Doc.Html in
     open Verso.Output Html in do
       let Json.arr #[ Json.str name, aliases, spec] := info
-        | do Verso.Doc.Html.HtmlT.logError s!"Failed to deserialize data while making HTML for Lake command, got {info}"; pure .empty
+        | do reportError s!"Failed to deserialize data while making HTML for Lake command, got {info}"; pure .empty
       let .ok (aliases : List String) := FromJson.fromJson? aliases
-        | do Verso.Doc.Html.HtmlT.logError s!"Failed to deserialize aliases while making HTML for Lake command, got {spec}"; pure .empty
+        | do reportError s!"Failed to deserialize aliases while making HTML for Lake command, got {spec}"; pure .empty
       let .ok (spec : CommandSpec) := FromJson.fromJson? spec
-        | do Verso.Doc.Html.HtmlT.logError s!"Failed to deserialize spec while making HTML for Lake command, got {spec}"; pure .empty
+        | do reportError s!"Failed to deserialize spec while making HTML for Lake command, got {spec}"; pure .empty
 
       let lakeTok : Highlighted := .token ⟨.keyword none none none, "lake"⟩
       let nameTok : Highlighted := .token ⟨.keyword none none none, name⟩
@@ -278,7 +293,7 @@ def lakeCommand.descr : BlockDescr where
           {{permalink id xref false}}
           <span class="label">"Lake command"</span>
           <pre class="signature hl lean block" data-lean-context={{name}}>
-            {{← (Highlighted.seq #[lakeTok, .text " ", nameTok, .text " ", spec]).toHtml}}
+            {{← (Highlighted.seq #[lakeTok, .text " ", nameTok, .text " ", spec]).toHtml (g := Verso.Genre.Manual)}}
           </pre>
           <div class="text">
             {{aliasHtml}}
@@ -308,17 +323,13 @@ def lakeMeta : RoleExpander
     pure #[← `(show Verso.Doc.Inline Verso.Genre.Manual from .other {Manual.Inline.lakeMeta with data := Json.arr #[$(quote mName), .null]} #[Inline.code $(quote mName)])]
 
 @[inline_extension lakeMeta]
-def lakeMeta.descr : InlineDescr where
+def lakeMeta.descr : InlineDescr := withHighlighting {
   traverse _ _ _ := do
     pure none
   toTeX :=
     some <| fun go _ _ content => do
       pure <| .seq <| ← content.mapM fun b => do
         pure <| .seq #[← go b, .raw "\n"]
-  extraCss := [highlightingStyle]
-  extraJs := [highlightingJs]
-  extraJsFiles := [("popper.js", popper), ("tippy.js", tippy)]
-  extraCssFiles := [("tippy-border.css", tippy.border.css)]
   toHtml :=
     open Verso.Output.Html in
     some <| fun _ _ data _ => do
@@ -329,9 +340,9 @@ def lakeMeta.descr : InlineDescr where
         | .arr #[.str mName, _] =>
           (mName, none)
         | _ => ("", none)
-      let hl : Highlighted := .token ⟨.var ⟨mName.toName⟩ mName, mName⟩
-      hl.inlineHtml ctx
-
+      let hl : Highlighted := .token ⟨.var ⟨mName.toName⟩ mName none, mName⟩
+      hl.inlineHtml ctx (g := Verso.Genre.Manual)
+}
 
 @[role_expander lake]
 def lakeInline : RoleExpander
@@ -379,7 +390,7 @@ a.lake-command:hover {
             if let some dest := (← read).traverseState.externalTags[id]? then
               return {{<a href={{dest.link}} class="lake-command"><code>s!"lake {n}"</code></a>}}
 
-      HtmlT.logError "No name for lake command"
+      reportError s!"No name for lake command in {data.compress}"
       is.mapM goI
 
 @[role_expander lakeArgs]
@@ -401,22 +412,19 @@ def lakeArgs : RoleExpander
         pure #[← ``(Verso.Doc.Inline.other (Inline.lakeArgs $(quote hl)) #[])]
 
 @[inline_extension lakeArgs]
-def lakeArgs.descr : InlineDescr where
+def lakeArgs.descr : InlineDescr := withHighlighting {
   traverse _ _ _ := do
     pure none
   toTeX := none
 
-  extraCss := [highlightingStyle]
-  extraJs := [highlightingJs]
-  extraJsFiles := [("popper.js", popper), ("tippy.js", tippy)]
-  extraCssFiles := [("tippy-border.css", tippy.border.css)]
   toHtml :=
     open Verso.Output.Html in
     some <| fun _ _ data _ => do
       if let .arr #[hl, name] := data then
         match fromJson? (α := Highlighted) hl with
-        | .error e => HtmlT.logError s!"Couldn't deserialize Lake args: {e}"; return .empty
+        | .error e => reportError s!"Couldn't deserialize Lake args: {e}"; return .empty
         | .ok hl =>
           let name := if let Json.str n := name then some n else none
-          hl.inlineHtml name
-      else HtmlT.logError s!"Expected two-element JSON array, got {data}"; return .empty
+          hl.inlineHtml name (g := Verso.Genre.Manual)
+      else reportError s!"Expected two-element JSON array, got {data}"; return .empty
+}

@@ -32,6 +32,7 @@ open Verso.Genre.Manual.InlineLean
 
 set_option pp.rawOnError true
 
+set_option maxHeartbeats 1000000
 
 #doc (Manual) "Maps and Sets" =>
 %%%
@@ -56,13 +57,13 @@ In Lean, maps may have the following properties:
 : Extensionality
 
   Maps can be viewed as partial functions from keys to values.
-  {deftech}_Extensional maps_{index subterm:="extensional"}[map] are maps for which propositional equality matches this interpretation.
+  {deftech}_Extensional maps_{index (subterm := "extensional")}[map] are maps for which propositional equality matches this interpretation.
   This can be convenient for reasoning, but it also rules out some useful operations that would be able to distinguish between them.
   In general, extensional maps should be used only when needed for verification.
 
 : Dependent or Not
 
-  A {deftech}_dependent map_{index subterm:="dependent"}[map] is one in which the type of each value is determined by its corresponding key, rather than being constant.
+  A {deftech}_dependent map_{index (subterm := "dependent")}[map] is one in which the type of each value is determined by its corresponding key, rather than being constant.
   Dependent maps have more expressive power, but are also more difficult to use.
   They impose more requirements on their users.
   For example, many operations on {name Std.DHashMap}`DHashMap` require {name}`LawfulBEq` instances rather than {name}`BEq`.
@@ -71,12 +72,12 @@ In Lean, maps may have the following properties:
 
 ::::: leanSection
 
-```lean (show := false)
+```lean -show
 open Std
 ```
 
 
-:::table (header := true)
+:::table +header
 *
   - Map
   - Representation
@@ -176,6 +177,10 @@ A nested inductive type that occurs inside a map or set should be defined in thr
 
 :::example "Nested Inductive Types with `Std.HashMap`"
 
+```imports -show
+import Std
+```
+
 This example requires that `Std.Data.HashMap.RawLemmas` is imported.
 To keep the code shorter, the `Std` namespace is opened:
 ```lean
@@ -186,7 +191,7 @@ The map of an adventure game may consist of a series of rooms, connected by pass
 Each room has a description, and each passage faces in a particular direction.
 This can be represented as a recursive structure.
 
-```lean (error:=true) (name:=badNesting) (keep := false)
+```lean +error (name:=badNesting) -keep
 structure Maze where
   description : String
   passages : HashMap String Maze
@@ -195,7 +200,12 @@ structure Maze where
 This definition is rejected:
 
 ```leanOutput badNesting
-(kernel) arg #1 of '_nested.Std.HashMap_1.mk' contains a non valid occurrence of the datatypes being declared
+(kernel) application type mismatch
+  DHashMap.Raw.WF inner
+argument has type
+  _nested.Std.DHashMap.Raw_3
+but function has type
+  (DHashMap.Raw String fun x => Maze) → Prop
 ```
 
 Making this work requires separating the well-formedness predicates from the structure.
@@ -300,6 +310,10 @@ These operations avoid creating a second reference to the value during modificat
 
 :::example "Modifying Values in Maps"
 
+```imports -show
+import Std
+```
+
 ```lean
 open Std
 ```
@@ -350,7 +364,7 @@ tag := "HashMap"
 
 The declarations in this section should be imported using `import Std.HashMap`.
 
-{docstring Std.HashMap (hideFields:=true) (hideStructureConstructor := true)}
+{docstring Std.HashMap +hideFields +hideStructureConstructor}
 
 
 ## Creation
@@ -435,6 +449,12 @@ $_ ~m $_
 
 ## Iteration
 
+{docstring Std.HashMap.iter}
+
+{docstring Std.HashMap.keysIter}
+
+{docstring Std.HashMap.valuesIter}
+
 {docstring Std.HashMap.map}
 
 {docstring Std.HashMap.fold}
@@ -474,7 +494,7 @@ tag := "DHashMap"
 
 The declarations in this section should be imported using `import Std.DHashMap`.
 
-{docstring Std.DHashMap (hideFields:=true) (hideStructureConstructor := true)}
+{docstring Std.DHashMap +hideFields +hideStructureConstructor}
 
 ## Creation
 
@@ -557,6 +577,12 @@ $_ ~m $_
 
 ## Iteration
 
+{docstring Std.DHashMap.iter}
+
+{docstring Std.DHashMap.keysIter}
+
+{docstring Std.DHashMap.valuesIter}
+
 {docstring Std.DHashMap.map}
 
 {docstring Std.DHashMap.fold}
@@ -592,7 +618,7 @@ tag := "ExtHashMap"
 
 The declarations in this section should be imported using `import Std.ExtHashMap`.
 
-{docstring Std.ExtHashMap (hideFields:=true) (hideStructureConstructor := true)}
+{docstring Std.ExtHashMap +hideFields +hideStructureConstructor}
 
 ## Creation
 
@@ -669,7 +695,7 @@ tag := "ExtDHashMap"
 
 The declarations in this section should be imported using `import Std.ExtDHashMap`.
 
-{docstring Std.ExtDHashMap (hideFields:=true) (hideStructureConstructor := true)}
+{docstring Std.ExtDHashMap +hideFields +hideStructureConstructor}
 
 ## Creation
 
@@ -798,6 +824,8 @@ $_ ~m $_
 
 ## Iteration
 
+{docstring Std.HashSet.iter}
+
 {docstring Std.HashSet.all}
 
 {docstring Std.HashSet.any}
@@ -890,7 +918,7 @@ tag := "DTreeMap"
 
 The declarations in this section should be imported using `import Std.DTreeMap`.
 
-{docstring Std.DTreeMap (hideFields:=true) (hideStructureConstructor := true)}
+{docstring Std.DTreeMap +hideFields +hideStructureConstructor}
 
 ## Creation
 
@@ -957,6 +985,12 @@ The declarations in this section should be imported using `import Std.DTreeMap`.
 {docstring Std.DTreeMap.partition}
 
 ## Iteration
+
+{docstring Std.DTreeMap.iter}
+
+{docstring Std.DTreeMap.keysIter}
+
+{docstring Std.DTreeMap.valuesIter}
 
 {docstring Std.DTreeMap.map}
 

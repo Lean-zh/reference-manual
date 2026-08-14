@@ -14,6 +14,7 @@ open Verso.Genre
 open Verso.Genre.Manual
 open Verso.Genre.Manual.InlineLean
 
+section
 
 open Lean Elab Command
 
@@ -21,12 +22,44 @@ open Lean Elab Command
 set_option maxRecDepth 1024
 set_option maxHeartbeats 650_000
 
-def derivableClasses : IO (Array Name) := do
+/-- Classes that are part of the manual, not to be shown -/
+-- TODO: When moving to v4.26.0-rc1, @kim-em removed `Plausible.Arbitrary` from this list.
+-- Should it be restored?
+private def hiddenDerivable : Array Name := #[``Manual.Toml.Test]
+
+private def derivableClasses : IO (Array Name) := do
   let handlers ← derivingHandlersRef.get
-  let derivable := handlers.toList.map (·.fst) |>.toArray |>.qsort (·.toString < ·.toString)
+  let derivable :=
+    handlers.toList.map (·.fst)
+      |>.toArray
+      |>.filter (fun x => !hiddenDerivable.contains x && !(`Lean).isPrefixOf x)
+      |>.qsort (·.toString < ·.toString)
   pure derivable
 
+private def checkDerivable (expected : Array Name) : CommandElabM Unit := do
+  let classes ← derivableClasses
+  let extra := classes.filter (· ∉ expected)
+  let missing := expected.filter (· ∉ classes)
+  if extra.isEmpty && missing.isEmpty then
+    Verso.Log.logSilentInfo m!"Derivable classes match!"
+  else
+    unless extra.isEmpty do
+      logError
+        m!"These classes were not expected. If they should appear in the list here, \
+           then add them to the call; otherwise, add them to `{.ofConstName ``hiddenDerivable}`: \
+           {.andList <| extra.toList.map (.ofConstName ·)}"
+    unless missing.isEmpty do
+      logError
+        m!"These classes were expected but not present. Check whether the text needs updating, then \
+           then remove them from the call."
+
+end
+
+
+#eval checkDerivable #[``BEq, ``DecidableEq, ``Hashable, ``Inhabited, ``Nonempty, ``Ord, ``Repr, ``SizeOf, ``TypeName, ``LawfulBEq, ``ReflBEq]
+
 open Verso Doc Elab ArgParse in
+open Lean in
 open SubVerso Highlighting in
 @[directive_expander derivableClassList]
 def derivableClassList : DirectiveExpander
@@ -35,11 +68,13 @@ def derivableClassList : DirectiveExpander
     ArgParse.done.run args
     if contents.size > 0 then throwError "Expected empty directive"
     let classNames ← derivableClasses
-    let itemStx ← classNames.filter (!(`Lean).isPrefixOf ·) |>.mapM fun n => do
+    let itemStx ← classNames.mapM fun n => do
       let hl : Highlighted ← constTok n n.toString
       `(Inline.other {Verso.Genre.Manual.InlineLean.Inline.name with data := ToJson.toJson $(quote hl)} #[Inline.code $(quote n.toString)])
     let theList ← `(Verso.Doc.Block.ul #[$[⟨#[Verso.Doc.Block.para #[$itemStx]]⟩],*])
     return #[theList]
+
+open Lean Elab Command
 
 #doc (Manual) "Deriving Handlers" =>
 %%%
@@ -54,6 +89,7 @@ They are provided with all of the names in the mutual block for which the instan
 When a handler returns {lean}`true`, no further handlers are called.
 
 Lean includes deriving handlers for the following classes:
+
 :::derivableClassList
 :::
 
@@ -62,6 +98,11 @@ Lean includes deriving handlers for the following classes:
 
 ::::keepEnv
 :::example "Deriving Handlers"
+
+```imports -show
+import Lean.Elab
+```
+
 Instances of the {name}`IsEnum` class demonstrate that a type is a finite enumeration by providing a bijection between the type and a suitably-sized {name}`Fin`:
 ```lean
 class IsEnum (α : Type) where

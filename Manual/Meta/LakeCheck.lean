@@ -29,18 +29,15 @@ open Lean.Elab.Tactic.GuardMsgs
 namespace Manual
 
 private partial def parseOpts [Monad m] [MonadInfoTree m] [MonadLiftT CoreM m] [MonadEnv m] [MonadError m] : ArgParse m (List String) :=
-  (many (.positional `subcommand stringOrIdent))
+  (.many (.positional `subcommand stringOrIdent))
 where
-  many {α} (p : ArgParse m α) : ArgParse m (List α) :=
-    (· :: ·) <$> p <*> many p <|> pure []
-
   stringOrIdent : ValDesc m String := {
     get
       | .name x => pure <| x.getId.toString (escape := false)
       | .str x => pure x.getString
       | .num n => throwErrorAt n "Expected string or identifier"
-
-    description := "string or identifier"
+    signature := .Ident ∪ .String
+    description := "Subcommand"
   }
 
 
@@ -60,6 +57,31 @@ def lakeHelp : CodeBlockExpander
     let lakeOutput := out.stdout
 
     discard <| expectString "'lake --help' output" str lakeOutput (useLine := useLine)
+
+    return #[]
+where
+  -- Ignore the version spec or empty lines to reduce false positives
+  useLine (l : String) : Bool :=
+    !l.isEmpty && !"Lake version ".isPrefixOf l
+
+/--
+Check that the output of `lake CMD help` has not changed unexpectedly.
+
+This was introduced to get CI unstuck when `lake --help cache` was broken temporarily, but `lake cache help` worked.
+-/
+@[code_block_expander lakeCacheHelp]
+def lakeCacheHelp : CodeBlockExpander
+  | args, str => do
+    let sub ← parseOpts.run args
+    let args := #["cache", "help"] ++ sub
+    let out ← IO.Process.output {cmd := "lake", args}
+    if out.exitCode != 0 then
+      throwError
+        m!"When running 'lake --help', the exit code was {out.exitCode}\n" ++
+        m!"Stderr:\n{out.stderr}\n\nStdout:\n{out.stdout}\n\n"
+    let lakeOutput := out.stdout
+
+    discard <| expectString s!"'lake {sub} help' output" str lakeOutput (useLine := useLine)
 
     return #[]
 where

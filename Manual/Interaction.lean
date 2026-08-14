@@ -28,9 +28,9 @@ Lean's interactive features are based on a different paradigm.
 Rather than a separate command prompt outside of the program, Lean provides {tech}[commands] for accomplishing the same tasks in the context of a source file.
 By convention, commands that are intended for interactive use rather than as part of a durable code artifact are prefixed with {keyword}`#`.
 
-Information from Lean commands is available in the {deftech}_message log_, which accumulates output from the elaborator({tech key := "elaborator"}[繁释器]).
+Information from Lean commands is available in the {deftech}_message log_, which accumulates output from the {tech (key := "Lean elaborator")}[elaborator].
 Each entry in the message log is associated with a specific source range and has a {deftech}_severity_.
-There are three severities: {lean type:="Lean.MessageSeverity"}`information` is used for messages that do not indicate a problem, {lean type:="Lean.MessageSeverity"}`warning` indicates a potential problem, and {lean type:="Lean.MessageSeverity"}`error` indicates a definite problem.
+There are three severities: {lean  (type := "Lean.MessageSeverity")}`information` is used for messages that do not indicate a problem, {lean  (type := "Lean.MessageSeverity")}`warning` indicates a potential problem, and {lean  (type := "Lean.MessageSeverity")}`error` indicates a definite problem.
 For interactive commands, results are typically returned as informational messages that are associated with the command's leading keyword.
 
 # Evaluating Terms
@@ -56,11 +56,11 @@ Use {keywordOf Lean.reduceCmd}`#reduce` to instead reduce terms using the reduct
 
 :::
 
-{keywordOf Lean.Parser.Command.eval}`#eval` always {tech key:="elaborator"}[elaborates] and compiles the provided term.
+{keywordOf Lean.Parser.Command.eval}`#eval` always {tech (key := "Lean elaborator")}[elaborates] and compiles the provided term.
 It then checks whether the term transitively depends on any uses of {lean}`sorry`, in which case evaluation is terminated unless the command was invoked as {keywordOf Lean.Parser.Command.eval}`#eval!`.
 This is because compiled code may rely on compile-time invariants (such as array lookups being in-bounds) that are ensured by proofs of suitable statements, and running code that contains incomplete proofs (or uses of {lean}`sorry` that “prove” incorrect statements) can cause Lean itself to crash.
 
-```lean (show := false)
+```lean -show
 section
 variable (m : Type → Type)
 open Lean.Elab.Command (CommandElabM)
@@ -81,12 +81,63 @@ The way the code is run depends on its type:
   The compiled code is run, and the result is displayed.
 
 Auxiliary definitions or other environment modifications that result from elaborating the term in {keywordOf Lean.Parser.Command.eval}`#eval` are discarded.
-If the term is an action in a metaprogramming monad, then changes made to the environment by the running the monadic action are preserved.
+If the term is an action in a metaprogramming monad, then changes made to the environment by running the monadic action are preserved.
 :::
 
-```lean (show := false)
+```lean -show
 end
 ```
+
+
+When used in a {tech}`module`, {keywordOf Lean.Parser.Command.eval}`#eval` reveals a difference between the way the Lean language server and the Lean compiler process files.
+Because it runs code at compile time, {keywordOf Lean.Parser.Command.eval}`#eval` requires that its code is available in the {tech}[meta phase].
+To make easier to experiment with a module, the language server makes all imported modules available in the meta phase, while the compiler strictly adheres to the {keywordOf Lean.Parser.Module.import}`meta` declarations.
+As a result, modules that use {keywordOf Lean.guardMsgsCmd}`#guard_msgs` together with {keywordOf Lean.Parser.Command.eval}`#eval` to embed lightweight tests may elaborate successfully in the language server but fail during a build.
+To fix this, the definitions can be imported with {keywordOf Lean.Parser.Module.import}`meta import` in the module that contains the test:
+
+::::example "Evaluation and Meta"
+:::leanModules -server +error
+```leanModule (moduleName := Eval.Even)
+module
+public section
+def isEven (n : Nat) : Bool :=
+  n % 2 = 0
+
+```
+```leanModule (moduleName := Eval) (name := noMetaEval)
+module
+import Eval.Even
+
+/-- info: [true, false] -/
+#guard_msgs in
+#eval [isEven 4, isEven 5]
+```
+```leanOutput noMetaEval
+❌️ Docstring on `#guard_msgs` does not match generated message:
+
+- info: [true, false]
++ error: Invalid `meta` definition `_eval`, `isEven` is not accessible here; consider adding `public meta import Eval.Even`
+```
+:::
+:::leanModules
+Importing {name}`isEven` to the meta phase fixes the problem:
+```leanModule (moduleName := Eval.Even)
+module
+public section
+def isEven (n : Nat) : Bool :=
+  n % 2 = 0
+```
+```leanModule (moduleName := Eval) (name := metaEval)
+module
+meta import Eval.Even
+
+/-- info: [true, false] -/
+#guard_msgs in
+#eval [isEven 4, isEven 5]
+```
+:::
+::::
+
 
 Results are displayed using a {name Lean.ToExpr}`ToExpr`, {name}`ToString`, or {name}`Repr` instance, if they exist.
 If not, and {option}`eval.derive.repr` is {lean}`true`, Lean attempts to derive a suitable {name}`Repr` instance.
@@ -96,11 +147,11 @@ Setting {option}`eval.pp` to {lean}`false` disables the use of {name Lean.ToExpr
 :::example "Displaying Output"
 
 {keywordOf Lean.Parser.Command.eval}`#eval` cannot display functions:
-```lean (name := funEval) (error := true)
+```lean (name := funEval) +error
 #eval fun x => x + 1
 ```
 ```leanOutput funEval
-could not synthesize a 'ToExpr', 'Repr', or 'ToString' instance for type
+Could not synthesize a `ToExpr`, `Repr`, or `ToString` instance for type
   Nat → Nat
 ```
 
@@ -119,12 +170,12 @@ Quadrant.nw
 The derived instance is not saved.
 Disabling {option}`eval.derive.repr` causes {keywordOf Lean.Parser.Command.eval}`#eval` to fail:
 
-```lean (name := quadEval2) (error := true)
+```lean (name := quadEval2) +error
 set_option eval.derive.repr false
 #eval Quadrant.nw
 ```
 ```leanOutput quadEval2
-could not synthesize a 'ToExpr', 'Repr', or 'ToString' instance for type
+Could not synthesize a `ToExpr`, `Repr`, or `ToString` instance for type
   Quadrant
 ```
 
@@ -158,7 +209,7 @@ In particular, functions defined using {tech}[well-founded recursion] or as {tec
 
 :::syntax command (title := "Reducing Terms")
 ```grammar
-#reduce $[(proofs := true)]? $[(types := true)]? $t
+#reduce $[($ident := $tm)]* $t
 ```
 
 {includeDocstring Lean.reduceCmd}
@@ -248,10 +299,10 @@ Attempting to add a string to a natural number fails, as expected:
 #check_failure "one" + 1
 ```
 ```leanOutput oneOne
-failed to synthesize
-  HAdd String Nat ?m.32
+failed to synthesize instance of type class
+  HAdd String Nat ?m.5
 
-Additional diagnostic information may be available using the `set_option diagnostics true` command.
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
 ```
 Nonetheless, a partially-elaborated term is available:
 ```leanOutput oneOne
@@ -269,11 +320,53 @@ tag := "hash-synth"
 ```grammar
 #synth $t
 ```
+:::
 
-The {keywordOf Lean.Parser.Command.synth}`#synth` command attempts to synthesize an instance for the provided class.
+The {keywordOf Lean.Parser.Command.synth}`#synth` command invokes Lean's {tech}[type class] resolution machinery and attempts to perform {ref "instance-synth"}[instance synthesis] to find an instance for the given type class.
 If it succeeds, then the resulting instance term is output.
 
+::::example "Synthesizing a Type Class Instance"
+
+:::paragraph
+Lean uses type classes to overload operations like addition.
+The `+` operator is notation for a call to {name}`HAdd.hAdd`, which is the single method in the {name}`HAdd` type class.
+This example shows that Lean will let us add two integers, and the result will be an integer:
+```lean (name := synthInstHAddNat)
+#synth HAdd Int Int Int
+```
+```leanOutput synthInstHAddNat
+instHAdd
+```
 :::
+
+:::paragraph
+By default, Lean does not show the implicit arguments in the output term.
+Instance arguments are implicit, however, which decreases the usefulness of this output for understanding instance synthesis.
+Setting the option {option}`pp.explicit` to {name}`true` causes Lean to display implicit arguments, including instances:
+```lean (name := synthInstHAddNat2)
+set_option pp.explicit true in
+#synth HAdd Int Int Int
+```
+```leanOutput synthInstHAddNat2
+@instHAdd Int Int.instAdd
+```
+:::
+
+:::paragraph
+Lean does not allow the addition of integers and strings, as demonstrated by this failure of type class instance synthesis:
+```lean (name := synthInstHAddNatInt) +error
+#synth HAdd Int String String
+```
+```leanOutput synthInstHAddNatInt
+failed to synthesize
+  HAdd Int String String
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.
+```
+:::
+
+
+::::
 
 # Querying the Context
 %%%
@@ -307,10 +400,13 @@ Adds the string literal to Lean's {tech}[message log].
 #print axioms $t
 ```
 
-Lists all axioms that the constant transitively relies on.
+Lists all axioms that the constant transitively relies on. See {ref "print-axioms"}[the documentation for axioms] for more information.
 :::
 
 :::example "Printing Axioms"
+```imports -show
+import Std.Tactic.BVDecide
+```
 
 These two functions each swap the elements in a pair of bitvectors:
 
@@ -338,8 +434,10 @@ The resulting proof makes use of a number of axioms:
 #print axioms swap_eq_swap'
 ```
 ```leanOutput axioms
-'swap_eq_swap'' depends on axioms: [propext, Classical.choice, Lean.ofReduceBool, Quot.sound]
+'swap_eq_swap'' depends on axioms: [propext, Classical.choice, Quot.sound, swap_eq_swap'._native.bv_decide.ax_3]
 ```
+
+The axiom {name}`swap_eq_swap'._native.bv_decide.ax_3` was generated by {tactic}`bv_decide`, showing that native code was used to translate an external proof certificate into a Lean proof term.
 :::
 
 :::syntax command (title := "Printing Equations")
@@ -363,7 +461,7 @@ def intersperse (x : α) : List α → List α
 ```
 ```leanOutput intersperse_eqns
 equations:
-theorem intersperse.eq_1.{u_1} : ∀ {α : Type u_1} (x y z : α) (zs : List α),
+@[backward_defeq] theorem intersperse.eq_1.{u_1} : ∀ {α : Type u_1} (x y z : α) (zs : List α),
   intersperse x (y :: z :: zs) = y :: x :: intersperse x (z :: zs)
 theorem intersperse.eq_2.{u_1} : ∀ {α : Type u_1} (x : α) (x_1 : List α),
   (∀ (y z : α) (zs : List α), x_1 = y :: z :: zs → False) → intersperse x x_1 = x_1
@@ -406,8 +504,8 @@ intersperse.eq_unfold.{u_1} :
 :::example "Scope Information"
 The {keywordOf Lean.Parser.Command.where}`#where` command displays all the modifications made to the current {tech}[section scope], both in the current scope and in the scopes in which it is nested.
 
-```lean (fresh := true) (name := scopeInfo)
-section
+```lean +fresh (name := scopeInfo)
+public section
 open Nat
 
 namespace A
@@ -415,7 +513,7 @@ variable (n : Nat)
 namespace B
 
 open List
-set_option pp.funBinderTypes true
+set_option pp.tagAppFns true
 
 #where
 
@@ -423,13 +521,15 @@ end A.B
 end
 ```
 ```leanOutput scopeInfo
+public section
+
 namespace A.B
 
 open Nat List
 
 variable (n : Nat)
 
-set_option pp.funBinderTypes true
+set_option pp.tagAppFns true
 ```
 
 :::
@@ -467,7 +567,7 @@ $c:command
 
 The {keywordOf Lean.guardMsgsCmd}`#guard_msgs` command can ensure that a set of test cases pass:
 
-````lean
+```lean
 def reverse : List α → List α := helper []
 where
   helper acc
@@ -481,7 +581,7 @@ where
 /-- info: ['c', 'b', 'a'] -/
 #guard_msgs in
 #eval reverse "abc".toList
-````
+```
 
 :::
 
@@ -498,7 +598,7 @@ The behavior of the {keywordOf Lean.guardMsgsCmd}`#guard_msgs` command can be sp
 These configuration options are provided in parentheses, separated by commas.
 :::
 
-::::syntax Lean.guardMsgsSpecElt (title := "Specifying {keyword}`#guard_msgs` Behavior") (open := false)
+::::syntax Lean.guardMsgsSpecElt (title := "Specifying {keyword}`#guard_msgs` Behavior") -open
 
 ```grammar
 $_:guardMsgsFilter
@@ -513,7 +613,7 @@ ordering := $_
 There are three kinds of options for {keywordOf Lean.guardMsgsCmd}`#guard_msgs`: filters, whitespace comparison strategies, and orderings.
 ::::
 
-:::syntax Lean.guardMsgsFilter (title := "Output Filters for {keyword}`#guard_msgs`") (open := false)
+:::syntax Lean.guardMsgsFilter (title := "Output Filters for {keyword}`#guard_msgs`") -open
 ```grammar
 $[drop]? all
 ```
@@ -532,7 +632,7 @@ $[drop]? error
 :::
 
 
-:::syntax Lean.guardMsgsWhitespaceArg (title := "Whitespace Comparison for `#guard_msgs`") (open := false)
+:::syntax Lean.guardMsgsWhitespaceArg (title := "Whitespace Comparison for `#guard_msgs`") -open
 ```grammar
 exact
 ```
@@ -555,9 +655,10 @@ Leading and trailing whitespace is always ignored when comparing messages. On to
 :::
 
 The option {option}`guard_msgs.diff` controls the content of the error message that {keywordOf Lean.guardMsgsCmd}`#guard_msgs` produces when the expected message doesn't match the produced message.
-By default, the error message shows the produced message, which can be compared with the expected message in the source file.
-When messages are large and only differ by a small amount, it can be difficult to spot the difference.
-Setting {option}`guard_msgs.diff` to `true` causes {keywordOf Lean.guardMsgsCmd}`#guard_msgs` to instead show a line-by-line difference, with a leading `+` used to indicate lines from the produced message and a leading `-` used to indicate lines from the expected message.
+By default, {keywordOf Lean.guardMsgsCmd}`#guard_msgs` shows a line-by-line difference, with a leading `+` used to indicate lines from the produced message and a leading `-` used to indicate lines from the expected message.
+When messages are large and only differ by a small amount, this can make it easier to notice where they differ.
+Setting {option}`guard_msgs.diff` to `false` causes {keywordOf Lean.guardMsgsCmd}`#guard_msgs` to instead show just the produced message, which can be compared with the expected message in the source file.
+This can be convenient if the difference between the message is confusing or overwhelming.
 
 {optionDocs guard_msgs.diff}
 
@@ -570,21 +671,23 @@ inductive Tree (α : Type u) : Type u where
   | branches : List (Tree α) → Tree α
 
 def Tree.big (n : Nat) : Tree Nat :=
-  if n = 0 then .val 0
-  else if n = 1 then .branches [.big 0]
-  else .branches [.big (n / 2), .big (n / 3)]
+  if n < 5 then .branches [.val n, .val (n - 1), .val n, .val (n - 2)]
+  else .branches [.big (n / 2),  .big (n / 3)]
 ```
 
 However, it can be difficult to spot where test failures come from when the output is large:
-```lean (error := true) (name := bigMsg)
+```lean +error (name := bigMsg)
+set_option guard_msgs.diff false
 /--
 info: Tree.branches
   [Tree.branches
-     [Tree.branches [Tree.branches [Tree.branches [Tree.val 0], Tree.val 0], Tree.branches [Tree.val 0]],
-      Tree.branches [Tree.branches [Tree.val 2], Tree.branches [Tree.val 0]]],
+     [Tree.branches
+        [Tree.branches [Tree.val 2, Tree.val 1, Tree.val 2, Tree.val 0],
+         Tree.branches [Tree.val 1, Tree.val 0, Tree.val 1, Tree.val 0],
+      Tree.branches [Tree.val 3, Tree.val 2, Tree.val 3, Tree.val 1]],
    Tree.branches
-     [Tree.branches [Tree.branches [Tree.val 0], Tree.branches [Tree.val 0]],
-      Tree.branches [Tree.branches [Tree.val 0], Tree.val 0]]]
+     [Tree.branches [Tree.val 3, Tree.val 2, Tree.val 3, Tree.val 1],
+      Tree.branches [Tree.val 2, Tree.val 1, Tree.val 2, Tree.val 0]]]
 -/
 #guard_msgs in
 #eval Tree.big 20
@@ -593,37 +696,43 @@ The evaluation produces:
 ```leanOutput bigMsg (severity := information)
 Tree.branches
   [Tree.branches
-     [Tree.branches [Tree.branches [Tree.branches [Tree.val 0], Tree.val 0], Tree.branches [Tree.val 0]],
-      Tree.branches [Tree.branches [Tree.val 0], Tree.branches [Tree.val 0]]],
+     [Tree.branches
+        [Tree.branches [Tree.val 2, Tree.val 1, Tree.val 2, Tree.val 0],
+         Tree.branches [Tree.val 1, Tree.val 0, Tree.val 1, Tree.val 0]],
+      Tree.branches [Tree.val 3, Tree.val 2, Tree.val 3, Tree.val 1]],
    Tree.branches
-     [Tree.branches [Tree.branches [Tree.val 0], Tree.branches [Tree.val 0]],
-      Tree.branches [Tree.branches [Tree.val 0], Tree.val 0]]]
+     [Tree.branches [Tree.val 3, Tree.val 2, Tree.val 3, Tree.val 1],
+      Tree.branches [Tree.val 2, Tree.val 1, Tree.val 2, Tree.val 0]]]
 ```
 
-while the {keywordOf Lean.guardMsgsCmd}`#guard_msgs` command reports this error:
+Without {option}`guard_msgs.diff`, the {keywordOf Lean.guardMsgsCmd}`#guard_msgs` command reports this error:
 ```leanOutput bigMsg (severity := error)
 ❌️ Docstring on `#guard_msgs` does not match generated message:
 
 info: Tree.branches
   [Tree.branches
-     [Tree.branches [Tree.branches [Tree.branches [Tree.val 0], Tree.val 0], Tree.branches [Tree.val 0]],
-      Tree.branches [Tree.branches [Tree.val 0], Tree.branches [Tree.val 0]]],
+     [Tree.branches
+        [Tree.branches [Tree.val 2, Tree.val 1, Tree.val 2, Tree.val 0],
+         Tree.branches [Tree.val 1, Tree.val 0, Tree.val 1, Tree.val 0]],
+      Tree.branches [Tree.val 3, Tree.val 2, Tree.val 3, Tree.val 1]],
    Tree.branches
-     [Tree.branches [Tree.branches [Tree.val 0], Tree.branches [Tree.val 0]],
-      Tree.branches [Tree.branches [Tree.val 0], Tree.val 0]]]
+     [Tree.branches [Tree.val 3, Tree.val 2, Tree.val 3, Tree.val 1],
+      Tree.branches [Tree.val 2, Tree.val 1, Tree.val 2, Tree.val 0]]]
 ```
 
 Enabling {option}`guard_msgs.diff` highlights the differences instead, making the error more apparent:
-```lean (error := true) (name := bigMsg')
+```lean +error (name := bigMsg')
 set_option guard_msgs.diff true in
 /--
 info: Tree.branches
   [Tree.branches
-     [Tree.branches [Tree.branches [Tree.branches [Tree.val 0], Tree.val 0], Tree.branches [Tree.val 0]],
-      Tree.branches [Tree.branches [Tree.val 2], Tree.branches [Tree.val 0]]],
+     [Tree.branches
+        [Tree.branches [Tree.val 2, Tree.val 1, Tree.val 2, Tree.val 0],
+         Tree.branches [Tree.val 1, Tree.val 0, Tree.val 1, Tree.val 0,
+      Tree.branches [Tree.val 3, Tree.val 2, Tree.val 3, Tree.val 1]],
    Tree.branches
-     [Tree.branches [Tree.branches [Tree.val 0], Tree.branches [Tree.val 0]],
-      Tree.branches [Tree.branches [Tree.val 0], Tree.val 0]]]
+     [Tree.branches [Tree.val 3, Tree.val 2, Tree.val 3, Tree.val 1],
+      Tree.branches [Tree.val 2, Tree.val 1, Tree.val 2, Tree.val 0]]]
 -/
 #guard_msgs in
 #eval Tree.big 20
@@ -633,12 +742,14 @@ info: Tree.branches
 
   info: Tree.branches
     [Tree.branches
-       [Tree.branches [Tree.branches [Tree.branches [Tree.val 0], Tree.val 0], Tree.branches [Tree.val 0]],
--       Tree.branches [Tree.branches [Tree.val 2], Tree.branches [Tree.val 0]]],
-+       Tree.branches [Tree.branches [Tree.val 0], Tree.branches [Tree.val 0]]],
+       [Tree.branches
+          [Tree.branches [Tree.val 2, Tree.val 1, Tree.val 2, Tree.val 0],
+-          Tree.branches [Tree.val 1, Tree.val 0, Tree.val 1, Tree.val 0,
++          Tree.branches [Tree.val 1, Tree.val 0, Tree.val 1, Tree.val 0]],
+        Tree.branches [Tree.val 3, Tree.val 2, Tree.val 3, Tree.val 1]],
      Tree.branches
-       [Tree.branches [Tree.branches [Tree.val 0], Tree.branches [Tree.val 0]],
-        Tree.branches [Tree.branches [Tree.val 0], Tree.val 0]]]
+       [Tree.branches [Tree.val 3, Tree.val 2, Tree.val 3, Tree.val 1],
+        Tree.branches [Tree.val 2, Tree.val 1, Tree.val 2, Tree.val 0]]]
 ```
 :::
 

@@ -48,7 +48,7 @@ tag := "Format"
 
 
 ::::leanSection
-```lean show:=false
+```lean -show
 open Std (Format)
 open Std.Format
 variable {str : String} {indent : String} {n : Nat}
@@ -93,6 +93,9 @@ The most important {name Std.Format}`Format` operations are:
 ::::
 
 :::example "Widths and Newlines"
+```imports -show
+import Std
+```
 ```lean
 open Std Format
 ```
@@ -112,7 +115,7 @@ def lst : Format := parenSeq nums
 where nums := [1, 2, 3, 4, 5].map (text s!"{·}")
 ```
 
-```lean show := false
+```lean -show -keep
 -- check statement in next paragraph
 /-- info: 120 -/
 #check_msgs in
@@ -216,7 +219,9 @@ def parenSeq (xs : List Format) : Format :=
 
 {name}`nums` contains the numbers one through twenty, as a list of formats:
 ```lean
-def nums : List Format := Nat.fold 20 (init := []) fun i _ ys => text s!"{20 - i}" :: ys
+def nums : List Format :=
+  Nat.fold 20 (init := []) fun i _ ys =>
+    text s!"{20 - i}" :: ys
 ```
 
 ```lean (name := nums)
@@ -292,7 +297,8 @@ Using {name}`fill`, on the other hand, only inserts newlines as required to avoi
 
 The behavior of {name}`fill` can be seen clearly with longer sequences:
 ```lean (name := filledbigp30)
-#eval IO.println (pretty (width := 30) (fill (parenSeq (nums ++ nums ++ nums ++ nums))))
+#eval IO.println <|
+  pretty (width := 30) (fill (parenSeq (nums ++ nums ++ nums ++ nums)))
 ```
 ```leanOutput filledbigp30
 ( 1 2 3 4 5 6 7 8 9 10 11 12
@@ -396,10 +402,10 @@ tag := "format-empty"
 The empty string does not have a single unique representative in {name}`Std.Format`.
 All of the following represent the empty string:
 
-* {lean type:="Std.Format"}`.nil`
-* {lean type:="Std.Format"}`.text ""`
-* {lean type:="Std.Format"}`.text "" ++ .nil`
-* {lean type:="Std.Format"}`.nil ++ .text ""`
+* {lean  (type := "Std.Format")}`.nil`
+* {lean  (type := "Std.Format")}`.text ""`
+* {lean  (type := "Std.Format")}`.text "" ++ .nil`
+* {lean  (type := "Std.Format")}`.nil ++ .text ""`
 
 Use {name}`Std.Format.isEmpty` to check whether a document contains zero characters, and {name}`Std.Format.isNil` to specifically check whether it is the constructor {lean}`Std.Format.nil`.
 :::
@@ -555,17 +561,17 @@ In some cases, however, it's necessary to write an instance by hand:
   Because programs can't inspect proofs, they cannot be rendered directly.
   This is a common reason why a type would have an interface other than its constructors.
 
-* Types with special syntax, such as {name}`List`, should use this syntax in their {name}`Repr` isntances.
+* Types with special syntax, such as {name}`List`, should use this syntax in their {name}`Repr` instances.
 
 * The derived {name}`Repr` instance for structures uses {tech}[structure instance] notation.
   A hand-written instance can use the constructor's name explicitly or use {tech}[anonymous constructor syntax].
 
-```lean (show := false)
+```lean -show -keep
 /-- info: Std.HashSet.ofList [0, 3, 5] -/
 #check_msgs in
 #eval IO.println <| repr (({} : Std.HashSet Nat).insert 3 |>.insert 5 |>.insert 0)
 ```
-```lean (show := false) (keep := false)
+```lean -show -keep
 structure S where
   x : Nat
   y : Nat
@@ -688,7 +694,9 @@ some (N.NatOrInt.int (-5))
 ```
 
 ```lean (name := lstnat3)
-#eval IO.println (Std.Format.pretty (width := 3) (repr <| (List.range 10).map (NatOrInt.nat)))
+#eval IO.println <|
+  Std.Format.pretty (width := 3) <|
+    repr <| (List.range 10).map NatOrInt.nat
 ```
 ```leanOutput lstnat3
 [N.NatOrInt.nat
@@ -716,17 +724,26 @@ some (N.NatOrInt.int (-5))
 :::
 
 :::example "Infix Syntax"
+This example demonstrates the use of precedences to encode a left-associative pretty printer.
+The type {lean}`AddExpr` represents expressions with constants and addition:
 ```lean
 inductive AddExpr where
   | nat : Nat → AddExpr
   | add : AddExpr → AddExpr → AddExpr
+```
 
+The {name}`OfNat` and {name}`Add` instances provide a more convenient syntax for {name}`AddExpr`:
+```lean
 instance : OfNat AddExpr n where
   ofNat := .nat n
 
 instance : Add AddExpr where
   add := .add
+```
 
+The {inst}`Repr AddExpr` instance should insert only the necessary parentheses.
+Lean's addition operator is left-associative, with precedence 65, so the recursive call to the left uses precedence 64 and the operator itself is parenthesized if the current context has precedence greater than or equal to 65:
+```lean
 protected def AddExpr.reprPrec : AddExpr → Nat → Std.Format
   | .nat n, p  =>
     Repr.reprPrec n p
@@ -740,7 +757,7 @@ protected def AddExpr.reprPrec : AddExpr → Nat → Std.Format
 instance : Repr AddExpr := ⟨AddExpr.reprPrec⟩
 ```
 
-```lean (show := false)
+```lean -show -keep
 -- Test that the guidelines provided for infix operators match Lean's own pretty printer
 /--
 info: 1 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 + 10 + 11 + 1 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 + 10 + 11 + 1 + 2 + 3 + 4 + 5 + 6 + 7 +
@@ -764,12 +781,45 @@ info: 1 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 + 10 + 11 + 1 + 2 + 3 + 4 + 5 + 6 + 7 + 
 
 ```
 
-```lean
+Regardless of the input's parenthesization, this instance inserts only the necessary parentheses:
+```lean (name := prec1)
 #eval IO.println (repr (((2 + 3) + 4) : AddExpr))
+```
+```leanOutput prec1
+2 + 3 + 4
+```
+```lean (name:=prec2)
 #eval IO.println (repr ((2 + 3 + 4) : AddExpr))
+```
+```leanOutput prec2
+2 + 3 + 4
+```
+```lean (name:=prec3)
 #eval IO.println (repr ((2 + (3 + 4)) : AddExpr))
+```
+```leanOutput prec3
+2 + (3 + 4)
+```
+```lean (name:=prec4)
 #eval IO.println (repr ([2 + (3 + 4), (2 + 3) + 4] : List AddExpr))
-#eval IO.println <| (repr ([2 + (3 + 4), (2 + 3) + 4] : List AddExpr)).pretty (width := 0)
+```
+```leanOutput prec4
+[2 + (3 + 4), 2 + 3 + 4]
+```
+The uses of {name Std.Format.group}`group`, {name Std.Format.nestD}`nestD`, and {name Std.Format.line}`line` in the implementation lead to the expected newlines and indentation in a narrow context:
+```lean (name:=prec5)
+#eval ([2 + (3 + 4), (2 + 3) + 4] : List AddExpr)
+  |> repr
+  |>.pretty (width := 0)
+  |> IO.println
+```
+```leanOutput prec5
+[2 +
+   (3 +
+      4),
+ 2 +
+     3 +
+   4]
 ```
 :::
 
@@ -785,7 +835,7 @@ The latter is defined after the former and is thus selected when possible; howev
 If the {name}`Repr` instance for a type never generates spaces or newlines, then it should have a {name}`ReprAtom` instance.
 Lean has {name}`ReprAtom` instances for types such as {name}`String`, {name}`UInt8`, {name}`Nat`, {name}`Char`, and {name}`Bool`.
 
-```lean (show := false)
+```lean -show
 open Lean Elab Command in
 #eval show CommandElabM Unit from
   for x in [``String, ``UInt8, ``Nat, ``Char, ``Bool] do

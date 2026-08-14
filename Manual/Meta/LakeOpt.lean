@@ -15,9 +15,9 @@ import Verso.Code
 
 import Manual.Meta.Basic
 
-
-open Lean Elab
 open Verso ArgParse Doc Elab Genre.Manual Html Code Highlighted.WebAssets
+open Lean.Doc.Syntax
+open Lean Elab
 
 namespace Manual
 
@@ -33,8 +33,8 @@ def LakeOptKind.ns : LakeOptKind → String
 open LakeOptKind in
 instance : Quote LakeOptKind where
   quote
-    | .flag => Syntax.mkCApp ``flag #[]
-    | .option => Syntax.mkCApp ``option #[]
+    | .flag => Syntax.mkCApp ``LakeOptKind.flag #[]
+    | .option => Syntax.mkCApp ``LakeOptKind.option #[]
 
 def Inline.lakeOptDef (name : String) (kind : LakeOptKind) (argMeta : Option String) : Inline where
   name := `Manual.lakeOptDef
@@ -54,6 +54,7 @@ def LakeOptDefOpts.parse [Monad m] [MonadError m] : ArgParse m LakeOptDefOpts :=
 where
   optKind : ValDesc m LakeOptKind := {
     description := "'flag' or 'option'",
+    signature := .Ident,
     get
       | .name x =>
         match x.getId with
@@ -84,17 +85,24 @@ def lakeOptDef : RoleExpander
       | throwErrorAt arg "Expected code literal with the option or flag"
     let origName := name.getString
     let name := origName.takeWhile fun c => c == '-' || c.isAlphanum
-    let valMeta := origName.drop name.length |>.dropWhile fun c => !c.isAlphanum
+    let name := name.copy
+    let valMeta := origName.drop name.length |>.dropWhile fun (c : Char) => !c.isAlphanum
 
-    pure #[← `(show Verso.Doc.Inline Verso.Genre.Manual from .other (Manual.Inline.lakeOptDef $(quote name) $(quote kind) $(quote (if valMeta.isEmpty then none else some valMeta : Option String))) #[Inline.code $(quote name)])]
+    pure #[← `(show Verso.Doc.Inline Verso.Genre.Manual from .other (Manual.Inline.lakeOptDef $(quote name) $(quote kind) $(quote (if valMeta.isEmpty then none else some valMeta.copy : Option String))) #[Inline.code $(quote name)])]
+
+open Verso.Search in
+def lakeOptDomainMapper : DomainMapper :=
+  DomainMapper.withDefaultJs lakeOptDomain "Lake Command-Line Option" "lake-option-domain" |>.setFont { family := .code }
 
 @[inline_extension lakeOptDef]
 def lakeOptDef.descr : InlineDescr where
+  init s := s.addQuickJumpMapper lakeOptDomain lakeOptDomainMapper
+
   traverse id data _ := do
     let .arr #[.str name, jsonKind, _] := data
-      | logError s!"Failed to deserialize metadata for Lake option def: {data}"; return none
+      | reportError s!"Failed to deserialize metadata for Lake option def: {data}"; return none
     let .ok kind := fromJson? (α := LakeOptKind) jsonKind
-      | logError s!"Failed to deserialize metadata for Lake option def '{name}' kind: {jsonKind}"; return none
+      | reportError s!"Failed to deserialize metadata for Lake option def '{name}' kind: {jsonKind}"; return none
     modify fun s =>
       s |>.saveDomainObject lakeOptDomain name id |>.saveDomainObjectData lakeOptDomain name jsonKind
 
@@ -107,15 +115,15 @@ def lakeOptDef.descr : InlineDescr where
   toHtml :=
     open Verso.Output.Html in
     some <| fun goB id data content => do
-      let .arr #[.str name, _jsonKind, meta] := data
-        | HtmlT.logError s!"Failed to deserialize metadata for Lake option def: {data}"; content.mapM goB
+      let .arr #[.str name, _jsonKind, metadata] := data
+        | reportError s!"Failed to deserialize metadata for Lake option def: {data}"; content.mapM goB
 
       let idAttr := (← read).traverseState.htmlId id
 
-      let .ok meta := FromJson.fromJson? (α := Option String) meta
-        | HtmlT.logError s!"Failed to deserialize argument metadata for Lake option def: {meta}"; content.mapM goB
+      let .ok metadata := FromJson.fromJson? (α := Option String) metadata
+        | reportError s!"Failed to deserialize argument metadata for Lake option def: {metadata}"; content.mapM goB
 
-      if let some mv := meta then
+      if let some mv := metadata then
         pure {{<code {{idAttr}} class="lake-opt">{{name}}"="{{mv}}</code>}}
       else
         pure {{<code {{idAttr}} class="lake-opt">{{name}}</code>}}
@@ -135,6 +143,7 @@ def lakeOpt : RoleExpander
     let `(inline|code( $name:str )) := arg
       | throwErrorAt arg "Expected code literal with the option or flag"
     let optName := name.getString.takeWhile fun c => c == '-' || c.isAlphanum
+    let optName := optName.copy
 
     pure #[← `(show Verso.Doc.Inline Verso.Genre.Manual from .other (Manual.Inline.lakeOpt $(quote optName) $(quote name.getString)) #[Inline.code $(quote name.getString)])]
 
@@ -149,13 +158,13 @@ def lakeOpt.descr : InlineDescr where
 
   toHtml :=
     open Verso.Output.Html in
-    some <| fun goB _id data content => do
+    some <| fun goB _ data content => do
       let .arr #[.str name, .str original] := data
-        | HtmlT.logError s!"Failed to deserialize metadata for Lake option ref: {data}"; content.mapM goB
+        | reportError s!"Failed to deserialize metadata for Lake option ref: {data}"; content.mapM goB
 
       if let some obj := (← read).traverseState.getDomainObject? lakeOptDomain name then
         for id in obj.ids do
           if let some dest := (← read).traverseState.externalTags[id]? then
-            return {{<code class="lake-opt"><a href={{dest.link}} class="lake-command">{{name}}</a>{{original.drop name.length}}</code>}}
+            return {{<code class="lake-opt"><a href={{dest.link}} class="lake-command">{{name}}</a>{{original.drop name.length |>.copy}}</code>}}
 
       pure {{<code class="lake-opt">{{original}}</code>}}

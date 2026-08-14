@@ -122,7 +122,7 @@ Instances for recursive inductive types are common, however.
 There is a standard idiom to work around this limitation: define a recursive function independently of the instance, and then refer to it in the instance definition.
 By convention, these recursive functions have the name of the corresponding method, but are defined in the type's namespace.
 
-::: example "Instances are not recursive"
+:::example "Instances are not recursive"
 Given this definition of {lean}`NatTree`:
 ```lean
 inductive NatTree where
@@ -130,26 +130,32 @@ inductive NatTree where
   | branch (left : NatTree) (val : Nat) (right : NatTree)
 ```
 the following {name}`BEq` instance fails:
-```lean (error := true) (name := beqNatTreeFail)
+```lean +error (name := beqNatTreeFail)
 instance : BEq NatTree where
   beq
-    | .leaf, .leaf => true
-    | .branch l1 v1 r1, .branch l2 v2 r2 => l1 == l2 && v1 == v2 && r1 == r2
-    | _, _ => false
+    | .leaf, .leaf =>
+      true
+    | .branch l1 v1 r1, .branch l2 v2 r2 =>
+      l1 == l2 && v1 == v2 && r1 == r2
+    | _, _ =>
+      false
 ```
 with errors in both the left and right recursive calls that read:
 ```leanOutput beqNatTreeFail
-failed to synthesize
+failed to synthesize instance of type class
   BEq NatTree
 
-Additional diagnostic information may be available using the `set_option diagnostics true` command.
+Hint: Adding the command `deriving instance BEq for NatTree` may allow Lean to derive the missing instance.
 ```
 Given a suitable recursive function, such as {lean}`NatTree.beq`:
 ```lean
 def NatTree.beq : NatTree → NatTree → Bool
-  | .leaf, .leaf => true
-  | .branch l1 v1 r1, .branch l2 v2 r2 => l1 == l2 && v1 == v2 && r1 == r2
-  | _, _ => false
+  | .leaf, .leaf =>
+    true
+  | .branch l1 v1 r1, .branch l2 v2 r2 =>
+    NatTree.beq l1 l2 && v1 == v2 && NatTree.beq r1 r2
+  | _, _ =>
+    false
 ```
 the instance can be created in a second step:
 ```lean
@@ -177,17 +183,17 @@ inductive NatRoseTree where
 ```
 Checking the equality of rose trees requires checking equality of arrays.
 However, instances are not typically available for instance synthesis during their own definitions, so the following definition fails, even though {lean}`NatRoseTree.beq` is a recursive function and is in scope in its own definition.
-```lean (error := true) (name := natRoseTreeBEqFail) (keep := false)
+```lean +error (name := natRoseTreeBEqFail) -keep
 def NatRoseTree.beq : (tree1 tree2 : NatRoseTree) → Bool
   | .node val1 children1, .node val2 children2 =>
     val1 == val2 &&
     children1 == children2
 ```
 ```leanOutput natRoseTreeBEqFail
-failed to synthesize
+failed to synthesize instance of type class
   BEq (Array NatRoseTree)
 
-Additional diagnostic information may be available using the `set_option diagnostics true` command.
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
 ```
 
 To solve this, a local {lean}`BEq NatRoseTree` instance may be `let`-bound:
@@ -213,7 +219,7 @@ This is done using ordinary Lean function syntax.
 Just as with other instances, the function in question is not available for instance synthesis in its own definition.
 ::::keepEnv
 :::example "An instance for a sum class"
-```lean (show := false)
+```lean -show
 axiom α : Type
 ```
 Because {lean}`DecidableEq α` is an abbreviation for {lean}`(a b : α) → Decidable (Eq a b)`, its arguments can be used directly, as in this example:
@@ -248,7 +254,7 @@ inductive StringList where
   | cons (hd : String) (tl : StringList)
 ```
 In the following attempt at defining a {name}`DecidableEq` instance, instance synthesis invoked while elaborating the inner {keywordOf termIfThenElse}`if` fails because the instance is not available for instance synthesis in its own definition:
-```lean (error := true) (name := stringListNoRec) (keep := false)
+```lean +error (name := stringListNoRec) -keep
 instance : DecidableEq StringList
   | .nil, .nil => .isTrue rfl
   | .cons h1 t1, .cons h2 t2 =>
@@ -262,10 +268,10 @@ instance : DecidableEq StringList
   | .nil, .cons _ _ | .cons _ _, .nil => .isFalse nofun
 ```
 ```leanOutput stringListNoRec
-failed to synthesize
+failed to synthesize instance of type class
   Decidable (t1 = t2)
 
-Additional diagnostic information may be available using the `set_option diagnostics true` command.
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
 ```
 However, because it is an ordinary Lean function, it can recursively refer to its own explicitly-provided name:
 ```lean
@@ -295,7 +301,7 @@ tag := "instance-priorities"
 Instances may be assigned {deftech}_priorities_.
 During instance synthesis, higher-priority instances are preferred; see {ref "instance-synth"}[the section on instance synthesis] for details of instance synthesis.
 
-:::syntax prio open:=false (title := "Instance Priorities")
+:::syntax prio -open (title := "Instance Priorities")
 Priorities may be numeric:
 ```grammar
 $n:num

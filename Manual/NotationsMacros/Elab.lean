@@ -13,7 +13,7 @@ import Lean.Parser.Command
 open Manual
 
 open Verso.Genre
-open Verso.Genre.Manual
+open Verso.Genre.Manual hiding seeAlso
 open Verso.Genre.Manual.InlineLean
 
 set_option pp.rawOnError true
@@ -26,6 +26,12 @@ set_option linter.unusedVariables false
 tag := "elaborators"
 %%%
 
+:::seeAlso
+* Elaborators process {ref "syntax-ext"}[new syntax extensions].
+
+* {ref "quote-patterns"}[Quotation patterns] are the most typical way to destructure syntax.
+:::
+
 While macros allow Lean to be extended by translating new syntax into existing syntax, {deftech}_elaborators_ allow the new syntax to be processed directly.
 Elaborators have access to everything that Lean itself uses to implement each feature of the language.
 Defining a new elaborator allows a language extension to be just as powerful as any built-in feature of Lean.
@@ -35,7 +41,7 @@ Elaborators come in two varieties:
 
  * {deftech}_Command elaborators_ are used to add new commands to Lean.
    Commands are implemented as side effects: they may add new constants to the global environment, extend compile-time tables such as the one that tracks {tech}[instances], they can provide feedback in the form of information, warnings, or errors, and they have full access to the {name}`IO` monad.
-   Command elaborators are associated with the {tech key:="kind"}[syntax kinds] that they can handle.
+   Command elaborators are associated with the {tech (key := "kind")}[syntax kinds] that they can handle.
 
  * {deftech}_Term elaborators_ are used to implement new terms by translating the syntax into Lean's core type theory.
    They can do everything that command elaborators can do, and they additionally have access to the local context in which the term is being elaborated.
@@ -84,13 +90,19 @@ tactic $_
 # Command Elaborators
 
 :::::leanSection
-```lean (show := false)
+```lean -show
 open Lean Elab Command
 ```
 A command elaborator has type {name}`CommandElab`, which is an abbreviation for {lean}`Syntax → CommandElabM Unit`.
 Command elaborators may be implicitly defined using {keywordOf Lean.Parser.Command.elab_rules}`elab_rules`, or explicitly by defining a function and applying the {attr}`command_elab` attribute.
 
 :::example "Querying the Environment"
+```imports -show
+import Lean.Elab
+```
+```lean -show
+open Lean
+```
 
 A command elaborator can be used to query the environment to discover how many constants have a given name.
 This example uses {name}`getEnv` from the {name}`MonadEnv` class to get the current environment.
@@ -104,7 +116,7 @@ elab_rules : command
   | `(#count_constants%$tok $x) => do
     let pattern := x.getId
     let env ← getEnv
-    let mut count := 0
+    let mut count : Nat := 0
     for (y, _) in env.constants do
       if pattern.isSuffixOf y then
         count := count + 1
@@ -129,7 +141,7 @@ Found 2 instances of 'interestingName'
 # Term Elaborators
 
 :::::leanSection
-```lean (show := false)
+```lean -show
 open Lean Elab Term
 ```
 A term elaborator has type {name}`TermElab`, which is an abbreviation for {lean}`Syntax → Option Expr → TermElabM Expr`.
@@ -137,11 +149,17 @@ The optional {lean}`Expr` parameter is the type expected for the term being elab
 Like command elaborators, term elaborators may be implicitly defined using {keywordOf Lean.Parser.Command.elab_rules}`elab_rules`, or explicitly by defining a function and applying the {attr}`term_elab` attribute.
 
 :::example "Avoiding a Type"
+```imports -show
+import Lean.Elab
+```
+```lean -show
+open Lean Elab Term
+```
 
 This examples demonstrates an elaborator for syntax that is the opposite of a type ascription.
 The provided term may have any type _other_ than the one indicated, and metavariables are solved pessimistically.
 In this example, {name}`elabType` invokes the term elaborator and then ensures that the resulting term is a type.
-{name}`Meta.inferType` infers a type for a term, and {name}`Meta.isDefEq` attempts to make two terms {tech key:="definitional equality"}[definitionally equal] by unification, returning {lean}`true` if it succeeds.
+{name}`Meta.inferType` infers a type for a term, and {name}`Meta.isDefEq` attempts to make two terms {tech (key := "definitional equality")}[definitionally equal] by unification, returning {lean}`true` if it succeeds.
 
 ```lean
 syntax (name := notType) "(" term  " !: " term ")" : term
@@ -159,7 +177,7 @@ def elabNotType : TermElab := fun stx _ => do
 ```
 
 If the type position does not contain a type, then `elabType` throws an error:
-```lean (name := notType) (error := true)
+```lean (name := notType) +error
 #eval ([1, 2, 3] !: "not a type")
 ```
 ```leanOutput notType
@@ -176,15 +194,15 @@ If the term's type is definitely not equal to the provided type, then elaboratio
 ```
 
 If the types match, an error is thrown:
-```lean (name := nope) (error := true)
+```lean (name := nope) +error
 #eval (5 !: Nat)
 ```
 ```leanOutput nope
 Got unwanted type Nat
 ```
 
-The type equality check may fill in missing information, so {lean type :="String"}`sorry` (which may have any type) is also rejected:
-```lean (name := unif) (error := true)
+The type equality check may fill in missing information, so {lean  (type := "String")}`sorry` (which may have any type) is also rejected:
+```lean (name := unif) +error
 #eval (sorry !: String)
 ```
 ```leanOutput unif
@@ -193,6 +211,12 @@ Got unwanted type String
 :::
 
 :::example "Using Any Local Variable"
+```imports -show
+import Lean.Elab
+```
+```lean -show
+open Lean
+```
 
 Term elaborators have access to the expected type and to the local context.
 This can be used to create a term analogue of the {tactic}`assumption` tactic.
@@ -235,7 +259,7 @@ It chooses the most recent suitable variable, as desired:
 ```
 
 When no assumption is suitable, it returns an error that describes the attempt:
-```lean (name := noFun) (error := true)
+```lean (name := noFun) +error
 #eval
   let x := Nat.zero
   let y := "hello"
@@ -248,20 +272,20 @@ No assumption in [x, y, f] has type Int → Int
 
 Because it uses unification, the natural number literal is chosen here, because numeric literals may have any type with an {name}`OfNat` instance.
 Unfortunately, there is no {name}`OfNat` instance for functions, so instance synthesis later fails.
-```lean (name := poly) (error := true)
+```lean (name := poly) +error
 #eval
   let x := 5
   let y := "hello"
   (anything! : Int → Int)
 ```
 ```leanOutput poly
-failed to synthesize
+failed to synthesize instance of type class
   OfNat (Int → Int) 5
 numerals are polymorphic in Lean, but the numeral `5` cannot be used in a context where the expected type is
   Int → Int
 due to the absence of the instance above
 
-Additional diagnostic information may be available using the `set_option diagnostics true` command.
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
 ```
 
 :::

@@ -25,12 +25,12 @@ tag := "concurrency"
 %%%
 
 :::leanSection
-```lean (show := false)
+```lean -show
 variable {α : Type u}
 ```
 
 {deftech}_Tasks_ are the fundamental primitive for writing multi-threaded code.
-A {lean}`Task α` represents a computation that, at some point, will {deftech}_resolve_ to a value of type `α`; it may be computed on a separate thread.
+A {lean}`Task α` represents a computation that, at some point, will {tech (key := "resolve promise")}_resolve_ to a value of type `α`; it may be computed on a separate thread.
 When a task has resolved, its value can be read; attempting to get the value of a task before it resolves causes the current thread to block until the task has resolved.
 Tasks are similar to promises in JavaScript, `JoinHandle` in Rust, and `Future` in Scala.
 
@@ -44,18 +44,18 @@ Similarly, {name}`BaseIO.asTask` and {name}`EIO.asTask` create tasks in other {n
 These tasks may have side effects, and can communicate with other tasks.
 :::
 
-When the last reference to a task is dropped it is {deftech key:="cancel"}_cancelled_.
+When the last reference to a task is dropped it is {deftech (key := "cancel")}_cancelled_.
 Pure tasks created with {name}`Task.spawn` are terminated upon cancellation.
 Tasks spawned with {name}`IO.asTask`, {name}`EIO.asTask`, or {name}`BaseIO.asTask` continue executing and must explicitly check for cancellation using {name}`IO.checkCanceled`.
 Tasks may be explicitly cancelled using {name}`IO.cancel`.
 
 The Lean runtime maintains a thread pool for running tasks.
-The size of the thread pool is determined by the environment variable {envVar (def := true)}`LEAN_NUM_THREADS` if it is set, or by the number of logical processors on the current machine otherwise.
+The size of the thread pool is determined by the environment variable {envVar +def}`LEAN_NUM_THREADS` if it is set, or by the number of logical processors on the current machine otherwise.
 The size of the thread pool is not a hard limit; in certain situations it may be exceeded to avoid deadlocks.
-By default, these threads are used to run tasks; each task has a {deftech}_priority_ ({name}`Task.Priority`), and higher-priority tasks take precedence over lower-priority tasks.
+By default, these threads are used to run tasks; each task has a {deftech (key := "task priority")}_priority_ ({name}`Task.Priority`), and higher-priority tasks take precedence over lower-priority tasks.
 Tasks may also be assigned to dedicated threads by spawning them with a sufficiently high priority.
 
-{docstring Task (label := "type") (hideStructureConstructor := true) (hideFields := true)}
+{docstring Task (label := "type") +hideStructureConstructor +hideFields}
 
 # Creating Tasks
 
@@ -162,7 +162,7 @@ Pure tasks are terminated automatically upon cancellation.
 # Promises
 
 Promises represent a value that will be supplied in the future.
-Supplying the value is called {deftech key:="resolve"}_resolving_ the promise.
+Supplying the value is called {deftech (key := "resolve promise")}_resolving_ the promise.
 Once created, a promise can be stored in a data structure or passed around like any other value, and attempts to read from it will block until it is resolved.
 
 
@@ -216,8 +216,8 @@ The types and functions in this section are available after importing {module}`S
 
 
 :::leanSection
-```lean (show := false)
-variable {m : Type → Type v} {α : Type} [MonadLiftT BaseIO m] [Inhabited α]
+```lean -show
+variable {m : Type → Type v} {α : Type} [MonadLiftT BaseIO m] [Inhabited α] [Monad m]
 ```
 Synchronous channels can also be read using {keywordOf Lean.Parser.Term.doFor}`for` loops.
 In particular, there is an instance of type {inst}`ForIn m (Std.Channel.Sync α) α` for every monad {lean}`m` with a {inst}`MonadLiftT BaseIO m` instance and {lean}`α` with an {inst}`Inhabited α` instance.
@@ -226,7 +226,7 @@ In particular, there is an instance of type {inst}`ForIn m (Std.Channel.Sync α)
 
 The types and functions in this section are available after importing {module}`Std.Sync.Mutex`.
 
-{docstring Std.Mutex (label := "type") (hideStructureConstructor := true) (hideFields := true)}
+{docstring Std.Mutex (label := "type") +hideStructureConstructor +hideFields}
 
 {docstring Std.Mutex.new}
 

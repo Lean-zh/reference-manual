@@ -36,7 +36,7 @@ Infix operators are primarily useful in smaller expressions, or when there is no
 
 ## Functors
 
-```lean (show := false)
+```lean -show
 section FOps
 variable {f : Type u → Type v} [Functor f] {α β : Type u} {g : α → β} {x : f α}
 ```
@@ -54,7 +54,7 @@ $_ <&> $_
 ```
 :::
 
-```lean (show := false)
+```lean -show
 example : g <$> x = Functor.map g x := by rfl
 example : x <&> g = Functor.map g x := by rfl
 end FOps
@@ -62,7 +62,7 @@ end FOps
 
 ## Applicative Functors
 
-```lean (show := false)
+```lean -show
 section AOps
 variable {f : Type u → Type v} [Applicative f] [Alternative f] {α β : Type u} {g : f (α → β)} {x e1 e e' : f α} {e2 : f β}
 ```
@@ -97,7 +97,7 @@ $_ <|> $_
 :::
 
 
-```lean (show := false)
+```lean -show
 example : g <*> x = Seq.seq g (fun () => x) := by rfl
 example : e1 *> e2 = SeqRight.seqRight e1 (fun () => e2) := by rfl
 example : e1 <* e2 = SeqLeft.seqLeft e1 (fun () => e2) := by rfl
@@ -121,12 +121,12 @@ In this example, the constructor {name}`User.mk` is applied via this idiom in th
 ```ioLean
 def getName : IO String := do
   IO.println "What is your name?"
-  return (← (← IO.getStdin).getLine).trimRight
+  return (← (← IO.getStdin).getLine).trimAsciiEnd.copy
 
 partial def getFavoriteNat : IO Nat := do
   IO.println "What is your favorite natural number?"
   let line ← (← IO.getStdin).getLine
-  if let some n := line.trim.toNat? then
+  if let some n := line.trimAscii.copy.toNat? then
     return n
   else
     IO.println "Let's try again."
@@ -165,7 +165,7 @@ What is your favorite natural number?
 Monads are primarily used via {tech}[{keywordOf Lean.Parser.Term.do}`do`-notation].
 However, it can sometimes be convenient to describe monadic computations via operators.
 
-```lean (show := false)
+```lean -show
 section MOps
 variable {m : Type u → Type v} [Monad m] {α β : Type u} {act : m α} {f : α → m β} {g : β → m γ}
 ```
@@ -192,7 +192,7 @@ $_ <=< $_
 
 :::
 
-```lean (show := false)
+```lean -show
 example : act >>= f = Bind.bind act f := by rfl
 example : f =<< act = Bind.bind act f := rfl
 example : f >=> g = Bind.kleisliRight f g := by rfl
@@ -210,23 +210,24 @@ Monads are primarily used via {deftech}[{keywordOf Lean.Parser.Term.do}`do`-nota
 It provides familiar syntax for sequencing effectful operations, early return, local mutable variables, loops, and exception handling.
 All of these features are translated to the operations of the {lean}`Monad` type class, with a few of them requiring addition instances of classes such as {lean}`ForIn` that specify iteration over containers.
 For more details about the design of {keywordOf Lean.Parser.Term.do}`do`-notation, please consult {citet doUnchained}[].
-A {keywordOf Lean.Parser.Term.do}`do` term consists of the keyword {keywordOf Lean.Parser.Term.do}`do` followed by a sequence of {deftech}_{keywordOf Lean.Parser.Term.do}`do` items_.
+
+A {keywordOf Lean.Parser.Term.do}`do` term consists of the keyword {keywordOf Lean.Parser.Term.do}`do` followed by a sequence of {deftech}_{keywordOf Lean.Parser.Term.do}`do` elements_.
 
 :::syntax term (title := "`do`-Notation")
 ```grammar
 do $stmt*
 ```
-The items in a {keywordOf Lean.Parser.Term.do}`do` may be separated by semicolons; otherwise, each should be on its own line and they should have equal indentation.
+The elements in a {keywordOf Lean.Parser.Term.do}`do` may be separated by semicolons; otherwise, each should be on its own line and they should have equal indentation.
 :::
 
-```lean (show := false)
+```lean -show
 section
 variable {m : Type → Type} [Monad m] {α β γ: Type} {e1 : m Unit} {e : β} {es : m α}
 ```
 
 ## Sequential Computations
 
-One form of {tech}[{keywordOf Lean.Parser.Term.do}`do` item] is a term.
+One form of {tech}[{keywordOf Lean.Parser.Term.do}`do`-element] is a term.
 
 :::syntax Lean.Parser.Term.doSeqItem (title := "Terms in `do`-Notation")
 ```grammar
@@ -235,12 +236,12 @@ $e:term
 :::
 
 
-A term followed by a sequence of items is translated to a use of {name}`bind`; in particular, {lean}`do e1; es` is translated to {lean}`e1 >>= fun () => do es`.
+A term followed by a sequence of elements is translated to a use of {name}`bind`; in particular, {lean}`do e1; es` is translated to {lean}`e1 >>= fun () => do es`.
 
 
-:::table (header := true)
+:::table +header
 *
-  * {keywordOf Lean.Parser.Term.do}`do` Item
+  * {keywordOf Lean.Parser.Term.do}`do` Element
   * Desugaring
 *
   * ```leanTerm
@@ -253,7 +254,7 @@ A term followed by a sequence of items is translated to a use of {name}`bind`; i
     ```
 :::
 
-```lean (show := false) (keep := false)
+```lean -show -keep
 def ex1a := do e1; es
 def ex1b := e1 >>= fun () => do es
 example : @ex1a = @ex1b := by rfl
@@ -262,7 +263,7 @@ example : @ex1a = @ex1b := by rfl
 The result of the term's computation may also be named, allowing it to be used in subsequent steps.
 This is done using {keywordOf Lean.Parser.Term.doLet}`let`.
 
-```lean (show := false)
+```lean -show
 section
 variable {e1 : m β} {e1? : m (Option β)} {fallback : m α} {e2 : m γ} {f : β → γ → m Unit} {g : γ → α} {h : β → m γ}
 ```
@@ -291,9 +292,9 @@ let $v := $e:term
 :::
 {lean}`do let x := e; es` is translated to {lean}`let x := e; do es`.
 
-:::table (header := true)
+:::table +header
 *
-  * {keywordOf Lean.Parser.Term.do}`do` Item
+  * {keywordOf Lean.Parser.Term.do}`do` Element
   * Desugaring
 *
   * ```leanTerm
@@ -330,7 +331,7 @@ let $v := $e:term
     ```
 :::
 
-```lean (show := false) (keep := false)
+```lean -show -keep
 -- Test desugarings
 def ex1a := do
     let x ← e1
@@ -369,9 +370,9 @@ This allows monadic effects to be used in positions that otherwise might expect 
 Multiple occurrences of `←` are processed from left to right, inside to outside.
 
 ::::figure "Example Nested Action Desugarings"
-:::table (header := true)
+:::table +header
 *
-  * Example {keywordOf Lean.Parser.Term.do}`do` Item
+  * Example {keywordOf Lean.Parser.Term.do}`do` Element
   * Desugaring
 *
   * ```leanTerm
@@ -402,7 +403,7 @@ Multiple occurrences of `←` are processed from left to right, inside to outsid
 :::
 ::::
 
-```lean (show := false) (keep := false)
+```lean -show -keep
 -- Test desugarings
 def ex1a := do
   f (← e1) (← e2)
@@ -428,6 +429,9 @@ In addition to convenient support for sequential computations with data dependen
 These effects are implemented via transformations of the entire {keywordOf Lean.Parser.Term.do}`do` block in a manner akin to {tech}[monad transformers], rather than via a local desugaring.
 
 ## Early Return
+%%%
+tag := "early-return"
+%%%
 
 Early return terminates a computation immediately with a given value.
 The value is returned from the closest containing {keywordOf Lean.Parser.Term.do}`do` block; however, this may not be the closest `do` keyword.
@@ -452,6 +456,9 @@ Internally, the {keywordOf Lean.Parser.Term.do}`do` elaborator performs a transl
 On its own, {keywordOf Lean.Parser.Term.doReturn}`return` is short for {keywordOf Lean.Parser.Term.doReturn}`return`​` `​{lean}`()`.
 
 ## Local Mutable State
+%%%
+tag := "let-mut"
+%%%
 
 Local mutable state is mutable state that cannot escape the {keywordOf Lean.Parser.Term.do}`do` block in which it is defined.
 The {keywordOf Lean.Parser.Term.doLet}`let mut` binder introduces a locally-mutable binding.
@@ -488,9 +495,9 @@ When {keywordOf Lean.Parser.Term.do}`do` blocks contain mutable bindings, the {k
 tag := "do-control-structures"
 %%%
 
-There are {keywordOf Lean.Parser.Term.do}`do` items that correspond to most of Lean's term-level control structures.
-When they occur as a step in a {keywordOf Lean.Parser.Term.do}`do` block, they are interpreted as {keywordOf Lean.Parser.Term.do}`do` items rather than terms.
-Each branch of the control structures is a sequence of {keywordOf Lean.Parser.Term.do}`do` items, rather than a term, and some of them are more syntactically flexible than their corresponding terms.
+There are {keywordOf Lean.Parser.Term.do}`do` elements that correspond to most of Lean's term-level control structures.
+When they occur as a step in a {keywordOf Lean.Parser.Term.do}`do` block, they are interpreted as {keywordOf Lean.Parser.Term.do}`do` elements rather than terms.
+Each branch of the control structures is a sequence of {keywordOf Lean.Parser.Term.do}`do` elements, rather than a term, and some of them are more syntactically flexible than their corresponding terms.
 
 :::syntax Lean.Parser.Term.doSeqItem (title := "Conditionals")
 In a {keywordOf Lean.Parser.Term.do}`do` block, {keywordOf Lean.Parser.Term.doIf}`if` statements may omit their {keywordOf Lean.Parser.Term.doIf}`else` branch.
@@ -562,8 +569,10 @@ When iterating over multiple collections, iteration stops when any of the collec
 :::example "Iteration over Array Indices with {keywordOf Lean.Parser.Term.doFor}`for`"
 
 When iterating over the valid indices for an array with {keywordOf Lean.Parser.Term.doFor}`for`, naming the membership proof allows the tactic that searches for proofs that array indices are in bounds to succeed.
-```lean (keep := false)
-def satisfyingIndices (p : α → Prop) [DecidablePred p] (xs : Array α) : Array Nat := Id.run do
+```lean -keep
+def satisfyingIndices
+    (p : α → Prop) [DecidablePred p]
+    (xs : Array α) : Array Nat := Id.run do
   let mut out := #[]
   for h : i in [0:xs.size] do
     if p xs[i] then out := out.push i
@@ -572,7 +581,7 @@ def satisfyingIndices (p : α → Prop) [DecidablePred p] (xs : Array α) : Arra
 
 Omitting the hypothesis name causes the array lookup to fail, because no proof is available in the context that the iteration variable is within the specified range.
 
-```lean (keep := false) (show := false)
+```lean -keep -show
 -- test it
 /--
 error: failed to prove index is valid, possible solutions:
@@ -598,8 +607,7 @@ inst✝ : DecidablePred p
 xs : Array α
 out✝ : Array Nat := #[]
 i : Nat
-r✝ : Array Nat
-out : Array Nat := r✝
+out : Array Nat := __s✝
 ⊢ i < xs.size
 -/
 #check_msgs in
@@ -622,7 +630,7 @@ When iteration is complete, {name}`ForIn.forIn` returns the final values of the 
 
 The specific desugaring of a loop depends on how state and early termination are used in its body.
 Here are some examples:
-```lean (show := false)
+```lean -show
 axiom «<B>» : Type u
 axiom «<b>» : β
 variable [Monad m] (xs : Coll) [ForIn m Coll α] [instMem : Membership α Coll] [ForIn' m Coll α instMem]
@@ -631,9 +639,9 @@ variable (f : α → β → m β) (f' : (x : α) → x ∈ xs → β → m β)
 macro "…" : term => `((«<b>» : β))
 ```
 
-:::table (header := true)
+:::table +header
 *
-  * {keywordOf Lean.Parser.Term.do}`do` Item
+  * {keywordOf Lean.Parser.Term.do}`do` Element
   * Desugaring
 *
   * ```leanTerm (type := "m α")
@@ -797,12 +805,12 @@ Attempting to mutate a mutable binding outside of the same {keywordOf Lean.Parse
 :::
 
 The rules are as follows:
- * Each item immediately nested under the {keywordOf Lean.Parser.Term.do}`do` keyword that begins a block belongs to that block.
- * Each item immediately nested under the {keywordOf Lean.Parser.Term.do}`do` keyword that is an item in a containing {keywordOf Lean.Parser.Term.do}`do` block belongs to the outer block.
- * Items in the branches of an {keywordOf Lean.Parser.Term.doIf}`if`, {keywordOf Lean.Parser.Term.doMatch}`match`, or {keywordOf Lean.Parser.Term.doUnless}`unless` item belong to the same {keywordOf Lean.Parser.Term.do}`do` block as the control structure that contains them. The {keywordOf Lean.Parser.Term.doUnless}`do` keyword that is part of the syntax of {keywordOf Lean.Parser.Term.doUnless}`unless` does not introduce a new {keywordOf Lean.Parser.Term.do}`do` block.
- * Items in the body of {keywordOf Lean.doElemRepeat_}`repeat`, {keywordOf Lean.doElemWhile_Do_}`while`, and {keywordOf Lean.Parser.Term.doFor}`for` belong to the same {keywordOf Lean.Parser.Term.do}`do` block as the loop  that contains them. The {keywordOf Lean.Parser.Term.doFor}`do` keyword that is part of the syntax of {keywordOf Lean.doElemWhile_Do_}`while` and {keywordOf Lean.Parser.Term.doFor}`for` does not introduce a new {keywordOf Lean.Parser.Term.do}`do` block.
+ * Each element immediately nested under the {keywordOf Lean.Parser.Term.do}`do` keyword that begins a block belongs to that block.
+ * Each element immediately nested under the {keywordOf Lean.Parser.Term.do}`do` keyword that is an element in a containing {keywordOf Lean.Parser.Term.do}`do` block belongs to the outer block.
+ * Elements in the branches of an {keywordOf Lean.Parser.Term.doIf}`if`, {keywordOf Lean.Parser.Term.doMatch}`match`, or {keywordOf Lean.Parser.Term.doUnless}`unless` element belong to the same {keywordOf Lean.Parser.Term.do}`do` block as the control structure that contains them. The {keywordOf Lean.Parser.Term.doUnless}`do` keyword that is part of the syntax of {keywordOf Lean.Parser.Term.doUnless}`unless` does not introduce a new {keywordOf Lean.Parser.Term.do}`do` block.
+ * Elements in the body of {keywordOf Lean.doElemRepeat_}`repeat`, {keywordOf Lean.doElemWhile_Do_}`while`, and {keywordOf Lean.Parser.Term.doFor}`for` belong to the same {keywordOf Lean.Parser.Term.do}`do` block as the loop  that contains them. The {keywordOf Lean.Parser.Term.doFor}`do` keyword that is part of the syntax of {keywordOf Lean.doElemWhile_Do_}`while` and {keywordOf Lean.Parser.Term.doFor}`for` does not introduce a new {keywordOf Lean.Parser.Term.do}`do` block.
 
-```lean (show := false)
+```lean -show
 -- Test nested `do` rules
 
 /-- info: ((), 6) -/
@@ -813,7 +821,11 @@ The rules are as follows:
     set 6
     return
 
-/-- error: must be last element in a `do` sequence -/
+/--
+warning: This `do` element and its control-flow region are dead code. Consider removing it.
+---
+info: ((), 6)
+-/
 #check_msgs in
 #eval (·.run 0) <| show StateM Nat Unit from do
   set 5
@@ -853,20 +865,20 @@ def test : StateM Nat Unit := do
 ```
 
 This is because the {keywordOf Lean.Parser.Term.doReturn}`return` statement under the {keywordOf Lean.Parser.Term.doIf}`if` belongs to the same {keywordOf Lean.Parser.Term.do}`do` as its immediate parent, which itself belongs to the same {keywordOf Lean.Parser.Term.do}`do` as the {keywordOf Lean.Parser.Term.doIf}`if`.
-If {keywordOf Lean.Parser.Term.do}`do` blocks that occurred as items in other {keywordOf Lean.Parser.Term.do}`do` blocks instead created new blocks, then the example would output {lean}`7`.
+If {keywordOf Lean.Parser.Term.do}`do` blocks that occurred as elements in other {keywordOf Lean.Parser.Term.do}`do` blocks instead created new blocks, then the example would output {lean}`7`.
 :::
 ::::
 
-```lean (show := false)
+```lean -show
 end
 ```
 
-```lean (show := false)
+```lean -show
 -- tests for this section
 set_option pp.all true
 
 /--
-info: @Bind.bind.{0, 0} m (@Monad.toBind.{0, 0} m inst✝) Unit α e1 fun (x : PUnit.{1}) => es : m α
+info: @Bind.bind.{0, 0} m (@Monad.toBind.{0, 0} m inst✝) PUnit.{1} α e1 fun (__r : PUnit.{1}) => es : m α
 -/
 #check_msgs in
 #check do e1; es
@@ -890,7 +902,8 @@ variable {e1 : m β} {e2 : m γ} {f : β → γ → m Unit} {g : γ → α} {h :
 /--
 info: @Bind.bind.{0, 0} m (@Monad.toBind.{0, 0} m inst✝) β α e1 fun (__do_lift : β) =>
   @Bind.bind.{0, 0} m (@Monad.toBind.{0, 0} m inst✝) γ α e2 fun (__do_lift_1 : γ) =>
-    @Bind.bind.{0, 0} m (@Monad.toBind.{0, 0} m inst✝) Unit α (f __do_lift __do_lift_1) fun (x : PUnit.{1}) => es : m α
+    @Bind.bind.{0, 0} m (@Monad.toBind.{0, 0} m inst✝) PUnit.{1} α (f __do_lift __do_lift_1) fun (__r : PUnit.{1}) =>
+      es : m α
 -/
 #check_msgs in
 #check do f (← e1) (← e2); es

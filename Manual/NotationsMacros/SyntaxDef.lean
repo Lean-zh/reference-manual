@@ -44,7 +44,7 @@ All of these are represented by a few basic building blocks:
 : {deftech}[Identifiers]
 
   :::keepEnv
-  ```lean (show := false)
+  ```lean -show
   variable {α : Type u}
   variable {x : α}
   ```
@@ -91,7 +91,7 @@ Typically, single-token syntax productions consist of a {name Lean.Syntax.node}`
 Atoms for literals are not interpreted by the parser: string atoms include their leading and trailing double-quote characters along with any escape sequences contained within, and hexadecimal numerals are saved as a string that begins with {lean}`"0x"`.
 {ref "typed-syntax-helpers"}[Helpers] such as {name}`Lean.TSyntax.getString` are provided to perform this decoding on demand.
 
-```lean (show := false) (keep := false)
+```lean -show -keep
 -- Verify claims about atoms and nodes
 open Lean in
 partial def noInfo : Syntax → Syntax
@@ -147,7 +147,7 @@ tag := "source-info"
 
 Atoms, identifiers, and nodes optionally contain {deftech}[source information] that tracks their correspondence with the original file.
 The parser saves source information for all tokens, but not for nodes; position information for parsed nodes is reconstructed from their first and last tokens.
-Not all {name Lean.Syntax}`Syntax` data results from the parser: it may be the result of {tech}[macro expansion], in which case it typically contains a mix of generated and parsed syntax, or it may be the result of {tech key:="delaborator"}[delaborating] an internal term to display it to a user.
+Not all {name Lean.Syntax}`Syntax` data results from the parser: it may be the result of {tech}[macro expansion], in which case it typically contains a mix of generated and parsed syntax, or it may be the result of {tech (key := "delaborator")}[delaborating] an internal term to display it to a user.
 In these use cases, nodes may themselves contain source information.
 
 Source information comes in two varieties:
@@ -169,7 +169,7 @@ Source information comes in two varieties:
 
 # Inspecting Syntax
 
-```lean (show := false)
+```lean -show
 section Inspecting
 open Lean
 ```
@@ -191,6 +191,13 @@ There are three primary ways to inspect {lean}`Syntax` values:
 
 ::::keepEnv
 :::example "Representing Syntax as Constructors"
+```imports -show
+import Lean.Elab
+```
+```lean -show
+open Lean
+```
+
 The {name}`Repr` instance's representation of syntax can be inspected by quoting it in the context of {keywordOf Lean.Parser.Command.eval}`#eval`, which can run actions in the command elaboration monad {name Lean.Elab.Command.CommandElabM}`CommandElabM`.
 To reduce the size of the example output, the helper {lean}`removeSourceInfo` is used to remove source information prior to display.
 ```lean
@@ -221,15 +228,15 @@ In the second example, {tech}[macro scopes] inserted by quotation are visible on
   logInfo (repr (removeSourceInfo stx.raw))
 ```
 The contents of the {tech}[pre-resolved identifier] {name}`List.length` are visible here:
-```leanOutput reprStx2
+```leanOutput reprStx2 (allowDiff := 2)
 Lean.Syntax.node
   (Lean.SourceInfo.none)
   `Lean.Parser.Term.app
   #[Lean.Syntax.ident
       (Lean.SourceInfo.none)
-      "List.length".toSubstring
-      (Lean.Name.mkNum `List.length._@.Manual.NotationsMacros.SyntaxDef._hyg 2)
-      [Lean.Syntax.Preresolved.decl `List.length [], Lean.Syntax.Preresolved.namespace `List.length],
+      "List.length".toRawSubstring
+      (Lean.Name.mkNum (Lean.Name.mkStr (Lean.Name.mkStr (Lean.Name.mkNum `List.length.«_@».Manual.NotationsMacros.SyntaxDef 1704743902) "_hygCtx") "_hyg") 2)
+      [Lean.Syntax.Preresolved.decl `List.length []],
     Lean.Syntax.node
       (Lean.SourceInfo.none)
       `null
@@ -260,6 +267,12 @@ The {name}`ToString` instance represents the constructors of {name}`Syntax` as f
    Otherwise, the node is represented by its kind followed by its child nodes, both surrounded by parentheses.
 
 :::example "Syntax as Strings"
+```imports -show
+import Lean.Elab
+```
+```lean -show
+open Lean
+```
 The string representation of syntax can be inspected by quoting it in the context of {keywordOf Lean.Parser.Command.eval}`#eval`, which can run actions in the command elaboration monad {name Lean.Elab.Command.CommandElabM}`CommandElabM`.
 
 ```lean (name := toStringStx1)
@@ -277,9 +290,9 @@ In the second example, {tech}[macro scopes] inserted by quotation are visible on
   let stx ← `(List.length ["Rose", "Daffodil", "Lily"])
   logInfo (toString stx)
 ```
-```leanOutput toStringStx2
+```leanOutput toStringStx2 (allowDiff := 2)
 (Term.app
- `List.length._@.Manual.NotationsMacros.SyntaxDef._hyg.2
+ `List.length._@.Manual.NotationsMacros.SyntaxDef.3168789510._hygCtx._hyg.2
  [(«term[_]» "[" [(str "\"Rose\"") "," (str "\"Daffodil\"") "," (str "\"Lily\"")] "]")])
 ```
 :::
@@ -290,7 +303,10 @@ However, {name}`ppTerm` can be explicitly invoked if needed.
 
 ::::keepEnv
 :::example "Pretty-Printed Syntax"
-```lean (show := false)
+```imports -show
+import Lean.Elab
+```
+```lean -show
 open Lean Elab Command
 ```
 
@@ -350,7 +366,7 @@ List.length✝
 
 ::::
 
-```lean (show := false)
+```lean -show
 end Inspecting
 ```
 
@@ -360,7 +376,7 @@ tag := "typed-syntax"
 %%%
 
 Syntax may additionally be annotated with a type that specifies which {tech}[syntax category] it belongs to.
-{TODO}[Describe the problem here - complicated invisible internal invariants leading to weird error msgs]
+{TODO}[Describe the problem here—complicated invisible internal invariants leading to weird error msgs]
 The {name Lean.TSyntax}`TSyntax` structure contains a type-level list of syntax categories along with a syntax tree.
 The list of syntax categories typically contains precisely one element, in which case the list structure itself is not shown.
 
@@ -372,7 +388,7 @@ The list of syntax categories typically contains precisely one element, in which
 For many of Lean's built-in syntactic categories, there is a set of {tech}[coercions] that appropriately wrap one kind of syntax for another category, such as a coercion from the syntax of string literals to the syntax of terms.
 Additionally, many helper functions that are only valid on some syntactic categories are defined for the appropriate typed syntax only.
 
-```lean (show := false)
+```lean -show
 /-- info: instCoeHTCTOfCoeHTC -/
 #check_msgs in
 open Lean in
@@ -383,12 +399,32 @@ The constructor of {name Lean.TSyntax}`TSyntax` is public, and nothing prevents 
 The use of {name Lean.TSyntax}`TSyntax` should be seen as a way to reduce common mistakes, rather than rule them out entirely.
 
 
+:::leanSection
+```lean -show
+open Lean Syntax
+variable {ks : SyntaxNodeKinds} {sep : String}
+```
 In addition to {name Lean.TSyntax}`TSyntax`, there are types that represent arrays of syntax, with or without separators.
 These correspond to {TODO}[xref] repeated elements in syntax declarations or antiquotations.
+{lean}`TSyntaxArray ks` is an {tech}[abbreviation] for {lean}`Array (TSyntax ks)`, while {lean}`TSepArray ks sep` is a structure; this means that {tech}[generalized field notation] can be used to apply array functions to {name}`TSyntaxArray` but not {name}`TSepArray`.
+There is a {tech}[coercion] between {lean}`TSepArray ks` and {lean}`TSyntaxArray ks`, as well as explicit conversion functions.
+This conversion inserts or removes separator elements from the underlying array, and takes time linear in the number of elements.
+:::
 
 {docstring Lean.TSyntaxArray}
 
+{docstring Lean.TSyntaxArray.raw}
+
 {docstring Lean.Syntax.TSepArray}
+
+{docstring Lean.Syntax.TSepArray.getElems +allowMissing}
+
+{docstring Lean.Syntax.TSepArray.elemsAndSeps}
+
+{docstring Lean.Syntax.TSepArray.ofElems}
+
+{docstring Lean.Syntax.TSepArray.push +allowMissing}
+
 
 # Aliases
 
@@ -421,7 +457,104 @@ These aliases allow code to be written at a higher level of abstraction.
 
 {docstring Lean.HygieneInfo}
 
-# Helpers for Typed Syntax
+# Helpers for Constructing Syntax
+%%%
+tag := "syntax-construction-helpers"
+%%%
+
+{docstring Lean.mkIdent +allowMissing}
+
+{docstring Lean.mkIdentFrom}
+
+{docstring Lean.mkIdentFromRef +allowMissing}
+
+{docstring Lean.mkCIdent +allowMissing}
+
+{docstring Lean.mkCIdentFrom}
+
+{docstring Lean.mkCIdentFromRef +allowMissing}
+
+{docstring Lean.Syntax.mkApp}
+
+{docstring Lean.Syntax.mkCApp +allowMissing}
+
+{docstring Lean.Syntax.mkLit +allowMissing}
+
+{docstring Lean.Syntax.mkCharLit +allowMissing}
+
+{docstring Lean.Syntax.mkStrLit +allowMissing}
+
+{docstring Lean.Syntax.mkNumLit +allowMissing}
+
+{docstring Lean.Syntax.mkNatLit +allowMissing}
+
+{docstring Lean.Syntax.mkScientificLit +allowMissing}
+
+{docstring Lean.Syntax.mkNameLit +allowMissing}
+
+{docstring Lean.mkOptionalNode +allowMissing}
+
+{docstring Lean.mkGroupNode +allowMissing}
+
+{docstring Lean.mkHole +allowMissing}
+
+## Quoting Data
+%%%
+tag := "quote-class"
+%%%
+
+:::leanSection
+```lean -show
+open Lean
+```
+The {name Lean.Quote}`Quote` class allows values to be converted into typed syntax that represents them.
+For example, {lean (type:="Term")}`quote 5` represents {lean (type := "Term")}``⟨.node .none `num #[.atom .none "5"]⟩``.
+The class is parameterized over syntax kinds; this allows the same value to be represented appropriately at different kinds.
+Instance resolution for {name}`Quote` takes typed syntax {tech}[coercions] into account.
+The syntax kind's default value is {lean}`` `term ``.
+```lean -show
+/--
+info: { raw := Lean.Syntax.node (Lean.SourceInfo.none) `num #[Lean.Syntax.atom (Lean.SourceInfo.none) "5"] }
+-/
+#guard_msgs in
+#eval (quote 5 : Term)
+```
+:::
+
+:::paragraph
+There is no guarantee that the result of {name Lean.Quote.quote}`Quote.quote` will successfully elaborate.
+Generally speaking, the resulting syntax contains quoted versions of all explicit arguments and omits implicit arguments.
+
+{docstring Lean.Quote +allowMissing}
+
+When defining instances of {name Lean.Quote}`Quote`, use {name Lean.mkCIdent}`mkCIdent` and {name Lean.Syntax.mkCApp}`mkCApp` to avoid variable capture in the generated syntax.
+:::
+
+:::example "Defining `Quote` Instances"
+```lean -show
+open Lean Syntax
+```
+
+To quote a tree of type {name}`Tree`, {name}`mkCIdent` and {name}`mkCApp` are used to ensure that local bindings with similar names cannot interfere.
+Using double backticks ensures that the constructor names don't contain typos and are correctly resolved.
+```lean
+inductive Tree (α : Type u) : Type u where
+  | leaf
+  | branch (left : Tree α) (val : α) (right : Tree α)
+
+instance [Quote α] : Quote (Tree α) where
+  quote := quoteTree
+where
+  quoteTree
+    | .leaf =>
+      mkCIdent ``Tree.leaf
+    | .branch l v r =>
+      mkCApp ``Tree.branch #[quoteTree l, quote v, quoteTree r]
+```
+
+:::
+
+# Decoding Typed Syntax
 %%%
 tag := "typed-syntax-helpers"
 %%%
@@ -512,15 +645,15 @@ Identifiers in syntax rules indicate syntax categories, rather than naming subte
 Finally, the syntax rule specifies which syntax category it extends.
 It is an error to declare a syntax rule in a nonexistent category.
 
-```lean (show := false)
+```lean -show
 -- verify preceding para
-/-- error: unknown category 'nuhUh' -/
+/-- error: unknown category `nuhUh` -/
 #check_msgs in
 syntax "blah" : nuhUh
 ```
 
 
-:::syntax stx (open := false) (title := "Syntax Specifiers")
+:::syntax stx -open (title := "Syntax Specifiers")
 The syntactic category `stx` is the grammar of specifiers that may occur in the body of a {keywordOf Lean.Parser.Command.syntax}`syntax` command.
 
 String literals are parsed as {tech}[atoms] (including both keywords such as `if`, `#eval`, or `where`):
@@ -664,21 +797,21 @@ syntax (name := termBalanced) "balanced " balanced : term
 These terms cannot be elaborated, but reaching an elaboration error indicates that parsing succeeded:
 ```lean
 /--
-error: elaboration function for 'termBalanced' has not been implemented
+error: elaboration function for `termBalanced` has not been implemented
   balanced ()
 -/
 #guard_msgs in
 example := balanced ()
 
 /--
-error: elaboration function for 'termBalanced' has not been implemented
+error: elaboration function for `termBalanced` has not been implemented
   balanced []
 -/
 #guard_msgs in
 example := balanced []
 
 /--
-error: elaboration function for 'termBalanced' has not been implemented
+error: elaboration function for `termBalanced` has not been implemented
   balanced [[]()([])]
 -/
 #guard_msgs in
@@ -702,7 +835,7 @@ A variant of list literals that requires double square brackets and allows a tra
 syntax "[[" term,*,? "]]" : term
 ```
 
-Adding a {deftech}[macro] that describes how to translate it into an ordinary list literal allows it to be used in tests.
+Adding a {tech}[macro] that describes how to translate it into an ordinary list literal allows it to be used in tests.
 ```lean
 macro_rules
   | `(term|[[$e:term,*]]) => `([$e,*])
@@ -760,14 +893,14 @@ syntax "note " ppLine withPosition((colEq "◦ " str ppLine)+) : term
 ```
 
 There is no elaborator or macro associated with this syntax, but the following example is accepted by the parser:
-```lean (error := true) (name := noteEx1)
+```lean +error (name := noteEx1)
 #check
   note
     ◦ "One"
     ◦ "Two"
 ```
 ```leanOutput noteEx1
-elaboration function for '«termNote__◦__»' has not been implemented
+elaboration function for `«termNote__◦__»` has not been implemented
   note
     ◦ "One"
     ◦ "Two"
@@ -775,17 +908,18 @@ elaboration function for '«termNote__◦__»' has not been implemented
 ```
 
 The syntax does not require that the list is indented with respect to the opening token, which would require an extra `withPosition` and a `colGt`.
-```lean (error := true) (name := noteEx15)
+```lean +error (name := noteEx15)
 #check
   note
 ◦ "One"
 ◦ "Two"
 ```
 ```leanOutput noteEx15
-elaboration function for '«termNote__◦__»' has not been implemented
+elaboration function for `«termNote__◦__»` has not been implemented
   note
     ◦ "One"
     ◦ "Two"
+
 ```
 
 

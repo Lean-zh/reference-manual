@@ -8,6 +8,7 @@ import VersoManual
 
 import Manual.Meta
 import Manual.Meta.Monotonicity
+import Manual.RecursiveDefs.PartialFixpoint.Theory
 
 open Manual
 open Verso.Genre
@@ -26,8 +27,8 @@ tag := "partial-fixpoint"
 %%%
 
 All definitions are fundamentally equations: the new constant being defined is equal to the right-hand side of the definition.
-For functions defined by {ref "structural-recursion"}[structural recursion], this equation holds {tech key:="definitional equality"}[definitionally], and there is a unique value returned by application of the function.
-For functions defined by {ref "well-founded-recursion"}[well-founded recursion], the equation may hold only {tech key:="proposition"}[propositionally], but all type-correct applications of the function to arguments are equal to the respective values prescribed by the definition.
+For functions defined by {ref "structural-recursion"}[structural recursion], this equation holds {tech (key := "definitional equality")}[definitionally], and there is a unique value returned by application of the function.
+For functions defined by {ref "well-founded-recursion"}[well-founded recursion], the equation may hold only {tech (key := "proposition")}[propositionally], but all type-correct applications of the function to arguments are equal to the respective values prescribed by the definition.
 In both cases, the fact that the function terminates for all inputs means that the value computed by applying the function is always uniquely determined.
 
 
@@ -39,7 +40,7 @@ As with the other strategies for defining recursive functions, compiled code use
 The term {tech}_partial fixpoint_ is specific to Lean.
 Functions declared {keywordOf Lean.Parser.Command.declaration}`partial` do not require termination proofs, so long as the type of their return values is inhabited, but they are completely opaque from the perspective of Lean's logic.
 Partial fixpoints, on the other hand, can be rewritten using their defining equations while writing proofs.
-Logically speaking, partial fixpoints are total functions that don't reduce {tech key:="definitional equality"}[definitionally] when applied, but for which equational rewrite rule are provided.
+Logically speaking, partial fixpoints are total functions that don't reduce {tech (key := "definitional equality")}[definitionally] when applied, but for which equational rewrite rule are provided.
 They are _partial_ in the sense that the defining equation does not necessarily specify a value for all possible arguments.
 
 
@@ -62,7 +63,7 @@ Both classes are backed by the same theory and construction: least fixpoints of 
 Just as with structural and well-founded recursion, Lean allows {tech}[mutually recursive] functions to be defined as partial fixpoints.
 To use this feature, every function definition in a {tech}[mutual block] must be annotated with the {keywordOf Lean.Parser.Command.declaration}`partial_fixpoint` modifier.
 
-```lean (show := false)
+```lean -show
 section
 variable (p : Nat → Bool)
 ```
@@ -70,7 +71,7 @@ variable (p : Nat → Bool)
 :::example "Definition by Partial Fixpoint"
 
 The following function finds the least natural number for which the predicate {lean}`p` holds.
-If `p` never holds, then this equation does not specify the behavior: the function {lean}`find` could return {lean type:="Nat"}`42` or any other {lean}`Nat` in that case and still satisfy the equation.
+If `p` never holds, then this equation does not specify the behavior: the function {lean}`find` could return {lean  (type := "Nat")}`42` or any other {lean}`Nat` in that case and still satisfy the equation.
 
 ```lean
 def find (p : Nat → Bool) (i : Nat := 0) : Nat :=
@@ -85,7 +86,7 @@ The elaborator can prove that functions satisfying the equation exist.
 Within Lean's logic, {lean}`find` is defined to be an arbitrary such function.
 :::
 
-```lean (show := false)
+```lean -show
 end
 ```
 
@@ -98,7 +99,7 @@ tag := "partial-fixpoint-tailrec"
 
 A recursive function can be defined as a partial fixpoint if the following two conditions hold:
 
- 1. The function's return type is inhabited (as with {ref "partial-unsafe"}[functions marked {keywordOf Lean.Parser.Command.declaration}`partial`]) - either a {name}`Nonempty` or {name}`Inhabited` instance works.
+ 1. The function's return type is inhabited (as with {ref "partial-unsafe"}[functions marked {keywordOf Lean.Parser.Command.declaration}`partial`])—either a {name}`Nonempty` or {name}`Inhabited` instance works.
  2. All recursive calls are in {tech}[tail position] of the function.
 
 An expression is in {deftech}_tail position_ in the function body if it is:
@@ -108,11 +109,11 @@ An expression is in {deftech}_tail position_ in the function body if it is:
  * the branches of an {keywordOf termIfThenElse}`if` expression that is in tail position, and
  * the body of a {keywordOf Lean.Parser.Term.let}`let` expression that is in tail position.
 
-In particular, the {tech key:="match discriminant"}[discriminant] of a {keywordOf Lean.Parser.Term.match}`match` expression, the condition of an {keywordOf termIfThenElse}`if` expression and the arguments of functions are not tail positions.
+In particular, the {tech (key := "match discriminant")}[discriminant] of a {keywordOf Lean.Parser.Term.match}`match` expression, the condition of an {keywordOf termIfThenElse}`if` expression and the arguments of functions are not tail positions.
 
 :::
 
-```lean (show := false)
+```lean -show
 -- Test that nonempty is enough
 inductive A : Type where
   | mkA
@@ -159,7 +160,7 @@ partial_fixpoint
 
 If the result of the recursive call is not just returned, but passed to another function, it is not in tail position and this definition fails.
 
-```lean (keep := false) (error := true) (name := nonTailPos)
+```lean -keep +error (name := nonTailPos)
 def List.findIndex (xs : List α) (p : α → Bool) : Int :=
   match xs with
   | [] => -1
@@ -175,8 +176,10 @@ The error message on the recursive call is:
 ```leanOutput nonTailPos
 Could not prove 'List.findIndex' to be monotone in its recursive calls:
   Cannot eliminate recursive call `List.findIndex ys p` enclosed in
-    have r := ys✝.findIndex p;
-    if r = -1 then -1 else r + 1
+    if ys✝.findIndex p = -1 then -1 else ys✝.findIndex p + 1
+  Tried to apply 'monotone_ite', but failed.
+  Possible cause: A missing `MonoBind` instance.
+  Use `set_option trace.Elab.Tactic.monotonicity true` to debug.
 ```
 
 :::
@@ -198,7 +201,7 @@ In particular, using {tech}[{keywordOf Lean.Parser.Term.do}`do`-notation] should
 
 The following function implements the Ackermann function in the {name}`Option` monad, and is accepted without an (explicit or implicit) termination proof:
 
-```lean (keep := false)
+```lean -keep
 def ack : (n m : Nat) → Option Nat
   | 0,   y   => some (y+1)
   | x+1, 0   => ack x 1
@@ -208,7 +211,7 @@ partial_fixpoint
 
 Recursive calls may also occur within higher-order functions such as {name}`List.mapM`, if they are set up appropriately, and {tech}[{keywordOf Lean.Parser.Term.do}`do`-notation]:
 
-```lean (keep := false)
+```lean -keep
 structure Tree where cs : List Tree
 
 def Tree.rev (t : Tree) : Option Tree := do
@@ -225,7 +228,7 @@ partial_fixpoint
 
 Pattern matching on the result of the recursive call will prevent the definition by partial fixpoint from going through:
 
-```lean (keep := false) (error := true) (name := monoMatch)
+```lean -keep +error (name := monoMatch)
 def List.findIndex (xs : List α) (p : α → Bool) : Option Nat :=
   match xs with
   | [] => none
@@ -322,7 +325,7 @@ If, when given an arbitrary partial function with a signature that's compatible 
 
  * taking one rewriting step with the defining equation, in which the recursive calls are replaced by the arbitrary function, also implies the satisfaction of the motive
 
-then the motive is satsified for all inputs for which the {lean}`List.findIndex` returns {name}`some`.
+then the motive is satisfied for all inputs for which the {lean}`List.findIndex` returns {name}`some`.
 
 :::
 
@@ -345,7 +348,7 @@ theorem List.findIndex_implies_pred
       have : r = 0 := by simp_all
       simp_all
     next =>
-      simp only [Option.map_eq_map, Option.map_eq_some'] at hsome
+      simp only [Option.map_eq_map, Option.map_eq_some_iff] at hsome
       obtain ⟨r', hr, rfl⟩ := hsome
       specialize ih _ _ hr
       simpa
@@ -360,90 +363,8 @@ tag := "mutual-partial-fixpoint"
 
 Lean supports the definition of {tech}[mutually recursive] functions using {tech}[partial fixpoint].
 Mutual recursion may be introduced using a {tech}[mutual block], but it also results from {keywordOf Lean.Parser.Term.letrec}`let rec` expressions and {keywordOf Lean.Parser.Command.declaration}`where` blocks.
-The rules for mutual well-founded recursion are applied to a group of actually mutually recursive, lifted definitions, that results from the {ref "mutual-syntax"}[elaboration steps] for mutual groups.
+The rules for mutual recursion with partial fixpoints are applied to a group of actually mutually recursive, lifted definitions, that results from the {ref "mutual-syntax"}[elaboration steps] for mutual groups.
 
 If all functions in the mutual group have the {keywordOf Lean.Parser.Command.declaration}`partial_fixpoint` clause, then this strategy is used.
 
-# Theory and Construction
-%%%
-tag := "partial-fixpoint-theory"
-%%%
-
-The construction builds on a variant of the Knaster–Tarski theorem: In a chain-complete partial order, every monotone function has a least fixed point.
-
-The necessary theory is found in the `Lean.Order` namespace.
-This is not meant to be a general purpose library of order theoretic results.
-Instead, the definitions and theorems in `Lean.Order` are only intended as implementation details of the {keywordOf Lean.Parser.Command.declaration}`partial_fixpoint` feature, and they should be considered a private API that may change without notice.
-
-The notion of a partial order, and that of a chain-complete partial order, are represented by the type classes {name}`Lean.Order.PartialOrder` and {name}`Lean.Order.CCPO`, respectively.
-
-{docstring Lean.Order.PartialOrder (allowMissing := true)}
-
-{docstring Lean.Order.CCPO (allowMissing := true)}
-
-```lean (show := false)
-section
-open Lean.Order
-variable {α : Type u} {β : Type v} [PartialOrder α] [PartialOrder β] (f : α → β) (x y : α)
-```
-
-A function is monotone if it preserves partial orders.
-That is, if {lean}`x ⊑ y` then {lean}`f x ⊑ f y`.
-The operator `⊑` represent {name}`Lean.Order.PartialOrder.rel`.
-
-{docstring Lean.Order.monotone}
-
-The fixpoint of a monotone function can be taken using {name}`fix`, which indeed constructs a fixpoint, as shown by {name}`fix_eq`,
-
-{docstring Lean.Order.fix}
-
-{docstring Lean.Order.fix_eq}
-
-:::paragraph
-
-To construct the partial fixpoint, Lean first synthesizes a suitable {name}`CCPO` instance.
-
-```lean (show := false)
-section
-universe u v
-variable (α : Type u)
-variable (β : α → Sort v) [∀ x, CCPO (β x)]
-variable (w : α)
-```
-
-* If the function's result type has a dedicated instance, like {name}`Option` has with {name}`instCCPOOption`, this is used together with the instance for the function type, {name}`instCCPOPi`, to construct an instance for the whole function's type.
-
-* Otherwise, if the function's type can be shown to be inhabited by a witness {lean}`w`, then the instance {name}`FlatOrder.instCCPO` for the wrapper type {lean}`FlatOrder w` is used. In this order, {lean}`w` is a least element and all other elements are incomparable.
-
-```lean (show := false)
-end
-```
-
-:::
-
-Next, the recursive calls in the right-hand side of the function definitions are abstracted; this turns into the argument `f` of {name}`fix`. The monotonicity requirement is solved by the {tactic}`monotonicity` tactic, which applies compositional monotonicity lemmas in a syntax-driven way.
-
-```lean (show := false)
-section
-set_option linter.unusedVariables false
-variable {α : Sort u} {β : Sort v} [PartialOrder α] [PartialOrder β] (more : (x : α) → β) (x : α)
-
-local macro "…" x:term:arg "…" : term => `(more $x)
-```
-
-The tactic solves goals of the form {lean}`monotone (fun x => … x …)` using the following steps:
-
-* Applying {name}`monotone_const` when there is no dependency on {lean}`x` left.
-* Splitting on {keywordOf Lean.Parser.Term.match}`match` expressions.
-* Splitting on {keywordOf termIfThenElse}`if` expressions.
-* Moving {keywordOf Lean.Parser.Term.let}`let` expression to the context, if the value and type do not depend on {lean}`x`.
-* Zeta-reducing a {keywordOf Lean.Parser.Term.let}`let` expression when value and type do depend on {lean}`x`.
-* Applying lemmas annotated with {attr}`partial_fixpoint_monotone`
-
-```lean (show := false)
-end
-```
-
-The following monotonicity lemmas are registered, and should allow recursive calls under the given higher-order functions in the arguments indicated by `·` (but not the other arguments, shown as `_`).
-
-{monotonicityLemmas}
+{include 1 Manual.RecursiveDefs.PartialFixpoint.Theory}

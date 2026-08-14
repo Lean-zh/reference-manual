@@ -12,10 +12,11 @@ import Manual.Meta.Basic
 import Lake.Toml.Decode
 import Lake.Load.Toml
 
-open Lean Elab
 open Verso ArgParse Doc Elab Genre.Manual Html Code Highlighted.WebAssets Multi
 open SubVerso.Highlighting Highlighted
+open Lean Elab
 
+open scoped Lean.Doc.Syntax
 
 open Lean.Elab.Tactic.GuardMsgs
 
@@ -164,23 +165,23 @@ where
 private def hasSubstring (haystack : String) (needle : String) : Bool := Id.run do
   if needle.isEmpty then return true
   if needle.length > haystack.length then return false
-  let mut iter := haystack.iter
-  let fst := needle.get 0
-  while h : iter.hasNext do
-    if iter.curr' h  == fst then
+  let mut iter := haystack.startPos
+  let fst := String.Pos.Raw.get needle 0
+  while h : iter ≠ haystack.endPos do
+    if iter.get h  == fst then
       let mut iter' := iter
-      let mut iter'' := needle.iter
-      while iter'.hasNext && iter''.hasNext do
-        if iter'.curr == iter''.curr then
-          iter' := iter'.next
-          iter'' := iter''.next
+      let mut iter'' := needle.startPos
+      while h : iter'≠ haystack.endPos ∧ iter'' ≠ needle.endPos do
+        if iter'.get h.1 == iter''.get h.2 then
+          iter' := iter'.next h.1
+          iter'' := iter''.next h.2
         else break
-      if iter''.hasNext then
-        iter := iter.next
+      if iter'' ≠ needle.endPos then
+        iter := iter.next h
         continue
       else return true
     else
-      iter := iter.next
+      iter := iter.next h
       continue
   return false
 
@@ -243,7 +244,7 @@ partial def highlightToml : Syntax → StateM (Option String) Highlighted := fun
     srcInfoHl info <$> elts.mapM highlightToml
   | .node info ``Lake.Toml.basicString #[s@(.atom _ str)] =>
     if let some str' := Lean.Syntax.decodeStrLit str then
-      if (str'.take 8 == "https://" || str'.take 7 == "http://") && !hasSubstring str' "example.com" then
+      if (str'.startsWith "https://" || str'.startsWith "http://".toSlice ) && !hasSubstring str' "example.com" then
         (srcInfoHl info ∘ .link str') <$> highlightToml s
       else
         srcInfoHl info <$> highlightToml s
@@ -295,32 +296,36 @@ def configPaths : Std.HashMap (List String) Name := Std.HashMap.ofList [
 ]
 
 open Verso Output Html in
-partial def Highlighted.toHtml (tableLink : Name → Option String) (keyLink : Name → Name → Option String) : Highlighted -> Html
+partial def Highlighted.toHtml (tableLink : Name → Option String) (keyLink : Name → Name → Option String) (urlLinks : Bool := true) : Highlighted -> Html
   | .token t s =>
     match t with
     | .bool _ => {{<span class="bool">{{s}}</span>}}
     | .string _ => {{<span class="string">{{s}}</span>}}
     | .num _ => {{<span class="num">{{s}}</span>}}
   | .tableHeader hl =>
-    {{<span class="table-header">{{hl.toHtml tableLink keyLink}}</span>}}
+    {{<span class="table-header">{{hl.toHtml tableLink keyLink urlLinks}}</span>}}
   | .tableName n hl =>
     let tableName := n.map (·.splitOn ".") >>= (configPaths[·]?)
     if let some dest := tableName >>= tableLink then
-      {{<a href={{dest}}>{{hl.toHtml tableLink keyLink}}</a>}}
+      {{<a href={{dest}}>{{hl.toHtml tableLink keyLink urlLinks}}</a>}}
     else
-      hl.toHtml tableLink keyLink
-  | .tableDelim hl => {{<span class="table-delimiter">{{hl.toHtml tableLink keyLink}}</span>}}
-  | .concat hls => .seq (hls.map (toHtml tableLink keyLink))
-  | .link url hl => {{<a href={{url}}>{{hl.toHtml tableLink keyLink}}</a>}}
+      hl.toHtml tableLink keyLink urlLinks
+  | .tableDelim hl => {{<span class="table-delimiter">{{hl.toHtml tableLink keyLink urlLinks}}</span>}}
+  | .concat hls => .seq (hls.map (toHtml tableLink keyLink urlLinks))
+  | .link url hl =>
+    if urlLinks then
+      {{<a href={{url}}>{{hl.toHtml tableLink keyLink urlLinks}}</a>}}
+    else
+      hl.toHtml tableLink keyLink urlLinks
   | .text s => s
   | .ws s =>
     let comment := s.find (· == '#')
     let commentStr := s.extract comment s.endPos
     let commentHtml := if commentStr.isEmpty then .empty else {{<span class="comment">{{commentStr}}</span>}}
-    {{ {{s.extract 0 comment}} {{commentHtml}} }}
+    {{ {{s.extract s.startPos comment}} {{commentHtml}} }}
   | .key none k => {{
     <span class="key">
-      {{k.toHtml tableLink keyLink}}
+      {{k.toHtml tableLink keyLink urlLinks}}
     </span>
   }}
   | .key (some p) k =>
@@ -334,8 +339,8 @@ partial def Highlighted.toHtml (tableLink : Name → Option String) (keyLink : N
 
     {{ <span class="key" data-toml-key={{p}}>
         {{ if let some url := dest then {{
-          <a href={{url}}>{{k.toHtml tableLink keyLink}}</a>
-        }} else k.toHtml tableLink keyLink }}
+          <a href={{url}}>{{k.toHtml tableLink keyLink urlLinks}}</a>
+        }} else k.toHtml tableLink keyLink urlLinks }}
       </span>
     }}
 
@@ -343,9 +348,9 @@ partial def Highlighted.toHtml (tableLink : Name → Option String) (keyLink : N
 
 end Toml
 
-def Block.toml (highlighted : Toml.Highlighted) : Block where
+def Block.toml (highlighted : Toml.Highlighted) (link : Bool := true) : Block where
   name := `Manual.Block.toml
-  data := toJson highlighted
+  data := toJson (highlighted, link)
 
 def Inline.toml (highlighted : Toml.Highlighted) : Inline where
   name := `Manual.Inline.toml
@@ -391,7 +396,7 @@ def tomlContent (str : StrLit) : DocElabM Toml.Highlighted := do
   let pos := str.raw.getPos? |>.getD 0
 
   let p := andthenFn whitespace Lake.Toml.toml.fn
-  let s := p.run inputCtx pmctx (getTokenTable pmctx.env) { cache := initCacheForInput inputCtx.input, pos }
+  let s := p.run inputCtx pmctx (getTokenTable pmctx.env) { cache := initCacheForInput inputCtx.inputString, pos }
   match s.errorMsg with
   | some err =>
     throwErrorAt str "Couldn't parse TOML: {err}"
@@ -437,13 +442,18 @@ pre.toml {
 }
 "#
 
+structure TomlParams where
+  link : Bool := true
+
+instance : FromArgs TomlParams m where
+  fromArgs := TomlParams.mk <$> ArgParse.flag `link true
+
 open Lean.Parser in
-@[code_block_expander toml]
-def toml : CodeBlockExpander
-  | args, str => do
-    ArgParse.done.run args
+@[code_block]
+def toml : CodeBlockExpanderOf TomlParams
+  | { link }, str => do
     let hl ← tomlContent str
-    pure #[← ``(Block.other (Block.toml $(quote hl)) #[Block.code $(quote str.getString)])]
+    ``(Block.other (Block.toml $(quote hl) $(quote link)) #[Block.code $(quote str.getString)])
 
 open Lean.Parser in
 @[role_expander toml]
@@ -472,14 +482,14 @@ def Block.toml.descr : BlockDescr where
   toHtml := some <| fun _goI _ _ info _ =>
     open Verso.Doc.Html in
     open Verso.Output Html in do
-      let .ok hl := FromJson.fromJson? (α := Toml.Highlighted) info
-        | do Verso.Doc.Html.HtmlT.logError "Failed to deserialize highlighted TOML data"; pure .empty
+      let .ok (hl, link) := FromJson.fromJson? (α := Toml.Highlighted × Bool) info
+        | do reportError "Failed to deserialize highlighted TOML data"; pure .empty
 
       let xref := (← read).traverseState
 
       return {{
         <pre class="toml">
-          {{hl.toHtml (Toml.tableLink xref) (Toml.fieldLink xref)}}
+          {{hl.toHtml (Toml.tableLink xref) (Toml.fieldLink xref) link}}
         </pre>
       }}
 
@@ -495,7 +505,7 @@ def Inline.toml.descr : InlineDescr where
     open Verso.Doc.Html in
     open Verso.Output Html in do
       let .ok hl := FromJson.fromJson? (α := Toml.Highlighted) info
-        | do Verso.Doc.Html.HtmlT.logError "Failed to deserialize highlighted TOML data"; pure .empty
+        | do reportError "Failed to deserialize highlighted TOML data"; pure .empty
 
       let xref := (← read).traverseState
 

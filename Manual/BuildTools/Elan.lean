@@ -22,6 +22,7 @@ open Lean.Elab.Tactic.GuardMsgs.WhitespaceMode
 #doc (Manual) "Managing Toolchains with Elan" =>
 %%%
 tag := "elan"
+shortContextTitle := "Elan"
 %%%
 
 Elan is the Lean toolchain manager.
@@ -107,7 +108,7 @@ tag := "elan-dir"
 %%%
 
 By default, Elan stores installed toolchains in `.elan/toolchains` in the user's home directory, and its proxies are kept in `.elan/bin`, which is added to the path when Elan is installed.
-The environment variable {envVar def:=true}`ELAN_HOME` can be used to change this location.
+The environment variable {envVar +def}`ELAN_HOME` can be used to change this location.
 It should be set both prior to installing Elan and in all sessions that use Lean in order to ensure that Elan's files are found.
 
 # Command-Line Interface
@@ -389,7 +390,7 @@ DISCUSSION:
         $ elan toolchain link master <path/to/lean/root>
         $ elan override set master
 
-    If you now compile a crate in the current directory, the custom
+    If you now compile a package in the current directory, the custom
     toolchain 'master' will be used.
 ```
 

@@ -7,6 +7,18 @@ section_number_pattern = re.compile(r"^\s*(\d+\.)+\s*")
 
 def process_html_file(filepath, output_filepath):
     """Reads an HTML file, removes 'QA' from headers, and writes the result to the output path."""
+
+    # We exclude release notes. Before
+    # https://github.com/leanprover/reference-manual/pull/599 we generated one
+    # block for each release notes document which had class="no-vale" on it.
+    # However, it's currently not easy to add any attributes to verso parts,
+    # which https://github.com/leanprover/reference-manual/pull/599 adds, hence
+    # the current workaround here.
+    #
+    # Reconsider this if https://github.com/leanprover/verso/issues/561 is resolved.
+    if "/releases/" in filepath:
+        return
+
     with open(filepath, 'r', encoding='utf-8') as file:
         soup = BeautifulSoup(file, 'html.parser')
 
@@ -29,6 +41,13 @@ def process_html_file(filepath, output_filepath):
             code_tag.replace_with("5")
         elif code_tag.attrs and 'class' in code_tag.attrs and 'hl' in code_tag['class'] and 'lean' in code_tag['class']:
             code_tag.decompose()
+
+    # Delete all content in error explanation pages. This comes from the lean4 repo
+    # and shouldn't be linted here.
+    for element in soup.find_all(class_='error-example-container'):
+        in_sections = element.find_parents('section')
+        if in_sections:
+            in_sections[-1].decompose()
 
     # Delete docstring content (for now)
     for element in soup.find_all(class_="namedocs"):

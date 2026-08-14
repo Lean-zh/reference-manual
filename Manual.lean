@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Author: David Thrane Christiansen
 -/
 import VersoManual
+import Manual.ZhDocString
 
 import Manual.Intro
 import Manual.Elaboration
@@ -14,9 +15,12 @@ import Manual.Defs
 import Manual.Classes
 import Manual.Axioms
 import Manual.Terms
+import Manual.ErrorExplanations
 import Manual.Tactics
 import Manual.Simp
+import Manual.Grind
 import Manual.BasicTypes
+import Manual.Iterators
 import Manual.BasicProps
 import Manual.NotationsMacros
 import Manual.IO
@@ -26,69 +30,42 @@ import Manual.BuildTools
 import Manual.Releases
 import Manual.Namespaces
 import Manual.Runtime
+import Manual.SupportedPlatforms
+import Manual.VCGen
 
 open Verso.Genre Manual
 open Verso.Genre.Manual.InlineLean
 
 set_option pp.rawOnError true
 set_option maxRecDepth 1024
-/-
-#doc (Manual) "The Lean Language Reference" =>
--/
 
 #doc (Manual) "Lean 语言参考手册" =>
 %%%
-file := "The Lean Language Reference"
+file := some "lean-language-reference"
 tag := "lean-language-reference"
+shortContextTitle := "Lean 中文参考手册"
 %%%
 
-/-
-This is the _Lean Language Reference_.
-It is intended to be a comprehensive, precise description of Lean: a reference work in which Lean users can look up detailed information, rather than a tutorial intended for new users.
-For other documentation, please refer to the [Lean documentation overview](https://lean-lang.org/documentation/).
-This manual covers Lean version {versionString}[].
--/
+这是 _Lean 语言参考手册_ 的中文版本。
+它旨在全面、精确地描述 Lean，供用户查阅详细信息，而不是作为面向新用户的入门教程。
+其他中文资料请参阅 [Lean 中文社区](https://www.leanprover.cn/)；英文资料请参阅 [Lean 文档总览](https://lean-lang.org/documentation/)。
+本手册涵盖 Lean {versionString}[] 版本。
 
-这是Lean语言参考手册。
-它旨在对Lean进行全面而精确的描述，是Lean用户查找详细信息的参考资料，而不是给新用户的入门教程。
-如需其他文档，请参阅[Lean文档总览(英文)](https://lean-lang.org/documentation/) 或 [lean中文文档](https://www.leanprover.cn/)。
-本手册涵盖Lean {versionString}[]版本。
+Lean 是一种基于依值类型论的*交互式定理证明器*，既可用于前沿数学，也可用于软件验证。
+Lean 的核心类型论足以表达非常复杂的数学对象，同时又足够精简，可以有独立实现，从而降低影响可靠性的缺陷风险。
+核心类型论由最小化的{tech (key := "kernel")}[内核]实现；内核只负责检查证明项。
+高级自动化通过富有表现力的{ref "tactics"}[策略语言]支持核心理论与内核。
+每个策略都会产生由内核检查的核心证明项，因此策略中的缺陷不会危及 Lean 整体的可靠性。
+和 Lean 的许多其他部分一样，策略语言可由用户扩展，以满足具体形式化项目的需求。
+策略本身用 Lean 编写，定义后即可立即使用，无需重建证明器或加载外部模块。
 
-/-
-Lean is an *interactive theorem prover* based on dependent type theory, designed for use both in cutting-edge mathematics and in software verification.
-Lean's core type theory is expressive enough to capture very complicated mathematical objects, but simple enough to admit independent implementations, reducing the risk of bugs that affect soundness.
-The core type theory is implemented in a minimal {tech}[kernel] that does nothing other than check proof terms.
-This core theory and kernel are supported by advanced automation, realized in {ref "tactics"}[an expressive tactic language].
-Each tactic produces a term in the core type theory that is checked by the kernel, so bugs in tactics do not threaten the soundness of Lean as a whole.
-Along with many other parts of Lean, the tactic language is user-extensible, so it can be built up to meet the needs of a given formalization project.
-Tactics are written in Lean itself, and can be used immediately upon definition; rebuilding the prover or loading external modules is not required.
--/
+Lean 同时也是一种纯*函数式编程语言*，其运行时基于引用计数，能够高效处理紧凑数组、多线程及单子式 {name}`IO`。
+作为一门编程语言，Lean 的语言服务器、构建工具、{tech (key := "Lean elaborator") -normalize}[精译器]和策略系统等主要组件都由 Lean 自身实现。
+本手册使用 [Verso](https://github.com/leanprover/verso) 编写；Verso 也是用 Lean 实现的文档创作工具。
 
-Lean是一种基于依值类型论的*交互式定理证明器*，既可用于前沿数学也可用于软件验证。
-Lean的核心类型理论(core type theory)足够丰富，能够描述非常复杂的数学对象，但又足够简单，允许有独立实现，从而降低影响健全性的bug风险。
-核心类型理论通过一个最小的内核({tech}[kernel])实现，内核除了校验证明项外不做其他任何事情。
-这一核心理论与内核由高级自动化机制支持，该机制体现在一种富有表现力的{ref "tactics"}[策略语言]之中。
-每个策略都会产生一个核心类型理论中的项，由内核检查，因此即使策略中出现bug，也不会威胁到整个Lean的健全性。
-除了许多其他Lean组件外，策略语言也是用户可扩展的，因此能根据形式化项目的需求不断完善。
-策略本身用Lean编写，定义后即可使用，无需重建证明器或加载外部模块。
+即使主要目标是编写证明，熟悉 Lean 的编程功能也很有价值，因为新的策略和证明自动化均由 Lean 程序实现。
+因此，本参考手册将 Lean 的证明语言与编程语言两方面结合描述，使二者相互阐明。
 
-/-
-Lean is also a pure *functional programming language*, with features such as a run-time system based on reference counting that can efficiently work with packed array structures, multi-threading, and monadic {name}`IO`.
-As befits a programming language, Lean is primarily implemented in itself, including the language server, build tool, {tech}[elaborator], and tactic system.
-This very book is written in [Verso](https://github.com/leanprover/verso), a documentation authoring tool written in Lean.
--/
-
-Lean同时也是一种纯*函数式编程语言*，具有基于引用计数的运行时系统，能够高效处理打包数组结构、多线程和单子{ name }`IO`等特性。
-作为一门编程语言，Lean主要由自身实现，包括语言服务器、构建工具、{tech key:="elaborator"}[繁释器]和策略系统。
-本手册正是用[Verso](https://github.com/leanprover/verso)编写的，Verso是用Lean开发的文档创作工具。
-
-/-
-Familiarity with Lean's programming features is valuable even for users whose primary interest is in writing proofs, because Lean programs are used to implement new tactics and proof automation.
-Thus, this reference manual does not draw a barrier between the two aspects, but rather describes them together so they can shed light on one another.
--/
-
-熟悉Lean的编程特性，即使对主要关注证明编写的用户来说也非常有价值，因为Lean程序用于实现新的策略和证明自动化。
-因此，本参考手册不会人为地将两者分开描述，而是将它们合在一起讲解，以便互为补充，相互启发。
 
 
 {include 0 Manual.Intro}
@@ -109,26 +86,34 @@ Thus, this reference manual does not draw a barrier between the two aspects, but
 
 {include 0 Manual.Attributes}
 
-{include 0 Manual.Terms}
-
 {include 0 Manual.Classes}
 
 {include 0 Manual.Coercions}
 
+{include 0 Manual.Runtime}
+
+{include 0 Manual.Terms}
+
 {include 0 Manual.Tactics}
 
-{include 0 Manual.Monads}
-
-{include 0 Manual.IO}
-
 {include 0 Manual.Simp}
+
+{include 0 Manual.Grind}
+
+{include 0 Manual.VCGen}
+
+{include 0 Manual.Monads}
 
 {include 0 Manual.BasicProps}
 
 {include 0 Manual.BasicTypes}
 
-# Dynamic Typing
+{include 0 Manual.IO}
+
+# 动态类型
 %%%
+file := some "dynamic-typing"
+tag := "dynamic-typing"
 draft := true
 %%%
 
@@ -136,60 +121,51 @@ draft := true
 
 {docstring Dynamic}
 
-{docstring Dynamic.mk (allowMissing := true)}
+{docstring Dynamic.mk +allowMissing}
 
 {docstring Dynamic.get?}
 
+{include 0 Manual.Iterators}
 
-/- # Standard Library -/
-# 动态类型
+# 标准库
 %%%
+file := some "standard-library"
 tag := "standard-library"
 draft := true
 %%%
 
-/-
+
 :::planned 109
 Overview of the standard library, including types from the prelude and those that require imports.
 :::
--/
-
-:::planned 109
-标准库概述,包括prelude中的类型以及那些需要导入的类型
-:::
--/
 
 {include 0 Manual.NotationsMacros}
 
-
-{include 0 Manual.Runtime}
-
-
 {include 0 Manual.BuildTools}
+
+{include 0 Manual.ValidatingProofs}
+
+{include 0 Manual.ErrorExplanations}
 
 {include 0 Manual.Releases}
 
-/-
-# Index
--/
+{include 0 Manual.SupportedPlatforms}
 
 # 索引
 %%%
 number := false
 file := some "the-index"
+tag := "index"
 %%%
 
 {theIndex}
-
-/-
-# Progress
--/
 
 # 进度
 %%%
 number := false
 draft := true
-file := some "the-index"
+file := some "progress"
+tag := "progress"
 %%%
 
 
@@ -197,6 +173,9 @@ file := some "the-index"
 
 :::progress
 ```namespace
+ByteArray
+ByteArray.Iterator
+ByteSlice
 List
 Int
 IntCast
@@ -239,6 +218,7 @@ LawfulFunctor
 LawfulApplicative
 LawfulMonad
 LawfulBEq
+ReflBEq
 EquivBEq
 LawfulHashable
 Id
@@ -252,7 +232,13 @@ EStateM.Result
 EStateM.Backtrackable
 String
 Substring
+String.Slice
+String.Slice.Pos
+String.Pattern
+String.Pos.Raw
 String.Pos
+String.ValidPos
+String.Iterator
 Char
 Nat
 Lean.Elab.Tactic
@@ -359,6 +345,9 @@ Eq
 HEq
 Max
 Min
+Std.Do
+Std.Do.PredTrans
+Std.Do.SVal
 Std.HashMap
 Std.ExtHashMap
 Std.DHashMap
@@ -368,22 +357,33 @@ Std.ExtHashSet
 Std.TreeMap
 Std.DTreeMap
 Std.TreeSet
+Std.Iterators
+Std.Iterators.Iter
+Std.Iterators.Iter.Equiv
+Std.Iterators.Iter.TerminationMeasures
+Std.Iterators.IterM
+Std.Iterators.IterM.Equiv
+Std.Iterators.IterM.TerminationMeasures
+Std.Iterators.Iterator
+Std.Iterators.IteratorAccess
+Std.Iterators.IteratorLoop
+Std.Iterators.IteratorLoopPartial
+Std.Iterators.Finite
+Std.Iterators.Productive
+Std.Iterators.PostconditionT
+Std.Iterators.HetT
+Std.PRange
+Std.PRange.UpwardEnumerable
+Std.Rco
+Std.Rcc
+Std.Rci
+Std.Roo
+Std.Roc
+Std.Roi
+Std.Rio
+Std.Ric
+Std.Rii
 ```
-
-
-```exceptions
-Std.Format.defUnicode
-Std.Format.format.indent
-Std.Format.format.unicode
-Std.Format.format.width
-Std.Format.getIndent
-Std.Format.getUnicode
-Std.Format.getWidth
-Std.Format.noConfusionType.withCtor
-Std.Format.noConfusionType.withCtorType
-Std.Format.pretty'
-```
-
 
 ```exceptions
 Std.HashMap.all
@@ -454,6 +454,43 @@ Substring.takeWhileAux
 ```
 
 ```exceptions
+String.Pos.Raw.ctorIdx
+String.Pos.Raw.extract.go₁
+String.Pos.Raw.extract.go₂
+String.Pos.Raw.mk.noConfusion
+String.Pos.Raw.utf8GetAux
+String.Pos.Raw.utf8GetAux?
+String.Pos.Raw.utf8PrevAux
+String.Pos.Raw.utf8SetAux
+```
+
+```exceptions
+String.Slice.ctorIdx
+String.Slice.hash
+String.Slice.instDecidableEqPos.decEq
+String.Slice.instInhabitedByteIterator.default
+String.Slice.instInhabitedPosIterator.default
+String.Slice.instInhabitedRevPosIterator.default
+String.Slice.instInhabitedRevSplitIterator.default
+String.Slice.instInhabitedSplitInclusiveIterator.default
+String.Slice.instInhabitedSplitIterator.default
+String.Slice.lines.lineMap
+String.Slice.mk.noConfusion
+```
+
+```exceptions
+String.Slice.Pos.ctorIdx
+String.Slice.Pos.mk.noConfusion
+String.Slice.Pos.prevAux
+String.Slice.Pos.prevAux.go
+```
+
+```exceptions
+String.ValidPos.ctorIdx
+String.ValidPos.mk.noConfusion
+```
+
+```exceptions
 Char.ofNatAux
 Char.quoteCore
 Char.quoteCore.smallCharToHex
@@ -482,6 +519,34 @@ BitVec.reduceShift
 BitVec.reduceShiftShift
 BitVec.reduceShiftWithBitVecLit
 BitVec.reduceUnary
+```
+
+```exceptions
+ByteArray.ctorIdx
+ByteArray.findFinIdx?.loop
+ByteArray.findIdx?.loop
+ByteArray.foldlM.loop
+ByteArray.foldlMUnsafe
+ByteArray.foldlMUnsafe.fold
+ByteArray.forIn.loop
+ByteArray.forInUnsafe
+ByteArray.forInUnsafe.loop
+ByteArray.hash
+ByteArray.instBEq.beq
+ByteArray.instInhabitedIterator.default
+ByteArray.mk.noConfusion
+ByteArray.mkIterator
+ByteArray.toList.loop
+ByteArray.utf8Decode?.go
+ByteArray.utf8DecodeChar?.assemble₁
+ByteArray.utf8DecodeChar?.assemble₂
+ByteArray.utf8DecodeChar?.assemble₂Unchecked
+ByteArray.utf8DecodeChar?.assemble₃
+ByteArray.utf8DecodeChar?.assemble₃Unchecked
+ByteArray.utf8DecodeChar?.assemble₄
+ByteArray.utf8DecodeChar?.assemble₄Unchecked
+ByteArray.utf8DecodeChar?.isInvalidContinuationByte
+ByteArray.utf8DecodeChar?.parseFirstByte
 ```
 
 ```exceptions
@@ -807,6 +872,17 @@ Prod.repr
 Prod.rprod
 Prod.lex
 Prod.Lex
+```
+
+```exceptions
+Std.Iterators.Iter.instForIn'
+Std.Iterators.Iter.step_filter
+Std.Iterators.Iter.val_step_filter
+```
+
+```exceptions
+Std.Iterators.IterM.instForIn'
+Std.Iterators.IterM.toListRev.go
 ```
 
 ```exceptions
