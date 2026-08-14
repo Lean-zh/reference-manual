@@ -131,4 +131,83 @@ namespace Option
 def allowUnsafeReducibility : Bool := false
 
 end Option
+
+namespace Order
+
+/--
+偏序是一个自反、传递且反对称的关系。
+
+此类型类用于构造 `partial_fixpoint`，不应作其他用途。
+-/
+class PartialOrder (α : Sort u) where
+  /--
+  “小于等于”关系，亦可理解为“近似”关系。
+
+  此关系用于构造 `partial_fixpoint`，不应作其他用途。
+  -/
+  rel : α → α → Prop
+  /-- “小于等于”关系（或“近似”关系）是自反的。 -/
+  rel_refl : ∀ {x : α}, rel x x
+  /-- “小于等于”关系（或“近似”关系）是传递的。 -/
+  rel_trans : ∀ {x y z : α}, rel x y → rel y z → rel x z
+  /-- “小于等于”关系（或“近似”关系）是反对称的。 -/
+  rel_antisymm : ∀ {x y : α}, rel x y → rel y x → x = y
+
+/--
+链完备偏序（CCPO）是一种偏序，其中每条链都有最小上界。
+
+此类型类用于构造 `partial_fixpoint`，不应作其他用途。
+-/
+class CCPO (α : Sort u) extends PartialOrder α where
+  /-- 每条链的最小上界都存在。 -/
+  has_csup : Unit
+
+/--
+若函数把相关元素映射为相关元素，则该函数是单调的。
+
+此定义用于构造 `partial_fixpoint`，不应作其他用途。
+-/
+def monotone : Unit := ()
+
+/--
+单调函数的最小不动点，是对该函数进行超限迭代所得链的最小上界。
+
+定义本身并非严格需要 `monotone f` 假设；然而没有该假设时，定义并没有太大意义。
+此外，让每次使用 `fix` 时都带上单调性要求，也可简化 `fix_eq` 等定理的应用。
+
+此定义用于构造 `partial_fixpoint`，不应作其他用途。
+-/
+def fix : Unit := ()
+
+/--
+链完备偏序中单调函数的不动点主定理：`fix` 构造出的值确实是不动点。
+
+此定理用于构造 `partial_fixpoint`，不应作其他用途。
+-/
+def fix_eq : Unit := ()
+
+/--
+完备格是一种偏序，其中每个子集都有最小上界。
+-/
+class CompleteLattice (α : Sort u) extends PartialOrder α where
+  /-- 任意子集的最小上界都存在。 -/
+  has_sup : Unit
+
+/--
+函数 `f` 的最小不动点，即所有前不动点的下确界。
+-/
+def lfp : Unit := ()
+
+/--
+单调函数 `f` 的最小不动点确实是不动点。
+-/
+def lfp_fix : Unit := ()
+
+/--
+单调函数 `f` 的最小不动点所满足的 Park 归纳原理。
+此定理显式接受一个 `f` 单调的见证。
+-/
+def lfp_le_of_le_monotone : Unit := ()
+
+end Order
 end ZhDoc.RecursiveDefs

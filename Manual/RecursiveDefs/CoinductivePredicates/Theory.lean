@@ -7,6 +7,7 @@ Author: Wojciech Różowski
 import VersoManual
 
 import Manual.Meta
+import Manual.ZhDocString.RecursiveDefs
 
 open Manual
 open Verso.Genre
@@ -40,20 +41,20 @@ tag := "complete-lattices"
 
 {tech (key := "complete lattice")}[完备格]是一种偏序，其中每个子集（而不仅是每条链）都有最小上界。
 
-{docstring Lean.Order.CompleteLattice}
+{zhdocstring Lean.Order.CompleteLattice ZhDoc.RecursiveDefs.Order.CompleteLattice}
 
 每个完备格都会给出一个链完备偏序，因为每条链尤其也是一个子集；但反过来一般并不成立。
 例如，居留类型上的平坦序（{ref "partial-fixpoint"}[偏不动点]用于尾递归函数）是链完备偏序，却不是完备格。
 
 根据 Knaster–Tarski 定理，在完备格中，单调函数的最小不动点可以直接构造为所有前不动点的下确界：
 
-{docstring Lean.Order.lfp +allowMissing}
+{zhdocstring Lean.Order.lfp ZhDoc.RecursiveDefs.Order.lfp}
 
-{docstring Lean.Order.lfp_fix +allowMissing}
+{zhdocstring Lean.Order.lfp_fix ZhDoc.RecursiveDefs.Order.lfp_fix}
 
 对应的归纳原理是 Park 归纳：要证明某个性质对最小不动点的所有元素成立，只需证明应用一次定义函数会保持该性质。
 
-{docstring Lean.Order.lfp_le_of_le_monotone}
+{zhdocstring Lean.Order.lfp_le_of_le_monotone ZhDoc.RecursiveDefs.Order.lfp_le_of_le_monotone}
 
 # 命题上的格结构
 %%%

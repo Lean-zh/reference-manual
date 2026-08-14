@@ -8,6 +8,7 @@ import VersoManual
 
 import Manual.Meta
 import Manual.Meta.Monotonicity
+import Manual.ZhDocString.RecursiveDefs
 
 open Manual
 open Verso.Genre
@@ -32,9 +33,9 @@ tag := "partial-fixpoint-theory"
 
 偏序和链完备偏序的概念分别由类型类 {name}`Lean.Order.PartialOrder` 和 {name}`Lean.Order.CCPO` 表示。
 
-{docstring Lean.Order.PartialOrder +allowMissing}
+{zhdocstring Lean.Order.PartialOrder ZhDoc.RecursiveDefs.Order.PartialOrder}
 
-{docstring Lean.Order.CCPO +allowMissing}
+{zhdocstring Lean.Order.CCPO ZhDoc.RecursiveDefs.Order.CCPO}
 
 ```lean -show
 section
@@ -46,13 +47,13 @@ variable {α : Type u} {β : Type v} [PartialOrder α] [PartialOrder β] (f : α
 也就是说，若 {lean}`x ⊑ y`，则 {lean}`f x ⊑ f y`。
 运算符 `⊑` 表示 {name}`Lean.Order.PartialOrder.rel`。
 
-{docstring Lean.Order.monotone}
+{zhdocstring Lean.Order.monotone ZhDoc.RecursiveDefs.Order.monotone}
 
 可使用 {name}`fix` 取得单调函数的不动点；如 {name}`fix_eq` 所示，它确实构造了一个不动点。
 
-{docstring Lean.Order.fix}
+{zhdocstring Lean.Order.fix ZhDoc.RecursiveDefs.Order.fix}
 
-{docstring Lean.Order.fix_eq}
+{zhdocstring Lean.Order.fix_eq ZhDoc.RecursiveDefs.Order.fix_eq}
 
 :::paragraph
 
