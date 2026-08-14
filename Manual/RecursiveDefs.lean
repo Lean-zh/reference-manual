@@ -7,6 +7,7 @@ Author: David Thrane Christiansen
 import VersoManual
 
 import Manual.Meta
+import Manual.ZhDocString.RecursiveDefs
 
 import Manual.RecursiveDefs.Structural
 import Manual.RecursiveDefs.WF
@@ -287,21 +288,21 @@ tag := "unsafe"
 除了不受限制地使用递归之外，不安全函数还能在类型间强制转换、检查两个值是否为内存中的同一对象、读取指针值、以及在原本纯净的代码中运行 {lean}`IO` 动作。
 使用这些算子需要对 Lean 的实现有深入理解。
 
-{docstring unsafeCast}
+{zhdocstring unsafeCast ZhDoc.RecursiveDefs.unsafeCast}
 
-{docstring ptrEq +allowMissing}
+{zhdocstring ptrEq ZhDoc.RecursiveDefs.ptrEq}
 
-{docstring ptrEqList +allowMissing}
+{zhdocstring ptrEqList ZhDoc.RecursiveDefs.ptrEqList}
 
-{docstring ptrAddrUnsafe +allowMissing}
+{zhdocstring ptrAddrUnsafe ZhDoc.RecursiveDefs.ptrAddrUnsafe}
 
-{docstring isExclusiveUnsafe}
+{zhdocstring isExclusiveUnsafe ZhDoc.RecursiveDefs.isExclusiveUnsafe}
 
-{docstring unsafeIO}
+{zhdocstring unsafeIO ZhDoc.RecursiveDefs.unsafeIO}
 
-{docstring unsafeEIO}
+{zhdocstring unsafeEIO ZhDoc.RecursiveDefs.unsafeEIO}
 
-{docstring unsafeBaseIO}
+{zhdocstring unsafeBaseIO ZhDoc.RecursiveDefs.unsafeBaseIO}
 
 
 
@@ -653,7 +654,7 @@ theorem sum_eq_add : sum x y = x + y := by simp
 
 :::syntax command (title := "局部不可约性")
 
-{includeDocstring Lean.Parser.commandSeal__}
+{zhincludeDocstring Lean.Parser.commandSeal__ ZhDoc.RecursiveDefs.Parser.commandSeal__}
 
 ```grammar
 seal $_:ident $_*
@@ -662,7 +663,7 @@ seal $_:ident $_*
 
 
 :::syntax command (title := "局部可约性")
-{includeDocstring Lean.Parser.commandUnseal__}
+{zhincludeDocstring Lean.Parser.commandUnseal__ ZhDoc.RecursiveDefs.Parser.commandUnseal__}
 
 ```grammar
 unseal $_:ident $_*
@@ -677,4 +678,4 @@ unseal $_:ident $_*
 其中不少会考虑可约性；而一旦全局改变了可约性，就无法使这些索引/缓存失效并重新生成。
 默认情况下，会禁止对可约性进行可能带来不可预测结果的不安全修改；不过，可通过 {option}`allowUnsafeReducibility` 选项启用之。
 
-{optionDocs allowUnsafeReducibility}
+{zhOptionDocs allowUnsafeReducibility ZhDoc.RecursiveDefs.Option.allowUnsafeReducibility}

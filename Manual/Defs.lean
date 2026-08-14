@@ -7,6 +7,7 @@ Author: David Thrane Christiansen
 import VersoManual
 
 import Manual.Meta
+import Manual.ZhDocString.Defs
 
 import Manual.RecursiveDefs
 
@@ -429,9 +430,9 @@ AtLeast.add {n✝ : Nat} {i : Fin n✝} (x y : AtLeast i) : AtLeast i
 默认情况下，该插入处于“宽松”模式，这意味着任何未绑定的标识符都可能成为自动插入的候选。
 将 {option}`relaxedAutoImplicit` 设为 {lean}`false` 会禁用宽松模式，此时仅由“单个字母后跟零个或多个数字”构成的标识符才会被考虑用于自动插入。
 
-{optionDocs relaxedAutoImplicit}
+{zhOptionDocs relaxedAutoImplicit ZhDoc.Defs.Option.relaxedAutoImplicit}
 
-{optionDocs autoImplicit}
+{zhOptionDocs autoImplicit ZhDoc.Defs.Option.autoImplicit}
 
 
 

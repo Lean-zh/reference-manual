@@ -7,6 +7,7 @@ Author: Joachim Breitner
 import VersoManual
 
 import Manual.Meta
+import Manual.ZhDocString.RecursiveDefs.WF
 import Manual.Papers
 import Manual.RecursiveDefs.WF.GuessLexExample
 import Manual.RecursiveDefs.WF.PreprocessExample
@@ -76,7 +77,7 @@ $$` x_0 ≻ x_1 ≻ \cdots`
 
 在 Lean 中，凡是带有规范良基关系的类型，都是类型类 {name}`WellFoundedRelation` 的实例。
 
-{docstring WellFoundedRelation}
+{zhdocstring WellFoundedRelation ZhDoc.RecursiveDefs.WF.WellFoundedRelation}
 
 ```lean -show
 section
@@ -749,11 +750,11 @@ tag := "well-founded-preprocessing"
 wf_preprocess
 ```
 
-{includeDocstring Lean.Parser.Attr.wf_preprocess}
+{zhincludeDocstring Lean.Parser.Attr.wf_preprocess ZhDoc.RecursiveDefs.WF.Parser.Attr.wf_preprocess}
 
 :::
 
-{docstring wfParam}
+{zhdocstring wfParam ZhDoc.RecursiveDefs.WF.wfParam}
 
 {attr}`wf_preprocess` simp 集中的某些重写规则会无条件地一般适用，而不理会 {lean}`wfParam` 标记。
 特别地，定理 {name}`ite_eq_dite` 会被用来扩展 {ref "if-then-else"}[if-then-else 表达式]各分支的上下文，在其中加入关于条件的一个假设：{margin}[这个假设的名字应当是一个基于 `h` 的不可访问名；这一点可由对项 {lean}`()` 使用 {name}`binderNameHint` 看出。绑定变量名提示见{ref "bound-variable-name-hints"}[策略语言参考]。]
@@ -808,7 +809,7 @@ end
 可以通过把选项 {option}`wf.preprocess` 设为 {lean}`false` 来关闭这一预处理。
 若想查看预处理后的函数定义（包括移除 {name}`wfParam` 标记之前和之后的版本），可将选项 {option}`trace.Elab.definition.wf` 设为 {lean}`true`。
 
-{optionDocs trace.Elab.definition.wf}
+{zhOptionDocs trace.Elab.definition.wf ZhDoc.RecursiveDefs.WF.Option.traceElabDefinitionWf}
 
 {spliceContents Manual.RecursiveDefs.WF.PreprocessExample}
 
@@ -822,12 +823,12 @@ variable {α : Type u}
 本节极其简要地介绍一下通过 {tech (key := "well-founded recursion")}[良基递归] 给出终止性证明所依赖的数学构造；这些构造偶尔会显露到表面。
 良基递归函数的精译建立在算子 {name}`WellFounded.fix` 之上。
 
-{docstring WellFounded.fix}
+{zhdocstring WellFounded.fix ZhDoc.RecursiveDefs.WF.WellFounded.fix}
 
 类型 {lean}`α` 会实例化为函数的（会变化的）形参，并用 {name}`PSigma` 将它们打包成一个类型。
 {name}`WellFounded` 关系则通过 {name}`invImage` 由终止性 {tech (key := "measure")}[度量] 构造出来。
 
-{docstring invImage}
+{zhdocstring invImage ZhDoc.RecursiveDefs.WF.invImage}
 
 函数体会被传给 {name}`WellFounded.fix`，其中形参会被适当地打包与拆包，而递归调用则替换为对 {name}`WellFounded.fix` 所提供值的调用。
 由 {keywordOf Lean.Parser.Command.declaration}`decreasing_by` 策略生成的终止性证明，会插入到恰当的位置。
@@ -839,9 +840,9 @@ variable {α : Type u}
 
 {name}`WellFounded` 的定义建立在关系的_可达元素_这一概念之上：
 
-{docstring WellFounded}
+{zhdocstring WellFounded ZhDoc.RecursiveDefs.WF.WellFounded}
 
-{docstring Acc}
+{zhdocstring Acc ZhDoc.RecursiveDefs.WF.Acc}
 
 ::: example "通过反复减法定义除法：终止性证明"
 
