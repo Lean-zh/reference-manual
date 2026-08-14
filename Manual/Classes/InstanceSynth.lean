@@ -289,7 +289,7 @@ tag := "class-output-parameters"
 Membership.{u, v} (α : outParam (Type u)) (γ : Type v) : Type (max u v)
 ```
 
-可以用 {name}`outParam` 这一{tech (key := "gadget")}[辅助构造]包装类型类参数的类型，从而将参数声明为输出。
+可以用 {name}`outParam` 这一{tech (key := "gadget")}[小工具]包装类型类参数的类型，从而将参数声明为输出。
 当类参数是{deftech (key := "output parameter")}_输出参数_时，实例合成不会要求它已知；事实上，任何已有值都会被完全忽略。
 会选中第一个匹配输入参数的实例，并将该实例为输出参数指定的值作为其值。
 如果原先已有值，则在合成完成后将其与指定值比较；二者不匹配即为错误。

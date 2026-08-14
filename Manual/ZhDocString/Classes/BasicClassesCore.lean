@@ -424,7 +424,7 @@ class LawfulGetElem (cont : Type u) (idx : Type v) (elem : outParam (Type w))
     intros
     try simp only [getElem?] <;> congr
 
-  /-- `GetElem?.getElem!` 的成败与 `GetElem.getElem?` 的成败一致。 -/
+  /-- `GetElem?.getElem!` 的成败与 `GetElem?.getElem?` 的成败一致。 -/
   getElem!_def [_root_.Inhabited elem] (c : cont) (i : idx) :
       c[i]! = match c[i]? with | some e => e | none => default := by
     intros

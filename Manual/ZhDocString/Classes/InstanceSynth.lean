@@ -12,6 +12,7 @@ set_option checkBinderAnnotations false
 ```
 #check (inferInstance : Inhabited Nat) -- Inhabited Nat
 
+@[instance_reducible]
 def foo : Inhabited (Nat × Nat) :=
   inferInstance
 

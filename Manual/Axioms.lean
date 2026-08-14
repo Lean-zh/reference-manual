@@ -200,8 +200,9 @@ Lean 中有七个标准公理。前三个公理是使用 Lean 开展数学工作
 公理 {name}`sorryAx` 是 {tactic}`sorry` 策略和 {lean}`sorry` 项实现的一部分。
 完成的证明不应使用此公理，因为它可用于证明任何命题：
  * ```signature
-   sorryAx {α : Sort u} (synthetic := true) : α
+   sorryAx.{u} (α : Sort u) (synthetic : Bool) : α
    ```
+第二个参数标记该占位证明是否由错误恢复生成：普通的 `sorry` 使用 `false`，错误恢复生成的合成 `sorry` 使用 `true`。
 
 最后三个公理并非真正因其_数学_内容而存在；从数学角度看，它们证明的都是平凡命题：
 

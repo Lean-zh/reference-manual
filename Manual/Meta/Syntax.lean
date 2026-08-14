@@ -10,6 +10,7 @@ import Verso.Code.Highlighted
 import VersoManual.InlineLean
 
 import Manual.Meta.Basic
+import Manual.Meta.LocalizedDocstrings
 import Manual.Meta.PPrint
 
 open Verso Doc Elab
@@ -120,6 +121,7 @@ def keywordOf : RoleExpander
         if kindName == k then catName := some cat; break
       if let some _ := catName then break
     let kindDoc ← findDocString? (← getEnv) kindName
+    let kindDoc := match localizedSyntaxDocString? kindName with | some d => some d | none => kindDoc
     return #[← `(Inline.other {Inline.keywordOf with data := ToJson.toJson (α := (String × Option Name × Name × Option String)) $(quote (kw.getString, catName, parserName.getD kindName, kindDoc))} #[Inline.code $kw])]
 
 @[inline_extension keywordOf]
@@ -654,6 +656,7 @@ partial def production (which : Nat) (stx : Syntax) : StateT (Lean.NameMap (Name
     -- If the identifier is the name of something that works like a syntax category, then treat it as a nonterminal
     if x ∈ [`ident, `atom, `num] || (Lean.Parser.parserExtension.getState (← getEnv)).categories.contains x then
       let d? ← findDocString? (← getEnv) x
+      let d? := match localizedSyntaxDocString? x with | some d => some d | none => d?
       -- TODO render markdown
       let tok ←
         lift <| tag (.nonterminal x d?) <|
@@ -726,6 +729,7 @@ partial def production (which : Nat) (stx : Syntax) : StateT (Lean.NameMap (Name
       let cat := stx[0]
       if let .ident info' _ c _ := cat then
         let d? ← findDocString? (← getEnv) c
+        let d? := match localizedSyntaxDocString? c with | some d => some d | none => d?
         -- TODO render markdown
         let tok ←
           lift <| tag (.nonterminal c d?) <|
@@ -740,6 +744,7 @@ partial def production (which : Nat) (stx : Syntax) : StateT (Lean.NameMap (Name
       if let .ident info _ x _ := name then
         if let .ident info' _ c _ := cat then
           let d? ← findDocString? (← getEnv) c
+          let d? := match localizedSyntaxDocString? c with | some d => some d | none => d?
           modify (·.insert x (c, d?))
           return (← lift <| tag (.localName x which c d?) x.toString) ++ (← lift <| tag .bnf ":") ++ (← production which cat)
       return "_" ++ (← lift <| tag .bnf ":") ++ (← production which cat)
@@ -765,6 +770,7 @@ partial def production (which : Nat) (stx : Syntax) : StateT (Lean.NameMap (Name
     | _, some k', #[a, b, c, d] => do
       --
       let doc? ← findDocString? (← getEnv) k'
+      let doc? := match localizedSyntaxDocString? k' with | some d => some d | none => doc?
       let last :=
         if let .node _ _ #[] := d then c else d
 
@@ -785,6 +791,7 @@ partial def production (which : Nat) (stx : Syntax) : StateT (Lean.NameMap (Name
       for a in args do
         out := out ++ (← production which a)
       let doc? ← findDocString? (← getEnv) k
+      let doc? := match localizedSyntaxDocString? k with | some d => some d | none => doc?
       lift <| tag (.fromNonterminal k doc?) out
 
 end Meta.PPrint.Grammar
@@ -816,6 +823,7 @@ where
   renderLhs (config : FreeSyntaxConfig) (isFirst : Bool) : TagFormatT GrammarTag DocElabM Format := do
     let cat := (categoryOf (← getEnv) config.name).getD config.name
     let d? ← findDocString? (← getEnv) cat
+    let d? := match localizedSyntaxDocString? cat with | some d => some d | none => d?
     let mut bnf : Format := (← tag (.nonterminal cat d?) s!"{nonTerm cat}") ++ " " ++ (← tag .bnf "::=")
     if config.open || (!config.open && !isFirst) then
       bnf := bnf ++ (" ..." : Format)
@@ -1534,6 +1542,7 @@ def syntaxKind : RoleExpander
     let id : Ident := mkIdentFrom syntaxKindName kName
     let k ← try realizeGlobalConstNoOverloadWithInfo id catch _ => pure kName
     let doc? ← findDocString? (← getEnv) k
+    let doc? := match localizedSyntaxDocString? k with | some d => some d | none => doc?
     return #[← `(Inline.other {Inline.syntaxKind with data := ToJson.toJson (α := Name × String × Option String) ($(quote k), $(quote syntaxKindName.getString), $(quote doc?))} #[Inline.code $(quote k.toString)])]
 
 

@@ -14,6 +14,8 @@ open Verso.Genre
 open Verso.Genre.Manual
 open Verso.Genre.Manual.InlineLean
 
+set_option warn.classDefReducibility false
+
 #doc (Manual) "实例声明" =>
 %%%
 file := "Instance-Declarations"
