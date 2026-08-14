@@ -297,7 +297,9 @@ jobs:
         name: Deploy preview
         runs-on: ubuntu-latest
         needs: [build]
-        if: github.repository == 'leanprover/reference-manual' && github.event_name == 'push' && github.ref_name == 'nightly-testing'
+        if:
+            github.repository == 'leanprover/reference-manual' && github.event_name == 'push' &&
+            github.ref_name == 'nightly-testing'
         steps:
             - name: Get generated HTML from artifact storage
               uses: actions/download-artifact@v4

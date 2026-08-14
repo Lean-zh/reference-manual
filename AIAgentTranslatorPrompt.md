@@ -4,19 +4,24 @@
 
 ## 工作流
 
-1. **确认范围**：读取目标文件及其 `{include ...}` 子文档，列出允许修改的文件；尊重并行任务的文件边界。
+1. **确认范围**：读取目标文件及其 `{include ...}`
+   子文档，列出允许修改的文件；尊重并行任务的文件边界。
 2. **建立基线**：运行最窄的现有构建目标，记录真实错误。不要把工具链或上游已有错误误报为翻译错误。
 3. **逐段翻译**：保留代码、Verso 语法、引用键、测试和最新上游新增内容。英文原文是否保留由当前章节惯例决定，不要自行制造大段注释副本。
-4. **术语校对**：以 [TERMINOLOGY.md](TERMINOLOGY.md) 为准；elaboration 固定译为“精译”，elaborator 固定译为“精译器”。新增重要术语时同步更新术语表。
+4. **术语校对**：以 [TERMINOLOGY.md](TERMINOLOGY.md)
+   为准；elaboration 固定译为“精译”，elaborator 固定译为“精译器”。新增重要术语时同步更新术语表。
 5. **标记校对**：
-   - `{tech}` / `{deftech}` 的英文 key 必须稳定；
-   - `{index}` 键不翻译；
-   - `:::` 等容器嵌套必须平衡；
-   - 中文标题使用 ASCII `file` 和 `tag`；
-   - 不修改 Lean 代码的语义来迎合译文。
-6. **Docstring**：使用 `{zhdocstring 英文声明 ZhDoc.载体}` 或 `{zhOptionDocs 选项 ZhDoc.载体}`。构造子和字段必须一一对应；发现映射风险时修复载体或基础设施，禁止把译文静默挂到错误对象。
+    - `{tech}` / `{deftech}` 的英文 key 必须稳定；
+    - `{index}` 键不翻译；
+    - `:::` 等容器嵌套必须平衡；
+    - 中文标题使用 ASCII `file` 和 `tag`；
+    - 不修改 Lean 代码的语义来迎合译文。
+6. **Docstring**：使用 `{zhdocstring 英文声明 ZhDoc.载体}` 或
+   `{zhOptionDocs 选项 ZhDoc.载体}`。构造子和字段必须一一对应；发现映射风险时修复载体或基础设施，禁止把译文静默挂到错误对象。
 7. **逐句复核**：检查漏译、多译、否定词、量词、术语一致性、链接和代码内名字。中文应准确、自然，不逐词硬译。
-8. **验证**：至少运行目标模块构建；公共导入变更运行 `lake build Manual`；站点或发布变更按 README 运行 `./generate-html.sh --mode preview`。最后运行 `git diff --check`。
+8. **验证**：至少运行目标模块构建；公共导入变更运行
+   `lake build Manual`；站点或发布变更按 README 运行
+   `./generate-html.sh --mode preview`。最后运行 `git diff --check`。
 
 ## 禁止事项
 

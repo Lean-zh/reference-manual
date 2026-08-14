@@ -16,9 +16,8 @@ jobs:
         name: Deploy release branch to hosting
         runs-on: ubuntu-latest
         if:
-            ${{ github.repository == 'leanprover/reference-manual' &&
-            (github.event_name != 'workflow_run' || github.event.workflow_run.conclusion ==
-            'success') }}
+            ${{ github.repository == 'leanprover/reference-manual' && (github.event_name !=
+            'workflow_run' || github.event.workflow_run.conclusion == 'success') }}
         steps:
             - name: Checkout postdeploy branch
               uses: actions/checkout@v4
@@ -47,9 +46,8 @@ jobs:
         name: Deploy tutorials release branch to hosting
         runs-on: ubuntu-latest
         if:
-            ${{ github.repository == 'leanprover/reference-manual' &&
-            (github.event_name != 'workflow_run' || github.event.workflow_run.conclusion ==
-            'success') }}
+            ${{ github.repository == 'leanprover/reference-manual' && (github.event_name !=
+            'workflow_run' || github.event.workflow_run.conclusion == 'success') }}
         steps:
             - name: Checkout postdeploy-tutorials branch
               uses: actions/checkout@v4
