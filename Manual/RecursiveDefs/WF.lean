@@ -460,7 +460,7 @@ tag := "The-Lean-Language-Reference--Definitions--Recursive-Definitions--Well-Fo
 :::
 
 
-:::tactic "decreasing_trivial"
+:::tactic "decreasing_trivial" +replace
 
 {tactic}`decreasing_trivial` 是一个可扩展的策略，它会应用若干常见启发式来解决终止性目标。
 具体来说，它会尝试下列策略与定理：
