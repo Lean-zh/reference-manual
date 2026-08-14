@@ -71,7 +71,7 @@ $[$_]?
 :::
 
 
-{deftech (key := "documentation comment")}_文档注释_用于为它所修饰的声明提供源码内 API 文档。
+{deftech (key := "Documentation comments")}_文档注释_用于为它所修饰的声明提供源码内 API 文档。
 文档注释实际上并不是普通注释：把它放在不会被当作文档处理的位置会造成语法错误。
 它也用于需要文本、但字符串转义会很繁琐的位置，例如 {keywordOf Lean.guardMsgsCmd}`#guard_msgs` 命令中的预期消息。
 
@@ -92,7 +92,7 @@ $[$_]?
 若声明为 {keyword}`protected`，则打开其命名空间时不会将该名字带入作用域。
 
 被标记为 {keyword}`noncomputable` 的函数不会被编译，因而也不能执行。
-当函数使用了非可计算的推理原则（例如选择公理或排中律）来产生与其返回结果相关的数据，或使用了因效率原因而不参与代码生成的 Lean 特性（如 {tech (key := "recursor")}[递归器]）时，该函数必须是 noncomputable。
+当函数使用了非可计算的推理原则（例如选择公理或排中律）来产生与其返回结果相关的数据，或使用了因效率原因而不参与代码生成的 Lean 特性（如 {tech (key := "recursors")}[递归器]）时，该函数必须是 noncomputable。
 即使无法编译和执行，noncomputable 函数在规范化与推理中依然十分有用。
 
 {keyword}`unsafe` 标记会使定义跳过内核检查，并允许其访问可能破坏 Lean 保证的功能。
@@ -106,7 +106,7 @@ file := "Headers-and-Signatures"
 tag := "signature-syntax"
 %%%
 
-定义或声明的 {deftech (key := "header")}_头部_（若有）由待声明/定义的常量以及其签名组成。
+定义或声明的 {deftech (key := "_header_")}_头部_（若有）由待声明/定义的常量以及其签名组成。
 常量的 {deftech (key := "signature")}_签名_ 指定了它可以如何被使用。
 签名中包含的不仅仅是类型本身的信息，还包括例如 {tech (key := "universe parameter")}[宇宙层级参数]、可选参数的默认值等。
 在 Lean 中，不同类型的声明均使用一致的格式来书写签名。
@@ -189,11 +189,11 @@ tag := "bracketed-parameter-syntax"
 
 :::syntax bracketedBinder (title := "可选与自动参数")
 带有 `:=` 的圆括号参数用于为参数指定默认值。
-带默认值的参数称为 {deftech (key := "optional parameter")}_可选参数_。
+带默认值的参数称为 {deftech (key := "optional parameters")}_可选参数_。
 在调用位置，如果未提供该参数，则会使用给定的默认项进行填充。
 签名中之前的参数在默认值表达式内可见，且其在调用点的实参会被替换进默认值表达式。
 
-如果提供了一个 {ref "tactics"}[策略脚本]，则会在调用点执行该脚本以合成一个参数值；通过策略填充的参数称为 {deftech (key := "automatic parameter")}_自动参数_。
+如果提供了一个 {ref "tactics"}[策略脚本]，则会在调用点执行该脚本以合成一个参数值；通过策略填充的参数称为 {deftech (key := "automatic parameters")}_自动参数_。
 ```grammar
 ($x $x* : $t := $e)
 ```
@@ -258,6 +258,7 @@ def mustBeEqual (n : Nat) : (k : Nat) → n = k → String :=
   fun _ =>
     fun
     | rfl => s!"Equal - both are {n}!"
+
 ```
 :::
 
@@ -343,7 +344,6 @@ Note: It is not possible to treat `β` as an implicitly bound variable here beca
 
 给出完整签名即可通过：
 ```lean -keep
-
 set_option autoImplicit false
 
 def map.{u, v} {α : Type u} {β : Type v}
@@ -356,7 +356,6 @@ def map.{u, v} {α : Type u} {β : Type v}
 对于未显式标注类型的参数，其宇宙参数会被自动插入。
 即便禁用了 {option}`autoImplicit`，类型参数所处的宇宙也可被推断，并插入相应的宇宙参数：
 ```lean -keep
-
 set_option autoImplicit false
 
 def map {α β} (f : α → β) :
@@ -529,7 +528,7 @@ tag := "definitions-command"
 
 定义的头部与主体会一并进行精译。
 若头部信息不完整（例如缺失某个参数的类型或缺失余域），则定义体可能为精译器提供足够信息以重建缺失部分。
-不过，{tech (key := "instance implicit")}[实例隐式]参数必须在头部显式给出，或作为 {tech (key := "section variable")}[区段变量]指定。
+不过，{tech (key := "instance implicit")}[实例隐式]参数必须在头部显式给出，或作为 {tech (key := "section variables")}[区段变量]指定。
 
 
 :::syntax Lean.Parser.Command.declaration (alias := Lean.Parser.Command.definition) (title := "定义")
@@ -560,11 +559,11 @@ def $_ $_ where
   $_*
 ```
 
-在 {tech (key := "module")}[模块]中，使用 {keyword}`def` 定义的主体默认不会对外公开。
+在 {tech (key := "modules")}[模块]中，使用 {keyword}`def` 定义的主体默认不会对外公开。
 :::
 
 :::syntax Lean.Parser.Command.declaration (alias := Lean.Parser.Command.abbrev) (title := "缩写")
-{deftech (key := "abbreviation")}[缩写]与使用 {keyword}`def` 的定义完全一致，区别仅在于它们是 {tech (key := "reducible")}[可约]的。
+{deftech (key := "Abbreviations")}[缩写]与使用 {keyword}`def` 的定义完全一致，区别仅在于它们是 {tech (key := "reducible")}[可约]的。
 
 
 ```grammar
@@ -584,13 +583,13 @@ abbrev $_ $_ where
   $_*
 ```
 
-在 {tech (key := "module")}[模块]中，使用 {keyword}`abbrev` 定义的主体默认会对外公开。
+在 {tech (key := "modules")}[模块]中，使用 {keyword}`abbrev` 定义的主体默认会对外公开。
 :::
 
 
-{deftech (key := "opaque constant")}_不透明常量_是在内核中不受 {tech (key := "δ")}[δ-归约]约束的已定义常量。
+{deftech (key := "Opaque constants")}_不透明常量_是在内核中不受 {tech (key := "δ")}[δ-归约]约束的已定义常量。
 它们对于仅陈述某个函数的存在性很有用。
-与 {tech (key := "axiom")}[公理]不同，不透明声明只能用于可被占据的类型，因此不会带来不一致风险。
+与 {tech (key := "axioms")}[公理]不同，不透明声明只能用于可被占据的类型，因此不会带来不一致风险。
 亦不同于公理的是，该类型的占据元会在已编译代码中被实际使用。
 还可以使用 {attr}`implemented_by` 属性指示编译器在编译该不透明常量时发出对其他函数的调用。
 
@@ -620,7 +619,7 @@ tag := "theorems"
 
 
 :::paragraph
-由于 {tech (key := "proposition")}[命题]是其占据元可作为证明的类型，{deftech (key := "theorem")}[定理]与“定义”在技术上非常相似。
+由于 {tech (key := "propositions")}[命题]是其占据元可作为证明的类型，{deftech (key := "theorems")}[定理]与“定义”在技术上非常相似。
 然而，由于它们的使用场景不同，许多细节上有所差异：
 
 * 定理陈述必须是一个命题；
@@ -655,7 +654,7 @@ theorem $_ $_ where
   $_*
 ```
 
-在 {tech (key := "module")}[模块]中，定理的证明默认不会对外公开。
+在 {tech (key := "modules")}[模块]中，定理的证明默认不会对外公开。
 :::
 
 

@@ -158,9 +158,9 @@ class PartialOrder (α : Sort u) where
 
 此类型类用于构造 `partial_fixpoint`，不应作其他用途。
 -/
-class CCPO (α : Sort u) extends PartialOrder α where
+class CCPO (α : Sort u) extends Lean.Order.PartialOrder α where
   /-- 每条链的最小上界都存在。 -/
-  has_csup : Unit
+  has_csup : ∀ {c : α → Prop}, Lean.Order.chain c → Exists (Lean.Order.is_sup c)
 
 /--
 若函数把相关元素映射为相关元素，则该函数是单调的。
@@ -189,9 +189,9 @@ def fix_eq : Unit := ()
 /--
 完备格是一种偏序，其中每个子集都有最小上界。
 -/
-class CompleteLattice (α : Sort u) extends PartialOrder α where
+class CompleteLattice (α : Sort u) extends Lean.Order.PartialOrder α where
   /-- 任意子集的最小上界都存在。 -/
-  has_sup : Unit
+  has_sup : ∀ (c : α → Prop), Exists (Lean.Order.is_sup c)
 
 /--
 函数 `f` 的最小不动点，即所有前不动点的下确界。

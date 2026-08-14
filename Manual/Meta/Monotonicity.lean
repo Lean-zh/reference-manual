@@ -36,7 +36,7 @@ private def mkInlineTable (rows : Array (Array Term)) (tag : Option String := no
       throwError s!"Expected all rows to have same number of columns, but got {rows.map (·.size)}"
 
     let blocks : Array Term :=
-      #[ ← ``(Inline.text "Theorem"), ← ``(Inline.text "Pattern") ] ++
+      #[ ← ``(Inline.text "定理"), ← ``(Inline.text "模式") ] ++
       rows.flatten
 
     -- The new compiler has a stack overflow when compiling the table unless we split it up. This

@@ -29,7 +29,7 @@ file := "Recursive-Definitions"
 
 允许任意递归函数定义会使 Lean 的逻辑不一致。一般递归使得可以写出环形证明：“{tech (key := "proposition")}[命题] $`P` 为真，因为命题 $`P` 为真”。在证明之外，一个无限循环可以被赋予类型 {name}`Empty`，再结合 {keywordOf Lean.Parser.Term.nomatch}`nomatch` 或 {name Empty.rec}`Empty.rec`，即可“证明”任意定理。
 
-直接禁止递归函数定义将大幅降低 Lean 的实用性：{tech (key := "inductive type")}[归纳类型]是定义谓词与数据的关键，而它们本身具有递归结构。
+直接禁止递归函数定义将大幅降低 Lean 的实用性：{tech (key := "inductive types")}[归纳类型]是定义谓词与数据的关键，而它们本身具有递归结构。
 此外，多数有用的递归函数并不威胁自洽性，而无限循环通常意味着定义有误而非有意为之。
 Lean 并未一禁了之，而是要求每个递归函数都以安全的方式定义。
 在精译递归定义的过程中，Lean 的精译器还会同时给出该定义安全的理由。{margin}[可参阅精译概览中的 {ref "elaboration-results"}[精译器的输出]一节，了解递归定义精译在整体精译流程中的位置。]
@@ -229,7 +229,7 @@ tag := "partial-functions"
 尽管递归定义不是内核类型论的一部分，仍然可以用内核来检查定义体是否具有正确的类型。
 其工作方式与其他函数式语言相同：在一个“该定义已与其类型绑定”的环境中检查定义体，从而为递归的使用做类型检查。
 一旦确认通过类型检查，定义体会被丢弃，内核仅保留那个不透明常量。
-与所有 Lean 函数一样，编译器会基于精译得到的 {tech (key := "pre-definitions")}[预定义] 生成代码。
+与所有 Lean 函数一样，编译器会基于精译得到的 {tech (key := "pre-definition")}[预定义] 生成代码。
 
 即便内核不会对偏函数展开，仍可以在不依赖其具体实现的前提下，对调用它们的其他函数开展推理。
 
@@ -400,29 +400,29 @@ htmlSplit := .never
 
 可约性分为五个等级：
 
-: {deftech (key := "irreducible")}[不可约]
+: {deftech (key := "Irreducible")}[不可约]
 
   在精译过程中，不可约定义完全不会被展开。
   对定义应用 {attr}`irreducible` 属性可使其不可约。
 
-: {deftech (key := "semireducible")}[半可约]
+: {deftech (key := "Semireducible")}[半可约]
 
   半可约定义不会被类型类实例合成或 {tactic}`simp` 等潜在代价较高的自动化过程展开，但在检查定义相等性和解析{tech (key := "generalized field notation")}[广义字段记法]时会展开。
   {keywordOf Lean.Parser.Command.declaration}`def` 命令通常创建半可约定义，除非属性指定了不同等级；不过，采用{tech (key := "well-founded recursion")}[良基递归]的定义默认不可约。
 
-: {deftech (key := "implicit reducible")}[隐式参数可约]
+: {deftech (key := "Implicit reducible")}[隐式参数可约]
 
   检查函数隐式实参的{tech (key := "definitional equality")}[定义相等性]时，会展开隐式参数可约的定义。
   这里的隐式实参包括普通{tech (key := "implicit")}[隐式]实参、{tech (key := "instance implicit")}[实例隐式]实参和{tech (key := "strict implicit")}[严格隐式]实参。
   如果某个定义出现在隐式实参的类型中，并且预期它能够归约，就应将其设为隐式参数可约。
 
-: {deftech (key := "instance reducible")}[实例可约]
+: {deftech (key := "Instance reducible")}[实例可约]
 
   类型类{tech (key := "synthesis")}[实例合成]期间会展开实例可约的定义。
   所有类型类实例都应当是实例可约或完全可约的。
   由 {keywordOf Lean.Parser.Command.instance}`instance` 命令创建的实例会自动标记为实例可约。
 
-: {deftech (key := "reducible")}[可约]
+: {deftech (key := "Reducible")}[可约]
 
   可约定义几乎会在所有场合按需展开。
   类型类实例合成、定义相等性检查以及语言的其余部分，基本都会把这种定义视作缩写。
@@ -448,7 +448,6 @@ def goodMorning : Clause := "Good morning"
 ```
 相对地，不可约别名不会在定义相等测试中被展开，因此作为字符串的类型会被拒绝：
 ```lean +error (name := irred)
-
 def goodEvening : Utterance := "Good evening"
 ```
 ```leanOutput irred
@@ -467,7 +466,6 @@ but is expected to have type
 
 然而 {lean}`Clause` 是半可约的，因此不能直接使用 {inst}`ToString String` 实例：
 ```lean +error (name := toStringClause)
-
 #synth ToString Clause
 ```
 ```leanOutput toStringClause
@@ -487,7 +485,7 @@ instance : ToString Clause := inferInstanceAs (ToString String)
 
 
 :::example "可约性与广义字段记法"
-在查找匹配名称时，{tech (key := "generalized field notation")}[广义字段记法] 会展开可约与半可约的声明。
+在查找匹配名称时，{tech (key := "Generalized field notation")}[广义字段记法] 会展开可约与半可约的声明。
 给定 {name}`List` 的一个半可约别名 {name}`Sequence`：
 ```lean
 def Sequence := List
@@ -501,7 +499,6 @@ def Sequence.ofList (xs : List α) : Sequence α := xs
 
 然而，一旦将 {name}`Sequence` 声明为不可约，就会阻止展开：
 ```lean +error (name := irredSeq)
-
 attribute [irreducible] Sequence
 
 #check let xs : Sequence Nat := .ofList [1,2,3]; xs.reverse
@@ -564,7 +561,6 @@ theorem plus_eq_add : plus x y = x + y := by simp
 
 半可约同义名则不会被 {tactic}`simp` 展开：
 ```lean -keep +error (name := simpSemi)
-
 theorem sum_eq_add : sum x y = x + y := by simp
 ```
 不过，由 {tactic}`rfl` 触发的定义相等检查会展开 {lean}`sum`：
@@ -577,7 +573,6 @@ theorem tally_eq_add : tally x y = x + y := by rfl
 ```
 当显式提供时，{tactic}`simp` 可以展开任意定义，甚至包括不可约的：
 ```lean  -keep (name := simpName)
-
 theorem tally_eq_add : tally x y = x + y := by simp [tally]
 ```
 类似地，可将证明的一部分放入 {tactic}`with_unfolding_all` 块中以忽略不可约性：
