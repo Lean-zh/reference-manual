@@ -277,7 +277,7 @@ noncomputable example (f g : Nat → Nat) : Decidable (f = g) :=
 ::::
 
 
-# 有元素的类型
+# 带默认值的类型
 %%%
 tag := "The-Lean-Language-Reference--Type-Classes--Basic-Classes--Inhabited-Types"
 %%%
