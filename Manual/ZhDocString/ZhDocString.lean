@@ -138,6 +138,16 @@ where
       throwErrorAt blame "中文文档载体 {zhName} 是归纳类型，但 {enName} 不是归纳类型"
     | _, _ => pure #[]
 
+/--
+Insert only the translated documentation body from `zhName`, without rendering a declaration
+signature. This is the translated counterpart of `includeDocstring` for use inside syntax blocks.
+-/
+@[block_command]
+meta def zhincludeDocstring : BlockCommandOf ZhDocstringOpts
+  | ⟨(_enStx, enName), (zhStx, zhName), _customLabel⟩ => do
+    let body ← translatedBlocks [enName, zhName] zhStx (← getDocString? (← getEnv) zhName)
+    ``(Doc.Block.concat #[$body,*])
+
 section
 variable {m}
 variable [Monad m] [MonadError m] [MonadLiftT CoreM m] [MonadLiftT MetaM m] [MonadEnv m]
