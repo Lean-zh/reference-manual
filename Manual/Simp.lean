@@ -9,6 +9,7 @@ import VersoManual
 import Lean.Parser.Term
 
 import Manual.Meta
+import Manual.ZhDocString.Simp
 
 open Verso.Genre Manual
 open Verso.Genre.Manual.InlineLean
@@ -372,9 +373,9 @@ simp $p:prio
 返回值是一个 {name Lean.Meta.SimpExtension}`SimpExtension`，可用于以编程方式访问自定义「simp 集」的内容。
 在规则列表中加入该属性的名称，即可指示 {tactic}`simp` 策略使用新的「simp 集」。
 
-{docstring Lean.Meta.registerSimpAttr}
+{zhdocstring Lean.Meta.registerSimpAttr ZhDoc.registerSimpAttr}
 
-{docstring Lean.Meta.SimpExtension}
+{zhdocstring Lean.Meta.SimpExtension ZhDoc.SimpExtension}
 
 
 # 「simp 范式」
@@ -455,11 +456,11 @@ tag := "simp-config"
 
 {tactic}`simp` 主要通过配置参数来配置，该参数以名为 `config` 的具名参数传入。
 
-{docstring Lean.Meta.Simp.Config}
+{zhdocstring Lean.Meta.Simp.Config ZhDoc.Simp.Config}
 
-{docstring Lean.Meta.Simp.neutralConfig}
+{zhdocstring Lean.Meta.Simp.neutralConfig ZhDoc.Simp.neutralConfig}
 
-{docstring Lean.Meta.DSimp.Config}
+{zhdocstring Lean.Meta.DSimp.Config ZhDoc.DSimp.Config}
 
 ## 选项
 %%%
@@ -468,15 +469,15 @@ tag := "simp-options"
 
 以下全局选项会影响 {tactic}`simp`：
 
-{optionDocs simprocs}
+{zhOptionDocs simprocs ZhDoc.Option.simprocs}
 
-{optionDocs tactic.simp.trace}
+{zhOptionDocs tactic.simp.trace ZhDoc.Option.tactic.simp.trace}
 
-{optionDocs linter.unnecessarySimpa}
+{zhOptionDocs linter.unnecessarySimpa ZhDoc.Option.linter.unnecessarySimpa}
 
-{optionDocs trace.Meta.Tactic.simp.rewrite}
+{zhOptionDocs trace.Meta.Tactic.simp.rewrite ZhDoc.Option.trace.Meta.Tactic.simp.rewrite}
 
-{optionDocs trace.Meta.Tactic.simp.discharge}
+{zhOptionDocs trace.Meta.Tactic.simp.discharge ZhDoc.Option.trace.Meta.Tactic.simp.discharge}
 
 # 简化与重写
 %%%
