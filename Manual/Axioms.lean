@@ -12,9 +12,10 @@ import Manual.Papers
 open Verso.Genre Manual
 open Verso.Genre.Manual.InlineLean
 
-#doc (Manual) "Axioms" =>
+#doc (Manual) "公理" =>
 %%%
 tag := "axioms"
+file := "Axioms"
 htmlSplit := .never
 %%%
 :::leanSection
@@ -23,65 +24,65 @@ htmlSplit := .never
 universe u
 ```
 
-{deftech}_Axioms_ are postulated constants.
-While the axiom's type must itself be a type (that is, it must have type {lean}`Sort u`), there are no further requirements.
-Axioms do not {tech (key := "reduction")}[reduce] to other terms.
+{deftech (key := "Axioms")}_公理_是假定存在的常量。
+公理的类型本身必须是类型（也就是说，它必须具有类型 {lean}`Sort u`），除此之外没有其他要求。
+公理不会{tech (key := "reduction")}[归约]为其他项。
 :::
 
-Axioms can be used to experiment with the consequences of an idea before investing the time required to construct a model or prove a theorem.
-They can also be used to adopt reasoning principles that can't otherwise be accessed in Lean's type theory; Lean itself provides {ref "standard-axioms"}[three such axioms] that are known to be consistent.
-However, axioms should be used with caution: axioms that are inconsistent with one another, or just false, undermine the very foundations of proofs.
-Lean automatically tracks the axioms that each proof depends on so that they can be audited.
+在投入构造模型或证明定理所需的时间之前，可以先用公理试验某个想法会产生什么后果。
+公理也可用于采纳 Lean 类型论中原本无法使用的推理原则；Lean 自身提供了{ref "standard-axioms"}[三个这样的公理]，且已知它们是一致的。
+不过，使用公理应当谨慎：彼此不一致或本身就是假的公理会动摇证明赖以成立的根基。
+Lean 会自动追踪每个证明所依赖的公理，以便审查。
 
-# Axiom Declarations
+# 公理声明
 %%%
 tag := "axiom-declarations"
 %%%
 
-Axioms declarations include a name and a type:
+公理声明包含名称和类型：
 
-:::syntax Lean.Parser.Command.axiom (title := "Axiom Declarations")
+:::syntax Lean.Parser.Command.axiom (title := "公理声明")
 ```grammar
 axiom $_ $_
 ```
 :::
 
-Axioms declarations may be modified with all possible {ref "declaration-modifiers"}[declaration modifiers].
-Documentation comments, attributes, {keyword}`private`, and {keyword}`protected` have the same meaning as for other declarations.
-The modifiers {keyword}`partial`, {keyword}`nonrec`, {keyword}`noncomputable` and {keyword}`unsafe` have no effect.
+公理声明可以使用所有{ref "declaration-modifiers"}[声明修饰符]进行修饰。
+文档注释、属性、{keyword}`private` 和 {keyword}`protected` 的含义与用于其他声明时相同。
+修饰符 {keyword}`partial`、{keyword}`nonrec`、{keyword}`noncomputable` 和 {keyword}`unsafe` 不起作用。
 
-# Consistency
+# 一致性
 %%%
 tag := "axiom-consistency"
 %%%
 
-Using axioms is risky.
-Because they introduce a new constant of any type, and an inhabitant of a type that is a proposition counts as a proof of the proposition, axioms can be used to prove even false propositions.
-Any proof that relies on an axiom can be trusted only to the extent that the axiom is both true and consistent with the other axioms used.
-By their very nature, Lean cannot check whether new axioms are consistent; please exercise care when adding axioms.
+使用公理有风险。
+公理会引入一个具有任意类型的新常量，而命题类型的一个元素就算作该命题的证明，因此公理甚至可用于证明假命题。
+依赖某个公理的证明，其可信程度取决于该公理是否为真，以及它是否与所用的其他公理一致。
+从本质上说，Lean 无法检查新公理是否一致；添加公理时请务必谨慎。
 
-:::example "Inconsistencies From Axioms"
-Axioms may introduce inconsistency, either alone or in combination with other axioms.
+:::example "公理导致的不一致"
+公理可能单独或与其他公理共同引入不一致。
 
-Assuming a false statement allows any statement at all to be proved:
+假定一个假命题，就能证明任何命题：
 ```lean
 axiom false_is_true : False
 
 theorem two_eq_five : 2 = 5 := false_is_true.elim
 ```
 
-Inconsistency may also arise from axioms that are incompatible with other properties of Lean.
-For example, parametricity is a powerful reasoning technique when used in languages that support it, but it is not compatible with Lean's standard axioms.
-If parametricity held, then the “free theorem” from the introduction to Wadler's [_Theorems for Free_](https://dl.acm.org/doi/pdf/10.1145/99370.99404) (1989), which describes a technique for using parametricity to derive theorems about polymorphic functions, would be true.
-As an axiom, it reads:
+与 Lean 的其他性质不相容的公理也可能导致不一致。
+例如，在支持参数化性的语言中，参数化性是一种强大的推理技术，但它与 Lean 的标准公理不相容。
+如果参数化性成立，那么 Wadler 的论文 [_Theorems for Free_](https://dl.acm.org/doi/pdf/10.1145/99370.99404)（1989）引言中的“自由定理”就会成立；该论文介绍了利用参数化性推导多态函数相关定理的技术。
+将这个自由定理写成公理如下：
 ```lean
 axiom List.free_theorem {α β}
   (f : {α : _} → List α → List α) (g : α → β) :
   f ∘ (List.map g) = (List.map g) ∘ f
 ```
-However, a consequence of excluded middle is that all propositions are decidable; this means that a function can _check_ whether they are true or false.
-This function can't be compiled, but it still exists.
-This can be used to define polymorphic functions that are not parametric:
+然而，排中律的一个推论是所有命题都可判定；这意味着函数可以_检查_命题是真还是假。
+这个函数无法编译，但它仍然存在。
+由此可以定义不具参数化性的多态函数：
 ```lean
 open Classical in
 noncomputable def nonParametric
@@ -89,7 +90,7 @@ noncomputable def nonParametric
     List α :=
   if α = Nat then [] else xs
 ```
-The existence of this function contradicts the “free theorem”:
+这个函数的存在与“自由定理”矛盾：
 ```lean
 theorem unit_not_nat : Unit ≠ Nat := by
   intro eq
@@ -108,19 +109,19 @@ example : False := by
 ```
 :::
 
-# Reduction
+# 归约
 %%%
 tag := "axiom-reduction"
 %%%
 
-Even consistent axioms can cause difficulties.
-{tech}[Definitional equality] identifies terms modulo reduction rules.
-The {tech}[ι-reduction] rule specifies the interaction of recursors and constructors; because axioms are not constructors, it does not apply to them.
-Ordinarily, terms without free variables reduce to applications of constructors, but axioms can cause them to get “stuck,” resulting in large terms.
+即使是一致的公理也可能造成困难。
+{tech (key := "Definitional equality")}[定义相等]按照归约规则来等同项。
+{tech (key := "ι-reduction")}[ι-归约]规则规定了递归器与构造器的相互作用；由于公理不是构造器，该规则不适用于公理。
+通常，不含自由变量的项会归约为构造器的应用，但公理可能使归约“卡住”，从而产生很大的项。
 
-:::example "Axioms and Stuck Reduction"
-Adding an additional `0` to {lean}`Nat` with an axiom results in some definitional reductions getting stuck.
-In this example, two {name}`Nat.succ` constructors are successfully moved to the outside of the term by reduction, but {name}`Nat.rec` is unable to make further progress after encountering {lean}`Nat.otherZero`.
+:::example "公理与卡住的归约"
+用公理为 {lean}`Nat` 添加一个额外的 `0`，会使某些定义归约卡住。
+在此例中，归约成功地将两个 {name}`Nat.succ` 构造器移到项的外层，但 {name}`Nat.rec` 遇到 {lean}`Nat.otherZero` 后就无法继续推进。
 ```lean (name := otherZero)
 axiom Nat.otherZero : Nat
 
@@ -131,13 +132,13 @@ axiom Nat.otherZero : Nat
 ```
 :::
 
-Furthermore, the Lean compiler is not able to generate code for axioms.
-At runtime, Lean values must be represented by concrete data in memory, but axioms do not have a concrete representation.
-Definitions that contain non-proof code that relies on axioms must be marked {keyword}`noncomputable` and can't be compiled.
+此外，Lean 编译器无法为公理生成代码。
+运行时，Lean 值必须由内存中的具体数据表示，但公理没有具体表示。
+如果定义所包含的非证明代码依赖公理，就必须将其标记为 {keyword}`noncomputable`，且无法编译。
 
-:::example "Axioms and Compilation"
-Adding an additional `0` to {lean}`Nat` with an axiom makes it so functions that use it can't be compiled.
-In particular, {name}`List.length'` returns the axiom {name}`Nat.otherZero` instead of {name}`Nat.zero` as the length of the empty list.
+:::example "公理与编译"
+用公理为 {lean}`Nat` 添加一个额外的 `0`，会使使用它的函数无法编译。
+特别地，{name}`List.length'` 将公理 {name}`Nat.otherZero` 而不是 {name}`Nat.zero` 作为空列表的长度返回。
 ```lean (name := otherZero2) +error
 axiom Nat.otherZero : Nat
 
@@ -149,9 +150,9 @@ def List.length' : List α → Nat
 `Nat.otherZero` not supported by code generator; consider marking definition as `noncomputable`
 ```
 
-Axioms used in proofs rather than programs do not prevent a function from being compiled.
-The compiler does not generate code for proofs, so axioms in proofs are no problem.
-{lean}`nextOdd` computes the next odd number from a {lean}`Nat`, which may be the number itself or one greater:
+在证明而非程序中使用的公理不会妨碍函数编译。
+编译器不为证明生成代码，因此证明中的公理不会造成问题。
+{lean}`nextOdd` 根据一个 {lean}`Nat` 计算下一个奇数；结果可能就是该数本身，也可能比它大一：
 ```lean
 def nextOdd (k : Nat) :
     { n : Nat // n % 2 = 1 ∧ (n = k ∨ n = k + 1) } where
@@ -160,14 +161,14 @@ def nextOdd (k : Nat) :
     by_cases k % 2 = 1 <;>
     simp [*] <;> omega
 ```
-The tactic proof generates a term that transitively relies on three axioms:
+该策略证明生成的项传递地依赖三个公理：
 ```lean (name:=printAxNextOdd)
 #print axioms nextOdd
 ```
 ```leanOutput printAxNextOdd
 'nextOdd' depends on axioms: [propext, Classical.choice, Quot.sound]
 ```
-Because they occur only in a proof, the compiler has no problem generating code:
+由于这些公理只出现在证明中，编译器可以顺利生成代码：
 ```lean (name := evalNextOdd)
 #eval (nextOdd 4, nextOdd 5)
 ```
@@ -176,12 +177,12 @@ Because they occur only in a proof, the compiler has no problem generating code:
 ```
 :::
 
-# Standard Axioms
+# 标准公理
 %%%
 tag := "standard-axioms"
 %%%
 
-There are seven standard axioms in Lean. The first three axioms are important parts of how mathematics is done in Lean:
+Lean 中有七个标准公理。前三个公理是使用 Lean 开展数学工作的重要组成部分：
  * ```signature
    Classical.choice.{u} {α : Sort u} : Nonempty α → α
    ```
@@ -194,15 +195,15 @@ There are seven standard axioms in Lean. The first three axioms are important pa
      r a b → Quot.mk r a = Quot.mk r b
    ```
 
-All three of these axioms are discussed in the book [Theorem Proving in Lean](https://lean-lang.org/theorem_proving_in_lean4/find/?domain=Verso.Genre.Manual.section&name=axioms-and-computation).
+[Theorem Proving in Lean](https://lean-lang.org/theorem_proving_in_lean4/find/?domain=Verso.Genre.Manual.section&name=axioms-and-computation) 一书讨论了这三个公理。
 
-The axiom {name}`sorryAx` is used as part of the implementation of the {tactic}`sorry` tactic and {lean}`sorry` term.
-Uses of this axiom are not intended to occur in finished proofs, as it can be used to prove anything:
+公理 {name}`sorryAx` 是 {tactic}`sorry` 策略和 {lean}`sorry` 项实现的一部分。
+完成的证明不应使用此公理，因为它可用于证明任何命题：
  * ```signature
    sorryAx {α : Sort u} (synthetic := true) : α
    ```
 
-Three final axioms do not truly exist for their _mathematical_ content; from a mathematical perspective they prove trivial statements:
+最后三个公理并非真正因其_数学_内容而存在；从数学角度看，它们证明的都是平凡命题：
 
  * ```signature
     Lean.trustCompiler : True
@@ -215,16 +216,16 @@ Three final axioms do not truly exist for their _mathematical_ content; from a m
     Lean.ofReduceNat (a b : Nat) : Lean.reduceNat a = b → a = b
    ```
 
-These axioms instead track proofs that depend on the correctness of the entire compiler, and not just on the much smaller {tech}`kernel`.
+相反，这些公理用于追踪依赖整个编译器正确性的证明，而不只是依赖小得多的{tech (key := "kernel")}[内核]。
 
-:::example "Creating and Tracking Proofs That Trust the Compiler"
-The functions {name}`Lean.reduceBool` and {name}`Lean.reduceNat` can be invoked to have the compiler perform a calculation; this can greatly improve performance of implementations of proof by reflection.
+:::example "创建并追踪信任编译器的证明"
+调用函数 {name}`Lean.reduceBool` 和 {name}`Lean.reduceNat` 可以让编译器执行计算；这能大幅提升反射式证明实现的性能。
 
 ```lean
 def largeNumber : Nat := Lean.reduceNat (230_000 + 4_500 + 1_000_067)
 ```
 
-The resulting term depends on the axiom {name}`Lean.trustCompiler` in order to track the fact that this calculation depends on the correctness of the compiler.
+所得项依赖公理 {name}`Lean.trustCompiler`，以追踪该计算依赖编译器正确性这一事实。
 
 ```lean (name := printAxExC1)
 #print axioms largeNumber
@@ -234,9 +235,9 @@ The resulting term depends on the axiom {name}`Lean.trustCompiler` in order to t
 ```
 :::
 
-:::example "Axioms and the `native_decide` Tactic"
-Instead of appealing to {name}`Lean.trustCompiler`, the {tactic}`native_decide` tactic creates a bespoke axiom for each invocation.
-This allows each axiom to be audited for the precise statement that it proves.
+:::example "公理与 `native_decide` 策略"
+{tactic}`native_decide` 策略并不诉诸 {name}`Lean.trustCompiler`，而是为每次调用创建一个专用公理。
+这样就能针对每个公理所证明的确切命题进行审查。
 
 ```lean (name := printAxExC2)
 def bigSum : (List.range 1_001).sum = 500_500 := by native_decide
@@ -246,7 +247,7 @@ def bigSum : (List.range 1_001).sum = 500_500 := by native_decide
 'bigSum' depends on axioms: [bigSum._native.native_decide.ax_1]
 ```
 
-The axiom's type can be checked directly:
+可以直接检查该公理的类型：
 ```lean (name := printAxExC3)
 #check bigSum._native.native_decide.ax_1
 ```
@@ -255,17 +256,17 @@ bigSum._native.native_decide.ax_1 : decide ((List.range 1001).sum = 500500) = tr
 ```
 :::
 
-# Displaying Axiom Dependencies
+# 显示公理依赖
 %%%
 tag := "print-axioms"
 %%%
 
-The command {keywordOf Lean.Parser.Command.printAxioms}`#print axioms`, followed by a defined identifier, displays all the axioms that a definition transitively relies on.
-In other words, if a proof uses another proof, which itself uses an axiom, then the axiom is reported by {keywordOf Lean.Parser.Command.printAxioms}`#print axioms` for both.
+命令 {keywordOf Lean.Parser.Command.printAxioms}`#print axioms` 后接一个已定义的标识符，会显示该定义传递依赖的所有公理。
+换句话说，如果一个证明使用了另一个本身使用公理的证明，那么对二者执行 {keywordOf Lean.Parser.Command.printAxioms}`#print axioms` 时都会报告该公理。
 
 ::::keepEnv
 
-This can be used to audit the assumptions made by a proof, for instance detecting that a proof transitively depends on the {tactic}`sorry` tactic.
+这可用于审查证明所作的假设，例如检测一个证明是否传递地依赖 {tactic}`sorry` 策略。
 
 ```lean
 def lazy : 4 == 2 + 1 + 1 := by sorry
@@ -277,9 +278,9 @@ def lazy : 4 == 2 + 1 + 1 := by sorry
 'lazy' depends on axioms: [sorryAx]
 ```
 
-:::example "Printing Axioms of Simple Definitions" (keep := true)
+:::example "打印简单定义的公理" (keep := true)
 
-Consider the following three constants:
+考虑以下三个常量：
 
 ```lean
 def addThree (n : Nat) : Nat := 1 + n + 2
@@ -287,7 +288,7 @@ theorem excluded_middle (P : Prop) : P ∨ ¬ P := Classical.em P
 theorem simple_equality (P : Prop) : (P ∨ False) = P := or_false P
 ```
 
-Regular functions like {lean}`addThree` that we might want to actually evaluation typically do not depend on any axioms:
+像 {lean}`addThree` 这样可能确实需要求值的普通函数通常不依赖任何公理：
 
 ```lean (name := printAxEx2)
 #print axioms addThree
@@ -296,7 +297,7 @@ Regular functions like {lean}`addThree` that we might want to actually evaluatio
 'addThree' does not depend on any axioms
 ```
 
-The excluded middle theorem is only true if we use classical reasoning, so the foundation for classical reasoning shows up alongside other axioms:
+排中律定理只有使用经典推理时才成立，因此经典推理的基础会与其他公理一同出现：
 
 ```lean (name := printAxEx1)
 #print axioms excluded_middle
@@ -305,7 +306,7 @@ The excluded middle theorem is only true if we use classical reasoning, so the f
 'excluded_middle' depends on axioms: [propext, Classical.choice, Quot.sound]
 ```
 
-Finally, the idea that two equivalent propositions are equal directly relies on {tech}[propositional extensionality].
+最后，等价命题相等这一观念直接依赖{tech (key := "propositional extensionality")}[命题外延性]。
 
 ```lean (name := printAxEx3)
 #print axioms simple_equality
@@ -315,15 +316,15 @@ Finally, the idea that two equivalent propositions are equal directly relies on 
 ```
 :::
 
-:::example "Using {keywordOf Lean.Parser.Command.printAxioms}`#print axioms` with {keywordOf Lean.guardMsgsCmd}`#guard_msgs`"
+:::example "将 {keywordOf Lean.Parser.Command.printAxioms}`#print axioms` 与 {keywordOf Lean.guardMsgsCmd}`#guard_msgs` 配合使用"
 
-You can use {keywordOf Lean.Parser.Command.printAxioms}`#print axioms`
-together with {keywordOf Lean.guardMsgsCmd}`#guard_msgs` to ensure
-that updates to libraries from other projects cannot silently
-introduce unwanted dependencies on axioms.
+可以将 {keywordOf Lean.Parser.Command.printAxioms}`#print axioms`
+与 {keywordOf Lean.guardMsgsCmd}`#guard_msgs` 配合使用，以确保
+其他项目的库更新不会悄然
+引入不需要的公理依赖。
 
-For example, if the proof of {name}`double_neg_elim` below changed in such a way that it used more
-axioms than those listed, then the {keywordOf Lean.guardMsgsCmd}`#guard_msgs` command would report an error.
+例如，如果下面 {name}`double_neg_elim` 的证明发生变化，使用了比所列公理更多的公理，
+那么 {keywordOf Lean.guardMsgsCmd}`#guard_msgs` 命令就会报告错误。
 
 ```lean
 theorem double_neg_elim (P : Prop) : (¬ ¬ P) = P :=
