@@ -9,6 +9,7 @@ import VersoManual
 import Manual.Meta
 import Manual.Papers
 import Manual.ZhDocString.VCGenCore
+import Manual.ZhDocString.VCGenWP
 
 import Std.Tactic.Do
 
@@ -380,9 +381,9 @@ $_ →ₚ $_
 
 {zhdocstring PredTrans ZhDoc.PredTrans}
 
-{docstring PredTrans.Conjunctive}
+{zhdocstring PredTrans.Conjunctive ZhDoc.PredTrans.Conjunctive}
 
-{docstring PredTrans.Monotonic}
+{zhdocstring PredTrans.Monotonic ZhDoc.PredTrans.Monotonic}
 
 :::leanSection
 ```lean -show
@@ -397,32 +398,32 @@ variable {σ : List (Type u)} {ps : PostShape} {x y : PredTrans ps α} {Q : Asse
 {name}`pure` 运算符是恒等变换器；它只是用自己的参数实例化后置条件。
 {name}`bind` 运算符组合谓词变换器。
 
-{docstring PredTrans.pure}
+{zhdocstring PredTrans.pure ZhDoc.PredTrans.pure}
 
-{docstring PredTrans.bind}
+{zhdocstring PredTrans.bind ZhDoc.PredTrans.bind}
 
 辅助运算符 {name}`PredTrans.pushArg`、{name}`PredTrans.pushExcept` 和 {name}`PredTrans.pushOption` 通过添加一种标准副作用来修改谓词变换器。
 它们用于实现 {name}`StateT`、{name}`ExceptT` 和 {name}`OptionT` 等变换器的 {name}`WP` 实例；也可用来实现可按这些变换器之一理解的单子。
 例如，{name}`PredTrans.pushArg` 通常用于状态单子，但也可以用它实现读取器单子的实例，将读取器的值视为只读状态。
 
-{docstring PredTrans.pushArg}
+{zhdocstring PredTrans.pushArg ZhDoc.PredTrans.pushArg}
 
-{docstring PredTrans.pushExcept}
+{zhdocstring PredTrans.pushExcept ZhDoc.PredTrans.pushExcept}
 
-{docstring PredTrans.pushOption}
+{zhdocstring PredTrans.pushOption ZhDoc.PredTrans.pushOption}
 
 ### 最弱前置条件
 
 单子的{tech}[最弱前置条件]语义由 {name}`WP` 类型类提供。
 {name}`WP` 实例决定单子的后置条件形状，并提供逻辑规则，将单子操作解释为该后置条件形状上的谓词变换器。
 
-{docstring WP}
+{zhdocstring WP ZhDoc.WP}
 
 :::syntax term (title := "最弱前置条件")
 ```grammar
 wp⟦$_ $[: $_]?⟧
 ```
-{includeDocstring Std.Do.«termWp⟦_:_⟧»}
+{zhincludeDocstring Std.Do.«termWp⟦_:_⟧» ZhDoc.«termWp⟦_:_⟧»}
 :::
 
 ### 最弱前置条件单子态射
@@ -431,7 +432,7 @@ wp⟦$_ $[: $_]?⟧
 除了满足单子定律外，单子对 {name}`pure` 和 {name}`bind` 的实现之最弱前置条件，还应分别对应谓词变换器单子的 {name}`pure` 和 {name}`bind` 运算符。
 缺少 {name}`WPMonad` 实例时，{tactic}`mvcgen` 通常会原样返回初始证明目标。
 
-{docstring WPMonad}
+{zhdocstring WPMonad ZhDoc.WPMonad}
 
 :::example "缺少 `WPMonad` 实例"
 ```imports -show
@@ -535,24 +536,24 @@ tag := "mvcgen-adequacy"
 {deftech}_充分性引理_在关于单子程序调用的陈述与由其 {name}`WP` 实例给出的程序{tech}[最弱前置条件]语义之间架起桥梁。
 它们表明：若调用的最弱前置条件为真，则关于该调用的性质为真。
 
-{docstring Id.of_wp_run_eq}
+{zhdocstring Id.of_wp_run_eq ZhDoc.Id.of_wp_run_eq}
 
-{docstring StateM.of_wp_run_eq}
+{zhdocstring StateM.of_wp_run_eq ZhDoc.StateM.of_wp_run_eq}
 
-{docstring StateM.of_wp_run'_eq}
+{zhdocstring StateM.of_wp_run'_eq ZhDoc.StateM.of_wp_run'_eq}
 
-{docstring ReaderM.of_wp_run_eq}
+{zhdocstring ReaderM.of_wp_run_eq ZhDoc.ReaderM.of_wp_run_eq}
 
-{docstring Except.of_wp_eq}
+{zhdocstring Except.of_wp_eq ZhDoc.Except.of_wp_eq}
 
-{docstring EStateM.of_wp_run_eq}
+{zhdocstring EStateM.of_wp_run_eq ZhDoc.EStateM.of_wp_run_eq}
 
 ## 霍尔三元组
 
 {deftech}_霍尔三元组_{citep hoare69}[] 由前置条件、程序和后置条件组成。
 若在满足前置条件的状态中运行程序，所得状态将满足后置条件。
 
-{docstring Triple}
+{zhdocstring Triple ZhDoc.Triple}
 
 ::::syntax term (title := "霍尔三元组")
 ```grammar
@@ -566,9 +567,9 @@ variable [WP m ps] {x : m α} {P : Assertion ps} {Q : PostCond α ps}
 :::
 ::::
 
-{docstring Triple.and}
+{zhdocstring Triple.and ZhDoc.Triple.and}
 
-{docstring Triple.mp}
+{zhdocstring Triple.mp ZhDoc.Triple.mp}
 
 ## 规约引理
 
@@ -587,7 +588,7 @@ variable [WP m ps] {x : m α} {P : Assertion ps} {Q : PostCond α ps}
 ```grammar
 spec $[$_:prio]?
 ```
-{includeDocstring Lean.Parser.Attr.spec}
+{zhincludeDocstring Lean.Parser.Attr.spec ZhDoc.spec}
 :::
 
 规约引理中的全称量化变量可用于关联输入状态、输出状态和返回值。
@@ -633,27 +634,27 @@ example : Assertion (.arg Nat .pure) = SPred [Nat] := rfl
 这些类型用于不变式。
 {name}`ForIn.forIn` 和 {name}`ForIn'.forIn'` 的{tech}[规约引理]采用 {name}`Invariant` 类型的参数，而 {tactic}`mvcgen` 会确保其他自动化过程不会意外生成不变式。
 
-{docstring Invariant}
+{zhdocstring Invariant ZhDoc.Invariant}
 
-{docstring Invariant.withEarlyReturn}
+{zhdocstring Invariant.withEarlyReturn ZhDoc.Invariant.withEarlyReturn}
 
 不变式使用列表来建模 {keywordOf Lean.Parser.Term.doFor}`for` 循环中的值序列。
 循环中的当前位置用 {name}`List.Cursor` 跟踪；它将列表中的位置表示为该位置左侧元素与右侧元素的组合。
 该类型并非传统的拉链结构；传统拉链为高效移动会反转前缀，而此类型用于规约和证明而非运行时代码，因此前缀保持原顺序。
 
-{docstring List.Cursor}
+{zhdocstring List.Cursor ZhDoc.List.Cursor}
 
-{docstring List.Cursor.at}
+{zhdocstring List.Cursor.at ZhDoc.List.Cursor.at}
 
-{docstring List.Cursor.pos}
+{zhdocstring List.Cursor.pos ZhDoc.List.Cursor.pos}
 
-{docstring List.Cursor.current}
+{zhdocstring List.Cursor.current ZhDoc.List.Cursor.current}
 
-{docstring List.Cursor.tail}
+{zhdocstring List.Cursor.tail ZhDoc.List.Cursor.tail}
 
-{docstring List.Cursor.begin}
+{zhdocstring List.Cursor.begin ZhDoc.List.Cursor.begin}
 
-{docstring List.Cursor.end}
+{zhdocstring List.Cursor.end ZhDoc.List.Cursor.end}
 
 
 # 验证条件
