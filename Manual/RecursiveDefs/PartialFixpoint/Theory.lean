@@ -19,18 +19,18 @@ open Lean.Elab.Tactic.GuardMsgs.WhitespaceMode
 open Lean.Order
 
 
-#doc (Manual) "Theory and Construction" =>
+#doc (Manual) "理论与构造" =>
 %%%
 tag := "partial-fixpoint-theory"
 %%%
 
-The construction builds on a variant of the Knaster–Tarski theorem: In a chain-complete partial order, every monotone function has a least fixed point.
+该构造建立在 Knaster–Tarski 定理的一个变体之上：在链完备偏序中，每个单调函数都有最小不动点。
 
-The necessary theory is found in the `Lean.Order` namespace.
-This is not meant to be a general purpose library of order theoretic results.
-Instead, the definitions and theorems in `Lean.Order` are only intended as implementation details of the {keywordOf Lean.Parser.Command.declaration}`partial_fixpoint` feature, and they should be considered a private API that may change without notice.
+所需理论位于 `Lean.Order` 命名空间中。
+它并非旨在成为通用的序理论结果库。
+相反，`Lean.Order` 中的定义和定理仅用作 {keywordOf Lean.Parser.Command.declaration}`partial_fixpoint` 功能的实现细节，应将其视为可能随时变更而不另行通知的私有 API。
 
-The notion of a partial order, and that of a chain-complete partial order, are represented by the type classes {name}`Lean.Order.PartialOrder` and {name}`Lean.Order.CCPO`, respectively.
+偏序和链完备偏序的概念分别由类型类 {name}`Lean.Order.PartialOrder` 和 {name}`Lean.Order.CCPO` 表示。
 
 {docstring Lean.Order.PartialOrder +allowMissing}
 
@@ -42,13 +42,13 @@ open Lean.Order
 variable {α : Type u} {β : Type v} [PartialOrder α] [PartialOrder β] (f : α → β) (x y : α)
 ```
 
-A function is monotone if it preserves partial orders.
-That is, if {lean}`x ⊑ y` then {lean}`f x ⊑ f y`.
-The operator `⊑` represent {name}`Lean.Order.PartialOrder.rel`.
+如果函数保持偏序关系，它就是单调的。
+也就是说，若 {lean}`x ⊑ y`，则 {lean}`f x ⊑ f y`。
+运算符 `⊑` 表示 {name}`Lean.Order.PartialOrder.rel`。
 
 {docstring Lean.Order.monotone}
 
-The fixpoint of a monotone function can be taken using {name}`fix`, which indeed constructs a fixpoint, as shown by {name}`fix_eq`,
+可使用 {name}`fix` 取得单调函数的不动点；如 {name}`fix_eq` 所示，它确实构造了一个不动点。
 
 {docstring Lean.Order.fix}
 
@@ -56,7 +56,7 @@ The fixpoint of a monotone function can be taken using {name}`fix`, which indeed
 
 :::paragraph
 
-To construct the partial fixpoint, Lean first synthesizes a suitable {name}`CCPO` instance.
+为了构造偏不动点，Lean 首先合成合适的 {name}`CCPO` 实例。
 
 ```lean -show
 section
@@ -66,9 +66,9 @@ variable (β : α → Sort v) [∀ x, CCPO (β x)]
 variable (w : α)
 ```
 
-* If the function's result type has a dedicated instance, like {name}`Option` has with {name}`instCCPOOption`, this is used together with the instance for the function type, {name}`instCCPOPi`, to construct an instance for the whole function's type.
+* 如果函数的结果类型有专用实例，例如 {name}`Option` 的 {name}`instCCPOOption`，就将其与函数类型的实例 {name}`instCCPOPi` 一起使用，为整个函数类型构造实例。
 
-* Otherwise, if the function's type can be shown to be inhabited by a witness {lean}`w`, then the instance {name}`FlatOrder.instCCPO` for the wrapper type {lean}`FlatOrder w` is used. In this order, {lean}`w` is a least element and all other elements are incomparable.
+* 否则，如果可以证明函数类型由见证 {lean}`w` 居留，则使用包装类型 {lean}`FlatOrder w` 的实例 {name}`FlatOrder.instCCPO`。在此序中，{lean}`w` 是最小元素，所有其他元素彼此不可比。
 
 ```lean -show
 end
@@ -76,7 +76,7 @@ end
 
 :::
 
-Next, the recursive calls in the right-hand side of the function definitions are abstracted; this turns into the argument `f` of {name}`fix`. The monotonicity requirement is solved by the {tactic}`monotonicity` tactic, which applies compositional monotonicity lemmas in a syntax-driven way.
+接下来，将函数定义右侧的递归调用抽象出来；它们会成为 {name}`fix` 的参数 `f`。单调性要求由 {tactic}`monotonicity` 策略解决，该策略以语法驱动的方式应用组合式单调性引理。
 
 ```lean -show
 section
@@ -86,23 +86,23 @@ variable {α : Sort u} {β : Sort v} [PartialOrder α] [PartialOrder β] (more :
 local macro "…" x:term:arg "…" : term => `(more $x)
 ```
 
-The tactic solves goals of the form {lean}`monotone (fun x => … x …)` using the following steps:
+该策略通过以下步骤解决形如 {lean}`monotone (fun x => … x …)` 的目标：
 
-* Applying {name}`monotone_const` when there is no dependency on {lean}`x` left.
-* Splitting on {keywordOf Lean.Parser.Term.match}`match` expressions.
-* Splitting on {keywordOf termIfThenElse}`if` expressions.
-* Moving {keywordOf Lean.Parser.Term.let}`let` expression to the context, if the value and type do not depend on {lean}`x`.
-* Zeta-reducing a {keywordOf Lean.Parser.Term.let}`let` expression when value and type do depend on {lean}`x`.
-* Applying lemmas annotated with {attr}`partial_fixpoint_monotone`
+* 当不再依赖 {lean}`x` 时，应用 {name}`monotone_const`。
+* 对 {keywordOf Lean.Parser.Term.match}`match` 表达式分情况。
+* 对 {keywordOf termIfThenElse}`if` 表达式分情况。
+* 如果值和类型均不依赖 {lean}`x`，则将 {keywordOf Lean.Parser.Term.let}`let` 表达式移入上下文。
+* 当值和类型确实依赖 {lean}`x` 时，对 {keywordOf Lean.Parser.Term.let}`let` 表达式进行 zeta 归约。
+* 应用以 {attr}`partial_fixpoint_monotone` 标注的引理
 
 ```lean -show
 end
 ```
 
-The following monotonicity lemmas are registered, and should allow recursive calls under the given higher-order functions in the arguments indicated by `·` (but not the other arguments, shown as `_`).
+系统注册了以下单调性引理；它们应当允许递归调用出现在给定高阶函数中以 `·` 标示的参数位置（但不允许出现在以 `_` 标示的其他参数位置）。
 
 
 {monotonicityLemmas}
 
-The order-theoretic framework described here also underpins {ref "coinductive-predicates"}[coinductive and inductive predicates].
-For {lean}`Prop`-valued functions, the {name}`Lean.Order.CompleteLattice` instance provides both least and greatest fixpoints, enabling definitions with {keywordOf Lean.Parser.Command.declaration}`inductive_fixpoint` and {keywordOf Lean.Parser.Command.declaration}`coinductive_fixpoint` clauses.
+这里描述的序理论框架也是{ref "coinductive-predicates"}[余归纳与归纳谓词]的基础。
+对于取值于 {lean}`Prop` 的函数，{name}`Lean.Order.CompleteLattice` 实例同时提供最小与最大不动点，从而允许使用 {keywordOf Lean.Parser.Command.declaration}`inductive_fixpoint` 和 {keywordOf Lean.Parser.Command.declaration}`coinductive_fixpoint` 子句进行定义。

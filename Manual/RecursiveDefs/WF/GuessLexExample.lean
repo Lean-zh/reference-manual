@@ -9,8 +9,8 @@ import VersoManual
 import Manual.Meta
 
 /-!
-This is extracted into its own file because line numbers show up in the error message, and we don't
-want to update it over and over again as we edit the large file.
+此示例提取到单独的文件中，因为错误消息会显示行号，而我们不希望在编辑大文件时
+反复更新它。
 -/
 
 open Verso.Genre Manual
@@ -18,13 +18,13 @@ open Verso.Genre.Manual.InlineLean
 
 open Lean.Elab.Tactic.GuardMsgs.WhitespaceMode
 
-#doc (Manual) "Termination failure (for inclusion elsewhere)" =>
+#doc (Manual) "终止性失败（供其他位置嵌入）" =>
 
-:::example "Termination failure"
+:::example "终止性失败"
 
-If there is no {keywordOf Lean.Parser.Command.declaration}`termination_by` clause, Lean attempts to infer a measure for well-founded recursion.
-If it fails, then it prints the table mentioned above.
-In this example, the {keywordOf Lean.Parser.Command.declaration}`decreasing_by` clause simply prevents Lean from also attempting structural recursion; this keeps the error message specific.
+如果没有 {keywordOf Lean.Parser.Command.declaration}`termination_by` 子句，Lean 会尝试推断良基递归的度量。
+如果推断失败，它就会打印上文所述的表格。
+在此示例中，{keywordOf Lean.Parser.Command.declaration}`decreasing_by` 子句只是阻止 Lean 同时尝试结构递归，从而让错误消息保持针对性。
 
 ```lean +error -keep (name := badwf)
 def f : (n m l : Nat) → Nat
@@ -46,15 +46,15 @@ The basic measures relate at each recursive call as follows:
 Please use `termination_by` to specify a decreasing measure.
 ```
 
-The three recursive calls are identified by their source positions.
-This message conveys the following facts:
+这三个递归调用通过其源码位置来标识。
+这条消息表达了以下事实：
 
-* In the first recursive call, all arguments are (provably) equal to the parameters
-* In the second recursive call, the first argument is equal to the first parameter and the second argument is provably smaller than the second parameter.
-  The third parameter was not checked for this recursive call, because it was not necessary to determine that no suitable termination argument exists.
-* In the third recursive call, the first argument decreases strictly, and the other arguments were not checked.
+* 在第一次递归调用中，所有参数都（可证明地）等于对应的形参
+* 在第二次递归调用中，第一个参数等于第一个形参，且第二个参数可证明地小于第二个形参。
+  此递归调用没有检查第三个参数，因为要判定不存在合适的终止参数，并不需要检查它。
+* 在第三次递归调用中，第一个参数严格减小，其他参数则未被检查。
 
-When termination proofs fail in this manner, a good technique to discover the problem is to explicitly indicate the expected termination argument using {keywordOf Lean.Parser.Command.declaration}`termination_by`.
-This will surface the messages from the failing tactic.
+当终止性证明以这种方式失败时，发现问题的一种好方法是使用 {keywordOf Lean.Parser.Command.declaration}`termination_by` 明确指出预期的终止参数。
+这样会显示失败策略所产生的消息。
 
 :::

@@ -18,79 +18,79 @@ open Lean.Elab.Tactic.GuardMsgs.WhitespaceMode
 open Lean.Order
 
 
-#doc (Manual) "Theory and Construction" =>
+#doc (Manual) "理论与构造" =>
 %%%
 tag := "coinductive-theory"
 %%%
 
-The construction of coinductive and inductive predicates builds on the Knaster-Tarski fixpoint theorem for complete lattices.
-While {ref "partial-fixpoint-theory"}[partial fixpoint recursion] relies on chain-complete partial orders ({name}`Lean.Order.CCPO`), coinductive and inductive predicates use the stronger notion of a {deftech}_complete lattice_.
+余归纳与归纳谓词的构造建立在完备格上的 Knaster–Tarski 不动点定理之上。
+{ref "partial-fixpoint-theory"}[偏不动点递归]依赖链完备偏序（{name}`Lean.Order.CCPO`），而余归纳与归纳谓词使用更强的{deftech (key := "complete lattice")}_完备格_概念。
 
-The key idea is that {lean}`Prop` carries a {ref "complete-lattices"}[complete lattice] structure ordered by implication (`P ⊑ Q` when `P → Q`), and any monotone endofunction on a complete lattice has both a least and a greatest fixpoint by the Knaster-Tarski theorem.
-Coinductive predicates use the {ref "lattice-prop"}[reverse implication order] (`P ⊑ Q` when `Q → P`), so that the least fixpoint in this reversed order is the greatest fixpoint in the standard order.
-For predicates of the form `α → Prop`, the pointwise lifting of this lattice structure to function types provides the necessary setting.
-For mutual blocks, the product of complete lattices is again a complete lattice.
-This construction shares its internals with the {ref "partial-fixpoint"}[partial fixpoint] machinery.
+关键思想是，{lean}`Prop` 带有一个按蕴涵排序的{ref "complete-lattices"}[完备格]结构（当 `P → Q` 时 `P ⊑ Q`）；根据 Knaster–Tarski 定理，完备格上的任意单调自映射同时具有最小与最大不动点。
+余归纳谓词使用{ref "lattice-prop"}[反向蕴涵序]（当 `Q → P` 时 `P ⊑ Q`），因此该反向序中的最小不动点就是标准序中的最大不动点。
+对于形如 `α → Prop` 的谓词，将此格结构逐点提升到函数类型即可提供所需环境。
+对于互递归块，完备格的积仍是完备格。
+该构造与{ref "partial-fixpoint"}[偏不动点]机制共享内部实现。
 
 
-# Complete Lattices
+# 完备格
 %%%
 tag := "complete-lattices"
 %%%
 
-A {tech}[complete lattice] is a partial order where every subset has a least upper bound, not just every chain.
+{tech (key := "complete lattice")}[完备格]是一种偏序，其中每个子集（而不仅是每条链）都有最小上界。
 
 {docstring Lean.Order.CompleteLattice}
 
-Every complete lattice gives rise to a CCPO, since every chain is in particular a subset, but the converse does not hold in general.
-For instance, the flat order on an inhabited type (used by {ref "partial-fixpoint"}[partial fixpoints] for tail-recursive functions) is a CCPO but not a complete lattice.
+每个完备格都会给出一个链完备偏序，因为每条链尤其也是一个子集；但反过来一般并不成立。
+例如，居留类型上的平坦序（{ref "partial-fixpoint"}[偏不动点]用于尾递归函数）是链完备偏序，却不是完备格。
 
-In a complete lattice, the least fixpoint of a monotone function can be constructed directly as the infimum of all pre-fixpoints, following the Knaster-Tarski theorem:
+根据 Knaster–Tarski 定理，在完备格中，单调函数的最小不动点可以直接构造为所有前不动点的下确界：
 
 {docstring Lean.Order.lfp +allowMissing}
 
 {docstring Lean.Order.lfp_fix +allowMissing}
 
-The corresponding induction principle is Park induction: to show that a property holds for all elements of the least fixpoint, it suffices to show that the property is preserved by one application of the defining function.
+对应的归纳原理是 Park 归纳：要证明某个性质对最小不动点的所有元素成立，只需证明应用一次定义函数会保持该性质。
 
 {docstring Lean.Order.lfp_le_of_le_monotone}
 
-# Lattice Structure on Propositions
+# 命题上的格结构
 %%%
 tag := "lattice-prop"
 %%%
 
-The type {lean}`Prop` admits two natural complete lattice structures, each giving rise to a different kind of fixpoint:
+类型 {lean}`Prop` 具有两种自然的完备格结构，分别产生不同种类的不动点：
 
 :::paragraph
 
- * {name}`Lean.Order.ImplicationOrder` orders propositions by implication: `P ⊑ Q` means `P → Q`.
-   The least fixpoint in this order yields the smallest predicate closed under the defining rules, corresponding to an {tech (key := "lattice-theoretic inductive predicate")}_inductive predicate_.
-   This is the order used by {keywordOf Lean.Parser.Command.declaration}`inductive_fixpoint`.
+ * {name}`Lean.Order.ImplicationOrder` 按蕴涵对命题排序：`P ⊑ Q` 意味着 `P → Q`。
+   该序中的最小不动点给出在定义规则下闭合的最小谓词，对应于{tech (key := "lattice-theoretic inductive predicate")}_归纳谓词_。
+   这是 {keywordOf Lean.Parser.Command.declaration}`inductive_fixpoint` 使用的序。
 
- * {name}`Lean.Order.ReverseImplicationOrder` orders propositions by reverse implication: `P ⊑ Q` means `Q → P`.
-   The least fixpoint in this _reversed_ order is the _greatest_ fixpoint in the standard order, yielding the largest predicate consistent with the defining rules.
-   This corresponds to a {tech (key := "lattice-theoretic coinductive predicate")}_coinductive predicate_.
-   This is the order used by {keywordOf Lean.Parser.Command.declaration}`coinductive_fixpoint`.
+ * {name}`Lean.Order.ReverseImplicationOrder` 按反向蕴涵对命题排序：`P ⊑ Q` 意味着 `Q → P`。
+   该_反向_序中的最小不动点是标准序中的_最大_不动点，由此得到与定义规则相容的最大谓词。
+   这对应于{tech (key := "lattice-theoretic coinductive predicate")}_余归纳谓词_。
+   这是 {keywordOf Lean.Parser.Command.declaration}`coinductive_fixpoint` 使用的序。
 
 :::
 
-Arrow types into a complete lattice inherit a complete lattice structure, and products of complete lattices are complete lattices.
-These closure properties allow the construction to be extended to predicates of arbitrary arity and to mutual blocks.
+以完备格为值域的箭头类型继承完备格结构，完备格的积也是完备格。
+这些闭包性质使该构造能够扩展到任意元数的谓词和互递归块。
 
-# Monotonicity
+# 单调性
 %%%
 tag := "coinductive-monotonicity"
 %%%
 
-Defining a predicate as a fixpoint requires the defining equation to be monotone with respect to the appropriate order.
-For both the {keywordOf Lean.Parser.Command.declaration}`coinductive` command and the {keywordOf Lean.Parser.Command.declaration}`coinductive_fixpoint` and {keywordOf Lean.Parser.Command.declaration}`inductive_fixpoint` termination clauses, the monotonicity requirement is semantic rather than syntactic.
-The {tactic}`monotonicity` tactic proves monotonicity by composing lemmas registered with the {attr}`partial_fixpoint_monotone` attribute.
-This approach is more permissive than strict positivity.
-For example, negation and implication are handled correctly by flipping the order between {name}`Lean.Order.ImplicationOrder` and {name}`Lean.Order.ReverseImplicationOrder`.
-This is what allows mixing inductive and coinductive fixpoints in the same {tech}[mutual block].
+将谓词定义为不动点，要求定义方程相对于适当的序是单调的。
+对于 {keywordOf Lean.Parser.Command.declaration}`coinductive` 命令，以及 {keywordOf Lean.Parser.Command.declaration}`coinductive_fixpoint` 和 {keywordOf Lean.Parser.Command.declaration}`inductive_fixpoint` 终止子句，单调性要求都是语义上的，而非语法上的。
+{tactic}`monotonicity` 策略通过组合以 {attr}`partial_fixpoint_monotone` 属性注册的引理来证明单调性。
+这种方法比严格正性更宽松。
+例如，通过在 {name}`Lean.Order.ImplicationOrder` 与 {name}`Lean.Order.ReverseImplicationOrder` 之间翻转序，可以正确处理否定和蕴涵。
+这正是同一{tech (key := "mutual block")}[互递归块]中能够混合归纳与余归纳不动点的原因。
 
-The set of constructs handled by the {tactic}`monotonicity` tactic is extensible: registering additional {attr}`partial_fixpoint_monotone` lemmas teaches the tactic to handle new logical connectives or higher-order functions.
-Alternatively, an explicit monotonicity proof term can be provided when using {keywordOf Lean.Parser.Command.declaration}`coinductive_fixpoint` via a {keyword}`monotonicity` clause.
+{tactic}`monotonicity` 策略所能处理的构造是可扩展的：注册额外的 {attr}`partial_fixpoint_monotone` 引理，可让该策略学会处理新的逻辑联结词或高阶函数。
+或者，在使用 {keywordOf Lean.Parser.Command.declaration}`coinductive_fixpoint` 时，可以通过 {keyword}`monotonicity` 子句提供显式单调性证明项。
 
-See the {ref "partial-fixpoint-theory"}[theory section of partial fixpoints] for the full list of registered monotonicity lemmas and for more detail on the monotonicity tactic.
+已注册单调性引理的完整列表以及单调性策略的更多细节，请参阅{ref "partial-fixpoint-theory"}[偏不动点的理论一节]。

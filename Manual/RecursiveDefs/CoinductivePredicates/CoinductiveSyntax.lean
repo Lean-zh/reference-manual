@@ -20,28 +20,28 @@ open Lean.Order
 set_option maxRecDepth 600
 
 
-#doc (Manual) "The `coinductive` Command" =>
+#doc (Manual) "`coinductive` 命令" =>
 %%%
 tag := "coinductive-command"
 %%%
 
-The {keywordOf Lean.Parser.Command.declaration}`coinductive` command provides a syntax for defining {tech (key := "lattice-theoretic coinductive predicate")}[coinductive predicates] that mirrors the syntax of {keywordOf Lean.Parser.Command.declaration}`inductive` declarations.
-Rather than writing a recursive function with {keywordOf Lean.Parser.Command.declaration}`coinductive_fixpoint`, the declaration is written in terms of constructors, just as it would be for an inductive type.
+{keywordOf Lean.Parser.Command.declaration}`coinductive` 命令提供一种定义{tech (key := "lattice-theoretic coinductive predicate")}[余归纳谓词]的语法，其形式与 {keywordOf Lean.Parser.Command.declaration}`inductive` 声明的语法相仿。
+无需使用 {keywordOf Lean.Parser.Command.declaration}`coinductive_fixpoint` 编写递归函数，而是像归纳类型那样以构造器来编写声明。
 
-:::syntax command (title := "Coinductive Predicates")
+:::syntax command (title := "余归纳谓词")
 ```grammar
 coinductive $_ $_* : $_ where
   $_*
 ```
-The {keywordOf Lean.Parser.Command.declaration}`coinductive` command defines a coinductive predicate by specifying its constructors.
-It can only be used to define predicates, that is, types valued in {lean}`Prop`.
+{keywordOf Lean.Parser.Command.declaration}`coinductive` 命令通过指定构造器来定义余归纳谓词。
+它只能用于定义谓词，即取值于 {lean}`Prop` 的类型。
 :::
 
-The {keywordOf Lean.Parser.Command.declaration}`coinductive` command defines the same predicate as the corresponding {keywordOf Lean.Parser.Command.declaration}`coinductive_fixpoint` definition.
-It additionally generates constructors and a case analysis principle, much like an ordinary {keywordOf Lean.Parser.Command.declaration}`inductive` declaration.
+{keywordOf Lean.Parser.Command.declaration}`coinductive` 命令定义的谓词与对应的 {keywordOf Lean.Parser.Command.declaration}`coinductive_fixpoint` 定义相同。
+此外，它还会生成构造器和分情况分析原理，很像普通的 {keywordOf Lean.Parser.Command.declaration}`inductive` 声明。
 
-:::example "Coinductive Predicate via `coinductive`"
-The predicate {lean}`InfSeq` from prior examples can equivalently be defined using the {keywordOf Lean.Parser.Command.coinductive}`coinductive` command:
+:::example "通过 `coinductive` 定义余归纳谓词"
+前述示例中的谓词 {lean}`InfSeq` 也可以等价地使用 {keywordOf Lean.Parser.Command.coinductive}`coinductive` 命令定义：
 
 ```lean
 variable (α : Type)
@@ -50,7 +50,7 @@ coinductive InfSeq (r : α → α → Prop) : α → Prop where
   | step : r a b → InfSeq r b → InfSeq r a
 ```
 
-This generates a constructor and a {tech}[coinduction principle]:
+这会生成一个构造器和一个{tech (key := "coinduction principle")}[余归纳原理]：
 
 ```signature
 InfSeq.step (α : Type) (r : α → α → Prop) {a b : α} :
@@ -63,7 +63,7 @@ InfSeq.coinduct (α : Type) (r : α → α → Prop) (pred : α → Prop) :
   ∀ (a : α), pred a → InfSeq α r a
 ```
 
-A case analysis principle is also generated:
+还会生成一个分情况分析原理：
 ```signature
 InfSeq.casesOn (α : Type) (r : α → α → Prop)
     {motive : (a : α) → InfSeq α r a → Prop} {a : α} (t : InfSeq α r a) :
@@ -72,7 +72,7 @@ InfSeq.casesOn (α : Type) (r : α → α → Prop)
   motive a t
 ```
 
-Case analysis can be used in proofs via the {tactic}`cases` tactic:
+在证明中，可以通过 {tactic}`cases` 策略使用分情况分析：
 
 ```lean
 theorem InfSeq.casesOnTest (r : α → α → Prop)
@@ -84,18 +84,18 @@ theorem InfSeq.casesOnTest (r : α → α → Prop)
 :::
 
 
-# Elaboration
+# 精译
 %%%
 tag := "coinductive-elaboration"
 %%%
 
-Under the hood, the {keywordOf Lean.Parser.Command.declaration}`coinductive` command is elaborated in several steps.
-First, it is processed as if it were an ordinary {keywordOf Lean.Parser.Command.declaration}`inductive` declaration.
-Before registering the types with the kernel, however, a {deftech}_flat inductive_ (also called a _functor_) is created: each recursive occurrence of the coinductive predicate in the premises of a constructor is replaced by an explicit parameter.
+在底层，{keywordOf Lean.Parser.Command.declaration}`coinductive` 命令会分若干步进行精译。
+首先，将其当作普通的 {keywordOf Lean.Parser.Command.declaration}`inductive` 声明进行处理。
+不过，在向内核注册类型之前，会创建一个{deftech (key := "flat inductive")}_平坦归纳类型_（也称为_函子_）：构造器前提中余归纳谓词的每次递归出现都会替换为一个显式参数。
 
 
-:::example "Flat Inductive"
-This example uses the coinductive specification of infinite sequences:
+:::example "平坦归纳类型"
+此示例使用无限序列的余归纳规约：
 ```lean -show
 variable (α : Type)
 ```
@@ -103,13 +103,13 @@ variable (α : Type)
 coinductive InfSeq (r : α → α → Prop) : α → Prop where
   | step : r a b → InfSeq r b → InfSeq r a
 ```
-For {lean}`InfSeq`, the generated flat inductive is:
+对于 {lean}`InfSeq`，生成的平坦归纳类型为：
 
 ```signature
 InfSeq._functor : (α : Type) → (α → α → Prop) → (α → Prop) → α → Prop
 ```
 
-Its constructor takes the predicate parameter in place of recursive calls:
+其构造器使用谓词参数取代递归调用：
 
 ```lean (name := printFunctor) -keep
 set_option pp.proofs true in
@@ -125,10 +125,10 @@ InfSeq._functor.step : ∀ (α : Type) (r : α → α → Prop) (InfSeq._functor
 ```
 :::
 
-An equivalent {deftech}_existential form_ is then constructed, expressing each constructor as a disjunction of dependent products (that is, existential quantifiers and conjunctions).
-This form is used for monotonicity checking and for generating readable coinduction principles.
+随后构造等价的{deftech (key := "existential form")}_存在形式_，将每个构造器表示为依赖积（即存在量词与合取）的析取。
+此形式用于单调性检查以及生成易读的余归纳原理。
 
-:::example "Existential Form"
+:::example "存在形式"
 ```lean -show
 variable (α : Type)
 ```
@@ -147,7 +147,7 @@ def InfSeq._functor.existential : (α : Type) → (α → α → Prop) → (α �
 fun α r InfSeq._functor.call a => ∃ b, r a b ∧ InfSeq._functor.call b
 ```
 
-The two forms are connected by an equivalence theorem:
+这两种形式由一个等价定理联系起来：
 
 ```lean (name := checkExistEquiv) -keep
 #check @InfSeq._functor.existential_equiv
@@ -158,31 +158,31 @@ InfSeq._functor.existential_equiv : ∀ (α : Type) (r : α → α → Prop) (In
 ```
 :::
 
-The existential form is then registered as a coinductive predicate using the {ref "partial-fixpoint"}[partial fixpoint] machinery with the {name}`Lean.Order.ReverseImplicationOrder` complete lattice instance.
-Using the correspondence between the flat inductive and the existential form, constructors and a case analysis eliminator are generated, just as for regular inductive types.
+随后，使用{ref "partial-fixpoint"}[偏不动点]机制和 {name}`Lean.Order.ReverseImplicationOrder` 完备格实例，将存在形式注册为余归纳谓词。
+利用平坦归纳类型与存在形式之间的对应关系，系统会像处理普通归纳类型一样生成构造器和分情况分析消去器。
 
 :::paragraph
-The following declarations are generated for a coinductive predicate named `P`:
+对于名为 `P` 的余归纳谓词，会生成以下声明：
 
- * `P._functor`: the {tech}[flat inductive]
- * `P._functor.existential`: the {tech}[existential form]
- * `P._functor.existential_equiv`: equivalence between the two forms
- * `P.functor_unfold`: theorem connecting the coinductive predicate to its flat inductive
- * Constructors (e.g., `P.step`): corresponding to each constructor in the declaration
- * `P.casesOn`: case analysis principle
- * `P.coinduct`: {tech}[coinduction principle]
+ * `P._functor`：{tech (key := "flat inductive")}[平坦归纳类型]
+ * `P._functor.existential`：{tech (key := "existential form")}[存在形式]
+ * `P._functor.existential_equiv`：两种形式之间的等价定理
+ * `P.functor_unfold`：联系余归纳谓词与其平坦归纳类型的定理
+ * 构造器（例如 `P.step`）：与声明中的各构造器相对应
+ * `P.casesOn`：分情况分析原理
+ * `P.coinduct`：{tech (key := "coinduction principle")}[余归纳原理]
 :::
 
-# Mutual Coinductive and Inductive Blocks
+# 余归纳与归纳互递归块
 %%%
 tag := "mutual-coinductive-syntax"
 %%%
 
-In a {tech}[mutual block] containing {keywordOf Lean.Parser.Command.coinductive}`coinductive` definitions, the {keywordOf Lean.Parser.Command.inductive}`inductive` keyword is reinterpreted: instead of being registered as an ordinary kernel inductive type, it is elaborated via the lattice-theoretic {tech (key := "lattice-theoretic inductive predicate")}[inductive fixpoint] machinery.
-This allows mixing coinductive and inductive predicates in the same mutual block.
+在包含 {keywordOf Lean.Parser.Command.coinductive}`coinductive` 定义的{tech (key := "mutual block")}[互递归块]中，{keywordOf Lean.Parser.Command.inductive}`inductive` 关键字会被重新解释：它不会注册为普通的内核归纳类型，而是通过格理论的{tech (key := "lattice-theoretic inductive predicate")}[归纳不动点]机制进行精译。
+这允许在同一互递归块中混合余归纳与归纳谓词。
 
-:::example "Mutual Coinductive-Inductive Block"
-The predicates {lean}`Tick` and {lean}`Tock` are defined mutually, with {lean}`Tick` as a coinductive predicate and {lean}`Tock` as an inductive predicate:
+:::example "余归纳—归纳互递归块"
+谓词 {lean}`Tick` 与 {lean}`Tock` 互相定义，其中 {lean}`Tick` 是余归纳谓词，{lean}`Tock` 是归纳谓词：
 
 ```lean
 mutual
@@ -194,7 +194,7 @@ mutual
 end
 ```
 
-Both constructors are available:
+两个构造器都可用：
 ```lean (name := checkTickMk)
 #check @Tick.mk
 ```
@@ -208,7 +208,7 @@ Tick.mk : ¬Tock → Tick
 Tock.mk : ¬Tick → Tock
 ```
 
-A mutual induction principle is generated:
+系统会生成一个互归纳原理：
 ```lean (name := checkMutualInduct)
 #check @Tick.mutual_induct
 ```
@@ -218,25 +218,25 @@ Tick.mutual_induct : ∀ (pred_1 pred_2 : Prop),
 ```
 :::
 
-# Restrictions
+# 限制
 %%%
 tag := "coinductive-restrictions"
 %%%
 
 :::paragraph
-The {keywordOf Lean.Parser.Command.declaration}`coinductive` command has the following restrictions:
+{keywordOf Lean.Parser.Command.declaration}`coinductive` 命令有以下限制：
 
- * It can only define predicates, that is, types valued in {lean}`Prop`.
-   Attempting to define a coinductive type in {lean}`Type` or higher universes results in an error.
+ * 它只能定义谓词，即取值于 {lean}`Prop` 的类型。
+   尝试在 {lean}`Type` 或更高宇宙中定义余归纳类型会导致错误。
 
- * The predicate being defined may not have {tech}[macro scopes].
+ * 正在定义的谓词不能带有{tech (key := "macro scopes")}[宏作用域]。
 
- * Pattern matching via {keywordOf Lean.Parser.Term.match}`match` is not yet supported; use the {tactic}`cases` tactic instead.
+ * 尚不支持通过 {keywordOf Lean.Parser.Term.match}`match` 进行模式匹配；请改用 {tactic}`cases` 策略。
 
 :::
 
-:::example "Restriction to Predicates"
-Attempting to define a coinductive type that is not a predicate results in an error:
+:::example "仅限谓词"
+尝试定义一个并非谓词的余归纳类型会导致错误：
 
 ```lean +error (name := notPredErr)
 coinductive MyNat where
