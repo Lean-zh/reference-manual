@@ -537,6 +537,9 @@ irreducible
 :::
 
 ## 可约性与策略
+%%%
+tag := "The-Lean-Language-Reference--Definitions--Recursive-Definitions--Controlling-Reduction--Reducibility-and-Tactics"
+%%%
 
 
 下面这些策略可控制大多数策略会展开哪些定义：{tactic}`with_reducible`、{tactic}`with_reducible_and_instances` 与 {tactic}`with_unfolding_all`。
@@ -645,6 +648,9 @@ theorem sum_eq_add : sum x y = x + y := by simp
 
 
 ## 修改可约性
+%%%
+tag := "The-Lean-Language-Reference--Definitions--Recursive-Definitions--Controlling-Reduction--Modifying-Reducibility"
+%%%
 
 
 可以在定义所在的模块中，使用 {keywordOf Lean.Parser.Command.attribute}`attribute` 命令施加相应属性，从而全局修改某个定义的可约性。
@@ -672,6 +678,9 @@ unseal $_:ident $_*
 :::
 
 ## 选项
+%%%
+tag := "The-Lean-Language-Reference--Definitions--Recursive-Definitions--Controlling-Reduction--Options"
+%%%
 
 
 出于性能考虑，精译器与许多策略会构建索引与缓存。

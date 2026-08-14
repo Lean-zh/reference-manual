@@ -103,6 +103,9 @@ end
  * 在明确希望使用结构递归的场景下，可以防止意外改用良基递归。
 
 # 显式结构递归
+%%%
+tag := "The-Lean-Language-Reference--Definitions--Recursive-Definitions--Structural-Recursion--Explicit-Structural-Recursion"
+%%%
 
 若要显式使用结构递归，可以在函数或定理定义上添加 {keywordOf Lean.Parser.Command.declaration}`termination_by structural` 子句，用以指定 {tech (key := "decreasing parameter")}[递减参数]。
 递减参数可以引用签名中已命名的形参。

@@ -484,6 +484,9 @@ tag := "format-render"
 {zhdocstring Std.Format.MonadPrettyFormat ZhDoc.Std.Format.MonadPrettyFormat}
 
 ## `ToFormat` 类
+%%%
+tag := "The-Lean-Language-Reference--Interacting-with-Lean--Formatted-Output--Format--The--ToFormat--Class"
+%%%
 
 {name}`Std.ToFormat` 类用于提供一种格式化值的标准方式，并不要求这种格式是有效的 Lean 语法。
 错误消息和某些{ref "format-join"}[序列连接运算符]会使用这些实例。

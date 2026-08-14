@@ -135,6 +135,9 @@ decreasing_by
 :::
 
 # 终止性证明
+%%%
+tag := "The-Lean-Language-Reference--Definitions--Recursive-Definitions--Well-Founded-Recursion--Termination-proofs"
+%%%
 
 一旦指定了 {tech (key := "measure")}[度量] 并确定了其 {tech (key := "well-founded relation")}[良基关系]，Lean 就会为每个递归调用生成终止性证明目标。
 
@@ -442,6 +445,9 @@ section
 ::::
 
 # 默认终止性证明策略
+%%%
+tag := "The-Lean-Language-Reference--Definitions--Recursive-Definitions--Well-Founded-Recursion--Default-Termination-Proof-Tactic"
+%%%
 
 如果没有给出 {keywordOf Lean.Parser.Command.declaration}`decreasing_by` 子句，那么会隐式使用 {tactic}`decreasing_tactic`，并将其分别应用到每个证明目标上。
 
@@ -814,6 +820,9 @@ end
 {spliceContents Manual.RecursiveDefs.WF.PreprocessExample}
 
 # 理论与构造
+%%%
+tag := "The-Lean-Language-Reference--Definitions--Recursive-Definitions--Well-Founded-Recursion--Theory-and-Construction"
+%%%
 
 ```lean -show
 section
