@@ -21,57 +21,57 @@ open Lean.Order
 
 set_option maxRecDepth 600
 
-#doc (Manual) "Partial Fixpoint Recursion" =>
+#doc (Manual) "偏不动点递归" =>
 %%%
 tag := "partial-fixpoint"
 %%%
 
-All definitions are fundamentally equations: the new constant being defined is equal to the right-hand side of the definition.
-For functions defined by {ref "structural-recursion"}[structural recursion], this equation holds {tech (key := "definitional equality")}[definitionally], and there is a unique value returned by application of the function.
-For functions defined by {ref "well-founded-recursion"}[well-founded recursion], the equation may hold only {tech (key := "proposition")}[propositionally], but all type-correct applications of the function to arguments are equal to the respective values prescribed by the definition.
-In both cases, the fact that the function terminates for all inputs means that the value computed by applying the function is always uniquely determined.
+所有定义在根本上都是方程：被定义的新常量等于定义的右侧。
+对于以 {ref "structural-recursion"}[结构递归] 定义的函数，这个方程在 {tech (key := "definitional equality")}[定义上]成立，并且函数应用会返回唯一的值。
+对于以 {ref "well-founded-recursion"}[良基递归] 定义的函数，这个方程可能只在 {tech (key := "proposition")}[命题上]成立，但函数对任意类型正确的实参应用，都等于定义所规定的相应值。
+在这两种情形下，函数对所有输入都终止这一事实，意味着函数应用计算出的值总是唯一确定的。
 
 
-In some cases where a function does not terminate for all arguments, the equation may not _uniquely_ determine the function's return value for each input, but there are nonetheless functions for which the defining equation holds.
-In these cases, a definition as a {deftech}_partial fixpoint_ may still be possible.
-Any function that satisfies the defining equation can be used to demonstrate that the equation does not create a logical contradiction, and the equation can then be proven as a theorem about this function.
-As with the other strategies for defining recursive functions, compiled code uses the function as it was originally written; like definitions in terms of eliminators or recursion over accessibility proofs, the function used to define the partial fixpoint is used only to justify the function's equations in Lean's logic for purposes of mathematical reasoning.
+在某些函数并非对所有实参都终止的情况下，这个方程未必能为每个输入_唯一地_确定返回值；但尽管如此，仍可能存在满足该定义方程的函数。
+此时，仍可能把它定义为一个 {deftech (key := "partial fixpoint")}_偏不动点_。
+任何满足该定义方程的函数，都可以用来说明该方程不会造成逻辑矛盾，随后再把这个方程证明为该函数的定理。
+和其他递归函数定义策略一样，编译后的代码会使用函数最初写下来的形式；类似于借助消去器或基于可达性证明的递归来定义函数，定义偏不动点所用到的函数，只是为了在 Lean 的逻辑中为其方程提供数学推理上的正当性。
 
-The term {tech}_partial fixpoint_ is specific to Lean.
-Functions declared {keywordOf Lean.Parser.Command.declaration}`partial` do not require termination proofs, so long as the type of their return values is inhabited, but they are completely opaque from the perspective of Lean's logic.
-Partial fixpoints, on the other hand, can be rewritten using their defining equations while writing proofs.
-Logically speaking, partial fixpoints are total functions that don't reduce {tech (key := "definitional equality")}[definitionally] when applied, but for which equational rewrite rule are provided.
-They are _partial_ in the sense that the defining equation does not necessarily specify a value for all possible arguments.
+术语 {tech (key := "partial fixpoint")}_偏不动点_ 是 Lean 特有的。
+凡是声明为 {keywordOf Lean.Parser.Command.declaration}`partial` 的函数，只要其返回值类型可被占据，就不需要终止性证明；但从 Lean 逻辑的视角看，它们是完全不透明的。
+而偏不动点则不同：在写证明时，可以按照其定义方程对它们进行重写。
+从逻辑上说，偏不动点是一些全函数：把它们应用到实参上时不会 {tech (key := "definitional equality")}[在定义上] 归约，但 Lean 会为它们提供等式重写规则。
+它们之所以称为“偏”，是因为定义方程未必会为所有可能的实参指定一个值。
 
 
-While partial fixpoints do allow functions to be defined that cannot be expressed using structural or well-founded recursion, the technique is also useful in other cases.
-Even in cases where the defining equation fully describes the function's behavior and a termination proof using {ref "well-founded-recursion"}[well-founded recursion] would be possible, it may simply be more convenient to define the function as a partial fixpoint to avoid a having to write a termination proof.
+偏不动点不仅能定义那些无法用结构递归或良基递归表达的函数；在其他情况下，这项技术同样有用。
+即便某个定义方程已经完整描述了函数行为，且原则上也能用 {ref "well-founded-recursion"}[良基递归] 给出终止性证明，把函数定义为偏不动点仍可能更方便，因为这样无需书写终止性证明。
 
-Defining recursive functions as partial fixpoints only occurs when explicitly requested by annotating the definition with {keywordOf Lean.Parser.Command.declaration}`partial_fixpoint`.
+只有在显式请求时——即在定义上标注 {keywordOf Lean.Parser.Command.declaration}`partial_fixpoint`——递归函数才会按偏不动点来定义。
 
 :::paragraph
-There are two classes of functions that can be defined as partial fixpoints:
+可以定义为偏不动点的函数有两类：
 
- * Tail-recursive functions whose return type is inhabited type
+ * 返回类型可被占据的 尾递归函数
 
- * Functions that return values in a suitable monad, such as the {name}`Option` monad
+ * 返回值位于某个合适单子中的函数，例如 {name}`Option` 单子
 
-Both classes are backed by the same theory and construction: least fixpoints of monotone equations in chain-complete partial orders.
+这两类函数都建立在同一套理论与构造之上：链完备偏序中单调方程的最小不动点。
 
 :::
 
-Just as with structural and well-founded recursion, Lean allows {tech}[mutually recursive] functions to be defined as partial fixpoints.
-To use this feature, every function definition in a {tech}[mutual block] must be annotated with the {keywordOf Lean.Parser.Command.declaration}`partial_fixpoint` modifier.
+与结构递归和良基递归一样，Lean 也允许把 {tech (key := "mutually recursive")}[互递归] 函数定义为偏不动点。
+要使用这一特性，{tech (key := "mutual block")}[互递归块] 中的每个函数定义都必须带有 {keywordOf Lean.Parser.Command.declaration}`partial_fixpoint` 修饰符。
 
 ```lean -show
 section
 variable (p : Nat → Bool)
 ```
 
-:::example "Definition by Partial Fixpoint"
+:::example "按偏不动点定义"
 
-The following function finds the least natural number for which the predicate {lean}`p` holds.
-If `p` never holds, then this equation does not specify the behavior: the function {lean}`find` could return {lean  (type := "Nat")}`42` or any other {lean}`Nat` in that case and still satisfy the equation.
+下面这个函数寻找使谓词 {lean}`p` 成立的最小自然数。
+如果 `p` 永远不成立，那么这个方程并没有规定其行为：在这种情况下，函数 {lean}`find` 返回 {lean  (type := "Nat")}`42` 或任意其他 {lean}`Nat`，都依然满足该方程。
 
 ```lean
 def find (p : Nat → Bool) (i : Nat := 0) : Nat :=
@@ -82,39 +82,39 @@ def find (p : Nat → Bool) (i : Nat := 0) : Nat :=
 partial_fixpoint
 ```
 
-The elaborator can prove that functions satisfying the equation exist.
-Within Lean's logic, {lean}`find` is defined to be an arbitrary such function.
+精译器能够证明，满足该方程的函数确实存在。
+在 Lean 的逻辑中，{lean}`find` 被定义为任意一个这样的函数。
 :::
 
 ```lean -show
 end
 ```
 
-# Tail-Recursive Functions
+# 尾递归函数
 %%%
 tag := "partial-fixpoint-tailrec"
 %%%
 
 :::paragraph
 
-A recursive function can be defined as a partial fixpoint if the following two conditions hold:
+若满足下列两个条件，递归函数就可以定义为偏不动点：
 
- 1. The function's return type is inhabited (as with {ref "partial-unsafe"}[functions marked {keywordOf Lean.Parser.Command.declaration}`partial`])—either a {name}`Nonempty` or {name}`Inhabited` instance works.
- 2. All recursive calls are in {tech}[tail position] of the function.
+ 1. 函数的返回类型可被占据（与{ref "partial-unsafe"}[标记为 {keywordOf Lean.Parser.Command.declaration}`partial` 的函数]类似）——拥有 {name}`Nonempty` 或 {name}`Inhabited` 实例皆可。
+ 2. 所有递归调用都位于函数的 {tech (key := "tail position")}[尾位置]。
 
-An expression is in {deftech}_tail position_ in the function body if it is:
+若函数体中的一个表达式属于下列情形，则它处于 {deftech (key := "tail position")}_尾位置_：
 
- * the function body itself,
- * the branches of a {keywordOf Lean.Parser.Term.match}`match` expression that is in tail position,
- * the branches of an {keywordOf termIfThenElse}`if` expression that is in tail position, and
- * the body of a {keywordOf Lean.Parser.Term.let}`let` expression that is in tail position.
+ * 函数体本身；
+ * 处于尾位置的 {keywordOf Lean.Parser.Term.match}`match` 表达式的各个分支；
+ * 处于尾位置的 {keywordOf termIfThenElse}`if` 表达式的各个分支；
+ * 处于尾位置的 {keywordOf Lean.Parser.Term.let}`let` 表达式的函数体。
 
-In particular, the {tech (key := "match discriminant")}[discriminant] of a {keywordOf Lean.Parser.Term.match}`match` expression, the condition of an {keywordOf termIfThenElse}`if` expression and the arguments of functions are not tail positions.
+特别地，{keywordOf Lean.Parser.Term.match}`match` 表达式的 {tech (key := "match discriminant")}[判别项]、{keywordOf termIfThenElse}`if` 表达式的条件，以及函数实参，都不处于尾位置。
 
 :::
 
 ```lean -show
--- Test that nonempty is enough
+-- 测试只需 nonempty 即可
 inductive A : Type where
   | mkA
   | mkA'
@@ -129,10 +129,10 @@ example (n : Nat) : getA n = getA (n + 3) := by
   conv => lhs; rw [getA, getA, getA]
 ```
 
-:::example "Loops are Tail Recursive Functions"
+:::example "循环也是尾递归函数"
 
-Because the function body itself is a {tech}[tail position], the infinitely looping function {lean}`loop` is tail recursive.
-It can be defined as a partial fixpoint.
+由于函数体本身就是一个 {tech (key := "tail position")}[尾位置]，无限循环函数 {lean}`loop` 是尾递归的。
+它可以定义为偏不动点。
 
 ```lean
 def loop (x : Nat) : Nat := loop (x + 1)
@@ -141,9 +141,9 @@ partial_fixpoint
 
 :::
 
-:::example "Tail Recursion with Branching"
+:::example "带分支的尾递归"
 
-{lean}`Array.find` could also be constructed using well-founded recursion with a termination proof, but may be more convenient to define using {keywordOf Lean.Parser.Command.declaration}`partial_fixpoint`, where no termination proof is needed.
+{lean}`Array.find` 也可以借助良基递归加上终止性证明来构造，但用 {keywordOf Lean.Parser.Command.declaration}`partial_fixpoint` 来定义往往更方便，因为这样不需要终止性证明。
 
 ```lean
 def Array.find (xs : Array α) (p : α → Bool)
@@ -158,7 +158,7 @@ def Array.find (xs : Array α) (p : α → Bool)
 partial_fixpoint
 ```
 
-If the result of the recursive call is not just returned, but passed to another function, it is not in tail position and this definition fails.
+如果递归调用的结果不是直接返回，而是先传给另一个函数，那么它就不在尾位置，此定义也就会失败。
 
 ```lean -keep +error (name := nonTailPos)
 def List.findIndex (xs : List α) (p : α → Bool) : Int :=
@@ -172,7 +172,7 @@ def List.findIndex (xs : List α) (p : α → Bool) : Int :=
       if r = -1 then -1 else r + 1
 partial_fixpoint
 ```
-The error message on the recursive call is:
+递归调用处的错误消息是：
 ```leanOutput nonTailPos
 Could not prove 'List.findIndex' to be monotone in its recursive calls:
   Cannot eliminate recursive call `List.findIndex ys p` enclosed in
@@ -184,22 +184,22 @@ Could not prove 'List.findIndex' to be monotone in its recursive calls:
 
 :::
 
-# Monadic functions
+# 单子函数
 %%%
 tag := "partial-fixpoint-monadic"
 %%%
 
 
-Defining a function as a partial fixpoint is more powerful if the function's return type is a monad that is an instance of {name}`Lean.Order.MonoBind`, such as {name}`Option`.
-In this case, recursive call are not restricted to tail-positions, but may also occur inside higher-order monadic functions such as {name}`bind` and {name}`List.mapM`.
+如果函数的返回类型是某个带有 {name}`Lean.Order.MonoBind` 实例的单子（例如 {name}`Option`），那么把函数定义为偏不动点会更强大。
+这时，递归调用不再局限于尾位置，还可以出现在 {name}`bind`、{name}`List.mapM` 等高阶单子函数内部。
 
-The set of higher-order functions for which this works is {ref "partial-fixpoint-theory"}[extensible], so no exhaustive list is given here.
-The aspiration is that a monadic recursive function definition that is built using abstract monadic operations like {name}`bind`, but that does not open the abstraction of the monad (e.g. by matching on the {name}`Option` value), is accepted.
-In particular, using {tech}[{keywordOf Lean.Parser.Term.do}`do`-notation] should work.
+能够支持这一点的高阶函数集合是{ref "partial-fixpoint-theory"}[可扩展的]，因此这里不给出穷尽列表。
+理想状态是：只要一个单子递归函数定义是通过 {name}`bind` 这类抽象单子操作构造出来的，并且没有拆开单子的抽象（例如对 {name}`Option` 的值做模式匹配），它就应该被接受。
+特别地，使用 {tech (key := "do-notation")}[{keywordOf Lean.Parser.Term.do}`do` 记法] 应当可行。
 
-:::example "Monadic functions"
+:::example "单子函数"
 
-The following function implements the Ackermann function in the {name}`Option` monad, and is accepted without an (explicit or implicit) termination proof:
+下面这个函数在 {name}`Option` 单子中实现了 Ackermann 函数，并且无需显式或隐式终止性证明即可被接受：
 
 ```lean -keep
 def ack : (n m : Nat) → Option Nat
@@ -209,7 +209,7 @@ def ack : (n m : Nat) → Option Nat
 partial_fixpoint
 ```
 
-Recursive calls may also occur within higher-order functions such as {name}`List.mapM`, if they are set up appropriately, and {tech}[{keywordOf Lean.Parser.Term.do}`do`-notation]:
+如果适当设置，递归调用也可以出现在 {name}`List.mapM` 之类的高阶函数内部，以及 {tech (key := "do-notation")}[{keywordOf Lean.Parser.Term.do}`do` 记法] 中：
 
 ```lean -keep
 structure Tree where cs : List Tree
@@ -226,7 +226,7 @@ def Tree.rev' (t : Tree) : Option Tree := do
 partial_fixpoint
 ```
 
-Pattern matching on the result of the recursive call will prevent the definition by partial fixpoint from going through:
+若对递归调用的结果做模式匹配，就会阻止该定义作为偏不动点通过：
 
 ```lean -keep +error (name := monoMatch)
 def List.findIndex (xs : List α) (p : α → Bool) : Option Nat :=
@@ -249,7 +249,7 @@ Could not prove 'List.findIndex' to be monotone in its recursive calls:
     | some r => some (r + 1)
 ```
 
-In this particular case, using {name}`Functor.map` instead of explicit pattern matching helps:
+在这个具体例子里，用 {name}`Functor.map` 代替显式模式匹配就有帮助：
 
 ```lean
 def List.findIndex (xs : List α) (p : α → Bool) : Option Nat :=
@@ -264,25 +264,25 @@ partial_fixpoint
 ```
 :::
 
-# Partial Correctness Theorems
+# 偏正确性定理
 %%%
 tag := "partial-correctness-theorem"
 %%%
 
 
-For every function defined as a partial fixpoint, Lean proves that the defining equation is satisfied.
-This enables proofs by rewriting.
-However, these equational theorems are not sufficient for reasoning about the behavior of the function on arguments for which the function specification does not terminate.
-Code paths that lead to infinite recursion at runtime would end up as infinite chains of rewrites in a potential proof.
+对于每个定义为偏不动点的函数，Lean 都会证明其定义方程成立。
+这使得人们可以通过重写来进行证明。
+不过，这些等式定理不足以推理函数在那些其规范本身不终止的实参上的行为。
+在运行时会导致无限递归的代码路径，在证明中最终只会变成无限长的重写链。
 
-Partial fixpoints in suitable monads, on the other hand, provide additional theorems that map the undefined values from non-termination to suitable values in the monad.
-In the {name}`Option` monad, then partial fixpoint equals {name}`Option.none` on all function inputs for which the defining equation specifies non-termination.
-From this fact, Lean proves a {deftech}_partial correctness theorem_ for the function which allows facts to be concluded when the function's result is {name}`Option.some`.
+另一方面，在合适单子中的偏不动点还会提供额外定理，把“不终止”所对应的未定义值映射为该单子中的适当值。
+在 {name}`Option` 单子中，当定义方程规定某些输入上不终止时，偏不动点在这些输入上的值就等于 {name}`Option.none`。
+基于这一事实，Lean 会为该函数证明一个 {deftech (key := "partial correctness theorem")}_偏正确性定理_，使人们能够在函数结果为 {name}`Option.some` 时推出相应事实。
 
 
-::::example "Partial Correctness Theorem"
+::::example "偏正确性定理"
 
-Recall {lean}`List.findIndex` from an earlier example:
+回忆前面的例子 {lean}`List.findIndex`：
 
 ```lean
 def List.findIndex (xs : List α) (p : α → Bool) : Option Nat :=
@@ -296,7 +296,7 @@ def List.findIndex (xs : List α) (p : α → Bool) : Option Nat :=
 partial_fixpoint
 ```
 
-With this function definition, Lean automatically proves the following partial correctness theorem:
+有了这个函数定义，Lean 会自动证明下面的偏正确性定理：
 
 ```signature
 List.findIndex.partial_correctness.{u_1} {α : Type u_1}
@@ -318,19 +318,19 @@ List.findIndex.partial_correctness.{u_1} {α : Type u_1}
 ```
 
 :::paragraph
-Here, the motive is a relation between the parameter and return types of {lean}`List.findIndex`, with the {name}`Option` removed from the return type.
-If, when given an arbitrary partial function with a signature that's compatible with {lean}`List.findIndex`, the following hold:
+这里的 motive 是 {lean}`List.findIndex` 的参数类型与返回类型之间的一个关系，其中返回类型里的 {name}`Option` 已被去掉。
+若给定一个签名与 {lean}`List.findIndex` 相容的任意偏函数，并且满足下列条件：
 
- * the motive is satisfied for all inputs for which the arbitrary function returns a value (rather than {name}`none`),
+ * 对所有该任意函数返回某个值（而不是 {name}`none`）的输入，motive 都成立；
 
- * taking one rewriting step with the defining equation, in which the recursive calls are replaced by the arbitrary function, also implies the satisfaction of the motive
+ * 按定义方程进行一步重写、并把其中递归调用替换为该任意函数后，也能推出 motive 成立；
 
-then the motive is satisfied for all inputs for which the {lean}`List.findIndex` returns {name}`some`.
+那么，对所有 {lean}`List.findIndex` 返回 {name}`some` 的输入，motive 都成立。
 
 :::
 
-The partial correctness theorem is a reasoning principle.
-It can be used to prove that the resulting number is a valid index in the list and that the predicate holds for that index:
+偏正确性定理是一条推理原理。
+它可以用来证明：得到的数字是该列表中的一个合法索引，而且谓词在该索引处成立：
 
 ```lean
 theorem List.findIndex_implies_pred
@@ -356,15 +356,15 @@ theorem List.findIndex_implies_pred
 
 ::::
 
-# Mutual Recursion with Partial Fixpoints
+# 偏不动点下的互递归
 %%%
 tag := "mutual-partial-fixpoint"
 %%%
 
-Lean supports the definition of {tech}[mutually recursive] functions using {tech}[partial fixpoint].
-Mutual recursion may be introduced using a {tech}[mutual block], but it also results from {keywordOf Lean.Parser.Term.letrec}`let rec` expressions and {keywordOf Lean.Parser.Command.declaration}`where` blocks.
-The rules for mutual recursion with partial fixpoints are applied to a group of actually mutually recursive, lifted definitions, that results from the {ref "mutual-syntax"}[elaboration steps] for mutual groups.
+Lean 支持使用 {tech (key := "partial fixpoint")}[偏不动点] 来定义 {tech (key := "mutually recursive")}[互递归] 函数。
+互递归既可以通过 {tech (key := "mutual block")}[互递归块] 引入，也可能来自 {keywordOf Lean.Parser.Term.letrec}`let rec` 表达式和 {keywordOf Lean.Parser.Command.declaration}`where` 代码块。
+带偏不动点的互递归规则，会应用到由互递归组的{ref "mutual-syntax"}[精译步骤]所得、经过提升后且实际上互相递归的一组定义上。
 
-If all functions in the mutual group have the {keywordOf Lean.Parser.Command.declaration}`partial_fixpoint` clause, then this strategy is used.
+若互递归组中的所有函数都带有 {keywordOf Lean.Parser.Command.declaration}`partial_fixpoint` 子句，就会采用这一策略。
 
 {include 1 Manual.RecursiveDefs.PartialFixpoint.Theory}

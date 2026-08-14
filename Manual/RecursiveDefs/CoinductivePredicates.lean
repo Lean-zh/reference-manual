@@ -22,45 +22,45 @@ open Lean.Order
 set_option maxRecDepth 600
 
 
-#doc (Manual) "Coinductive and Inductive Predicates" =>
+#doc (Manual) "余归纳与归纳谓词" =>
 %%%
 tag := "coinductive-predicates"
 %%%
 
 :::paragraph
-Lean's type theory does not support coinductive types directly.
-However, {deftech (key := "lattice-theoretic coinductive predicate")}[coinductive predicates], that is, recursive definitions valued in {lean}`Prop`, can be defined using the complete lattice structure on propositions.
-These predicates provide a coinductive reasoning principle, where something can be shown to satisfy a predicate by showing that it satisfies some smaller predicate that is itself consistent with the definition of the coinductive predicate.
-This is the dual of inductive reasoning, in which a known fact can be decomposed via a potentially recursive case analysis.
-Coinductive predicates allow infinite domains to be specified and reasoned about.
-Some examples from computer science include:
+Lean 的类型论并不直接支持余归纳类型。
+不过，{deftech (key := "lattice-theoretic coinductive predicate")}[余归纳谓词]——也就是取值于 {lean}`Prop` 的递归定义——可以借助命题上的完备格结构来定义。
+这些谓词提供了一种余归纳推理原理：若能证明某个对象满足某个更小的谓词，且该谓词本身与余归纳谓词的定义相容，就可以证明该对象满足这个余归纳谓词。
+这与归纳推理对偶：在归纳推理中，一个已知事实可以通过可能递归的分类讨论被分解。
+余归纳谓词使得人们能够刻画并推理无限域。
+计算机科学中的一些例子包括：
 
- * bisimilarity of state transition systems that admit cycles
- * divergence of small-step operational semantics
- * liveness properties
+ * 允许环路的状态迁移系统上的互模拟
+ * 小步操作语义中的发散
+ * 活性性质
 
-Dually, {deftech (key := "lattice-theoretic inductive predicate")}[inductive predicates] can also be defined via least fixpoints using the same machinery.
-Because it uses the same underlying mechanisms, this alternative to ordinary {tech}[inductive types] is compatible with mixed inductive-coinductive mutual blocks.
+对偶地，{deftech (key := "lattice-theoretic inductive predicate")}[归纳谓词] 也可以借助同样的机制，通过最小不动点来定义。
+由于它们使用的是同一套底层机制，这种替代普通 {tech (key := "inductive types")}[归纳类型] 的方案，与归纳—余归纳混合的互递归块相兼容。
 :::
 
-::::::example "Infinite Sequences" (open := true)
+::::::example "无限序列" (open := true)
 
 ::::leanSection
 ```lean -show
 variable {R : α → α → Prop} (x y : α) {pred : α → Prop}
 ```
 :::paragraph
-Given a relation {lean}`R` on {lean}`α` (that is, with type {lean}`α → α → Prop`), there is an infinite sequence of values in {lean}`α` starting at {lean}`x` if:
+给定 {lean}`α` 上的一个关系 {lean}`R`（即其类型为 {lean}`α → α → Prop`），如果满足下列条件，就存在一个从 {lean}`x` 出发的、由 {lean}`α` 中值组成的无限序列：
 
- * there exists some {lean}`y` such that {lean}`R x y`, and
- * there exists an infinite sequence from {lean}`y`.
+ * 存在某个 {lean}`y` 使得 {lean}`R x y` 成立；
+ * 并且从 {lean}`y` 出发也存在一个无限序列。
 
-This is a quintessential coinductive predicate: it describes a potentially infinite behavior that can be presented as a single inference rule with no base cases.
+这是一个典型的余归纳谓词：它描述的是一种潜在无限的行为，并且可以表达为一条没有基例的单一推理规则。
 :::
 ::::
 
-This recursive specification is well-defined, but it cannot be defined as an ordinary recursive function because the recursive part of the definition does not decrease.
-However, it is a perfectly sensible coinductive definition:
+这个递归规格是良定义的，但它不能作为普通递归函数来定义，因为定义中的递归部分并没有减小。
+不过，把它定义成余归纳定义却完全合理：
 ```lean
 coinductive InfSeq (R : α → α → Prop) : α → Prop where
   | step (y : α) : R x y →  InfSeq R y → InfSeq R x
@@ -71,9 +71,9 @@ coinductive InfSeq (R : α → α → Prop) : α → Prop where
 variable {R : α → α → Prop} (a : α) {pred : α → Prop}
 ```
 
-The coinductive reasoning principle takes a predicate {lean}`pred`.
-To prove that {lean}`a` is the start of an infinite {lean}`R`-sequence, it suffices to show that {lean}`R` relates each element that satisfies {lean}`pred` to some other such element.
-In other words, it that the presence of an infinite sequence can be demonstrated by providing one:
+余归纳推理原理接受一个谓词 {lean}`pred`。
+要证明 {lean}`a` 是某条无限 {lean}`R`-序列的起点，只需证明：对每个满足 {lean}`pred` 的元素，{lean}`R` 都会把它关联到另一个同样满足该谓词的元素。
+换言之，无限序列的存在可以通过直接给出这样一条序列来证明：
 ```signature
 InfSeq.coinduct (R : α → α → Prop) (pred : α → Prop) :
   (∀ (a : α), pred a → ∃ y, R a y ∧ pred y) →
@@ -85,22 +85,22 @@ InfSeq.coinduct (R : α → α → Prop) (pred : α → Prop) :
 
 
 
-There are two ways to define coinductive predicates in Lean:
+在 Lean 中，有两种方式定义余归纳谓词：
 
- 1. Using the {keywordOf Lean.Parser.Command.declaration}`coinductive_fixpoint` termination clause on a recursive {keywordOf Lean.Parser.Command.declaration}`def` valued in {lean}`Prop`, which takes the greatest fixpoint. Equivalently, the {keywordOf Lean.Parser.Command.declaration}`inductive_fixpoint` clause defines inductive predicates as least fixpoints.
+ 1. 在取值于 {lean}`Prop` 的递归 {keywordOf Lean.Parser.Command.declaration}`def` 上使用 {keywordOf Lean.Parser.Command.declaration}`coinductive_fixpoint` 终止性子句，它会取最大不动点。等价地，{keywordOf Lean.Parser.Command.declaration}`inductive_fixpoint` 子句则把归纳谓词定义为最小不动点。
 
- 2. Using the {keywordOf Lean.Parser.Command.coinductive}`coinductive` command, which provides a declarative syntax mirroring {keywordOf Lean.Parser.Command.inductive}`inductive` declarations.
+ 2. 使用 {keywordOf Lean.Parser.Command.coinductive}`coinductive` 命令，它提供了一种与 {keywordOf Lean.Parser.Command.inductive}`inductive` 声明相呼应的声明式语法。
 
 
-# Fixpoint Termination Clauses
+# 不动点终止性子句
 %%%
 tag := "fixpoint-clauses"
 %%%
 
-A recursive {lean}`Prop`-valued function can be defined as a fixpoint by annotating it with {keywordOf Lean.Parser.Command.declaration}`coinductive_fixpoint` for coinductive definitions (greatest fixpoint) or {keywordOf Lean.Parser.Command.declaration}`inductive_fixpoint` for inductive definitions (least fixpoint).
-These termination clauses play the same role as {keywordOf Lean.Parser.Command.declaration}`partial_fixpoint` but use the {ref "lattice-prop"}[complete lattice structure on `Prop`] to compute the appropriate fixpoint.
+取值于 {lean}`Prop` 的递归函数，可以通过为其添加 {keywordOf Lean.Parser.Command.declaration}`coinductive_fixpoint`（用于余归纳定义，即最大不动点）或 {keywordOf Lean.Parser.Command.declaration}`inductive_fixpoint`（用于归纳定义，即最小不动点）标注，来定义为一个不动点。
+这些终止性子句与 {keywordOf Lean.Parser.Command.declaration}`partial_fixpoint` 扮演相同角色，但它们利用 {ref "lattice-prop"}[`Prop` 上的完备格结构] 来计算相应的不动点。
 
-## Coinductive Fixpoint
+## 余归纳不动点
 %%%
 tag := "coinductive-fixpoint-clause"
 %%%
@@ -109,8 +109,8 @@ tag := "coinductive-fixpoint-clause"
 ```lean -show
 variable {P Q : ReverseImplicationOrder}
 ```
-The {keywordOf Lean.Parser.Command.declaration}`coinductive_fixpoint` clause defines a predicate as the greatest fixpoint of its defining equation.
-The function must be monotone with respect to {name}`Lean.Order.ReverseImplicationOrder`, in which {lean}`P ⊑ Q` means {lean}`Q → P`.
+{keywordOf Lean.Parser.Command.declaration}`coinductive_fixpoint` 子句把一个谓词定义为其定义方程的最大不动点。
+该函数必须相对于 {name}`Lean.Order.ReverseImplicationOrder` 是单调的；在这个顺序中，{lean}`P ⊑ Q` 表示 {lean}`Q → P`。
 :::
 
 :::leanSection
@@ -119,16 +119,16 @@ variable {P Q : α → ReverseImplicationOrder}
 example : (P ⊑ Q) = (∀ x, P x ⊑ Q x) := rfl
 example : (∀ x, P x ⊑ Q x) = (∀ x, Q x → P x) := rfl
 ```
-This ordering is extended pointwise over the predicate's domain.
-Given predicates {lean}`P` and {lean}`Q` over {lean}`α`, {lean}`P ⊑ Q` means {lean}`∀ x : α, P x ⊑ Q x` (that is, {lean}`∀ x, Q x → P x`).
+这个顺序会按点扩展到谓词的定义域上。
+给定 {lean}`α` 上的谓词 {lean}`P` 与 {lean}`Q`，{lean}`P ⊑ Q` 表示 {lean}`∀ x : α, P x ⊑ Q x`（也就是 {lean}`∀ x, Q x → P x`）。
 :::
 
-::::example "Monotonicity of Infinite Sequences"
+::::example "无限序列的单调性"
 ```lean -show
 variable (R : α → α → Prop) {a : α}
 ```
-The proposition {lean}`InfSeq R a` is true when there exists an infinite chain of {lean}`R`-related elements starting from {lean}`a`.
-This can be written using {keywordOf Lean.Parser.Command.declaration}`coinductive_fixpoint`:
+当存在一条从 {lean}`a` 出发、由 {lean}`R` 关联起来的无限链时，命题 {lean}`InfSeq R a` 为真。
+这可以用 {keywordOf Lean.Parser.Command.declaration}`coinductive_fixpoint` 写成：
 
 ```lean
 def InfSeq (R : α → α → Prop) (a : α) : Prop :=
@@ -136,7 +136,7 @@ def InfSeq (R : α → α → Prop) (a : α) : Prop :=
 coinductive_fixpoint
 ```
 
-During elaboration, the first step is to abstract this recursive definition over the recursive calls, yielding a definition equivalent to {lean}`F`:
+在精译过程中，第一步是把这个递归定义对递归调用做抽象，得到一个与 {lean}`F` 等价的定义：
 ```lean
 def F (R : α → α → Prop) (a : α) (P : α → Prop) : Prop :=
   ∃ b, R a b ∧ P b
@@ -146,8 +146,8 @@ def F (R : α → α → Prop) (a : α) (P : α → Prop) : Prop :=
 ```lean -show
 variable (P Q : α → Prop) (R : α → α → Prop)
 ```
-For this function to be monotone with respect to reverse implication, it must preserve the reverse implication ordering between {lean}`P` and {lean}`Q`.
-That is, {lean}`∀ (x : α), Q x → P x` must imply {lean}`∀ (x : α), F R x Q → F R x P`:
+要使这个函数相对于反向蕴含顺序是单调的，它就必须保持 {lean}`P` 与 {lean}`Q` 之间的反向蕴含顺序。
+也就是说，{lean}`∀ (x : α), Q x → P x` 必须推出 {lean}`∀ (x : α), F R x Q → F R x P`：
 :::
 ```lean
 theorem F_monotone
@@ -157,11 +157,11 @@ theorem F_monotone
 ```
 ::::
 
-:::example "Failure of Monotonicity"
+:::example "单调性失败"
 
-An element is accessible in a relation if there is no infinite chain leading to the element.
-This property is inductively defined as {name}`Acc` in the standard library.
-This attempt to define it coinductively fails:
+如果某个元素不存在一条通向它的无限链，那么它对于该关系就是可达的。
+标准库中将这一性质归纳地定义为 {name}`Acc`。
+下面这个把它尝试定义为余归纳谓词的做法会失败：
 ```lean +error (name := nonmono)
 def NoInfChain (R : α → α → Prop) (x : α) : Prop :=
   ∀ y, R x y → ¬NoInfChain R y
@@ -174,13 +174,13 @@ Could not prove 'NoInfChain' to be monotone in its recursive calls:
     NoInfChain R y✝
 ```
 
-The corresponding function is:
+对应的函数是：
 ```lean
 def F (R : α → α → Prop) (x : α) (P : α → Prop) : Prop :=
   ∀ y, R x y → ¬P y
 ```
 
-Lean failed to prove this function monotone because it is not, in fact, monotone:
+Lean 之所以无法证明这个函数单调，是因为它事实上确实不单调：
 ```lean
 theorem F_nonmonotone :
     ¬(∀ α R P Q,
@@ -192,26 +192,26 @@ theorem F_nonmonotone :
     simpa
   -- α = PUnit, R always true
   refine ⟨PUnit, fun _ _ => True, ?_⟩
-  -- P is trivially true, Q is always false
+  -- P 恒为真，而 Q 恒为假
   refine ⟨fun _ => True, fun _ => False, ?_⟩
   simp [F]
 ```
 :::
 
-:::example "Non-Predicates"
+:::example "非谓词"
 
-An infinite conjunction of some proposition can be defined as a coinductive fixpoint:
+某个命题的无限合取可以定义为一个余归纳不动点：
 ```lean
 def InfConj (p : Prop) : Prop := p ∧ InfConj p
 coinductive_fixpoint
 ```
 
-This cannot be used to define an infinite product, however:
+不过，这不能用来定义一个无限积：
 ```lean +error (name := nonprop)
 def InfProd (α : Type) : Prop := α × InfProd α
 coinductive_fixpoint
 ```
-The error message indicates that a proposition was expected:
+错误消息表明，此处本来期望的是一个命题：
 ```leanOutput nonprop
 Application type mismatch: The argument
   InfProd α
@@ -225,18 +225,18 @@ of sort `Type (?u.6 + 1)` in the application
 
 :::
 
-Just as with definitions via partial fixpoints, the coinductive predicate's defining equations do not hold definitionally.
-However, the elaborator proves equational lemmas that allow the predicate to be rewritten to its unfolding.
+与通过偏不动点给出的定义一样，余归纳谓词的定义方程并不在定义上成立。
+不过，精译器会证明等式引理，从而允许把该谓词重写为其展开式。
 
-:::example "Definitional Equality and Coinductive Predicates"
-{lean}`InfSeq` is the coinductive statement that an relation starts an infinite chain:
+:::example "定义相等与余归纳谓词"
+{lean}`InfSeq` 是一个余归纳断言：某个关系从某点开始存在一条无限链：
 ```lean
 def InfSeq (R : α → α → Prop) (a : α) : Prop :=
   ∃ b, R a b ∧ InfSeq R b
 coinductive_fixpoint
 ```
 
-Because it is defined using {keywordOf Lean.Parser.Command.declaration}`coinductive_fixpoint`, it is not definitionally equal to its unfolding:
+由于它是借助 {keywordOf Lean.Parser.Command.declaration}`coinductive_fixpoint` 定义的，因此它与其展开式并不在定义上相等：
 ```lean +error (name := nondefeq)
 example (R : α → α → Prop) (a : α) :
     InfSeq R a = ∃ b, R a b ∧ InfSeq R b := by
@@ -254,7 +254,7 @@ a : α
 ⊢ InfSeq R a = ∃ b, R a b ∧ InfSeq R b
 ```
 
-However, it is equipped with equational lemmas that allow it to be rewritten to its unfolding:
+不过，它带有可将其重写为展开式的等式引理：
 ```lean
 example (R : α → α → Prop) (a : α) :
     InfSeq R a = ∃ b, R a b ∧ InfSeq R b := by
@@ -263,18 +263,18 @@ example (R : α → α → Prop) (a : α) :
 
 :::
 
-In addition to equational lemmas, Lean generates a {deftech}[coinduction principle].
-The coinduction principle states that the coinductive predicate can be proved by exhibiting some other predicate that is a post-fixpoint of the monotone function.
+除了等式引理外，Lean 还会生成一条 {deftech (key := "coinduction principle")}[余归纳原理]。
+这条余归纳原理说明：只要给出另一个谓词，并证明它是该单调函数的一个后不动点，就可以证明相应的余归纳谓词。
 
-::::example "Coinduction Principles for Infinite Sequences"
-{lean}`InfSeq` is the coinductive statement that an relation starts an infinite chain:
+::::example "无限序列的余归纳原理"
+{lean}`InfSeq` 是一个余归纳断言：某个关系从某点开始存在一条无限链：
 ```lean
 def InfSeq (R : α → α → Prop) (a : α) : Prop :=
   ∃ b, R a b ∧ InfSeq R b
 coinductive_fixpoint
 ```
 
-The corresponding monotone function is:
+对应的单调函数是：
 ```lean
 def F (R : α → α → Prop) (a : α) (P : α → Prop) : Prop :=
   ∃ b, R a b ∧ P b
@@ -284,10 +284,10 @@ def F (R : α → α → Prop) (a : α) (P : α → Prop) : Prop :=
 ```lean -show
 variable {R : α → α → Prop} {a : α} {P : α → Prop}
 ```
-Because {lean}`InfSeq` is the _greatest_ fixpoint of {lean}`F`, the existence of _any_ predicate that is less than its image in {lean}`F` suffices to show that every element that satisfies the predicate also satisfies {lean}`InfSeq`.
-In other words, to prove {lean}`InfSeq R a`, it suffices to demonstrate a predicate {lean}`P` such that {lean}`∀ (a : α), P a → F R a P`, or {lean}`∀ (a : α), P a → ∃ b, R a b ∧ P b`, and then show {lean}`P a`.
+由于 {lean}`InfSeq` 是 {lean}`F` 的_最大_不动点，只要存在_任意_一个谓词，它小于自己在 {lean}`F` 下的像，就足以说明：凡满足该谓词的元素，也都满足 {lean}`InfSeq`。
+换言之，要证明 {lean}`InfSeq R a`，只需给出一个谓词 {lean}`P`，使得 {lean}`∀ (a : α), P a → F R a P`，也就是 {lean}`∀ (a : α), P a → ∃ b, R a b ∧ P b`，然后再证明 {lean}`P a`。
 :::
-This coinduction principle is named {lean}`InfSeq.coinduct`:
+这条余归纳原理名为 {lean}`InfSeq.coinduct`：
 ```signature
 InfSeq.coinduct {α} (R : α → α → Prop) (pred : α → Prop) :
   (∀ (a : α), pred a → ∃ b, R a b ∧ pred b) →
@@ -295,8 +295,8 @@ InfSeq.coinduct {α} (R : α → α → Prop) (pred : α → Prop) :
 ```
 ::::
 
-::::example "Simple Proof by Coinduction"
-{lean}`InfSeq` states that there is an infinite sequence of elements in a relation, with a given starting point:
+::::example "余归纳的简单证明"
+{lean}`InfSeq` 断言：在给定起点处，某个关系中存在一条由元素组成的无限序列：
 ```lean
 def InfSeq (R : α → α → Prop) (a : α) : Prop :=
   ∃ b, R a b ∧ InfSeq R b
@@ -307,7 +307,7 @@ coinductive_fixpoint
 ```lean -show
 variable {R : α → α → Prop} {a : α}
 ```
-If {lean}`R a a` holds, then there is a trivial infinite chain that loops at {lean}`a`:
+如果 {lean}`R a a` 成立，那么就存在一条在 {lean}`a` 处自环的平凡无限链：
 
 ```lean
 theorem cycle_InfSeq {R : α → α → Prop} (a : α) :
@@ -319,16 +319,16 @@ theorem cycle_InfSeq {R : α → α → Prop} (a : α) :
 :::
 ::::
 
-:::example "Infinite Chains of Less-Than"
-{lean}`InfSeq` states that there is an infinite sequence of elements in a relation, with a given starting point:
+:::example "小于关系的无限链"
+{lean}`InfSeq` 断言：在给定起点处，某个关系中存在一条由元素组成的无限序列：
 ```lean
 def InfSeq (R : α → α → Prop) (a : α) : Prop :=
   ∃ b, R a b ∧ InfSeq R b
 coinductive_fixpoint
 ```
 
-There is an infinite chain of natural numbers related by {lean (type := "Nat → Nat → Prop")}`(· < ·)`.
-All natural numbers start such a chain, so the predicate can be trivial:
+对于关系 {lean (type := "Nat → Nat → Prop")}`(· < ·)`，自然数上存在无限链。
+每个自然数都可以作为这样一条链的起点，因此这里的谓词可以取成平凡谓词：
 ```lean
 theorem lt_InfSeq {n : Nat} : InfSeq (· < ·) n := by
   apply InfSeq.coinduct (pred := fun x => True)
@@ -339,14 +339,14 @@ theorem lt_InfSeq {n : Nat} : InfSeq (· < ·) n := by
 ```
 :::
 
-::::example "DFA Language Equivalence"
-Coinductive predicates naturally capture bisimulation-like notions.
+::::example "DFA 语言等价性"
+余归纳谓词天然适合刻画类似互模拟的概念。
 
 :::leanSection
 ```lean -show
 variable {Q : Type} {A : Type} {q : Q}
 ```
-A deterministic finite automaton is given by a set of states {lean}`Q`, an alphabet {lean}`A`, a start state {lean}`q` in {lean}`Q`, a subset of {lean}`Q` that defines accepting states, and a transition function that takes a state and an element of the alphabet to a new state:
+一个确定有限自动机由如下数据给出：状态集合 {lean}`Q`、字母表 {lean}`A`、位于 {lean}`Q` 中的初始状态 {lean}`q`、用来定义接受状态的 {lean}`Q` 的一个子集，以及一个把状态和字母表元素映射到新状态的迁移函数：
 :::
 ```lean
 structure DFA (Q : Type) (A : Type) : Type where
@@ -355,7 +355,7 @@ structure DFA (Q : Type) (A : Type) : Type where
   accepting : Q → Bool
 ```
 
-Two automata over the same alphabet have equivalent languages from a given pair of states when they agree as to whether these states are accepting and they furthermore have equivalent languages from all successor states according to their transition functions:
+对于同一字母表上的两个自动机，如果从给定的一对状态出发，它们对“这些状态是否为接受状态”的判断一致，并且按照各自的迁移函数，从所有后继状态出发得到的语言也都等价，那么它们在这对状态上的语言就是等价的：
 ```lean
 def languageEquivalent (M : DFA Q A) (M' : DFA Q' A)
     (q : Q) (q' : Q') : Prop :=
@@ -364,7 +364,7 @@ def languageEquivalent (M : DFA Q A) (M' : DFA Q' A)
 coinductive_fixpoint
 ```
 
-The coinduction principle captures the standard notion of bisimulation of deterministic automata:
+余归纳原理刻画了确定自动机的标准互模拟概念：
 ```signature
 languageEquivalent.coinduct {Q A Q' : Type}
   (M : DFA Q A) (M' : DFA Q' A) (pred : Q → Q' → Prop) :
@@ -375,7 +375,7 @@ languageEquivalent.coinduct {Q A Q' : Type}
     languageEquivalent M M' q q'
 ```
 
-It can be used to prove that these two DFAs have equivalent languages:
+它可以用来证明下面这两个 DFA 的语言等价：
 :::row (align := "top")
 ```diagram (cssScale := "0.1") +inline
 open Illuminate in
@@ -403,7 +403,7 @@ cfg.start 0 |>.atop
 ```
 :::
 
-These DFAs can be represented using the following definitions:
+这两个 DFA 可以用如下定义表示：
 ```lean
 inductive Alphabet where | a | b
 
@@ -431,8 +431,8 @@ def cycle : DFA Q2 Alphabet where
     | .fail => False
 ```
 
-To prove that they are equivalent, the first step is to define a relation that captures their equivalent states.
-Then, coinduction lifts the demonstration that they actually are equivalent in this relation to language equivalence:
+为了证明它们等价，第一步是定义一个关系，用来刻画它们的等价状态。
+然后，余归纳会把“它们在该关系下确实等价”的证明提升为语言等价：
 ```lean
 theorem loop_equiv_cycle :
     languageEquivalent loop cycle loop.q₀ cycle.q₀ := by
@@ -448,42 +448,42 @@ theorem loop_equiv_cycle :
 ```
 ::::
 
-## Inductive Fixpoint
+## 归纳不动点
 %%%
 tag := "inductive-fixpoint-clause"
 %%%
 
-The {keywordOf Lean.Parser.Command.declaration}`inductive_fixpoint` clause defines a predicate as the least fixpoint of its defining equation.
-The function must be monotone with respect to {name}`Lean.Order.ImplicationOrder`, the order on {lean}`Prop` where `P ⊑ Q` means `P → Q`.
-This provides an alternative to ordinary {keywordOf Lean.Parser.Command.declaration}`inductive` type declarations for predicates, and is the dual of {keywordOf Lean.Parser.Command.declaration}`coinductive_fixpoint`.
+{keywordOf Lean.Parser.Command.declaration}`inductive_fixpoint` 子句把一个谓词定义为其定义方程的最小不动点。
+该函数必须相对于 {name}`Lean.Order.ImplicationOrder` 是单调的；这是 {lean}`Prop` 上的一个顺序，其中 `P ⊑ Q` 表示 `P → Q`。
+这为谓词提供了普通 {keywordOf Lean.Parser.Command.declaration}`inductive` 类型声明之外的另一种选择，并且与 {keywordOf Lean.Parser.Command.declaration}`coinductive_fixpoint` 对偶。
 
-In most cases, an ordinary inductive type declaration is more convenient.
-However, inductive fixpoint definitions have two key advantages over ordinary inductive type declarations that make them more suitable for certain specialized use cases:
- * Ordinary inductive type declarations have a _syntactic_ positivity condition, where recursive occurrences of the inductive type cannot occur in negative positions. Inductive fixpoints instead require monotonicity, which is a _semantic_ condition.
- * Inductive fixpoints can be defined mutually with coinductive fixpoints, allowing mixed inductive-codinductive predicates.
+在大多数情况下，普通的归纳类型声明会更方便。
+不过，归纳不动点定义相较于普通归纳类型声明有两个关键优势，因此更适合某些专门用途：
+ * 普通归纳类型声明带有一个_句法性的_正性条件：归纳类型的递归出现不能位于负位置。而归纳不动点要求的则是单调性，这是一条_语义性的_条件。
+ * 归纳不动点可以与余归纳不动点互相定义，从而允许归纳—余归纳混合谓词。
 
-For each inductive fixpoint definition, an induction principle is automatically proven.
-This induction principle has the same logical strength as the corresponding induction principle that would be generated for an inductive type declaration, but it is formulated somewhat differently and must be explicitly applied.
+对于每个归纳不动点定义，系统都会自动证明一条归纳原理。
+这条归纳原理在逻辑强度上与归纳类型声明会生成的对应归纳原理相同，但其表述方式略有不同，而且必须显式应用。
 
-Just as with coinductive fixpoints, inductive fixpoint definitions do not definitionally reduce.
-They can be unfolded using their generated equational lemmas, and their induction principles allow them to be used in proofs.
+与余归纳不动点一样，归纳不动点定义也不会在定义上归约。
+它们可以借助自动生成的等式引理来展开，而其归纳原理则允许在证明中使用它们。
 
-:::example "Reflexive Transitive Closures as Inductive Fixpoints"
-The reflexive transitive closure of a relation can be defined as an inductive predicate:
+:::example "作为归纳不动点的自反传递闭包"
+一个关系的自反传递闭包可以定义为归纳谓词：
 ```lean
 inductive Star (R : α → α → Prop) : α → α → Prop where
   | refl : ∀ x : α, Star R x x
   | step : ∀ x y z, R x y → Star R y z → Star R x z
 ```
 
-The same predicate can be defined as a least fixpoint.
+同一个谓词也可以定义为最小不动点。
 ```lean
 def StarInd (tr : α → α → Prop) (q₁ q₂ : α) : Prop :=
   q₁ = q₂ ∨ ∃ (z : α), (tr q₁ z ∧ StarInd tr z q₂)
 inductive_fixpoint
 ```
 
-An induction principle is generated:
+系统会生成一条归纳原理：
 ```signature
 StarInd.induct (tr : α → α → Prop) (q₂ : α) (pred : α → Prop)
   (hyp : ∀ (q₁ : α), (q₁ = q₂ ∨ ∃ z, tr q₁ z ∧ pred z) → pred q₁)
@@ -491,7 +491,7 @@ StarInd.induct (tr : α → α → Prop) (q₂ : α) (pred : α → Prop)
   StarInd tr q₁ q₂ → pred q₁
 ```
 
-The induction principle can be used to prove that the two formulations are equivalent:
+这条归纳原理可以用来证明这两种表述彼此等价：
 ```lean -keep
 theorem star_implies_starInd (R : α → α → Prop) :
     ∀ a b : α, Star R a b = StarInd R a b := by
@@ -505,19 +505,19 @@ theorem star_implies_starInd (R : α → α → Prop) :
 ```
 :::
 
-## Mixed Inductive-Coinductive Predicates in Mutual Blocks
+## 互递归块中的归纳-余归纳混合谓词
 %%%
 tag := "mixed-mutual-fixpoint"
 %%%
 
-A {tech}[mutual block] can mix {keywordOf Lean.Parser.Command.declaration}`coinductive_fixpoint` and {keywordOf Lean.Parser.Command.declaration}`inductive_fixpoint` clauses.
-Every definition in the block must use one of these two clauses.
-The construction uses two {ref "lattice-prop"}[lattice structures on `Prop`]: {name Lean.Order.ImplicationOrder}`ImplicationOrder` for inductive definitions and {name Lean.Order.ReverseImplicationOrder}`ReverseImplicationOrder` for coinductive definitions.
-In both cases, the least fixpoint of the corresponding lattice is computed; using the reverse implication order, the least fixpoint coincides with the greatest fixpoint in the standard order.
-This is possible because {ref "coinductive-monotonicity"}[monotonicity] lemmas flip between the two orders when negation or implication is encountered.
+{tech (key := "mutual block")}[互递归块] 可以混用 {keywordOf Lean.Parser.Command.declaration}`coinductive_fixpoint` 与 {keywordOf Lean.Parser.Command.declaration}`inductive_fixpoint` 子句。
+块中的每个定义都必须使用这两种子句之一。
+该构造会使用 `Prop` 上的两种{ref "lattice-prop"}[格结构]：归纳定义使用 {name Lean.Order.ImplicationOrder}`ImplicationOrder`，余归纳定义使用 {name Lean.Order.ReverseImplicationOrder}`ReverseImplicationOrder`。
+在这两种情况下，系统计算的都是相应格上的最小不动点；而在反向蕴含顺序下，这个最小不动点恰好对应标准顺序下的最大不动点。
+之所以可行，是因为遇到否定或蕴含时，{ref "coinductive-monotonicity"}[单调性] 引理会在这两种顺序之间翻转方向。
 
-:::example "Mixed Inductive-Coinductive Mutual Block"
-This mutual block contains mutually-recursive coinductive and inductive predicates:
+:::example "归纳-余归纳混合互递归块"
+这个互递归块包含互相递归的余归纳谓词与归纳谓词：
 ```lean
 mutual
   def tick : Prop :=
@@ -530,7 +530,7 @@ mutual
 end
 ```
 
-A mutual induction principle is generated for the first definition in the mutual block:
+系统会为互递归块中的第一个定义生成一条互归纳原理：
 ```signature
 tick.mutual_induct (pred_1 pred_2 : Prop) :
   (pred_1 → pred_2 → False) → ((pred_1 → False) → pred_2) →
@@ -539,35 +539,35 @@ tick.mutual_induct (pred_1 pred_2 : Prop) :
 :::
 
 
-# Further Examples
+# 更多示例
 %%%
 tag := "coinductive-predicate-examples"
 %%%
 
-:::example "Infinite Chains from Universal Reachability" (open := true)
+:::example "由全可达性推出的无限链" (open := true)
 ```lean -show
 variable {a : α}
 ```
-The reflexive transitive closure of a relation is specified inductively:
+一个关系的自反传递闭包可以用归纳方式刻画：
 ```lean
 inductive Star (R : α → α → Prop) : α → α → Prop where
   | refl : ∀ x : α, Star R x x
   | step : ∀ x y z, R x y → Star R y z → Star R x z
 ```
-Infinite sequences are specified coinductively:
+无限序列则用余归纳方式刻画：
 ```lean
 def InfSeq (R : α → α → Prop) (a : α) : Prop :=
   ∃ b, R a b ∧ InfSeq R b
 coinductive_fixpoint
 ```
 
-If every state reachable from a starting state {lean}`a` via the reflexive transitive closure has a successor, then there is an infinite chain from {lean}`a`.
-The predicate {lean}`AllSeqInf` states that every reachable state has a successor:
+如果从起始状态 {lean}`a` 出发，经由自反传递闭包可达的每个状态都有后继，那么从 {lean}`a` 出发就存在一条无限链。
+谓词 {lean}`AllSeqInf` 表示每个可达状态都有后继：
 ```lean
 def AllSeqInf (R : α → α → Prop) (x : α) : Prop :=
   ∀ y : α, Star R x y → ∃ z, R y z
 ```
-Proving that this implies that there is an infinite chain is done via coinduction:
+证明这件事蕴含存在无限链，可以通过余归纳完成：
 ```lean
 theorem infSeq_of_allSeqInf (R : α → α → Prop) :
     ∀ x, AllSeqInf R x → InfSeq R x := by
@@ -583,9 +583,9 @@ theorem infSeq_of_allSeqInf (R : α → α → Prop) :
 :::
 
 
-:::example "Coinduction Up-To Transitive Closure" (open := true)
-A strengthened coinduction principle allows the coinduction hypothesis to be applied up to transitive closure.
-Given a predicate {lean}`X` such that every {lean}`X`-state leads via one-or-more {lean}`R`-steps to another {lean}`X`-state, then every {lean}`X`-state satisfies {lean}`InfSeq R`:
+:::example "到传递闭包为止的余归纳" (open := true)
+一个强化后的余归纳原理允许把余归纳假设应用到传递闭包为止。
+给定一个谓词 {lean}`X`，若每个 {lean}`X`-状态都能经过一步或多步 {lean}`R` 迁移到另一个 {lean}`X`-状态，那么每个 {lean}`X`-状态都满足 {lean}`InfSeq R`：
 
 ```lean
 inductive Star (R : α → α → Prop) : α → α → Prop where
