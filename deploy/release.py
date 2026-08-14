@@ -46,7 +46,11 @@ def deploy_version(source_dir, version, commit_sha, branch):
 
             # Checkout the specified branch
             print(f"Checking out branch: {branch}")
-            run_git_command(["git", "switch", "-c", branch, "--track", "origin/" + branch])
+            # Recreate the local deployment branch from its remote tip.  Do not
+            # require `origin/<branch>` to be present in the configured fetch
+            # refspec: Actions checkouts and single-branch clones may have the
+            # remote-tracking ref without advertising it as a trackable branch.
+            run_git_command(["git", "switch", "-C", branch, "origin/" + branch])
 
             # The target directory for this version
             version_dir = version
