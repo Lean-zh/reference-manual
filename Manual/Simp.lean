@@ -30,6 +30,7 @@ file := "The-Simplifier"
 
 # 调用简化器
 %%%
+file := "Invoking-the-Simplifier"
 tag := "simp-tactic-naming"
 %%%
 
@@ -47,7 +48,7 @@ Lean 的简化器可以通过多种方式调用。
 
 : `-?` 后缀
 
-  使简化器记录简化期间用过哪些规则，并建议把策略脚本改为使用一个最小的 {tech (key := "simp set")}[「simp 集」]
+  使简化器记录简化期间用过哪些规则，并建议把策略脚本改为使用一个最小的 {tech (key := "simp set")}[simp 集]
 
 : `-_arith` 后缀
 
@@ -62,7 +63,7 @@ Lean 的简化器可以通过多种方式调用。
   使简化器反复简化所有假设和目标结论，并尽可能多地考虑各项假设，直到无法继续简化为止
 
 此外还有两个简化策略 {tactic}`simpa` 和 {tactic}`simpa!`，它们先同时简化目标以及一个证明项或假设，再完成目标。
-这种同步简化使证明面对 {tech (key := "simp set")}[「simp 集」]的变化时更加稳健。
+这种同步简化使证明面对 {tech (key := "simp set")}[simp 集]的变化时更加稳健。
 
 ## 参数
 %%%
@@ -79,14 +80,14 @@ simp $_:optConfig $[only]? $[ [ $[$e],* ] ]? $[at $[$h]*]?
 
 换言之，调用简化策略时依次接受以下修饰项，且每一项都是可选的：
  * 一组{ref "tactic-config"}[配置选项]；根据所调用的简化器是 {tactic}`simp` 还是 {tactic}`dsimp` 的变体，其中应分别包含 {name}`Lean.Meta.Simp.Config` 或 {name}`Lean.Meta.DSimp.Config` 的字段。
- * {keywordOf Lean.Parser.Tactic.simp}`only` 修饰符排除「默认 simp 集」，改为从空的{margin}[严格来说，为了完成自反情形，「simp 集」始终包含 {name}`eq_self` 和 {name}`iff_self`。]「simp 集」开始。
- * 引理列表向「simp 集」添加引理或从中移除引理。引理列表中的引理有三种指定方式：
-   * `*`，将证明状态中的所有假设添加到「simp 集」
-   * `-` 后接一个引理，将该引理从「simp 集」中移除
+ * {keywordOf Lean.Parser.Tactic.simp}`only` 修饰符排除默认 simp 集，改为从空的{margin}[严格来说，为了完成自反情形，simp 集始终包含 {name}`eq_self` 和 {name}`iff_self`。]simp 集开始。
+ * 引理列表向simp 集添加引理或从中移除引理。引理列表中的引理有三种指定方式：
+   * `*`，将证明状态中的所有假设添加到simp 集
+   * `-` 后接一个引理，将该引理从simp 集中移除
    * 引理说明符，由以下各项依次组成：
       * 可选的 `↓` 或 `↑`，分别使引理在进入子项之前或之后应用（默认为 `↑`）。简化后的参数通常能让更多规则适用，因此简化器一般先简化子项，再尝试简化父项；`↓` 则使规则在子项简化之前先简化父项。
       * 可选的 `←`，使等式引理从右向左而非从左向右使用。
-      * 必需的引理，可以是「simp 集」名称、引理名称或项。项会被视作具有全新名称的具名引理。
+      * 必需的引理，可以是simp 集名称、引理名称或项。项会被视作具有全新名称的具名引理。
  * 位置说明符，以 {keywordOf Lean.Parser.Tactic.simp}`at` 开头，由一系列位置组成。位置可以是：
 
    - 假设的名称，表示应简化其类型
@@ -198,6 +199,7 @@ h' : p (x + 12)
 
 # 重写规则
 %%%
+file := "Rewrite-Rules"
 tag := "simp-rewrites"
 %%%
 
@@ -314,7 +316,7 @@ x z : β
 ⊢ w = y ∧ x = z
 ```
 
-「默认 simp 集」包含 {lean}`Prod.mk.injEq`，它表明这两个陈述等价：
+默认 simp 集包含 {lean}`Prod.mk.injEq`，它表明这两个陈述等价：
 
 ```signature
 Prod.mk.injEq.{u, v} {α : Type u} {β : Type v} (fst : α) (snd : β) :
@@ -325,22 +327,23 @@ Prod.mk.injEq.{u, v} {α : Type u} {β : Type v} (fst : α) (snd : β) :
 :::::
 
 除了重写规则，{tactic}`simp` 还有一些由 {ref "simp-config"}[`config` 参数控制]的内置归约规则。
-即使「simp 集」为空，{tactic}`simp` 也可以用值替换 `let` 绑定的变量、归约{tech (key := "match discriminant")}[判别式]为构造器应用的 {keywordOf Lean.Parser.Term.match}`match` 表达式、归约应用于构造器的结构投影，或把匿名函数应用于其参数。
+即使simp 集为空，{tactic}`simp` 也可以用值替换 `let` 绑定的变量、归约{tech (key := "match discriminant")}[判别式]为构造器应用的 {keywordOf Lean.Parser.Term.match}`match` 表达式、归约应用于构造器的结构投影，或把匿名函数应用于其参数。
 
-# 「simp 集」
+# simp 集
 %%%
+file := "Simp-sets"
 tag := "simp-sets"
 %%%
 
-简化器使用的一组规则称为 {deftech (key := "simp set")}_「simp 集」_。
-「simp 集」通过对 {deftech (key := "default simp set")}_「默认 simp 集」_的修改来指定。
+简化器使用的一组规则称为 {deftech (key := "simp set")}_simp 集_。
+simp 集通过对 {deftech (key := "default simp set")}_默认 simp 集_的修改来指定。
 这些修改可以包括添加规则、移除规则或添加一组规则。
-{tactic}`simp` 策略的 `only` 修饰符使其从空的「simp 集」而不是默认集合开始。
-规则通过 {attr}`simp` 属性添加到「默认 simp 集」。
+{tactic}`simp` 策略的 `only` 修饰符使其从空的simp 集而不是默认集合开始。
+规则通过 {attr}`simp` 属性添加到默认 simp 集。
 
 
 :::syntax attr (alias := Lean.Meta.simpExtension) (title := "注册 {keyword}`simp` 引理")
-{attr}`simp` 属性将声明添加到「默认 simp 集」。
+{attr}`simp` 属性将声明添加到默认 simp 集。
 如果该声明是定义，则将该定义标记为待展开；如果是定理，则将该定理注册为重写规则。
 
 ```grammar
@@ -368,56 +371,58 @@ simp $p:prio
 ```
 :::
 
-{deftech (key := "Custom simp sets")}_自定义「simp 集」_使用 {name Lean.Meta.registerSimpAttr}`registerSimpAttr` 创建；必须把它放在 {keywordOf Lean.Parser.Command.initialize}`initialize` 块中，使其在{tech (key := "initialization")}[初始化]期间运行。
-它还会产生一项副作用：创建一个接口与 {attr}`simp` 相同的新属性，用于向自定义「simp 集」添加规则。
-返回值是一个 {name Lean.Meta.SimpExtension}`SimpExtension`，可用于以编程方式访问自定义「simp 集」的内容。
-在规则列表中加入该属性的名称，即可指示 {tactic}`simp` 策略使用新的「simp 集」。
+{deftech (key := "Custom simp sets")}_自定义simp 集_使用 {name Lean.Meta.registerSimpAttr}`registerSimpAttr` 创建；必须把它放在 {keywordOf Lean.Parser.Command.initialize}`initialize` 块中，使其在{tech (key := "initialization")}[初始化]期间运行。
+它还会产生一项副作用：创建一个接口与 {attr}`simp` 相同的新属性，用于向自定义simp 集添加规则。
+返回值是一个 {name Lean.Meta.SimpExtension}`SimpExtension`，可用于以编程方式访问自定义simp 集的内容。
+在规则列表中加入该属性的名称，即可指示 {tactic}`simp` 策略使用新的simp 集。
 
 {zhdocstring Lean.Meta.registerSimpAttr ZhDoc.registerSimpAttr}
 
 {zhdocstring Lean.Meta.SimpExtension ZhDoc.SimpExtension}
 
 
-# 「simp 范式」
+# simp 范式
 %%%
+file := "Simp-Normal-Forms"
 tag := "simp-normal-forms"
 %%%
 
 
-默认的{tech (key := "simp set")}[「simp 集」]包含所有以 {attr}`simp` 属性标记的定理和简化过程。
-表达式的 {deftech (key := "simp normal form")}_「simp 范式」_，是通过 {tactic}`simp` 策略应用「默认 simp 集」，直至没有规则可以继续应用而得到的结果。
-当表达式处于「simp 范式」时，它已经按照「默认 simp 集」尽可能充分地归约，因此通常更便于在证明中使用。
+默认的{tech (key := "simp set")}[simp 集]包含所有以 {attr}`simp` 属性标记的定理和简化过程。
+表达式的 {deftech (key := "simp normal form")}_simp 范式_，是通过 {tactic}`simp` 策略应用默认 simp 集，直至没有规则可以继续应用而得到的结果。
+当表达式处于simp 范式时，它已经按照默认 simp 集尽可能充分地归约，因此通常更便于在证明中使用。
 
-{tactic}`simp` 策略*不保证合流性*，这意味着表达式的「simp 范式」可能取决于「默认 simp 集」中各元素的应用顺序。
+{tactic}`simp` 策略*不保证合流性*，这意味着表达式的simp 范式可能取决于默认 simp 集中各元素的应用顺序。
 设置 {attr}`simp` 属性时可以指定优先级，从而改变规则的应用顺序。
 
-设计 Lean 库时，必须考虑库中各种运算符组合应当采用哪种合适的「simp 范式」。
-这可以指导开发者选择库应向「默认 simp 集」添加哪些规则。
-特别是，simp 引理的右侧应当处于「simp 范式」；这有助于确保简化终止。
-此外，即使一个概念有多种等价的陈述方式，库中也应通过一种「simp 范式」来表达它。
+设计 Lean 库时，必须考虑库中各种运算符组合应当采用哪种合适的simp 范式。
+这可以指导开发者选择库应向默认 simp 集添加哪些规则。
+特别是，simp 引理的右侧应当处于simp 范式；这有助于确保简化终止。
+此外，即使一个概念有多种等价的陈述方式，库中也应通过一种simp 范式来表达它。
 如果不同的 simp 引理以两种不同方式陈述同一概念，那么简化器可能无法把二者联系起来，致使某些预期的简化无法发生。
 
 尽管简化不必具有合流性，力求合流仍然很有帮助，因为这会使库的行为更可预测，也往往能暴露缺失或选择不当的 simp 引理。
-「默认 simp 集」和库所导出常量的类型签名一样，都是库接口的一部分。
+默认 simp 集和库所导出常量的类型签名一样，都是库接口的一部分。
 
-库不应向「默认 simp 集」添加未提及该库所定义的任何常量的规则。
+库不应向默认 simp 集添加未提及该库所定义的任何常量的规则。
 否则，导入一个库可能会改变 {tactic}`simp` 对某个不相关库的行为。
-如果一个库依赖其他库中定义或声明的额外简化规则，请创建自定义「simp 集」，并指示用户使用它，或者提供专用策略。
+如果一个库依赖其他库中定义或声明的额外简化规则，请创建自定义simp 集，并指示用户使用它，或者提供专用策略。
 
 
 # 终结位置与非终结位置
 %%%
+file := "Terminal-vs-Non-Terminal-Positions"
 tag := "terminal-simp"
 %%%
 
 为了编写可维护的证明，除非 {tactic}`simp` 能关闭目标，否则应避免不带 {keywordOf Lean.Parser.Tactic.simp}`only` 使用它。
 这种不关闭目标的 {tactic}`simp` 用法称为 {deftech (key := "non-terminal simps")}_非终结 simp_。
-这是因为向「默认 simp 集」添加规则可能会增强 {tactic}`simp`，也可能只是使它选择不同的重写序列，从而得到不同的「simp 范式」。
+这是因为向默认 simp 集添加规则可能会增强 {tactic}`simp`，也可能只是使它选择不同的重写序列，从而得到不同的simp 范式。
 指定 {keywordOf Lean.Parser.Tactic.simp}`only` 后，新增引理不会影响该次策略调用。
 在实践中，{tactic}`simp` 的终结用法远不容易因新增 simp 引理而失效；即使失效，问题也更容易理解和修复。
 
 在非终结位置工作时，可以使用 {tactic}`simp?`（或其他名称中带有 `?` 的简化策略）生成带 {keywordOf Lean.Parser.Tactic.simp}`only` 的适当调用。
-正如 {tactic}`apply?` 或 {tactic}`rw?` 会建议使用相关引理，{tactic}`simp?` 会建议一次 {tactic}`simp` 调用，其中包含达到该范式所用的最小「simp 集」。
+正如 {tactic}`apply?` 或 {tactic}`rw?` 会建议使用相关引理，{tactic}`simp?` 会建议一次 {tactic}`simp` 调用，其中包含达到该范式所用的最小simp 集。
 
 :::example "使用 {tactic}`simp?`"
 
@@ -451,6 +456,7 @@ example (xs : Array Unit) : xs.size = 2 → xs = #[(), ()] := by
 
 # 配置简化
 %%%
+file := "Configuring-Simplification"
 tag := "simp-config"
 %%%
 
@@ -481,6 +487,7 @@ tag := "simp-options"
 
 # 简化与重写
 %%%
+file := "Simplification-vs-Rewriting"
 tag := "simp-vs-rw"
 %%%
 
@@ -495,4 +502,4 @@ tag := "simp-vs-rw"
 {tactic}`simp` 策略主要从内向外重写。
 它首先简化尽可能小的表达式，从而为外围表达式带来更多简化机会。
 {tactic}`rw` 策略选择与模式匹配的最左、最外层子项，并只重写一次。
-两类策略都允许覆盖其默认策略：向「simp 集」添加引理时，`↓` 修饰符使其在简化子项之前应用；{tactic}`rw` 配置参数的 {name Lean.Meta.Rewrite.Config.occs}`occs` 字段则允许通过白名单或黑名单选择其他出现位置。
+两类策略都允许覆盖其默认策略：向simp 集添加引理时，`↓` 修饰符使其在简化子项之前应用；{tactic}`rw` 配置参数的 {name Lean.Meta.Rewrite.Config.occs}`occs` 字段则允许通过白名单或黑名单选择其他出现位置。
