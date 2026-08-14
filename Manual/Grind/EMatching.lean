@@ -17,37 +17,37 @@ open Verso.Doc.Elab (CodeBlockExpander)
 
 open Lean.Elab.Tactic.GuardMsgs.WhitespaceMode
 
-#doc (Manual) "E‑matching" =>
+#doc (Manual) "E-匹配" =>
 %%%
 tag := "e-matching"
 %%%
 
-{deftech}_E-matching_ is a procedure for efficiently instantiating quantified theorem statements with ground terms.
-It is widely employed in SMT solvers, and {tactic}`grind` uses it to instantiate theorems efficiently.
-It is especially effective when combined with {tech}[congruence closure], enabling {tactic}`grind` to discover non-obvious consequences of equalities and annotated theorems automatically.
+{deftech}_E-匹配_是一种用基项高效实例化量化定理陈述的过程。
+它被广泛用于 SMT 求解器中，而 {tactic}`grind` 也利用它来高效实例化定理。
+当它与 {tech}[合一闭包] 结合使用时尤其有效，能够让 {tactic}`grind` 自动发现等式与已标注定理的非显然后果。
 
-E-matching adds new facts to the metaphorical whiteboard, based on an index of theorems.
-When the whiteboard contains terms that match the index, the E-matching engine instantiates the corresponding theorems, and the resulting terms can feed further rounds of {tech}[congruence closure], {tech}[constraint propagation], and theory-specific solvers.
-Each fact added to the whiteboard by E-matching is referred to as an {deftech (key := "e-matching instance")}_instance_.
-Annotating theorems for E-matching, thus adding them to the index, is essential for enabling {tactic}`grind` to make effective use of a library.
+E-匹配会基于定理索引，把新的事实加入这个比喻意义上的白板。
+当白板中出现与索引匹配的项时，E-匹配引擎就会实例化相应定理，而由此得到的项又能供后续的 {tech}[合一闭包]、{tech}[约束传播] 与特定理论求解器继续使用。
+每一个由 E-匹配加入白板的事实，都称为一个 {deftech (key := "e-matching instance")}_实例_。
+为定理添加 E-匹配标注、从而把它们加入索引，是让 {tactic}`grind` 有效利用库内容的关键。
 
-In addition to user-specified theorems, {tactic}`grind` uses automatically generated equations for {keywordOf Lean.Parser.Term.match}`match`-expressions as E-matching theorems.
-Behind the scenes, the {tech (key := "Lean elaborator")}[elaborator] generates auxiliary functions that implement pattern matches, along with equational theorems that specify their behavior.
-Using these equations with E-matching enables {tactic}`grind` to reduce these instances of pattern matching.
+除了用户指定的定理以外，{tactic}`grind` 还会把为 {keywordOf Lean.Parser.Term.match}`match` 表达式自动生成的等式当作 E-匹配定理使用。
+在幕后，{tech (key := "Lean elaborator")}[精译器]会生成实现模式匹配的辅助函数，以及描述其行为的等式定理。
+将这些等式与 E-匹配配合使用，就能让 {tactic}`grind` 化简这些模式匹配实例。
 
 
-# Patterns
+# 模式
 %%%
 tag := "e-matching-patterns"
 %%%
 
-The E-matching index is a table of _patterns_.
-When a term matches one of the patterns in the table, {tactic}`grind` attempts to instantiate and apply the corresponding theorem, giving rise to further facts and equalities.
-Selecting appropriate patterns is an important part of using {tactic}`grind` effectively: if the patterns are too restrictive, then useful theorems may not be applied; if they are too general, performance may suffer.
+E-匹配索引是一张由_模式_组成的表。
+当某个项与表中的某个模式匹配时，{tactic}`grind` 就会尝试实例化并应用相应定理，从而产生更多事实与等式。
+选择合适的模式，是有效使用 {tactic}`grind` 的重要一环：如果模式过于严格，有用的定理就可能无法应用；如果模式过于宽泛，性能则可能下降。
 
 
-::::example "E-matching Patterns"
-Consider the following functions and theorems:
+::::example "E-匹配模式"
+考虑下面这些函数和定理：
 ```lean
 def f (a : Nat) : Nat :=
   a + 1
@@ -63,42 +63,42 @@ theorem gf (x : Nat) : g (f x) = x := by
 ```lean -show
 variable {x a b : Nat}
 ```
-The theorem {lean}`gf` asserts that {lean}`g (f x) = x` for all natural numbers {lean}`x`.
-The attribute {attr}`grind =` instructs {tactic}`grind` to use the left-hand side of the equation, {lean}`g (f x)`, as a pattern for heuristic instantiation via E-matching.
+定理 {lean}`gf` 断言：对所有自然数 {lean}`x`，都有 {lean}`g (f x) = x`。
+属性 {attr}`grind =` 告诉 {tactic}`grind` 使用等式左边的 {lean}`g (f x)` 作为 E-匹配启发式实例化时的模式。
 
-This proof goal does not include an instance of {lean}`g (f x)`, but {tactic}`grind` is nonetheless able to solve it:
+这个证明目标并不包含 {lean}`g (f x)` 的实例，但 {tactic}`grind` 仍然能够将其解决：
 ```lean
 example {a b} (h : f b = a) : g a = b := by
   grind
 ```
 
-Although {lean}`g a` is not an instance of the pattern {lean}`g (f x)`, it becomes one modulo the equation {lean}`f b = a`.
-By substituting {lean}`a` with {lean}`f b` in {lean}`g a`, we obtain the term {lean}`g (f b)`, which matches the pattern {lean}`g (f x)` with the assignment `x := b`.
-Thus, the theorem {lean}`gf` is instantiated with `x := b`, and the new equality {lean}`g (f b) = b` is asserted.
-{tactic}`grind` then uses congruence closure to derive the implied equality {lean}`g a = g (f b)` and completes the proof.
+虽然 {lean}`g a` 并不是模式 {lean}`g (f x)` 的一个实例，但在等式 {lean}`f b = a` 的意义下，它会变成一个实例。
+把 {lean}`g a` 中的 {lean}`a` 替换成 {lean}`f b` 后，我们得到项 {lean}`g (f b)`，它就与模式 {lean}`g (f x)` 匹配，对应赋值为 `x := b`。
+因此，定理 {lean}`gf` 会以 `x := b` 进行实例化，并断言新的等式 {lean}`g (f b) = b`。
+随后，{tactic}`grind` 使用合一闭包推出蕴含的等式 {lean}`g a = g (f b)`，从而完成证明。
 ::::
 
 
-The {keywordOf Lean.Parser.Command.grind_pattern}`grind_pattern` command can be used to manually select an E-matching pattern for a theorem.
-Enabling the option {option}`trace.grind.ematch.instance` causes {tactic}`grind` print a trace message for each theorem instance it generates, which can be helpful when determining E-matching patterns.
+{keywordOf Lean.Parser.Command.grind_pattern}`grind_pattern` 命令可用于手动为定理选择 E-匹配模式。
+开启选项 {option}`trace.grind.ematch.instance` 后，{tactic}`grind` 会为其生成的每个定理实例打印一条追踪消息，这在确定 E-匹配模式时会很有帮助。
 
-:::syntax command (title := "E-matching Pattern Selection")
+:::syntax command (title := "E-匹配模式选择")
 ```grammar
 grind_pattern $_ => $_,*
 ```
-Associates a theorem with one or more patterns.
-When multiple patterns are provided in a single {keywordOf Lean.Parser.Command.grind_pattern}`grind_pattern` command, _all_ of them must match a term before {tactic}`grind` will attempt to instantiate the theorem.
+将一个定理与一个或多个模式关联起来。
+如果在同一个 {keywordOf Lean.Parser.Command.grind_pattern}`grind_pattern` 命令中给出了多个模式，那么必须_全部_匹配到项，{tactic}`grind` 才会尝试实例化该定理。
 
 ```grammar
 grind_pattern $_ => $_,* where $_
 ```
-The optional {keywordOf Lean.Parser.Command.grind_pattern}`where` clause specifies constraints that must be satisfied before {tactic}`grind` attempts to instantiate the theorem.
-Each constraint has the form `variable =/= value`, preventing instantiation when the pattern variable would be assigned the specified value.
-This is useful to avoid unbounded or excessive instantiations with problematic terms.
+可选的 {keywordOf Lean.Parser.Command.grind_pattern}`where` 子句给出了一组约束；只有满足这些约束时，{tactic}`grind` 才会尝试实例化该定理。
+每个约束都形如 `variable =/= value`，用于阻止在模式变量会被赋成指定值时发生实例化。
+这对于避免某些问题项导致的无界或过度实例化很有用。
 :::
 
-::::example "Selecting Patterns"
-The {attr}`grind =` attribute uses the left side of the equality as the E-matching pattern for {lean}`gf`:
+::::example "选择模式"
+{attr}`grind =` 属性会把等式左边用作 {lean}`gf` 的 E-匹配模式：
 ```lean
 def f (a : Nat) : Nat :=
   a + 1
@@ -111,11 +111,10 @@ theorem gf (x : Nat) : g (f x) = x := by
   simp [f, g]
 ```
 
-For example, the pattern `g (f x)` is too restrictive in the following case:
-the theorem `gf` will not be instantiated because the goal does not even
-contain the function symbol `g`.
+例如，在下面这种情况下，模式 `g (f x)` 就过于严格：
+定理 `gf` 不会被实例化，因为目标里甚至根本不包含函数符号 `g`。
 
-In this example, {tactic}`grind` fails because the pattern is too restrictive: the goal does not contain the function symbol {lean}`g`.
+在这个例子中，{tactic}`grind` 会失败，因为模式太严格：目标不包含函数符号 {lean}`g`。
 ```lean +error (name := restrictivePattern)
 example (h₁ : f b = a) (h₂ : f c = a) : b = c := by
   grind
@@ -136,7 +135,7 @@ h : ¬b = c
     [eqc] {a, f b, f c}
 ```
 
-Using just `f x` as the pattern allows {tactic}`grind` to solve the goal automatically:
+只用 `f x` 作为模式，就足以让 {tactic}`grind` 自动解决该目标：
 ```lean
 grind_pattern gf => f x
 
@@ -144,7 +143,7 @@ example {a b c} (h₁ : f b = a) (h₂ : f c = a) : b = c := by
   grind
 ```
 
-Enabling {option}`trace.grind.ematch.instance` makes it possible to see the equalities found by E-matching:
+开启 {option}`trace.grind.ematch.instance` 后，就可以看到 E-匹配找到的等式：
 ```lean (name := ematchInstanceTrace)
 example (h₁ : f b = a) (h₂ : f c = a) : b = c := by
   set_option trace.grind.ematch.instance true in
@@ -155,27 +154,27 @@ example (h₁ : f b = a) (h₂ : f c = a) : b = c := by
 [grind.ematch.instance] gf: g (f b) = b
 ```
 
-After E-matching, the proof succeeds because congruence closure equates `g (f c)` with `g (f b)`, because both `f b` and `f c` are equal to `a`.
-Thus, `b` and `c` must be in the same equivalence class.
+在 E-匹配之后，证明之所以成功，是因为合一闭包会把 `g (f c)` 与 `g (f b)` 判定为相等；这是由于 `f b` 和 `f c` 都等于 `a`。
+因此，`b` 与 `c` 必须处于同一个等价类中。
 
 ::::
 
-When multiple patterns are specified together, all of them must match in the current context before {tactic}`grind` attempts to instantiate the theorem.
-This is referred to as a {deftech}_multi-pattern_.
-This is useful for lemmas such as transitivity rules, where multiple premises must be simultaneously present for the rule to apply.
-A single theorem may be associated with multiple separate patterns by using multiple invocations of {keywordOf Lean.Parser.Command.grind_pattern}`grind_pattern` or the {attrs}`@[grind _=_]` attribute.
-If _any_ of these separate patterns match, the theorem will be instantiated.
+当多个模式被一起指定时，只有它们全部在当前上下文中匹配成功，{tactic}`grind` 才会尝试实例化该定理。
+这称为 {deftech}_多模式_。
+对于传递性规则这类引理，它尤其有用，因为规则适用时往往要求多个前提同时在场。
+通过多次调用 {keywordOf Lean.Parser.Command.grind_pattern}`grind_pattern`，或者使用 {attrs}`@[grind _=_]` 属性，一个定理也可以关联到多个彼此独立的模式。
+只要这些独立模式中有_任意一个_匹配成功，该定理就会被实例化。
 
-::::example "Multi-Patterns"
+::::example "多模式"
 
-{lean}`R` is a transitive binary relation over {lean}`Int`:
+{lean}`R` 是 {lean}`Int` 上的一个传递二元关系：
 ```lean
 opaque R : Int → Int → Prop
 axiom Rtrans {x y z : Int} : R x y → R y z → R x z
 ```
 
-To use the fact that {lean}`R` is transitive, {tactic}`grind` must already be able to satisfy both premises.
-This is represented using a {tech}[multi-pattern]:
+要利用 {lean}`R` 的传递性，{tactic}`grind` 必须已经能够同时满足两个前提。
+这可以通过一个 {tech}[多模式] 来表示：
 ```lean
 grind_pattern Rtrans => R x y, R y z
 
@@ -187,22 +186,22 @@ example {a b c d} : R a b → R b c → R c d → R a d := by
 variable {x y z a b c d : Int}
 ```
 
-The multi-pattern `R x y, R y z` instructs {tactic}`grind` to instantiate {lean}`Rtrans` only when both {lean}`R x y` and {lean}`R y z` are available in the context.
-In the example, {tactic}`grind` applies {lean}`Rtrans` to derive {lean}`R a c` from {lean}`R a b` and {lean}`R b c`, and can then repeat the same reasoning to deduce {lean}`R a d` from {lean}`R a c` and {lean}`R c d`.
+多模式 `R x y, R y z` 告诉 {tactic}`grind`：只有当上下文中同时存在 {lean}`R x y` 与 {lean}`R y z` 时，才实例化 {lean}`Rtrans`。
+在这个例子里，{tactic}`grind` 先由 {lean}`R a b` 与 {lean}`R b c` 应用 {lean}`Rtrans` 推出 {lean}`R a c`，然后再次重复同样的推理，由 {lean}`R a c` 与 {lean}`R c d` 推出 {lean}`R a d`。
 ::::
 
-::::example "Pattern Constraints"
-Certain combinations of theorems can lead to unbounded instantiation, where E-matching repeatedly generates longer and longer terms.
-Consider theorems about {name}`List.flatMap` and {name}`List.reverse`.
-If {name}`List.flatMap_def`, {name}`List.flatMap_reverse`, and {name}`List.reverse_flatMap` are all annotated with {attrs}`@[grind =]`, then as soon as {name}`List.flatMap_reverse` is instantiated, the following chain of instantiations occurs, creating progressively longer function compositions with {name}`List.reverse`.
-This can be observed using the `#grind_lint` command:
+::::example "模式约束"
+某些定理组合可能导致无界实例化，也就是 E-匹配反复生成越来越长的项。
+考虑与 {name}`List.flatMap` 和 {name}`List.reverse` 有关的定理。
+如果 {name}`List.flatMap_def`、{name}`List.flatMap_reverse` 与 {name}`List.reverse_flatMap` 都被加上 {attrs}`@[grind =]` 标注，那么一旦 {name}`List.flatMap_reverse` 被实例化，就会发生下面这一连串实例化，不断构造出带有更多 {name}`List.reverse` 组合的函数。
+这一点可以用 `#grind_lint` 命令观察到：
 ```
 attribute [local grind =] List.reverse_flatMap
 
 set_option trace.grind.ematch.instance true in
 #grind_lint inspect List.flatMap_reverse
 ```
-The trace output shows the unbounded instantiation:
+追踪输出展示了这种无界实例化：
 ```
 [grind.ematch.instance] List.flatMap_def: List.flatMap (List.reverse ∘ f) l = (List.map (List.reverse ∘ f) l).flatten
 [grind.ematch.instance] List.flatMap_def: List.flatMap f l.reverse = (List.map f l.reverse).flatten
@@ -213,64 +212,64 @@ The trace output shows the unbounded instantiation:
   (List.map (List.reverse ∘ List.reverse ∘ f) l.reverse).flatten
 ```
 
-This pattern continues indefinitely, with each iteration adding another {name}`List.reverse` to the composition.
-The {keywordOf Lean.Parser.Command.grind_pattern}`where` clause prevents this by excluding problematic instantiations:
+这种模式会无限继续下去，每次迭代都会在组合中再添一个 {name}`List.reverse`。
+{keywordOf Lean.Parser.Command.grind_pattern}`where` 子句可以通过排除有问题的实例化来阻止这种情况：
 ```
 grind_pattern reverse_flatMap => (l.flatMap f).reverse where
   f =/= List.reverse ∘ _
 ```
-This instructs {tactic}`grind` to use the pattern `(l.flatMap f).reverse`, but only when `f` is not a composition with {name}`List.reverse`, preventing the unbounded chain of instantiations.
+这会指示 {tactic}`grind` 使用模式 `(l.flatMap f).reverse`，但只在 `f` 不是与 {name}`List.reverse` 的复合时才使用，从而阻止那条无界实例化链。
 
-You can use `#grind_lint check` to look for problematic patterns, or `#grind_lint check in List` or `#grind_lint check in module Std.Data` to look in specific namespaces or modules.
+你可以用 `#grind_lint check` 查找有问题的模式，也可以用 `#grind_lint check in List` 或 `#grind_lint check in module Std.Data` 在特定命名空间或模块中检查。
 ::::
 
-The {attr}`grind` attribute automatically generates an E-matching pattern or multi-pattern using a heuristic, instead of using {keywordOf Lean.Parser.Command.grindPattern}`grind_pattern` to explicitly specify a pattern.
-It includes a number of variants that select different heuristics.
-The {attr}`grind?` attribute displays an info message showing the pattern which was selected—this is very helpful for debugging!
+{attr}`grind` 属性会用启发式方法自动生成 E-匹配模式或多模式，而不必用 {keywordOf Lean.Parser.Command.grindPattern}`grind_pattern` 显式指定模式。
+它包含若干变体，用来选择不同的启发式。
+{attr}`grind?` 属性会显示一条信息消息，指出所选模式——这对调试非常有帮助！
 
-Patterns are subexpressions of theorem statements.
-A subexpression is {deftech}_indexable_ if it has an indexable constant as its head, and it is said to {deftech}_cover_ one of the theorem's arguments if it fixes the argument's value.
-Indexable constants are all constants other than {name}`Eq`, {name}`HEq`, {name}`Iff`, {name}`And`, {name}`Or`, and {name}`Not`.
-The set of arguments that are covered by a pattern or multi-pattern is referred to as its {deftech}_coverage_.
-Some constants are lower priority than others; in particular, the arithmetic operators {name}`HAdd.hAdd`, {name}`HSub.hSub`, {name}`HMul.hMul`, {name}`Dvd.dvd`, {name}`HDiv.hDiv`, and {name}`HMod.hMod` have low priority.
-An indexable subexpression is {deftech}_minimal_ if there is no smaller indexable subexpression whose head constant has at least as high priority.
+模式是定理陈述的子表达式。
+如果某个子表达式的头部是可索引常量，那么它就是 {deftech}_可索引的_；如果它能固定定理某个参数的取值，就称它 {deftech}_覆盖_ 了该参数。
+可索引常量指除 {name}`Eq`、{name}`HEq`、{name}`Iff`、{name}`And`、{name}`Or` 与 {name}`Not` 之外的所有常量。
+一个模式或多模式所覆盖参数的集合，称为它的 {deftech}_覆盖度_。
+有些常量的优先级低于其他常量；特别是算术运算符 {name}`HAdd.hAdd`、{name}`HSub.hSub`、{name}`HMul.hMul`、{name}`Dvd.dvd`、{name}`HDiv.hDiv` 与 {name}`HMod.hMod` 的优先级都较低。
+如果不存在一个更小的可索引子表达式，并且它的头常量优先级至少同样高，那么该可索引子表达式就是 {deftech}_极小的_。
 
-:::syntax attr (title := "Grind Patterns")
-When the {attr}`grind` attribute is added to a definition, it causes `grind` to unfold that definition to its body whenever it is encountered.
-When using the module system, if the body of the definition is not visible (e.g. via {attrs}`@[expose]`), then the {attr}`grind` attribute is ignored.
+:::syntax attr (title := "Grind 模式")
+当把 {attr}`grind` 属性加到某个定义上时，每当 `grind` 遇到该定义，就会把它展开为其主体。
+在使用模块系统时，如果该定义的主体不可见（例如没有通过 {attrs}`@[expose]` 暴露），那么 {attr}`grind` 属性会被忽略。
 
 ```grammar
 grind $[$_:grindMod]?
 ```
-The {attr}`grind` attribute automatically generates an E-matching pattern for a theorem, using a strategy determined by the provided modifier.
-If no modifier is provided, then {attr}`grind` suggests suitable modifiers, displaying the resulting patterns.
+{attr}`grind` 属性会根据给定修饰符所决定的策略，自动为定理生成 E-匹配模式。
+如果没有提供修饰符，那么 {attr}`grind` 会建议合适的修饰符，并显示相应生成的模式。
 
 ```grammar
 grind! $[$_:grindMod]?
 ```
-The {attr}`grind!` attribute automatically generates an E-matching pattern for a theorem, using a strategy determined by the provided modifier.
-It additionally enforces the condition that the selected pattern(s) should be minimal indexable subexpressions.
+{attr}`grind!` 属性会根据给定修饰符所决定的策略，自动为定理生成 E-匹配模式。
+此外，它还强制要求所选模式必须是极小的可索引子表达式。
 
 ```grammar
 grind? $[$_:grindMod]?
 ```
 
-The {attr}`grind?` displays the pattern that was generated.
+{attr}`grind?` 会显示所生成的模式。
 
 ```grammar
 grind!? $[$_:grindMod]?
 ```
-The {attr}`grind!?` attribute is equivalent to {attr}`grind!`, except it displays the resulting pattern for inspection.
+{attr}`grind!?` 属性等价于 {attr}`grind!`，不同之处在于它会显示生成结果，便于检查。
 
 
-Without any modifier, {attrs}`@[grind]` traverses the conclusion and then the hypotheses from left to right, adding patterns as they increase the coverage, stopping when all arguments are covered.
-This default strategy can be explicitly requested using the {keywordOf Lean.Parser.Attr.grindDef}`.` modifier.
-In addition to using the default strategy, the attribute checks which other strategies could be applied, and displays all of the resulting patterns.
+在没有任何修饰符时，{attrs}`@[grind]` 会先遍历结论，再从左到右遍历各个假设；每当某个模式能扩大覆盖度时，就将其加入，并在所有参数都被覆盖时停止。
+这一默认策略也可以通过 {keywordOf Lean.Parser.Attr.grindDef}`.` 修饰符显式请求。
+除了使用默认策略之外，该属性还会检查哪些其他策略也适用，并显示所有由此得到的模式。
 :::
 
 ```lean -keep -show
--- This test will start failing if new grind modifiers are added. It's to make sure they're all
--- documented (or at least that a decision has been made to _not_ document one of them).
+-- 如果新增了 grind 修饰符，这个测试就会开始失败。这样可以确保它们都
+-- 已被文档记录（或者至少已经明确决定某一个不写入文档）。
 open Lean Parser Attr
 open Lean Elab Command
 
@@ -325,7 +324,7 @@ grindUsr
 
 ```
 
-:::syntax Lean.Parser.Attr.grindMod (title := "Default Pattern")
+:::syntax Lean.Parser.Attr.grindMod (title := "默认模式")
 ```grammar
 .
 ```
@@ -335,48 +334,48 @@ grindUsr
 {includeDocstring Lean.Parser.Attr.grindDef}
 :::
 
-:::syntax Lean.Parser.Attr.grindMod (title := "Equality Rewrites")
+:::syntax Lean.Parser.Attr.grindMod (title := "等式重写")
 ```grammar
 =
 ```
 {includeDocstring Lean.Parser.Attr.grindEq}
 :::
 
-:::syntax Lean.Parser.Attr.grindMod (title := "Backward Equality Rewrites")
+:::syntax Lean.Parser.Attr.grindMod (title := "反向等式重写")
 ```grammar
 =_
 ```
 {includeDocstring Lean.Parser.Attr.grindEqRhs}
 :::
 
-:::syntax Lean.Parser.Attr.grindMod (title := "Bidirectional Equality Rewrites")
+:::syntax Lean.Parser.Attr.grindMod (title := "双向等式重写")
 ```grammar
 _=_
 ```
 {includeDocstring Lean.Parser.Attr.grindEqBoth}
 :::
 
-:::syntax Lean.Parser.Attr.grindMod (title := "Forward Reasoning")
+:::syntax Lean.Parser.Attr.grindMod (title := "前向推理")
 ```grammar
 →
 ```
 {includeDocstring Lean.Parser.Attr.grindFwd}
 :::
 
-:::syntax Lean.Parser.Attr.grindMod (title := "Backward Reasoning")
+:::syntax Lean.Parser.Attr.grindMod (title := "后向推理")
 ```grammar
 ←
 ```
 {includeDocstring Lean.Parser.Attr.grindBwd}
 :::
 
-It is important to inspect the patterns generated by the {attrs}`@[grind]` attribute to ensure that they match the correct parts of the lemma.
-If the pattern is too strict, the lemma will not be applied in situations where it would be relevant, leading to less automation.
-If it is too general, then performance will suffer as the lemma is tried in many situations where it is not helpful.
+检查 {attrs}`@[grind]` 属性生成的模式非常重要，以确保它们匹配到的是引理中正确的部分。
+如果模式过于严格，那么在它本应相关的情形下，引理也不会被应用，从而降低自动化程度。
+如果模式过于宽泛，那么引理会在许多无助于证明的场景中被尝试，性能因此受损。
 
-There are also three less commonly used modifiers for lemmas:
+另外，还有三个较少使用的引理修饰符：
 
-:::syntax Lean.Parser.Attr.grindMod (title := "Left-to-Right Traversal")
+:::syntax Lean.Parser.Attr.grindMod (title := "从左到右遍历")
 ```grammar
 =>
 ```
@@ -386,7 +385,7 @@ There are also three less commonly used modifiers for lemmas:
 {includeDocstring Lean.Parser.Attr.grindLR}
 :::
 
-:::syntax Lean.Parser.Attr.grindMod (title := "Right-to-Left Traversal")
+:::syntax Lean.Parser.Attr.grindMod (title := "从右到左遍历")
 ```grammar
 <=
 ```
@@ -396,18 +395,18 @@ There are also three less commonly used modifiers for lemmas:
 {includeDocstring Lean.Parser.Attr.grindRL}
 :::
 
-:::syntax Lean.Parser.Attr.grindMod (title := "Backward Reasoning on Equality")
+:::syntax Lean.Parser.Attr.grindMod (title := "等式上的后向推理")
 ```grammar
 ←=
 ```
 {includeDocstring Lean.Parser.Attr.grindEqBwd}
 :::
 
-:::example "The `@[grind ←=]` Attribute"
+:::example "`@[grind ←=]` 属性"
 ```lean -show
 variable {α} {a b : α} [Inv α]
 ```
-When attempting to prove that {lean}`a⁻¹ = b`, {tactic}`grind` uses {name}`inv_eq` due to the {attrs}`@[grind ←=]` annotation.
+当尝试证明 {lean}`a⁻¹ = b` 时，由于存在 {attrs}`@[grind ←=]` 标注，{tactic}`grind` 会使用 {name}`inv_eq`。
 ```lean
 @[grind ←=]
 theorem inv_eq [One α] [Mul α] [Inv α] {a b : α}
@@ -416,7 +415,7 @@ theorem inv_eq [One α] [Mul α] [Inv α] {a b : α}
 ```
 :::
 
-:::syntax Lean.Parser.Attr.grindMod (title := "Function-Valued Congruence Closure")
+:::syntax Lean.Parser.Attr.grindMod (title := "值为函数的合一闭包")
 ```grammar
 funCC
 ```
@@ -424,32 +423,32 @@ funCC
 :::
 
 
-Some additional modifiers can be used to add other kinds of lemmas to the index.
-This includes extensionality theorems, injectivity theorems for functions, and a shortcut to add all constructors of an inductively defined predicate to the index.
+还有一些额外修饰符可用于把其他类型的引理加入索引。
+这包括外延性定理、函数的单射性定理，以及一个将归纳定义谓词的所有构造子快捷加入索引的方式。
 
-:::syntax Lean.Parser.Attr.grindMod (title := "Extensionality")
+:::syntax Lean.Parser.Attr.grindMod (title := "外延性")
 ```grammar
 ext
 ```
 {includeDocstring Lean.Parser.Attr.grindExt}
 
-In addition, adding {attrs}`@[grind ext]` to a structure registers a its extensionality theorem.
+此外，给某个结构体加上 {attrs}`@[grind ext]` 还会注册它的外延性定理。
 :::
 
 
-::::example "The `@[grind ext]` Attribute"
+::::example "`@[grind ext]` 属性"
 
-{lean}`Point` is a structure with two fields:
+{lean}`Point` 是一个带有两个字段的结构体：
 ```lean
 structure Point where
   x : Int
   y : Int
 ```
-By default, {tactic}`grind` can solve goals like this one, because definitional equality includes {tech (key := "η-equivalence")}[η-equivalence] for product types:
+默认情况下，{tactic}`grind` 可以解决下面这样的目标，因为定义相等对积类型包含 {tech (key := "η-equivalence")}[η-等价]：
 ```lean
 example (p : Point) : p = ⟨p.x, p.y⟩ := by grind
 ```
-However, it can't solve goals like this one that require an appeal to propositional equalities:
+不过，它无法解决下面这种需要诉诸命题相等的目标：
 ```lean +error (name := noExt)
 example (p : Point) (a : Int) : a = p.x → p = ⟨a, p.y⟩ := by grind
 ```
@@ -468,7 +467,7 @@ h_1 : ¬p = { x := a, y := p.y }
 ```
 
 
-This kind of goal may come up when proving theorems like the fact that swapping the fields of a point twice is the identity:
+在证明诸如“把点的字段交换两次等于恒等”的定理时，就可能遇到这种目标：
 ```lean
 def Point.swap (p : Point) : Point := ⟨p.y, p.x⟩
 ```
@@ -494,7 +493,7 @@ h_1 : ¬{ x := w.x, y := w.y } = id w
 
 [grind] Diagnostics
 ```
-Adding the {attrs}`@[grind ext]` attribute to {name}`Point` enables {tactic}`grind` to solve both the original example and prove this theorem:
+给 {name}`Point` 添加 {attrs}`@[grind ext]` 属性后，{tactic}`grind` 既能解决最初的例子，也能证明下面这个定理：
 ```lean
 attribute [grind ext] Point
 
@@ -507,33 +506,33 @@ theorem swap_swap_eq_id' : Point.swap ∘ Point.swap = id := by
 ```
 ::::
 
-:::syntax Lean.Parser.Attr.grindMod (title := "Injectivity")
+:::syntax Lean.Parser.Attr.grindMod (title := "单射性")
 ```grammar
 inj
 ```
 {includeDocstring Lean.Parser.Attr.grindInj}
 :::
 
-:::example "Injectivity Patterns"
-This function {name}`double` doubles its argument:
+:::example "单射性模式"
+函数 {name}`double` 会把它的参数翻倍：
 ```lean
 def double (x : Nat) : Nat := x + x
 ```
-By default, {tactic}`grind` cannot prove the following theorem:
+默认情况下，{tactic}`grind` 无法证明下面这个定理：
 ```lean +error
 theorem A {n k : Nat} :
     double (n + 5) = double (k - 3) →
     n + 8 = k := by
   grind
 ```
-However, {name}`double` is injective, and this fact can be registered for {tactic}`grind` using the {attr}`grind inj` attribute:
+不过，{name}`double` 是单射的，而这一事实可以用 {attr}`grind inj` 属性为 {tactic}`grind` 注册：
 ```lean
 @[grind inj]
 theorem double_inj : Function.Injective double := by
   simp only [double, Function.Injective]
   grind
 ```
-This injectivity lemma suffices to prove the theorem:
+这个单射性引理就足以证明该定理：
 ```lean
 theorem B {n k : Nat} :
     double (n + 5) = double (k - 3) →
@@ -542,15 +541,15 @@ theorem B {n k : Nat} :
 ```
 :::
 
-:::syntax Lean.Parser.Attr.grindMod (title := "Constructor Patterns")
+:::syntax Lean.Parser.Attr.grindMod (title := "构造子模式")
 ```grammar
 intro
 ```
 {includeDocstring Lean.Parser.Attr.grindIntro}
 :::
 
-:::example "Patterns for Constructors"
-The predicate {name}`Decreasing` states that each of the values in a list of integers is less than the one before, and the function {name}`decreasing` checks this property, returning a {name}`Bool`.
+:::example "构造子的模式"
+谓词 {name}`Decreasing` 表示一个整数列表中的每个值都小于它前面的那个值，而函数 {name}`decreasing` 会检查这一性质，并返回一个 {name}`Bool`。
 ```lean
 inductive Decreasing : List Int → Prop
   | nil : Decreasing []
@@ -562,8 +561,8 @@ def decreasing : List Int → Bool
   | y :: x :: xs => y > x && decreasing (x :: xs)
 ```
 
-The function is correct if it returns {name}`true` exactly when {name}`Decreasing` holds for its argument.
-Attempting to prove this fact using a combination of {tactic}`fun_induction` and {tactic}`grind` fails immediately, with none of the three cases proven:
+如果且仅如果 {name}`Decreasing` 对其参数成立时该函数返回 {name}`true`，那么这个函数就是正确的。
+尝试用 {tactic}`fun_induction` 与 {tactic}`grind` 的组合来证明这一点，会立刻失败，三个分支一个也证不出来：
 ```lean +error (name := decreasingCorrect1)
 def decreasingCorrect : decreasing xs = Decreasing xs := by
   fun_induction decreasing <;> grind
@@ -608,7 +607,7 @@ right_1 : ¬Decreasing (y :: x :: xs)
   [cases] Case analyses
   [cutsat] Assignment satisfying linear constraints
 ```
-Adding the {attr}`grind intro` attribute to {name}`Decreasing` results in E-matching patterns being added for each of the three constructors, after which {tactic}`grind` can prove the first two goals, and requires only a case analysis of a hypothesis to prove the final goal:
+给 {name}`Decreasing` 添加 {attr}`grind intro` 属性后，会为它的三个构造子分别加入 E-匹配模式。这样一来，{tactic}`grind` 就能证明前两个目标，而最后一个目标只需再对某个假设做一次分类讨论即可：
 ```lean
 attribute [grind intro] Decreasing
 
@@ -622,7 +621,7 @@ def decreasingCorrect' : decreasing xs = Decreasing xs := by
       | .cons hDec hLt =>
         grind
 ```
-Adding {attr}`grind cases` to {name}`Decreasing` enables this case analysis automatically, resulting in a fully automatic proof:
+给 {name}`Decreasing` 添加 {attr}`grind cases` 后，这个分类讨论也会自动完成，从而得到一个完全自动化的证明：
 ```lean
 attribute [grind cases] Decreasing
 
@@ -631,76 +630,76 @@ def decreasingCorrect'' : decreasing xs = Decreasing xs := by
 ```
 :::
 
-:::syntax Lean.Parser.Attr.grindMod (title := "Unfolding During Preprocessing")
+:::syntax Lean.Parser.Attr.grindMod (title := "预处理时展开")
 ```grammar
 unfold
 ```
 {includeDocstring Lean.Parser.Attr.grindUnfold}
 :::
 
-:::syntax Lean.Parser.Attr.grindMod (title := "Normalization Rules")
+:::syntax Lean.Parser.Attr.grindMod (title := "规范化规则")
 ```grammar
 norm
 ```
 {includeDocstring Lean.Parser.Attr.grindNorm}
 :::
 
-The {tactic}`grind` tactic can work with a source algebra that doesn't have a great deal of solving infrastructure (e.g. bitvectors) by “̲injecting”̲ it into another algebra that has more solving infrastructure (like natural numbers or integers).
-Homomorphism rules describe the injection from source to target, and how the injection commutes with other operations (like addition or multiplication in the case of bitvectors).
-Homomorphism predicates present additional facts that {tactic}`grind` can use about the injection (like that a bitvector of length $`n` corresponds to a natural number less than $`2^n`).
+{tactic}`grind` 策略可以处理某些求解基础设施并不丰富的源代数（例如位向量），做法是把它“嵌入”到另一个求解基础设施更丰富的代数中（例如自然数或整数）。
+同态规则描述了这种从源到目标的嵌入，以及该嵌入如何与其他运算交换（例如在位向量情形下的加法或乘法）。
+同态谓词则给出了关于该嵌入的更多事实，供 {tactic}`grind` 使用（例如长度为 $`n` 的位向量对应于一个小于 $`2^n` 的自然数）。
 
-:::syntax Lean.Parser.Attr.grindMod (title := "Homomorphism Rules")
+:::syntax Lean.Parser.Attr.grindMod (title := "同态规则")
 ```grammar
 hom
 ```
 {includeDocstring Lean.Parser.Attr.grindHom}
 :::
 
-:::syntax Lean.Parser.Attr.grindMod (title := "Homomorphism Predicates")
+:::syntax Lean.Parser.Attr.grindMod (title := "同态谓词")
 ```grammar
 hom_pred
 ```
 {includeDocstring Lean.Parser.Attr.grindHomPred}
 :::
 
-{TODO}[Grind's hom infrastructure could use an example]
+{TODO}[Grind 的同态基础设施值得补一个示例]
 
-{TODO}[Document `gen` modifier for `grind` patterns]
+{TODO}[为 `grind` 模式中的 `gen` 修饰符编写文档]
 
-# Inspecting Patterns
+# 检查模式
 
-The {attr}`grind?` attribute is a version of the {attr}`grind` attribute that additionally displays the generated pattern or {tech}[multi-pattern].
-Patterns and multi-patterns are displayed as lists of subexpressions, each of which is a pattern; ordinary patterns are displayed as singleton lists.
-In these displayed patterns, the names of defined constants are printed as-is.
-When the theorem's parameters occur in the pattern, they are displayed using numbers rather than names.
-In particular, they are numbered from right to left, starting at 0; this representation is referred to as {deftech}_de Bruijn indices_.
+{attr}`grind?` 属性是 {attr}`grind` 属性的一个变体，它还会额外显示所生成的模式或 {tech}[多模式]。
+模式与多模式都会显示为子表达式列表，其中每个子表达式都是一个模式；普通模式则显示为单元素列表。
+在这些显示出来的模式里，已定义常量的名字会原样打印。
+当定理的参数出现在模式中时，它们会用数字而不是名字来显示。
+具体来说，这些参数按从右到左的顺序编号，从 0 开始；这种表示法称为 {deftech}_de Bruijn 索引_。
 
-:::example "Inspecting Patterns" (open := true)
-In order to use this proof that divisibility is transitive with {tactic}`grind`, it requires E-matching patterns:
+:::example "检查模式" (open := true)
+要想让 {tactic}`grind` 使用下面这个“整除具有传递性”的证明，就需要为它提供 E-匹配模式：
 ```lean
 theorem div_trans {n k j : Nat} : n ∣ k → k ∣ j → n ∣ j := by
   intro ⟨d₁, p₁⟩ ⟨d₂, p₂⟩
   exact ⟨d₁ * d₂, by rw [p₂, p₁, Nat.mul_assoc]⟩
 ```
-The right attribute to use is {attrs}`@[grind →]`, because there should be a pattern for each premise.
-Using {attrs}`@[grind? →]`, it is possible to see which patterns are generated:
+正确的属性是 {attrs}`@[grind →]`，因为每个前提都应该对应一个模式。
+使用 {attrs}`@[grind? →]` 可以看到实际生成了哪些模式：
 ```lean (name := grindHuh)
 attribute [grind? →] div_trans
 ```
-There are two:
+一共有两个：
 ```leanOutput grindHuh
 div_trans: [@Dvd.dvd `[Nat] `[Nat.instDvd] #4 #3, @Dvd.dvd `[Nat] `[Nat.instDvd] #3 #2]
 ```
-Arguments are numbered from right to left, so `#0` is the assumption that `k ∣ j`, while `#4` is `n`.
-Thus, these two patterns correspond to the terms `n ∣ k` and `k ∣ j`.
+参数按从右到左编号，因此 `#0` 是假设 `k ∣ j`，而 `#4` 是 `n`。
+因此，这两个模式分别对应项 `n ∣ k` 与 `k ∣ j`。
 :::
 
-The rules for selecting patterns from subexpressions of the hypotheses and conclusion are subtle.
+从假设和结论的子表达式中选择模式的规则相当微妙。
 :::TODO
-more text
+补充更多说明
 :::
 
-:::example "Forward Pattern Generation" (open := true)
+:::example "前向模式生成" (open := true)
 ```lean
 axiom p : Nat → Nat
 axiom q : Nat → Nat
@@ -712,45 +711,45 @@ axiom q : Nat → Nat
 ```leanOutput h1
 h₁: [q #1]
 ```
-The pattern is `q x`.
-Counting from the right, parameter `#0` is the premise `w` and parameter `#1` is the implicit parameter `x`.
+模式是 `q x`。
+从右往左数，参数 `#0` 是前提 `w`，参数 `#1` 是隐式参数 `x`。
 
-Why did `@[grind! →]`? select `q #1`?
-The attribute `@[grind! →]` finds patterns by traversing the hypotheses (that is, parameters whose types are propositions) from left to right.
-In this case, there's only a single hypothesis: `p (q x) = 7`.
-The heuristic described above says that {attr}`grind!` will search for a minimal {tech}[indexable] subexpression which {tech}[covers] a previously uncovered parameter.
-There's just one uncovered parameter, namely `x`.
-The whole hypothesis `p (q x) = 7` can't be used because {tactic}`grind` will not index on equality.
-The right-hand side `7` is not helpful, because it doesn't determine the value of `x`.
-`p (q x)` is not suitable because it is not minimal: it has `q x` inside of it, which is indexable (its head is the constant `q`), and it determines the value of `x`.
-The expression `q x` itself is minimal, because `x` is not indexable.
-Thus, `q x` is selected as the pattern.
+为什么 `@[grind! →]` 会选择 `q #1` 呢？
+属性 `@[grind! →]` 会通过从左到右遍历各个假设（也就是类型为命题的参数）来寻找模式。
+在这里，只有一个假设：`p (q x) = 7`。
+前面描述的启发式规则是：{attr}`grind!` 会寻找一个极小的 {tech}[可索引] 子表达式，它能够 {tech}[覆盖] 某个此前尚未覆盖的参数。
+这里只有一个尚未覆盖的参数，也就是 `x`。
+整个假设 `p (q x) = 7` 不能用，因为 {tactic}`grind` 不会对等式建立索引。
+右边的 `7` 也没有帮助，因为它并不能确定 `x` 的值。
+`p (q x)` 也不合适，因为它并不极小：其中包含 `q x`，而 `q x` 本身就是可索引的（其头部是常量 `q`），并且它也能够确定 `x` 的值。
+表达式 `q x` 本身则是极小的，因为 `x` 并不可索引。
+因此，`q x` 被选为了模式。
 :::
 
-:::example "Backward Pattern Generation" (open := true)
+:::example "后向模式生成" (open := true)
 ```lean -show
 axiom p : Nat → Nat
 axiom q : Nat → Nat
 ```
 
-In this example, the {keywordOf Lean.Parser.Attr.grindMod}`←` modifier indicates that the pattern should be found in the conclusion:
+在这个例子中，{keywordOf Lean.Parser.Attr.grindMod}`←` 修饰符表示应当在结论中寻找模式：
 ```lean (name := h2)
 set_option trace.grind.debug.ematch.pattern true in
 @[grind? ←] theorem h₂ (w : 7 = p (q x)) : p (x + 1) = q x := sorry
 ```
-The left side of the equality is used because {name}`Eq` is not indexable and {name}`HAdd.hAdd` has lower priority than {lean}`p`.
+这里使用的是等式左边，因为 {name}`Eq` 不可索引，而 {name}`HAdd.hAdd` 的优先级又低于 {lean}`p`。
 ```leanOutput h2
 h₂: [p (#1 + 1)]
 ```
 :::
 
-:::example "Bidirectional Equality Pattern Generation" (open := true)
+:::example "双向等式模式生成" (open := true)
 ```lean -show
 axiom p : Nat → Nat
 axiom q : Nat → Nat
 ```
-In this example, two separate E-matching patterns are generated from the equality conclusion.
-One matches the left-hand side, and the other matches the right-hand side.
+在这个例子中，会从等式结论中生成两个彼此独立的 E-匹配模式。
+其中一个匹配左边，另一个匹配右边。
 ```lean (name := h3)
 @[grind? _=_] theorem h₃ (w : 7 = p (q x)) : p (x + 1) = q x := sorry
 ```
@@ -758,36 +757,36 @@ One matches the left-hand side, and the other matches the right-hand side.
 h₃: [q #1]
 ```
 
-The entire left side of the equality is used instead of just `x + 1` because {name}`HAdd.hAdd` has lower priority than {lean}`p`.
+这里使用的是整个等式左边，而不是仅仅使用 `x + 1`，因为 {name}`HAdd.hAdd` 的优先级低于 {lean}`p`。
 ```leanOutput h3
 h₃: [p (#1 + 1)]
 ```
 :::
 
-:::example "Patterns from Conclusion and Hypotheses" (open := true)
+:::example "来自结论与假设的模式" (open := true)
 ```lean -show
 axiom p : Nat → Nat
 axiom q : Nat → Nat
 ```
 
-Without any modifiers, {attrs}`@[grind]` produces a multipattern by first checking the conclusion and then the premises:
+在不加任何修饰符时，{attrs}`@[grind]` 会先检查结论，再检查前提，从而生成一个多模式：
 ```lean (name := h4)
 @[grind? .] theorem h₄ (w : p x = q y) : p (x + 2) = 7 := sorry
 ```
-Here, argument `x` is `#2`, `y` is `#1`, and `w` is `#0`.
-The resulting multipattern contains the left-hand side of the equality, which is the only {tech}[minimal] {tech}[indexable] subexpression of the conclusion that covers an argument (namely `x`).
-It also contains `q y`, which is the only minimal indexable subexpression of the hypothesis `w` that covers an additional argument (namely `y`).
+这里，参数 `x` 是 `#2`，`y` 是 `#1`，而 `w` 是 `#0`。
+生成得到的多模式包含等式左边，因为它是结论中唯一一个既 {tech}[极小] 又 {tech}[可索引]，并且能够覆盖某个参数（即 `x`）的子表达式。
+它还包含 `q y`，因为这是前提 `w` 中唯一一个能够覆盖额外参数（即 `y`）的极小可索引子表达式。
 ```leanOutput h4
 h₄: [p (#2 + 2), q #1]
 ```
 :::
 
-:::example "Failing Backward Pattern Generation" (open := true)
+:::example "失败的后向模式生成" (open := true)
 ```lean -show
 axiom p : Nat → Nat
 axiom q : Nat → Nat
 ```
-In this example, pattern generation fails because the theorem's conclusion doesn't mention the argument `y`.
+在这个例子中，模式生成会失败，因为定理的结论没有提到参数 `y`。
 ```lean (name := h5) +error
 @[grind? ←] theorem h₅ (w : p x = q y) : p (x + 2) = 7 := sorry
 ```
@@ -796,12 +795,12 @@ In this example, pattern generation fails because the theorem's conclusion doesn
 ```
 :::
 
-:::example "Left-to-Right Generation" (open := true)
+:::example "从左到右生成" (open := true)
 ```lean -show
 axiom p : Nat → Nat
 axiom q : Nat → Nat
 ```
-In this example, the pattern is generated by traversing the premises from left to right, followed by the conclusion:
+在这个例子中，模式是通过先从左到右遍历前提、再遍历结论而生成的：
 ```lean (name := h6)
 @[grind? =>] theorem h₆
     (_ : q (y + 2) = q y)
@@ -809,42 +808,42 @@ In this example, the pattern is generated by traversing the premises from left t
     p (x + 2) = 7 :=
   sorry
 ```
-In the patterns, `y` is argument `#3` and `x` is argument `#2`, because {tech}[automatic implicit parameters] are inserted from left to right and `y` occurs before `x` in the theorem statement.
-The premises are arguments `#1` and `#0`.
-In the resulting multipattern, `y` is covered by a subexpression of the first premise, and `z` is covered by a subexpression of the conclusion:
+在这些模式里，`y` 是参数 `#3`，`x` 是参数 `#2`，因为 {tech}[自动隐式参数] 是按从左到右的顺序插入的，而在定理陈述中 `y` 出现在 `x` 之前。
+两个前提分别是参数 `#1` 和 `#0`。
+在生成的多模式中，`y` 由第一个前提的某个子表达式覆盖，而 `x` 由结论中的某个子表达式覆盖：
 ```leanOutput h6
 h₆: [q (#3 + 2), p (#2 + 2)]
 ```
 :::
 
 
-# Resource Limits
+# 资源限制
 %%%
 tag := "grind-limits"
 %%%
 
-E-matching can generate an unbounded number of theorem {tech (key := "e-matching instance")}[instances].
-For the sake of both efficiency and termination, {tactic}`grind` limits the number of times that E-matching can run using two mechanisms:
+E-匹配可能生成无界数量的定理 {tech (key := "e-matching instance")}[实例]。
+出于效率和终止性的双重考虑，{tactic}`grind` 通过两种机制限制 E-匹配的运行次数：
 
-: Generations
+: 代数层级
 
-  Each term is assigned a {deftech}_generation_, and terms produced by E-matching have a generation that is one greater than the maximal generation of all the terms used to instantiate the theorem.
-  E-matching only considers terms whose generation is beneath a configurable threshold.
-  The `gen` option to {tactic}`grind` controls the generation threshold.
+  每个项都会被赋予一个 {deftech}_generation_，而由 E-匹配生成的项，其 generation 会比所有用于实例化该定理的项中的最大 generation 大 1。
+  E-匹配只会考虑 generation 低于某个可配置阈值的项。
+  {tactic}`grind` 的 `gen` 选项控制这个 generation 阈值。
 
-: Round Limits
+: 轮数限制
 
-  Each invocation of the E-matching engine is referred to as a {deftech}_round_.
-  Only a limited number of rounds of E-matching are performed.
-  The `ematch` option to {tactic}`grind` controls the round limit.
+  每次调用 E-匹配引擎都称为一 {deftech}_轮_。
+  E-匹配只会执行有限轮。
+  {tactic}`grind` 的 `ematch` 选项控制这个轮数上限。
 
 
-:::example "Too Many Instances" (open := true)
+:::example "实例过多" (open := true)
 
-E-matching can generate too many theorem {tech (key := "e-matching instance")}[instances].
-Some patterns may even generate an unbounded number of instances.
+E-匹配可能生成过多的定理 {tech (key := "e-matching instance")}[实例]。
+有些模式甚至会生成无界数量的实例。
 
-In this example, {name}`s_eq` is added to the index with the pattern `s x`:
+在这个例子中，{name}`s_eq` 以模式 `s x` 被加入索引：
 ```lean (name := ematchUnboundedPat)
 def s (x : Nat) := 0
 
@@ -855,11 +854,11 @@ def s (x : Nat) := 0
 s_eq: [s #0]
 ```
 
-Attempting to use this theorem results in many facts about {lean}`s` applied to concrete values being generated.
-In particular, {lean}`s_eq` is instantiated with a new {lean}`Nat` in each of the five rounds.
-First, {tactic}`grind` instantiates {lean}`s_eq` with `x := 0`, which generates the term {lean}`s 1`.
-This matches the pattern `s x`, and is thus used to instantiate {lean}`s_eq` with `x := 1`, which generates the term {lean}`s 2`,
-and so on until the round limit is reached.
+尝试使用这个定理会生成许多把 {lean}`s` 应用于具体值的事实。
+特别地，在这五轮中的每一轮里，{lean}`s_eq` 都会用一个新的 {lean}`Nat` 来实例化。
+首先，{tactic}`grind` 用 `x := 0` 实例化 {lean}`s_eq`，从而生成项 {lean}`s 1`。
+这个项又会匹配模式 `s x`，于是进一步以 `x := 1` 实例化 {lean}`s_eq`，生成项 {lean}`s 2`，
+如此继续，直到达到轮数上限。
 ```lean +error (name := ematchUnbounded)
 example : s 0 > 0 := by
   grind
@@ -888,7 +887,7 @@ h : s 0 = 0
 [grind] Diagnostics
 ```
 
-Increasing the round limit to 20 causes E-matching to terminate due to the default generation limit of 8:
+把轮数上限提高到 20 后，E-匹配会因为默认的 generation 上限 8 而终止：
 ```lean +error (name := ematchUnbounded2)
 example : s 0 > 0 := by
   grind (ematch := 20)
@@ -920,10 +919,10 @@ h : s 0 = 0
 ```
 :::
 
-:::example "Increasing E-matching Limits"
+:::example "提高 E-匹配限制"
 
 
-{lean}`iota` returns the list of all numbers strictly less than its argument, and the theorem {lean}`iota_succ` describes its behavior on {lean}`Nat.succ`:
+{lean}`iota` 会返回所有严格小于其参数的数字所构成的列表，而定理 {lean}`iota_succ` 描述了它在 {lean}`Nat.succ` 上的行为：
 ```lean
 def iota : Nat → List Nat
   | 0 => []
@@ -933,8 +932,8 @@ def iota : Nat → List Nat
   rfl
 ```
 
-The fact that {lean}`(iota 20).length > 10` can be proven by repeatedly instantiating {lean}`iota_succ` and {lean}`List.length_cons`.
-However, {tactic}`grind` does not succeed:
+事实 {lean}`(iota 20).length > 10` 可以通过反复实例化 {lean}`iota_succ` 与 {lean}`List.length_cons` 来证明。
+然而，{tactic}`grind` 默认并不会成功：
 ```lean +error (name := biggerGrindLimits)
 example : (iota 20).length > 10 := by
   grind
@@ -967,17 +966,17 @@ h : (iota 20).length ≤ 10
 [grind] Diagnostics
 ```
 
-Due to the limited number of E-matching rounds, the chain of instantiations is not completed.
-Increasing these limits allows {tactic}`grind` to succeed:
+由于 E-匹配轮数受限，这条实例化链没有走完。
+提高这些限制后，{tactic}`grind` 就可以成功：
 
 ```lean
 example : (iota 20).length > 10 := by
   grind (gen := 20) (ematch := 20)
 ```
 
-When the option {option}`diagnostics` is set to {lean}`true`, {tactic}`grind` displays the number of instances that it generates for each theorem.
-This is useful to detect theorems that contain patterns that are triggering too many instances.
-In this case, the diagnostics show that {name}`iota_succ` is instantiated 12 times:
+当选项 {option}`diagnostics` 设为 {lean}`true` 时，{tactic}`grind` 会显示它为每个定理生成了多少实例。
+这有助于找出那些由于模式设计而触发过多实例的定理。
+在这里，诊断信息显示 {name}`iota_succ` 被实例化了 12 次：
 ```lean (name := grindDiagnostics)
 set_option diagnostics true in
 set_option diagnostics.threshold 10 in
@@ -997,12 +996,12 @@ example : (iota 20).length > 10 := by
 ```
 :::
 
-By default, {tactic}`grind` uses automatically generated equations for {keywordOf Lean.Parser.Term.match}`match`-expressions as E-matching theorems.
-This can be disabled by setting the `matchEqs` flag to {lean}`false`.
+默认情况下，{tactic}`grind` 会把为 {keywordOf Lean.Parser.Term.match}`match` 表达式自动生成的等式当作 E-匹配定理使用。
+这可以通过把 `matchEqs` 标志设为 {lean}`false` 来禁用。
 
-:::example "E-matching and Pattern Matching"
+:::example "E-匹配与模式匹配"
 
-Enabling diagnostics shows that {tactic}`grind` uses one of the equations of the auxiliary matching function during E-matching:
+打开诊断信息后可以看到，{tactic}`grind` 在 E-匹配期间使用了辅助匹配函数的某一条等式：
 ```lean (name := gt1diag)
 theorem gt1 (x y : Nat) :
     x = y + 1 →
@@ -1018,7 +1017,7 @@ theorem gt1 (x y : Nat) :
     [thm] gt1.match_1.congr_eq_2 ↦ 1
   [app] Applications
 ```
-The theorem has this type:
+这个定理的类型如下：
 ```lean (name := gt1matchtype)
 #check gt1.match_1.congr_eq_2
 ```
@@ -1031,7 +1030,7 @@ gt1.match_1.congr_eq_2.{u_1} (motive : Nat → Sort u_1) (x✝ : Nat) (h_1 : Uni
     h_2 n✝
 ```
 
-Disabling the use of matcher function equations causes the proof to fail:
+禁用匹配器函数等式后，证明就会失败：
 
 ```lean +error (name := noMatchEqs)
 example (x y : Nat)
@@ -1067,8 +1066,8 @@ h_2 : x = n + 1
 {optionDocs trace.grind.ematch.instance}
 
 :::comment
-TBD
-* anti‑patterns
-* local vs global attributes
-* `gen` modifier?
+待补
+* 反模式
+* 局部属性与全局属性
+* `gen` 修饰符？
 :::

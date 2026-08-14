@@ -20,7 +20,7 @@ open Lean.Elab.Tactic.GuardMsgs.WhitespaceMode
 
 open Lean.Grind
 
-#doc (Manual) "`if`-`then`-`else` Normalization" =>
+#doc (Manual) "`if`-`then`-`else` 规范化" =>
 %%%
 tag := "grind-if-then-else-norm"
 %%%
@@ -29,43 +29,44 @@ tag := "grind-if-then-else-norm"
 open Std
 ```
 
-This example is a showcase for the “out of the box” power of {tactic}`grind`.
-Later examples will explore adding {attrs}`@[grind]` annotations as part of the development process, to make {tactic}`grind` more effective in a new domain.
-This example does not rely on any of the algebra extensions to {tactic}`grind`, we're just using:
-* instantiation of annotated theorems from the library,
-* {tech}[congruence closure], and
-* case splitting.
+这个例子展示了 {tactic}`grind` “开箱即用”的威力。
+后续示例会探讨如何把添加 {attrs}`@[grind]` 标注纳入开发流程，从而让 {tactic}`grind` 在新领域中更有效。
+这个例子并不依赖 {tactic}`grind` 的任何代数扩展；我们只使用：
+* 对库中已标注定理的实例化，
+* {tech}[合一闭包]，以及
+* 分类讨论。
 
-The solution here builds on an earlier formalization by Chris Hughes, but with some notable improvements:
-* the verification is separate from the code,
-* the proof is now a one-liner combining {tactic}`fun_induction` and {tactic}`grind`,
-* the proof is robust to changes in the code (e.g. swapping out {name}`HashMap` for {name}`TreeMap`) as well as changes to the precise verification conditions.
+这里的解法建立在 Chris Hughes 早先的形式化基础上，但有几项显著改进：
+* 验证与代码彼此分离，
+* 证明现在是一行式写法，把 {tactic}`fun_induction` 与 {tactic}`grind` 结合起来，
+* 该证明对代码变动（例如把 {name}`HashMap` 换成 {name}`TreeMap`）以及对精确验证条件的改动都具有稳健性。
 
 
-# The problem
+# 问题
 
-Here is Rustan Leino's original description of the problem, as [posted by Leonardo de Moura](https://leanprover.zulipchat.com/#narrow/stream/113488-general/topic/Rustan's.20challenge) on the Lean Zulip:
+下面是 Rustan Leino 对这个问题的原始描述，由 Leonardo de Moura [发布在](https://leanprover.zulipchat.com/#narrow/stream/113488-general/topic/Rustan's.20challenge) Lean Zulip 上：
 
-> The data structure is an expression with Boolean literals, variables, and if-then-else expressions.
+> 该数据结构是一种表达式，由布尔字面量、变量以及 if-then-else 表达式构成。
 
-  The goal is to normalize such expressions into a form where:
-  a) No nested ifs: the condition part of an if-expression is not itself an if-expression
-  b) No constant tests: the condition part of an if-expression is not a constant
-  c) No redundant ifs: the then and else branches of an if are not the same
-  d) Each variable is evaluated at most once: the free variables of the condition are disjoint from those in the then branch, and also disjoint from those in the else branch.
+  目标是把这类表达式规范化成如下形式：
+  a) 没有嵌套 if：if 表达式的条件部分本身不是 if 表达式
+  b) 没有常量测试：if 表达式的条件部分不是常量
+  c) 没有冗余 if：if 的 then 分支与 else 分支不相同
+  d) 每个变量至多求值一次：条件中的自由变量与 then 分支中的自由变量不相交，也与 else 分支中的自由变量不相交。
 
-  One should show that a normalization function produces an expression satisfying these four conditions, and one should also prove that the normalization function preserves the meaning of the given expression.
+  需要证明某个规范化函数会产生满足这四个条件的表达式，同时还要证明这个规范化函数保持原表达式的语义不变。
 
-# The Formal Statement
+# 形式化陈述
 
 :::leanFirst
-To formalize the statement in Lean, we use an inductive type {name}`IfExpr`:
+为了在 Lean 中形式化这一陈述，我们使用归纳类型 {name}`IfExpr`：
 
 ```lean
 /--
-An if-expression is either boolean literal, a
-numbered variable, or an if-then-else expression
-where each subexpression is an if-expression.
+if 表达式要么是布尔字面量，
+要么是带编号的变量，
+要么是一个 if-then-else 表达式，
+其中每个子表达式也都是 if 表达式。
 -/
 inductive IfExpr
   | lit : Bool → IfExpr
@@ -76,14 +77,15 @@ deriving DecidableEq
 :::
 
 :::leanFirst
-and define some inductive predicates and an {name IfExpr.eval}`eval` function, so we can state the four desired properties:
+然后定义一些归纳谓词与一个 {name IfExpr.eval}`eval` 函数，以便陈述所需的四个性质：
 
 ```lean
 namespace IfExpr
 
 /--
-An if-expression has a "nested if" if it contains
-an if-then-else where the "if" is itself an if-then-else.
+若某个 if 表达式包含一个 if-then-else，
+并且其中的 “if” 本身又是 if-then-else，
+则称该表达式具有“嵌套 if”。
 -/
 def hasNestedIf : IfExpr → Bool
   | lit _ => false
@@ -92,8 +94,9 @@ def hasNestedIf : IfExpr → Bool
   | ite _ t e => t.hasNestedIf || e.hasNestedIf
 
 /--
-An if-expression has a "constant if" if it contains
-an if-then-else where the "if" is itself a literal.
+若某个 if 表达式包含一个 if-then-else，
+并且其中的 “if” 本身是字面量，
+则称该表达式具有“常量 if”。
 -/
 def hasConstantIf : IfExpr → Bool
   | lit _ => false
@@ -103,9 +106,9 @@ def hasConstantIf : IfExpr → Bool
     i.hasConstantIf || t.hasConstantIf || e.hasConstantIf
 
 /--
-An if-expression has a "redundant if" if
-it contains an if-then-else where
-the "then" and "else" clauses are identical.
+若某个 if 表达式包含一个 if-then-else，
+且其中的 “then” 与 “else” 子句完全相同，
+则称该表达式具有“冗余 if”。
 -/
 def hasRedundantIf : IfExpr → Bool
   | lit _ => false
@@ -114,8 +117,9 @@ def hasRedundantIf : IfExpr → Bool
       t.hasRedundantIf || e.hasRedundantIf
 
 /--
-All the variables appearing in an if-expressions,
-read left to right, without removing duplicates.
+if 表达式中出现的所有变量，
+按从左到右的顺序列出，
+且不去重。
 -/
 def vars : IfExpr → List Nat
   | lit _ => []
@@ -123,7 +127,7 @@ def vars : IfExpr → List Nat
   | ite i t e => i.vars ++ t.vars ++ e.vars
 
 /--
-A helper function to specify that two lists are disjoint.
+一个用来表达两个列表不相交的辅助函数。
 -/
 def _root_.List.disjoint {α} [DecidableEq α] :
     List α → List α → Bool
@@ -131,11 +135,10 @@ def _root_.List.disjoint {α} [DecidableEq α] :
   | x::xs, ys => x ∉ ys && xs.disjoint ys
 
 /--
-An if expression evaluates each variable at most once if
-for each if-then-else the variables in the "if" clause
-are disjoint from the variables in the "then" clause
-and the variables in the "if" clause
-are disjoint from the variables in the "else" clause.
+如果一个 if 表达式满足：对每个 if-then-else，
+“if” 子句中的变量与 “then” 子句中的变量不相交，
+并且 “if” 子句中的变量与 “else” 子句中的变量也不相交，
+那么这个 if 表达式对每个变量至多求值一次。
 -/
 def disjoint : IfExpr → Bool
   | lit _ => true
@@ -145,17 +148,17 @@ def disjoint : IfExpr → Bool
         i.disjoint && t.disjoint && e.disjoint
 
 /--
-An if expression is "normalized" if it has
-no nested, constant, or redundant ifs,
-and it evaluates each variable at most once.
+如果一个 if 表达式
+没有嵌套 if、常量 if 或冗余 if，
+并且每个变量至多求值一次，
+那么它就是“规范化的”。
 -/
 def normalized (e : IfExpr) : Bool :=
   !e.hasNestedIf && !e.hasConstantIf &&
     !e.hasRedundantIf && e.disjoint
 
 /--
-The evaluation of an if expression
-at some assignment of variables.
+在某个变量赋值下对 if 表达式求值。
 -/
 def eval (f : Nat → Bool) : IfExpr → Bool
   | lit b => b
@@ -166,42 +169,41 @@ end IfExpr
 ```
 :::
 
-Using these we can state the problem. The challenge is to inhabit the following type (and to do so nicely!):
+有了这些定义之后，我们就可以陈述这个问题了。挑战在于构造下面这个类型的一个元素（而且还要写得漂亮！）：
 
 ```lean
 def IfNormalization : Type :=
   { Z : IfExpr → IfExpr // ∀ e, (Z e).normalized ∧ (Z e).eval = e.eval }
 ```
 
-# Other solutions
+# 其他解法
 
-At this point, it's worth pausing and doing at least one of the following:
+到这里，不妨先停下来，至少做下面这些事情中的一项：
 
 :::comment
-TODO (@david-christiansen): We include a link here to live-lean and an externally hosted blob of code. There's no way to keep this in sync. :-(
+TODO (@david-christiansen)：这里我们放了一个指向 live-lean 的链接和一份外部托管的代码文件。没法保证它们始终同步。:-(
 :::
 
-* Try to prove this yourself! It's quite challenging for a beginner!
-  You can [have a go](https://live.lean-lang.org/#project=lean-nightly&url=https%3A%2F%2Fgist.githubusercontent.com%2Fkim-em%2Ff416b31fe29de8a3f1b2b3a84e0f1793%2Fraw%2F75ca61230b50c126f8658bacd933ecf7bfcaa4b8%2Fgrind_ite.lean)
-  in the Live Lean editor without any installation.
-* Read Chris Hughes's [solution](https://github.com/leanprover-community/mathlib4/blob/master/Archive/Examples/IfNormalization/Result.lean),
-  which is included in the Mathlib Archive.
-  This solution makes good use of Aesop, but is not ideal because
-  1. It defines the solution using a subtype, simultaneously giving the construction and proving properties about it.
-     We think it's better stylistically to keep these separate.
-  2. Even with Aesop automation, there's still about 15 lines of manual proof work before we can hand off to Aesop.
-* Read Wojciech Nawrocki's [solution](https://leanprover.zulipchat.com/#narrow/channel/113488-general/topic/Rustan's.20challenge/near/398824748).
-  This one uses less automation, at about 300 lines of proof work.
+* 试着自己证明它！对于初学者来说，这相当有挑战性！
+  你可以在无需任何安装的情况下，直接在 Live Lean 编辑器里[动手试试](https://live.lean-lang.org/#project=lean-nightly&url=https%3A%2F%2Fgist.githubusercontent.com%2Fkim-em%2Ff416b31fe29de8a3f1b2b3a84e0f1793%2Fraw%2F75ca61230b50c126f8658bacd933ecf7bfcaa4b8%2Fgrind_ite.lean)。
+* 阅读 Chris Hughes 的[解法](https://github.com/leanprover-community/mathlib4/blob/master/Archive/Examples/IfNormalization/Result.lean)，
+  它被收录在 Mathlib Archive 中。
+  这个解法很好地利用了 Aesop，但并不理想，因为
+  1. 它用一个子类型来定义解法，同时给出构造并证明其性质。
+     我们认为从风格上看，最好把这两件事分开。
+  2. 即使用了 Aesop 自动化，在能够把证明交给 Aesop 之前，仍然需要大约 15 行手工证明工作。
+* 阅读 Wojciech Nawrocki 的[解法](https://leanprover.zulipchat.com/#narrow/channel/113488-general/topic/Rustan's.20challenge/near/398824748)。
+  这个版本使用的自动化更少，大约有 300 行证明工作。
 
-# The solution using {tactic}`grind`
+# 使用 {tactic}`grind` 的解法
 
-Actually solving the problem is not that hard:
-we just need a recursive function that carries along a record of “already assigned variables”,
-and then, whenever performing a branch on a variable, adding a new assignment in each of the branches.
-It also needs to flatten nested if-then-else expressions which have another if-then-else in the “condition” position.
-(This is extracted from Chris Hughes's solution, but without the subtyping.)
+实际上，要解决这个问题并不算太难：
+我们只需要一个递归函数，沿途携带一份“已经赋值的变量”记录；
+然后每当对某个变量做分支时，就在各个分支中加入新的赋值。
+它还需要把那些“条件”位置又出现了 if-then-else 的嵌套 if-then-else 表达式拍平。
+（这部分是从 Chris Hughes 的解法中提取出来的，但去掉了子类型。）
 
-Let's work inside the `IfExpr` namespace.
+下面我们在 `IfExpr` 命名空间里工作。
 ```lean
 namespace IfExpr
 ```
@@ -230,7 +232,7 @@ def normalize (assign : Std.HashMap Nat Bool) :
 
 ```
 
-This is pretty straightforward, but it immediately runs into a problem:
+这一定义相当直接，但立刻就会遇到一个问题：
 
 ```leanOutput failed_to_show_termination (stopAt := "Could not find a decreasing measure.")
 fail to show termination for
@@ -248,19 +250,19 @@ Could not find a decreasing measure.
 ```
 
 
-Lean here is telling us that it can't see that the function is terminating.
-Often Lean is pretty good at working this out for itself, but for sufficiently complicated functions
-we need to step in to give it a hint.
+这里 Lean 告诉我们，它看不出这个函数一定会终止。
+很多时候 Lean 很擅长自行判断这一点，但对于足够复杂的函数，
+我们就需要介入并给它一点提示。
 
-In this case we can see that it's the recursive call
-`ite (ite a b c) t e` which is calling {lean}`normalize` on `(ite a (ite b t e) (ite c t e))`
-where Lean is having difficulty. Lean has made a guess at a plausible termination measure,
-based on using automatically generated {name}`sizeOf` function, but can't prove the resulting goal,
-essentially because `t` and `e` appear multiple times in the recursive call.
+在这个例子里，我们可以看出，Lean 感到困难的是如下递归调用：
+`ite (ite a b c) t e` 会在 `(ite a (ite b t e) (ite c t e))` 上调用 {lean}`normalize`。
+Lean 已经基于自动生成的 {name}`sizeOf` 函数，猜测了一个看似合理的终止度量，
+但无法证明由此产生的目标，
+本质上是因为 `t` 和 `e` 在递归调用中各自出现了多次。
 :::
 
-To address problems like this, we nearly always want to stop using the automatically generated `sizeOf` function,
-and construct our own termination measure. We'll use
+要处理这类问题，我们几乎总是应该放弃使用自动生成的 `sizeOf` 函数，
+转而自行构造终止度量。这里我们使用
 
 ```lean
 @[simp] def normSize : IfExpr → Nat
@@ -270,12 +272,12 @@ and construct our own termination measure. We'll use
 ```
 
 
-Many different functions would work here. The basic idea is to increase the “weight” of the “condition” branch
-(this is the multiplicative factor in the `2 * normSize i` ),
-so that as long the “condition” part shrinks a bit, the whole expression counts as shrinking even if the “then” and “else” branches have grown.
-We've annotated the definition with {attrs}`@[simp]` so Lean's automated termination checker is allowed to unfold the definition.
+这里有很多不同的函数都能用。基本思路是提高“条件”分支的“权重”
+（也就是 `2 * normSize i` 中的乘法因子），
+这样一来，只要“条件”部分缩小了一些，即使 “then” 和 “else” 分支变大了，整个表达式仍可视为缩小。
+我们给这个定义加上了 {attrs}`@[simp]` 标注，这样 Lean 的自动终止性检查器就被允许展开这个定义。
 
-With this in place, the definition goes through using the {keywordOf Lean.Parser.Command.declaration}`termination_by` clause:
+有了这个定义之后，就可以借助 {keywordOf Lean.Parser.Command.declaration}`termination_by` 子句通过定义检查：
 
 :::keepEnv
 ```lean
@@ -300,8 +302,8 @@ def normalize (assign : Std.HashMap Nat Bool) :
 termination_by e => e.normSize
 ```
 
-Now it's time to prove some properties of this function.
-We're just going to package together all the properties we want:
+现在该来证明这个函数的一些性质了。
+我们直接把想要的所有性质打包在一起：
 
 ```lean -keep
 theorem normalize_spec
@@ -314,19 +316,19 @@ theorem normalize_spec
   sorry
 ```
 
-That is:
-* the result of {lean}`normalize` is actually normalized according to the initial definitions,
-* if we normalize an “if-then-else” expression using some assignments, and then evaluate the remaining variables,
-  we get the same result as evaluating the original “if-then-else” using the composite of the two assignments,
-* and any variable appearing in the assignments no longer appears in the normalized expression.
+也就是说：
+* {lean}`normalize` 的结果按照最初的定义确实是规范化的，
+* 如果我们先用某些赋值去规范化一个 if-then-else 表达式，再对剩余变量求值，
+  那么得到的结果，与在原始 if-then-else 表达式上使用这两组赋值的复合后再求值得到的结果相同，
+* 并且任何出现在赋值中的变量，都不会再出现在规范化后的表达式中。
 
-You might think that we should state these three properties as separate lemmas,
-but it turns out that proving them all at once is really convenient, because we can use the {tactic}`fun_induction`
-tactic to assume that all these properties hold for {lean}`normalize` in the recursive calls, and then
-{tactic}`grind` will just put all the facts together for the result:
+你也许会觉得，应该把这三个性质分别表述成独立引理，
+但事实证明，把它们一次性同时证明会非常方便，因为这样就可以用 {tactic}`fun_induction`
+策略，在递归调用处直接假设这些性质都对 {lean}`normalize` 成立，
+然后 {tactic}`grind` 就会把所有事实组合起来得到结论：
 
 ```lean
--- We tell `grind` to unfold our definitions above.
+-- 我们告诉 `grind` 展开上面定义的这些定义。
 attribute [local grind]
   normalized hasNestedIf hasConstantIf hasRedundantIf
   disjoint vars eval List.disjoint
@@ -341,16 +343,16 @@ theorem normalize_spec
   fun_induction normalize with grind
 ```
 
-The fact that the {tactic}`fun_induction` plus {tactic}`grind` combination just works here is sort of astonishing.
-We're really excited about this, and we're hoping to see a lot more proofs in this style!
+{tactic}`fun_induction` 加上 {tactic}`grind` 的组合在这里竟然直接奏效，着实令人惊叹。
+我们对此非常兴奋，也希望将来能看到更多这种风格的证明！
 
-A lovely consequence of highly automated proofs is that often you have some flexibility to change the statements,
-without changing the proof at all! As examples, the particular way that we asserted above that
-“any variable appearing in the assignments no longer appears in the normalized expression”
-could be stated in many different ways (although not omitted!). The variations really don't matter,
-and {tactic}`grind` can both prove, and use, any of them:
+高度自动化证明带来的一个美妙结果是：你往往可以在完全不改动证明的前提下，灵活调整命题表述！
+例如，上面“任何出现在赋值中的变量都不再出现在规范化后的表达式中”这一断言，
+可以有很多不同的表述方式（虽然不能省略！）。
+这些变化其实都无关紧要，
+而 {tactic}`grind` 既能证明它们，也能使用它们：
 
-Here we use `assign.contains v = false`:
+这里我们使用 `assign.contains v = false`：
 ```lean
 example (assign : Std.HashMap Nat Bool) (e : IfExpr) :
     (normalize assign e).normalized
@@ -361,7 +363,7 @@ example (assign : Std.HashMap Nat Bool) (e : IfExpr) :
   fun_induction normalize with grind
 ```
 
-and here we use `assign[v]? = none`:
+这里则使用 `assign[v]? = none`：
 
 ```lean
 example (assign : Std.HashMap Nat Bool) (e : IfExpr) :
@@ -373,15 +375,15 @@ example (assign : Std.HashMap Nat Bool) (e : IfExpr) :
   fun_induction normalize with grind
 ```
 
-In fact, it's also of no consequence to `grind` whether we use a
-{name}`HashMap` or a {name}`TreeMap` to store the assignments,
-we can simply switch that implementation detail out, without having to touch the proofs:
+事实上，对 `grind` 来说，用 {name}`HashMap` 还是 {name}`TreeMap`
+来存储赋值也完全无关紧要，
+我们可以直接替换这个实现细节，而完全不用改动证明：
 
 :::
 
 
 ```lean -show
--- We have to repeat these annotations because we've rolled back the environment to before we defined `normalize`.
+-- 我们必须重复这些标注，因为当前环境已经回滚到了定义 `normalize` 之前。
 attribute [local grind]
   normalized hasNestedIf hasConstantIf hasRedundantIf
   disjoint vars eval List.disjoint
@@ -417,12 +419,11 @@ theorem normalize_spec
   fun_induction normalize with grind
 ```
 
-(The fact that we can do this relies on the fact that all the lemmas for both {name}`HashMap` and for {name}`TreeMap` that {tactic}`grind` needs have already be annotated in the standard library.)
+（之所以能够这样做，是因为 {tactic}`grind` 所需的、同时适用于 {name}`HashMap` 和 {name}`TreeMap` 的所有引理，都已经在标准库中加好了标注。）
 
-If you'd like to play around with this code,
-you can find the whole file [here](https://github.com/leanprover/lean4/blob/master/tests/lean/run/grind_ite.lean),
-or in fact [play with it with no installation](https://live.lean-lang.org/#project=lean-nightly&url=https%3A%2F%2Fraw.githubusercontent.com%2Fleanprover%2Flean4%2Frefs%2Fheads%2Fmaster%2Ftests%2Flean%2Frun%2Fgrind_ite.lean)
-in the Live Lean editor.
+如果你想亲自试试这段代码，
+可以在[这里](https://github.com/leanprover/lean4/blob/master/tests/lean/run/grind_ite.lean)找到完整文件，
+或者干脆直接在 Live Lean 编辑器中[无需安装即可游玩](https://live.lean-lang.org/#project=lean-nightly&url=https%3A%2F%2Fraw.githubusercontent.com%2Fleanprover%2Flean4%2Frefs%2Fheads%2Fmaster%2Ftests%2Flean%2Frun%2Fgrind_ite.lean)。
 
 ```lean -show
 end IfExpr

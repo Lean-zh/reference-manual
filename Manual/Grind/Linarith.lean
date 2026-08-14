@@ -17,41 +17,41 @@ open Verso.Doc.Elab (CodeBlockExpander)
 
 open Lean.Elab.Tactic.GuardMsgs.WhitespaceMode
 
--- Due to Lean.Grind.Semiring.nsmul_eq_natCast_mul
+-- 由于 Lean.Grind.Semiring.nsmul_eq_natCast_mul
 set_option verso.docstring.allowMissing true
 
 open Lean.Grind
 
-#doc (Manual) "Linear Arithmetic Solver" =>
+#doc (Manual) "线性算术求解器" =>
 %%%
 tag := "grind-linarith"
 %%%
 
-The {tactic}`grind` tactic includes a linear arithmetic solver for arbitrary types, called `linarith`, that is used for types not supported by {ref "cutsat"}`cutsat`.
-Like the {ref "grind-ring"}`ring` solver, it can be used with any type that has instances of certain type classes.
-It self-configures depending on the availability of these type classes, so it is not necessary to provide all of them to use the solver; however, its capabilities are increased by the availability of more instances.
-This solver is useful for reasoning about the real numbers, ordered vector spaces, and other types that can't be embedded into {name}`Int`.
+{tactic}`grind` 策略内置了一个面向任意类型的线性算术求解器 `linarith`，用于处理 {ref "cutsat"}`cutsat` 不支持的类型。
+和 {ref "grind-ring"}`ring` 求解器一样，只要某个类型拥有若干类型类实例，就可以使用它。
+它会根据这些类型类实例的可用性自行配置，因此并不需要提供全部实例才能使用该求解器；不过，可用实例越多，它的能力也就越强。
+这个求解器适合用来推理实数、有序向量空间，以及其他无法嵌入到 {name}`Int` 中的类型。
 
 
-The core functionality of `linarith` is a model-based solver for linear inequalities with integer coefficients.
-It can be disabled using the option `grind -linarith`.
+`linarith` 的核心功能，是一个用于处理整数系数线性不等式的基于模型的求解器。
+它可以用选项 `grind -linarith` 禁用。
 
 
-:::example "Goals Decided by `linarith`" (open := true)
+:::example "由 `linarith` 判定的目标" (open := true)
 ```imports -show
 import Std
 ```
 ```lean -show
 open Lean.Grind
 ```
-All of these examples rely on instances of the following ordering notation and `linarith` classes:
+下面这些例子都依赖于下列序关系记号以及 `linarith` 相关类型类的实例：
 ```lean
 variable [LE α] [LT α] [Std.LawfulOrderLT α]  [Std.IsLinearOrder α]
 variable [IntModule α] [OrderedAdd α]
 ```
 
-Integer modules ({name}`IntModule`) are types with zero, addition, negation, subtraction, and scalar multiplication by integers that satisfy the expected properties of these operations.
-Linear orders ({name}`Std.IsLinearOrder`) are orders in which any pair of elements is ordered, and {name}`OrderedAdd` states that adding a constant to both sides preserves orderings.
+整数模（{name}`IntModule`）是带有零、加法、取负、减法以及整数标量乘法的类型，并满足这些运算应有的性质。
+线性序（{name}`Std.IsLinearOrder`）要求任意两个元素都可比较，而 {name}`OrderedAdd` 表示在不等式两边同时加上一个常量会保持序关系。
 
 ```lean
 example {a b : α} : 2 • a + b ≥ b + a + a := by grind
@@ -74,22 +74,22 @@ example {a b c d e : α} :
 ```
 :::
 
-:::example "Commutative Ring Goals Decided by `linarith`" (open := true)
+:::example "由 `linarith` 判定的交换环目标" (open := true)
 ```imports -show
 import Std
 ```
 ```lean -show
 open Lean.Grind
 ```
-For types that are commmutative rings (that is, types in which the multiplication operator is commutative) with {name}`CommRing` instances, `linarith` has more capabilities.
+对于带有 {name}`CommRing` 实例的交换环类型（也就是乘法满足交换律的类型），`linarith` 具备更强的能力。
 
 ```lean
 variable [LE R] [LT R] [Std.IsLinearOrder R] [Std.LawfulOrderLT R]
 variable [CommRing R] [OrderedRing R]
 ```
 
-The {inst}`CommRing R` instance allows `linarith` to perform basic normalization, such as identifying linear atoms `a * b` and `b * a`, and to account for scalar multiplication on both sides.
-The {inst}`OrderedRing R` instance allows the solver to support constants, because it has access to the fact that {lean}`(0 : R) < 1`.
+{inst}`CommRing R` 实例允许 `linarith` 进行基础规范化，例如识别线性原子 `a * b` 与 `b * a`，并处理等式或不等式两边的标量乘法。
+{inst}`OrderedRing R` 实例则让求解器能够支持常量，因为它可以利用 {lean}`(0 : R) < 1` 这一事实。
 
 ```lean
 example (a b : R) (h : a * b ≤ 1) : b * 3 • a + 1 ≤ 4 := by grind
@@ -106,23 +106,23 @@ example (a b c d e f : R) :
 :::
 
 :::TODO
-Planned future features
-* Support for `NatModule` (by embedding in the Grothendieck envelope, as we already do for semirings),
-* Better communication between the `ring` and `linarith` solvers.
-  There is currently very little communication between these two solvers.
-* Non-linear arithmetic over ordered rings.
+计划中的未来功能
+* 支持 `NatModule`（通过嵌入到 Grothendieck 包络中，就像我们已经对半环所做的那样），
+* 改进 `ring` 与 `linarith` 求解器之间的通信。
+  目前这两个求解器之间的通信还很少。
+* 有序环上的非线性算术。
 :::
 
-# Supporting `linarith`
+# 支持 `linarith`
 %%%
 tag := "grind-linarith-classes"
 %%%
 
-To add support for a new type to `linarith`, the first step is to implement {name}`IntModule` if possible, or {name}`NatModule` otherwise.
-Every {name}`Ring` is already an {name}`IntModule`, and every {name}`Semiring` is already a {name}`NatModule`, so implementing one of those instances is also sufficient.
-Next, one of the order classes ({name}`Std.IsPreorder`, {name}`Std.IsPartialOrder`, or {name}`Std.IsLinearOrder`) should be implemented.
-Typically an {name Std.IsPreorder}`IsPreorder` instance is enough when the context already includes a contradiction, but an {name Std.IsLinearOrder}`IsLinearOrder` instance is required in order to prove linear inequality goals.
-Additional features are enabled by implementing {name}`OrderedAdd`, which expresses that the additive structure in a module is compatible with the order, and {name}`OrderedRing`, which improves support for constants.
+若要让 `linarith` 支持一种新类型，第一步是在可能时实现 {name}`IntModule`，否则实现 {name}`NatModule`。
+每个 {name}`Ring` 都已经是 {name}`IntModule`，每个 {name}`Semiring` 都已经是 {name}`NatModule`，因此实现其中任一实例也已足够。
+接下来，还应实现某个序类型类（{name}`Std.IsPreorder`、{name}`Std.IsPartialOrder` 或 {name}`Std.IsLinearOrder`）。
+通常来说，当上下文中已经包含矛盾时，{name Std.IsPreorder}`IsPreorder` 实例就够用；但若要证明线性不等式目标，则需要 {name Std.IsLinearOrder}`IsLinearOrder` 实例。
+此外，若实现 {name}`OrderedAdd`（表达模的加法结构与序相容）以及 {name}`OrderedRing`（改进对常量的支持），还可以启用更多功能。
 
 
 {docstring Lean.Grind.NatModule}

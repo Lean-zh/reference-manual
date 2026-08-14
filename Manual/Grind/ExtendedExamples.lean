@@ -21,13 +21,13 @@ open Lean.Elab.Tactic.GuardMsgs.WhitespaceMode
 
 open Lean.Grind
 
-#doc (Manual) "Bigger Examples" =>
+#doc (Manual) "更大的示例" =>
 %%%
 tag := "grind-bigger-examples"
 %%%
 
 :::TODO
-Properly link to tutorial section
+正确链接到教程章节
 :::
 
 {include 1 Manual.Grind.ExtendedExamples.Integration}
