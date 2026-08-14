@@ -213,6 +213,9 @@ Lean {deftech (key := "environment")}[环境]不仅含有从名字到定义的�
 虽然单层语法的宏展开发生在精译之前，但整个流程中宏展开与精译是交错进行的。
 
 ## 信息树
+%%%
+tag := "info-trees"
+%%%
 
 
 与 Lean 代码交互时，需要比仅作依赖导入更多的信息。
@@ -231,6 +234,9 @@ open Lean.Elab (Info)
 
 
 # 内核
+%%%
+tag := "kernel"
+%%%
 
 
 Lean 值得信任的 {deftech (key := "kernel")}_内核_ 是一个小型、健壮的核心类型理论类型检查器实现。

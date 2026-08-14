@@ -74,6 +74,9 @@ end Forest
 
 
 # 命名空间与作用域
+%%%
+tag := "namespaces-and-scopes"
+%%%
 
 
 每个 {tech (key := "section scope")}[作用域] 都有一个 {tech (key := "current namespace")}[当前命名空间]，其取值由 {keywordOf Lean.Parser.Command.namespace}`namespace` 命令决定。{margin}[关于 {keywordOf Lean.Parser.Command.namespace}`namespace` 命令的详细介绍见 {ref "scope-commands"}[作用域命令] 一节。]
@@ -358,6 +361,9 @@ Unknown identifier `three`
 
 
 # 导出名称
+%%%
+tag := "exported-names"
+%%%
 
 
 {deftech (key := "exporting")}_导出_一个名字，就是将其引入到当前命名空间内。

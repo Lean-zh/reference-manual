@@ -158,14 +158,6 @@ $_* $[: $_]?
 :::
 
 
-Parameters may have three forms:
- * An identifier, which names a parameter but does not provide a type.
-   These parameters' types must be inferred during elaboration.
- * An underscore (`_`), which indicates a parameter that is not accessible by name in the local scope.
-   These parameters' types must also be inferred during elaboration.
- * A bracketed binder, which may specify every aspect of one or more parameters, including their names, their types, default values, and whether they are explicit, implicit, strictly implicit, or instance-implicit.
-
-
 参数可以有三种形式：
  * 标识符：为参数命名，但不提供类型。这类参数的类型必须在精译阶段推断出来。
  * 下划线（`_`）：表示该参数在局部作用域中不能通过名字访问。这类参数的类型同样需要在精译阶段推断。
@@ -238,14 +230,6 @@ tag := "bracketed-parameter-syntax"
 [$[$x :]? $t]
 ```
 :::
-
-The parameters are always in scope in the signature's type, which occurs after the colon.
-They are also in scope in the declaration's body, while names bound in the type itself are only in scope in the type.
-Thus, parameter names are used twice:
- * As names in the declaration's function type, bound as part of a {tech (key := "dependent")}[dependent function type].
- * As names in the declaration's body.
-   In function definitions, they are bound by a {keywordOf Lean.Parser.Term.fun}`fun`.
-
 
 这些参数在签名的类型（位于冒号之后）中总是处于作用域内。
 它们同样在声明的主体中可见；而由类型内部绑定的名字仅在类型内部可见。
