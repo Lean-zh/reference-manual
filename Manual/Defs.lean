@@ -26,7 +26,7 @@ tag := "definitions"
 
 
 
-Lean 中以下命令属于“定义式（definition-like）”：{TODO}[以命令名形式渲染（类似策略索引）]
+Lean 中以下命令属于“定义式”：{TODO}[以命令名形式渲染（类似策略索引）]
  * {keyword}`def`
  * {keyword}`abbrev`
  * {keyword}`example`
@@ -40,7 +40,7 @@ Lean 中以下命令属于“定义式（definition-like）”：{TODO}[以命�
 
 
 
-# 修饰符（Modifiers）
+# 修饰符
 %%%
 file := "Modifiers"
 tag := "declaration-modifiers"
@@ -91,7 +91,7 @@ $[$_]?
 若声明为 {keyword}`protected`，则打开其命名空间时不会将该名字带入作用域。
 
 被标记为 {keyword}`noncomputable` 的函数不会被编译，因而也不能执行。
-当函数使用了非可计算的推理原则（例如选择公理或排中律）来产生与其返回结果相关的数据，或使用了因效率原因而不参与代码生成的 Lean 特性（如 {tech (key := "recursor")}[递归子]）时，该函数必须是 noncomputable。
+当函数使用了非可计算的推理原则（例如选择公理或排中律）来产生与其返回结果相关的数据，或使用了因效率原因而不参与代码生成的 Lean 特性（如 {tech (key := "recursor")}[递归器]）时，该函数必须是 noncomputable。
 即使无法编译和执行，noncomputable 函数在规范化与推理中依然十分有用。
 
 {keyword}`unsafe` 标记会使定义跳过内核检查，并允许其访问可能破坏 Lean 保证的功能。
@@ -99,7 +99,7 @@ $[$_]?
 
 
 
-# 头部与签名（Headers and Signatures）
+# 头部与签名
 %%%
 file := "Headers and Signatures"
 tag := "signature-syntax"
@@ -111,7 +111,7 @@ tag := "signature-syntax"
 在 Lean 中，不同类型的声明均使用一致的格式来书写签名。
 
 
-## 声明名称（Declaration Names）
+## 声明名称
 %%%
 tag := "declaration-names"
 %%%
@@ -129,14 +129,14 @@ $_:ident
 ```grammar
 $_.{$_, $_,*}
 ```
-这些宇宙参数名是绑定出现（binding occurrences）。
+这些宇宙参数名是绑定出现。
 :::
 
 
-示例（example）不包含声明名称；而实例声明（instance）的名字是可选的。
+示例不包含声明名称；而实例声明的名字是可选的。
 
 
-## 参数与类型（Parameters and Types）
+## 参数与类型
 %%%
 tag := "parameter-syntax"
 %%%
@@ -161,10 +161,10 @@ $_* $[: $_]?
 参数可以有三种形式：
  * 标识符：为参数命名，但不提供类型。这类参数的类型必须在精译阶段推断出来。
  * 下划线（`_`）：表示该参数在局部作用域中不能通过名字访问。这类参数的类型同样需要在精译阶段推断。
- * 带括号参数（bracketed binder）：可以为一个或多个参数指定所有方面的信息，包括名称、类型、默认值，以及其是显式、隐式、严格隐式或实例隐式。
+ * 带括号参数：可以为一个或多个参数指定所有方面的信息，包括名称、类型、默认值，以及其是显式、隐式、严格隐式或实例隐式。
 
 
-## 带括号参数绑定（Bracketed Parameter Bindings）
+## 带括号参数绑定
 %%%
 tag := "bracketed-parameter-syntax"
 %%%
@@ -238,7 +238,7 @@ tag := "bracketed-parameter-syntax"
  * 作为声明主体中的名字。在函数定义里，它们由 {keywordOf Lean.Parser.Term.fun}`fun` 进行绑定。
 
 
-:::example "参数作用域（Parameter Scope）"
+:::example "参数作用域"
 {lean}`add` 的签名包含一个参数 `n`。
 此外，签名的类型为 {lean}`(k : Nat) → Nat`，这是一个包含 `k` 的函数类型。
 参数 `n` 在函数体内处于作用域中，而 `k` 不在。
@@ -260,13 +260,13 @@ def mustBeEqual (n : Nat) : (k : Nat) → n = k → String :=
 ```
 :::
 
-The section on {ref "function-application"}[function application] describes the interpretation of {tech (key := "optional parameter")}[optional], {tech (key := "automatic parameter")}[automatic], {tech}[implicit], and {tech}[instance implicit] parameters in detail.
+关于函数应用的章节 {ref "function-application"}[函数应用] 详细说明了 {tech (key := "optional parameter")}[可选]、{tech (key := "automatic parameter")}[自动]、{tech (key := "implicit")}[隐式] 与 {tech (key := "instance implicit")}[实例隐式] 等参数的解释规则。
 
 
 关于函数应用的章节 {ref "function-application"}[函数应用] 详细说明了 {tech (key := "optional parameter")}[可选]、{tech (key := "automatic parameter")}[自动]、{tech (key := "implicit")}[隐式] 与 {tech (key := "instance implicit")}[实例隐式] 等参数的解释规则。
 
 
-## 自动隐式参数（Automatic Implicit Parameters）
+## 自动隐式参数
 %%%
 tag := "automatic-implicit-parameters"
 %%%
@@ -288,7 +288,7 @@ tag := "automatic-implicit-parameters"
 ```lean -show
 variable {α : Type u} {β : Type v}
 ```
-:::example "自动隐式参数（Automatic Implicit Parameters）"
+:::example "自动隐式参数"
 
 在下面对 {lean}`map` 的定义中，{lean}`α` 与 {lean}`β` 并未显式绑定。
 这不会报错，而是会被转换为隐式参数。
@@ -309,7 +309,7 @@ map.{u, v} {α : Type u} {β : Type v}
 ::::
 
 
-::::example "无自动隐式参数（No Automatic Implicit Parameters）"
+::::example "无自动隐式参数"
 
 :::leanSection
 ```lean -show
@@ -372,7 +372,7 @@ def map {α β} (f : α → β) :
 
 
 
-:::::example "多轮自动隐式参数（Iterated Automatic Implicit Parameters）"
+:::::example "多轮自动隐式参数"
 
 :::leanSection
 ```lean -show
@@ -420,13 +420,13 @@ AtLeast.add {n✝ : Nat} {i : Fin n✝} (x y : AtLeast i) : AtLeast i
 :::::
 
 
-由于 {tech}[section variables] 引入的参数会先被插入，自动隐式参数的插入发生在其之后。
+由于 {tech (key := "section variables")}[区段变量]引入的参数会先被插入，自动隐式参数的插入发生在其之后。
 与节变量对应的参数即便并未直接对应于签名中书写的某个名字，仍会与其对应的节变量同名；而禁用自动隐式参数对这些对应于节变量的参数不起作用。
 不过，当启用自动隐式参数时，包含其他未绑定变量的节变量声明还会获得遵循与隐式参数相同规则的附加节变量。
 
 
 自动隐式参数的插入由两个选项控制。
-默认情况下，该插入处于“宽松（relaxed）”模式，这意味着任何未绑定的标识符都可能成为自动插入的候选。
+默认情况下，该插入处于“宽松”模式，这意味着任何未绑定的标识符都可能成为自动插入的候选。
 将 {option}`relaxedAutoImplicit` 设为 {lean}`false` 会禁用宽松模式，此时仅由“单个字母后跟零个或多个数字”构成的标识符才会被考虑用于自动插入。
 
 {optionDocs relaxedAutoImplicit}
@@ -435,7 +435,7 @@ AtLeast.add {n✝ : Nat} {i : Fin n✝} (x y : AtLeast i) : AtLeast i
 
 
 
-::::example "宽松 vs 非宽松的自动隐式参数（Relaxed vs Non-Relaxed Automatic Implicit Parameters）"
+::::example "宽松与非宽松的自动隐式参数"
 
 拼写错误的标识符或缺失的导入，可能会变成意外的隐式参数，如下例所示：
 ```lean
@@ -515,8 +515,9 @@ Note: It is not possible to treat `α` as an implicitly bound variable here beca
 ::::
 
 
-# 定义（Definitions）
+# 定义
 %%%
+file := "Definitions"
 tag := "definitions-command"
 %%%
 
@@ -536,7 +537,7 @@ tag := "definitions-command"
 :::syntax Lean.Parser.Command.declaration (alias := Lean.Parser.Command.definition) (title := "定义")
 使用 `:=` 的定义会将右侧的项与该常量的名字相关联。
 对于每个参数，定义体外层会包裹一个 {keywordOf Lean.Parser.Term.fun}`fun`，而类型则通过将参数绑定在函数类型中获得。
-使用 {keyword}`def` 的定义是 {tech (key := "semireducible")}[半可约（semireducible）]的。
+使用 {keyword}`def` 的定义是 {tech (key := "semireducible")}[半可约]的。
 
 
 ```grammar
@@ -564,8 +565,8 @@ def $_ $_ where
 在 {tech (key := "module")}[模块]中，使用 {keyword}`def` 定义的主体默认不会对外公开。
 :::
 
-:::syntax Lean.Parser.Command.declaration (alias := Lean.Parser.Command.abbrev) (title := "缩写（Abbreviations）")
-{deftech (key := "abbreviation")}[缩写]与使用 {keyword}`def` 的定义完全一致，区别仅在于它们是 {tech (key := "reducible")}[可约（reducible）]的。
+:::syntax Lean.Parser.Command.declaration (alias := Lean.Parser.Command.abbrev) (title := "缩写")
+{deftech (key := "abbreviation")}[缩写]与使用 {keyword}`def` 的定义完全一致，区别仅在于它们是 {tech (key := "reducible")}[可约]的。
 
 
 ```grammar
@@ -591,11 +592,11 @@ abbrev $_ $_ where
 
 {deftech (key := "opaque constant")}_不透明常量_是在内核中不受 {tech (key := "δ")}[δ-归约]约束的已定义常量。
 它们对于仅陈述某个函数的存在性很有用。
-与 {tech (key := "axiom")}[公理]不同，不透明声明只能用于可被占据（inhabited）的类型，因此不会带来不一致风险。
+与 {tech (key := "axiom")}[公理]不同，不透明声明只能用于可被占据的类型，因此不会带来不一致风险。
 亦不同于公理的是，该类型的占据元会在已编译代码中被实际使用。
 还可以使用 {attr}`implemented_by` 属性指示编译器在编译该不透明常量时发出对其他函数的调用。
 
-:::syntax Lean.Parser.Command.declaration (alias := Lean.Parser.Command.opaque) (title := "不透明常量（Opaque Constants）")
+:::syntax Lean.Parser.Command.declaration (alias := Lean.Parser.Command.opaque) (title := "不透明常量")
 带右侧定义式的不透明常量会像其他定义一样被精译。
 这表明该类型可被占据；该占据元本身不再扮演后续角色。
 
@@ -613,8 +614,9 @@ opaque $_ $_
 :::
 
 
-# 定理（Theorems）
+# 定理
 %%%
+file := "Theorems"
 tag := "theorems"
 %%%
 
@@ -628,14 +630,14 @@ tag := "theorems"
 * 定理的头部（即定理陈述）会在定理主体之前被完全精译。
   只有当区段变量（或依赖于它们的变量）出现在头部时，它们才会成为定理的参数。
   这可以避免更改证明时无意间改变定理陈述本身。
-* 定理默认是 {tech (key := "irreducible")}[不可约（irreducible）]的。
+* 定理默认是 {tech (key := "irreducible")}[不可约]的。
   由于对同一命题的所有证明在 {tech (key := "definitional equality")}[定义相等]下是相等的，几乎没有理由去展开一个定理。
 :::
 
 定理也可以是递归的，但需满足与 {ref "recursive-definitions"}[递归函数定义]相同的条件。
 不过，更常见的做法是使用 {tactic}`induction` 或 {tactic}`fun_induction` 等策略来完成证明。
 
-:::syntax Lean.Parser.Command.declaration (alias := Lean.Parser.Command.theorem) (title := "定理（Theorems）")
+:::syntax Lean.Parser.Command.declaration (alias := Lean.Parser.Command.theorem) (title := "定理")
 定理的语法与定义类似，但签名中的余类型（即定理陈述）是强制的。
 
 ```grammar
@@ -661,8 +663,9 @@ theorem $_ $_ where
 
 
 
-# 示例声明（Example Declarations）
+# 示例声明
 %%%
+file := "Example-Declarations"
 tag := "example-declarations"
 %%%
 
@@ -671,7 +674,7 @@ tag := "example-declarations"
 示例有助于在开发过程中进行增量测试，也有助于读者更容易理解一个文件。
 
 
-:::syntax Lean.Parser.Command.declaration (alias := Lean.Parser.Command.example) (title := "示例（Examples）")
+:::syntax Lean.Parser.Command.declaration (alias := Lean.Parser.Command.example) (title := "示例")
 
 ```grammar
 $_:declModifiers
