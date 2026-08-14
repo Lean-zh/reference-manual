@@ -23,7 +23,7 @@ open Lean.Elab.Tactic.GuardMsgs.WhitespaceMode
 #doc (Manual) "递归定义" =>
 %%%
 tag := "recursive-definitions"
-file := "Recursive Definitions"
+file := "Recursive-Definitions"
 %%%
 
 允许任意递归函数定义会使 Lean 的逻辑不一致。一般递归使得可以写出环形证明：“{tech (key := "proposition")}[命题] $`P` 为真，因为命题 $`P` 为真”。在证明之外，一个无限循环可以被赋予类型 {name}`Empty`，再结合 {keywordOf Lean.Parser.Term.nomatch}`nomatch` 或 {name Empty.rec}`Empty.rec`，即可“证明”任意定理。

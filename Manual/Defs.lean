@@ -101,7 +101,7 @@ $[$_]?
 
 # 头部与签名
 %%%
-file := "Headers and Signatures"
+file := "Headers-and-Signatures"
 tag := "signature-syntax"
 %%%
 
