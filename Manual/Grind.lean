@@ -152,6 +152,7 @@ example (x y : Int) :
 
 # 错误消息
 %%%
+file := "Error-Messages"
 tag := "grind-errors"
 %%%
 
@@ -162,6 +163,7 @@ tag := "grind-errors"
 
 # 最小化 `grind` 调用
 %%%
+file := "Minimizing--grind--calls"
 tag := "grind-minimizing-grind-calls"
 %%%
 
@@ -190,6 +192,7 @@ tag := "grind-minimizing-grind-calls"
 
 # 可约性
 %%%
+file := "Reducibility"
 tag := "grind-reducibility"
 %%%
 

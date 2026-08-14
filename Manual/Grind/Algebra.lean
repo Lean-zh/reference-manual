@@ -24,6 +24,7 @@ set_option maxHeartbeats 300000
 
 #doc (Manual) "代数求解器（交换环、域）" =>
 %%%
+file := "Algebraic-Solver-_LPAR_Commutative-Rings___-Fields_RPAR_"
 tag := "grind-ring"
 %%%
 

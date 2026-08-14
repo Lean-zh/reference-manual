@@ -19,6 +19,7 @@ open Lean.Elab.Tactic.GuardMsgs.WhitespaceMode
 
 #doc (Manual) "为库添加 `grind` 标注" =>
 %%%
+file := "Annotating-Libraries-for--grind"
 tag := "grind-annotation"
 %%%
 
@@ -28,6 +29,9 @@ tag := "grind-annotation"
 添加标注通常应当保守：只有当你认为模式一旦匹配，{tactic}`grind` 就应当_总是_实例化该定理时，才添加标注。
 
 # `simp` 引理
+%%%
+tag := "grind-simp-lemmas"
+%%%
 
 通常，许多带有 {attrs}`@[simp]` 标注的定理也应带有 {attrs}`@[grind =]` 标注。
 一个重要的例外是：我们通常避免让 {attrs}`@[simp]` 定理在右侧引入 {keywordOf Lean.Parser.Term.if}`if`，而倾向于使用一对分别以肯定条件和否定条件为假设的定理。
@@ -36,6 +40,9 @@ tag := "grind-annotation"
 除了使用 {attrs}`@[grind =]` 促使 {tactic}`grind` 从左向右重写外，还可以使用 {attrs}`@[grind _=_]` 进行“饱和”：遇到任意一侧时都允许双向重写。
 
 # 逆向与正向推理
+%%%
+tag := "grind-backwards-and-forwards-reasoning"
+%%%
 
 :::paragraph
 对逆向推理定理使用 {attrs}`@[grind ←]`（它从定理结论生成模式）；也就是说，当定理结论与目标匹配时，就应尝试该定理。

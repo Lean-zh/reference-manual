@@ -19,6 +19,7 @@ open Lean.Elab.Tactic.GuardMsgs.WhitespaceMode
 
 #doc (Manual) "同余闭包" =>
 %%%
+file := "Congruence-Closure"
 tag := "congruence-closure"
 %%%
 
@@ -73,6 +74,9 @@ example (a b c : Nat) (h : a = b) : (a, c) = (b, c) := by
 
 
 # 同余闭包与化简
+%%%
+tag := "grind-congruence-closure-vs-simplification"
+%%%
 
 ::::leanSection
 ```lean -show

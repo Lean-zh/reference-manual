@@ -25,6 +25,7 @@ open Lean.Grind
 
 #doc (Manual) "线性算术求解器" =>
 %%%
+file := "Linear-Arithmetic-Solver"
 tag := "grind-linarith"
 %%%
 

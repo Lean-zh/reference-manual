@@ -20,6 +20,7 @@ open Lean.Elab.Tactic.GuardMsgs.WhitespaceMode
 
 #doc (Manual) "E-匹配" =>
 %%%
+file := "E___matching"
 tag := "e-matching"
 %%%
 

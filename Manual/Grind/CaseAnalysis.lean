@@ -20,6 +20,7 @@ open Lean.Elab.Tactic.GuardMsgs.WhitespaceMode
 
 #doc (Manual) "情形分析" =>
 %%%
+file := "Case-Analysis"
 tag := "grind-split"
 %%%
 
@@ -29,6 +30,9 @@ tag := "grind-split"
 
 
 # 选择启发式方法
+%%%
+tag := "grind-selection-heuristics"
+%%%
 
 {tactic}`grind` 综合以下三类信号来决定要拆分哪个子项：
 
@@ -254,6 +258,9 @@ example (h : Even (n + 2)) : Even n := by
 :::
 
 # 性能
+%%%
+tag := "grind-performance"
+%%%
 
 情形分析功能强大，但计算代价高昂：每增加一层情形拆分，搜索空间都会成倍增长。
 因此务必谨慎，避免不必要的拆分。

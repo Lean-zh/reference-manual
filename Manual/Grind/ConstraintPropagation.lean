@@ -22,6 +22,7 @@ open Lean Lean.Grind Lean.Meta.Grind
 
 #doc (Manual) "约束传播" =>
 %%%
+file := "Constraint-Propagation"
 tag := "grind-propagation"
 %%%
 

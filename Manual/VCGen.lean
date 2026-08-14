@@ -51,6 +51,7 @@ tag := "mvcgen-tactic"
 
 # 概览
 %%%
+file := "Overview"
 tag := "mvcgen-overview"
 %%%
 
@@ -78,6 +79,7 @@ tag := "mvcgen-overview"
 
 # 谓词变换器概述
 %%%
+file := "Predicate-Transformers"
 tag := "mvcgen-predicate-transformers"
 %%%
 
@@ -702,6 +704,7 @@ tag := "mvcgen-invariant-specifications"
 
 # 验证条件
 %%%
+file := "Verification-Conditions"
 tag := "mvcgen-verification-conditions"
 %%%
 
@@ -736,6 +739,7 @@ variable [Monad m] [WPMonad m ps] {e : m α} {P : Assertion ps} {Q : PostCond α
 
 # 为单子启用 `mvcgen`
 %%%
+file := "Enabling--mvcgen--For-Monads"
 tag := "mvcgen-enabling-mvcgen-for-monads"
 %%%
 
@@ -917,6 +921,7 @@ theorem logUntil_length : (logUntil n).run.2.size = n := by
 
 # 证明模式
 %%%
+file := "Proof-Mode"
 tag := "mvcgen-proof-mode"
 %%%
 

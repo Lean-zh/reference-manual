@@ -22,6 +22,7 @@ open Lean.Elab.Tactic.GuardMsgs.WhitespaceMode
 
 #doc (Manual) "线性整数算术" =>
 %%%
+file := "Linear-Integer-Arithmetic"
 tag := "cutsat"
 %%%
 

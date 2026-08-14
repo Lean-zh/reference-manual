@@ -21,6 +21,9 @@ open Lean.Elab.Tactic.GuardMsgs.WhitespaceMode
 open Lean.Grind
 
 #doc (Manual) "整合 `grind` 的功能" =>
+%%%
+tag := "grind-integrating-features"
+%%%
 
 :::paragraph
 这个示例展示了 {tactic}`grind` 的各个子模块如何无缝整合。
