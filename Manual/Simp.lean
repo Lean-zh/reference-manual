@@ -9,6 +9,7 @@ import VersoManual
 import Lean.Parser.Term
 
 import Manual.Meta
+import Manual.ZhDocString.Simp
 
 open Verso.Genre Manual
 open Verso.Genre.Manual.InlineLean
@@ -17,90 +18,92 @@ set_option pp.rawOnError true
 
 set_option linter.unusedVariables false
 
-#doc (Manual) "The Simplifier" =>
+#doc (Manual) "简化器" =>
 %%%
 tag := "the-simplifier"
+file := "The-Simplifier"
 %%%
 
-The simplifier is one of the most-used features of Lean.
-It performs inside-out rewriting of terms based on a database of simplification rules.
-The simplifier is highly configurable, and a number of tactics use it in different ways.
+简化器是 Lean 中最常用的功能之一。
+它根据简化规则数据库，从内向外重写项。
+简化器具有很高的可配置性，许多策略以不同方式使用它。
 
-# Invoking the Simplifier
+# 调用简化器
 %%%
+file := "Invoking-the-Simplifier"
 tag := "simp-tactic-naming"
 %%%
 
 
-Lean's simplifier can be invoked in a variety of ways.
-The most common patterns are captured in a set of tactics.
-The {ref "simp-tactics"}[tactic reference] contains a complete list of simplification tactics.
+Lean 的简化器可以通过多种方式调用。
+一组策略涵盖了最常见的调用模式。
+{ref "simp-tactics"}[策略参考]中列出了完整的简化策略。
 
-Simplification tactics all contain `simp` in their name.
-Aside from that, they are named according to a system of prefixes and suffixes that describe their functionality:
+所有简化策略的名称都包含 `simp`。
+除此之外，它们还按照一套描述其功能的前缀和后缀体系来命名：
 
-: `-!` suffix
+: `-!` 后缀
 
-  Sets the {name Lean.Meta.Simp.Config.autoUnfold}`autoUnfold` configuration option to `true`, causing the simplifier to unfold all definitions
+  将 {name Lean.Meta.Simp.Config.autoUnfold}`autoUnfold` 配置选项设为 `true`，使简化器展开所有定义
 
-: `-?` suffix
+: `-?` 后缀
 
-  Causes the simplifier to keep track of which rules it employed during simplification and suggest a minimal {tech}[simp set] as an edit to the tactic script
+  使简化器记录简化期间用过哪些规则，并建议把策略脚本改为使用一个最小的 {tech (key := "simp set")}[simp 集]
 
-: `-_arith` suffix
+: `-_arith` 后缀
 
-  Enables the use of linear arithmetic simplification rules
+  启用线性算术简化规则
 
-: `d-` prefix
+: `d-` 前缀
 
-  Causes the simplifier to simplify only with rewrites that hold definitionally
+  使简化器仅使用在定义意义下成立的重写进行简化
 
-: `-_all` suffix
+: `-_all` 后缀
 
-  Causes the simplifier to repeatedly simplify all assumptions and the conclusion of the goal, taking as many hypotheses into account as possible, until no further simplification is possible
+  使简化器反复简化所有假设和目标结论，并尽可能多地考虑各项假设，直到无法继续简化为止
 
-There are two further simplification tactics, {tactic}`simpa` and {tactic}`simpa!`, which are used to simultaneously simplify a goal and either a proof term or an assumption before discharging the goal.
-This simultaneous simplification makes proofs more robust to changes in the {tech}[simp set].
+此外还有两个简化策略 {tactic}`simpa` 和 {tactic}`simpa!`，它们先同时简化目标以及一个证明项或假设，再完成目标。
+这种同步简化使证明面对 {tech (key := "simp set")}[simp 集]的变化时更加稳健。
 
-## Parameters
+## 参数
 %%%
 tag := "simp-tactic-params"
 %%%
 
-The simplification tactics have the following grammar:
+简化策略采用以下语法：
 
-:::syntax tactic (title := "Simplification Tactics")
+:::syntax tactic (title := "简化策略")
 ```grammar
 simp $_:optConfig $[only]? $[ [ $[$e],* ] ]? $[at $[$h]*]?
 ```
 :::
 
-In other words, an invocation of a simplification tactic takes the following modifiers, in order, all of which are optional:
- * A set of {ref "tactic-config"}[configuration options], which should include the fields of {name}`Lean.Meta.Simp.Config` or {name}`Lean.Meta.DSimp.Config`, depending on whether the simplifier being invoked is a version of {tactic}`simp` or a version of {tactic}`dsimp`.
- * The {keywordOf Lean.Parser.Tactic.simp}`only` modifier excludes the default simp set, instead beginning with an empty{margin}[Technically, the simp set always includes {name}`eq_self` and {name}`iff_self` in order to discharge reflexive cases.] simp set.
- * The lemma list adds or removes lemmas from the simp set. There are three ways to specify lemmas in the lemma list:
-   * `*`, which adds all assumptions in the proof state to the simp set
-   * `-` followed by a lemma, which removes the lemma from the simp set
-   * A lemma specifier, consisting of the following in sequence:
-      * An optional `↓` or `↑`, which respectively cause the lemma to be applied before or after entering a subterm (`↑` is the default). The simplifier typically simplifies subterms before attempting to simplify parent terms, as simplified arguments often make more rules applicable; `↓` causes the parent term to be simplified with the rule prior to the simplification of subterms.
-      * An optional `←`, which causes equational lemmas to be used from right to left rather than from left to right.
-      * A mandatory lemma, which can be a simp set name, a lemma name, or a term. Terms are treated as if they were named lemmas with fresh names.
- * A location specifier, preceded by {keywordOf Lean.Parser.Tactic.simp}`at`, which consists of a sequence of locations. Locations may be:
+换言之，调用简化策略时依次接受以下修饰项，且每一项都是可选的：
+ * 一组{ref "tactic-config"}[配置选项]；根据所调用的简化器是 {tactic}`simp` 还是 {tactic}`dsimp` 的变体，其中应分别包含 {name}`Lean.Meta.Simp.Config` 或 {name}`Lean.Meta.DSimp.Config` 的字段。
+ * {keywordOf Lean.Parser.Tactic.simp}`only` 修饰符排除默认 simp 集，改为从空的{margin}[严格来说，为了完成自反情形，simp 集始终包含 {name}`eq_self` 和 {name}`iff_self`。]simp 集开始。
+ * 引理列表向 simp 集添加引理或从中移除引理。引理列表中的引理有三种指定方式：
+   * `*`，将证明状态中的所有假设添加到 simp 集
+   * `-` 后接一个引理，将该引理从 simp 集中移除
+   * 引理说明符，由以下各项依次组成：
+      * 可选的 `↓` 或 `↑`，分别使引理在进入子项之前或之后应用（默认为 `↑`）。简化后的参数通常能让更多规则适用，因此简化器一般先简化子项，再尝试简化父项；`↓` 则使规则在子项简化之前先简化父项。
+      * 可选的 `←`，使等式引理从右向左而非从左向右使用。
+      * 必需的引理，可以是 simp 集名称、引理名称或项。项会被视作具有全新名称的具名引理。
+ * 位置说明符，以 {keywordOf Lean.Parser.Tactic.simp}`at` 开头，由一系列位置组成。位置可以是：
 
-   - The name of an assumption, indicating that its type should be simplified
-   - An asterisk `*`, indicating that all assumptions and the conclusion should be simplified
-   - A turnstile `⊢`, indicating that the conclusion should be simplified
+   - 假设的名称，表示应简化其类型
+   - 星号 `*`，表示应简化所有假设和结论
+   - 推导符号 `⊢`，表示应简化结论
 
-  By default, only the conclusion is simplified.
+  默认只简化结论。
 
-::::example "Location specifiers for {tactic}`simp`"
+::::example "{tactic}`simp` 的位置说明符"
 :::tacticExample
 {goal -show}`∀ (p : Nat → Prop) (x : Nat) (h : p (x + 5 + 2)) (h' : p (3 + x + 9)), p (6 + x + 1)`
 ```setup
 intro p x h h'
 ```
 
-In this proof state,
+在此证明状态中，
 ```pre
 p : Nat → Prop
 x : Nat
@@ -109,7 +112,7 @@ h' : p (3 + x + 9)
 ⊢ p (6 + x + 1)
 ```
 
-the tactic {tacticStep}`simp +arith` simplifies only the goal:
+策略 {tacticStep}`simp +arith` 只简化目标：
 
 ```post
 p : Nat → Prop
@@ -133,7 +136,7 @@ h' : p (3 + x + 9)
 ⊢ p (6 + x + 1)
 ```
 
-Invoking {tacticStep}`simp +arith at h` yields a goal in which the hypothesis `h` has been simplified:
+调用 {tacticStep}`simp +arith at h` 会得到一个假设 `h` 已被简化的目标：
 
 ```post
 p : Nat → Prop
@@ -157,7 +160,7 @@ h' : p (3 + x + 9)
 ⊢ p (6 + x + 1)
 ```
 
-The conclusion can be additionally simplified by adding `⊢`, that is, {tacticStep}`simp +arith at h ⊢`:
+添加 `⊢` 还可同时简化结论，即使用 {tacticStep}`simp +arith at h ⊢`：
 
 ```post
 p : Nat → Prop
@@ -181,7 +184,7 @@ h' : p (3 + x + 9)
 ⊢ p (6 + x + 1)
 ```
 
-Using {tacticStep}`simp +arith at *` simplifies all assumptions together with the conclusion:
+使用 {tacticStep}`simp +arith at *` 会简化所有假设以及结论：
 
 ```post
 p : Nat → Prop
@@ -194,30 +197,31 @@ h' : p (x + 12)
 ::::
 
 
-# Rewrite Rules
+# 重写规则
 %%%
+file := "Rewrite-Rules"
 tag := "simp-rewrites"
 %%%
 
-The simplifier has three kinds of rewrite rules:
+简化器有三类重写规则：
 
-: Declarations to unfold
+: 要展开的声明
 
-  The simplifier will only unfold {tech}[reducible] definitions by default.
-  However, a rewrite rule can be added for any {tech}[semireducible] or {tech}[irreducible] definition that causes the simplifier to unfold it as well.
-  When the simplifier is running in definitional mode ({tactic}`dsimp` and its variants), definition unfolding only replaces the defined name with its value; otherwise, it also uses the equational lemmas produced by the equation compiler.
+  默认情况下，简化器只展开{tech (key := "reducible")}[可约]定义。
+  不过，可以为任意{tech (key := "semireducible")}[半可约]或{tech (key := "irreducible")}[不可约]定义添加重写规则，使简化器也展开该定义。
+  当简化器以定义模式（{tactic}`dsimp` 及其变体）运行时，定义展开只会用定义的值替换定义名称；否则，它还会使用等式编译器产生的等式引理。
 
-: Equational lemmas
+: 等式引理
 
-  The simplifier can treat equality proofs as rewrite rules, in which case the left side of the equality will be replaced with the right. These equational lemmas may have any number of parameters. The simplifier instantiates parameters to make the left side of the equality match the goal, and it performs a proof search to instantiate any additional parameters.
+  简化器可以将相等性证明视为重写规则，此时等式左侧会被右侧替换。这些等式引理可以有任意数量的参数。简化器会实例化参数，使等式左侧与目标匹配，并通过证明搜索实例化任何额外参数。
 
-: Simplification procedures
+: 简化过程
 
-  The simplifier supports simplification procedures, known as {deftech}_simprocs_, that use Lean metaprogramming to perform rewrites that can't be efficiently specified using equations. Lean includes simprocs for the most important operations on built-in types.
+  简化器支持称为 {deftech (key := "simprocs")}_simproc_ 的简化过程。它们利用 Lean 元编程执行无法用等式高效指定的重写。Lean 为内置类型上最重要的操作提供了简化过程。
 
 :::keepEnv
 ```lean -show
--- Validate the above description of reducibility
+-- 验证上述关于可约性的说明
 
 @[irreducible]
 def foo (x : α) := x
@@ -282,12 +286,12 @@ example : foo'' (x, y) = (y, x) := by
 ```
 :::
 
-Due to {tech}[propositional extensionality], equational lemmas can rewrite propositions to simpler, logically equivalent propositions.
-When the simplifier rewrites a proof goal to {lean}`True`, it automatically closes it.
-As a special case of equational lemmas, propositions other than equality can be tagged as rewrite rules
-They are preprocessed into rules that rewrite the proposition to {lean}`True`.
+借助{tech (key := "propositional extensionality")}[命题外延性]，等式引理可以把命题重写为逻辑等价且更简单的命题。
+当简化器把证明目标重写为 {lean}`True` 时，它会自动关闭该目标。
+作为等式引理的一种特殊情形，相等性以外的命题也可以标记为重写规则。
+它们会被预处理为将该命题重写成 {lean}`True` 的规则。
 
-:::::example "Rewriting Propositions"
+:::::example "重写命题"
 ::::tacticExample
 
 {goal -show}`∀(α β : Type) (w y : α) (x z : β), (w, x) = (y, z)`
@@ -295,7 +299,7 @@ They are preprocessed into rules that rewrite the proposition to {lean}`True`.
 intro α β w y x z
 ```
 
-When asked to simplify an equality of pairs:
+当要求简化一个序对相等式时：
 ```pre
 α β : Type
 w y : α
@@ -303,7 +307,7 @@ x z : β
 ⊢ (w, x) = (y, z)
 ```
 
-{tacticStep}`simp` yields a conjunction of equalities:
+{tacticStep}`simp` 会得到相等式的合取：
 
 ```post
 α β : Type
@@ -312,7 +316,7 @@ x z : β
 ⊢ w = y ∧ x = z
 ```
 
-The default simp set contains {lean}`Prod.mk.injEq`, which shows the equivalence of the two statements:
+默认 simp 集包含 {lean}`Prod.mk.injEq`，它表明这两个陈述等价：
 
 ```signature
 Prod.mk.injEq.{u, v} {α : Type u} {β : Type v} (fst : α) (snd : β) :
@@ -322,24 +326,25 @@ Prod.mk.injEq.{u, v} {α : Type u} {β : Type v} (fst : α) (snd : β) :
 ::::
 :::::
 
-In addition to rewrite rules, {tactic}`simp` has a number of built-in reduction rules, {ref "simp-config"}[controlled by the `config` parameter].
-Even when the simp set is empty, {tactic}`simp` can replace `let`-bound variables with their values, reduce {keywordOf Lean.Parser.Term.match}`match` expressions whose {tech (key := "match discriminant")}[discriminants] are constructor applications, reduce structure projections applied to constructors, or apply lambdas to their arguments.
+除了重写规则，{tactic}`simp` 还有一些由 {ref "simp-config"}[`config` 参数控制]的内置归约规则。
+即使 simp 集为空，{tactic}`simp` 也可以用值替换 `let` 绑定的变量、归约{tech (key := "match discriminant")}[判别式]为构造器应用的 {keywordOf Lean.Parser.Term.match}`match` 表达式、归约应用于构造器的结构投影，或把匿名函数应用于其参数。
 
-# Simp sets
+# simp 集
 %%%
+file := "Simp-sets"
 tag := "simp-sets"
 %%%
 
-A collection of rules used by the simplifier is called a {deftech}_simp set_.
-A simp set is specified in terms of modifications from a {deftech}_default simp set_.
-These modifications can include adding rules, removing rules, or adding a set of rules.
-The `only` modifier to the {tactic}`simp` tactic causes it to start with an empty simp set, rather than the default one.
-Rules are added to the default simp set using the {attr}`simp` attribute.
+简化器使用的一组规则称为 {deftech (key := "simp set")}_simp 集_。
+simp 集通过对 {deftech (key := "default simp set")}_默认 simp 集_的修改来指定。
+这些修改可以包括添加规则、移除规则或添加一组规则。
+{tactic}`simp` 策略的 `only` 修饰符使其从空的 simp 集而不是默认 simp 集开始。
+规则通过 {attr}`simp` 属性添加到默认 simp 集。
 
 
-:::syntax attr (alias := Lean.Meta.simpExtension) (title := "Registering {keyword}`simp` Lemmas")
-The {attr}`simp` attribute adds a declaration to the default simp set.
-If the declaration is a definition, the definition is marked for unfolding; if it is a theorem, then the theorem is registered as a rewrite rule.
+:::syntax attr (alias := Lean.Meta.simpExtension) (title := "注册 {keyword}`simp` 引理")
+{attr}`simp` 属性将声明添加到默认 simp 集。
+如果该声明是定义，则将该定义标记为待展开；如果是定理，则将该定理注册为重写规则。
 
 ```grammar
 simp
@@ -359,67 +364,69 @@ simp $p:prio
 ```
 
 ```lean -show
--- Check above claim about default priority
+-- 检查上述关于默认优先级的说法
 /-- info: 1000 -/
 #check_msgs in
 #eval eval_prio default
 ```
 :::
 
-{deftech}_Custom simp sets_ are created with {name Lean.Meta.registerSimpAttr}`registerSimpAttr`, which must be run during {tech}[initialization] by placing it in an {keywordOf Lean.Parser.Command.initialize}`initialize` block.
-As a side effect, it creates a new attribute with the same interface as {attr}`simp` that adds rules to the custom simp set.
-The returned value is a {name Lean.Meta.SimpExtension}`SimpExtension`, which can be used to programmatically access the contents of the custom simp set.
-The {tactic}`simp` tactics can be instructed to use the new simp set by including its attribute name in the rule list.
+{deftech (key := "Custom simp sets")}_自定义 simp 集_使用 {name Lean.Meta.registerSimpAttr}`registerSimpAttr` 创建；必须把它放在 {keywordOf Lean.Parser.Command.initialize}`initialize` 块中，使其在{tech (key := "initialization")}[初始化]期间运行。
+它还会产生一项副作用：创建一个接口与 {attr}`simp` 相同的新属性，用于向自定义 simp 集添加规则。
+返回值是一个 {name Lean.Meta.SimpExtension}`SimpExtension`，可用于以编程方式访问自定义 simp 集的内容。
+在规则列表中加入该属性的名称，即可指示 {tactic}`simp` 策略使用新的 simp 集。
 
-{docstring Lean.Meta.registerSimpAttr}
+{zhdocstring Lean.Meta.registerSimpAttr ZhDoc.registerSimpAttr}
 
-{docstring Lean.Meta.SimpExtension}
+{zhdocstring Lean.Meta.SimpExtension ZhDoc.SimpExtension}
 
 
-# Simp Normal Forms
+# simp 范式
 %%%
+file := "Simp-Normal-Forms"
 tag := "simp-normal-forms"
 %%%
 
 
-The default {tech}[simp set] contains all the theorems and simplification procedures marked with the {attr}`simp` attribute.
-The {deftech}_simp normal form_ of an expression is the result of applying the default simp set via the {tactic}`simp` tactic until no more rules can be applied.
-When an expression is in simp normal form, it is as reduced as possible according to the default simp set, often making it easier to work with in proofs.
+默认的{tech (key := "simp set")}[simp 集]包含所有以 {attr}`simp` 属性标记的定理和简化过程。
+表达式的 {deftech (key := "simp normal form")}_simp 范式_，是通过 {tactic}`simp` 策略应用默认 simp 集，直至没有规则可以继续应用而得到的结果。
+当表达式处于 simp 范式时，它已经按照默认 simp 集尽可能充分地归约，因此通常更便于在证明中使用。
 
-The {tactic}`simp` tactic *does not guarantee confluence*, which means that the simp normal form of an expression may depend on the order in which the elements of the default simp set are applied.
-The order in which the rules are applied can be changed by assigning priorities when setting the {attr}`simp` attribute.
+{tactic}`simp` 策略*不保证合流性*，这意味着表达式的 simp 范式可能取决于默认 simp 集中各元素的应用顺序。
+设置 {attr}`simp` 属性时可以指定优先级，从而改变规则的应用顺序。
 
-When designing a Lean library, it's important to think about what the appropriate simp normal form for the various combinations of the library's operators is.
-This can serve as a guide when selecting which rules the library should add to the default simp set.
-In particular, the right-hand side of simp lemmas should be in simp normal form; this helps ensure that simplification terminates.
-Additionally, each concept in the library should be expressed through one simp normal form, even if there are multiple equivalent ways to state it.
-If a concept is stated in two different ways in different simp lemmas, then some desired simplifications may not occur because the simplifier does not connect them.
+设计 Lean 库时，必须考虑库中各种运算符组合应当采用哪种合适的 simp 范式。
+这可以指导开发者选择库应向默认 simp 集添加哪些规则。
+特别是，simp 引理的右侧应当处于 simp 范式；这有助于确保简化终止。
+此外，即使一个概念有多种等价的陈述方式，库中也应通过一种 simp 范式来表达它。
+如果不同的 simp 引理以两种不同方式陈述同一概念，那么简化器可能无法把二者联系起来，致使某些预期的简化无法发生。
 
-Even though simplification doesn't need to be confluent, striving for confluence is helpful because it makes the library more predictable and tends to reveal missing or poorly chosen simp lemmas.
-The default simp set is as much a part of a library's interface as the type signatures of the constants that it exports.
+尽管简化不必具有合流性，力求合流仍然很有帮助，因为这会使库的行为更可预测，也往往能暴露缺失或选择不当的 simp 引理。
+默认 simp 集和库所导出常量的类型签名一样，都是库接口的一部分。
 
-Libraries should not add rules to the default simp set that don't mention at least one constant defined in the library.
-Otherwise, importing a library could change the behavior of {tactic}`simp` for some unrelated library.
-If a library relies on additional simplification rules for definitions or declarations from other libraries, please create a custom simp set and either instruct users to use it or provide a dedicated tactic.
+库不应向默认 simp 集添加未提及该库所定义的任何常量的规则。
+否则，导入一个库可能会改变 {tactic}`simp` 对某个不相关库的行为。
+如果一个库依赖其他库中定义或声明的额外简化规则，请创建自定义 simp 集，并指示用户使用它，或者提供专用策略。
 
 
-# Terminal vs Non-Terminal Positions
+# 终结位置与非终结位置
 %%%
+file := "Terminal-vs-Non-Terminal-Positions"
 tag := "terminal-simp"
 %%%
 
-To write maintainable proofs, avoid using {tactic}`simp` without {keywordOf Lean.Parser.Tactic.simp}`only` unless it closes the goal.
-Such uses of {tactic}`simp` that do not close a goal are referred to as {deftech}_non-terminal simps_.
-This is because additions to the default simp set may make {tactic}`simp` more powerful or just cause it to select a different sequence of rewrites and arrive at a different simp normal form.
-When {keywordOf Lean.Parser.Tactic.simp}`only` is specified, additional lemmas will not affect that invocation of the tactic.
-In practice, terminal uses of {tactic}`simp` are not nearly as likely to be broken by the addition of new simp lemmas, and when they are, it's easier to understand the issue and fix it.
+为了编写可维护的证明，除非 {tactic}`simp` 能关闭目标，否则应避免不带 {keywordOf Lean.Parser.Tactic.simp}`only` 使用它。
+这种不关闭目标的 {tactic}`simp` 用法称为 {deftech (key := "non-terminal simps")}_非终结 simp_。
+这是因为向默认 simp 集添加规则可能会增强 {tactic}`simp`，也可能只是使它选择不同的重写序列，从而得到不同的 simp 范式。
+指定 {keywordOf Lean.Parser.Tactic.simp}`only` 后，新增引理不会影响该次策略调用。
+在实践中，{tactic}`simp` 的终结用法远不容易因新增 simp 引理而失效；即使失效，问题也更容易理解和修复。
 
-When working in non-terminal positions, {tactic}`simp?` (or one of the other simplification tactics with `?` in their names) can be used to generate an appropriate invocation with {keywordOf Lean.Parser.Tactic.simp}`only`.
-Just as {tactic}`apply?` or {tactic}`rw?` suggest the use of relevant lemmas, {tactic}`simp?` suggests an invocation of {tactic}`simp` with a minimal simp set that was used to reach the normal form.
+在非终结位置工作时，可以使用 {tactic}`simp?`（或其他名称中带有 `?` 的简化策略）生成带 {keywordOf Lean.Parser.Tactic.simp}`only` 的适当调用。
+正如 {tactic}`apply?` 或 {tactic}`rw?` 会建议使用相关引理，{tactic}`simp?` 会建议一次 {tactic}`simp` 调用，其中包含达到该范式所用的最小 simp 集。
 
-:::example "Using {tactic}`simp?`"
+:::example "使用 {tactic}`simp?`"
 
-The non-terminal {tactic}`simp?` in this proof suggests a smaller {tactic}`simp` with {keywordOf Lean.Parser.Tactic.simp}`only`:
+此证明中的非终结 {tactic}`simp?` 会建议一个带 {keywordOf Lean.Parser.Tactic.simp}`only`、规模更小的 {tactic}`simp`：
 ```lean (name:=simpHuhDemo)
 example (xs : Array Unit) : xs.size = 2 → xs = #[(), ()] := by
   intros
@@ -427,12 +434,12 @@ example (xs : Array Unit) : xs.size = 2 → xs = #[(), ()] := by
   simp?
   assumption
 ```
-The suggested rewrite is:
+建议的改写是：
 ```leanOutput simpHuhDemo
 Try this:
   [apply] simp only [List.size_toArray, List.length_cons, List.length_nil, Nat.zero_add, Nat.reduceAdd]
 ```
-which results in the more maintainable proof:
+由此得到更易维护的证明：
 ```lean
 example (xs : Array Unit) : xs.size = 2 → xs = #[(), ()] := by
   intros
@@ -447,50 +454,52 @@ example (xs : Array Unit) : xs.size = 2 → xs = #[(), ()] := by
 :::
 
 
-# Configuring Simplification
+# 配置简化
 %%%
+file := "Configuring-Simplification"
 tag := "simp-config"
 %%%
 
-{tactic}`simp` is primarily configured via a configuration parameter, passed as a named argument called `config`.
+{tactic}`simp` 主要通过配置参数来配置，该参数以名为 `config` 的具名参数传入。
 
-{docstring Lean.Meta.Simp.Config}
+{zhdocstring Lean.Meta.Simp.Config ZhDoc.Simp.Config}
 
-{docstring Lean.Meta.Simp.neutralConfig}
+{zhdocstring Lean.Meta.Simp.neutralConfig ZhDoc.Simp.neutralConfig}
 
-{docstring Lean.Meta.DSimp.Config}
+{zhdocstring Lean.Meta.DSimp.Config ZhDoc.DSimp.Config}
 
-## Options
+## 选项
 %%%
 tag := "simp-options"
 %%%
 
-Some global options affect {tactic}`simp`:
+以下全局选项会影响 {tactic}`simp`：
 
-{optionDocs simprocs}
+{zhOptionDocs simprocs ZhDoc.Option.simprocs}
 
-{optionDocs tactic.simp.trace}
+{zhOptionDocs tactic.simp.trace ZhDoc.Option.tactic.simp.trace}
 
-{optionDocs linter.unnecessarySimpa}
+{zhOptionDocs linter.unnecessarySimpa ZhDoc.Option.linter.unnecessarySimpa}
 
-{optionDocs trace.Meta.Tactic.simp.rewrite}
+{zhOptionDocs trace.Meta.Tactic.simp.rewrite ZhDoc.Option.trace.Meta.Tactic.simp.rewrite}
 
-{optionDocs trace.Meta.Tactic.simp.discharge}
+{zhOptionDocs trace.Meta.Tactic.simp.discharge ZhDoc.Option.trace.Meta.Tactic.simp.discharge}
 
-# Simplification vs Rewriting
+# 简化与重写
 %%%
+file := "Simplification-vs-Rewriting"
 tag := "simp-vs-rw"
 %%%
 
 
-Both {tactic}`simp` and {tactic}`rw`/{tactic}`rewrite` use equational lemmas to replace parts of terms with equivalent alternatives.
-Their intended uses and their rewriting strategies differ, however.
-Tactics in the {tactic}`simp` family are primarily used to reformulate a problem in a standardized way, making it more amenable to both human understanding and further automation.
-In particular, simplification should never render an otherwise-provable goal impossible.
-Tactics in the {tactic}`rw` family are primarily used to apply hand-selected transformations that do not always preserve provability nor place terms in standardized forms.
-These different emphases are reflected in the differences of behavior between the two families of tactics.
+{tactic}`simp` 和 {tactic}`rw`/{tactic}`rewrite` 都使用等式引理，将项的一部分替换为等价形式。
+不过，它们的预期用途和重写策略有所不同。
+{tactic}`simp` 系列的策略主要以标准化方式重新表述问题，使问题更便于人类理解和进一步自动化。
+特别是，简化绝不应使原本可证的目标变得不可证。
+{tactic}`rw` 系列的策略主要用于应用人工选定的变换；这些变换不一定保持可证性，也不一定将项变为标准形式。
+两类策略行为上的差异反映了各自侧重点的不同。
 
-The {tactic}`simp` tactics primarily rewrite from the inside out.
-The smallest possible expressions are simplified first so that they can unlock further simplification opportunities for the surrounding expressions.
-The {tactic}`rw` tactics select the leftmost outermost subterm that matches the pattern, rewriting it a single time.
-Both tactics allow their strategy to be overridden: when adding a lemma to a simp set, the `↓` modifier causes it to be applied prior to the simplification of subterms, and the {name Lean.Meta.Rewrite.Config.occs}`occs` field of {tactic}`rw`'s configuration parameter allows a different occurrence to be selected, either via a whitelist or a blacklist.
+{tactic}`simp` 策略主要从内向外重写。
+它首先简化尽可能小的表达式，从而为外围表达式带来更多简化机会。
+{tactic}`rw` 策略选择与模式匹配的最左、最外层子项，并只重写一次。
+两类策略都允许覆盖其默认策略：向 simp 集添加引理时，`↓` 修饰符使其在简化子项之前应用；{tactic}`rw` 配置参数的 {name Lean.Meta.Rewrite.Config.occs}`occs` 字段则允许通过白名单或黑名单选择其他出现位置。
