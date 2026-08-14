@@ -25,8 +25,8 @@ open Lean Lean.Grind Lean.Meta.Grind
 tag := "grind-propagation"
 %%%
 
-{deftech}[约束传播] 作用于白板上的 {lean}`True` 与 {lean}`False` 两个桶。
-每当某个项被加入其中一个桶时，{tactic}`grind` 都会触发许多小型的 {deftech}_前向规则_，从它的逻辑后果中推导出更多信息：
+{deftech (key := "Constraint propagation")}[约束传播] 作用于白板上的 {lean}`True` 与 {lean}`False` 两个桶。
+每当某个项被加入其中一个桶时，{tactic}`grind` 都会触发许多小型的 {deftech (key := "forward rules")}_前向规则_，从它的逻辑后果中推导出更多信息：
 
 : 布尔联结词
 
@@ -45,7 +45,7 @@ tag := "grind-propagation"
 
 : 归纳类型
 
-  如果由同一个 {tech}[归纳类型] 的两个不同构造子应用而成的项（例如 {name}`none` 和 {name}`some`）被放进同一个等价类，就会导出矛盾。
+  如果由同一个 {tech (key := "inductive type")}[归纳类型] 的两个不同构造子应用而成的项（例如 {name}`none` 和 {name}`some`）被放进同一个等价类，就会导出矛盾。
   如果由同一个构造子应用而成的两个项被放进同一个等价类，那么它们的参数也会被判定为相等。
 
 : 投影
@@ -63,7 +63,7 @@ tag := "grind-propagation"
   ```lean -show
   variable {h : α = β} {a : α}
   ```
-  任意项 {typed}`cast h a : β` 都会立刻与 {typed}`a : α` 判定为相等（使用 {tech}[异质相等]）。
+  任意项 {typed}`cast h a : β` 都会立刻与 {typed}`a : α` 判定为相等（使用 {tech (key := "heterogeneous equality")}[异质相等]）。
   :::
 
 : 归约
@@ -92,7 +92,7 @@ tag := "grind-propagation"
 
 3. 如果出现矛盾，就用 ({lean}`closeGoal`) 关闭目标。
 
-{deftech}_向上传播_从子项的事实中推出关于整个项的事实，而 {deftech}_向下传播_则从整个项的事实中推出关于子项的事实。
+{deftech (key := "Upward propagation")}_向上传播_从子项的事实中推出关于整个项的事实，而 {deftech (key := "downward propagation")}_向下传播_则从整个项的事实中推出关于子项的事实。
 :::
 
 ```lean -show
@@ -187,6 +187,9 @@ TODO (@kim-em)：上面没有给 `propagateEtaStruct` 加上 `{lean}` 字面量�
 许多针对 {lean}`Bool` 的专门变体都严格仿照这些规则（例如 {lean}`propagateBoolAndUp`）。
 
 # 仅靠传播的示例
+%%%
+tag := "grind-propagation-only-examples"
+%%%
 
 下面这些目标*纯粹*依靠约束传播即可关闭——既不需要分类讨论，也不需要理论求解器：
 

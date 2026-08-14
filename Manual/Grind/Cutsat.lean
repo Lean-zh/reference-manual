@@ -107,18 +107,18 @@ h_2 : 2 ∣ 2 * a + b
 ```
 ::::
 
-# 有理解
+# 有理数解
 %%%
 tag := "cutsat-qlia"
 %%%
 
 该求解器对线性整数算术是完备的。
 不过，即使约束很少，搜索空间也可能迅速变得极大，而这个求解器并不是为大规模分类讨论而设计的。
-{tactic}`grind` 的 `qlia` 选项通过允许求解器接受有理解来缩小搜索空间。
+{tactic}`grind` 的 `qlia` 选项通过允许求解器接受有理数解来缩小搜索空间。
 使用该选项后，求解器通常会更快，但它就不再完备。
 
-:::example "有理解"
-下面这个例子有有理解，但没有整数解：
+:::example "有理数解但无整数解"
+下面这个例子有有理数解，但没有整数解：
 ```lean
 example {x y : Int} :
     27 ≤ 13 * x + 11 * y →
@@ -128,7 +128,7 @@ example {x y : Int} :
   grind
 ```
 
-由于它使用的是有理解，因此在指定 `+qlia` 时，{tactic}`grind` 无法驳倒目标的否定：
+由于它使用的是有理数解，因此在指定 `+qlia` 时，{tactic}`grind` 无法驳倒目标的否定：
 ```lean +error (name := withqlia)
 example {x y : Int} :
     27 ≤ 13 * x + 11 * y →
@@ -158,6 +158,9 @@ h_3 : 9 * x + -7 * y + -4 ≤ 0
 :::
 
 # 非线性约束
+%%%
+tag := "grind-nonlinear-constraints"
+%%%
 
 该求解器目前并不真正求解非线性约束，而是把 `x * x` 这样的非线性项当作变量处理。
 
@@ -217,6 +220,9 @@ example (x : Int) : x*x ≥ 0 := by
 ::::
 
 # 除法与模
+%%%
+tag := "grind-division-and-modulus"
+%%%
 
 该求解器支持线性的除法与取模运算。
 
@@ -231,6 +237,9 @@ example (x y : Int) :
 :::
 
 # 代数处理
+%%%
+tag := "grind-algebraic-processing"
+%%%
 
 该求解器会对交换（半）环表达式做规范化。
 
@@ -250,7 +259,7 @@ example (a b : Nat)
 tag := "cutsat-mbtc"
 %%%
 
-该求解器还实现了 {deftech}_基于模型的理论组合_，这是一种把等式传播回共享白板的机制。
+该求解器还实现了 {deftech (key := "model-based theory combination")}_基于模型的理论组合_，这是一种把等式传播回共享白板的机制。
 这些新增的等式又可能进一步触发新的同余。
 基于模型的理论组合会扩大搜索空间；可以使用选项 `grind -mbtc` 将其禁用。
 
@@ -330,6 +339,9 @@ example (a b c : UInt64) : a ≤ 2 → b ≤ 3 → c - a - b = 0 → c ≤ 5 := 
 {zhdocstring Lean.Grind.IntInterval ZhDoc.IntInterval}
 
 # 实现说明
+%%%
+tag := "grind-implementation-notes"
+%%%
 
 ::::leanSection
 ```lean -show

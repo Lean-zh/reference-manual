@@ -47,7 +47,7 @@ example [CommRing α] (x : α) : (x + 1) * (x - 1) = x ^ 2 - 1 := by
   grind
 ```
 :::
-:::example "环的特征" (open := true)
+:::example "有限环的特征" (open := true)
 求解器“知道” `16*16 = 0`，因为[环的特征](https://en.wikipedia.org/wiki/Characteristic_%28algebra%29)（即若干个乘法单位元相加得到加法单位元时，所需份数的最小值）为 `256`；这一信息由 {name}`IsCharP` 实例提供。
 
 ```lean -show
@@ -156,6 +156,9 @@ Lean 标准库为其中定义的类型提供了适用的实例。
 例如，Mathlib 的 `CommRing` 类型类实现了 `Lean.Grind.CommRing`，从而确保 `ring` 求解器开箱即用。
 
 ## 代数结构
+%%%
+tag := "grind-algebraic-structures"
+%%%
 
 要启用代数求解器，一个类型应当具有该求解器所支持的、尽可能具体的代数结构实例。
 按具体程度递增的顺序，依次为 {name Lean.Grind.Semiring}`Semiring`、{name Lean.Grind.Ring}`Ring`、{name Lean.Grind.CommSemiring}`CommSemiring`、{name Lean.Grind.CommRing}`CommRing` 和 {name Lean.Grind.Field}`Field`。
@@ -199,6 +202,9 @@ example [Field α] (a : α) :
 {zhdocstring Lean.Grind.Field ZhDoc.Field}
 
 ## 环的特征
+%%%
+tag := "grind-ring-characteristics"
+%%%
 
 :::TODO
 
@@ -331,7 +337,10 @@ example (x y : Nat) :
 
 {zhdocstring Lean.Grind.AddRightCancel ZhDoc.AddRightCancel}
 
-# 资源限制
+# 代数求解器的资源限制
+%%%
+tag := "grind-resource-limits"
+%%%
 
 Gröbner 基计算可能非常昂贵。可以使用选项 `grind (ringSteps := <num>)` 限制 `ring` 求解器执行的步数。
 

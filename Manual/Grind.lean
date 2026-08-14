@@ -49,6 +49,7 @@ open Manual (comment)
 
 #doc (Manual) "`grind` 策略" =>
 %%%
+file := "The--grind--tactic"
 tag := "grind-tactic"
 %%%
 
@@ -93,7 +94,7 @@ Lean 标准库已经带有 `@[grind]` 属性标注，因此常用引理会被自
 :::
 
 
-:::example "同余闭包" (open := true)
+:::example "同余闭包自动推理" (open := true)
 
 这个证明使用{tech (key := "congruence closure")}[同余闭包]立即成功；同余闭包会发现由相等项组成的集合。
 
@@ -160,6 +161,9 @@ tag := "grind-errors"
 检查这些列表，可以找出缺失的事实或相互矛盾的假设。
 
 # 最小化 `grind` 调用
+%%%
+tag := "grind-minimizing-grind-calls"
+%%%
 
 `grind only [...]` 策略使用受限的定理集合调用 {tactic}`grind`，从而可能提升性能。
 可以使用 {tactic}`grind?` 方便地构造 `grind only` 调用；它会自动记录 {tactic}`grind` 使用的定理，并建议合适的 `grind only`。
@@ -185,6 +189,9 @@ tag := "grind-errors"
 {include 1 Manual.Grind.Annotation}
 
 # 可约性
+%%%
+tag := "grind-reducibility"
+%%%
 
 {tactic}`grind` 会及早展开项中的{tech (key := "Reducible")}[可约]定义。
 这使定义相等性比较和索引更高效。
@@ -294,10 +301,16 @@ fib.eq_3: [@HAdd.hAdd `[Nat] `[Nat] `[Nat] `[instHAdd] (fib #0) (fib (#0 + 1))]
 
 ```comment
 # 诊断
+%%%
+tag := "grind-diagnostics"
+%%%
 待定
 阈值通知、学到的等价类、整数赋值、代数基、已执行的拆分、实例统计。
 
 # 故障排除与常见问题
+%%%
+tag := "grind-troubleshooting-faq"
+%%%
 待定
 ```
 

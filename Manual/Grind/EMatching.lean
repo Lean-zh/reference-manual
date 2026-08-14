@@ -23,12 +23,12 @@ open Lean.Elab.Tactic.GuardMsgs.WhitespaceMode
 tag := "e-matching"
 %%%
 
-{deftech}_E-匹配_是一种用基项高效实例化量化定理陈述的过程。
+{deftech (key := "E-matching")}_E-匹配_是一种用基项高效实例化量化定理陈述的过程。
 它被广泛用于 SMT 求解器中，而 {tactic}`grind` 也利用它来高效实例化定理。
-当它与 {tech}[合一闭包] 结合使用时尤其有效，能够让 {tactic}`grind` 自动发现等式与已标注定理的非显然后果。
+当它与 {tech (key := "Congruence closure")}[同余闭包] 结合使用时尤其有效，能够让 {tactic}`grind` 自动发现等式与已标注定理的非显然后果。
 
 E-匹配会基于定理索引，把新的事实加入这个比喻意义上的白板。
-当白板中出现与索引匹配的项时，E-匹配引擎就会实例化相应定理，而由此得到的项又能供后续的 {tech}[合一闭包]、{tech}[约束传播] 与特定理论求解器继续使用。
+当白板中出现与索引匹配的项时，E-匹配引擎就会实例化相应定理，而由此得到的项又能供后续的 {tech (key := "Congruence closure")}[同余闭包]、{tech (key := "Constraint propagation")}[约束传播] 与特定理论求解器继续使用。
 每一个由 E-匹配加入白板的事实，都称为一个 {deftech (key := "e-matching instance")}_实例_。
 为定理添加 E-匹配标注、从而把它们加入索引，是让 {tactic}`grind` 有效利用库内容的关键。
 
@@ -76,7 +76,7 @@ example {a b} (h : f b = a) : g a = b := by
 虽然 {lean}`g a` 并不是模式 {lean}`g (f x)` 的一个实例，但在等式 {lean}`f b = a` 的意义下，它会变成一个实例。
 把 {lean}`g a` 中的 {lean}`a` 替换成 {lean}`f b` 后，我们得到项 {lean}`g (f b)`，它就与模式 {lean}`g (f x)` 匹配，对应赋值为 `x := b`。
 因此，定理 {lean}`gf` 会以 `x := b` 进行实例化，并断言新的等式 {lean}`g (f b) = b`。
-随后，{tactic}`grind` 使用合一闭包推出蕴含的等式 {lean}`g a = g (f b)`，从而完成证明。
+随后，{tactic}`grind` 使用同余闭包推出蕴含的等式 {lean}`g a = g (f b)`，从而完成证明。
 ::::
 
 
@@ -155,13 +155,13 @@ example (h₁ : f b = a) (h₂ : f c = a) : b = c := by
 [grind.ematch.instance] gf: g (f b) = b
 ```
 
-在 E-匹配之后，证明之所以成功，是因为合一闭包会把 `g (f c)` 与 `g (f b)` 判定为相等；这是由于 `f b` 和 `f c` 都等于 `a`。
+在 E-匹配之后，证明之所以成功，是因为同余闭包会把 `g (f c)` 与 `g (f b)` 判定为相等；这是由于 `f b` 和 `f c` 都等于 `a`。
 因此，`b` 与 `c` 必须处于同一个等价类中。
 
 ::::
 
 当多个模式被一起指定时，只有它们全部在当前上下文中匹配成功，{tactic}`grind` 才会尝试实例化该定理。
-这称为 {deftech}_多模式_。
+这称为 {deftech (key := "multi-pattern")}_多模式_。
 对于传递性规则这类引理，它尤其有用，因为规则适用时往往要求多个前提同时在场。
 通过多次调用 {keywordOf Lean.Parser.Command.grind_pattern}`grind_pattern`，或者使用 {attrs}`@[grind _=_]` 属性，一个定理也可以关联到多个彼此独立的模式。
 只要这些独立模式中有_任意一个_匹配成功，该定理就会被实例化。
@@ -175,7 +175,7 @@ axiom Rtrans {x y z : Int} : R x y → R y z → R x z
 ```
 
 要利用 {lean}`R` 的传递性，{tactic}`grind` 必须已经能够同时满足两个前提。
-这可以通过一个 {tech}[多模式] 来表示：
+这可以通过一个 {tech (key := "multi-pattern")}[多模式] 来表示：
 ```lean
 grind_pattern Rtrans => R x y, R y z
 
@@ -229,11 +229,11 @@ grind_pattern reverse_flatMap => (l.flatMap f).reverse where
 {attr}`grind?` 属性会显示一条信息消息，指出所选模式——这对调试非常有帮助！
 
 模式是定理陈述的子表达式。
-如果某个子表达式的头部是可索引常量，那么它就是 {deftech}_可索引的_；如果它能固定定理某个参数的取值，就称它 {deftech}_覆盖_ 了该参数。
+如果某个子表达式的头部是可索引常量，那么它就是 {deftech (key := "indexable")}_可索引的_；如果它能固定定理某个参数的取值，就称它 {deftech (key := "cover")}_覆盖_ 了该参数。
 可索引常量指除 {name}`Eq`、{name}`HEq`、{name}`Iff`、{name}`And`、{name}`Or` 与 {name}`Not` 之外的所有常量。
-一个模式或多模式所覆盖参数的集合，称为它的 {deftech}_覆盖度_。
+一个模式或多模式所覆盖参数的集合，称为它的 {deftech (key := "coverage")}_覆盖度_。
 有些常量的优先级低于其他常量；特别是算术运算符 {name}`HAdd.hAdd`、{name}`HSub.hSub`、{name}`HMul.hMul`、{name}`Dvd.dvd`、{name}`HDiv.hDiv` 与 {name}`HMod.hMod` 的优先级都较低。
-如果不存在一个更小的可索引子表达式，并且它的头常量优先级至少同样高，那么该可索引子表达式就是 {deftech}_极小的_。
+如果不存在一个更小的可索引子表达式，并且它的头常量优先级至少同样高，那么该可索引子表达式就是 {deftech (key := "minimal")}_极小的_。
 
 :::syntax attr (title := "Grind 模式")
 当把 {attr}`grind` 属性加到某个定义上时，每当 `grind` 遇到该定义，就会把它展开为其主体。
@@ -416,7 +416,7 @@ theorem inv_eq [One α] [Mul α] [Inv α] {a b : α}
 ```
 :::
 
-:::syntax Lean.Parser.Attr.grindMod (title := "值为函数的合一闭包")
+:::syntax Lean.Parser.Attr.grindMod (title := "函数值的同余闭包")
 ```grammar
 funCC
 ```
@@ -668,14 +668,17 @@ hom_pred
 {TODO}[为 `grind` 模式中的 `gen` 修饰符编写文档]
 
 # 检查模式
+%%%
+tag := "grind-inspecting-patterns"
+%%%
 
-{attr}`grind?` 属性是 {attr}`grind` 属性的一个变体，它还会额外显示所生成的模式或 {tech}[多模式]。
+{attr}`grind?` 属性是 {attr}`grind` 属性的一个变体，它还会额外显示所生成的模式或 {tech (key := "multi-pattern")}[多模式]。
 模式与多模式都会显示为子表达式列表，其中每个子表达式都是一个模式；普通模式则显示为单元素列表。
 在这些显示出来的模式里，已定义常量的名字会原样打印。
 当定理的参数出现在模式中时，它们会用数字而不是名字来显示。
-具体来说，这些参数按从右到左的顺序编号，从 0 开始；这种表示法称为 {deftech}_de Bruijn 索引_。
+具体来说，这些参数按从右到左的顺序编号，从 0 开始；这种表示法称为 {deftech (key := "de Bruijn indices")}_de Bruijn 索引_。
 
-:::example "检查模式" (open := true)
+:::example "模式检查示例" (open := true)
 要想让 {tactic}`grind` 使用下面这个“整除具有传递性”的证明，就需要为它提供 E-匹配模式：
 ```lean
 theorem div_trans {n k j : Nat} : n ∣ k → k ∣ j → n ∣ j := by
@@ -718,7 +721,7 @@ h₁: [q #1]
 为什么 `@[grind! →]` 会选择 `q #1` 呢？
 属性 `@[grind! →]` 会通过从左到右遍历各个假设（也就是类型为命题的参数）来寻找模式。
 在这里，只有一个假设：`p (q x) = 7`。
-前面描述的启发式规则是：{attr}`grind!` 会寻找一个极小的 {tech}[可索引] 子表达式，它能够 {tech}[覆盖] 某个此前尚未覆盖的参数。
+前面描述的启发式规则是：{attr}`grind!` 会寻找一个极小的 {tech (key := "indexable")}[可索引] 子表达式，它能够 {tech (key := "cover")}[覆盖] 某个此前尚未覆盖的参数。
 这里只有一个尚未覆盖的参数，也就是 `x`。
 整个假设 `p (q x) = 7` 不能用，因为 {tactic}`grind` 不会对等式建立索引。
 右边的 `7` 也没有帮助，因为它并不能确定 `x` 的值。
@@ -775,7 +778,7 @@ axiom q : Nat → Nat
 @[grind? .] theorem h₄ (w : p x = q y) : p (x + 2) = 7 := sorry
 ```
 这里，参数 `x` 是 `#2`，`y` 是 `#1`，而 `w` 是 `#0`。
-生成得到的多模式包含等式左边，因为它是结论中唯一一个既 {tech}[极小] 又 {tech}[可索引]，并且能够覆盖某个参数（即 `x`）的子表达式。
+生成得到的多模式包含等式左边，因为它是结论中唯一一个既 {tech (key := "minimal")}[极小] 又 {tech (key := "indexable")}[可索引]，并且能够覆盖某个参数（即 `x`）的子表达式。
 它还包含 `q y`，因为这是前提 `w` 中唯一一个能够覆盖额外参数（即 `y`）的极小可索引子表达式。
 ```leanOutput h4
 h₄: [p (#2 + 2), q #1]
@@ -809,7 +812,7 @@ axiom q : Nat → Nat
     p (x + 2) = 7 :=
   sorry
 ```
-在这些模式里，`y` 是参数 `#3`，`x` 是参数 `#2`，因为 {tech}[自动隐式参数] 是按从左到右的顺序插入的，而在定理陈述中 `y` 出现在 `x` 之前。
+在这些模式里，`y` 是参数 `#3`，`x` 是参数 `#2`，因为 {tech (key := "automatic implicit parameters")}[自动隐式参数] 是按从左到右的顺序插入的，而在定理陈述中 `y` 出现在 `x` 之前。
 两个前提分别是参数 `#1` 和 `#0`。
 在生成的多模式中，`y` 由第一个前提的某个子表达式覆盖，而 `x` 由结论中的某个子表达式覆盖：
 ```leanOutput h6
@@ -818,7 +821,7 @@ h₆: [q (#3 + 2), p (#2 + 2)]
 :::
 
 
-# 资源限制
+# E-匹配的资源限制
 %%%
 tag := "grind-limits"
 %%%
@@ -828,13 +831,13 @@ E-匹配可能生成无界数量的定理 {tech (key := "e-matching instance")}[
 
 : 代数层级
 
-  每个项都会被赋予一个 {deftech}_generation_，而由 E-匹配生成的项，其 generation 会比所有用于实例化该定理的项中的最大 generation 大 1。
+  每个项都会被赋予一个 {deftech (key := "generation")}_generation_，而由 E-匹配生成的项，其 generation 会比所有用于实例化该定理的项中的最大 generation 大 1。
   E-匹配只会考虑 generation 低于某个可配置阈值的项。
   {tactic}`grind` 的 `gen` 选项控制这个 generation 阈值。
 
 : 轮数限制
 
-  每次调用 E-匹配引擎都称为一 {deftech}_轮_。
+  每次调用 E-匹配引擎都称为一 {deftech (key := "round")}_轮_。
   E-匹配只会执行有限轮。
   {tactic}`grind` 的 `ematch` 选项控制这个轮数上限。
 

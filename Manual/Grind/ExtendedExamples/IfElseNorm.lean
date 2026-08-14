@@ -33,7 +33,7 @@ open Std
 后续示例会探讨如何把添加 {attrs}`@[grind]` 标注纳入开发流程，从而让 {tactic}`grind` 在新领域中更有效。
 这个例子并不依赖 {tactic}`grind` 的任何代数扩展；我们只使用：
 * 对库中已标注定理的实例化，
-* {tech}[合一闭包]，以及
+* {tech (key := "Congruence closure")}[同余闭包]，以及
 * 分类讨论。
 
 这里的解法建立在 Chris Hughes 早先的形式化基础上，但有几项显著改进：
@@ -43,6 +43,9 @@ open Std
 
 
 # 问题
+%%%
+tag := "grind-the-problem"
+%%%
 
 下面是 Rustan Leino 对这个问题的原始描述，由 Leonardo de Moura [发布在](https://leanprover.zulipchat.com/#narrow/stream/113488-general/topic/Rustan's.20challenge) Lean Zulip 上：
 
@@ -57,6 +60,9 @@ open Std
   需要证明某个规范化函数会产生满足这四个条件的表达式，同时还要证明这个规范化函数保持原表达式的语义不变。
 
 # 形式化陈述
+%%%
+tag := "grind-the-formal-statement"
+%%%
 
 :::leanFirst
 为了在 Lean 中形式化这一陈述，我们使用归纳类型 {name}`IfExpr`：
@@ -177,6 +183,9 @@ def IfNormalization : Type :=
 ```
 
 # 其他解法
+%%%
+tag := "grind-other-solutions"
+%%%
 
 到这里，不妨先停下来，至少做下面这些事情中的一项：
 
@@ -196,6 +205,9 @@ TODO (@david-christiansen)：这里我们放了一个指向 live-lean 的链接�
   这个版本使用的自动化更少，大约有 300 行证明工作。
 
 # 使用 {tactic}`grind` 的解法
+%%%
+tag := "grind-the-solution-using-tactic-grind"
+%%%
 
 实际上，要解决这个问题并不算太难：
 我们只需要一个递归函数，沿途携带一份“已经赋值的变量”记录；
