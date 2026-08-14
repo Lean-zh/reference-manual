@@ -20,53 +20,54 @@ open Lean.Elab.Tactic.GuardMsgs.WhitespaceMode
 open Lean Lean.Grind Lean.Meta.Grind
 
 
-#doc (Manual) "Constraint Propagation" =>
+#doc (Manual) "约束传播" =>
 %%%
+file := "Constraint-Propagation"
 tag := "grind-propagation"
 %%%
 
-{deftech}[Constraint propagation] works on the {lean}`True` and {lean}`False` buckets of the whiteboard.
-Whenever a term is added to one of those buckets, {tactic}`grind` fires dozens of small {deftech}_forward rules_ that derive further information from its logical consequences:
+{deftech (key := "Constraint propagation")}[约束传播] 作用于白板上的 {lean}`True` 与 {lean}`False` 两个桶。
+每当某个项被加入其中一个桶时，{tactic}`grind` 都会触发许多小型的 {deftech (key := "forward rules")}_前向规则_，从它的逻辑后果中推导出更多信息：
 
-: Boolean connectives
+: 布尔联结词
 
   ::::leanSection
   ```lean -show
   variable {A B : Prop}
   ```
   :::paragraph
-  The truth tables of the Boolean connectives can be used to derive further true and false facts.
-  For example:
-   * If {lean}`A` is {lean}`True`, then {lean}`A ∨ B` becomes {lean}`True`.
-   * If {lean}`A ∧ B` is {lean}`True`, then both {lean}`A` and {lean}`B` become {lean}`True`.
-   * If {lean}`A ∧ B` is {lean}`False`, at least one of {lean}`A`, {lean}`B` becomes {lean}`False`.
+  布尔联结词的真值表可用于推出更多为真或为假的事实。
+  例如：
+   * 如果 {lean}`A` 是 {lean}`True`，那么 {lean}`A ∨ B` 就变成 {lean}`True`。
+   * 如果 {lean}`A ∧ B` 是 {lean}`True`，那么 {lean}`A` 和 {lean}`B` 都会变成 {lean}`True`。
+   * 如果 {lean}`A ∧ B` 是 {lean}`False`，那么 {lean}`A`、{lean}`B` 中至少有一个会变成 {lean}`False`。
   :::
   ::::
 
-: Inductive Types
+: 归纳类型
 
-  If terms formed by applications of two different constructors of the same {tech}[inductive type] (e.g. {name}`none` and {name}`some`) are placed in the same equivalence class, a contradiction is derived.
-  If two terms formed by applications of the same constructor are placed in the same equivalence class, then their arguments are also made equal.
+  如果由同一个 {tech (key := "inductive type")}[归纳类型] 的两个不同构造子应用而成的项（例如 {name}`none` 和 {name}`some`）被放进同一个等价类，就会导出矛盾。
+  如果由同一个构造子应用而成的两个项被放进同一个等价类，那么它们的参数也会被判定为相等。
 
-: Projections
+: 投影
   :::leanSection
   ```lean -show
   variable {x x' : α} {y y' : β} {h : (x, y) = (x', y')} {a : α}
   ```
 
-  From {typed}`h : (x, y) = (x', y')` we derive {lean}`x = x'` and {lean}`y = y'`.
+  从 {typed}`h : (x, y) = (x', y')` 可以推出 {lean}`x = x'` 和 {lean}`y = y'`。
   :::
 
-: Casts
+: 强制转换
 
   :::leanSection
   ```lean -show
   variable {h : α = β} {a : α}
   ```
-  Any term {typed}`cast h a : β` is equated with {typed}`a : α` immediately (using {tech}[heterogeneous equality]).
+  任意项 {typed}`cast h a : β` 都会立刻与 {typed}`a : α` 判定为相等（使用 {tech (key := "heterogeneous equality")}[异质相等]）。
   :::
 
-: Reduction
+: 归约
 
   ::::keepEnv
   :::leanSection
@@ -77,22 +78,22 @@ Whenever a term is added to one of those buckets, {tactic}`grind` fires dozens o
     y : β
   variable {p : S α β}
   ```
-  Definitional reduction is propagated, so {lean}`(a, b).1` is equated with {lean}`a`.
+  定义性归约也会传播，因此 {lean}`(a, b).1` 会与 {lean}`a` 判定为相等。
   :::
   ::::
 
 :::paragraph
-Below is a _representative slice_ of the propagators that demonstrates their overall style.
-Each follows the same skeleton.
+下面给出一组_具有代表性_的传播器片段，用来展示它们的整体风格。
+它们都遵循同一套骨架。
 
-1. It inspect the truth value of sub‑expressions.
+1. 检查子表达式的真值。
 
-2. If further facts can be derived, it either equates terms (connecting them on the metaphorical whiteboard) using ({lean}`pushEq`), or it indicates truth values using ({lean}`pushEqTrue` / {lean}`pushEqFalse`).
-   These steps produce proof terms using internal helper lemmas such as {name}`Grind.and_eq_of_eq_true_left`.
+2. 如果还能推出更多事实，就要么用 ({lean}`pushEq`) 将项判定为相等（也就是把它们连接到比喻意义上的白板上），要么用 ({lean}`pushEqTrue` / {lean}`pushEqFalse`) 标示真值。
+   这些步骤会借助诸如 {name}`Grind.and_eq_of_eq_true_left` 这样的内部辅助引理来构造证明项。
 
-3. If a contradiction arises, the goal is closed using ({lean}`closeGoal`).
+3. 如果出现矛盾，就用 ({lean}`closeGoal`) 关闭目标。
 
-{deftech}_Upward propagation_ derives facts about a term from facts about sub-terms, while {deftech}_downward propagation_ derives facts about sub-terms from facts about a term.
+{deftech (key := "Upward propagation")}_向上传播_从子项的事实中推出关于整个项的事实，而 {deftech (key := "downward propagation")}_向下传播_则从整个项的事实中推出关于子项的事实。
 :::
 
 ```lean -show
@@ -100,7 +101,7 @@ namespace ExamplePropagators
 ```
 ```lean -keep
 
-/-- Propagate equalities *upwards* for conjunctions. -/
+/-- 对合取进行*向上*的相等传播。 -/
 builtin_grind_propagator propagateAndUp ↑And := fun e => do
   let_expr And a b := e | return ()
   if (← isEqTrue a) then
@@ -125,7 +126,7 @@ builtin_grind_propagator propagateAndUp ↑And := fun e => do
         a b (← mkEqFalseProof b)
 
 /--
-Truth flows *down* when the whole `And` is proven `True`.
+当整个 `And` 已被证明为 `True` 时，真值会向*下*传播。
 -/
 builtin_grind_propagator propagateAndDown ↓And :=
   fun e => do
@@ -145,7 +146,7 @@ end ExamplePropagators
 
 
 
-Other frequently‑triggered propagators follow the same pattern:
+其他经常触发的传播器也遵循同样的模式：
 
 ::::leanSection
 ```lean -show
@@ -154,68 +155,71 @@ variable {A B : Prop} {a b : α}
 
 :::table +header
 *
-  * Propagator
-  * Handles
-  * Notes
+  * 传播器
+  * 处理对象
+  * 说明
 *
   * {lean}`propagateOrUp` / {lean}`propagateOrDown`
   * {lean}`A ∨ B`
-  * Uses the truth table for disjunction to derive further truth values
+  * 使用析取的真值表来推出更多真值
 *
   * {lean}`propagateNotUp` / {lean}`propagateNotDown`
   * {lean}`¬ A`
-  * Ensures that {lean}`¬ A` and {lean}`A` have opposite truth values
+  * 确保 {lean}`¬ A` 与 {lean}`A` 的真值相反
 *
   * {lean}`propagateEqUp` / {lean}`propagateEqDown`
   * `a = b`
-  * Bridges Booleans, detects constructor clash {TODO}[What does 'bridges booleans' mean? Find out]
+  * 桥接布尔值，检测构造子冲突 {TODO}[“桥接布尔值”是什么意思？请查明]
 *
   * {lean}`propagateIte` / {lean}`propagateDIte`
   * {name}`ite` / {name}`dite`
-  * Equates the term with the chosen branch once the condition's truth value is known
+  * 一旦已知条件的真值，就把该项与选中的分支判定为相等
 *
   * `propagateEtaStruct`
-  * Values of structures tagged `[grind ext]`
-  * Generates η‑expansion `a = ⟨a.1, …⟩`
+  * 带有 `[grind ext]` 标记的结构体值
+  * 生成 η‑展开 `a = ⟨a.1, …⟩`
 :::
 ::::
 
 :::comment
-TODO (@kim-em): we don't add the `{lean}` literal type to `propagateEtaStruct` above because it is private.
+TODO (@kim-em)：上面没有给 `propagateEtaStruct` 加上 `{lean}` 字面量类型，因为它是私有的。
 :::
 
-Many specialized variants for {lean}`Bool` mirror these rules exactly (e.g. {lean}`propagateBoolAndUp`).
+许多针对 {lean}`Bool` 的专门变体都严格仿照这些规则（例如 {lean}`propagateBoolAndUp`）。
 
-# Propagation‑Only Examples
+# 仅靠传播的示例
+%%%
+tag := "grind-propagation-only-examples"
+%%%
 
-These goals are closed *purely* by constraint propagation—no case splits, no theory solvers:
+下面这些目标*纯粹*依靠约束传播即可关闭——既不需要分类讨论，也不需要理论求解器：
 
 ```lean
--- Boolean connective: a && !a is always false.
+-- 布尔联结词：a && !a 永远为 false。
 example (a : Bool) : (a && !a) = false := by
   grind
 
--- Conditional (ite):
--- once the condition is true, ite picks the 'then' branch.
+-- 条件表达式（ite）：
+-- 一旦条件为真，ite 就会选择 then 分支。
 example (c : Bool) (t e : Nat) (h : c = true) :
     (if c then t else e) = t := by
   grind
 
--- Negation propagates truth downwards.
+-- 否定会向下传播真值。
 example (a : Bool) (h : (!a) = true) : a = false := by
   grind
 ```
 
-These snippets run instantly because the relevant propagators ({lean}`propagateBoolAndUp`, {lean}`propagateIte`, {lean}`propagateBoolNotDown`) fire as soon as the hypotheses are internalized.
-Setting the option {option}`trace.grind.eqc` to {lean}`true` causes {tactic}`grind` to print a line every time two equivalence classes merge, which is handy for seeing propagation in action.
+这些片段会立刻运行完成，因为相关传播器（{lean}`propagateBoolAndUp`、{lean}`propagateIte`、{lean}`propagateBoolNotDown`）会在假设被内化后立刻触发。
+将选项 {option}`trace.grind.eqc` 设为 {lean}`true` 后，每当两个等价类合并时，{tactic}`grind` 都会打印一行信息，这很适合观察传播是如何发生的。
 
 
 :::TODO
 
-This section should be uncommented when the command is implemented:
+等该命令实现后，这一节应取消注释：
 
 ```lean -show
--- Test to ensure that this section is uncommented when the command is implemented
+-- 用于确保该命令实现后，本节已被取消注释的测试
 /--
 error: elaboration function for `Lean.Parser.«command_Grind_propagator___(_):=_»` has not been implemented
 -/
@@ -223,18 +227,18 @@ error: elaboration function for `Lean.Parser.«command_Grind_propagator___(_):=_
 grind_propagator ↑x(y) := _
 ```
 
-{tactic}`grind` is still under active development, and its implementation is likely to change.
-Until the API has stabilized we recommend _refraining from writing custom elaborators or satellite solvers_.
-If a project-local custom propagator is really needed, then it should be defined using the {keywordOf «command_Grind_propagator___(_):=_»}`grind_propagator` command, rather than {keywordOf «command_Builtin_grind_propagator____:=_»}`builtin_grind_propagator` (the latter is reserved for Lean’s own code).
-When adding new propagators, keep them *small and orthogonal*—they should fire in ≤1 µs and either push one fact or close the goal.
-This keeps the propagation phase predictable and easy to debug.
+{tactic}`grind` 仍在积极开发中，其实现很可能还会变化。
+在 API 稳定之前，我们建议_不要编写自定义精译器或卫星求解器_。
+如果项目本地确实需要自定义传播器，那么应使用 {keywordOf «command_Grind_propagator___(_):=_»}`grind_propagator` 命令来定义，而不是使用 {keywordOf «command_Builtin_grind_propagator____:=_»}`builtin_grind_propagator`（后者保留给 Lean 自身代码使用）。
+添加新传播器时，应保持其*小而正交*——它们应在 ≤1 µs 内触发，并且要么推进一个事实，要么关闭目标。
+这样可以让传播阶段的行为更可预测，也更容易调试。
 :::
 
-The set of propagation rules is expanded and refined over time, so the InfoView will show increasingly rich {lean}`True` and {lean}`False` buckets.
-The full equivalence classes are displayed automatically _only when {tactic}`grind` fails_, and only for the first subgoal that it could not close—use this output to inspect missing facts and understand why the subgoal remains open.
+传播规则的集合会随着时间不断扩展和细化，因此 InfoView 中显示的 {lean}`True` 与 {lean}`False` 桶也会越来越丰富。
+完整的等价类只会在 {tactic}`grind` _失败时_自动显示，而且只针对它无法关闭的第一个子目标——可以利用这些输出来检查缺失的事实，并理解为什么该子目标仍然未解。
 
-:::example "Identifying Missing Facts"
-In this example, {tactic}`grind` fails:
+:::example "识别缺失的事实"
+在这个例子中，{tactic}`grind` 失败了：
 
 ```lean +error (name := missing)
 example :
@@ -243,7 +247,7 @@ example :
     w = z := by
   grind
 ```
-The resulting error message includes the identified equivalence classes along with the true and false propositions:
+生成的错误消息会给出识别到的等价类，以及为真和为假的命题：
 ```leanOutput missing (expandTrace := eqc)
 `grind` failed
 case grind
@@ -266,7 +270,7 @@ h_2 : ¬w = z
     [eqc] {x, y, z}
     [eqc] {w, v}
 ```
-Both `x = y` and `y = z` were discovered by constraint propagation from the `x = y ∧ y = z` premise.
-In this proof, {tactic}`grind` performed a case split on `w = x ∨ w = v`.
-In the second branch, it could not place `w` and `z` in the same equivalence class.
+`x = y` 和 `y = z` 都是由约束传播从前提 `x = y ∧ y = z` 中发现的。
+在这个证明中，{tactic}`grind` 对 `w = x ∨ w = v` 做了分类讨论。
+在第二个分支里，它无法把 `w` 和 `z` 放进同一个等价类。
 :::

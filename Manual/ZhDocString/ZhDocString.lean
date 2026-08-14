@@ -35,6 +35,11 @@ private meta def translatedBlocks (names : List Name) (blame : Syntax)
     | throwErrorAt blame "无法将中文文档字符串解析为 Markdown"
   ast.blocks.mapM (blockFromMarkdownWithLean names)
 
+private def finalNameComponent : Name → String
+  | .anonymous => ""
+  | .str _ s => s
+  | .num _ n => toString n
+
 /--
 Render the declaration and signatures of `enName`, using documentation text from `zhName`.
 The two declarations must have matching constructors and fields; mismatches are errors rather than
@@ -64,7 +69,7 @@ where
         throwErrorAt blame "中英文结构体的构造子可见性不匹配：{enName} / {zhName}"
       let ctorRow : Option Term ← match enCtor?, zhCtor? with
         | some enCtor, some zhCtor => do
-          if enCtor.name.getString! != zhCtor.name.getString! then
+          if finalNameComponent enCtor.name != finalNameComponent zhCtor.name then
             throwErrorAt blame
               "中英文结构体构造子映射不匹配：{enCtor.name} / {zhCtor.name}"
           let header := if enIsClass then "实例构造子" else "构造子"
@@ -80,7 +85,7 @@ where
       if enParents.size != zhParents.size then
         throwErrorAt blame "中英文结构体父类型数量不匹配：{enName} / {zhName}"
       for (enParent, zhParent) in enParents.zip zhParents do
-        if enParent.name.getString! != zhParent.name.getString! then
+        if finalNameComponent enParent.name != finalNameComponent zhParent.name then
           throwErrorAt blame
             "中英文结构体父类型映射不匹配：{enParent.name} / {zhParent.name}"
 
@@ -97,7 +102,7 @@ where
       if enFields.size != zhFields.size then
         throwErrorAt blame "中英文结构体字段数不匹配：{enName} / {zhName}"
       let fieldSigs : Array Term ← (enFields.zip zhFields).mapM fun (enField, zhField) => do
-        if enField.projFn.getString! != zhField.projFn.getString! then
+        if finalNameComponent enField.projFn != finalNameComponent zhField.projFn then
           throwErrorAt blame "中英文字段映射不匹配：{enField.projFn} / {zhField.projFn}"
         let inheritedFrom : Option Nat :=
           enField.fieldFrom.head?.bind (fun n => enParents.findIdx? (·.name == n.name))
@@ -119,7 +124,7 @@ where
         throwErrorAt blame "中英文归纳类型构造子数量不匹配：{enName} / {zhName}"
       let ctorSigs : Array Term ← (enCtors.zip zhCtors).mapM fun (enCtor, zhCtor) =>
         withTheReader Core.Context ({· with currNamespace := enName}) do
-          if enCtor.name.getString! != zhCtor.name.getString! then
+          if finalNameComponent enCtor.name != finalNameComponent zhCtor.name then
             throwErrorAt blame "中英文构造子映射不匹配：{enCtor.name} / {zhCtor.name}"
           let desc ← translatedBlocks [enName, enCtor.name, zhName, zhCtor.name]
             blame zhCtor.docstring?
@@ -137,6 +142,16 @@ where
     | _, .inductive .. =>
       throwErrorAt blame "中文文档载体 {zhName} 是归纳类型，但 {enName} 不是归纳类型"
     | _, _ => pure #[]
+
+/--
+Insert only the translated documentation body from `zhName`, without rendering a declaration
+signature. This is the translated counterpart of `includeDocstring` for use inside syntax blocks.
+-/
+@[block_command]
+meta def zhincludeDocstring : BlockCommandOf ZhDocstringOpts
+  | ⟨(_enStx, enName), (zhStx, zhName), _customLabel⟩ => do
+    let body ← translatedBlocks [enName, zhName] zhStx (← getDocString? (← getEnv) zhName)
+    ``(Doc.Block.concat #[$body,*])
 
 section
 variable {m}

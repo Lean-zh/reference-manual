@@ -20,24 +20,27 @@ open Lean.Elab.Tactic.GuardMsgs.WhitespaceMode
 
 open Lean.Grind
 
-#doc (Manual) "Integrating `grind`'s Features" =>
+#doc (Manual) "整合 `grind` 的功能" =>
+%%%
+tag := "grind-integrating-features"
+%%%
 
 :::paragraph
-This example demonstrates how the various submodules of {tactic}`grind` are seamlessly integrated.
-In particular we can:
-* instantiate theorems from the library, using custom patterns,
-* perform case splitting,
-* do linear integer arithmetic reasoning, including modularity conditions, and
-* do Gröbner basis reasoning
-all without providing explicit instructions to drive the interactions between these modes of reasoning.
+这个示例展示了 {tactic}`grind` 的各个子模块如何无缝整合。
+特别地，我们可以：
+* 使用自定义模式对库中的定理进行实例化，
+* 执行分类讨论，
+* 进行线性整数算术推理，包括模约束，以及
+* 进行 Gröbner 基推理
+而完全无需显式给出指令来驱动这些推理模式之间的交互。
 :::
 
-For this example we'll begin with a “mocked up” version of the real numbers, and the `sin` and `cos` functions.
-Of course, this example works [without any changes](https://github.com/leanprover-community/mathlib4/blob/master/MathlibTest/grind/trig.lean) using Mathlib's versions of these!
+在这个示例中，我们先使用一个“仿造”的实数版本，以及 `sin` 和 `cos` 函数。
+当然，若改用 Mathlib 中对应的版本，这个例子也能[无需任何修改](https://github.com/leanprover-community/mathlib4/blob/master/MathlibTest/grind/trig.lean)地工作！
 
 
 :::TODO
-A `sorry` for `instCommRingR` causes a run-time crash. It's unclear why.
+给 `instCommRingR` 写一个 `sorry` 会导致运行时崩溃，原因尚不清楚。
 :::
 
 ```lean
@@ -53,21 +56,21 @@ axiom trig_identity : ∀ x, (cos x)^2 + (sin x)^2 = 1
 ```
 
 :::paragraph
-Our first step is to tell grind to “put the trig identity on the whiteboard” whenever it sees a goal involving {name}`sin` or {name}`cos`:
+第一步是告诉 grind：只要它看到涉及 {name}`sin` 或 {name}`cos` 的目标，就把三角恒等式“写到白板上”：
 
 ```lean
 grind_pattern trig_identity => cos x
 grind_pattern trig_identity => sin x
 ```
 
-Note here we use *two* different patterns for the same theorem, so the theorem is instantiated even if {tactic}`grind` sees just one of these functions.
-If we preferred to more conservatively instantiate the theorem only when both {name}`sin` and {name}`cos` are present, we could have used a multi-pattern:
+注意，这里我们为同一个定理使用了*两个*不同的模式，因此即使 {tactic}`grind` 只看到其中一个函数，也会对该定理进行实例化。
+如果希望更保守一些，只在 {name}`sin` 和 {name}`cos` 同时出现时才实例化该定理，那么可以使用多模式：
 
 ```lean -keep
 grind_pattern trig_identity => cos x, sin x
 ```
 
-For this example, either approach will work.
+对于这个例子，这两种做法都可以。
 :::
 
 ::::leanSection
@@ -76,27 +79,27 @@ variable {x : R}
 ```
 
 :::paragraph
-Because `grind` immediately notices the trig identity, we can prove goals like this:
+由于 `grind` 会立刻注意到三角恒等式，我们可以证明如下目标：
 ```lean
 example : (cos x + sin x)^2 = 2 * cos x * sin x + 1 := by
   grind
 ```
-Here {tactic}`grind` does the following:
+这里 {tactic}`grind` 的行为如下：
 
-1. It notices {lean}`cos x` and {lean}`sin x`, so instantiates the trig identity.
+1. 它注意到 {lean}`cos x` 和 {lean}`sin x`，于是实例化三角恒等式。
 
-2. It notices that this is a polynomial in {inst}`CommRing R`, and sends it to the Gröbner basis module.
-   No calculation happens at this point: it's the first polynomial relation in this ring, so the Gröbner basis is updated to {lean}`[(cos x)^2 + (sin x)^2 - 1]`.
+2. 它注意到这在 {inst}`CommRing R` 上是一个多项式，于是将其交给 Gröbner 基模块。
+   此时并不会进行实际计算：这是该环中的第一条多项式关系，因此 Gröbner 基会更新为 {lean}`[(cos x)^2 + (sin x)^2 - 1]`。
 
-3. It notices that the left and right hand sides of the goal are polynomials in {inst}`CommRing R`, and sends them to the Gröbner basis module for normalization.
+3. 它注意到目标左右两边都是 {inst}`CommRing R` 上的多项式，于是将它们送往 Gröbner 基模块做规范化。
 
-Since their normal forms modulo {lean}`(cos x)^2 + (sin x)^2 = 1` are equal, their equivalence classes are merged, and the goal is solved.
+由于它们模去 {lean}`(cos x)^2 + (sin x)^2 = 1` 后的范式相同，它们所在的等价类会被合并，目标因此得证。
 
 :::
 
 
 :::paragraph
-We can also do this sort of argument when {tech}[congruence closure] is needed:
+当需要 {tech (key := "Congruence closure")}[同余闭包] 时，我们也可以做这种推理：
 ```lean
 example (f : R → Nat) :
     f ((cos x + sin x)^2) = f (2 * cos x * sin x + 1) := by
@@ -107,12 +110,12 @@ example (f : R → Nat) :
 variable (f : R → Nat) (n : Nat)
 ```
 
-As before, {tactic}`grind` instantiates the trig identity, notices that {lean}`(cos x + sin x)^2` and {lean}`2 * cos x * sin x + 1` are equal modulo {lean}`(cos x)^2 + (sin x)^2 = 1`,
-puts those algebraic expressions in the same equivalence class, and then puts the function applications {lean}`f ((cos x + sin x)^2)` and {lean}`f (2 * cos x * sin x + 1)` in the same equivalence class,
-and closes the goal.
+和前面一样，{tactic}`grind` 会实例化三角恒等式，注意到 {lean}`(cos x + sin x)^2` 与 {lean}`2 * cos x * sin x + 1` 在模去 {lean}`(cos x)^2 + (sin x)^2 = 1` 后相等，
+于是把这两个代数表达式放入同一个等价类，再把函数应用 {lean}`f ((cos x + sin x)^2)` 与 {lean}`f (2 * cos x * sin x + 1)` 放入同一个等价类，
+从而关闭目标。
 :::
 
-Notice that we've used an arbitrary function {typed}`f : R → Nat` here; let's check that `grind` can use some linear integer arithmetic reasoning after the Gröbner basis steps:
+注意，这里我们使用的是任意函数 {typed}`f : R → Nat`；下面来看看 `grind` 在完成 Gröbner 基步骤之后，是否还能继续使用一些线性整数算术推理：
 ```lean
 example (f : R → Nat) :
     4 * f ((cos x + sin x)^2) ≠ 2 + f (2 * cos x * sin x + 1) := by
@@ -120,24 +123,24 @@ example (f : R → Nat) :
 ```
 
 
-Here {tactic}`grind` first works out that this goal reduces to {lean}`4 * n ≠ 2 + n` for some {typed}`n : Nat` (i.e. by identifying the two function applications as described above), and then uses modularity to derive a contradiction.
+这里 {tactic}`grind` 首先推出，这个目标可化简为某个 {typed}`n : Nat` 上的 {lean}`4 * n ≠ 2 + n`（也就是像上面那样识别出那两个函数应用相等），然后利用模算术推出矛盾。
 
 
 
-Finally, we can also mix in some case splitting:
+最后，我们还可以混入一些分类讨论：
 ```lean
 example (f : R → Nat) :
     max 3 (4 * f ((cos x + sin x)^2)) ≠
       2 + f (2 * cos x * sin x + 1) := by
   grind
 ```
-As before, {tactic}`grind` first does the instantiation and Gröbner basis calculations required to identify the two function applications.
-However the `cutsat` algorithm by itself can't do anything with {lean}`max 3 (4 * n) ≠ 2 + n`.
-Next, after instantiating {lean}`Nat.max_def` (automatically, because of an annotation in the standard library) which states {lean}`∀ {n m : Nat}, max n m = if n ≤ m then m else n`, {tactic}`grind` can then case split on the inequality.
-In the branch {lean}`3 ≤ 4 * n`, `cutsat` again uses modularity to prove `4 * n ≠ 2 + n`.
-In the branch {lean}`4 * n < 3`, `cutsat` quickly determines {lean}`n = 0`, and then notices that {lean}`4 * 0 ≠ 2 + 0`.
+和前面一样，{tactic}`grind` 首先完成识别这两个函数应用所需的实例化与 Gröbner 基计算。
+不过，仅靠 `cutsat` 算法本身无法处理 {lean}`max 3 (4 * n) ≠ 2 + n`。
+接着，在实例化 {lean}`Nat.max_def`（这是自动发生的，因为标准库中有相应标注）之后——该定理断言 {lean}`∀ {n m : Nat}, max n m = if n ≤ m then m else n`——{tactic}`grind` 就可以对这个不等式做分类讨论。
+在分支 {lean}`3 ≤ 4 * n` 中，`cutsat` 再次利用模算术证明 `4 * n ≠ 2 + n`。
+在分支 {lean}`4 * n < 3` 中，`cutsat` 很快确定 {lean}`n = 0`，继而注意到 {lean}`4 * 0 ≠ 2 + 0`。
 
-This has been, of course, a quite artificial example!
-In practice, this sort of automatic integration of different reasoning modes is very powerful: the central “whiteboard” which tracks instantiated theorems and equivalence classes can hand off relevant terms and equalities to the appropriate modules (here, `cutsat` and Gröbner bases), which can then return new facts to the whiteboard.
+当然，这仍是一个相当人为的例子！
+但在实践中，这种不同推理模式之间的自动整合非常强大：负责跟踪已实例化定理与等价类的中央“白板”，能够把相关项和等式交给合适的模块（这里是 `cutsat` 和 Gröbner 基），这些模块随后又能把新的事实返回给白板。
 
 ::::

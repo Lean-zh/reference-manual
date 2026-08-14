@@ -17,8 +17,9 @@ open Verso.Doc.Elab (CodeBlockExpander)
 
 open Lean.Elab.Tactic.GuardMsgs.WhitespaceMode
 
-#doc (Manual) "Congruence Closure" =>
+#doc (Manual) "同余闭包" =>
 %%%
+file := "Congruence-Closure"
 tag := "congruence-closure"
 %%%
 
@@ -26,10 +27,10 @@ tag := "congruence-closure"
 ```lean -show
 variable {a a' : α} {b b' : β} {f : α → β → γ}
 ```
-{deftech}_Congruence closure_ maintains equivalence classes of terms under the reflexive, symmetric, and transitive closure of “is equal to” _and_ the rule that equal arguments yield equal function results.
-Formally, if {lean}`a = a'` and {lean}`b = b'`, then {lean}`f a b = f a' b'` is added.
-The algorithm merges equivalence classes until a fixed point is reached.
-If a contradiction is discovered, then the goal can be closed immediately.
+{deftech (key := "Congruence closure")}_同余闭包_维护项在“相等”的自反、对称和传递闭包下的等价类，_并且_遵循“相等的参数产生相等的函数结果”这一规则。
+形式化地说，如果 {lean}`a = a'` 且 {lean}`b = b'`，就会加入 {lean}`f a b = f a' b'`。
+该算法会不断合并等价类，直至达到不动点。
+如果发现矛盾，就可以立即关闭目标。
 :::
 
 ::::leanSection
@@ -37,54 +38,57 @@ If a contradiction is discovered, then the goal can be closed immediately.
 variable {t₁ t₂ : α} {h : t₁ = t₂} {a : α} {f : α → β} {g : β → β}
 ```
 :::paragraph
-Using the analogy of the shared whiteboard:
+沿用共享白板的比喻：
 
-1. Every hypothesis {typed}`h : t₁ = t₂` writes a line connecting {lean}`t₁` and {lean}`t₂`.
+1. 每个假设 {typed}`h : t₁ = t₂` 都会画一条连接 {lean}`t₁` 与 {lean}`t₂` 的线。
 
-2. Whenever two terms are connected by one or more lines, they're considered to be equal.
-   Soon, whole constellations ({lean}`f a`, {lean}`g (f a)`, …) are connected.
+2. 只要两个项由一条或多条线连接，就认为它们相等。
+   很快，整片项群（{lean}`f a`、{lean}`g (f a)`、……）都会连接起来。
 
-3. If two different constructors of the same inductive type are connected by one or more lines, then a contradiction is discovered and the goal is closed.
-   For example, equating {lean}`True` and {lean}`False` or {lean  (type := "Option Nat")}`none` and {lean}`some 1` would be a contradiction.
+3. 如果同一归纳类型的两个不同构造器由一条或多条线连接起来，就发现了矛盾，目标随即关闭。
+   例如，令 {lean}`True` 与 {lean}`False` 相等，或令 {lean  (type := "Option Nat")}`none` 与 {lean}`some 1` 相等，都会产生矛盾。
 
 :::
 ::::
 
-:::example "Congruence Closure" (open := true)
-This theorem is proved using congruence closure:
+:::example "同余闭包" (open := true)
+这个定理使用同余闭包证明：
 ```lean
 example {α} (f g : α → α) (x y : α)
     (h₁ : x = y) (h₂ : f y = g y) :
     f x = g x := by
   grind
 ```
-Initially, `f y`, `g y`, `x`, and `y` are in separate equivalence classes.
-The congruence closure engine uses `h₁` to merge `x` and `y`, after which the equivalence classes are `{x, y}`, `f y`, and `g y`.
-Next, `h₂` is used to merge `f y` and `g y`, after which the classes are `{x, y}` and `{f y, g y}`.
-This is sufficient to prove that `f x = g x`, because `y` and `x` are in the same class.
+最初，`f y`、`g y`、`x` 和 `y` 分属不同的等价类。
+同余闭包引擎使用 `h₁` 合并 `x` 和 `y`，此后等价类为 `{x, y}`、`f y` 和 `g y`。
+接着使用 `h₂` 合并 `f y` 和 `g y`，此后等价类为 `{x, y}` 和 `{f y, g y}`。
+这足以证明 `f x = g x`，因为 `y` 和 `x` 位于同一个等价类中。
 
-Similar reasoning is used for constructors:
+对构造器也使用类似的推理：
 ```lean
 example (a b c : Nat) (h : a = b) : (a, c) = (b, c) := by
   grind
 ```
-Because the pair constructor {name}`Prod.mk` obeys congruence, the tuples become equal as soon as `a` and `b` are placed in the same class.
+由于序对构造器 {name}`Prod.mk` 满足同余性，一旦 `a` 和 `b` 被归入同一个类，这两个元组便相等。
 :::
 
 
-# Congruence Closure vs. Simplification
+# 同余闭包与化简
+%%%
+tag := "grind-congruence-closure-vs-simplification"
+%%%
 
 ::::leanSection
 ```lean -show
 variable {t₁ t₂ : α} {h : t₁ = t₂} {a : α} {f : α → β} {g : β → β}
 ```
 :::paragraph
-Congruence closure is a fundamentally different operation from simplification:
+同余闭包与化简是两种根本不同的操作：
 
-* {tactic}`simp` _rewrites_ a goal, replacing occurrences of {lean}`t₁` with {lean}`t₂` as soon as it sees {typed}`h : t₁ = t₂`.
-  The rewrite is directional and destructive.
-* {tactic}`grind` _accumulates_ equalities bidirectionally.  No term is rewritten; instead, both representatives live in the same class.  All other engines ({tech}[E‑matching], theory solvers, {tech (key := "constraint propagation")}[propagation]) can query these classes and add new facts, then the closure updates incrementally.
+* {tactic}`simp` 会_重写_目标：一旦看到 {typed}`h : t₁ = t₂`，就把出现的 {lean}`t₁` 替换为 {lean}`t₂`。
+  这种重写是有方向且破坏性的。
+* {tactic}`grind` 会双向_累积_等式。它不重写任何项，而是让两个代表元处于同一个类中。所有其他引擎（{tech (key := "E‑matching")}[E‑匹配]、理论求解器和{tech (key := "constraint propagation")}[传播]）都可以查询这些类并加入新事实，闭包随后增量更新。
 
-This makes congruence closure especially robust in the presence of symmetrical reasoning, mutual recursion, and large nestings of constructors where rewriting would duplicate work.
+因此，在对称推理、互递归以及构造器深度嵌套等会使重写产生重复工作的情形下，同余闭包尤其稳健。
 :::
 ::::

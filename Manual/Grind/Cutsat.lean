@@ -9,6 +9,7 @@ import VersoManual
 import Lean.Parser.Term
 
 import Manual.Meta
+import Manual.ZhDocString.Grind
 import Manual.Papers
 
 
@@ -19,50 +20,51 @@ open Verso.Code.External (lit)
 
 open Lean.Elab.Tactic.GuardMsgs.WhitespaceMode
 
-#doc (Manual) "Linear Integer Arithmetic" =>
+#doc (Manual) "线性整数算术" =>
 %%%
+file := "Linear-Integer-Arithmetic"
 tag := "cutsat"
 %%%
 
 :::paragraph
-The linear integer arithmetic solver implements a model-based decision procedure for linear integer arithmetic.
-The solver can process four categories of linear polynomial constraints (where `p` is a [linear polynomial](https://en.wikipedia.org/wiki/Degree_of_a_polynomial)):
+线性整数算术求解器实现了一个针对线性整数算术的基于模型的判定过程。
+该求解器能够处理四类线性多项式约束（其中 `p` 是一个[线性多项式](https://en.wikipedia.org/wiki/Degree_of_a_polynomial)）：
 
-: Equality
+: 等式
 
  `p = 0`
 
-: Divisibility
+: 整除性
 
  `d ∣ p`
 
-: Inequality
+: 不等式
 
   `p ≤ 0`
 
-: Disequality
+: 不等关系
 
   `p ≠ 0`
 
-It is complete for linear integer arithmetic, and natural numbers are supported by converting them to integers with {name}`Int.ofNat`.
-Support for additional types that can be embedded into {lean}`Int` can be added via instances of {name}`Lean.Grind.ToInt`.
-Nonlinear terms (e.g. `x * x`) are allowed, and are represented as variables.
-The solver is additionally capable of propagating information back to the metaphorical {tactic}`grind` whiteboard, which can trigger further progress from the other subsystems.
-By default, it is enabled; it can be disabled using the flag {lit}`-lia`
+它对于线性整数算术是完备的，并且通过用 {name}`Int.ofNat` 将自然数转换成整数，也支持自然数。
+对于其他能够嵌入到 {lean}`Int` 中的类型，可以通过提供 {name}`Lean.Grind.ToInt` 的实例来增加支持。
+非线性项（例如 `x * x`）也是允许的，但会被表示为变量。
+此外，该求解器还能把信息传播回比喻意义上的 {tactic}`grind` 白板，从而触发其他子系统进一步推进证明。
+默认情况下它是启用的；可以用标志 {lit}`-lia` 将其禁用。
 :::
 
 
 
-::::example "Examples of Linear Integer Arithmetic" (open := true)
+::::example "线性整数算术示例" (open := true)
 
-All of these statements can be proved using the linear integer arithmetic solver.
-In the first example, the left-hand side must be a multiple of 2, and thus cannot be 5:
+下面这些命题都可以用线性整数算术求解器证明。
+在第一个例子中，左边必定是 2 的倍数，因此不可能等于 5：
 ```lean
 example {x y : Int} : 2 * x + 4 * y ≠ 5 := by
   grind
 ```
 
-The solver supports mixing equalities and inequalities:
+求解器支持混合使用等式与不等式：
 ```lean
 example {x y : Int} :
     2 * x + 3 * y = 0 →
@@ -71,7 +73,7 @@ example {x y : Int} :
   grind
 ```
 
-It also supports linear divisibility constraints:
+它也支持线性的整除约束：
 ```lean
 example (a b : Int) :
     2 ∣ a + 1 →
@@ -81,7 +83,7 @@ example (a b : Int) :
 ```
 
 
-Without `lia`, {tactic}`grind` cannot prove the statement:
+如果没有 `lia`，{tactic}`grind` 就无法证明该命题：
 
 ```lean +error (name := noLia)
 example (a b : Int) :
@@ -106,18 +108,18 @@ h_2 : 2 ∣ 2 * a + b
 ```
 ::::
 
-# Rational Solutions
+# 有理数解
 %%%
 tag := "cutsat-qlia"
 %%%
 
-The solver is complete for linear integer arithmetic.
-However, the search can become vast with very few constraints, but the solver was not designed to perform massive case-analysis.
-The `qlia` option to {tactic}`grind` reduces the search space by instructing the solver to accept rational solutions.
-With this option, the solver is likely to be faster, but it is incomplete.
+该求解器对线性整数算术是完备的。
+不过，即使约束很少，搜索空间也可能迅速变得极大，而这个求解器并不是为大规模分类讨论而设计的。
+{tactic}`grind` 的 `qlia` 选项通过允许求解器接受有理数解来缩小搜索空间。
+使用该选项后，求解器通常会更快，但它就不再完备。
 
-:::example "Rational Solutions"
-The following example has a rational solution, but does not have integer solutions:
+:::example "有理数解但无整数解"
+下面这个例子有有理数解，但没有整数解：
 ```lean
 example {x y : Int} :
     27 ≤ 13 * x + 11 * y →
@@ -127,7 +129,7 @@ example {x y : Int} :
   grind
 ```
 
-Because it uses the rational solution, {tactic}`grind` fails to refute the negation of the goal when `+qlia` is specified:
+由于它使用的是有理数解，因此在指定 `+qlia` 时，{tactic}`grind` 无法驳倒目标的否定：
 ```lean +error (name := withqlia)
 example {x y : Int} :
     27 ≤ 13 * x + 11 * y →
@@ -153,15 +155,18 @@ h_3 : 9 * x + -7 * y + -4 ≤ 0
     [assign] y := 2
 ```
 
-The rational model constructed by the solver is in the section `Assignment satisfying linear constraints` in the goal diagnostics.
+求解器构造出的有理模型，出现在目标诊断里的 `Assignment satisfying linear constraints` 一节中。
 :::
 
-# Nonlinear Constraints
+# 非线性约束
+%%%
+tag := "grind-nonlinear-constraints"
+%%%
 
-The solver currently does support nonlinear constraints, and treats nonlinear terms such as `x * x` as variables.
+该求解器目前并不真正求解非线性约束，而是把 `x * x` 这样的非线性项当作变量处理。
 
-::::example "Nonlinear Terms" (open := true)
-The linear integer arithmetic solver fails to prove this theorem:
+::::example "非线性项" (open := true)
+线性整数算术求解器无法证明这个定理：
 
 ```lean +error (name := nonlinear)
 example (x : Int) : x * x ≥ 0 := by
@@ -180,7 +185,7 @@ h : x * x + 1 ≤ 0
   [cutsat] Assignment satisfying linear constraints
 ```
 
-From the perspective of the linear integer arithmetic solver, it is equivalent to:
+从线性整数算术求解器的视角来看，这等价于：
 
 ```lean +error (name := nonlinear2)
 example {y : Int} (x : Int) : y ≥ 0 := by
@@ -200,7 +205,7 @@ h : x * x + 1 ≤ 0
 ```
 
 :::paragraph
-This can be seen by setting the option {option}`trace.grind.lia.assert` to {lean}`true`, which traces all constraints processed by the solver.
+这一点可以通过把选项 {option}`trace.grind.lia.assert` 设为 {lean}`true` 看出来；这样会追踪求解器处理的所有约束。
 
 ```lean +error (name := liaDiag)
 example (x : Int) : x*x ≥ 0 := by
@@ -211,15 +216,18 @@ example (x : Int) : x*x ≥ 0 := by
 [grind.lia.assert] -1*「x ^ 2 + 1」 + 「x ^ 2」 + 1 = 0
 [grind.lia.assert] 「x ^ 2」 + 1 ≤ 0
 ```
-The term `x ^ 2` is “quoted” in `「x ^ 2」 + 1 ≤ 0` to indicate that `x ^ 2` is treated as a variable.
+在 `「x ^ 2」 + 1 ≤ 0` 中，项 `x ^ 2` 被“加引号”显示，以表明 `x ^ 2` 被当作一个变量处理。
 :::
 ::::
 
-# Division and Modulus
+# 除法与模
+%%%
+tag := "grind-division-and-modulus"
+%%%
 
-The solver supports linear division and modulo operations.
+该求解器支持线性的除法与取模运算。
 
-:::example "Linear Division and Modulo"
+:::example "线性除法与取模"
 ```lean
 example (x y : Int) :
     x = y / 2 →
@@ -229,12 +237,15 @@ example (x y : Int) :
 ```
 :::
 
-# Algebraic Processing
+# 代数处理
+%%%
+tag := "grind-algebraic-processing"
+%%%
 
-The solver normalizes commutative (semi)ring expressions.
+该求解器会对交换（半）环表达式做规范化。
 
-:::example "Commutative (Semi)ring Normalization"
-Commutative ring normalization allows this goal to be solved:
+:::example "交换（半）环规范化"
+交换环规范化使得下面这个目标可被证明：
 ```lean
 example (a b : Nat)
     (h₁ : a + 1 ≠ a * b * a)
@@ -244,17 +255,17 @@ example (a b : Nat)
 ```
 :::
 
-# Propagating Information
+# 传播信息
 %%%
 tag := "cutsat-mbtc"
 %%%
 
-The solver also implements {deftech}_model-based theory combination_, which is a mechanism for propagating equalities back to the metaphorical shared whiteboard.
-These additional equalities may in turn trigger new congruences.
-Model-based theory combination increases the size of the search space; it can be disabled using the option `grind -mbtc`.
+该求解器还实现了 {deftech (key := "model-based theory combination")}_基于模型的理论组合_，这是一种把等式传播回共享白板的机制。
+这些新增的等式又可能进一步触发新的同余。
+基于模型的理论组合会扩大搜索空间；可以使用选项 `grind -mbtc` 将其禁用。
 
-::::example "Propagating Equalities"
-In the example above, the linear inequalities and disequalities imply `y = 0`:
+::::example "传播等式"
+在上面的例子里，线性不等式与不等关系蕴含 `y = 0`：
 ```lean
 example (f : Int → Int) (x y : Int) :
     f x = 0 →
@@ -262,8 +273,8 @@ example (f : Int → Int) (x y : Int) :
     f (x + y) = 0 := by
   grind
 ```
-Consequently `x = x + y`, so `f x = f (x + y)` by {tech (key := "congruence closure")}[congruence].
-Without model-based theory combination, the proof gets stuck:
+因此 `x = x + y`，于是由 {tech (key := "congruence closure")}[同余] 得到 `f x = f (x + y)`。
+如果没有基于模型的理论组合，证明就会卡住：
 ```lean +error (name := noMbtc)
 example (f : Int → Int) (x y : Int) :
     f x = 0 →
@@ -292,15 +303,15 @@ h_4 : ¬f (x + y) = 0
 ```
 ::::
 
-# Other Types
+# 其他类型
 %%%
 tag := "cutsat-ToInt"
 %%%
 
-The LIA solver can also process linear constraints that contain natural numbers.
-It converts them into integer constraints using `Int.ofNat`.
+LIA 求解器也可以处理包含自然数的线性约束。
+它会使用 `Int.ofNat` 将其转换为整数约束。
 
-:::example "Natural Numbers as Linear Integer Arithmetic"
+:::example "作为线性整数算术的自然数"
 ```lean
 example (x y z : Nat) :
     x < y + z →
@@ -310,8 +321,8 @@ example (x y z : Nat) :
 ```
 :::
 
-There is an extensible mechanism via the {lean}`Lean.Grind.ToInt` type class to tell the solver that a type embeds in the integers.
-Using this, we can solve goals such as:
+通过 {lean}`Lean.Grind.ToInt` 类型类，有一种可扩展机制可以告诉求解器某个类型能够嵌入到整数中。
+借助这一机制，我们可以求解如下目标：
 
 ```lean
 example (a b c : Fin 11) : a ≤ 2 → b ≤ 3 → c = a + b → c ≤ 5 := by
@@ -324,11 +335,14 @@ example (a b c : UInt64) : a ≤ 2 → b ≤ 3 → c - a - b = 0 → c ≤ 5 := 
   grind
 ```
 
-{docstring Lean.Grind.ToInt}
+{zhdocstring Lean.Grind.ToInt ZhDoc.ToInt}
 
-{docstring Lean.Grind.IntInterval}
+{zhdocstring Lean.Grind.IntInterval ZhDoc.IntInterval}
 
-# Implementation Notes
+# 实现说明
+%%%
+tag := "grind-implementation-notes"
+%%%
 
 ::::leanSection
 ```lean -show
@@ -336,43 +350,43 @@ variable {x y : Int}
 ```
 
 :::paragraph
-The implementation of the linear integer arithmetic solver is inspired by Section 4 of {citet cuttingToTheChase}[].
-Compared to the paper, it includes several enhancements and modifications such as:
+线性整数算术求解器的实现受到了 {citet cuttingToTheChase}[] 第 4 节的启发。
+与论文相比，它还包含若干增强与修改，例如：
 
-* extended constraint support (equality and disequality),
+* 扩展了约束支持（等式与不等关系），
 
-* an optimized encoding of the `Cooper-Left` rule using a “big”-disjunction instead of fresh variables, and
+* 对 `Cooper-Left` 规则进行了优化编码，使用一个“大”析取而不是新鲜变量，以及
 
-* decision variable tracking for case splits (disequalities, `Cooper-Left`, `Cooper-Right`).
+* 对分类讨论中的决策变量进行跟踪（不等关系、`Cooper-Left`、`Cooper-Right`）。
 :::
 
 :::paragraph
-The solver procedure builds a model (that is, an assignment of the variables in the term) incrementally, resolving conflicts through constraint generation.
-For example, given a partial model `{x := 1}` and constraint {lean}`3 ∣ 3 * y + x + 1`:
+该求解过程会逐步构造一个模型（也就是对项中变量的赋值），并通过生成约束来解决冲突。
+例如，给定部分模型 `{x := 1}` 和约束 {lean}`3 ∣ 3 * y + x + 1`：
 
-- The solver cannot extend the model to {lean}`y` because {lean}`3 ∣ 3 * y + 2` is unsatisfiable.
+- 求解器无法把该模型扩展到 {lean}`y`，因为 {lean}`3 ∣ 3 * y + 2` 不可满足。
 
-- Thus, it resolves the conflict by generating the implied constraint {lean}`3 ∣ x + 1`.
+- 因此，它会通过生成蕴含约束 {lean}`3 ∣ x + 1` 来消解冲突。
 
-- The new constraint forces the solver to find a new assignment for {lean}`x`.
+- 这个新约束迫使求解器为 {lean}`x` 寻找新的赋值。
 :::
 
 
 :::paragraph
-When assigning a variable `y`, the solver considers:
+在为变量 `y` 赋值时，求解器会考虑：
 
-- The best upper and lower bounds (inequalities).
+- 最佳的上界与下界（不等式）。
 
-- A divisibility constraint.
+- 一个整除约束。
 
-- All disequality constraints where `y` is the maximal variable.
+- 所有以 `y` 为最大变量的不等关系约束。
 :::
 ::::
 
-The `Cooper-Left` and `Cooper-Right` rules handle the combination of inequalities and divisibility.
-For unsatisfiable disequalities `p ≠ 0`, the solver generates the case split: `p + 1 ≤ 0 ∨ -p + 1 ≤ 0`.
+`Cooper-Left` 与 `Cooper-Right` 规则负责处理不等式与整除性的组合。
+对于不可满足的不等关系 `p ≠ 0`，求解器会生成如下分类讨论：`p + 1 ≤ 0 ∨ -p + 1 ≤ 0`。
 
 
 :::comment
-Planned future features: improved constraint propagation.
+计划中的未来功能：改进约束传播。
 :::

@@ -17,29 +17,36 @@ open Verso.Doc.Elab (CodeBlockExpander)
 
 open Lean.Elab.Tactic.GuardMsgs.WhitespaceMode
 
-#doc (Manual) "Annotating Libraries for `grind`" =>
+#doc (Manual) "为库添加 `grind` 标注" =>
 %%%
+file := "Annotating-Libraries-for--grind"
 tag := "grind-annotation"
 %%%
 
-To use {tactic}`grind` effectively with a library, it must be annotated by applying the {attr}`grind` attribute to suitable lemmas or declaring {keywordOf Lean.Parser.Command.grindPattern}`grind_pattern`s.
-These annotations direct {tactic}`grind`'s selection of theorems, which lead to further facts on the metaphorical whiteboard.
-With too few annotations, {tactic}`grind` will fail to use the lemmas; with too many, it may become slow or it fail due to exhausting resource limitations.
-Annotations should generally be conservative: only add an annotation if you expect that {tactic}`grind` should _always_ instantiate the theorem once the patterns are matched.
+要在库中有效使用 {tactic}`grind`，必须为库添加标注：给合适的引理应用 {attr}`grind` 属性，或声明 {keywordOf Lean.Parser.Command.grindPattern}`grind_pattern`。
+这些标注引导 {tactic}`grind` 选择定理，进而在比喻中的白板上产生更多事实。
+标注太少时，{tactic}`grind` 将无法使用这些引理；标注太多时，它可能变慢，或因耗尽资源限制而失败。
+添加标注通常应当保守：只有当你认为模式一旦匹配，{tactic}`grind` 就应当_总是_实例化该定理时，才添加标注。
 
-# Simp Lemmas
+# `simp` 引理
+%%%
+tag := "grind-simp-lemmas"
+%%%
 
-Typically, many theorems that are annotated with {attrs}`@[simp]` should also be annotated with {attrs}`@[grind =]`.
-One significant exception is that typically we avoid having {attrs}`@[simp]` theorems that introduce an {keywordOf Lean.Parser.Term.if}`if` on the right hand side, instead preferring a pair of theorems with the positive and negative conditions as hypotheses.
-Because {tactic}`grind` is designed to perform case splitting, it is generally better to instead annotate the single theorem introducing the {keywordOf Lean.Parser.Term.if}`if` with {attrs}`@[grind =]`.
+通常，许多带有 {attrs}`@[simp]` 标注的定理也应带有 {attrs}`@[grind =]` 标注。
+一个重要的例外是：我们通常避免让 {attrs}`@[simp]` 定理在右侧引入 {keywordOf Lean.Parser.Term.if}`if`，而倾向于使用一对分别以肯定条件和否定条件为假设的定理。
+由于 {tactic}`grind` 的设计目标之一就是进行情形拆分，通常更适合改为给那个引入 {keywordOf Lean.Parser.Term.if}`if` 的单一定理添加 {attrs}`@[grind =]` 标注。
 
-Besides using {attrs}`@[grind =]` to encourage {tactic}`grind` to perform rewriting from left to right, you can also use {attrs}`@[grind _=_]` to “saturate”, allowing bidirectional rewriting whenever either side is encountered.
+除了使用 {attrs}`@[grind =]` 促使 {tactic}`grind` 从左向右重写外，还可以使用 {attrs}`@[grind _=_]` 进行“饱和”：遇到任意一侧时都允许双向重写。
 
-# Backwards and Forwards Reasoning
+# 逆向与正向推理
+%%%
+tag := "grind-backwards-and-forwards-reasoning"
+%%%
 
 :::paragraph
-Use {attrs}`@[grind ←]` (which generates patterns from the conclusion of the theorem) for backwards reasoning theorems, i.e. theorems that should be tried when their conclusion matches a goal.
-Some examples of theorems in the standard library that are annotated with {attr}`grind ←` are:
+对逆向推理定理使用 {attrs}`@[grind ←]`（它从定理结论生成模式）；也就是说，当定理结论与目标匹配时，就应尝试该定理。
+标准库中带有 {attr}`grind ←` 标注的定理包括：
 * ```signature
   Array.not_mem_empty (a : α) : ¬ a ∈ #[]
   ```
@@ -54,13 +61,13 @@ Some examples of theorems in the standard library that are annotated with {attr}
     {l : List α} (h : Pairwise R l) :
     Pairwise R l.tail
   ```
-In each case, the lemma is relevant when its conclusion matches a proof goal.
+在每个例子中，当引理的结论与证明目标匹配时，它便与当前证明相关。
 :::
 
 :::paragraph
-Use {attrs}`@[grind →]` (which generates patterns from the hypotheses) for forwards reasoning theorems,
-i.e. where facts should be propagated from existing facts on the whiteboard.
-Some examples of theorems in the standard library that are annotated with {attr}`grind →` are:
+对正向推理定理使用 {attrs}`@[grind →]`（它从假设生成模式），
+也就是从白板上的已有事实传播出新事实的定理。
+标准库中带有 {attr}`grind →` 标注的定理包括：
 * ```signature
   List.getElem_of_getElem? {l : List α} :
     l[i]? = some a →
@@ -76,11 +83,11 @@ Some examples of theorems in the standard library that are annotated with {attr}
     (h : filterMap f xs = []) :
     ∀ x ∈ xs, f x = none
   ```
-In these cases, the theorems' assumptions determine when they are relevant.
+在这些例子中，定理的假设决定它们何时与当前证明相关。
 :::
 
-There are many uses for custom patterns created with the {keywordOf Lean.Parser.Command.grindPattern}`grind_pattern` command.
-One common use is to introduce inequalities about terms, or membership propositions.
+使用 {keywordOf Lean.Parser.Command.grindPattern}`grind_pattern` 命令创建的自定义模式有许多用途。
+一种常见用途是引入关于项的不等式或成员关系命题。
 
 :::keepEnv
 ```lean -show
@@ -90,7 +97,7 @@ theorem countP_le_size [BEq α] {a : α} {xs : Array α} : count a xs ≤ xs.siz
 notation "..." => countP_le_size
 ```
 
-We might have
+例如，可以有：
 ```lean
 variable [BEq α]
 
@@ -102,14 +109,14 @@ grind_pattern count_le_size => count a xs
 ```lean -show
 variable {a : α} {xs : Array α}
 ```
-which will register this inequality as soon as a {lean}`count a xs` term is encountered (even if the problem has not previously involved inequalities).
+这样，一旦遇到 {lean}`count a xs` 项，就会登记该不等式（即使此前的问题中尚未涉及不等式）。
 
 ```lean -show
 end
 ```
 :::
 
-We can also use multi-patterns to be more restrictive, e.g. only introducing an inequality about sizes if the whiteboard already contains facts about sizes:
+还可以使用多模式施加更严格的限制，例如只有当白板上已经有关于大小的事实时，才引入关于大小的不等式：
 ```lean
 theorem size_pos_of_mem {xs : Array α} (h : a ∈ xs) : 0 < xs.size :=
   sorry
@@ -120,9 +127,9 @@ grind_pattern size_pos_of_mem => a ∈ xs, xs.size
 ```lean -show
 variable {a : α} {xs : Array α}
 ```
-Unlike a {attrs}`@[grind →]` attribute, which would cause this theorem to be instantiated whenever {lean}`a ∈ xs` is encountered, this pattern will only be used when {lean}`xs.size` is already on the whiteboard.
-(Note that this grind pattern could also be produced using the {attrs}`@[grind <=]` attribute, which looks at the conclusion first, then backwards through the hypotheses to select patterns.
-On the other hand, {attrs}`@[grind →]` would select only {lean}`a ∈ xs`.)
+若使用 {attrs}`@[grind →]` 属性，每当遇到 {lean}`a ∈ xs` 时都会实例化该定理；与之不同，这个模式只会在白板上已有 {lean}`xs.size` 时使用。
+（注意，也可以使用 {attrs}`@[grind <=]` 属性产生这个 grind 模式；该属性先查看结论，再逆向查看假设以选择模式。
+另一方面，{attrs}`@[grind →]` 只会选择 {lean}`a ∈ xs`。）
 :::
 
 
@@ -139,15 +146,15 @@ variable {x : R}
 axiom sin_sq_add_cos_sq' : sin x ^ 2 + cos x ^ 2 = 1
 notation "..." => sin_sq_add_cos_sq'
 ```
-In Mathlib we might want to enable polynomial reasoning about the sine and cosine functions,
-and so add a custom grind pattern
+在 Mathlib 中，我们可能希望启用关于正弦和余弦函数的多项式推理，
+因此添加如下自定义 grind 模式：
 ```lean
 theorem sin_sq_add_cos_sq : sin x ^ 2 + cos x ^ 2 = 1 := ...
 
 grind_pattern sin_sq_add_cos_sq => sin x, cos x
 ```
-which will instantiate the theorem as soon as *both* {lean}`sin x` and {lean}`cos x` (with the same {lean}`x`) are encountered.
-This theorem will then automatically enter the Gröbner basis module, and be used to reason about polynomial expressions involving both {lean}`sin x` and {lean}`cos x`.
-One both alternatively, more aggressively, write two separate grind patterns so that this theorem instantiated when either {lean}`sin x` or {lean}`cos x` is encountered.
+这样，一旦*同时*遇到具有同一个 {lean}`x` 的 {lean}`sin x` 和 {lean}`cos x`，就会实例化该定理。
+随后，该定理会自动进入 Gröbner 基模块，用于推理同时包含 {lean}`sin x` 和 {lean}`cos x` 的多项式表达式。
+另一种更激进的做法是分别编写两个 grind 模式，使该定理在遇到 {lean}`sin x` 或 {lean}`cos x` 中任意一个时就被实例化。
 :::
 ::::
