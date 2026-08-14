@@ -108,10 +108,15 @@ where
           enField.fieldFrom.head?.bind (fun n => enParents.findIdx? (·.name == n.name))
         let desc ← translatedBlocks
           [enName, enField.projFn, zhName, zhField.projFn] blame zhField.docString?
+        let inheritedNote : Array Term ←
+          if inheritedFrom.isSome then
+            pure #[← ``(Verso.Doc.Block.para
+              #[Verso.Doc.Inline.text "继承自父结构。"]) ]
+          else pure #[]
         ``(Verso.Doc.Block.other
           (Verso.Genre.Manual.Block.fieldSignature $(quote enField.visibility)
-            $(quote enField.fieldName) $(quote enField.type) $(quote inheritedFrom)
-            $(quote <| enParents.map (·.parent))) #[$desc,*])
+            $(quote enField.fieldName) $(quote enField.type) none
+            $(quote <| enParents.map (·.parent))) #[$(inheritedNote ++ desc),*])
       let fieldsRow : Option Term ←
         if fieldSigs.isEmpty then pure none
         else some <$> ``(Verso.Doc.Block.other
