@@ -11,7 +11,7 @@ namespace ZhDoc
 SPred [Nat, Bool] = (Nat → Bool → ULift Prop)
 ```
 -/
-axiom SPred (σs : List (Type u)) : Type u
+def SPred (_σs : List (Type u)) : Type u := PUnit
 
 namespace SPred
 
@@ -19,10 +19,10 @@ namespace SPred
 将纯命题 `P : Prop` 嵌入 `SPred`。
 建议优先使用记法 `⌜P⌝`。
 -/
-axiom pure : Unit
+def pure : Unit := ()
 
 /-- 将纯 Lean 值嵌入 `SVal`。这是 `SPred.pure` 的别名。 -/
-axiom embedSyntax : Unit
+def embedSyntax : Unit := ()
 
 /--
 `SPred` 中的蕴涵。
@@ -30,55 +30,55 @@ axiom embedSyntax : Unit
 如果在 `P` 为真的每个状态中 `Q` 也为真，就称谓词 `P` 蕴涵谓词 `Q`。
 与蕴含（`SPred.imp`）不同，蕴涵本身不是 `SPred`，而是普通命题。
 -/
-axiom entails : Unit
+def entails : Unit := ()
 
 /--
 `SPred` 中的逻辑等价。
 
 逻辑等价的谓词相等。可使用 `SPred.bientails.to_eq` 将双向蕴涵转换为等式。
 -/
-axiom bientails : Unit
+def bientails : Unit := ()
 
 /-- `SPred` 中的蕴涵；`SPred.entails` 的语法糖。 -/
-axiom entailsSyntax : Unit
+def entailsSyntax : Unit := ()
 
 /-- `SPred` 中的重言式；`SPred.entails ⌜True⌝` 的语法糖。 -/
-axiom tautologySyntax : Unit
+def tautologySyntax : Unit := ()
 
 /-- `SPred` 中的双向蕴涵；`SPred.bientails` 的语法糖。 -/
-axiom bientailsSyntax : Unit
+def bientailsSyntax : Unit := ()
 
 /-- `SPred` 中的合取：同时满足 `P` 和 `Q` 的状态满足 `spred(P ∧ Q)`。 -/
-axiom and : Unit
+def and : Unit := ()
 
 /--
 有状态谓词列表的合取。当且仅当一个状态满足 `env` 中的所有谓词时，它满足
 `conjunction env`。
 -/
-axiom conjunction : Unit
+def conjunction : Unit := ()
 
 /-- `SPred` 中的析取：满足 `P` 或 `Q` 的状态满足 `spred(P ∨ Q)`。 -/
-axiom or : Unit
+def or : Unit := ()
 
 /-- `SPred` 中的否定：不满足 `P` 的状态满足 `spred(¬ P)`。 -/
-axiom not : Unit
+def not : Unit := ()
 
 /--
 `SPred` 中的蕴含：只要满足 `P` 就也满足 `Q` 的状态满足 `spred(P → Q)`。
 -/
-axiom imp : Unit
+def imp : Unit := ()
 
 /--
 `SPred` 中的双条件：同时满足 `P` 和 `Q`，或二者都不满足的状态满足
 `spred(P ↔ Q)`。
 -/
-axiom iff : Unit
+def iff : Unit := ()
 
 /-- `SPred` 中的全称量词。 -/
-axiom «forall» : Unit
+def «forall» : Unit := ()
 
 /-- `SPred` 中的存在量词。 -/
-axiom «exists» : Unit
+def «exists» : Unit := ()
 
 end SPred
 
@@ -90,21 +90,21 @@ end SPred
 example : SVal [Nat, Bool] String = (Nat → Bool → String) := rfl
 ```
 -/
-axiom SVal (σs : List (Type u)) (α : Type u) : Type u
+def SVal (_σs : List (Type u)) (_α : Type u) : Type u := PUnit
 
 namespace SVal
 
 /-- 获取 `SVal` 中类型为 `σ` 的最上层状态。 -/
-axiom getThe : Unit
+def getThe : Unit := ()
 
 /-- 捕获一个 `SVal` 完整状态的元组。 -/
-axiom StateTuple : Unit
+def StateTuple : Unit := ()
 
 /-- 将接受 `StateTuple` 的函数柯里化为 `SVal`。 -/
-axiom curry : Unit
+def curry : Unit := ()
 
 /-- 将 `SVal` 反柯里化为接受 `StateTuple` 的函数。 -/
-axiom uncurry : Unit
+def uncurry : Unit := ()
 
 end SVal
 
@@ -132,7 +132,7 @@ namespace PostShape
 
 这些状态类型决定单子中断言的形状。
 -/
-axiom args : Unit
+def args : Unit := ()
 
 end PostShape
 
@@ -149,7 +149,7 @@ example : Assertion (.arg σ (.except ε .pure)) = (σ → ULift Prop) := rfl
 example : Assertion (.except ε (.arg σ .pure)) = (σ → ULift Prop) := rfl
 ```
 -/
-axiom Assertion : Unit
+def Assertion : Unit := ()
 
 /--
 给定谓词形状的后置条件：正常终止情形有一个 `Assertion`，谓词形状中的每个 `.except` 层也各有一个 `Assertion`。
@@ -161,7 +161,7 @@ example : PostCond α (.arg σ (.except ε .pure)) = ((α → σ → ULift Prop)
 example : PostCond α (.except ε (.arg σ .pure)) = ((α → σ → ULift Prop) × (ε → σ → ULift Prop) × PUnit) := rfl
 ```
 -/
-axiom PostCond : Unit
+def PostCond : Unit := ()
 
 /--
 关于后置条件形状中声明的每种潜在异常的断言。
@@ -174,7 +174,7 @@ example : ExceptConds (.arg σ (.except ε .pure)) = ((ε → ULift Prop) × Uni
 example : ExceptConds (.except ε (.arg σ .pure)) = ((ε → σ → ULift Prop) × Unit) := rfl
 ```
 -/
-axiom ExceptConds : Unit
+def ExceptConds : Unit := ()
 
 namespace PostCond
 
@@ -182,27 +182,27 @@ namespace PostCond
 表示完全正确性的后置条件。
 也就是说，它表示所断言的计算会无异常地结束，*并且*其结果满足给定谓词 `p`。
 -/
-axiom noThrow : Unit
+def noThrow : Unit := ()
 
 /--
 表示完全正确性的后置条件。
 也就是说，它表示所断言的计算会无异常地结束，*并且*其结果满足给定谓词 `p`。
 -/
-axiom noThrowSyntax : Unit
+def noThrowSyntax : Unit := ()
 
 /--
 表示部分正确性的后置条件。
 也就是说，它表示*如果*所断言的计算无异常地结束，*那么*其结果满足给定谓词 `p`。
 当计算抛出异常时，不作任何断言。
 -/
-axiom mayThrow : Unit
+def mayThrow : Unit := ()
 
 /--
 表示部分正确性的后置条件。
 也就是说，它表示*如果*所断言的计算无异常地结束，*那么*其结果满足给定谓词 `p`。
 当计算抛出异常时，不作任何断言。
 -/
-axiom mayThrowSyntax : Unit
+def mayThrowSyntax : Unit := ()
 
 /--
 后置条件的蕴涵。
@@ -213,14 +213,14 @@ axiom mayThrowSyntax : Unit
 
 后置条件的蕴含（`PostCond.imp`）会产生新的后置条件，而蕴涵则是普通命题。
 -/
-axiom entails : Unit
+def entails : Unit := ()
 
 /--
 后置条件的合取。
 
 它按点定义：关于返回值的断言取合取，关于每种潜在异常的断言也分别取合取。
 -/
-axiom and : Unit
+def and : Unit := ()
 
 /--
 后置条件的蕴含。
@@ -229,17 +229,17 @@ axiom and : Unit
 
 后置条件的蕴涵（`PostCond.entails`）是普通命题，而后置条件的蕴含本身仍是后置条件。
 -/
-axiom imp : Unit
+def imp : Unit := ()
 
 end PostCond
 
 /-- 后置条件越强，变换后得到的前置条件也越强。 -/
-axiom PredTransMonotonic : Unit
+def PredTransMonotonic : Unit := ()
 
 /--
 变换后置条件的合取，等价于分别变换这些后置条件后再取合取。
 -/
-axiom PredTransConjunctive : Unit
+def PredTransConjunctive : Unit := ()
 
 /--
 给定 `ps : PostShape` 和返回类型 `α : Type` 时的谓词变换器类型。谓词变换器

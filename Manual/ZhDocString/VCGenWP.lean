@@ -9,20 +9,20 @@ universe u v
 namespace PredTrans
 
 /-- 变换后的前置条件会随后置条件增强而增强。 -/
-axiom Monotonic : Prop
+def Monotonic : Prop := True
 
 /--
 变换后置条件的合取，等价于对各后置条件分别变换后再取合取。
 -/
-axiom Conjunctive : Prop
+def Conjunctive : Prop := True
 
 /--
 恒等谓词变换器：它把后置条件中关于返回值的断言实例化到 `a`。
 -/
-axiom pure : Prop
+def pure : Prop := True
 
 /-- 通过复合两个谓词变换器，将它们按顺序连接起来。 -/
-axiom bind : Prop
+def bind : Prop := True
 
 /--
 为后置条件形状为 `ps` 的谓词变换器加入对 `σ` 类型状态作断言的能力，所得后置条件形状为 `.arg σ ps`。
@@ -30,7 +30,7 @@ axiom bind : Prop
 
 这种解释也适用于读取器效应或只能追加的状态等各种类似状态的效应，只需将它们视为状态即可。
 -/
-axiom pushArg : Prop
+def pushArg : Prop := True
 
 /--
 为后置条件形状为 `ps` 的谓词变换器加入对 `ε` 类型异常作断言的能力，所得后置条件形状为 `.except ε ps`。
@@ -38,13 +38,13 @@ axiom pushArg : Prop
 
 这种解释也适用于提前终止等各种类似异常的效应，只需将它们视为异常即可。
 -/
-axiom pushExcept : Prop
+def pushExcept : Prop := True
 
 /--
 为后置条件形状为 `ps` 的谓词变换器加入对提前终止作断言的能力，所得后置条件形状为 `.except PUnit ps`。
 这是通过把 `OptionT (PredTrans ps) α` 解释为 `PredTrans (.except PUnit ps) α` 实现的，其中将 `Option` 建模为等价于 `Except PUnit`。
 -/
-axiom pushOption : Prop
+def pushOption : Prop := True
 
 end PredTrans
 
@@ -61,7 +61,7 @@ class WP (m : Type u → Type v) (ps : outParam PostShape.{u}) where
 /--
 `wp⟦x⟧ Q` 按定义等于 `(WP.wp x).apply Q`。
 -/
-axiom «termWp⟦_:_⟧» : Prop
+def «termWp⟦_:_⟧» : Prop := True
 
 /--
 带最弱前置条件（`WP`）的单子，并且其解释还是一个保持 `pure` 和 `bind` 的单子态射。
@@ -83,31 +83,31 @@ namespace Id
 `Id.run` 的可靠性引理。它由 `WPSound.of_wp_canReturn` 推导而来：
 `Id.run prog = x` 正是 `MonadAttach.CanReturn prog x` 的见证。
 -/
-axiom of_wp_run_eq : Prop
+def of_wp_run_eq : Prop := True
 
 end Id
 
 namespace StateM
 
 /-- `StateM.run` 的可靠性引理；它是 `StateT.of_wp_run` 在 `Id` 上的特化。 -/
-axiom of_wp_run_eq : Prop
+def of_wp_run_eq : Prop := True
 
 /-- `StateM.run'` 的可靠性引理；它是 `StateT.of_wp_run` 在 `Id` 上的特化。 -/
-axiom of_wp_run'_eq : Prop
+def of_wp_run'_eq : Prop := True
 
 end StateM
 
 namespace ReaderM
 
 /-- `ReaderM.run` 的可靠性引理；它是 `ReaderT.of_wp_run` 在 `Id` 上的特化。 -/
-axiom of_wp_run_eq : Prop
+def of_wp_run_eq : Prop := True
 
 end ReaderM
 
 namespace Except
 
 /-- `Except` 的可靠性引理；它是 `ExceptT.of_wp_run` 在 `Id` 上的特化。 -/
-axiom of_wp_eq : Prop
+def of_wp_eq : Prop := True
 
 end Except
 
@@ -117,7 +117,7 @@ namespace EStateM
 `EStateM.run` 的可靠性引理。
 当需要证明表达式 `x`（定义为 `EStateM.run prog s`）的性质，并希望用 `mvcgen` 推理 `prog` 时，此引理很有用。
 -/
-axiom of_wp_run_eq : Prop
+def of_wp_run_eq : Prop := True
 
 end EStateM
 
@@ -127,7 +127,7 @@ end EStateM
 
 `⦃P⦄ x ⦃Q⦄` 是 `Triple x P Q` 的便捷语法。
 -/
-axiom Triple : Prop
+def Triple : Prop := True
 
 namespace Triple
 
@@ -135,7 +135,7 @@ namespace Triple
 同一程序 `x` 的两个霍尔三元组规约的合取。
 该定理便于分解证明：可分别证明关于 `x` 的互不相关的事实，再用此定理将它们合并。
 -/
-axiom and : Prop
+def and : Prop := True
 
 /--
 同一程序 `x` 的两个霍尔三元组规约上的肯定前件规则。
@@ -143,7 +143,7 @@ axiom and : Prop
 `h₂ : Triple x P₂ (Q₁ →ₚ Q₂)` 是建立在 `Q₁` 基础上的 `Q₂` 高级证明，
 则 `mp x h₁ h₂` 给出关于 `x` 的 `Q₂` 证明。
 -/
-axiom mp : Prop
+def mp : Prop := True
 
 end Triple
 
@@ -155,7 +155,7 @@ end Triple
 * 否则，当该属性用于一个可由 `@[simp]` 化简的定义时，该定义会加入 `mvcgen` 的内部
   simp 集；此 simp 集用于在 `wp⟦·⟧` 上下文中化简模式匹配的判别项和常量的应用。
 -/
-axiom spec : Prop
+def spec : Prop := True
 
 /--
 `for ... in ...` 循环的规约所使用的循环不变式类型。
@@ -168,7 +168,7 @@ axiom spec : Prop
 离开循环后，游标前缀为 `xs`，后缀为空；归纳步骤中，不变式对首元素为 `x` 的后缀成立；
 运行循环体后，把 `x` 移到前缀，不变式仍然成立。
 -/
-axiom Invariant : Prop
+def Invariant : Prop := True
 
 namespace Invariant
 
@@ -187,7 +187,7 @@ forIn (β := MProd (Option γ) ...) (b := ⟨none, ...⟩) collection loopBody
 它与循环体开始处归纳假设中的 `xs.suffix = x::rest` 相矛盾，因此用户无需证明“循环已经提前返回，
 却又执行下一次循环体迭代”这一虚假情形。
 -/
-axiom withEarlyReturn : Prop
+def withEarlyReturn : Prop := True
 
 end Invariant
 
@@ -216,39 +216,39 @@ namespace Cursor
 前缀包含最前面的 `n` 个元素，后缀包含其余元素。
 若 `n` 大于列表长度，则游标位于列表末尾。
 -/
-axiom «at» : Prop
+def «at» : Prop := True
 
 /--
 游标在列表中的位置。
 这是前缀元素数量的简写。
 -/
-axiom pos : Prop
+def pos : Prop := True
 
 /--
 返回游标当前位置的元素。
 
 要求当前位置确实存在元素：后缀必须非空，因此游标不能位于列表末尾。
 -/
-axiom current : Prop
+def current : Prop := True
 
 /--
 将游标向前推进一个位置，把当前元素从后缀移到前缀。
 
 要求游标尚未位于列表末尾。
 -/
-axiom tail : Prop
+def tail : Prop := True
 
 /--
 在列表开头（位置 0）创建游标。
 前缀为空，后缀为整个列表。
 -/
-axiom begin : Prop
+def begin : Prop := True
 
 /--
 在列表末尾创建游标。
 前缀为整个列表，后缀为空。
 -/
-axiom «end» : Prop
+def «end» : Prop := True
 
 end Cursor
 end List
