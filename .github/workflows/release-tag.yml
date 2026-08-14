@@ -1,7 +1,6 @@
 name: Deploy Tagged Version
 
 on:
-    workflow_dispatch:
     push:
         tags:
             - "v*"
@@ -12,7 +11,7 @@ jobs:
         permissions:
             contents: write
         env:
-            PUBLIC_URL: "https://www.leanprover.cn/reference-manual/"
+            PUBLIC_URL: "https://www.leanprover.cn/reference-manual/latest/"
         steps:
             - name: Checkout repository
               uses: actions/checkout@v4

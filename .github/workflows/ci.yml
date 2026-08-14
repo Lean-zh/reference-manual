@@ -238,7 +238,7 @@ jobs:
         name: Deploy release
         runs-on: ubuntu-latest
         needs: [build]
-        if: github.event_name == 'release'
+        if: github.repository == 'leanprover/reference-manual' && github.event_name == 'release'
         outputs:
             ref-url: ${{ steps.deploy-release.outputs.deploy-url }}
         steps:
@@ -297,7 +297,7 @@ jobs:
         name: Deploy preview
         runs-on: ubuntu-latest
         needs: [build]
-        if: github.event_name == 'push' && github.ref_name == 'nightly-testing'
+        if: github.repository == 'leanprover/reference-manual' && github.event_name == 'push' && github.ref_name == 'nightly-testing'
         steps:
             - name: Get generated HTML from artifact storage
               uses: actions/download-artifact@v4
@@ -328,7 +328,7 @@ jobs:
         name: Check links
         runs-on: ubuntu-latest
         needs: [deploy]
-        if: github.event_name == 'release'
+        if: github.repository == 'leanprover/reference-manual' && github.event_name == 'release'
         steps:
             - uses: actions/checkout@v4
               with:

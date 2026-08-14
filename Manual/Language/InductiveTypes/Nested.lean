@@ -127,6 +127,7 @@ In this case, the function applies equally well to the translated version as it 
 :::
 :::::
 
+嵌套归纳类型转换为互递归归纳类型的过程如下：
 
 : 嵌套出现变为新的归纳类型
 

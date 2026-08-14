@@ -267,14 +267,20 @@ prelude
 
 :::
 
-::::syntax Lean.Parser.Module.import (title := "Imports")
-All {tech}[source files] may use plain imports:
+::::syntax Lean.Parser.Module.import (title := "导入")
+所有{tech (key := "source file")}[源文件]都可以使用普通导入：
 ```grammar
 import $mod:ident
 ```
 
-In source files that are not modules, this imports the specified Lean file.
-Importing a file makes its contents available in the current source file, as well as those from source files transitively imported by its imports.
+对于不是模块的源文件，该语法导入指定的 Lean 文件。
+导入文件会让它及其递归导入的所有源文件的内容在当前源文件中可见。
+
+源文件名与命名空间不一定一一对应。
+源文件可以向任意命名空间添加名称，而导入源文件不会影响当前打开的命名空间集合。
+
+{tech (key := "import name")}[导入名]会通过将名称中的点（`.`）替换为路径分隔符，并加上 `.lean` 或 `.olean` 后缀，转成文件名。
+Lean 在其包含路径中搜索对应的中间构建产物或可导入的模块文件。
 
 {tech}[Modules] may use the following import syntax:
 ```grammar
@@ -299,12 +305,6 @@ The modifiers have the following meanings:
   The imported module's private scope is added to the current module's {tech}[private scope].
 :::
 ::::
-
-源文件与命名空间不一定一一对应。
-源文件可以向任意命名空间添加名称，而导入源文件不会影响当前打开的命名空间集合。
-
-导入名会通过将名称中的点（`.`）替换为路径分隔符，并加上 `.lean` 或 `.olean` 后缀，转成文件名。
-Lean 在其包含路径中搜索对应的中间构建产物或可导入的模块文件。
 
 
 ## 命令

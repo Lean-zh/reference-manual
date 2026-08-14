@@ -255,6 +255,10 @@ of sort `Type 2`
 tag := "predicativity"
 %%%
 
+每个宇宙都包含依值函数类型，它们还可表示全称量化和蕴涵。
+函数类型所在的宇宙由其参数类型和返回类型的宇宙共同决定。
+具体规则取决于函数的返回类型是否为命题。
+
 谓词,即返回命题的函数（即结果为 `Prop` 中类型的函数）可以拥有任意宇宙的参数类型，但这类函数本身还是属于 `Prop`。
 换言之，命题具有 {deftech (key := "impredicative")}[_非直谓性的_](impredicative){index}[impredicative]{index (subterm := "impredicative")}[quantification] 量化， 因为命题本身可以是关于所有命题（以及所有其他类型）的陈述。
 
@@ -301,6 +305,8 @@ of sort `Type 2`
 ```
 :::
 
+Lean 的宇宙不是 {deftech (key := "cumulative")}[累积性的]；{index}[cumulativity]也就是说，`Type u` 中的类型不会自动也属于 `Type (u + 1)`。
+每个类型只属于唯一一个宇宙。
 
 :::Manual.example "无累积性"
 下例不可通过，因为标注的宇宙层级比实际函数类型要大：

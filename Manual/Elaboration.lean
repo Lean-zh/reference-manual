@@ -372,7 +372,7 @@ fun {α} motive x h_1 h_2 =>
 :::paragraph
 预定义随后被交由编译器和内核。
 编译器收到未消去递归的预定义。
-发送给内核的版本则经过第二次转化，将显式递归替换为使用 {ref "structural-recursion"}[归递子]、{ref "well-founded-recursion"}[良构递归](well-founded recursion)或其它方式。
+发送给内核的版本则经过第二次转化，将显式递归替换为使用 {ref "structural-recursion"}[归递子]、{ref "well-founded-recursion"}[良基递归]、{ref "partial-fixpoint"}[偏不动点递归]或其它方式。
 此种分工原因有三：
  * 编译器可以编译 {ref "partial-unsafe"}[`partial`（偏）函数]，对于内核而言仅当作推理的不可见常量。
  * 编译器还能编译 {ref "partial-unsafe"}[`unsafe`（不安全）函数]，直接绕过内核。

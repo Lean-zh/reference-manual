@@ -108,7 +108,7 @@ Lean infers that {lean}`Type (max u v)` is the least universe that can accommoda
 
 ::::
 
-Auto-implicit arguments are inserted in each field separately, even if their names coincide, and the fields become constructor parameters that quantify over types.
+每个字段都会独立插入自动隐式参数，即使它们的名称相同；这些字段随后成为对类型进行量化的构造子参数。
 
 ::::example "Auto-Implicit Parameters in Structure Fields"
 

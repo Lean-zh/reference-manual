@@ -75,7 +75,10 @@ $[deriving $[$x:ident],*]?
 新的归纳类型扩展了 Lean 的核心逻辑——它们不是由系统中已有的数据编码或模拟出来的。
 归纳类型声明还必须满足一系列 {ref "well-formed-inductives"}[良构性要求] 以确保逻辑系统的一致性。
 
-
+声明的第一行，从 {keywordOf Lean.Parser.Command.declaration (parser:=«inductive»)}`inductive` 到 {keywordOf Lean.Parser.Command.declaration (parser:=«inductive»)}`where`，指定新{tech (key := "type constructor")}[类型构造子]的名称和类型。
+如果为类型构造子提供了类型签名，则其结果类型必须是{tech (key := "universe")}[宇宙]，但参数不一定是类型。
+如果没有提供签名，Lean 会尝试推断出恰好足以容纳结果类型的宇宙。
+在某些情况下，这一过程可能无法找到最小宇宙，甚至完全无法找到合适的宇宙，此时必须给出标注。
 
 构造子定义在 {keywordOf Lean.Parser.Command.declaration (parser:=«inductive»)}`where`后边。
 构造子并非必需，比如像 {lean}`False` 和 {lean}`Empty` 这样没有构造子的归纳类型是完全合理的。
@@ -574,6 +577,9 @@ tag := "mutual-inductive-types-requirements"
 tag := "mutual-inductive-types-dependencies"
 %%%
 
+每个类型构造子的签名都必须能在不引用 `mutual` 组中其它归纳类型的情况下完成精译。
+换言之，`mutual` 组中的归纳类型不能互相作为参数。
+各归纳类型的构造子可以在参数类型中提及组内其它类型构造子，但必须满足由非互递归归纳类型的递归出现条件推广而来的限制。
 
 :::example "类型构造子之间不能互相引用"
 Lean 不接受下述归纳类型：
@@ -764,6 +770,8 @@ example : RLE [1, 1, 2, 2, 3, 1, 1, 1] where
 tag := "mutual-inductive-types-positivity"
 %%%
 
+`mutual` 组中定义的每个归纳类型，只能严格正地出现在组内所有类型的所有构造子参数类型中。
+换言之，在组内每个构造子的每个参数类型中，组内类型构造子都不能出现在任何箭头左侧，也不能出现在参数位置，除非它是某个归纳类型的类型构造子的参数。
 
 ::: example "互递归条件下的严格正性"
 在下面的 mutual 组中，`Tm` 在 `Binding.scope` 的参数类型里出现在负位置：
