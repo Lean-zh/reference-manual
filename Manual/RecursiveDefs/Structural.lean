@@ -19,27 +19,27 @@ open Lean.Elab.Tactic.GuardMsgs.WhitespaceMode
 
 set_option guard_msgs.diff true
 
-#doc (Manual) "Structural Recursion" =>
+#doc (Manual) "结构递归" =>
 %%%
 tag := "structural-recursion"
 %%%
 
-Structurally recursive functions are those in which each recursive call is on a structurally smaller term than the argument.
-The same parameter must decrease in all recursive calls; this parameter is called the {deftech}_decreasing parameter_.
-Structural recursion is stronger than the primitive recursion that recursors provide, because the recursive call can use more deeply nested sub-terms of the argument, rather than only an immediate sub-term.
-The constructions used to implement structural recursion are, however, implemented using the recursor; these helper constructions are described in the {ref "recursor-elaboration-helpers"}[section on inductive types].
+结构递归函数是指每次递归调用都作用于相对于该实参在结构上更小的项的函数。
+所有递归调用中都必须是同一个形参变小；这个形参称为 {deftech (key := "decreasing parameter")}_递减参数_。
+结构递归比递归器提供的原始递归更强，因为递归调用可以使用该实参更深层嵌套的子项，而不只是它的直接子项。
+不过，实现结构递归所用的构造本身仍是基于递归器实现的；这些辅助构造见{ref "recursor-elaboration-helpers"}[归纳类型一节]。
 
-The rules that govern structural recursion are fundamentally _syntactic_ in nature.
-There are many recursive definitions that exhibit structurally recursive computational behavior, but which are not accepted by these rules; this is a fundamental consequence of the analysis being fully automatic.
-{tech}[Well-founded recursion] provides a semantic approach to demonstrating termination that can be used in situations where a recursive function is not structurally recursive, but it can also be used when a function that computes according to structural recursion doesn't satisfy the syntactic requirements.
+支配结构递归的规则在本质上是_句法性的_。
+许多递归定义在计算行为上确实体现为结构递归，但并不会被这些规则接受；这是因为该分析必须完全自动化，这一限制是根本性的结果。
+{tech (key := "Well-founded recursion")}[良基递归]提供了一种证明终止性的语义方法，既可用于递归函数并非结构递归的情形，也可用于函数虽按结构递归计算、却不满足句法要求的情形。
 
 ```lean -show
 section
 variable (n n' : Nat)
 ```
-:::example "Structural Recursion vs Subtraction"
-The function {lean}`countdown` is structurally recursive.
-The parameter {lean}`n` was matched against the pattern {lean}`n' + 1`, which means that {lean}`n'` is a direct subterm of {lean}`n` in the second branch of the pattern match:
+:::example "结构递归与减法"
+函数 {lean}`countdown` 是结构递归的。
+形参 {lean}`n` 与模式 {lean}`n' + 1` 进行匹配，这意味着在模式匹配的第二个分支中，{lean}`n'` 是 {lean}`n` 的直接子项：
 ```lean
 def countdown (n : Nat) : List Nat :=
   match n with
@@ -47,7 +47,7 @@ def countdown (n : Nat) : List Nat :=
   | n' + 1 => n' :: countdown n'
 ```
 
-Replacing pattern matching with an equivalent Boolean test and subtraction results in an error:
+若把模式匹配替换为等价的布尔测试与减法，就会报错：
 ```lean +error (name := countdown') -keep
 def countdown' (n : Nat) : List Nat :=
   if n == 0 then []
@@ -74,10 +74,10 @@ h✝ : ¬(n == 0) = true
 n' : Nat := n - 1
 ⊢ n - 1 < n
 ```
-This is because there was no pattern matching on the parameter {lean}`n`.
-While this function indeed terminates, the argument that it does so is based on properties of if, the equality test, and subtraction, rather than being a generic feature of {lean}`Nat` being an {tech}[inductive type].
-These arguments are expressed using {tech}[well-founded recursion], and a slight change to the function definition allows Lean's automatic support for well-founded recursion to construct an alternative termination proof.
-This version branches on the decidability of {tech}[propositional equality] for {lean}`Nat` rather than the result of a Boolean equality test:
+这是因为这里并没有对形参 {lean}`n` 做模式匹配。
+虽然这个函数确实会终止，但其终止性的论证依赖于 if、相等测试和减法的性质，而不是 {lean}`Nat` 作为 {tech (key := "inductive type")}[归纳类型] 的一般性特征。
+这些论证要用 {tech (key := "well-founded recursion")}[良基递归] 来表达；只要对函数定义做一点改动，就能让 Lean 的良基递归自动支持构造出另一份终止性证明。
+这个版本不是分支于 {lean}`Nat` 的布尔相等测试结果，而是分支于 {tech (key := "propositional equality")}[命题相等] 的可判定性：
 
 ```lean
 def countdown' (n : Nat) : List Nat :=
@@ -87,30 +87,33 @@ def countdown' (n : Nat) : List Nat :=
     n' :: countdown' n'
 ```
 
-Here, Lean's automation automatically constructs a termination proof from facts about propositional equality and subtraction.
-It uses well-founded recursion rather than structural recursion behind the scenes.
+这里，Lean 的自动化会依据命题相等和减法的事实自动构造终止性证明。
+其底层采用的是良基递归，而不是结构递归。
 :::
 ```lean -show
 end
 ```
 
-Structural recursion may be used explicitly or automatically.
-With explicit structural recursion, the function definition declares which parameter is the {tech}[decreasing parameter].
-If no termination strategy is explicitly declared, Lean performs a search for a decreasing parameter as well as a decreasing measure for use with {tech}[well-founded recursion].
-Explicitly annotating structural recursion has the following benefits:
- * It can speed up elaboration, because no search occurs.
- * It documents the termination argument for readers.
- * In situations where structural recursion is explicitly desired, it prevents the accidental use of well-founded recursion.
+结构递归既可以显式使用，也可以自动推断。
+在显式结构递归中，函数定义会声明哪个形参是 {tech (key := "decreasing parameter")}[递减参数]。
+若未显式声明终止性策略，Lean 会同时搜索递减参数，以及可供 {tech (key := "well-founded recursion")}[良基递归] 使用的递减度量。
+显式标注结构递归有以下好处：
+ * 可以加快精译，因为无需搜索。
+ * 能为读者记录终止性论证。
+ * 在明确希望使用结构递归的场景下，可以防止意外改用良基递归。
 
-# Explicit Structural Recursion
+# 显式结构递归
+%%%
+tag := "The-Lean-Language-Reference--Definitions--Recursive-Definitions--Structural-Recursion--Explicit-Structural-Recursion"
+%%%
 
-To explicitly use structural recursion, a function or theorem definition can be annotated with a {keywordOf Lean.Parser.Command.declaration}`termination_by structural` clause that specifies the {tech}[decreasing parameter].
-The decreasing parameter may be a reference to a parameter named in the signature.
-When the signature specifies a function type, the decreasing parameter may additionally be a parameter not named in the signature; in this case, names for the remaining parameters may be introduced by writing them before an arrow ({keywordOf Lean.Parser.Command.declaration}`=>`).
+若要显式使用结构递归，可以在函数或定理定义上添加 {keywordOf Lean.Parser.Command.declaration}`termination_by structural` 子句，用以指定 {tech (key := "decreasing parameter")}[递减参数]。
+递减参数可以引用签名中已命名的形参。
+若签名写成函数类型，则递减参数还可以是签名中未命名的形参；此时可在箭头（{keywordOf Lean.Parser.Command.declaration}`=>`）前写出其余形参的名称，将它们引入作用域。
 
-:::example "Specifying Decreasing Parameters"
+:::example "指定递减参数"
 
-When the decreasing parameter is a named parameter to the function, it can be specified by referring to its name.
+当递减参数是函数的具名形参时，可以直接引用其名称来指定。
 
 ```lean -keep
 def half (n : Nat) : Nat :=
@@ -120,7 +123,7 @@ def half (n : Nat) : Nat :=
 termination_by structural n
 ```
 
-When the decreasing parameter is not named in the signature, a name can be introduced locally in the {keywordOf Lean.Parser.Command.declaration}`termination_by` clause.
+当递减参数在签名中未命名时，可以在 {keywordOf Lean.Parser.Command.declaration}`termination_by` 子句中局部引入一个名称。
 
 ```lean -keep
 def half : Nat → Nat
@@ -130,33 +133,32 @@ termination_by structural n => n
 ```
 :::
 
-:::syntax Lean.Parser.Termination.terminationBy (title := "Explicit Structural Recursion")
+:::syntax Lean.Parser.Termination.terminationBy (title := "显式结构递归")
 
-The `termination_by structural` clause introduces a decreasing parameter.
+`termination_by structural` 子句用来引入递减参数。
 
 ```grammar
 termination_by structural $[$_:ident* =>]? $term
 ```
 
-The identifiers before the optional `=>` can bring function parameters into scope that are not
-already bound in the declaration header, and the mandatory term must indicate one of the function's parameters, whether introduced in the header or locally in the clause.
+可选 `=>` 之前的标识符可以把尚未在声明头中绑定的函数形参带入作用域，而后面必需的项必须指明函数的某个形参，无论它是在声明头中引入，还是在该子句中局部引入。
 :::
 
-The decreasing parameter must satisfy the following conditions:
+递减参数必须满足下列条件：
 
-* Its type must be an {tech}[inductive type].
+* 它的类型必须是 {tech (key := "inductive type")}[归纳类型]。
 
-* If its type is an {tech}[indexed family], then all indices must be parameters of the function.
+* 若其类型是 {tech (key := "indexed family")}[索引族]，则所有索引都必须是该函数的形参。
 
-* If the inductive or indexed family of the decreasing parameter has data type parameters, then these data type parameters may themselves only depend on function parameters that are part of the {tech}[fixed prefix].
+* 若递减参数的归纳类型或索引族带有数据类型参数，则这些数据类型参数本身只能依赖属于 {tech (key := "fixed prefix")}[固定前缀] 的函数形参。
 
-A {deftech}_fixed parameter_ is a function parameter that is passed unmodified in all recursive calls and is not an index of the recursive parameter's type.
-The {deftech}_fixed prefix_ is the longest prefix of the function's parameters in which all are fixed.
+{deftech (key := "fixed parameter")}_固定参数_ 是指在所有递归调用中都原样传递、且不是递归参数类型之索引的函数形参。
+{deftech (key := "fixed prefix")}_固定前缀_ 是函数形参中满足“全部固定”的最长前缀。
 
-:::example "Ineligible decreasing parameters"
+:::example "不合格的递减参数"
 
-The decreasing parameter's type must be an inductive type.
-In {lean}`notInductive`, a function is specified as the decreasing parameter:
+递减参数的类型必须是归纳类型。
+在 {lean}`notInductive` 中，被指定为递减参数的是一个函数：
 
 ```lean +error (name := badnoindct)
 def notInductive (x : Nat → Nat) : Nat :=
@@ -168,8 +170,8 @@ cannot use specified measure for structural recursion:
   its type is not an inductive
 ```
 
-If the decreasing parameter is an indexed family, all the indices must be variables.
-In {lean}`constantIndex`, the indexed family {lean}`Fin'` is instead applied to a constant value:
+若递减参数是索引族，则所有索引都必须是变量。
+在 {lean}`constantIndex` 中，索引族 {lean}`Fin'` 却被应用到了一个常量值上：
 
 ```lean +error (name := badidx)
 inductive Fin' : Nat → Type where
@@ -185,8 +187,8 @@ cannot use specified measure for structural recursion:
     Fin' 100
 ```
 
-The parameters of the decreasing parameter's type must not depend on function parameters that come after varying parameters or indices.
-In {lean}`afterVarying`, the {tech}[fixed prefix] is empty, because the first parameter `n` varies, so `p` is not part of the fixed prefix:
+递减参数类型中的参数，不能依赖那些位于变化参数或索引之后的函数形参。
+在 {lean}`afterVarying` 中，{tech (key := "fixed prefix")}[固定前缀] 为空，因为第一个形参 `n` 会变化，所以 `p` 不属于固定前缀：
 
 ```lean +error (name := badparam)
 inductive WithParam' (p : Nat) : Nat → Type where
@@ -205,22 +207,21 @@ Cannot use parameter x:
 ```
 :::
 
-Furthermore, every recursive call of the functions must be on a {deftech}_strict sub-term_ of the decreasing
-parameter.
+此外，函数的每次递归调用都必须作用于递减参数的某个 {deftech (key := "strict sub-term")}_真子项_。
 
- * The decreasing parameter itself is a sub-term, but not a strict sub-term.
- * If a sub-term is the {tech (key := "match discriminant")}[discriminant] of a {keywordOf Lean.Parser.Term.match}`match` expression or other pattern-matching syntax, the pattern that matches the discriminant is a sub-term in the {tech}[right-hand side] of each {tech}[match alternative].
-   In particular, the rules of {ref "match-generalization"}[match generalization] are used to connect the discriminant to the occurrences of the pattern term in the right-hand side; thus, it respects {tech}[definitional equality].
-   The pattern is a _strict_ sub-term if and only if the discriminant is a strict sub-term.
- * If a sub-term is a constructor applied to arguments, then its recursive arguments are strict sub-terms.
+ * 递减参数自身是一个子项，但不是真子项。
+ * 若某个子项是 {keywordOf Lean.Parser.Term.match}`match` 表达式或其他模式匹配语法的 {tech (key := "match discriminant")}[判别项]，则与该判别项匹配的模式，会成为各个 {tech (key := "match alternative")}[匹配分支] 的 {tech (key := "right-hand side")}[右侧] 中的子项。
+   尤其是，这里会使用 {ref "match-generalization"}[匹配泛化] 的规则，把判别项与右侧中模式项的出现关联起来；因此它遵守 {tech (key := "definitional equality")}[定义相等]。
+   当且仅当判别项是真子项时，该模式才是真子项。
+ * 若某个子项是作用于若干实参的构造器，那么它的递归实参都是真子项。
 
 ```lean -show
 section
 variable (n : Nat)
 ```
-::::example "Nested Patterns and Sub-Terms"
+::::example "嵌套模式与子项"
 
-In the following example, the decreasing parameter {lean}`n` is matched against the nested pattern {lean  (type := "Nat")}`.succ (.succ n)`. Therefore {lean  (type := "Nat")}`.succ (.succ n)` is a (non-strict) sub-term of {lean  (type := "Nat")}`n`, and consequently  both {lean  (type := "Nat")}`n` and {lean  (type := "Nat")}`.succ n` are strict sub-terms, and the definition is accepted.
+在下例中，递减参数 {lean}`n` 与嵌套模式 {lean  (type := "Nat")}`.succ (.succ n)` 匹配。因此 {lean  (type := "Nat")}`.succ (.succ n)` 是 {lean  (type := "Nat")}`n` 的一个（非严格）子项，于是 {lean  (type := "Nat")}`n` 和 {lean  (type := "Nat")}`.succ n` 都是真子项，所以该定义会被接受。
 
 ```lean
 def fib : Nat → Nat
@@ -229,10 +230,10 @@ def fib : Nat → Nat
 termination_by structural n => n
 ```
 
-For clarity, this example uses {lean  (type := "Nat")}`.succ n` and {lean  (type := "Nat")}`.succ (.succ n)` instead of the equivalent {lean}`Nat`-specific {lean}`n+1` and {lean}`n+2`.
+为便于说明，这个例子使用 {lean  (type := "Nat")}`.succ n` 和 {lean  (type := "Nat")}`.succ (.succ n)`，而不是等价的、{lean}`Nat` 专用的 {lean}`n+1` 与 {lean}`n+2`。
 
 :::TODO
-Link to where this special syntax is documented.
+链接到这种特殊语法的文档位置。
 :::
 
 ::::
@@ -244,10 +245,10 @@ end
 section
 variable {α : Type u} (n n' : Nat) (xs : List α)
 ```
-:::example "Matching on Complex Expressions Can Prevent Elaboration"
+:::example "对复杂表达式做匹配可能阻碍精译"
 
-In the following example, the decreasing parameter {lean}`n` is not directly the {tech (key := "match discriminant")}[discriminant] of the {keywordOf Lean.Parser.Term.match}`match` expression.
-Therefore, {lean}`n'` is not considered a sub-term of {lean}`n`.
+在下例中，递减参数 {lean}`n` 并不是 {keywordOf Lean.Parser.Term.match}`match` 表达式的直接 {tech (key := "match discriminant")}[判别项]。
+因此，{lean}`n'` 不会被视为 {lean}`n` 的子项。
 
 ```lean +error -keep (name := badtarget)
 def half (n : Nat) : Nat :=
@@ -263,7 +264,7 @@ Cannot use parameter n:
     half n'
 ```
 
-Using {tech}[well-founded recursion], and explicitly connecting the discriminant to the pattern of the match, this definition can be accepted.
+若改用 {tech (key := "well-founded recursion")}[良基递归]，并显式把判别项与匹配模式联系起来，这个定义就能被接受。
 
 ```lean
 def half (n : Nat) : Nat :=
@@ -274,8 +275,8 @@ termination_by n
 decreasing_by simp_all; omega
 ```
 
-Similarly, the following example fails: although {lean}`xs.tail` would reduce to a strict sub-term of {lean}`xs`, this is not visible to Lean according to the rules above.
-In particular, {lean}`xs.tail` is not {tech (key := "definitional equality")}[definitionally equal] to a strict sub-term of {lean}`xs`.
+类似地，下面这个例子也会失败：虽然 {lean}`xs.tail` 会归约为 {lean}`xs` 的一个真子项，但按照上述规则，这一点对 Lean 来说并不可见。
+特别地，{lean}`xs.tail` 与 {lean}`xs` 的某个真子项并不 {tech (key := "definitional equality")}[定义相等]。
 
 ```lean +error -keep
 def listLen : List α → Nat
@@ -290,13 +291,13 @@ end
 ```
 
 
-:::example "Simultaneous Matching vs Matching Pairs for Structural Recursion"
+:::example "结构递归中的同时匹配与匹配成对值"
 
-An important consequence of the strategies that are used to prove termination is that *simultaneous matching of two {tech (key := "match discriminant")}[discriminants] is not equivalent to matching a pair*.
-Simultaneous matching maintains the connection between the discriminants and the patterns, allowing the pattern matching to refine the types of the assumptions in the local context as well as the expected type of the {keywordOf Lean.Parser.Term.match}`match`.
-Essentially, the elaboration rules for {keywordOf Lean.Parser.Term.match}`match` treat the discriminants specially, and changing discriminants in a way that preserves the run-time meaning of a program does not necessarily preserve the compile-time meaning.
+用于证明终止性的这些策略有一个重要后果：*同时匹配两个 {tech (key := "match discriminant")}[判别项] 与匹配一个二元组并不等价*。
+同时匹配会保留判别项与模式之间的联系，使模式匹配不仅能细化局部上下文中假设的类型，也能细化 {keywordOf Lean.Parser.Term.match}`match` 的期望类型。
+本质上，{keywordOf Lean.Parser.Term.match}`match` 的精译规则会对判别项作特殊处理；因此，对判别项做出虽能保持程序运行时含义、却不一定保持编译时含义的改动，并不安全。
 
-This function that finds the minimum of two natural numbers is defined by structural recursion on its first parameter:
+下面这个求两个自然数最小值的函数，是按其第一个参数做结构递归定义的：
 ```lean -keep
 def min' (n k : Nat) : Nat :=
   match n, k with
@@ -306,7 +307,7 @@ def min' (n k : Nat) : Nat :=
 termination_by structural n
 ```
 
-Replacing the simultaneous pattern match on both parameters with a match on a pair causes termination analysis to fail:
+若把对两个参数的同时模式匹配改写为对一个二元组做匹配，终止性分析就会失败：
 ```lean +error (name := noMin)
 def min' (n k : Nat) : Nat :=
   match (n, k) with
@@ -322,13 +323,13 @@ Cannot use parameter n:
     min' n' k'
 ```
 
-This is because the analysis only considers direct pattern matching on parameters when matching recursive calls to strictly-smaller argument values.
-Wrapping the discriminants in a pair breaks the connection.
+这是因为在把递归调用与更小的实参值对应起来时，该分析只考虑对形参本身的直接模式匹配。
+把判别项包进一个二元组会破坏这种联系。
 :::
 
-:::example "Structural Recursion Under Pairs"
+:::example "成对值下的结构递归"
 
-This function that finds the minimum of the two components of a pair can't be elaborated via structural recursion.
+下面这个求一对数中两个分量之最小值的函数，无法通过结构递归精译。
 ```lean +error (name := minpair) -keep
 def min' (nk : Nat × Nat) : Nat :=
   match nk with
@@ -343,10 +344,10 @@ Cannot use parameter nk:
   the type Nat × Nat does not have a `.brecOn` recursor
 ```
 
-This is because the parameter's type, {name}`Prod`, is not recursive.
-Thus, its constructor has no recursive parameters that can be exposed by pattern matching.
+这是因为该形参的类型 {name}`Prod` 并不是递归的。
+因此，它的构造器没有可通过模式匹配暴露出来的递归参数。
 
-This definition is accepted using {tech}[well-founded recursion], however:
+不过，这个定义可以通过 {tech (key := "well-founded recursion")}[良基递归] 被接受：
 ```lean
 def min' (nk : Nat × Nat) : Nat :=
   match nk with
@@ -361,9 +362,9 @@ termination_by nk
 section
 variable (n n' : Nat)
 ```
-:::example "Structural Recursion and Definitional Equality"
+:::example "结构递归与定义相等"
 
-Even though the recursive occurrence of {lean}`countdown` is applied to a term that is not a strict sub-term of the decreasing parameter, the following definition is accepted:
+尽管 {lean}`countdown` 的递归出现被应用到了一个并非递减参数真子项的项上，下列定义仍会被接受：
 ```lean
 def countdown (n : Nat) : List Nat :=
   match n with
@@ -372,10 +373,10 @@ def countdown (n : Nat) : List Nat :=
 termination_by structural n
 ```
 
-This is because {lean}`n' + 0` is {tech (key := "definitional equality")}[definitionally equal] to {lean}`n'`, which is a strict sub-term of {lean}`n`.
-{tech (key := "strict sub-term")}[Sub-terms] that result from pattern matching are connected to the {tech (key := "match discriminant")}[discriminant] using the rules for {ref "match-generalization"}[match generalization], which respect definitional equality.
+这是因为 {lean}`n' + 0` 与 {lean}`n'` {tech (key := "definitional equality")}[定义相等]，而后者是 {lean}`n` 的真子项。
+由模式匹配产生的 {tech (key := "strict sub-term")}[子项] 会通过 {ref "match-generalization"}[匹配泛化] 的规则与 {tech (key := "match discriminant")}[判别项] 关联起来，而这些规则尊重定义相等。
 
-In {lean}`countdown'`, the recursive occurrence is applied to {lean}`0 + n'`, which is not definitionally equal to `n'` because addition on natural numbers is structurally recursive in its second parameter:
+在 {lean}`countdown'` 中，递归出现被应用到了 {lean}`0 + n'` 上；它与 `n'` 并不定义相等，因为自然数上的加法是按照第二个参数做结构递归的：
 ```lean +error (name := countdownNonDefEq)
 def countdown' (n : Nat) : List Nat :=
   match n with
@@ -395,28 +396,28 @@ Cannot use parameter n:
 end
 ```
 
-# Mutual Structural Recursion
+# 互结构递归
 %%%
 tag := "mutual-structural-recursion"
 %%%
 
-Lean supports the definition of {tech}[mutually recursive] functions using structural recursion.
-Mutual recursion may be introduced using a {tech}[mutual block], but it also results from {keywordOf Lean.Parser.Term.letrec}`let rec` expressions and {keywordOf Lean.Parser.Command.declaration}`where` blocks.
-The rules for mutual structural recursion are applied to a group of actually mutually recursive, lifted definitions, that results from the {ref "mutual-syntax"}[elaboration steps] for mutual groups.
-If every function in the mutual group has a {keyword}`termination_by structural` annotation indicating that function’s decreasing argument, then structural recursion is used to translate the definitions.
+Lean 支持用结构递归来定义 {tech (key := "mutually recursive")}[互递归] 函数。
+互递归既可以通过 {tech (key := "mutual block")}[互递归块] 引入，也可能来自 {keywordOf Lean.Parser.Term.letrec}`let rec` 表达式和 {keywordOf Lean.Parser.Command.declaration}`where` 代码块。
+互结构递归的规则，会应用到由互递归组的{ref "mutual-syntax"}[精译步骤]所得、经过提升后且实际上互相递归的一组定义上。
+若互递归组中的每个函数都带有指明该函数递减实参的 {keyword}`termination_by structural` 注解，那么这些定义就会按结构递归来翻译。
 
-The requirements on the decreasing argument above are extended:
+此时，对递减实参的要求会扩展为：
 
- * All the types of all the decreasing arguments must be from the same inductive type, or more generally from the same {ref "mutual-inductive-types"}[mutual group of inductive types].
+ * 所有递减实参的类型都必须来自同一个归纳类型，或者更一般地，来自同一个{ref "mutual-inductive-types"}[互归纳类型组]。
 
- * The parameters of the decreasing parameter's types must be the same for all functions, and may depend only on the _common_ fixed prefix of function arguments.
+ * 递减参数类型中的参数，对所有函数都必须相同，且只能依赖于函数实参的_共同_固定前缀。
 
-The functions do not have to be in a one-to-one correspondence to the mutual inductive types.
-Multiple functions can have a decreasing argument of the same type, and not all types that are mutually recursive with the decreasing argument need have a corresponding function.
+这些函数不必与互归纳类型一一对应。
+多个函数可以拥有同一类型的递减实参，而与该递减实参互递归的类型也不必全都对应到某个函数。
 
-:::example "Mutual Structural Recursion Over Non-Mutual Types"
+:::example "非互递归类型上的互结构递归"
 
-The following example demonstrates mutual recursion over a non-mutual inductive data type:
+下面这个例子展示了在一个非互递归的归纳数据类型上进行互递归：
 
 ```lean
 mutual
@@ -433,10 +434,10 @@ end
 ```
 :::
 
-:::example "Mutual Structural Recursion Over Mutual Types"
+:::example "互归纳类型上的互结构递归"
 
-The following example demonstrates recursion over mutually inductive types.
-The functions {lean}`Exp.size` and {lean}`App.size` are mutually recursive.
+下面这个例子展示了在互归纳类型上的递归。
+函数 {lean}`Exp.size` 与 {lean}`App.size` 互相递归。
 
 ```lean
 mutual
@@ -462,8 +463,8 @@ mutual
 end
 ```
 
-The definition of {lean}`App.numArgs` is structurally recursive over type {lean}`App`.
-It demonstrates that not all inductive types in the mutual group need to be handled.
+{lean}`App.numArgs` 的定义是在类型 {lean}`App` 上做结构递归。
+它说明互递归组中的归纳类型不必全部都参与处理。
 
 ```lean
 def App.numArgs : App → Nat
@@ -477,29 +478,29 @@ termination_by structural a => a
 ::::draft
 :::planned 235
 
-Describe mutual structural recursion over {ref "nested-inductive-types"}[nested inductive types].
+描述在{ref "nested-inductive-types"}[嵌套归纳类型]上的互结构递归。
 
 :::
 ::::
 
-# Inferring Structural Recursion
+# 推断结构递归
 %%%
 tag := "inferring-structural-recursion"
 %%%
 
 
-If no {keyword}`termination_by` clauses are present in a recursive or mutually recursive function definition, then Lean attempts to infer a suitable structurally decreasing argument, effectively by trying all suitable parameters in sequence.
-If this search fails, Lean then attempts to infer {tech}[well-founded recursion].
+若递归或互递归函数定义中没有 {keyword}`termination_by` 子句，Lean 就会尝试推断一个合适的结构递减实参；做法实际上是按顺序尝试所有合适的形参。
+若这一步搜索失败，Lean 随后会尝试推断 {tech (key := "well-founded recursion")}[良基递归]。
 
-For mutually recursive functions, all combinations of parameters are tried, up to a limit to avoid combinatorial explosion.
-If only some of the mutually recursive functions have {keyword}`termination_by structural` clauses, then only those parameters are considered, while for the other functions all parameters are considered for structural recursion.
+对互递归函数而言，会尝试形参的各种组合，但会设置上限以避免组合爆炸。
+如果只有部分互递归函数带有 {keyword}`termination_by structural` 子句，那么对这些函数只考虑所指定的形参；而对其余函数，则会把所有形参都作为结构递归候选。
 
-A {keyword}`termination_by?` clause causes the inferred termination annotation to be shown.
-It can be automatically added to the source file using the offered suggestion or code action.
+{keyword}`termination_by?` 子句会显示推断出的终止性注解。
+它还可以通过给出的建议或代码操作自动加入源文件。
 
-:::example "Inferred Termination Annotations"
-Lean automatically infers that the function {lean}`half` is structurally recursive.
-The {keyword}`termination_by?` clause causes the inferred termination annotation to be displayed, and it can be automatically added to the source file with a single click.
+:::example "推断出的终止性注解"
+Lean 会自动推断函数 {lean}`half` 是结构递归的。
+{keyword}`termination_by?` 子句会显示推断出的终止性注解，并且可以一键自动加入源文件。
 
 ```lean (name := inferStruct)
 def half : Nat → Nat
@@ -513,63 +514,63 @@ Try this:
 ```
 :::
 
-# Elaboration Using Course-of-Values Recursion
+# 使用按所有较小值递归的精译
 %%%
 tag := "elab-as-course-of-values"
 %%%
 
-In this section, the construction used to elaborate structurally recursive functions is explained in more detail.
-This elaboration uses the {ref "recursor-elaboration-helpers"}[`below` and `brecOn` constructions] that are automatically generated from inductive types' recursors.
+本节将更详细地说明精译结构递归函数时所使用的构造。
+这种精译使用了由归纳类型递归器自动生成的 {ref "recursor-elaboration-helpers"}[`below` 与 `brecOn` 构造]。
 
 {spliceContents Manual.RecursiveDefs.Structural.RecursorExample}
 
-The structural recursion analysis attempts to translate the recursive {tech}[pre-definition] into a use of the appropriate structural recursion constructions.
-At this step, pattern matching has already been translated into the use of matcher functions; these are treated specially by the termination checker.
-Next, for each group of parameters, a translation using `brecOn` is attempted.
+结构递归分析会尝试把递归 {tech (key := "pre-definition")}[预定义] 翻译成对相应结构递归构造的使用。
+在这一步里，模式匹配已经被翻译成匹配器函数的调用；终止性检查器会对这些调用作特殊处理。
+接着，它会对每一组参数尝试使用 `brecOn` 的翻译。
 
 {spliceContents Manual.RecursiveDefs.Structural.CourseOfValuesExample}
 
-The `below` construction is a mapping from each value of a type to the results of some function call on _all_ smaller values; it can be understood as a memoization table that already contains the results for all smaller values.
-The notion of “smaller value” that is expressed in the `below` construction corresponds directly to the definition of {tech}[strict sub-terms].
+`below` 构造把某个类型的每个值映射到“某个函数在_所有_更小值上的调用结果”；它可以理解为一张记忆化表，其中已经包含了所有更小值的结果。
+`below` 构造中“更小值”的概念，与 {tech (key := "strict sub-terms")}[真子项] 的定义直接对应。
 
-Recursors expect an argument for each of the inductive type's constructors; these arguments are called with the constructor's arguments (and the result of recursion on recursive parameters) during {tech}[ι-reduction].
-The course-of-values recursion operator `brecOn`, on the other hand, expects just a single case that covers all constructors at once.
-This case is provided with a value and a `below` table that contains the results of recursion on all values smaller than the given value; it should use the contents of the table to satisfy the motive for the provided value.
-If the function is structurally recursive over a given parameter (or parameter group), then the results of all recursive calls will be present in this table already.
+递归器要求为该归纳类型的每个构造器各提供一个实参；在 {tech (key := "ι-reduction")}[ι-归约] 时，这些实参会以该构造器的参数（以及对递归参数递归后的结果）来调用。
+而按所有较小值递归的算子 `brecOn` 只要求一个同时覆盖全部构造器的分支。
+这个分支会收到一个值以及一张 `below` 表；该表包含对所有比给定值更小的值递归所得的结果，分支应利用表中的内容来满足这个给定值对应的动机。
+若函数在某个给定参数（或参数组）上是结构递归的，那么所有递归调用的结果都已经出现在这张表里。
 
-When the body of the recursive function is transformed into an invocation of `brecOn` on one of the function's parameters, the parameter and its course-of-values table are in scope.
-The analysis traverses the body of the function, looking for recursive calls.
-If the parameter is matched against, then its occurrences in the local context are {ref "match-generalization"}[generalized] and then instantiated with the pattern; this is also true for the type of the course-of-values table.
-Typically, this pattern matching results in the type of the course-of-values table becoming more specific, which gives access to the recursive results for smaller values.
-This generalization process implements the rule that patterns are {tech (key := "strict sub-term")}[sub-terms] of match discriminants.
-When an recursive occurrence of the function is detected, the course-of-values table is consulted to see whether it contains a result for the argument being checked.
-If so, the recursive call can be replaced with a projection from the table.
-If not, then the parameter in question doesn't support structural recursion.
+当递归函数的函数体被改写为对某个形参调用 `brecOn` 时，该形参与其“所有较小值表”都会进入作用域。
+分析器会遍历函数体，寻找递归调用。
+如果对这个形参做了匹配，那么它在局部上下文中的各次出现会先被{ref "match-generalization"}[泛化]，再用模式实例化；“所有较小值表”的类型也同样如此。
+通常，这种模式匹配会让“所有较小值表”的类型变得更具体，从而能够访问更小值对应的递归结果。
+这种泛化过程实现了“模式是匹配判别项的 {tech (key := "strict sub-term")}[子项]”这一规则。
+当检测到函数的递归出现时，就会查询“所有较小值表”，看看其中是否含有所检查实参对应的结果。
+若有，递归调用即可替换成从该表中的一次投影。
+若没有，则说明这里所考虑的参数不支持结构递归。
 
 ```lean -show
 section
 ```
 
-:::example "Elaboration Walkthrough"
-The first step in walking through the elaboration of {name}`half` is to manually desugar it to a simpler form.
-This doesn't match the way Lean works, but its output is much easier to read when there are fewer {name}`OfNat` instances present.
-This readable definition:
+:::example "精译过程示例"
+逐步考察 {name}`half` 的精译时，第一步是手工把它反糖化成一个更简单的形式。
+这并不完全符合 Lean 的实际处理方式，但当出现的 {name}`OfNat` 实例更少时，输出会容易阅读得多。
+这个较易读的定义：
 ```lean -keep
 def half : Nat → Nat
   | 0 | 1 => 0
   | n + 2 => half n + 1
 ```
-can be rewritten to this somewhat lower-level version:
+可以改写成下面这个更底层一些的版本：
 ```lean -keep
 def half : Nat → Nat
   | .zero | .succ .zero => .zero
   | .succ (.succ n) => half n |>.succ
 ```
 
-The elaborator begins by elaborating a pre-definition in which recursion is still present but the definition is otherwise in Lean's core type theory.
-Turning on the compiler's tracing of pre-definitions, as well as making the pretty printer more explicit, makes the resulting pre-definition visible:
+精译器一开始会先精译出一个预定义，其中递归仍然保留，但除此之外，该定义已经落在 Lean 的核心类型论里。
+开启编译器对预定义的追踪，并让美化打印更显式，就可以看到得到的预定义：
 ```lean -keep -show
--- Test of next block - visually check correspondence when updating!
+-- 测试下一代码块——更新时请目测核对其对应关系！
 set_option trace.Elab.definition.body true in
 set_option pp.all true in
 
@@ -592,7 +593,7 @@ def half : Nat → Nat
   | .zero | .succ .zero => .zero
   | .succ (.succ n) => half n |>.succ
 ```
-The returned trace message is:{TODO}[Trace not showing up in serialized info—figure out why so this test can work better, or better yet, add proper trace rendering to Verso]
+返回的跟踪消息是：{TODO}[跟踪信息没有显示在序列化后的信息里——需要查明原因，以便让这个测试更可靠；更理想的是，为 Verso 增加正式的跟踪渲染支持]
 ```
 [Elab.definition.body] half : Nat → Nat :=
     fun (x : Nat) =>
@@ -601,7 +602,7 @@ The returned trace message is:{TODO}[Trace not showing up in serialized info—f
         (fun (_ : Unit) => Nat.zero)
         fun (n : Nat) => Nat.succ (half n)
 ```
-The auxiliary match function's definition is:
+辅助匹配函数的定义是：
 ```lean (name := halfmatch)
 #print half.match_1
 ```
@@ -616,7 +617,7 @@ The auxiliary match function's definition is:
       Nat.casesOn n (h_2 ()) fun n =>
         h_3 n
 ```
-Formatted more readably, this definition is:
+把它排版得更易读一些，则为：
 ```lean
 def half.match_1'.{u} :
     (motive : Nat → Sort u) → (x : Nat) →
@@ -628,36 +629,36 @@ def half.match_1'.{u} :
       Nat.casesOn n (h_2 ()) fun n =>
         h_3 n
 ```
-In other words, the specific configuration of patterns used in {name}`half` are captured in {name}`half.match_1`.
+换言之，{name}`half` 中使用的那组特定模式配置，被编码进了 {name}`half.match_1`。
 
-This definition is a more readable version of {name}`half`'s pre-definition:
+这个定义是 {name}`half` 预定义的一个更易读版本：
 ```lean
 def half' : Nat → Nat :=
   fun (x : Nat) =>
     half.match_1 (motive := fun _ => Nat) x
-      (fun _ => 0) -- Case for 0
-      (fun _ => 0) -- Case for 1
-      (fun n => Nat.succ (half' n)) -- Case for n + 2
+      (fun _ => 0) -- 0 的分支
+      (fun _ => 0) -- 1 的分支
+      (fun n => Nat.succ (half' n)) -- n + 2 的分支
 ```
 
-To elaborate it as a structurally recursive function, the first step is to establish the `bRecOn` invocation.
-The definition must be marked {keywordOf Lean.Parser.Command.declaration}`noncomputable` because Lean does not support code generation for recursors such as {name}`Nat.brecOn`.
+要把它精译为一个结构递归函数，第一步是建立对 `bRecOn` 的调用。
+该定义必须标记为 {keywordOf Lean.Parser.Command.declaration}`noncomputable`，因为 Lean 不支持为 {name}`Nat.brecOn` 这类递归器生成代码。
 ```lean +error -keep
 noncomputable
 def half'' : Nat → Nat :=
   fun (x : Nat) =>
     x.brecOn fun n table =>
       _
-/- To translate:
+/- 待翻译：
     half.match_1 (motive := fun _ => Nat) x
-      (fun _ => 0) -- Case for 0
-      (fun _ => 0) -- Case for 1
-      (fun n => Nat.succ (half' n)) -- Case for n + 2
+      (fun _ => 0) -- 0 的分支
+      (fun _ => 0) -- 1 的分支
+      (fun n => Nat.succ (half' n)) -- n + 2 的分支
 -/
 ```
 
-The next step is to replace occurrences of `x` in the original function body with the `n` provided by {name Nat.brecOn}`brecOn`.
-Because `table`'s type depends on `x`, it must also be generalized when splitting cases with {name}`half.match_1`, leading to a motive with an extra parameter.
+下一步是把原函数体中出现的 `x` 替换为 {name Nat.brecOn}`brecOn` 提供的 `n`。
+由于 `table` 的类型依赖于 `x`，因此在用 {name}`half.match_1` 分情况时，它也必须一并泛化，从而得到一个带额外参数的动机。
 
 ```lean +error -keep (name := threeCases)
 noncomputable
@@ -674,13 +675,13 @@ def half'' : Nat → Nat :=
         _
         _)
       table
-/- To translate:
-      (fun _ => 0) -- Case for 0
-      (fun _ => 0) -- Case for 1
-      (fun n => Nat.succ (half' n)) -- Case for n + 2
+/- 待翻译：
+      (fun _ => 0) -- 0 的分支
+      (fun _ => 0) -- 1 的分支
+      (fun n => Nat.succ (half' n)) -- n + 2 的分支
 -/
 ```
-The three cases' placeholders expect the following types:
+这三个分支中的占位符分别需要如下类型：
 ```leanOutput threeCases
 don't know how to synthesize placeholder for argument `h_1`
 context:
@@ -705,7 +706,7 @@ table : Nat.below n
 ⊢ (n : Nat) → Nat.below n.succ.succ → Nat
 ```
 
-The first two cases in the pre-definition are constant functions, with no recursion to check:
+预定义中的前两个分支都是常量函数，没有递归需要检查：
 
 ```lean +error -keep (name := oneMore)
 noncomputable
@@ -722,20 +723,20 @@ def half'' : Nat → Nat :=
         (fun () _ => .zero)
         _)
       table
-/- To translate:
-      (fun n => Nat.succ (half' n)) -- Case for n + 2
+/- 待翻译：
+      (fun n => Nat.succ (half' n)) -- n + 2 的分支
 -/
 ```
 
-The final case contains a recursive call.
-It should be translated into a lookup into the course-of-values table.
-A more readable representation of the last hole's type is:
+最后一个分支包含递归调用。
+它应当被翻译为对“所有较小值表”的一次查找。
+最后一个洞的类型，用更易读的形式写出来是：
 ```leanTerm
 (n : Nat) →
 Nat.below (motive := fun _ => Nat) n.succ.succ →
 Nat
 ```
-which is equivalent to
+它等价于
 ```leanTerm
 (n : Nat) →
 Nat ×' (Nat ×' Nat.below (motive := fun _ => Nat) n) →
@@ -755,8 +756,8 @@ Nat) := rfl
 variable {n : Nat}
 ```
 
-The first {lean}`Nat` in the course-of-values table is the result of recursion on {lean}`n + 1`, and the second is the result of recursion on {lean}`n`.
-The recursive call can thus be replaced by a lookup, and the elaboration is successful:
+“所有较小值表”中的第一个 {lean}`Nat`，是对 {lean}`n + 1` 递归所得的结果；第二个则是对 {lean}`n` 递归所得的结果。
+因此，递归调用可以替换成一次查找，于是精译成功：
 
 ```lean +error -keep (name := oneMore)
 noncomputable
@@ -775,7 +776,7 @@ def half'' : Nat → Nat :=
       table
 ```
 
-The actual elaborator keeps track of the relationship between the parameter being checked for structural recursion and the positions in the course-of-values tables by inserting sentinel types with fresh names into the motive.
+实际的精译器会在动机中插入带新鲜名称的哨兵类型，以此跟踪“当前检查是否结构递归的参数”与“所有较小值表中的位置”之间的对应关系。
 :::
 
 ```lean -show
@@ -784,6 +785,6 @@ end
 
 ::::draft
 ::: planned 56
-A description of the elaboration of mutually recursive functions
+对互递归函数精译过程的说明
 :::
 ::::

@@ -14,11 +14,11 @@ open Verso.Genre.Manual.InlineLean
 
 open Lean.Elab.Tactic.GuardMsgs.WhitespaceMode
 
-#doc (Manual) "Recursion Example (for inclusion elsewhere)" =>
+#doc (Manual) "递归示例（供其他位置嵌入）" =>
 
 
-:::example "Course-of-Values Tables"
-This definition is equivalent to {name}`List.below`:
+:::example "所有较小值递归表"
+此定义等价于 {name}`List.below`：
 ```lean
 def List.below' {α : Type u} {motive : List α → Sort u} :
     List α → Sort (max (u + 1) u)
@@ -33,17 +33,17 @@ theorem List.below_eq_below' : @List.below = @List.below' := by
   congr
 ```
 
-In other words, for a given {tech}[motive], {lean}`List.below'` is a type that contains a realization of the motive for all suffixes of the list.
+换言之，对于给定的{tech (key := "motive")}[动机]，{lean}`List.below'` 是一个包含该动机在列表所有后缀上的实现的类型。
 
-More recursive arguments require further nested iterations of the product type.
-For instance, binary trees have two recursive occurrences.
+递归参数越多，就需要对积类型进行更深层的嵌套迭代。
+例如，二叉树有两个递归出现。
 ```lean
 inductive Tree (α : Type u) : Type u where
   | leaf
   | branch (left : Tree α) (val : α) (right : Tree α)
 ```
 
-Its corresponding course-of-values table contains the realizations of the motive for all subtrees:
+其对应的所有较小值递归表包含该动机在所有子树上的实现：
 ```lean
 def Tree.below' {α : Type u} {motive : Tree α → Sort u} :
     Tree α → Sort (max (u + 1) u)
@@ -64,12 +64,12 @@ theorem Tree.below_eq_below' : @Tree.below = @Tree.below' := by
 
 ```
 
-For both lists and trees, the `brecOn` operator expects just a single case, rather than one per constructor.
-This case accepts a list or tree along with a table of results for all smaller values; from this, it should satisfy the motive for the provided value.
-Dependent case analysis of the provided value automatically refines the type of the memo table, providing everything needed.
+对于列表和树，`brecOn` 运算符都只要求一个分支，而不是每个构造器各有一个分支。
+该分支接收一个列表或树，以及所有较小值的结果表；它应据此满足所给值的动机。
+对所给值进行依赖分情况分析会自动精化记忆表的类型，从而提供所需的一切。
 
-The following definitions are equivalent to {name}`List.brecOn` and {name}`Tree.brecOn`, respectively.
-The primitive recursive helpers {name}`List.brecOnTable`  and {name}`Tree.brecOnTable` compute the course-of-values tables along with the final results, and the actual definitions of the `brecOn` operators simply project out the result.
+以下定义分别等价于 {name}`List.brecOn` 和 {name}`Tree.brecOn`。
+原始递归辅助函数 {name}`List.brecOnTable` 和 {name}`Tree.brecOnTable` 在计算最终结果的同时计算所有较小值递归表，而 `brecOn` 运算符的实际定义只是投影出结果。
 ```lean
 def List.brecOnTable {α : Type u}
     {motive : List α → Sort u}
@@ -131,7 +131,7 @@ def Tree.brecOn' {α : Type u}
 ```
 
 ```lean -show -keep
--- Proving the above-claimed equivalence is too time consuming, but evaluating a few examples will at least catch silly mistakes!
+-- 证明上述等价性过于耗时，但求值几个示例至少能发现低级错误！
 
 /--
 info: fun motive x y z step =>

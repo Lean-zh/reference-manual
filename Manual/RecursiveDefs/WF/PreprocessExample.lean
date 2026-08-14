@@ -9,8 +9,8 @@ import VersoManual
 import Manual.Meta
 
 /-!
-This is extracted into its own file because line numbers show up in the error message, and we don't
-want to update it over and over again as we edit the large file.
+此示例提取到单独的文件中，因为错误消息会显示行号，而我们不希望在编辑大文件时
+反复更新它。
 -/
 
 open Verso.Genre Manual
@@ -20,40 +20,40 @@ open Lean.Elab.Tactic.GuardMsgs.WhitespaceMode
 
 set_option linter.constructorNameAsVariable false
 
-#doc (Manual) "Well-founded recursion preprocessing example (for inclusion elsewhere)" =>
+#doc (Manual) "良基递归预处理示例（供其他位置嵌入）" =>
 
-::::example "Preprocessing for a custom data type"
+::::example "自定义数据类型的预处理"
 
-This example demonstrates what is necessary to enable automatic well-founded recursion for a custom container type.
-The structure type {name}`Pair` is a homogeneous pair: it contains precisely two elements, both of which have the same type.
-It can be thought of as being similar to a list or array that always contains precisely two elements.
+此示例演示了要为自定义容器类型启用自动良基递归，需要具备哪些内容。
+结构类型 {name}`Pair` 是同质序对：它恰好包含两个类型相同的元素。
+可以把它看作一种总是恰好包含两个元素的列表或数组。
 
-As a container, {name}`Pair` can support a {name Pair.map}`map` operation.
-To support well-founded recursion in which recursive calls occur in the body of a function being mapped over a {name}`Pair`, some additional definitions are required, including a membership predicate, a theorem that relates the size of a member to the size of the containing pair, helpers to introduce and eliminate assumptions about membership, {attr}`wf_preprocess` rules to insert these helpers, and an extension to the {tactic}`decreasing_trivial` tactic.
-Each of these steps makes it easier to work with {name}`Pair`, but none are strictly necessary; there's no need to immediately implement all steps for every type.
+作为容器，{name}`Pair` 可以支持 {name Pair.map}`map` 操作。
+为了支持递归调用出现在映射到 {name}`Pair` 上的函数体内的良基递归，需要一些额外定义，包括成员关系谓词、关联成员大小与包含该成员的序对大小的定理、引入和消去成员关系假设的辅助函数、用于插入这些辅助函数的 {attr}`wf_preprocess` 规则，以及对 {tactic}`decreasing_trivial` 策略的扩展。
+这些步骤都会使 {name}`Pair` 更易使用，但没有哪一步是严格必需的；不必立即为每种类型实现所有步骤。
 
 ```lean
-/-- A homogeneous pair -/
+/-- 同质序对 -/
 structure Pair (α : Type u) where
   fst : α
   snd : α
 
-/-- Mapping a function over the elements of a pair -/
+/-- 将函数映射到序对的元素上 -/
 def Pair.map (f : α → β) (p : Pair α) : Pair β where
   fst := f p.fst
   snd := f p.snd
 ```
 
-Defining a nested inductive data type of binary trees that uses {name}`Pair` and attempting to define its {name Tree.map}`map` function demonstrates the need for preprocessing rules.
+定义一个使用 {name}`Pair` 的二叉树嵌套归纳数据类型，并尝试定义其 {name Tree.map}`map` 函数，可以说明预处理规则的必要性。
 
 ```lean
-/-- A binary tree defined using `Pair` -/
+/-- 使用 `Pair` 定义的二叉树 -/
 inductive Tree (α : Type u) where
   | leaf : α → Tree α
   | node : Pair (Tree α) → Tree α
 ```
 
-A straightforward definition of the {name Tree.map}`map` function fails:
+直接定义 {name Tree.map}`map` 函数会失败：
 
 ```lean +error -keep (name := badwf)
 def Tree.map (f : α → β) : Tree α → Tree β
@@ -78,14 +78,14 @@ t' : Tree α
 section
 variable (t' : Tree α) (p : Pair (Tree α))
 ```
-Clearly the proof obligation is not solvable, because nothing connects {lean}`t'` to {lean}`p`.
+这个证明义务显然无法解决，因为没有任何信息将 {lean}`t'` 与 {lean}`p` 联系起来。
 ```lean -show
 end
 ```
 :::
 
-The standard idiom to enable this kind of function definition is to have a function that enriches each element of a collection with a proof that they are, in fact, elements of the collection.
-Stating this property requires a membership predicate.
+启用这类函数定义的标准惯用法，是使用一个函数为集合中的每个元素附上其确实属于该集合的证明。
+陈述这一性质需要成员关系谓词。
 
 ```lean
 inductive Pair.Mem (p : Pair α) : α → Prop where
@@ -96,8 +96,8 @@ instance : Membership α (Pair α) where
   mem := Pair.Mem
 ```
 
-Every inductive type automatically has a {name}`SizeOf` instance.
-An element of a collection should be smaller than the collection, but this fact must be proved before it can be used to construct a termination proof:
+每个归纳类型都会自动拥有一个 {name}`SizeOf` 实例。
+集合中的元素应当小于该集合，但必须先证明这一事实，才能用它构造终止性证明：
 
 ```lean
 theorem Pair.sizeOf_lt_of_mem {α} [SizeOf α]
@@ -106,8 +106,8 @@ theorem Pair.sizeOf_lt_of_mem {α} [SizeOf α]
   cases h <;> cases p <;> (simp; omega)
 ```
 
-The next step is to define {name Pair.attach}`attach` and {name Pair.unattach}`unattach` functions that enrich the elements of the pair with a proof that they are elements of the pair, or remove said proof.
-Here, the type of {name}`Pair.unattach` is more general and can be used with any {ref "Subtype"}[subtype]; this is a typical pattern.
+下一步是定义 {name Pair.attach}`attach` 和 {name Pair.unattach}`unattach` 函数：前者为序对中的元素附上其属于该序对的证明，后者则移除该证明。
+这里，{name}`Pair.unattach` 的类型更为一般，可用于任意{ref "Subtype"}[子类型]；这是一种典型模式。
 
 ```lean
 def Pair.attach (p : Pair α) : Pair {x : α // x ∈ p} where
@@ -119,7 +119,7 @@ def Pair.unattach {P : α → Prop} :
   Pair.map Subtype.val
 ```
 
-{name Tree.map}`Tree.map` can now be defined by using {name}`Pair.attach` and {name}`Pair.sizeOf_lt_of_mem` explicitly:
+现在可以通过显式使用 {name}`Pair.attach` 和 {name}`Pair.sizeOf_lt_of_mem` 来定义 {name Tree.map}`Tree.map`：
 
 ```lean -keep
 def Tree.map (f : α → β) : Tree α → Tree β
@@ -132,11 +132,11 @@ decreasing_by
   omega
 ```
 
-This transformation can be made fully automatic.
-The preprocessing feature of well-founded recursion can be used to automate the introduction of the {lean}`Pair.attach` function.
-This is done in two stages.
-First, when {name}`Pair.map` is applied to one of the function's parameters, it is rewritten to an {name Pair.attach}`attach`/{name Pair.unattach}`unattach` composition.
-Then, when a function is mapped over the result of {name}`Pair.unattach`, the function is rewritten to accept the proof of membership and bring it into scope.
+这一变换可以完全自动化。
+可以使用良基递归的预处理功能，自动引入 {lean}`Pair.attach` 函数。
+这分两个阶段完成。
+首先，当 {name}`Pair.map` 应用于函数的某个形参时，将其重写为 {name Pair.attach}`attach`/{name Pair.unattach}`unattach` 组合。
+然后，当一个函数被映射到 {name}`Pair.unattach` 的结果上时，将该函数重写为接收成员关系证明，并把该证明引入作用域。
 ```lean
 @[wf_preprocess]
 theorem Pair.map_wfParam (f : α → β) (p : Pair α) :
@@ -154,7 +154,7 @@ theorem Pair.map_unattach {P : α → Prop}
   cases p; simp [wfParam, Pair.unattach, Pair.map]
 ```
 
-Now the function body can be written without extra considerations, and the membership assumption is still available to the termination proof.
+现在编写函数体时无需额外考虑，而终止性证明仍可使用成员关系假设。
 
 ```lean -keep
 def Tree.map (f : α → β) : Tree α → Tree β
@@ -167,7 +167,7 @@ decreasing_by
   omega
 ```
 
-The proof can be made fully automatic by adding {name Pair.sizeOf_lt_of_mem}`sizeOf_lt_of_mem` to the {tactic}`decreasing_trivial` tactic, as is done for similar built-in theorems.
+可以仿照类似的内置定理，将 {name Pair.sizeOf_lt_of_mem}`sizeOf_lt_of_mem` 添加到 {tactic}`decreasing_trivial` 策略中，使证明完全自动化。
 
 ```lean
 macro "sizeOf_pair_dec" : tactic =>
@@ -186,7 +186,7 @@ def Tree.map (f : α → β) : Tree α → Tree β
 termination_by t => t
 ```
 
-To keep the example short, the {tactic}`sizeOf_pair_dec` tactic is tailored to this particular recursion pattern and isn't really general enough for a general-purpose container library.
-It does, however, demonstrate that libraries can be just as convenient in practice as the container types in the standard library.
+为保持示例简短，{tactic}`sizeOf_pair_dec` 策略专门适配了这一特定递归模式，并不足以泛用于通用容器库。
+不过，它确实说明了库在实践中可以和标准库中的容器类型一样方便。
 
 ::::

@@ -7,6 +7,7 @@ Author: Joachim Breitner
 import VersoManual
 
 import Manual.Meta
+import Manual.ZhDocString.RecursiveDefs.WF
 import Manual.Papers
 import Manual.RecursiveDefs.WF.GuessLexExample
 import Manual.RecursiveDefs.WF.PreprocessExample
@@ -18,44 +19,43 @@ open Verso.Genre.Manual.InlineLean
 
 open Lean.Elab.Tactic.GuardMsgs.WhitespaceMode
 
-#doc (Manual) "Well-Founded Recursion" =>
+#doc (Manual) "良基递归" =>
 %%%
 tag := "well-founded-recursion"
 %%%
 
-Functions defined by {deftech}_well-founded recursion_ are those in which each recursive call has arguments that are _smaller_ (in a {ref "wf-rel"}[suitable sense]) than the functions' parameters.
-In contrast to {ref "structural-recursion"}[structural recursion], in which recursive definitions must satisfy particular _syntactic_ requirements, definitions that use well-founded recursion employ _semantic_ arguments.
-This allows a larger class of recursive definitions to be accepted.
-Furthermore, when Lean's automation fails to construct a termination proof, it is possible to specify one manually.
+以 {deftech (key := "well-founded recursion")}_良基递归_ 定义的函数，是指其中每次递归调用的实参都在某种{ref "wf-rel"}[适当意义]下比函数形参_更小_的函数。
+与{ref "structural-recursion"}[结构递归]不同，后者要求递归定义满足特定的_句法_要求，而良基递归的定义使用的是_语义_论证。
+这使得更大一类递归定义能够被接受。
+此外，当 Lean 的自动化无法构造终止性证明时，也可以手工给出。
 
-All definitions are treated identically by the Lean compiler.
-In Lean's logic, definitions that use well-founded recursion typically do not reduce {tech (key := "definitional equality")}[definitionally].
-The reductions do hold as propositional equalities, however, and Lean automatically proves them.
-This does not typically make it more difficult to prove properties of definitions that use well-founded recursion, because the propositional reductions can be used to reason about the behavior of the function.
-It does mean, however, that using these functions in types typically does not work well.
-Even when the reduction behavior happens to hold definitionally, it is often much slower than structurally recursive definitions in the kernel, which must unfold the termination proof along with the definition.
-When possible, recursive function that are intended for use in types or in other situations where definitional equality is important should be defined with structural recursion.
+Lean 编译器会以完全相同的方式对待所有这些定义。
+在 Lean 的逻辑中，使用良基递归的定义通常不会 {tech (key := "definitional equality")}[在定义上] 归约。
+不过，这些归约在命题相等层面仍然成立，而 Lean 会自动证明它们。
+这通常不会让证明良基递归定义的性质变得更困难，因为可以利用这些命题性的归约来推理函数行为。
+但这也意味着，这类函数通常不太适合出现在类型中。
+即便其归约行为碰巧在定义上成立，它在内核中的速度通常仍比结构递归定义慢得多，因为内核必须连同定义一起展开终止性证明。
+因此，只要可能，那些打算在类型中使用、或在其他依赖定义相等的重要场景中使用的递归函数，都应优先定义为结构递归。
 
-To explicitly use well-founded recursion, a function or theorem definition can be annotated with a {keywordOf Lean.Parser.Command.declaration}`termination_by` clause that specifies the {deftech}_measure_ by which the function terminates.
-The measure should be a term that decreases at each recursive call; it may be one of the function's parameters or a tuple of the parameters, but it may also be any other term.
-The measure's type must be equipped with a {tech}[well-founded relation], which determines what it means for the measure to decrease.
+若要显式使用良基递归，可以在函数或定理定义上添加 {keywordOf Lean.Parser.Command.declaration}`termination_by` 子句，用来指定函数终止所依据的 {deftech (key := "measure")}_度量_。
+该度量应是一个在每次递归调用时都会减小的项；它可以是函数的某个形参、若干形参组成的元组，也可以是任意其他项。
+这个度量的类型必须配备一个 {tech (key := "well-founded relation")}[良基关系]，它决定了“度量减小”究竟意味着什么。
 
-:::syntax Lean.Parser.Termination.terminationBy (title := "Explicit Well-Founded Recursion")
+:::syntax Lean.Parser.Termination.terminationBy (title := "显式良基递归")
 
-The {keywordOf Lean.Parser.Command.declaration}`termination_by` clause introduces the termination argument.
+{keywordOf Lean.Parser.Command.declaration}`termination_by` 子句用来引入终止性论证。
 
 ```grammar
 termination_by $[$_:ident* =>]? $term
 ```
 
-The identifiers before the optional `=>` can bring function parameters into scope that are not
-already bound in the declaration header, and the mandatory term must indicate one of the function's parameters, whether introduced in the header or locally in the clause.
+可选 `=>` 之前的标识符可以把尚未在声明头中绑定的函数形参带入作用域，而后面必需的项必须指明函数的某个形参，无论它是在声明头中引入，还是在该子句中局部引入。
 :::
 
-:::example "Division by Iterated Subtraction"
-Division can be specified as the number of times the divisor can be subtracted from the dividend.
-This operation cannot be elaborated using structural recursion because subtraction is not pattern matching.
-The value of `n` does decrease with each recursive call, so well-founded recursion can be used to justify the definition of division by iterated subtraction.
+:::example "通过反复减法定义除法"
+除法可以刻画为“除数能从被除数中减去多少次”。
+这个操作不能用结构递归来精译，因为减法不是模式匹配。
+不过 `n` 的值确实会在每次递归调用时减小，因此可以用良基递归来为这种“反复减法求除法”的定义提供正当性。
 
 ```lean
 def div (n k : Nat) : Nat :=
@@ -66,18 +66,18 @@ termination_by n
 ```
 :::
 
-# Well-Founded Relations
+# 良基关系
 %%%
 tag := "wf-rel"
 %%%
 
-A relation `≺` is a {deftech}_well-founded relation_ if there exists no infinitely descending chain
+若不存在无限下降链，则关系 `≺` 是一个 {deftech (key := "well-founded relation")}_良基关系_
 
 $$` x_0 ≻ x_1 ≻ \cdots`
 
-In Lean, types that are equipped with a canonical well-founded relation are instances of the {name}`WellFoundedRelation` type class.
+在 Lean 中，凡是带有规范良基关系的类型，都是类型类 {name}`WellFoundedRelation` 的实例。
 
-{docstring WellFoundedRelation}
+{zhdocstring WellFoundedRelation ZhDoc.RecursiveDefs.WF.WellFoundedRelation}
 
 ```lean -show
 section
@@ -86,25 +86,25 @@ variable {γ : Type u} (x₁ x₂ : γ) [SizeOf γ]
 local notation x " ≺ " y => WellFoundedRelation.rel x y
 ```
 
-The most important instances are:
+最重要的实例有：
 
-* {name}[`Nat`], ordered by {lean  (type := "Nat → Nat → Prop")}`(· < ·)`.
+* {name}[`Nat`]，按 {lean  (type := "Nat → Nat → Prop")}`(· < ·)` 排序。
 
-* {name}[`Prod`], ordered lexicographically: {lean}`(a₁, b₁) ≺ (a₂, b₂)` if and only if {lean}`a₁ ≺ a₂` or {lean}`a₁ = a₂` and {lean}`b₁ ≺ b₂`.
+* {name}[`Prod`]，按字典序排序：当且仅当 {lean}`a₁ ≺ a₂`，或 {lean}`a₁ = a₂` 且 {lean}`b₁ ≺ b₂` 时，有 {lean}`(a₁, b₁) ≺ (a₂, b₂)`。
 
-* Every type that is an instance of the {name}`SizeOf` type class, which provides a method {name}`SizeOf.sizeOf`, has a well-founded relation.
-  For these types, {lean}`x₁ ≺ x₂` if and only if {lean}`sizeOf x₁ < sizeOf x₂`. For {tech}[inductive types], a {lean}`SizeOf` instance is automatically derived by Lean.
+* 每个属于类型类 {name}`SizeOf`（其提供方法 {name}`SizeOf.sizeOf`）的类型，都带有一个良基关系。
+  对这些类型，{lean}`x₁ ≺ x₂` 当且仅当 {lean}`sizeOf x₁ < sizeOf x₂`。对于 {tech (key := "inductive types")}[归纳类型]，Lean 会自动派生出 {lean}`SizeOf` 实例。
 
 ```lean -show
 end
 ```
 
-Note that there exists a low-priority instance {name}`instSizeOfDefault` that provides a {lean}`SizeOf` instance for any type, and always returns {lean}`0`.
-This instance cannot be used to prove that a function terminates using well-founded recursion because {lean}`0 < 0` is false.
+注意，存在一个低优先级实例 {name}`instSizeOfDefault`，它会为任意类型提供一个 {lean}`SizeOf` 实例，并且总是返回 {lean}`0`。
+这个实例不能用来借助良基递归证明函数终止，因为 {lean}`0 < 0` 为假。
 
 ```lean -show
 
--- Check claims about instSizeOfDefault
+-- 检查关于 instSizeOfDefault 的断言
 
 example {α} (x : α) : sizeOf x = 0 := by rfl
 
@@ -114,11 +114,11 @@ example {α} (x : α) : sizeOf x = 0 := by rfl
 
 ```
 
-:::example "Default Size Instance"
+:::example "默认的 Size 实例"
 
-Function types in general do not have a well-founded relation that's useful for termination proofs.
-{ref "instance-synth"}[Instance synthesis] thus selects {name}`instSizeOfDefault` and the corresponding well-founded relation.
-If the measure is a function, the default {name}`SizeOf` instance is selected and the proof cannot succeed.
+函数类型一般并没有对终止性证明有用的良基关系。
+因此，{ref "instance-synth"}[实例合成]会选中 {name}`instSizeOfDefault` 及其对应的良基关系。
+如果度量本身是一个函数，那么就会选中默认的 {name}`SizeOf` 实例，证明也就不可能成功。
 
 ```lean -keep
 def fooInst (b : Bool → Bool) : Unit := fooInst (b ∘ b)
@@ -134,9 +134,12 @@ decreasing_by
 ```
 :::
 
-# Termination proofs
+# 终止性证明
+%%%
+tag := "The-Lean-Language-Reference--Definitions--Recursive-Definitions--Well-Founded-Recursion--Termination-proofs"
+%%%
 
-Once a {tech}[measure] is specified and its {tech}[well-founded relation] is determined, Lean determines the termination proof obligation for every recursive call.
+一旦指定了 {tech (key := "measure")}[度量] 并确定了其 {tech (key := "well-founded relation")}[良基关系]，Lean 就会为每个递归调用生成终止性证明目标。
 
 ```lean -show
 section
@@ -147,33 +150,33 @@ local notation "…" => more
 
 ```
 
-The proof obligation for each recursive call is of the form {lean}`g a₁ a₂ … ≺ g p₁ p₂ …`, where:
- * {lean}`g` is the measure as a function of the parameters,
- * {name WellFoundedRelation.rel}`≺` is the inferred well-founded relation,
- * {lean}`a₁` {lean}`a₂` {lean}`…` are the arguments of the recursive call and
- * {lean}`p₁` {lean}`p₂` {lean}`…` are the parameters of the function definition.
+每个递归调用对应的证明目标都形如 {lean}`g a₁ a₂ … ≺ g p₁ p₂ …`，其中：
+ * {lean}`g` 是把形参映射到度量值的函数；
+ * {name WellFoundedRelation.rel}`≺` 是推断出来的良基关系；
+ * {lean}`a₁` {lean}`a₂` {lean}`…` 是递归调用的实参；
+ * {lean}`p₁` {lean}`p₂` {lean}`…` 是函数定义的形参。
 
-The context of the proof obligation is the local context of the recursive call.
-In particular, local assumptions (such as those introduced by `if h : _`, `match h : _ with ` or `have`) are available.
-If a function parameter is the {tech (key := "match discriminant")}[discriminant] of a pattern match (e.g. by a {keywordOf Lean.Parser.Term.match}`match` expression), then this parameter is refined to the matched pattern in the proof obligation.
+证明目标的上下文，就是该递归调用所在的局部上下文。
+尤其是，局部假设（例如由 `if h : _`、`match h : _ with ` 或 `have` 引入的那些）都是可用的。
+如果函数的某个形参是某次模式匹配（例如通过 {keywordOf Lean.Parser.Term.match}`match` 表达式）的 {tech (key := "match discriminant")}[判别项]，那么在证明目标中，这个形参会被细化为与之匹配的模式。
 
 ```lean -show
 end
 ```
 
-The overall termination proof obligation consists of one goal for each recursive call.
-By default, the tactic {tactic}`decreasing_trivial` is used to prove each proof obligation.
-A custom tactic script can be provided using the optional {keywordOf Lean.Parser.Command.declaration}`decreasing_by` clause, which comes after the {keywordOf Lean.Parser.Command.declaration}`termination_by` clause.
-This tactic script is run once, with one goal for each proof obligation, rather than separately on each proof obligation.
+整体的终止性证明目标由若干个子目标组成，每个递归调用对应一个子目标。
+默认情况下，会使用策略 {tactic}`decreasing_trivial` 来证明每个证明目标。
+也可以在 {keywordOf Lean.Parser.Command.declaration}`termination_by` 子句之后，通过可选的 {keywordOf Lean.Parser.Command.declaration}`decreasing_by` 子句提供自定义策略脚本。
+该策略脚本只会运行一次；运行时同时拥有每个证明目标对应的一个子目标，而不是对每个证明目标分别运行。
 
 ```lean -show
 section
 variable {n : Nat}
 ```
 
-::::example "Termination Proof Obligations"
+::::example "终止性证明目标"
 
-The following recursive definition of the Fibonacci numbers has two recursive calls, which results in two goals in the termination proof.
+下面这个 Fibonacci 数的递归定义有两个递归调用，因此终止性证明中会产生两个目标。
 
 ```lean +error -keep (name := fibGoals)
 def fib (n : Nat) :=
@@ -215,10 +218,10 @@ h : ¬n ≤ 1
 
 
 
-Here, the {tech}[measure] is simply the parameter itself, and the well-founded order is the less-than relation on natural numbers.
-The first proof goal requires the user to prove that the argument of the first recursive call, namely {lean}`n - 1`, is strictly smaller than the function's parameter, {lean}`n`.
+这里的 {tech (key := "measure")}[度量] 就是参数本身，而良基顺序则是自然数上的小于关系。
+第一个证明目标要求用户证明：第一次递归调用的实参，也就是 {lean}`n - 1`，严格小于函数的形参 {lean}`n`。
 
-Both termination proofs can be easily discharged using the {tactic}`omega` tactic.
+这两个终止性证明都可以很容易地用 {tactic}`omega` 策略解决。
 
 ```lean -keep
 def fib (n : Nat) :=
@@ -236,9 +239,9 @@ decreasing_by
 end
 ```
 
-:::example "Refined Parameters"
+:::example "细化后的参数"
 
-If a parameter of the function is the {tech (key := "match discriminant")}[discriminant] of a pattern match, then the proof obligations mention the refined parameter.
+如果函数的某个参数是某次模式匹配的 {tech (key := "match discriminant")}[判别项]，那么证明目标中会出现细化后的参数。
 
 ```lean +error -keep (name := fibGoals2)
 def fib : Nat → Nat
@@ -274,14 +277,14 @@ n : Nat
 :::
 
 :::paragraph
-Additionally, the context is enriched with additional assumptions that can make it easier to prove termination.
-Some examples include:
+此外，上下文还会被补充进一些额外假设，以便更容易证明终止性。
+例如：
 
- * In the branches of an {ref "if-then-else"}[if-then-else] expression, a hypothesis that asserts the current branch's condition is added, much as if the dependent if-then-else syntax had been used.
- * In the function argument to certain higher-order functions, the context of the function's body is enriched with assumptions about the argument.
+ * 在 {ref "if-then-else"}[if-then-else 表达式]的各个分支中，会加入一个断言当前分支条件成立的假设，效果类似于使用依赖式 if-then-else 语法。
+ * 在某些高阶函数的函数实参中，函数体的上下文会被补充进关于该实参的假设。
 
-This list is not exhaustive, and the mechanism is extensible.
-It is described in detail in {ref "well-founded-preprocessing"}[the section on preprocessing].
+这个列表并不穷尽，而且该机制是可扩展的。
+其详细说明见{ref "well-founded-preprocessing"}[预处理一节]。
 :::
 
 ```lean -show
@@ -289,9 +292,9 @@ section
 variable {x : Nat} {xs : List Nat} {n : Nat}
 ```
 
-:::example "Enriched Proof Obligation Contexts"
+:::example "增强后的证明目标上下文"
 
-Here, the {keywordOf termIfThenElse}`if` does not add a local assumption about the condition (that is, whether {lean}`n ≤ 1`) to the local contexts in the branches.
+这里，{keywordOf termIfThenElse}`if` 并不会把关于条件（也就是 {lean}`n ≤ 1` 是否成立）的局部假设加入各分支的局部上下文中。
 
 
 ```lean +error -keep (name := fibGoals3)
@@ -316,7 +319,7 @@ unsolved goals
    ⊢ n - 2 < n
 ```
 
-Nevertheless, the assumptions are available in the context of the termination proof:
+不过，在终止性证明的上下文中，这些假设仍然可用：
 
 ```proofState
 ∀ (n : Nat), («h✝» : ¬ n ≤ 1) → n - 1 < n ∧ n - 2 < n := by
@@ -334,7 +337,7 @@ h✝ : ¬n ≤ 1
 
 ```
 
-Termination proof obligations in body of a {keywordOf Lean.Parser.Term.doFor}`for`​`…`​{keywordOf Lean.Parser.Term.doFor}`in` loop are also enriched, in this case with a {name}`Std.Legacy.Range` membership hypothesis:
+位于 {keywordOf Lean.Parser.Term.doFor}`for`​`…`​{keywordOf Lean.Parser.Term.doFor}`in` 循环体内的终止性证明目标也会被增强；这里增强进来的是一个关于 {name}`Std.Legacy.Range` 的成员资格假设：
 
 ```lean +error -keep (name := nestGoal3)
 def f (xs : Array Nat) : Nat := Id.run do
@@ -364,7 +367,7 @@ h✝ : i ∈ [:xs.size]
   intros
 ```
 
-Similarly, in the following (contrived) example, the termination proof contains an additional assumption showing that {lean}`x ∈ xs`.
+类似地，在下列这个（刻意构造的）例子中，终止性证明会额外带上一个说明 {lean}`x ∈ xs` 的假设。
 
 ```lean +error -keep (name := nestGoal1)
 def f (n : Nat) (xs : List Nat) : Nat :=
@@ -395,8 +398,8 @@ h✝ : x ∈ xs
 -/
 ```
 
-This feature requires special setup for the higher-order function under which the recursive call is nested, as described in {ref "well-founded-preprocessing"}[the section on preprocessing].
-In the following definition, identical to the one above except using a custom, equivalent function instead of {name}`List.map`, the proof obligation context is not enriched:
+这一特性要求为递归调用所嵌套其下的高阶函数进行特殊设置，详见{ref "well-founded-preprocessing"}[预处理一节]。
+下面这个定义除了用一个自定义的等价函数替代 {name}`List.map` 之外，与上面完全相同；此时证明目标的上下文就不会被增强：
 
 ```lean +error -keep (name := nestGoal4)
 def List.myMap := @List.map
@@ -433,48 +436,51 @@ section
 
 ::::TODO
 
-:::example "Nested recursive calls and subtypes"
+:::example "嵌套递归调用与子类型"
 
-I (Joachim) wanted to include a good example where recursive calls are nested inside each other, and one likely needs to introduce a subtype in the result to make it go through. But can't think of something nice and natural right now.
+我（Joachim）本想在这里加入一个好的例子：递归调用彼此嵌套，而且很可能需要在结果中引入一个子类型才能通过。但目前还想不到足够自然、足够漂亮的例子。
 
 :::
 
 ::::
 
-# Default Termination Proof Tactic
+# 默认终止性证明策略
+%%%
+tag := "The-Lean-Language-Reference--Definitions--Recursive-Definitions--Well-Founded-Recursion--Default-Termination-Proof-Tactic"
+%%%
 
-If no {keywordOf Lean.Parser.Command.declaration}`decreasing_by` clause is given, then the {tactic}`decreasing_tactic` is used implicitly, and applied to each proof obligation separately.
+如果没有给出 {keywordOf Lean.Parser.Command.declaration}`decreasing_by` 子句，那么会隐式使用 {tactic}`decreasing_tactic`，并将其分别应用到每个证明目标上。
 
 
 :::tactic "decreasing_tactic" +replace
 
-The tactic {tactic}`decreasing_tactic` mainly deals with lexicographic ordering of tuples, applying {name}`Prod.Lex.right` if the left components of the product are {tech (key := "definitional equality")}[definitionally equal], and {name}`Prod.Lex.left` otherwise.
-After preprocessing tuples this way, it calls the {tactic}`decreasing_trivial` tactic.
+{tactic}`decreasing_tactic` 主要处理元组的字典序：如果积类型左分量 {tech (key := "definitional equality")}[定义相等]，它就应用 {name}`Prod.Lex.right`；否则应用 {name}`Prod.Lex.left`。
+按这种方式预处理完元组之后，它会调用 {tactic}`decreasing_trivial` 策略。
 
 :::
 
 
-:::tactic "decreasing_trivial"
+:::tactic "decreasing_trivial" +replace
 
-The tactic {tactic}`decreasing_trivial` is an extensible tactic that applies a few common heuristics to solve a termination goal.
-In particular, it tries the following tactics and theorems:
+{tactic}`decreasing_trivial` 是一个可扩展的策略，它会应用若干常见启发式来解决终止性目标。
+具体来说，它会尝试下列策略与定理：
 
 * {tactic}`simp_arith`
 * {tactic}`assumption`
-* theorems {name}`Nat.sub_succ_lt_self`, {name}`Nat.pred_lt_of_lt`, and {name}`Nat.pred_lt`, which handle common arithmetic goals
+* 定理 {name}`Nat.sub_succ_lt_self`、{name}`Nat.pred_lt_of_lt` 和 {name}`Nat.pred_lt`，用来处理常见的算术目标
 * {tactic}`omega`
-* {tactic}`array_get_dec` and {tactic}`array_mem_dec`, which prove that the size of array elements is less than the size of the array
-* {tactic}`sizeOf_list_dec` that the size of list elements is less than the size of the list
-* {name}`String.Legacy.Iterator.sizeOf_next_lt_of_hasNext` and {name}`String.Legacy.Iterator.sizeOf_next_lt_of_atEnd`, to handle iteration through a string using  {keywordOf Lean.Parser.Term.doFor}`for`
+* {tactic}`array_get_dec` 与 {tactic}`array_mem_dec`，用于证明数组元素的大小小于数组本身的大小
+* {tactic}`sizeOf_list_dec`，用于证明列表元素的大小小于列表本身的大小
+* {name}`String.Legacy.Iterator.sizeOf_next_lt_of_hasNext` 与 {name}`String.Legacy.Iterator.sizeOf_next_lt_of_atEnd`，用于处理借助 {keywordOf Lean.Parser.Term.doFor}`for` 遍历字符串的情形
 
-This tactic is intended to be extended with further heuristics using {keywordOf Lean.Parser.Command.macro_rules}`macro_rules`.
+这个策略旨在通过 {keywordOf Lean.Parser.Command.macro_rules}`macro_rules` 继续扩展出更多启发式。
 
 :::
 
 
-:::example "No Backtracking of Lexicographic Order"
+:::example "字典序不回溯"
 
-A classic example of a recursive function that needs a more complex {tech}[measure] is the Ackermann function:
+需要更复杂 {tech (key := "measure")}[度量] 的递归函数，一个经典例子就是 Ackermann 函数：
 
 ```lean -keep
 def ack : Nat → Nat → Nat
@@ -484,11 +490,11 @@ def ack : Nat → Nat → Nat
 termination_by m n => (m, n)
 ```
 
-The measure is a tuple, so every recursive call has to be on arguments that are lexicographically smaller than the parameters.
-The default {tactic}`decreasing_tactic` can handle this.
+该度量是一个元组，因此每个递归调用的实参都必须在字典序意义下小于函数形参。
+默认的 {tactic}`decreasing_tactic` 可以处理这种情况。
 
-In particular, note that the third recursive call has a second argument that is smaller than the second parameter and a first argument that is definitionally equal to the first parameter.
-This allowed  {tactic}`decreasing_tactic` to apply {name}`Prod.Lex.right`.
+特别要注意，第三个递归调用的第二个实参小于第二个形参，而第一个实参与第一个形参在定义上相等。
+这使得 {tactic}`decreasing_tactic` 可以应用 {name}`Prod.Lex.right`。
 
 ```signature
 Prod.Lex.right {α β} {ra : α → α → Prop} {rb : β → β → Prop}
@@ -497,7 +503,7 @@ Prod.Lex.right {α β} {ra : α → α → Prop} {rb : β → β → Prop}
   Prod.Lex ra rb (a, b₁) (a, b₂)
 ```
 
-It fails, however, with the following modified function definition, where the third recursive call's first argument is provably smaller or equal to the first parameter, but not syntactically equal:
+然而，若把函数定义改成下面这样，它就会失败：第三个递归调用的第一个实参虽然可证明小于或等于第一个形参，但二者在句法上并不相等：
 
 ```lean -keep +error (name := synack)
 def synack : Nat → Nat → Nat
@@ -515,9 +521,9 @@ m n : Nat
 ⊢ m / 2 + 1 < m + 1
 ```
 
-Because {name}`Prod.Lex.right` is not applicable, the tactic used {name}`Prod.Lex.left`, which resulted in the unprovable goal above.
+由于 {name}`Prod.Lex.right` 不适用，该策略就改用了 {name}`Prod.Lex.left`，从而产生了上面那个无法证明的目标。
 
-This function definition may require a manual proof that uses the more general theorem {name}`Prod.Lex.right'`, which allows the first component of the tuple (which must be of type {name}`Nat`) to be less or equal instead of strictly equal:
+这个函数定义可能需要手工证明，并使用更一般的定理 {name}`Prod.Lex.right'`；该定理允许元组的第一个分量（其类型必须是 {name}`Nat`）只需小于或等于，而不必严格相等：
 ```signature
 Prod.Lex.right' {β} (rb : β → β → Prop)
   {a₂ : Nat} {b₂ : β} {a₁ : Nat} {b₁ : β}
@@ -534,7 +540,7 @@ termination_by m n => (m, n)
 decreasing_by
   · apply Prod.Lex.left
     omega
-  -- the next goal corresponds to the third recursive call
+  -- 下一个目标对应第三个递归调用
   · apply Prod.Lex.right'
     · omega
     · omega
@@ -542,38 +548,38 @@ decreasing_by
     omega
 ```
 
-The {tactic}`decreasing_tactic` tactic does not use the stronger {name}`Prod.Lex.right'` because it would require backtracking on failure.
+{tactic}`decreasing_tactic` 不使用更强的 {name}`Prod.Lex.right'`，因为那样一来在失败时就需要回溯。
 
 :::
 
-# Inferring Well-Founded Recursion
+# 推断良基递归
 %%%
 tag := "inferring-well-founded-recursion"
 %%%
 
-If a recursive function definition does not indicate a termination {tech}[measure], Lean will attempt to discover one automatically.
-If neither {keywordOf Lean.Parser.Command.declaration}`termination_by` nor {keywordOf Lean.Parser.Command.declaration}`decreasing_by` is provided, Lean will try to {ref "inferring-structural-recursion"}[infer structural recursion] before attempting well-founded recursion.
-If a {keywordOf Lean.Parser.Command.declaration}`decreasing_by` clause is present, only well-founded recursion is attempted.
+如果递归函数定义没有指明终止性 {tech (key := "measure")}[度量]，Lean 就会尝试自动发现一个。
+如果既没有提供 {keywordOf Lean.Parser.Command.declaration}`termination_by`，也没有提供 {keywordOf Lean.Parser.Command.declaration}`decreasing_by`，Lean 会先尝试{ref "inferring-structural-recursion"}[推断结构递归]，再尝试良基递归。
+如果存在 {keywordOf Lean.Parser.Command.declaration}`decreasing_by` 子句，则只会尝试良基递归。
 
-To infer a suitable termination {tech}[measure], Lean considers multiple {deftech}_basic termination measures_, which are termination measures of type {name}`Nat`, and then tries all tuples of these measures.
+为了推断一个合适的终止性 {tech (key := "measure")}[度量]，Lean 会考虑多个 {deftech (key := "basic termination measures")}_基础终止度量_——即类型为 {name}`Nat` 的终止度量——然后尝试这些度量的所有元组组合。
 
-The basic termination measures considered are:
+所考虑的基础终止度量有：
 
-* all parameters whose type have a non-trivial {name}`SizeOf` instance
-* the expression `e₂ - e₁` whenever the local context of a recursive call has an assumption of type `e₁ < e₂` or `e₁ ≤ e₂`, where `e₁` and `e₂` are of type {name}`Nat` and depend only on the function's parameters. {margin}[This approach is based on work by {citehere manolios2006}[].]
-* in a mutual group, an additional basic measure is used to distinguish between recursive calls to other functions in the group and recursive calls to the function being defined (for details, see {ref "mutual-well-founded-recursion"}[the section on mutual well-founded recursion])
+* 所有类型带有非平凡 {name}`SizeOf` 实例的形参
+* 表达式 `e₂ - e₁`：前提是某个递归调用的局部上下文中有一个类型为 `e₁ < e₂` 或 `e₁ ≤ e₂` 的假设，其中 `e₁` 与 `e₂` 的类型都是 {name}`Nat`，且只依赖于函数形参。 {margin}[这种方法基于 {citehere manolios2006}[] 的工作。]
+* 在互递归组中，还会使用一个额外的基础度量，以区分“对组内其他函数的递归调用”和“对当前正在定义函数本身的递归调用”（详见{ref "mutual-well-founded-recursion"}[互良基递归一节]）
 
-{deftech}_Candidate measures_ are basic measures or tuples of basic measures.
-If any of the candidate measures allow all proof obligations to be discharged by the termination proof tactic (that is, the tactic specified by {keywordOf Lean.Parser.Command.declaration}`decreasing_by`, or {tactic}`decreasing_trivial` if there is no {keywordOf Lean.Parser.Command.declaration}`decreasing_by` clause), then an arbitrary such candidate measure is selected as the automatic termination measure.
+{deftech (key := "Candidate measures")}_候选度量_ 是基础度量或基础度量的元组。
+如果某个候选度量能让终止性证明策略消去所有证明目标（即由 {keywordOf Lean.Parser.Command.declaration}`decreasing_by` 指定的策略；若没有 {keywordOf Lean.Parser.Command.declaration}`decreasing_by` 子句，则为 {tactic}`decreasing_trivial`），那么系统就会从中任意选择一个作为自动终止度量。
 
-A {keyword}`termination_by?` clause causes the inferred termination annotation to be shown.
-It can be automatically added to the source file using the offered suggestion or code action.
+{keyword}`termination_by?` 子句会显示推断出的终止性注解。
+它还可以通过给出的建议或代码操作自动加入源文件。
 
-To avoid the combinatorial explosion of trying all tuples of measures, Lean first tabulates all {tech}[basic termination measures], determining whether the basic measure is decreasing, strictly decreasing, or non-decreasing.
-A decreasing measure is smaller for at least one recursive call and never increases at any recursive call, while a strictly decreasing measure is smaller at all recursive calls.
-A non-decreasing measure is one that the termination tactic could not show to be decreasing or strictly decreasing.
-A suitable tuple is chosen based on the table.{margin}[This approach is based on {citehere bulwahn2007}[].]
-This table shows up in the error message when no automatic measure could be found.
+为了避免尝试所有度量元组所带来的组合爆炸，Lean 会先把所有 {tech (key := "basic termination measures")}[基础终止度量] 制成表格，判断每个基础度量是“递减”“严格递减”还是“非递减”。
+所谓递减度量，是指它在至少一个递归调用处变小，且在任何递归调用处都不会增大；所谓严格递减度量，则是在所有递归调用处都变小。
+非递减度量则是指终止性策略无法证明其递减或严格递减。
+随后会根据这张表来选取合适的元组。{margin}[这种方法基于 {citehere bulwahn2007}[]。]
+当找不到自动度量时，这张表会显示在错误消息中。
 
 {spliceContents Manual.RecursiveDefs.WF.GuessLexExample}
 
@@ -581,10 +587,10 @@ This table shows up in the error message when no automatic measure could be foun
 section
 variable {e₁ e₂ i j : Nat}
 ```
-:::example "Array Indexing"
+:::example "数组索引"
 
-The purpose of considering expressions of the form {lean}`e₂ - e₁` as measures is to support the common idiom of counting up to some upper bound, in particular when traversing arrays in possibly interesting ways.
-In the following function, which performs binary search on a sorted array, this heuristic helps Lean to find the {lean}`j - i` measure.
+把 {lean}`e₂ - e₁` 形式的表达式纳入度量候选，目的是支持一种常见写法：向某个上界递增计数，尤其是以各种有趣方式遍历数组时。
+在下面这个对有序数组进行二分查找的函数中，这个启发式帮助 Lean 找到了 {lean}`j - i` 这一度量。
 
 ```lean (name := binarySearch)
 def binarySearch (x : Int) (xs : Array Int) : Option Nat :=
@@ -605,7 +611,7 @@ where
   termination_by?
 ```
 
-The fact that the inferred termination argument uses some arbitrary measure, rather than an optimal or minimal one, is visible in the inferred measure, which contains a redundant `j`:
+从推断出的度量里包含一个冗余的 `j` 可以看出：推断出的终止性论证使用的是某个可行但任意的度量，而不是最优或最简的度量：
 ```leanOutput binarySearch
 Try this:
   [apply] termination_by (j, j - i)
@@ -617,14 +623,14 @@ Try this:
 end
 ```
 
-:::example "Termination Proof Tactics During Inference"
+:::example "推断期间的终止性证明策略"
 
-The tactic indicated by {keywordOf Lean.Parser.Command.declaration}`decreasing_by` is used slightly differently when inferring the termination {tech}[measure] than it is in the actual termination proof.
+由 {keywordOf Lean.Parser.Command.declaration}`decreasing_by` 指定的策略，在推断终止性 {tech (key := "measure")}[度量] 时与在实际终止性证明中使用时略有不同。
 
-* During inference, it is applied to a _single_ goal, attempting to prove {name LT.lt}`<` or {name LE.le}`≤` on {name}`Nat`.
-* During the termination proof, it is applied to many simultaneous goals (one per recursive call), and the goals may involve the lexicographic ordering of pairs.
+* 在推断期间，它只会应用于_单个_目标，尝试证明 {name LT.lt}`<` 或 {name LE.le}`≤` 在 {name}`Nat` 上成立。
+* 在终止性证明期间，它会面对多个同时存在的目标（每个递归调用一个），且这些目标可能涉及二元组的字典序。
 
-A consequence is that a {keywordOf Lean.Parser.Command.declaration}`decreasing_by` block that addresses goals individually and which works successfully with an explicit termination argument can cause inference of the termination measure to fail:
+因此，某个 {keywordOf Lean.Parser.Command.declaration}`decreasing_by` 代码块即便在显式给出终止性论证时能够逐个解决目标，也可能导致终止度量的推断失败：
 
 ```lean -keep +error
 def ack : Nat → Nat → Nat
@@ -640,15 +646,15 @@ decreasing_by
     omega
 ```
 
-It is advisable to always include a {keywordOf Lean.Parser.Command.declaration}`termination_by` clause whenever an explicit {keywordOf Lean.Parser.Command.declaration}`decreasing_by` proof is given.
+因此，只要写了显式的 {keywordOf Lean.Parser.Command.declaration}`decreasing_by` 证明，通常都建议同时写上 {keywordOf Lean.Parser.Command.declaration}`termination_by` 子句。
 
 :::
 
-:::example "Inference too powerful"
+:::example "推断过于强大"
 
-Because {tactic}`decreasing_tactic` avoids the need to backtrack by being incomplete with regard to lexicographic ordering, Lean may infer a termination {tech}[measure] that leads to goals that the tactic cannot prove.
-In this case, the error message is the one that results from the failing tactic rather than the one that results from being unable to find a measure.
-This is what happens in {lean}`notAck`:
+由于 {tactic}`decreasing_tactic` 在字典序方面并不完备，以此避免回溯，Lean 可能会推断出某个终止性 {tech (key := "measure")}[度量]，但由此产生的目标却是该策略本身无法证明的。
+此时，错误消息反映的是 策略证明失败，而不是“无法找到度量”。
+{lean}`notAck` 中发生的正是这种情况：
 
 ```lean +error (name := badInfer)
 def notAck : Nat → Nat → Nat
@@ -666,28 +672,28 @@ m n : Nat
 ⊢ m / 2 + 1 < m + 1
 ```
 
-In this case, explicitly stating the termination {tech}[measure] helps.
+在这种情况下，显式写出终止性 {tech (key := "measure")}[度量] 会有帮助。
 
 :::
 
-# Mutual Well-Founded Recursion
+# 互良基递归
 %%%
 tag := "mutual-well-founded-recursion"
 %%%
 
-Lean supports the definition of {tech}[mutually recursive] functions using {tech}[well-founded recursion].
-Mutual recursion may be introduced using a {tech}[mutual block], but it also results from {keywordOf Lean.Parser.Term.letrec}`let rec` expressions and {keywordOf Lean.Parser.Command.declaration}`where` blocks.
-The rules for mutual well-founded recursion are applied to a group of actually mutually recursive, lifted definitions, that results from the {ref "mutual-syntax"}[elaboration steps] for mutual groups.
+Lean 支持用 {tech (key := "well-founded recursion")}[良基递归] 来定义 {tech (key := "mutually recursive")}[互递归] 函数。
+互递归既可以通过 {tech (key := "mutual block")}[互递归块] 引入，也可能来自 {keywordOf Lean.Parser.Term.letrec}`let rec` 表达式和 {keywordOf Lean.Parser.Command.declaration}`where` 代码块。
+互良基递归的规则，会应用到由互递归组的{ref "mutual-syntax"}[精译步骤]所得、经过提升后且实际上互相递归的一组定义上。
 
-If any function in the mutual group has a {keywordOf Lean.Parser.Command.declaration}`termination_by` or {keywordOf Lean.Parser.Command.declaration}`decreasing_by` clause, well-founded recursion is attempted.
-If a termination {tech}[measure] is specified using {keywordOf Lean.Parser.Command.declaration}`termination_by` for _any_ function in the mutual group, then _all_ functions in the group must specify a termination measure, and they have to have the same type.
+如果互递归组中的任意一个函数带有 {keywordOf Lean.Parser.Command.declaration}`termination_by` 或 {keywordOf Lean.Parser.Command.declaration}`decreasing_by` 子句，就会尝试良基递归。
+如果互递归组中_任意_一个函数通过 {keywordOf Lean.Parser.Command.declaration}`termination_by` 指定了终止性 {tech (key := "measure")}[度量]，那么组内_所有_函数都必须指定终止度量，而且这些度量必须具有相同的类型。
 
-If no termination argument is specified, the termination argument is {ref "inferring-well-founded-recursion"}[inferred, as described above]. In the case of mutual recursion, a third class of basic measures is considered during inference, namely for each function in the mutual group the measure that is `1` for that function and `0` for the others. This allows Lean to order the functions so that some calls from one function to another are allowed even if the parameters do not decrease.
+如果没有指定终止性论证，则会像上文所述那样{ref "inferring-well-founded-recursion"}[自动推断]。在互递归的情况下，推断时还会考虑第三类基础度量：对互递归组中的每个函数，各自有一个在该函数上取 `1`、在其他函数上取 `0` 的度量。这使得 Lean 能对这些函数本身排序，从而允许某些“从一个函数调用另一个函数”的情况，即使形参并未减小。
 
-:::example "Mutual recursion without parameter decrease"
+:::example "参数不下降的互递归"
 
-In the following mutual function definitions, the parameter does not decrease in the call from {lean}`g` to {lean}`f`.
-Nonetheless, the definition is accepted due to the ordering imposed on the functions themselves by the additional basic measure.
+在下面这组互递归函数定义中，从 {lean}`g` 调用 {lean}`f` 时参数并没有减小。
+尽管如此，由于额外的基础度量对函数本身施加了顺序，这个定义仍会被接受。
 
 ```lean (name := fg)
 mutual
@@ -701,13 +707,13 @@ mutual
 end
 ```
 
-The inferred termination argument for {lean}`f` is:
+为 {lean}`f` 推断出的终止性论证是：
 ```leanOutput fg
 Try this:
   [apply] termination_by n => (n, 0)
 ```
 
-The inferred termination argument for {lean}`g` is:
+为 {lean}`g` 推断出的终止性论证是：
 ```leanOutput fg
 Try this:
   [apply] termination_by (n, 1)
@@ -715,49 +721,49 @@ Try this:
 
 :::
 
-# Preprocessing Function Definitions
+# 函数定义的预处理
 %%%
 tag := "well-founded-preprocessing"
 %%%
 
-Lean _preprocesses_ the function's body before determining the proof obligations at each call site, transforming it into an equivalent definition that may include additional information.
-This preprocessing step is primarily used to enrich the local context with additional assumptions that may be necessary in order to solve the termination proof obligations, freeing users from the need to perform equivalent transformations by hand.
-Preprocessing uses the {ref "the-simplifier"}[simplifier] and is extensible by the user.
+在确定每个调用点的证明目标之前，Lean 会先对函数体做_预处理_，把它变换成一个等价但可能携带附加信息的定义。
+这个预处理步骤主要用于向局部上下文补充求解终止性证明目标所必需的额外假设，从而免去用户手工做等价变换。
+预处理会使用{ref "the-simplifier"}[化简器]，并且用户可以扩展它。
 
 :::paragraph
 
-The preprocessing happens in three steps:
+预处理分三步进行：
 
-1.  Lean annotates occurrences of a function's parameter, or a subterm of a parameter, with the {name}`wfParam` {tech}[gadget].
+1.  Lean 会用 {name}`wfParam` {tech (key := "gadget")}[小工具] 标注函数形参，或形参某个子项的各次出现。
 
     ```signature
     wfParam {α} (a : α) : α
     ```
 
-    More precisely, every occurrence of the function's parameters is wrapped in {name}`wfParam`.
-    Whenever a {keywordOf Lean.Parser.Term.match}`match` expression has _any_ discriminant wrapped in {name}`wfParam`, the gadget is removed and every occurrence of a pattern match variable (regardless of whether it comes from the discriminant with the {name}`wfParam` gadget) is wrapped in {name}`wfParam`.
-    The {name}`wfParam` gadget is additionally floated out of {tech}[projection function] applications.
+    更精确地说，函数形参的每次出现都会被包上一层 {name}`wfParam`。
+    只要某个 {keywordOf Lean.Parser.Term.match}`match` 表达式有_任意一个_判别项被 {name}`wfParam` 包裹，这个小工具就会被移除，并且所有模式匹配变量的每次出现（无论它是否来自那个带有 {name}`wfParam` 小工具的判别项）都会改为包上一层 {name}`wfParam`。
+    此外，{name}`wfParam` 小工具还会从 {tech (key := "projection function")}[投影函数] 应用中被上浮出来。
 
-2.  The annotated function body is simplified using {ref "the-simplifier"}[the simplifier], using only simplification rules from the {attr}`wf_preprocess` {tech}[custom simp set].
+2.  带标注的函数体会使用{ref "the-simplifier"}[化简器]进行化简，并且只使用来自 {attr}`wf_preprocess` {tech (key := "custom simp set")}[自定义 simp 集] 的化简规则。
 
-3.  Finally, any left-over {name}`wfParam` markers are removed.
+3.  最后，移除所有残留的 {name}`wfParam` 标记。
 
-Annotating function parameters that are used for well-founded recursion allows the preprocessing simplification rules to distinguish between parameters and other terms.
+对用于良基递归的函数形参进行这种标注，可以让预处理的化简规则区分“形参”和“其他项”。
 :::
 
-:::syntax attr (title := "Preprocessing Simp Set for Well-Founded Recursion")
+:::syntax attr (title := "良基递归的预处理 Simp 集")
 ```grammar
 wf_preprocess
 ```
 
-{includeDocstring Lean.Parser.Attr.wf_preprocess}
+{zhincludeDocstring Lean.Parser.Attr.wf_preprocess ZhDoc.RecursiveDefs.WF.Parser.Attr.wf_preprocess}
 
 :::
 
-{docstring wfParam}
+{zhdocstring wfParam ZhDoc.RecursiveDefs.WF.wfParam}
 
-Some rewrite rules in the {attr}`wf_preprocess` simp set apply generally, without heeding the {lean}`wfParam` marker.
-In particular, the theorem {name}`ite_eq_dite` is used to extend the context of an {ref "if-then-else"}[if-then-else] expression branch with an assumption about the condition:{margin}[This assumption's name should be an inaccessible name based on `h`, as is indicated by using {name}`binderNameHint` with the term {lean}`()`. Binder name hints are described in the {ref "bound-variable-name-hints"}[tactic language reference].]
+{attr}`wf_preprocess` simp 集中的某些重写规则会无条件地一般适用，而不理会 {lean}`wfParam` 标记。
+特别地，定理 {name}`ite_eq_dite` 会被用来扩展 {ref "if-then-else"}[if-then-else 表达式]各分支的上下文，在其中加入关于条件的一个假设：{margin}[这个假设的名字应当是一个基于 `h` 的不可访问名；这一点可由对项 {lean}`()` 使用 {name}`binderNameHint` 看出。绑定变量名提示见{ref "bound-variable-name-hints"}[策略语言参考]。]
 
 ```signature
 ite_eq_dite {P : Prop} {α : Sort u} {a b : α} [Decidable P]  :
@@ -776,16 +782,16 @@ variable (xs : List α) (p : α → Bool) (f : α → β) (x : α)
 
 :::paragraph
 
-Other rewrite rules use the {name}`wfParam` marker to restrict their applicability; they are used only when a function (like {name}`List.map`) is applied to a parameter or subterm of a parameter, but not otherwise.
-This is typically done in two steps:
+其他重写规则则会利用 {name}`wfParam` 标记来限制自身的适用范围；它们只在某个函数（例如 {name}`List.map`）作用于一个形参或其子项时才会使用，否则不会。
+这通常分两步完成：
 
-1.  A theorem such as {name}`List.map_wfParam` recognizes a call of {name}`List.map` on a function parameter (or subterm), and uses {name}`List.attach` to enrich the type of the list elements with the assertion that they are indeed elements of that list:
+1.  像 {name}`List.map_wfParam` 这样的定理，会识别 {name}`List.map` 作用于函数形参（或其子项）的调用，并借助 {name}`List.attach` 用“它们确实是该列表元素”这一断言来丰富列表元素的类型：
 
     ```signature
     List.map_wfParam (xs : List α) (f : α → β) :
       (wfParam xs).map f = xs.attach.unattach.map f
     ```
-2. A theorem such as {name}`List.map_unattach` makes that assertion available to the function parameter of {name}`List.map`.
+2. 像 {name}`List.map_unattach` 这样的定理，会让这个断言对 {name}`List.map` 的函数参数可用。
 
     ```signature
     List.map_unattach (P : α → Prop)
@@ -796,9 +802,9 @@ This is typically done in two steps:
         f (wfParam x)
     ```
 
-  This theorem uses the {name}`binderNameHint` gadget to preserve a user-chosen binder name, should {lean}`f` be a lambda expression.
+  如果 {lean}`f` 是一个 lambda 表达式，这个定理会使用 {name}`binderNameHint` 小工具来保留用户选择的绑定变量名。
 
-By separating the introduction of {name}`List.attach` from the propagation of the introduced assumption, the desired the {lean}`x ∈ xs` assumption is made available to {lean}`f` even in chains such as `(xs.reverse.filter p).map f`.
+通过把 {name}`List.attach` 的引入与所引入假设的传播分离开来，即使是在 `(xs.reverse.filter p).map f` 这样的链式调用中，也能把期望的 {lean}`x ∈ xs` 假设提供给 {lean}`f`。
 
 :::
 
@@ -806,47 +812,50 @@ By separating the introduction of {name}`List.attach` from the propagation of th
 end
 ```
 
-This preprocessing can be disabled by setting the option {option}`wf.preprocess` to {lean}`false`.
-To see the preprocessed function definition, before and after the removal of {name}`wfParam` markers, set the option {option}`trace.Elab.definition.wf` to {lean}`true`.
+可以通过把选项 {option}`wf.preprocess` 设为 {lean}`false` 来关闭这一预处理。
+若想查看预处理后的函数定义（包括移除 {name}`wfParam` 标记之前和之后的版本），可将选项 {option}`trace.Elab.definition.wf` 设为 {lean}`true`。
 
-{optionDocs trace.Elab.definition.wf}
+{zhOptionDocs trace.Elab.definition.wf ZhDoc.RecursiveDefs.WF.Option.traceElabDefinitionWf}
 
 {spliceContents Manual.RecursiveDefs.WF.PreprocessExample}
 
-# Theory and Construction
+# 理论与构造
+%%%
+tag := "The-Lean-Language-Reference--Definitions--Recursive-Definitions--Well-Founded-Recursion--Theory-and-Construction"
+%%%
 
 ```lean -show
 section
 variable {α : Type u}
 ```
 
-This section gives a very brief glimpse into the mathematical constructions that underlie termination proofs via {tech}[well-founded recursion], which may surface occasionally.
-The elaboration of functions defined by well-founded recursion is based on the {name}`WellFounded.fix` operator.
+本节极其简要地介绍一下通过 {tech (key := "well-founded recursion")}[良基递归] 给出终止性证明所依赖的数学构造；这些构造偶尔会显露到表面。
+良基递归函数的精译建立在算子 {name}`WellFounded.fix` 之上。
 
-{docstring WellFounded.fix}
+{zhdocstring WellFounded.fix ZhDoc.RecursiveDefs.WF.WellFounded.fix}
 
-The type {lean}`α` is instantiated with the function's (varying) parameters, packed into one type using {name}`PSigma`.
-The {name}`WellFounded` relation is constructed from the termination {tech}[measure] via {name}`invImage`.
+类型 {lean}`α` 会实例化为函数的（会变化的）形参，并用 {name}`PSigma` 将它们打包成一个类型。
+{name}`WellFounded` 关系则通过 {name}`invImage` 由终止性 {tech (key := "measure")}[度量] 构造出来。
 
-{docstring invImage}
+{zhdocstring invImage ZhDoc.RecursiveDefs.WF.invImage}
 
-The function's body is passed to {name}`WellFounded.fix`, with parameters suitably packed and unpacked, and recursive calls are replaced with a call to the value provided by {name}`WellFounded.fix`.
-The termination proofs generated by the {keywordOf Lean.Parser.Command.declaration}`decreasing_by` tactics are inserted in the right place.
+函数体会被传给 {name}`WellFounded.fix`，其中形参会被适当地打包与拆包，而递归调用则替换为对 {name}`WellFounded.fix` 所提供值的调用。
+由 {keywordOf Lean.Parser.Command.declaration}`decreasing_by` 策略生成的终止性证明，会插入到恰当的位置。
 
-Finally, the equational and unfolding theorems for the recursive function are proved from {name}`WellFounded.fix_eq`.
-These theorems hide the details of packing and unpacking arguments and describe the function's behavior in terms of the original definition.
+最后，递归函数的等式定理与展开定理会从 {name}`WellFounded.fix_eq` 推导出来。
+这些定理隐藏了打包与拆包实参的细节，并以原始定义的形式描述函数行为。
 
-In the case of mutual recursion, an equivalent non-mutual function is constructed by combining the function's arguments using {name}`PSum`, and pattern-matching on that sum type in the result type and the body.
+在互递归的情况下，会用 {name}`PSum` 把函数的实参合并起来，从而构造一个等价的非互递归函数，并在结果类型与函数体中对该和类型做模式匹配。
 
-The definition of {name}`WellFounded` builds on the notion of _accessible elements_ of the relation:
+{name}`WellFounded` 的定义建立在关系的_可达元素_这一概念之上：
 
-{docstring WellFounded}
+{zhdocstring WellFounded ZhDoc.RecursiveDefs.WF.WellFounded}
 
-{docstring Acc}
+{zhdocstring Acc ZhDoc.RecursiveDefs.WF.Acc}
 
-::: example "Division by Iterated Subtraction: Termination Proof"
+::: example "通过反复减法定义除法：终止性证明"
 
-The definition of division by iterated subtraction can be written explicitly using well-founded recursion.
+通过反复减法定义除法的写法，也可以显式地借助良基递归来表达。
 ```lean
 noncomputable def div (n k : Nat) : Nat :=
   (inferInstance : WellFoundedRelation Nat).wf.fix
@@ -858,15 +867,15 @@ noncomputable def div (n k : Nat) : Nat :=
         omega))
     n
 ```
-The definition must be marked {keywordOf Lean.Parser.Command.declaration}`noncomputable` because well-founded recursion is not supported by the compiler.
-Like {tech}[recursors], it is part of Lean's logic.
+该定义必须标记为 {keywordOf Lean.Parser.Command.declaration}`noncomputable`，因为编译器不支持良基递归。
+和 {tech (key := "recursors")}[递归器] 一样，它属于 Lean 逻辑的一部分。
 
-The definition of division should satisfy the following equations:
+这个除法定义应满足下列方程：
  * {lean}`∀{n k : Nat}, (k = 0) → div n k = 0`
  * {lean}`∀{n k : Nat}, (k > n) → div n k = 0`
  * {lean}`∀{n k : Nat}, (k ≠ 0) → (¬ k > n) → div n k = 1 + div (n - k) k`
 
-This reduction behavior does not hold {tech (key := "definitional equality")}[definitionally]:
+这种归约行为并不 {tech (key := "definitional equality")}[在定义上] 成立：
 ```lean +error (name := nonDef) -keep
 theorem div.eq0 : div n 0 = 0 := by rfl
 ```
@@ -879,7 +888,7 @@ is not definitionally equal to the right-hand side
 n : Nat
 ⊢ div n 0 = 0
 ```
-However, using `WellFounded.fix_eq` to unfold the well-founded recursion, the three equations can be proved to hold:
+不过，借助 `WellFounded.fix_eq` 展开良基递归之后，这三个方程都可以被证明成立：
 ```lean
 theorem div.eq0 : div n 0 = 0 := by
   unfold div
