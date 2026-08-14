@@ -9,6 +9,7 @@ import VersoManual
 import Lean.Parser.Term
 
 import Manual.Meta
+import Manual.ZhDocString.Grind
 
 
 open Verso.Genre Manual
@@ -331,42 +332,42 @@ grindUsr
 ```grammar
 ·
 ```
-{includeDocstring Lean.Parser.Attr.grindDef}
+{zhincludeDocstring Lean.Parser.Attr.grindDef ZhDoc.Parser.Attr.grindDef}
 :::
 
 :::syntax Lean.Parser.Attr.grindMod (title := "等式重写")
 ```grammar
 =
 ```
-{includeDocstring Lean.Parser.Attr.grindEq}
+{zhincludeDocstring Lean.Parser.Attr.grindEq ZhDoc.Parser.Attr.grindEq}
 :::
 
 :::syntax Lean.Parser.Attr.grindMod (title := "反向等式重写")
 ```grammar
 =_
 ```
-{includeDocstring Lean.Parser.Attr.grindEqRhs}
+{zhincludeDocstring Lean.Parser.Attr.grindEqRhs ZhDoc.Parser.Attr.grindEqRhs}
 :::
 
 :::syntax Lean.Parser.Attr.grindMod (title := "双向等式重写")
 ```grammar
 _=_
 ```
-{includeDocstring Lean.Parser.Attr.grindEqBoth}
+{zhincludeDocstring Lean.Parser.Attr.grindEqBoth ZhDoc.Parser.Attr.grindEqBoth}
 :::
 
 :::syntax Lean.Parser.Attr.grindMod (title := "前向推理")
 ```grammar
 →
 ```
-{includeDocstring Lean.Parser.Attr.grindFwd}
+{zhincludeDocstring Lean.Parser.Attr.grindFwd ZhDoc.Parser.Attr.grindFwd}
 :::
 
 :::syntax Lean.Parser.Attr.grindMod (title := "后向推理")
 ```grammar
 ←
 ```
-{includeDocstring Lean.Parser.Attr.grindBwd}
+{zhincludeDocstring Lean.Parser.Attr.grindBwd ZhDoc.Parser.Attr.grindBwd}
 :::
 
 检查 {attrs}`@[grind]` 属性生成的模式非常重要，以确保它们匹配到的是引理中正确的部分。
@@ -382,7 +383,7 @@ _=_
 ```grammar
 ⇒
 ```
-{includeDocstring Lean.Parser.Attr.grindLR}
+{zhincludeDocstring Lean.Parser.Attr.grindLR ZhDoc.Parser.Attr.grindLR}
 :::
 
 :::syntax Lean.Parser.Attr.grindMod (title := "从右到左遍历")
@@ -392,14 +393,14 @@ _=_
 ```grammar
 ⇐
 ```
-{includeDocstring Lean.Parser.Attr.grindRL}
+{zhincludeDocstring Lean.Parser.Attr.grindRL ZhDoc.Parser.Attr.grindRL}
 :::
 
 :::syntax Lean.Parser.Attr.grindMod (title := "等式上的后向推理")
 ```grammar
 ←=
 ```
-{includeDocstring Lean.Parser.Attr.grindEqBwd}
+{zhincludeDocstring Lean.Parser.Attr.grindEqBwd ZhDoc.Parser.Attr.grindEqBwd}
 :::
 
 :::example "`@[grind ←=]` 属性"
@@ -419,7 +420,7 @@ theorem inv_eq [One α] [Mul α] [Inv α] {a b : α}
 ```grammar
 funCC
 ```
-{includeDocstring Lean.Parser.Attr.grindFunCC}
+{zhincludeDocstring Lean.Parser.Attr.grindFunCC ZhDoc.Parser.Attr.grindFunCC}
 :::
 
 
@@ -430,7 +431,7 @@ funCC
 ```grammar
 ext
 ```
-{includeDocstring Lean.Parser.Attr.grindExt}
+{zhincludeDocstring Lean.Parser.Attr.grindExt ZhDoc.Parser.Attr.grindExt}
 
 此外，给某个结构体加上 {attrs}`@[grind ext]` 还会注册它的外延性定理。
 :::
@@ -510,7 +511,7 @@ theorem swap_swap_eq_id' : Point.swap ∘ Point.swap = id := by
 ```grammar
 inj
 ```
-{includeDocstring Lean.Parser.Attr.grindInj}
+{zhincludeDocstring Lean.Parser.Attr.grindInj ZhDoc.Parser.Attr.grindInj}
 :::
 
 :::example "单射性模式"
@@ -545,7 +546,7 @@ theorem B {n k : Nat} :
 ```grammar
 intro
 ```
-{includeDocstring Lean.Parser.Attr.grindIntro}
+{zhincludeDocstring Lean.Parser.Attr.grindIntro ZhDoc.Parser.Attr.grindIntro}
 :::
 
 :::example "构造子的模式"
@@ -634,14 +635,14 @@ def decreasingCorrect'' : decreasing xs = Decreasing xs := by
 ```grammar
 unfold
 ```
-{includeDocstring Lean.Parser.Attr.grindUnfold}
+{zhincludeDocstring Lean.Parser.Attr.grindUnfold ZhDoc.Parser.Attr.grindUnfold}
 :::
 
 :::syntax Lean.Parser.Attr.grindMod (title := "规范化规则")
 ```grammar
 norm
 ```
-{includeDocstring Lean.Parser.Attr.grindNorm}
+{zhincludeDocstring Lean.Parser.Attr.grindNorm ZhDoc.Parser.Attr.grindNorm}
 :::
 
 {tactic}`grind` 策略可以处理某些求解基础设施并不丰富的源代数（例如位向量），做法是把它“嵌入”到另一个求解基础设施更丰富的代数中（例如自然数或整数）。
@@ -652,14 +653,14 @@ norm
 ```grammar
 hom
 ```
-{includeDocstring Lean.Parser.Attr.grindHom}
+{zhincludeDocstring Lean.Parser.Attr.grindHom ZhDoc.Parser.Attr.grindHom}
 :::
 
 :::syntax Lean.Parser.Attr.grindMod (title := "同态谓词")
 ```grammar
 hom_pred
 ```
-{includeDocstring Lean.Parser.Attr.grindHomPred}
+{zhincludeDocstring Lean.Parser.Attr.grindHomPred ZhDoc.Parser.Attr.grindHomPred}
 :::
 
 {TODO}[Grind 的同态基础设施值得补一个示例]
@@ -1063,7 +1064,7 @@ h_2 : x = n + 1
 ```
 :::
 
-{optionDocs trace.grind.ematch.instance}
+{zhOptionDocs trace.grind.ematch.instance ZhDoc.Option.trace.grind.ematch.instance}
 
 :::comment
 待补

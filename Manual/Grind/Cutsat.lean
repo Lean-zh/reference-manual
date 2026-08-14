@@ -9,6 +9,7 @@ import VersoManual
 import Lean.Parser.Term
 
 import Manual.Meta
+import Manual.ZhDocString.Grind
 import Manual.Papers
 
 
@@ -324,9 +325,9 @@ example (a b c : UInt64) : a ≤ 2 → b ≤ 3 → c - a - b = 0 → c ≤ 5 := 
   grind
 ```
 
-{docstring Lean.Grind.ToInt}
+{zhdocstring Lean.Grind.ToInt ZhDoc.ToInt}
 
-{docstring Lean.Grind.IntInterval}
+{zhdocstring Lean.Grind.IntInterval ZhDoc.IntInterval}
 
 # 实现说明
 

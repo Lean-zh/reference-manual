@@ -9,6 +9,7 @@ import VersoManual
 import Lean.Parser.Term
 
 import Manual.Meta
+import Manual.ZhDocString.Grind
 
 
 open Verso.Genre Manual
@@ -159,13 +160,13 @@ Lean 标准库为其中定义的类型提供了适用的实例。
 要启用代数求解器，一个类型应当具有该求解器所支持的、尽可能具体的代数结构实例。
 按具体程度递增的顺序，依次为 {name Lean.Grind.Semiring}`Semiring`、{name Lean.Grind.Ring}`Ring`、{name Lean.Grind.CommSemiring}`CommSemiring`、{name Lean.Grind.CommRing}`CommRing` 和 {name Lean.Grind.Field}`Field`。
 
-{docstring Lean.Grind.Semiring}
+{zhdocstring Lean.Grind.Semiring ZhDoc.Semiring}
 
-{docstring Lean.Grind.CommSemiring}
+{zhdocstring Lean.Grind.CommSemiring ZhDoc.CommSemiring}
 
-{docstring Lean.Grind.Ring}
+{zhdocstring Lean.Grind.Ring ZhDoc.Ring}
 
-{docstring Lean.Grind.CommRing}
+{zhdocstring Lean.Grind.CommRing ZhDoc.CommRing}
 
 ### 域
 %%%
@@ -195,7 +196,7 @@ example [Field α] (a : α) :
 ```
 ::::
 
-{docstring Lean.Grind.Field}
+{zhdocstring Lean.Grind.Field ZhDoc.Field}
 
 ## 环的特征
 
@@ -205,7 +206,7 @@ example [Field α] (a : α) :
 
 :::
 
-{docstring Lean.Grind.IsCharP}
+{zhdocstring Lean.Grind.IsCharP ZhDoc.IsCharP}
 
 
 ## 自然数零因子
@@ -253,9 +254,9 @@ h_1 : ¬b = -a
 ```
 :::
 
-{docstring Lean.Grind.NoNatZeroDivisors}
+{zhdocstring Lean.Grind.NoNatZeroDivisors ZhDoc.NoNatZeroDivisors}
 
-{docstring Lean.Grind.NoNatZeroDivisors.mk'}
+{zhdocstring Lean.Grind.NoNatZeroDivisors.mk' ZhDoc.NoNatZeroDivisors.mk'}
 
 `ring` 模块还会根据 `a` 是否为零，对项 `a⁻¹` 进行情形分析。
 在以下示例中，如果 `2*a` 为零，那么 `a` 也为零，因为
@@ -328,7 +329,7 @@ example (x y : Nat) :
   grind
 ```
 
-{docstring Lean.Grind.AddRightCancel}
+{zhdocstring Lean.Grind.AddRightCancel ZhDoc.AddRightCancel}
 
 # 资源限制
 

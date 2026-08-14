@@ -9,6 +9,7 @@ import VersoManual
 import Lean.Parser.Term
 
 import Manual.Meta
+import Manual.ZhDocString.Grind
 
 
 open Verso.Genre Manual
@@ -68,14 +69,14 @@ tag := "grind-split"
 ```grammar
 grind cases
 ```
-{includeDocstring Lean.Parser.Attr.grindCases}
+{zhincludeDocstring Lean.Parser.Attr.grindCases ZhDoc.Parser.Attr.grindCases}
 :::
 
 :::syntax attr (title := "及早情形分析")
 ```grammar
 grind cases eager
 ```
-{includeDocstring Lean.Parser.Attr.grindCasesEager}
+{zhincludeDocstring Lean.Parser.Attr.grindCasesEager ZhDoc.Parser.Attr.grindCasesEager}
 :::
 
 
@@ -263,4 +264,4 @@ example (h : Even (n + 2)) : Even n := by
 * {attr}`grind cases` 属性是{ref "scoped-attributes"}_有作用域的_。
   修饰符 {keywordOf Lean.Parser.Term.attrKind}`local` 和 {keywordOf Lean.Parser.Term.attrKind}`scoped` 可将额外拆分限制在某个节或命名空间内。
 
-{optionDocs trace.grind.split}
+{zhOptionDocs trace.grind.split ZhDoc.Option.trace.grind.split}

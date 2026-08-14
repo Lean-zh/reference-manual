@@ -9,6 +9,7 @@ import VersoManual
 import Lean.Parser.Term
 
 import Manual.Meta
+import Manual.ZhDocString.Grind
 
 open Verso.Genre Manual
 
@@ -125,10 +126,10 @@ tag := "grind-linarith-classes"
 此外，若实现 {name}`OrderedAdd`（表达模的加法结构与序相容）以及 {name}`OrderedRing`（改进对常量的支持），还可以启用更多功能。
 
 
-{docstring Lean.Grind.NatModule}
+{zhdocstring Lean.Grind.NatModule ZhDoc.NatModule}
 
-{docstring Lean.Grind.IntModule}
+{zhdocstring Lean.Grind.IntModule ZhDoc.IntModule}
 
-{docstring Lean.Grind.OrderedAdd}
+{zhdocstring Lean.Grind.OrderedAdd ZhDoc.OrderedAdd}
 
-{docstring Lean.Grind.OrderedRing}
+{zhdocstring Lean.Grind.OrderedRing ZhDoc.OrderedRing}
