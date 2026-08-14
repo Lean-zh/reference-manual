@@ -106,7 +106,7 @@ file := "Headers-and-Signatures"
 tag := "signature-syntax"
 %%%
 
-定义或声明的 {deftech (key := "_header_")}_头部_（若有）由待声明/定义的常量以及其签名组成。
+定义或声明的 {deftech (key := "header")}_头部_（若有）由待声明/定义的常量以及其签名组成。
 常量的 {deftech (key := "signature")}_签名_ 指定了它可以如何被使用。
 签名中包含的不仅仅是类型本身的信息，还包括例如 {tech (key := "universe parameter")}[宇宙层级参数]、可选参数的默认值等。
 在 Lean 中，不同类型的声明均使用一致的格式来书写签名。

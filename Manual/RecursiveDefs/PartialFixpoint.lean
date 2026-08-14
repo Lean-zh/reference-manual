@@ -195,7 +195,7 @@ tag := "partial-fixpoint-monadic"
 
 能够支持这一点的高阶函数集合是{ref "partial-fixpoint-theory"}[可扩展的]，因此这里不给出穷尽列表。
 理想状态是：只要一个单子递归函数定义是通过 {name}`bind` 这类抽象单子操作构造出来的，并且没有拆开单子的抽象（例如对 {name}`Option` 的值做模式匹配），它就应该被接受。
-特别地，使用 {tech (key := "{keywordOf Lean.Parser.Term.do}`do`-notation")}[{keywordOf Lean.Parser.Term.do}`do` 记法] 应当可行。
+特别地，使用 {tech (key := "do-notation")}[{keywordOf Lean.Parser.Term.do}`do` 记法] 应当可行。
 
 :::example "单子函数"
 
@@ -209,7 +209,7 @@ def ack : (n m : Nat) → Option Nat
 partial_fixpoint
 ```
 
-如果适当设置，递归调用也可以出现在 {name}`List.mapM` 之类的高阶函数内部，以及 {tech (key := "{keywordOf Lean.Parser.Term.do}`do`-notation")}[{keywordOf Lean.Parser.Term.do}`do` 记法] 中：
+如果适当设置，递归调用也可以出现在 {name}`List.mapM` 之类的高阶函数内部，以及 {tech (key := "do-notation")}[{keywordOf Lean.Parser.Term.do}`do` 记法] 中：
 
 ```lean -keep
 structure Tree where cs : List Tree
