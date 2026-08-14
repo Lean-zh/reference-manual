@@ -251,7 +251,7 @@ def grindLR := Prop
 def grindRL := Prop
 
 /--
-`←=` 修饰符专用于对等式进行后向推理，与其他 `grind` 修饰符不同。当定理结论是等式命题且以 `@[grind ←=]` 标注时，只要假设了对应的不等式，`grind` 就会实例化该定理；这是因为 `grind` 的所有证明均采用反证法。通常，`grind` 属性生成模式时不会考虑 `=` 符号。
+`←=` 修饰符专用于对等式进行后向推理，与其他 `grind` 修饰符不同。当定理结论是等式命题且以 `@[grind ←=]` 标注时，只要假设了对应的不等关系，`grind` 就会实例化该定理；这是因为 `grind` 的所有证明均采用反证法。通常，`grind` 属性生成模式时不会考虑 `=` 符号。
 -/
 def grindEqBwd := Prop
 
@@ -260,7 +260,7 @@ def grindEqBwd := Prop
 -/
 def grindFunCC := Prop
 
-/-- `ext` 修饰符标记供 `grind` 使用的外延性定理。例如，标准库用此属性标记 `funext`。每当 `grind` 遇到不等式 `a ≠ b` 时，它会尝试应用类型与 `a`、`b` 相匹配的外延性定理。 -/
+/-- `ext` 修饰符标记供 `grind` 使用的外延性定理。例如，标准库用此属性标记 `funext`。每当 `grind` 遇到不等关系 `a ≠ b` 时，它会尝试应用类型与 `a`、`b` 相匹配的外延性定理。 -/
 def grindExt := Prop
 
 /-- `inj` 修饰符标记供 `grind` 使用的单射性定理。定理结论必须形如 `Function.Injective f`，且项 `f` 至少包含一个常量符号。 -/
