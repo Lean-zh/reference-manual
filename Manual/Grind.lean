@@ -54,7 +54,7 @@ tag := "grind-tactic"
 %%%
 
 :::tutorials
- * {ref "grind-index-map" (remote := "tutorials")}[使用 `grind` 处理有序映射]
+ * [使用 `grind` 处理有序映射](https://www.leanprover.cn/projects/grind-index-map/)
 :::
 
 ```lean -show
