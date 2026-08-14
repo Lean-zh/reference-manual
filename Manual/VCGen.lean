@@ -39,12 +39,12 @@ tag := "mvcgen-tactic"
 %%%
 
 :::tutorials
- * {ref "mvcgen-tactic-tutorial" (remote := "tutorials")}[使用 `mvcgen` 验证命令式程序]
+ * [使用 `mvcgen` 验证命令式程序](https://www.leanprover.cn/projects/mvcgen/)
 :::
 
 {tactic}`mvcgen` 策略实现了一个_单子验证条件生成器_：
 它将涉及以 Lean 命令式 {keywordOf Lean.Parser.Term.do}`do` 记法编写的程序的目标，分解成若干更小的、足以证明原目标的{tech (key := "verification conditions")}_验证条件_（{deftech (key := "VCs")}[VC]）。
-除介绍 {tactic}`mvcgen` 用法的参考资料外，本章还包含一篇可独立阅读的{ref "mvcgen-tactic-tutorial" (remote := "tutorials")}[教程]。
+除介绍 {tactic}`mvcgen` 用法的参考资料外，本章还包含一篇可独立阅读的[教程](https://www.leanprover.cn/projects/mvcgen/)。
 
 要使用 {tactic}`mvcgen` 策略，必须导入 {module}`Std.Tactic.Do` 并打开命名空间 {namespace}`Std.Do`。
 
