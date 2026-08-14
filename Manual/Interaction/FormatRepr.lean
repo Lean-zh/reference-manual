@@ -21,27 +21,27 @@ set_option pp.rawOnError true
 set_option verso.code.warnLineLength 72
 set_option verso.docstring.allowMissing true
 
-#doc (Manual) "Formatted Output" =>
+#doc (Manual) "格式化输出" =>
 %%%
 tag := "format-repr"
 %%%
 
-The {name}`Repr` type class is used to provide a standard representation for data that can be parsed and evaluated to obtain an equivalent value.
-This is not a strict correctness criterion: for some types, especially those with embedded propositions, it is impossible to achieve.
-However, the output produced by a {name}`Repr` instance should be as close as possible to something that can be parsed and evaluated.
+{name}`Repr` 类型类用于为数据提供一种标准表示；该表示可以被解析和求值，从而得到一个等价的值。
+这并不是严格的正确性准则：对于某些类型，尤其是嵌入了命题的类型，这一点无法做到。
+不过，{name}`Repr` 实例产生的输出应尽可能接近可被解析和求值的内容。
 
 :::paragraph
-In addition to being machine-readable, this representation should be convenient for humans to understand—in particular, lines should not be too long, and nested values should be indented.
-This is achieved through a two-step process:
+除了可供机器读取之外，这种表示还应便于人类理解——特别是，行不应过长，嵌套值应缩进。
+这是通过两步过程实现的：
 
- 1. The {name}`Repr` instance produces an intermediate document of type {name}`Std.Format`, which compactly represents a _set_ of strings that differ with respect to the placement of newlines and indentation.
- 2. A rendering process selects the “best” representative from the set, according to criteria such as a desired maximum line length.
+ 1. {name}`Repr` 实例生成一个类型为 {name}`Std.Format` 的中间文档，它紧凑地表示一_组_字符串，这些字符串的区别在于换行和缩进的位置。
+ 2. 渲染过程根据期望的最大行长等准则，从该集合中选择“最佳”代表。
 
-In particular, {name}`Std.Format` can be built compositionally, so {name}`Repr` instances don't need to take the surrounding indentation context into account.
+尤其是，{name}`Std.Format` 可以组合式地构建，因此 {name}`Repr` 实例无需考虑周围的缩进上下文。
 :::
 
 
-# Format
+# 格式
 %%%
 tag := "Format"
 %%%
@@ -54,45 +54,45 @@ open Std.Format
 variable {str : String} {indent : String} {n : Nat}
 ```
 :::paragraph
-A {name}`Format`{margin}[The API described here is an adaptation of Wadler's ({citehere wadler2003}[]) It has been modified to be efficient in a strict language and with support for additional features such as metadata tags.] is a compact representation of a set of strings.
-The most important {name Std.Format}`Format` operations are:
+{name}`Format`{margin}[这里介绍的 API 改编自 Wadler 的工作（{citehere wadler2003}[]）。它经过修改，以便在严格求值语言中高效运行，并支持元数据标签等额外功能。]是字符串集合的一种紧凑表示。
+最重要的 {name Std.Format}`Format` 操作如下：
 
-: Strings
+: 字符串
 
-  A {name}`String` can be made into a {name}`Format` using the {name}`text` constructor.
-  This constructor is registered as a {ref "coercions"}[coercion] from {name}`String` to {name}`Format`, so it is often unnecessary to invoke it explicitly.
-  {lean}`text str` represents the singleton set that contains only {lean}`str`.
-  If the string contains newline characters ({lean}`'\n'`), then they are unconditionally inserted as newlines into the resulting output, regardless of groups.
-  They are, however, indented according to the current indentation level.
+  使用 {name}`text` 构造器可以将 {name}`String` 转换为 {name}`Format`。
+  此构造器已注册为从 {name}`String` 到 {name}`Format` 的{ref "coercions"}[强制转换]，因此通常无需显式调用。
+  {lean}`text str` 表示仅包含 {lean}`str` 的单元素集合。
+  如果字符串包含换行字符（{lean}`'\n'`），无论分组如何，它们都会无条件地作为换行插入最终输出。
+  不过，它们会按照当前缩进级别进行缩进。
 
-: Appending
+: 追加
 
-  Two {name}`Format`s can be appended using the `++` operator from the {inst}`Append Format` instance.
+  可以使用 {inst}`Append Format` 实例提供的 `++` 运算符追加两个 {name}`Format`。
 
-: Groups and Newlines
+: 分组与换行
 
-  The constructor {name}`line` represents the set that contains both {lean}`"\n" ++ indent` and {lean}`" "`, where {lean}`indent` is a string with enough spaces to indent the line correctly.
-  Imperatively, it can be thought of as a newline that will be “flattened” to a space if there is sufficient room on the current line.
-  Newlines occur in _groups_: the nearest enclosing application of the {name}`group` operator determines which group the newline belongs to.
-  By default, either all {name}`line`s in a group represent {lean}`"\n"` or all represent {lean}`" "`; groups may also be configured to fill lines, in which case the minimal number of {name}`line`s in the group represent {lean}`"\n"`.
-  Uses of {name}`line` that do not belong to a group always represent {lean}`"\n"`.
+  构造器 {name}`line` 表示同时包含 {lean}`"\n" ++ indent` 和 {lean}`" "` 的集合，其中 {lean}`indent` 是一个包含足够空格、可使该行正确缩进的字符串。
+  从命令式角度看，可以把它视为一个换行：如果当前行有足够空间，它就会被“展平”为空格。
+  换行出现在_分组_中：最近一层包围它的 {name}`group` 运算符应用决定该换行属于哪个分组。
+  默认情况下，一个分组内的所有 {name}`line` 要么都表示 {lean}`"\n"`，要么都表示 {lean}`" "`；也可以将分组配置为填充行，此时分组中数量最少的一部分 {name}`line` 表示 {lean}`"\n"`。
+  不属于任何分组的 {name}`line` 始终表示 {lean}`"\n"`。
 
-: Indentation
+: 缩进
 
-  When a newline is inserted, the output is also indented.
-  {lean}`nest n` increases the indentation of a document by {lean}`n` spaces.
-  This is not sufficient to represent all Lean syntax, which sometimes requires that columns align exactly.
-  {lean}`align` is a document that ensures that the output string is at the current indentation level, inserting just spaces if possible, or a newline followed by spaces if needed.
+  插入换行时，输出也会缩进。
+  {lean}`nest n` 将文档的缩进增加 {lean}`n` 个空格。
+  这不足以表示所有 Lean 语法，因为有时要求各列精确对齐。
+  {lean}`align` 是一种确保输出字符串位于当前缩进级别的文档：如果可能就只插入空格，否则插入一个换行，后接若干空格。
 
-: Tagging
+: 标记
 
-  Lean's interactive features require the ability to associate output with the underlying values that they represent.
-  This allows Lean development environments to present elaborated terms when hovering over terms proof states or error messages, for example.
-  Documents can be _tagged_ with a {name}`Nat` value {lean}`n` using {lean}`tag n`; these {name}`Nat`s should be mapped to the underlying value in a side table.
+  Lean 的交互功能需要能够把输出与其所表示的底层值关联起来。
+  例如，这使 Lean 开发环境能够在悬停于项、证明状态或错误消息上时呈现精译后的项。
+  可以使用 {lean}`tag n` 以 {name}`Nat` 值 {lean}`n` 给文档加_标签_；这些 {name}`Nat` 应在一张旁表中映射到底层值。
 :::
 ::::
 
-:::example "Widths and Newlines"
+:::example "宽度与换行"
 ```imports -show
 import Std
 ```
@@ -100,7 +100,7 @@ import Std
 open Std Format
 ```
 
-The helper {name}`parenSeq` creates a parenthesized sequence, with grouping and indentation to make it responsive to different output widths.
+辅助函数 {name}`parenSeq` 创建一个带圆括号的序列，并通过分组和缩进使其适应不同的输出宽度。
 ```lean
 def parenSeq (xs : List Format) : Format :=
   group <|
@@ -109,20 +109,20 @@ def parenSeq (xs : List Format) : Format :=
     ")"
 ```
 
-This document represents a parenthesized sequence of numbers:
+此文档表示一个带圆括号的数字序列：
 ```lean
 def lst : Format := parenSeq nums
 where nums := [1, 2, 3, 4, 5].map (text s!"{·}")
 ```
 
 ```lean -show -keep
--- check statement in next paragraph
+-- 检查下一段中的陈述
 /-- info: 120 -/
 #check_msgs in
 #eval defWidth
 ```
 
-Rendering it with the default line width of 120 characters places the entire sequence on one line:
+以默认的 120 字符行宽渲染它时，整个序列会位于一行：
 ```lean (name := lstp)
 #eval IO.println lst.pretty
 ```
@@ -130,8 +130,8 @@ Rendering it with the default line width of 120 characters places the entire seq
 ( 1 2 3 4 5 )
 ```
 
-Because all the {name}`line`s belong to the same {name}`group`, they will either all be rendered as spaces or all be rendered as newlines.
-If only 9 characters are available, all of the {name}`line`s in {name}`lst` become newlines:
+因为所有 {name}`line` 都属于同一个 {name}`group`，它们要么全部渲染为空格，要么全部渲染为换行。
+如果只有 9 个字符的可用宽度，{name}`lst` 中的所有 {name}`line` 都会变成换行：
 ```lean (name := lstp9)
 #eval IO.println (lst.pretty (width := 9))
 ```
@@ -146,12 +146,12 @@ If only 9 characters are available, all of the {name}`line`s in {name}`lst` beco
 ```
 
 
-This document contains three copies of {name}`lst` in a further parenthesized sequence:
+此文档在另一个带圆括号的序列中包含三份 {name}`lst`：
 ```lean
 def lsts := parenSeq [lst, lst, lst]
 ```
 
-At the default width, it remains on one line:
+在默认宽度下，它仍位于一行：
 ```lean (name := lstsp)
 #eval IO.println lsts.pretty
 ```
@@ -159,8 +159,8 @@ At the default width, it remains on one line:
 ( ( 1 2 3 4 5 ) ( 1 2 3 4 5 ) ( 1 2 3 4 5 ) )
 ```
 
-If only 20 characters are available, each occurrence of {name}`lst` ends up on its own line.
-This is because converting the outer {name}`group` to newlines is sufficient to keep the string within 20 columns:
+如果只有 20 个字符的可用宽度，每次出现的 {name}`lst` 都会单独占一行。
+这是因为，将外层 {name}`group` 转换为换行已经足以使字符串保持在 20 列以内：
 ```lean (name := lstsp20)
 #eval IO.println (lsts.pretty (width := 20))
 ```
@@ -172,7 +172,7 @@ This is because converting the outer {name}`group` to newlines is sufficient to 
 )
 ```
 
-If only 10 characters are available, each number must be on its own line:
+如果只有 10 个字符的可用宽度，每个数字都必须单独占一行：
 ```lean (name := lstsp10)
 #eval IO.println (lsts.pretty (width := 10))
 ```
@@ -204,12 +204,12 @@ If only 10 characters are available, each number must be on its own line:
 :::
 
 
-:::example "Grouping and Filling"
+:::example "分组与填充"
 ```lean
 open Std Format
 ```
 
-The helper {name}`parenSeq` creates a parenthesized sequence, with each element placed on a new line and indented:
+辅助函数 {name}`parenSeq` 创建一个带圆括号的序列，其中每个元素都另起一行并缩进：
 ```lean
 def parenSeq (xs : List Format) : Format :=
   nest 2 (text "(" ++ line ++ joinSep xs line) ++
@@ -217,7 +217,7 @@ def parenSeq (xs : List Format) : Format :=
   ")"
 ```
 
-{name}`nums` contains the numbers one through twenty, as a list of formats:
+{name}`nums` 包含从一到二十的数字，是一个格式列表：
 ```lean
 def nums : List Format :=
   Nat.fold 20 (init := []) fun i _ ys =>
@@ -228,20 +228,20 @@ def nums : List Format :=
 #eval nums
 ```
 
-Because {name}`parenSeq` does not introduce any groups, the resulting document is rendered on a single line:
+由于 {name}`parenSeq` 没有引入任何分组，所得文档被渲染为一行：
 ```lean
 #eval IO.println (pretty (parenSeq nums))
 ```
 
-This can be fixed by grouping them.
-{name}`grouped` does so with {name}`group`, while {name}`filled` does so with {name}`fill`.
+可以通过对它们进行分组来修复此问题。
+{name}`grouped` 使用 {name}`group` 进行分组，而 {name}`filled` 使用 {name}`fill`。
 ```lean
 def grouped := group (parenSeq nums)
 def filled := fill (parenSeq nums)
 ```
 
-Both grouping operators cause uses of {name}`line` to render as spaces.
-Given sufficient space, both render on a single line:
+两个分组运算符都会使 {name}`line` 被渲染为空格。
+如果空间充足，两者都会渲染为一行：
 ```lean (name := groupedp)
 #eval IO.println (pretty grouped)
 ```
@@ -256,8 +256,8 @@ Given sufficient space, both render on a single line:
 ( 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 )
 ```
 
-However, difference become apparent when there is not sufficient space on a single line.
-Unless _all_ newlines in a {name}`group` can be spaces, none can:
+然而，当一行空间不足时，两者的差异便会显现。
+除非 {name}`group` 中的_所有_换行都能变为空格，否则没有任何一个能变为空格：
 ```lean (name := groupedp30)
 #eval IO.println (pretty (width := 30) grouped)
 ```
@@ -286,7 +286,7 @@ Unless _all_ newlines in a {name}`group` can be spaces, none can:
 )
 ```
 
-Using {name}`fill`, on the other hand, only inserts newlines as required to avoid being two wide:
+另一方面，使用 {name}`fill` 时，只会按避免宽度过宽所需插入换行：
 ```lean (name := filledp30)
 #eval IO.println (pretty (width := 30) filled)
 ```
@@ -295,7 +295,7 @@ Using {name}`fill`, on the other hand, only inserts newlines as required to avoi
   13 14 15 16 17 18 19 20 )
 ```
 
-The behavior of {name}`fill` can be seen clearly with longer sequences:
+在更长的序列中可以清楚看到 {name}`fill` 的行为：
 ```lean (name := filledbigp30)
 #eval IO.println <|
   pretty (width := 30) (fill (parenSeq (nums ++ nums ++ nums ++ nums)))
@@ -312,11 +312,11 @@ The behavior of {name}`fill` can be seen clearly with longer sequences:
 ```
 :::
 
-::::example "Newline Characters in Strings"
-Including a newline character in a string causes the rendering process to unconditionally insert a newline.
-These newlines do, however, respect the current indentation level.
+::::example "字符串中的换行字符"
+字符串中包含换行字符时，渲染过程会无条件地插入换行。
+不过，这些换行仍会遵循当前缩进级别。
 
-The document {name}`str` consists of an embedded string with two newlines:
+文档 {name}`str` 由一个内嵌了两个换行的字符串组成：
 ```lean
 open Std Format
 
@@ -324,7 +324,7 @@ def str : Format := text "abc\nxyz\n123"
 ```
 
 :::paragraph
-Printing the string both with and without grouping results in the newlines being used:
+无论是否分组，打印字符串时都会使用这些换行：
 ```lean (name := str1)
 #eval IO.println str.pretty
 ```
@@ -344,7 +344,7 @@ xyz
 :::
 
 :::paragraph
-Because the string does not terminate with a newline, the last line of the first string is on the same line as the first line of the second string:
+由于该字符串并不以换行结尾，第一个字符串的最后一行会与第二个字符串的第一行位于同一行：
 ```lean (name := str3)
 #eval IO.println (str ++ str).pretty
 ```
@@ -358,7 +358,7 @@ xyz
 :::
 
 :::paragraph
-Increasing the indentation level, however, causes all three lines of the string to begin at the same column:
+不过，提高缩进级别会使字符串的三行都从同一列开始：
 ```lean (name := str4)
 #eval IO.println (text "It is:" ++ indentD str).pretty
 ```
@@ -381,7 +381,7 @@ It is:  abc
 
 ::::
 
-## Documents
+## 文档
 %%%
 tag := "format-api"
 %%%
@@ -392,22 +392,22 @@ tag := "format-api"
 
 {docstring Std.Format.fill}
 
-## Empty Documents
+## 空文档
 %%%
 tag := "format-empty"
 %%%
 
 
 :::paragraph
-The empty string does not have a single unique representative in {name}`Std.Format`.
-All of the following represent the empty string:
+空字符串在 {name}`Std.Format` 中没有唯一的单一表示。
+以下各项都表示空字符串：
 
 * {lean  (type := "Std.Format")}`.nil`
 * {lean  (type := "Std.Format")}`.text ""`
 * {lean  (type := "Std.Format")}`.text "" ++ .nil`
 * {lean  (type := "Std.Format")}`.nil ++ .text ""`
 
-Use {name}`Std.Format.isEmpty` to check whether a document contains zero characters, and {name}`Std.Format.isNil` to specifically check whether it is the constructor {lean}`Std.Format.nil`.
+使用 {name}`Std.Format.isEmpty` 检查文档是否包含零个字符；若要专门检查它是否为构造器 {lean}`Std.Format.nil`，则使用 {name}`Std.Format.isNil`。
 :::
 
 {docstring Std.Format.isEmpty}
@@ -416,13 +416,13 @@ Use {name}`Std.Format.isEmpty` to check whether a document contains zero charact
 
 
 
-## Sequences
+## 序列
 %%%
 tag := "format-join"
 %%%
 
-The operators in this section are useful when there is some kind of repeated content, such as the elements of a list.
-This is typically done by including {name Std.Format.line}`line` in their separator parameters, using a {ref "format-brackets"}[bracketing operator]
+当存在某种重复内容（例如列表元素）时，本节中的运算符很有用。
+通常的做法是在分隔符参数中包含 {name Std.Format.line}`line`，并使用{ref "format-brackets"}[括起运算符]。
 
 {docstring Std.Format.join}
 
@@ -432,12 +432,12 @@ This is typically done by including {name Std.Format.line}`line` in their separa
 
 {docstring Std.Format.joinSuffix}
 
-## Indentation
+## 缩进
 %%%
 tag := "format-indent"
 %%%
 
-These operators make it easier to achieve a consistent indentation style on top of {name}`Std.Format.nest`.
+这些运算符使得在 {name}`Std.Format.nest` 之上实现一致的缩进风格更加容易。
 
 {docstring Std.Format.nestD}
 
@@ -445,12 +445,12 @@ These operators make it easier to achieve a consistent indentation style on top 
 
 {docstring Std.Format.indentD}
 
-## Brackets and Parentheses
+## 方括号与圆括号
 %%%
 tag := "format-brackets"
 %%%
 
-These operators make it easier to achieve a consistent parenthesization style.
+这些运算符使实现一致的圆括号风格更加容易。
 
 {docstring Std.Format.bracket}
 
@@ -460,19 +460,19 @@ These operators make it easier to achieve a consistent parenthesization style.
 
 {docstring Std.Format.bracketFill}
 
-## Rendering
+## 渲染
 %%%
 tag := "format-render"
 %%%
 
-The {inst}`ToString Std.Format` instance invokes {name}`Std.Format.pretty` with its default arguments.
+{inst}`ToString Std.Format` 实例使用默认参数调用 {name}`Std.Format.pretty`。
 
-There are two ways to render a document:
-* Use {name Std.Format.pretty}`pretty` to construct a {name}`String`.
-  The entire string must be constructed up front before any can be sent to a user.
-* Use {name Std.Format.prettyM}`prettyM` to incrementally emit the {name}`String`, using effects in some {name}`Monad`.
-  As soon as each line is rendered, it is emitted.
-  This is suitable for streaming output.
+渲染文档有两种方式：
+* 使用 {name Std.Format.pretty}`pretty` 构造 {name}`String`。
+  必须先完整构造整个字符串，之后才能将其中任何内容发送给用户。
+* 使用 {name Std.Format.prettyM}`prettyM`，利用某个 {name}`Monad` 中的效果，增量地发出 {name}`String`。
+  每一行一经渲染就会被发出。
+  这适用于流式输出。
 
 {docstring Std.Format.pretty}
 
@@ -482,10 +482,10 @@ There are two ways to render a document:
 
 {docstring Std.Format.MonadPrettyFormat}
 
-## The `ToFormat` Class
+## `ToFormat` 类
 
-The {name}`Std.ToFormat` class is used to provide a standard means to format a value, with no expectation that this formatting be valid Lean syntax.
-These instances are used in error messages and by some of the {ref "format-join"}[sequence concatenation operators].
+{name}`Std.ToFormat` 类用于提供一种格式化值的标准方式，并不要求这种格式是有效的 Lean 语法。
+错误消息和某些{ref "format-join"}[序列连接运算符]会使用这些实例。
 
 {docstring Std.ToFormat}
 
@@ -494,9 +494,9 @@ These instances are used in error messages and by some of the {ref "format-join"
 tag := "repr"
 %%%
 
-A {name}`Repr` instance describes how to represent a value as a {name}`Std.Format`.
-Because they should emit valid Lean syntax, these instances need to take {tech}[precedence] into account.
-Inserting the maximal number of parentheses would work, but it makes it more difficult for humans to read the resulting output.
+{name}`Repr` 实例描述如何将值表示为 {name}`Std.Format`。
+因为它们应当发出有效的 Lean 语法，所以这些实例需要考虑{tech (key := "precedence")}[优先级]。
+插入最大数量的圆括号确实可行，但会使人类更难阅读所得输出。
 
 {docstring Repr}
 
@@ -504,14 +504,14 @@ Inserting the maximal number of parentheses would work, but it makes it more dif
 
 {docstring reprStr}
 
-:::example "Maximal Parentheses"
-The type {name}`NatOrInt` can contain a {name}`Nat` or an {name}`Int`:
+:::example "最多的圆括号"
+类型 {name}`NatOrInt` 可以包含一个 {name}`Nat` 或一个 {name}`Int`：
 ```lean
 inductive NatOrInt where
   | nat : Nat → NatOrInt
   | int : Int → NatOrInt
 ```
-This {inst}`Repr NatOrInt` instance ensures that the output is valid Lean syntax by inserting many parentheses:
+这个 {inst}`Repr NatOrInt` 实例通过插入许多圆括号来确保输出是有效的 Lean 语法：
 ```lean
 instance : Repr NatOrInt where
   reprPrec x _ :=
@@ -522,7 +522,7 @@ instance : Repr NatOrInt where
       | .int i =>
           .text "(" ++ "NatOrInt.int" ++ .line ++ "(" ++ repr i ++ "))"
 ```
-Whether it contains a {name}`Nat`, a non-negative {name}`Int`, or a negative {name}`Int`, the result can be parsed:
+无论它包含 {name}`Nat`、非负的 {name}`Int`，还是负的 {name}`Int`，结果都可以被解析：
 ```lean (name := parens)
 open NatOrInt in
 #eval do
@@ -535,36 +535,36 @@ open NatOrInt in
 (NatOrInt.int (5))
 (NatOrInt.int (-5))
 ```
-However, {lean}`(NatOrInt.nat (3))` is not particularly idiomatic Lean, and redundant parentheses can make it difficult to read large expressions.
+不过，{lean}`(NatOrInt.nat (3))` 并不是特别惯用的 Lean 写法，而且冗余的圆括号会使大型表达式难以阅读。
 :::
 
 
-The method {name}`Repr.reprPrec` has the following signature:
+方法 {name}`Repr.reprPrec` 具有如下签名：
 ```signature
 Repr.reprPrec.{u} {α : Type u} [Repr α] : α → Nat → Std.Format
 ```
-The first explicit parameter is the value to be represented, while the second is the {tech}[precedence] of the context in which it occurs.
-This precedence can be used to decide whether to insert parentheses: if the precedence of the syntax being produced by the instance is greater than that of its context, parentheses are necessary.
+第一个显式参数是要表示的值，第二个则是该值所在上下文的{tech (key := "precedence")}[优先级]。
+可以利用此优先级决定是否插入圆括号：如果实例所生成语法的优先级高于其上下文的优先级，就需要圆括号。
 
-## How To Write a `Repr` Instance
+## 如何编写 `Repr` 实例
 %%%
 tag := "repr-instance-howto"
 %%%
 
-Lean can produce an appropriate {name}`Repr` instance for most types automatically using {ref "deriving-instances"}[instance deriving].
-In some cases, however, it's necessary to write an instance by hand:
+Lean 可以使用{ref "deriving-instances"}[实例派生]为大多数类型自动生成合适的 {name}`Repr` 实例。
+不过，在某些情况下需要手动编写实例：
 
-* Some libraries provide functions as the primary instance to a type, rather than its constructors; in these cases, the {name}`Repr` instance should represent a call to these functions.
-  For example, {name}`Std.HashSet.ofList` is used in the {inst}`Repr (HashSet α)` instance.
+* 有些库以函数而非构造器作为类型的主要接口；在这种情况下，{name}`Repr` 实例应表示对这些函数的调用。
+  例如，{inst}`Repr (HashSet α)` 实例使用 {name}`Std.HashSet.ofList`。
 
-* Some inductive types include well-formedness proofs.
-  Because programs can't inspect proofs, they cannot be rendered directly.
-  This is a common reason why a type would have an interface other than its constructors.
+* 有些归纳类型包含良构性证明。
+  因为程序无法检查证明，所以不能直接渲染它们。
+  这是类型采用构造器以外接口的常见原因。
 
-* Types with special syntax, such as {name}`List`, should use this syntax in their {name}`Repr` instances.
+* 具有特殊语法的类型（例如 {name}`List`）应在其 {name}`Repr` 实例中使用这种语法。
 
-* The derived {name}`Repr` instance for structures uses {tech}[structure instance] notation.
-  A hand-written instance can use the constructor's name explicitly or use {tech}[anonymous constructor syntax].
+* 为结构派生的 {name}`Repr` 实例使用{tech (key := "structure instance")}[结构实例]记法。
+  手写实例可以显式使用构造器名称，也可以使用{tech (key := "anonymous constructor syntax")}[匿名构造器语法]。
 
 ```lean -show -keep
 /-- info: Std.HashSet.ofList [0, 3, 5] -/
@@ -581,49 +581,49 @@ deriving Repr
 #eval IO.println <| repr <| S.mk 2 3
 ```
 
-When writing a custom {name}`Repr` instance, please follow these conventions:
+编写自定义 {name}`Repr` 实例时，请遵循以下约定：
 
-: Precedence
+: 优先级
 
-  Check precedence, adding parentheses as needed, and pass the correct precedence to the {name}`reprPrec` instances of embedded data.
-  Each instance is responsible for surrounding itself in parentheses if needed; instances should generally not parenthesize recursive calls to {name}`reprPrec`.
+  检查优先级，按需添加圆括号，并将正确的优先级传给内嵌数据的 {name}`reprPrec` 实例。
+  每个实例都负责在需要时为自身加上圆括号；实例通常不应为对 {name}`reprPrec` 的递归调用加圆括号。
 
-  Function application has the maximum precedence, {lean}`max_prec`.
-  The helpers {name}`Repr.addAppParen` and {name}`reprArg` respectively insert parentheses around applications when needed and pass the appropriate precedence to function arguments.
+  函数应用具有最高优先级 {lean}`max_prec`。
+  辅助函数 {name}`Repr.addAppParen` 和 {name}`reprArg` 分别在需要时为应用加上圆括号，以及把适当的优先级传给函数参数。
 
-: Fully-Qualified Names
+: 完全限定名称
 
-  A {name}`Repr` instance does have access to the set of open namespaces in a given position.
-  All names of constants in the environment should be fully qualified to remove ambiguity.
+  {name}`Repr` 实例确实可以访问给定位置处已打开的命名空间集合。
+  环境中所有常量的名称都应完全限定，以消除歧义。
 
-: Default Nesting
+: 默认嵌套
 
-  Nested data should be indented using {name Std.Format.nestD}`nestD` to ensure consistent indentation across instances.
+  嵌套数据应使用 {name Std.Format.nestD}`nestD` 缩进，以确保各实例之间的缩进一致。
 
-: Grouping and Line Breaks
+: 分组与换行
 
-  The output of every {name}`Repr` instance that includes line breaks should be surrounded in a {name Std.Format.group}`group`.
-  Furthermore, if the resulting code contains notional expressions that are nested, a {name Std.Format.group}`group` should be inserted around each nested level.
-  Line breaks should usually be inserted in the following positions:
-    * Between a constructor and each of its arguments
-    * After `:=`
-    * After `,`
-    * Between the opening and closing braces of {tech}[structure instance] notation and its contents
-    * After, but not before, an infix operator
+  每个包含换行的 {name}`Repr` 实例，其输出都应包围在 {name Std.Format.group}`group` 中。
+  此外，如果所得代码包含概念上相互嵌套的表达式，则应在每个嵌套层级外围插入一个 {name Std.Format.group}`group`。
+  通常应在以下位置插入换行：
+    * 构造器与它的每个参数之间
+    * `:=` 之后
+    * `,` 之后
+    * {tech (key := "structure instance")}[结构实例]记法的左右花括号与其内容之间
+    * 中缀运算符之后，而不是之前
 
-: Parentheses and Brackets
+: 圆括号与方括号
 
-  Parentheses and brackets should be inserted using {name}`Std.Format.bracket` or its specializations {name}`Std.Format.paren` for parentheses and {name}`Std.Format.sbracket` for square brackets.
-  These operators align the contents of the parenthesized or bracketed expression in the same way that Lean's do.
-  Trailing parentheses and brackets should not be placed on their own line, but rather stay with their contents.
+  应使用 {name}`Std.Format.bracket` 或其特化形式插入圆括号和方括号：圆括号使用 {name}`Std.Format.paren`，方括号使用 {name}`Std.Format.sbracket`。
+  这些运算符对带圆括号或方括号表达式的内容进行对齐，其方式与 Lean 相同。
+  结尾的圆括号和方括号不应单独占一行，而应与其内容保持在一起。
 
 {docstring Repr.addAppParen}
 
 {docstring reprArg}
 
 
-:::example "Inductive Types with Constructors"
-The inductive type {name}`N.NatOrInt` can contain a {name}`Nat` or an {name}`Int`:
+:::example "带构造器的归纳类型"
+归纳类型 {name}`N.NatOrInt` 可以包含一个 {name}`Nat` 或一个 {name}`Int`：
 ```lean
 namespace N
 
@@ -632,12 +632,12 @@ inductive NatOrInt where
   | int : Int → NatOrInt
 
 ```
-The {inst}`Repr NatOrInt` instance adheres to the conventions:
- * The right-hand side is a function application, so it uses {name}`Repr.addAppParen` to add parentheses if necessary.
- * Parentheses are wrapped around the entire body with no additional {name Std.Format.line}`line`s.
- * The entire function application is grouped, and it is nested the default amount.
- * The function is separated from its parameters by a use of {name Std.Format.line}`line`; this newline will usually be a space because the {inst}`Repr Nat` and {inst}`Repr Int` instances are unlikely to produce long output.
- * Recursive calls to {name}`reprPrec` pass {lean}`max_prec` because they are in function parameter positions, and function application has the highest precedence.
+{inst}`Repr NatOrInt` 实例遵循上述约定：
+ * 右侧是一个函数应用，因此它使用 {name}`Repr.addAppParen` 在必要时添加圆括号。
+ * 圆括号包围整个主体，且不额外加入 {name Std.Format.line}`line`。
+ * 整个函数应用被分组，并按默认量嵌套。
+ * 函数与其参数之间用一个 {name Std.Format.line}`line` 分隔；这个换行通常会成为空格，因为 {inst}`Repr Nat` 和 {inst}`Repr Int` 实例不太可能产生很长的输出。
+ * 对 {name}`reprPrec` 的递归调用传入 {lean}`max_prec`，因为它们位于函数参数位置，而函数应用具有最高优先级。
 
 ```lean
 instance : Repr NatOrInt where
@@ -723,16 +723,16 @@ some (N.NatOrInt.int (-5))
 
 :::
 
-:::example "Infix Syntax"
-This example demonstrates the use of precedences to encode a left-associative pretty printer.
-The type {lean}`AddExpr` represents expressions with constants and addition:
+:::example "中缀语法"
+此示例演示如何使用优先级编码左结合的美化打印器。
+类型 {lean}`AddExpr` 表示包含常量和加法的表达式：
 ```lean
 inductive AddExpr where
   | nat : Nat → AddExpr
   | add : AddExpr → AddExpr → AddExpr
 ```
 
-The {name}`OfNat` and {name}`Add` instances provide a more convenient syntax for {name}`AddExpr`:
+{name}`OfNat` 和 {name}`Add` 实例为 {name}`AddExpr` 提供了更方便的语法：
 ```lean
 instance : OfNat AddExpr n where
   ofNat := .nat n
@@ -741,8 +741,8 @@ instance : Add AddExpr where
   add := .add
 ```
 
-The {inst}`Repr AddExpr` instance should insert only the necessary parentheses.
-Lean's addition operator is left-associative, with precedence 65, so the recursive call to the left uses precedence 64 and the operator itself is parenthesized if the current context has precedence greater than or equal to 65:
+{inst}`Repr AddExpr` 实例应只插入必要的圆括号。
+Lean 的加法运算符是左结合的，优先级为 65，因此左侧的递归调用使用优先级 64；如果当前上下文的优先级大于或等于 65，则为运算符自身加圆括号：
 ```lean
 protected def AddExpr.reprPrec : AddExpr → Nat → Std.Format
   | .nat n, p  =>
@@ -758,7 +758,7 @@ instance : Repr AddExpr := ⟨AddExpr.reprPrec⟩
 ```
 
 ```lean -show -keep
--- Test that the guidelines provided for infix operators match Lean's own pretty printer
+-- 测试为中缀运算符给出的准则是否与 Lean 自身的美化打印器一致
 /--
 info: 1 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 + 10 + 11 + 1 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 + 10 + 11 + 1 + 2 + 3 + 4 + 5 + 6 + 7 +
         8 +
@@ -781,7 +781,7 @@ info: 1 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 + 10 + 11 + 1 + 2 + 3 + 4 + 5 + 6 + 7 + 
 
 ```
 
-Regardless of the input's parenthesization, this instance inserts only the necessary parentheses:
+无论输入如何加括号，此实例都只插入必要的圆括号：
 ```lean (name := prec1)
 #eval IO.println (repr (((2 + 3) + 4) : AddExpr))
 ```
@@ -806,7 +806,7 @@ Regardless of the input's parenthesization, this instance inserts only the neces
 ```leanOutput prec4
 [2 + (3 + 4), 2 + 3 + 4]
 ```
-The uses of {name Std.Format.group}`group`, {name Std.Format.nestD}`nestD`, and {name Std.Format.line}`line` in the implementation lead to the expected newlines and indentation in a narrow context:
+实现中使用的 {name Std.Format.group}`group`、{name Std.Format.nestD}`nestD` 和 {name Std.Format.line}`line` 会在狭窄上下文中产生预期的换行与缩进：
 ```lean (name:=prec5)
 #eval ([2 + (3 + 4), (2 + 3) + 4] : List AddExpr)
   |> repr
@@ -823,17 +823,17 @@ The uses of {name Std.Format.group}`group`, {name Std.Format.nestD}`nestD`, and 
 ```
 :::
 
-## Atomic Types
+## 原子类型
 %%%
 tag := "ReprAtom"
 %%%
 
-When the elements of a list are sufficiently small, it can be both difficult to read and wasteful of space to render the list with one element per line.
-To improve readability, {name}`List` has two {name}`Repr` instances: one that uses {name}`Std.Format.bracket` for its contents, and one that uses {name}`Std.Format.bracketFill`.
-The latter is defined after the former and is thus selected when possible; however, it requires an instance of the empty type class {name}`ReprAtom`.
+当列表元素足够小时，每个元素单独占一行既难以阅读又浪费空间。
+为提高可读性，{name}`List` 有两个 {name}`Repr` 实例：一个对其内容使用 {name}`Std.Format.bracket`，另一个使用 {name}`Std.Format.bracketFill`。
+后者定义在前者之后，因此会在可能时被选中；不过，它要求有空类型类 {name}`ReprAtom` 的实例。
 
-If the {name}`Repr` instance for a type never generates spaces or newlines, then it should have a {name}`ReprAtom` instance.
-Lean has {name}`ReprAtom` instances for types such as {name}`String`, {name}`UInt8`, {name}`Nat`, {name}`Char`, and {name}`Bool`.
+如果某类型的 {name}`Repr` 实例从不生成空格或换行，那么该类型应有一个 {name}`ReprAtom` 实例。
+Lean 为 {name}`String`、{name}`UInt8`、{name}`Nat`、{name}`Char` 和 {name}`Bool` 等类型提供了 {name}`ReprAtom` 实例。
 
 ```lean -show
 open Lean Elab Command in
@@ -846,9 +846,9 @@ open Lean Elab Command in
 
 {docstring ReprAtom}
 
-::::example "Atomic Types and `Repr`"
+::::example "原子类型与 `Repr`"
 
-All constructors of the inductive type {name}`ABC` are without parameters:
+归纳类型 {name}`ABC` 的所有构造器都没有参数：
 
 ```lean
 inductive ABC where
@@ -858,7 +858,7 @@ inductive ABC where
 deriving Repr
 ```
 
-The derived {inst}`Repr ABC` instance is used to display lists:
+派生的 {inst}`Repr ABC` 实例用于显示列表：
 ```lean (name := abc1)
 def abc : List ABC := [.a, .b, .c]
 
@@ -867,7 +867,7 @@ def abcs : List ABC := abc ++ abc ++ abc
 #eval IO.println ((repr abcs).pretty (width := 14))
 ```
 
-Because of the narrow width, line breaks are inserted:
+由于宽度很窄，因此会插入换行：
 ```leanOutput abc1
 [ABC.a,
  ABC.b,
@@ -881,7 +881,7 @@ Because of the narrow width, line breaks are inserted:
 ```
 
 :::paragraph
-However, converting the list to a {lean}`List Nat` leads to a differently-formatted result.
+不过，将列表转换为 {lean}`List Nat` 会得到格式不同的结果。
 ```lean (name := abc2)
 def ABC.toNat : ABC → Nat
   | .a => 0
@@ -890,7 +890,7 @@ def ABC.toNat : ABC → Nat
 
 #eval IO.print ((repr (abcs.map ABC.toNat)).pretty (width := 14))
 ```
-There are far fewer line breaks:
+此时换行少得多：
 ```leanOutput abc2
 [0, 1, 2, 0,
  1, 2, 0, 1,
@@ -898,8 +898,8 @@ There are far fewer line breaks:
 ```
 :::
 
-This is because of the existence of a {inst}`ReprAtom Nat` instance.
-Adding one for {name}`ABC` leads to similar behavior:
+这是因为存在 {inst}`ReprAtom Nat` 实例。
+为 {name}`ABC` 添加一个这样的实例会产生类似的行为：
 ```lean (name := abc3)
 instance : ReprAtom ABC := ⟨⟩
 
