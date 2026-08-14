@@ -264,9 +264,6 @@ def mustBeEqual (n : Nat) : (k : Nat) → n = k → String :=
 关于函数应用的章节 {ref "function-application"}[函数应用] 详细说明了 {tech (key := "optional parameter")}[可选]、{tech (key := "automatic parameter")}[自动]、{tech (key := "implicit")}[隐式] 与 {tech (key := "instance implicit")}[实例隐式] 等参数的解释规则。
 
 
-关于函数应用的章节 {ref "function-application"}[函数应用] 详细说明了 {tech (key := "optional parameter")}[可选]、{tech (key := "automatic parameter")}[自动]、{tech (key := "implicit")}[隐式] 与 {tech (key := "instance implicit")}[实例隐式] 等参数的解释规则。
-
-
 ## 自动隐式参数
 %%%
 tag := "automatic-implicit-parameters"
@@ -531,7 +528,7 @@ tag := "definitions-command"
 为保证 Lean 作为逻辑的类型论的一致性，递归函数要么对内核保持不透明（例如 {ref "partial-functions"}[将其声明为 {keyword}`partial`]），要么需要使用 {ref "recursive-definitions"}[递归定义章节] 中描述的某种策略证明其终止。
 
 定义的头部与主体会一并进行精译。
-若头部信息不完整（例如缺失某个参数的类型或缺失余类型），则定义体可能为精译器提供足够信息以重建缺失部分。
+若头部信息不完整（例如缺失某个参数的类型或缺失余域），则定义体可能为精译器提供足够信息以重建缺失部分。
 不过，{tech (key := "instance implicit")}[实例隐式]参数必须在头部显式给出，或作为 {tech (key := "section variable")}[区段变量]指定。
 
 
@@ -639,7 +636,7 @@ tag := "theorems"
 不过，更常见的做法是使用 {tactic}`induction` 或 {tactic}`fun_induction` 等策略来完成证明。
 
 :::syntax Lean.Parser.Command.declaration (alias := Lean.Parser.Command.theorem) (title := "定理")
-定理的语法与定义类似，但签名中的余类型（即定理陈述）是强制的。
+定理的语法与定义类似，但签名中的余域（即定理陈述）是强制的。
 
 ```grammar
 $_:declModifiers

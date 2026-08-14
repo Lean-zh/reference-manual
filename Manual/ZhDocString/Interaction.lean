@@ -64,7 +64,7 @@ def reduceCmd : Unit := ()
 -/
 def «where» : Unit := ()
 
-/-- 显示当前 Lean 版本，即打印 `Lean.versionString`。 -/
+/-- 显示当前 Lean 版本、目标三元组与平台信息；其中版本号来自 `Lean.versionString`。 -/
 def version : Unit := ()
 
 /--
@@ -105,7 +105,7 @@ example : α := sorry
 #guard_msgs (configElt,*) in cmd
 ```
 默认配置列表为
-`(check all, whitespace := normalized, ordering := exact, positions := false)`。
+`(check all, whitespace := normalized, ordering := exact, positions := false, substring := false)`。
 
 消息过滤器按严重程度选择消息：
 - `info`、`warning`、`error`：具有相应严重程度的非跟踪消息；
@@ -281,12 +281,13 @@ namespace Format
 `FlattenBehavior` 设为 `fill` 后调用 `Format.group`。 -/
 def fill : Unit := ()
 
-/-- 检查给定格式是否不含字符。 -/
+/--
+检查给定格式是否按其结构判为空。此检查会把 `.align` 节点视为空，即使对齐在渲染时可能输出空格或换行；因此返回 `true` 并不保证最终渲染的字符串为空。
+-/
 def isEmpty : Unit := ()
 
 /--
-检查 `Format` 是否为构造子 `Format.nil`。这并不检查最终渲染出的字符串是否始终为空；
-如需后者，请使用 `Format.isEmpty`。
+检查 `Format` 是否恰为构造子 `Format.nil`。与 `Format.isEmpty` 不同，此函数不递归检查组合结构。
 -/
 def isNil : Unit := ()
 

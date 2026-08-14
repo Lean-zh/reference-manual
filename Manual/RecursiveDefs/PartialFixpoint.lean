@@ -52,7 +52,7 @@ tag := "partial-fixpoint"
 :::paragraph
 可以定义为偏不动点的函数有两类：
 
- * 返回类型可被占据的 尾递归函数
+ * 返回类型可被占据的尾递归函数
 
  * 返回值位于某个合适单子中的函数，例如 {name}`Option` 单子
 
@@ -318,14 +318,14 @@ List.findIndex.partial_correctness.{u_1} {α : Type u_1}
 ```
 
 :::paragraph
-这里的 motive 是 {lean}`List.findIndex` 的参数类型与返回类型之间的一个关系，其中返回类型里的 {name}`Option` 已被去掉。
+这里的动机（motive）是 {lean}`List.findIndex` 的参数类型与返回类型之间的一个关系，其中返回类型里的 {name}`Option` 已被去掉。
 若给定一个签名与 {lean}`List.findIndex` 相容的任意偏函数，并且满足下列条件：
 
- * 对所有该任意函数返回某个值（而不是 {name}`none`）的输入，motive 都成立；
+ * 对所有该任意函数返回某个值（而不是 {name}`none`）的输入，动机都成立；
 
- * 按定义方程进行一步重写、并把其中递归调用替换为该任意函数后，也能推出 motive 成立；
+ * 按定义方程进行一步重写、并把其中递归调用替换为该任意函数后，也能推出动机成立；
 
-那么，对所有 {lean}`List.findIndex` 返回 {name}`some` 的输入，motive 都成立。
+那么，对所有 {lean}`List.findIndex` 返回 {name}`some` 的输入，动机都成立。
 
 :::
 

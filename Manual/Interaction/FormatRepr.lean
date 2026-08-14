@@ -229,7 +229,7 @@ def nums : List Format :=
 #eval nums
 ```
 
-由于 {name}`parenSeq` 没有引入任何分组，所得文档被渲染为一行：
+由于 {name}`parenSeq` 没有引入任何分组，所得文档不会被渲染为一行：
 ```lean
 #eval IO.println (pretty (parenSeq nums))
 ```
@@ -451,7 +451,7 @@ tag := "format-indent"
 tag := "format-brackets"
 %%%
 
-这些运算符使实现一致的圆括号风格更加容易。
+这些运算符使实现一致的括号风格更加容易。
 
 {zhdocstring Std.Format.bracket ZhDoc.Std.Format.bracket}
 
@@ -548,7 +548,7 @@ open NatOrInt in
 Repr.reprPrec.{u} {α : Type u} [Repr α] : α → Nat → Std.Format
 ```
 第一个显式参数是要表示的值，第二个则是该值所在上下文的{tech (key := "precedence")}[优先级]。
-可以利用此优先级决定是否插入圆括号：如果实例所生成语法的优先级高于其上下文的优先级，就需要圆括号。
+可以利用此优先级决定是否插入圆括号：如果实例所生成语法的优先级不高于其上下文的优先级，就需要圆括号。
 
 ## 如何编写 `Repr` 实例
 %%%
@@ -597,7 +597,7 @@ deriving Repr
 
 : 完全限定名称
 
-  {name}`Repr` 实例确实可以访问给定位置处已打开的命名空间集合。
+  {name}`Repr` 实例无法访问给定位置处已打开的命名空间集合。
   环境中所有常量的名称都应完全限定，以消除歧义。
 
 : 默认嵌套

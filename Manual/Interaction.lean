@@ -58,7 +58,7 @@ tag := "hash-eval"
 
 :::
 
-{keywordOf Lean.Parser.Command.eval}`#eval` 总会精译并编译所提供的项。
+{keywordOf Lean.Parser.Command.eval}`#eval` 总会先由 Lean 的{tech (key := "Lean elaborator")}[精译器]精译所提供的项，再进行编译。
 随后，它会检查该项是否传递依赖于任何 {lean}`sorry`；若存在此类依赖，除非以 {keywordOf Lean.Parser.Command.eval}`#eval!` 形式调用命令，否则求值将终止。
 这是因为编译后的代码可能依赖编译期不变量（例如数组查找不能越界），而这些不变量由适当命题的证明保证；运行包含不完整证明的代码（或使用 {lean}`sorry`“证明”错误命题的代码）可能导致 Lean 自身崩溃。
 
@@ -650,7 +650,7 @@ normalized
 
  * `whitespace := exact` 要求空白字符完全匹配。
 
- * `whitespace := normalized` 在匹配前将所有换行符转换为空格（默认设置）。这样便可折断长行。
+ * `whitespace := normalized` 在匹配前将所有换行符转换为空格（默认设置）。这样便可将长行断行。
 
  * `whitespace := lax` 在匹配前将连续空白字符折叠为一个空格。
 
