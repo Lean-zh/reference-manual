@@ -16,18 +16,22 @@ open Verso.Genre.Manual.InlineLean
 
 set_option maxHeartbeats 250000
 
-#doc (Manual) "Basic Classes" =>
+#doc (Manual) "基础类" =>
 %%%
 tag := "basic-classes"
+file := "Basic-Classes"
 %%%
 
-Many Lean type classes exist in order to allow built-in notations such as addition or array indexing to be overloaded.
+Lean 中的许多类型类用于让加法、数组索引等内置记法可以重载。
 
-# Boolean Equality Tests
+# 布尔相等性测试
+%%%
+tag := "boolean-equality-tests"
+%%%
 
-The Boolean equality operator `==` is overloaded by defining instances of {name}`BEq`.
-The companion class {name}`Hashable` specifies a hashing procedure for a type.
-When a type has both {name}`BEq` and {name}`Hashable` instances, then the hashes computed should respect the {name}`BEq` instance: two values equated by {name}`BEq.beq` should always have the same hash.
+布尔相等运算符 `==` 通过定义 {name}`BEq` 的实例来重载。
+配套的 {name}`Hashable` 类为类型指定哈希过程。
+当某个类型同时具有 {name}`BEq` 和 {name}`Hashable` 实例时，计算出的哈希值应当遵循 {name}`BEq` 实例：被 {name}`BEq.beq` 判为相等的两个值应始终具有相同的哈希值。
 
 {docstring BEq}
 
@@ -45,15 +49,18 @@ When a type has both {name}`BEq` and {name}`Hashable` instances, then the hashes
 
 {docstring hash_eq}
 
-# Ordering
+# 排序关系
+%%%
+tag := "ordering"
+%%%
 
-There are two primary ways to order the values of a type:
- * The {name}`Ord` type class provides a three-way comparison operator, {name}`compare`, which can indicate that one value is less than, equal to, or greater than another. It returns an {name}`Ordering`.
- * The {name}`LT` and {name}`LE` classes provide canonical {lean}`Prop`-valued ordering relations for a type that do not need to be decidable. These relations are used to overload the `<` and `≤` operators.
+主要有两种方式为一个类型的值规定次序：
+ * {name}`Ord` 类型类提供三路比较运算符 {name}`compare`，它可以指出一个值小于、等于或大于另一个值。它返回一个 {name}`Ordering`。
+ * {name}`LT` 和 {name}`LE` 类为类型提供取值于 {lean}`Prop` 的典范排序关系，且这些关系不必是可判定的。它们用于重载 `<` 和 `≤` 运算符。
 
 {docstring Ord}
 
-The {name}`compare` method is exported, so no explicit `Ord` namespace is required to use it.
+{name}`compare` 方法已被导出，因此使用它时无需显式写出 `Ord` 命名空间。
 
 {docstring compareOn}
 
@@ -83,21 +90,21 @@ The {name}`compare` method is exported, so no explicit `Ord` namespace is requir
 
 {docstring compareLex}
 
-:::syntax term (title := "Ordering Operators")
+:::syntax term (title := "排序运算符")
 
-The less-than operator is overloaded in the {name}`LT` class:
+小于运算符在 {name}`LT` 类中重载：
 
 ```grammar
 $_ < $_
 ```
 
-The less-than-or-equal-to operator is overloaded in the {name}`LE` class:
+小于等于运算符在 {name}`LE` 类中重载：
 
 ```grammar
 $_ ≤ $_
 ```
 
-The greater-than and greater-than-or-equal-to operators are the reverse of the less-than and less-than-or-equal-to operators, and cannot be independently overloaded:
+大于和大于等于运算符分别是小于和小于等于运算符的反向形式，不能独立重载：
 
 ```grammar
 $_ > $_
@@ -113,8 +120,8 @@ $_ ≥ $_
 
 {docstring LE}
 
-An {name}`Ord` can be used to construct {name}`BEq`, {name}`LT`, and {name}`LE` instances with the following helpers.
-They are not automatically instances because many types are better served by custom relations.
+可以用以下辅助函数从 {name}`Ord` 构造 {name}`BEq`、{name}`LT` 和 {name}`LE` 实例。
+这些辅助函数不会自动成为实例，因为对许多类型而言，自定义关系更为合适。
 
 {docstring ltOfOrd}
 
@@ -126,10 +133,10 @@ They are not automatically instances because many types are better served by cus
 
 {docstring Ord.toLT}
 
-:::example "Using `Ord` Instances for `LT` and `LE` Instances"
+:::example "使用 `Ord` 实例构造 `LT` 和 `LE` 实例"
 
-Lean can automatically derive an {name}`Ord` instance.
-In this case, the {inst}`Ord Vegetable` instance compares vegetables lexicographically:
+Lean 可以自动派生 {name}`Ord` 实例。
+在本例中，{inst}`Ord Vegetable` 实例按字典序比较蔬菜：
 ```lean
 structure Vegetable where
   color : String
@@ -148,14 +155,14 @@ def sweetPotato : Vegetable where
 ```
 
 
-Using the helpers {name}`ltOfOrd` and {name}`leOfOrd`, {inst}`LT Vegetable` and {inst}`LE Vegetable` instances can be defined.
-These instances compare the vegetables using {name}`compare` and logically assert that the result is as expected.
+使用辅助函数 {name}`ltOfOrd` 和 {name}`leOfOrd`，可以定义 {inst}`LT Vegetable` 与 {inst}`LE Vegetable` 实例。
+这些实例使用 {name}`compare` 比较蔬菜，并在逻辑上断言结果符合预期。
 ```lean
 instance : LT Vegetable := ltOfOrd
 instance : LE Vegetable := leOfOrd
 ```
 
-The resulting relations are decidable because equality is decidable for {lean}`Ordering`:
+所得关系是可判定的，因为 {lean}`Ordering` 上的相等性是可判定的：
 
 ```lean (name := brLtSw)
 #eval broccoli < sweetPotato
@@ -183,7 +190,10 @@ true
 ```
 :::
 
-## Instance Construction
+## 实例构造
+%%%
+tag := "instance-construction"
+%%%
 
 {docstring Ord.lex}
 
@@ -191,10 +201,13 @@ true
 
 {docstring Ord.on}
 
-# Minimum and Maximum Values
+# 最小值与最大值
+%%%
+tag := "minimum-and-maximum-values"
+%%%
 
-The classes `Max` and `Min` provide overloaded operators for choosing the greater or lesser of two values.
-These should be in agreement with `Ord`, `LT`, and `LE` instances, if they exist, but there is no mechanism to enforce this.
+类 `Max` 和 `Min` 提供重载运算符，用于从两个值中选择较大者或较小者。
+若 `Ord`、`LT` 和 `LE` 实例存在，它们应当与这些运算符保持一致，但并没有强制这一点的机制。
 
 {docstring Min}
 
@@ -206,8 +219,8 @@ These should be in agreement with `Ord`, `LT`, and `LE` instances, if they exist
 variable {α : Type u} [LE α]
 ```
 
-Given an {inst}`LE α` instance for which {name}`LE.le` is decidable, the helpers {name}`minOfLe` and {name}`maxOfLe` can be used to create suitable {lean}`Min α` and {lean}`Max α` instances.
-They can be used as the right-hand side of an {keywordOf Lean.Parser.Command.declaration}`instance` declaration.
+给定一个 {name}`LE.le` 可判定的 {inst}`LE α` 实例，可以使用辅助函数 {name}`minOfLe` 和 {name}`maxOfLe` 创建合适的 {lean}`Min α` 与 {lean}`Max α` 实例。
+它们可以用作 {keywordOf Lean.Parser.Command.declaration}`instance` 声明的右侧。
 
 {docstring minOfLe}
 
@@ -215,14 +228,14 @@ They can be used as the right-hand side of an {keywordOf Lean.Parser.Command.dec
 
 :::
 
-# Decidability
+# 可判定性
 %%%
 tag := "decidable-propositions"
 %%%
 
-A proposition is {deftech}_decidable_ if it can be checked algorithmically.{index}[decidable]{index (subterm := "decidable")}[proposition]
-The Law of the Excluded Middle means that every proposition is true or false, but it provides no way to check which of the two cases holds, which can often be useful.
-By default, only algorithmic {lean}`Decidable` instances for which code can be generated are in scope; opening the `Classical` namespace makes every proposition decidable.
+如果一个命题可以通过算法检查，那么它就是{deftech (key := "decidable")}_可判定的_。{index}[可判定]{index (subterm := "可判定")}[命题]
+排中律意味着每个命题非真即假，但它没有提供检查究竟是哪种情形成立的方法；而这种检查往往很有用。
+默认情况下，作用域中只有可生成代码的算法式 {lean}`Decidable` 实例；打开 `Classical` 命名空间则会使每个命题都可判定。
 
 {docstring Decidable}
 
@@ -241,8 +254,8 @@ By default, only algorithmic {lean}`Decidable` instances for which code can be g
 {docstring Decidable.byCases}
 
 ::::keepEnv
-:::example "Excluded Middle and {lean}`Decidable`"
-The equality of functions from {lean}`Nat` to {lean}`Nat` is not decidable:
+:::example "排中律与 {lean}`Decidable`"
+从 {lean}`Nat` 到 {lean}`Nat` 的函数之间的相等性不可判定：
 ```lean +error (name := NatFunNotDecEq)
 example (f g : Nat → Nat) : Decidable (f = g) := inferInstance
 ```
@@ -253,7 +266,7 @@ failed to synthesize instance of type class
 Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
 ```
 
-Opening `Classical` makes every proposition decidable; however, declarations and examples that use this fact must be marked {keywordOf Lean.Parser.Command.declaration}`noncomputable` to indicate that code should not be generated for them.
+打开 `Classical` 会使每个命题都可判定；不过，使用这一事实的声明和示例必须标记为 {keywordOf Lean.Parser.Command.declaration}`noncomputable`，以表明不应为它们生成代码。
 ```lean
 open Classical
 noncomputable example (f g : Nat → Nat) : Decidable (f = g) :=
@@ -264,13 +277,19 @@ noncomputable example (f g : Nat → Nat) : Decidable (f = g) :=
 ::::
 
 
-# Inhabited Types
+# 有元素的类型
+%%%
+tag := "inhabited-types"
+%%%
 
 {docstring Inhabited}
 
 {docstring Nonempty}
 
-# Subsingleton Types
+# 至多单元素类型
+%%%
+tag := "subsingleton-types"
+%%%
 
 {docstring Subsingleton}
 
@@ -278,21 +297,24 @@ noncomputable example (f g : Nat → Nat) : Decidable (f = g) :=
 
 {docstring Subsingleton.helim}
 
-# Visible Representations
+# 可见表示
 %%%
+tag := "visible-representations"
 draft := true
 %%%
-
 :::planned 135
- * ToString
- * xref to Repr section
- * When to use {name}`Repr` vs {name}`ToString`
+ * `ToString`
+ * 指向 `Repr` 一节的交叉引用
+ * 何时使用 {name}`Repr`，何时使用 {name}`ToString`
 :::
 
 
 {docstring ToString +allowMissing}
 
-# Arithmetic and Bitwise Operators
+# 算术与位运算符
+%%%
+tag := "arithmetic-and-bitwise-operators"
+%%%
 
 {docstring Zero}
 
@@ -352,13 +374,19 @@ draft := true
 
 {docstring XorOp}
 
-# Append
+# 追加
+%%%
+tag := "append"
+%%%
 
 {docstring HAppend}
 
 {docstring Append}
 
-# Data Lookups
+# 数据查找
+%%%
+tag := "data-lookups"
+%%%
 
 {docstring GetElem}
 

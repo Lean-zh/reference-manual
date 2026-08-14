@@ -18,13 +18,13 @@ section
 
 open Lean Elab Command
 
-/- Needed due to big infotree coming out of the instance quotation in the example here -/
+/- 此处示例中的实例引用会产生很大的信息树，因此需要此设置 -/
 set_option maxRecDepth 1024
 set_option maxHeartbeats 650_000
 
-/-- Classes that are part of the manual, not to be shown -/
--- TODO: When moving to v4.26.0-rc1, @kim-em removed `Plausible.Arbitrary` from this list.
--- Should it be restored?
+/-- 手册自身所用、无需显示的类 -/
+-- TODO：迁移到 v4.26.0-rc1 时，@kim-em 从此列表中移除了 `Plausible.Arbitrary`。
+-- 是否应当恢复？
 private def hiddenDerivable : Array Name := #[``Manual.Toml.Test]
 
 private def derivableClasses : IO (Array Name) := do
@@ -64,7 +64,7 @@ open SubVerso Highlighting in
 @[directive_expander derivableClassList]
 def derivableClassList : DirectiveExpander
   | args, contents => do
-    -- No arguments!
+    -- 不接受参数！
     ArgParse.done.run args
     if contents.size > 0 then throwError "Expected empty directive"
     let classNames ← derivableClasses
@@ -76,19 +76,19 @@ def derivableClassList : DirectiveExpander
 
 open Lean Elab Command
 
-#doc (Manual) "Deriving Handlers" =>
+#doc (Manual) "派生处理器" =>
 %%%
 tag := "deriving-handlers"
 %%%
 
-Instance deriving uses a table of {deftech}_deriving handlers_ that maps type class names to metaprograms that derive instances for them.
-Deriving handlers may be added to the table using {lean}`registerDerivingHandler`, which should be called in an {keywordOf Lean.Parser.Command.initialize}`initialize` block.
-Each deriving handler should have the type {lean}`Array Name → CommandElabM Bool`.
-When a user requests that an instance of a class be derived, its registered handlers are called one at a time.
-They are provided with all of the names in the mutual block for which the instance is to be derived, and should either correctly derive an instance and return {lean}`true` or have no effect and return {lean}`false`.
-When a handler returns {lean}`true`, no further handlers are called.
+实例派生使用一张将类型类名称映射到元程序的{deftech (key := "deriving handlers")}_派生处理器_表；这些元程序为相应类型类派生实例。
+可以使用 {lean}`registerDerivingHandler` 将派生处理器添加到表中；应当在 {keywordOf Lean.Parser.Command.initialize}`initialize` 块中调用它。
+每个派生处理器都应具有类型 {lean}`Array Name → CommandElabM Bool`。
+当用户请求派生某个类的实例时，其已注册的处理器会被逐一调用。
+处理器会收到互递归块中所有需要派生该实例的名称，并且应当要么正确派生一个实例并返回 {lean}`true`，要么不产生任何效果并返回 {lean}`false`。
+一旦某个处理器返回 {lean}`true`，便不会再调用后续处理器。
 
-Lean includes deriving handlers for the following classes:
+Lean 为以下类内置了派生处理器：
 
 :::derivableClassList
 :::
@@ -97,13 +97,13 @@ Lean includes deriving handlers for the following classes:
 
 
 ::::keepEnv
-:::example "Deriving Handlers"
+:::example "派生处理器"
 
 ```imports -show
 import Lean.Elab
 ```
 
-Instances of the {name}`IsEnum` class demonstrate that a type is a finite enumeration by providing a bijection between the type and a suitably-sized {name}`Fin`:
+{name}`IsEnum` 类的实例通过给出该类型与大小适当的 {name}`Fin` 之间的双射，表明该类型是有限枚举：
 ```lean
 class IsEnum (α : Type) where
   size : Nat
@@ -113,8 +113,8 @@ class IsEnum (α : Type) where
   from_to_id : ∀ (x : α), fromIdx (toIdx x) = x
 ```
 
-For inductive types that are trivial enumerations, where no constructor expects any parameters, instances of this class are quite repetitive.
-The instance for `Bool` is typical:
+对于没有任何构造器接受参数、因而只是平凡枚举的归纳类型，该类的实例会非常重复。
+`Bool` 的实例就是一个典型例子：
 ```lean
 instance : IsEnum Bool where
   size := 2
@@ -132,7 +132,7 @@ instance : IsEnum Bool where
     | true => rfl
 ```
 
-The deriving handler programmatically constructs each pattern case, by analogy to the {lean}`IsEnum Bool` implementation:
+派生处理器参照 {lean}`IsEnum Bool` 的实现，以编程方式构造每个模式分支：
 ```lean
 open Lean Elab Parser Term Command
 
