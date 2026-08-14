@@ -21,7 +21,7 @@ import Manual.Grind.Linarith
 import Manual.Grind.Annotation
 import Manual.Grind.ExtendedExamples
 
--- Needed for the if-then-else normalization example.
+-- if-then-else 规范化示例需要此导入。
 import Std.Data.TreeMap
 import Std.Data.HashMap
 
@@ -33,7 +33,7 @@ open Lean.Elab.Tactic.GuardMsgs.WhitespaceMode
 
 set_option pp.rawOnError true
 
--- TODO (@kim-em): `Lean.Grind.AddCommMonoid` and `Lean.Grind.AddCommGroup` are not yet documented.
+-- TODO (@kim-em)：尚未记录 `Lean.Grind.AddCommMonoid` 和 `Lean.Grind.AddCommGroup`。
 set_option verso.docstring.allowMissing true
 
 set_option linter.unusedVariables false
@@ -41,61 +41,61 @@ set_option linter.unusedVariables false
 set_option linter.typography.quotes true
 set_option linter.typography.dashes true
 
--- The verso default max line length is 60, which is very restrictive.
--- TODO: discuss with David.
+-- Verso 默认最大行长为 60，限制很严。
+-- TODO：与 David 讨论。
 set_option verso.code.warnLineLength 72
 
 open Manual (comment)
 
-#doc (Manual) "The `grind` tactic" =>
+#doc (Manual) "`grind` 策略" =>
 %%%
 tag := "grind-tactic"
 %%%
 
 :::tutorials
- * {ref "grind-index-map" (remote := "tutorials")}[Using `grind` for Ordered Maps]
+ * {ref "grind-index-map" (remote := "tutorials")}[使用 `grind` 处理有序映射]
 :::
 
 ```lean -show
--- Open some namespaces for the examples.
+-- 为示例打开若干命名空间。
 open Lean Lean.Grind Lean.Meta.Grind
 ```
 
-The {tactic}`grind` tactic uses techniques inspired by modern SMT solvers to automatically construct proofs.
-It produces proofs by incrementally collecting sets of facts, deriving new facts from the existing ones using a set of cooperating techniques.
-Behind the scenes, all proofs are by contradiction, so there is no operational distinction between the expected conclusion and the premises; {tactic}`grind` always attempts to derive a contradiction.
+{tactic}`grind` 策略使用受现代 SMT 求解器启发的技术自动构造证明。
+它逐步收集事实集，并利用一组相互协作的技术从已有事实推导新事实，以此生成证明。
+在幕后，所有证明都使用反证法，因此在操作上预期结论与前提并无区别；{tactic}`grind` 始终尝试导出矛盾。
 
-Picture a virtual whiteboard.
-Every time {tactic}`grind` discovers a new equality, inequality, or Boolean literal it writes that fact on the board, merges equivalent terms into buckets, and invites each engine to read from—and add back to—the shared whiteboard.
-In particular, because all true propositions are equal to {lean}`True` and all false propositions are equal to {lean}`False`, {tactic}`grind` tracks a set of known facts as part of tracking equivalence classes.
+想象一块虚拟白板。
+每当 {tactic}`grind` 发现新的等式、不等式或布尔文字时，它都会把该事实写到白板上，将等价的项归入同一组，并让每个引擎从共享白板读取信息、再向其中添加信息。
+特别地，由于所有真命题都等于 {lean}`True`，所有假命题都等于 {lean}`False`，{tactic}`grind` 在跟踪等价类的同时也跟踪一组已知事实。
 
 :::paragraph
-The cooperating engines are:
+相互协作的引擎包括：
 
-* {tech}[congruence closure],
-* {tech}[constraint propagation],
-* {tech}[E‑matching],
-* guided {ref "grind-split"}[case analysis], and
-* a suite of satellite theory solvers, including both {ref "cutsat"}[linear integer arithmetic] and {ref "grind-ring"}[commutative rings].
+* {tech (key := "congruence closure")}[同余闭包]、
+* {tech (key := "constraint propagation")}[约束传播]、
+* {tech (key := "E‑matching")}[E‑匹配]、
+* 引导式{ref "grind-split"}[情形分析]，以及
+* 一组卫星理论求解器，包括{ref "cutsat"}[线性整数算术]和{ref "grind-ring"}[交换环]求解器。
 
-Like other tactics, {tactic}`grind` produces ordinary Lean proof terms for every fact it adds.
-Lean’s standard library is already annotated with `@[grind]` attributes, so common lemmas are discovered automatically.
+与其他策略一样，{tactic}`grind` 会为它添加的每个事实生成普通的 Lean 证明项。
+Lean 标准库已经带有 `@[grind]` 属性标注，因此常用引理会被自动发现。
 :::
 
-{tactic}`grind` is *not* designed for goals whose search space explodes combinatorially—think large‑`n` pigeonhole instances, graph‑coloring reductions, high‑order N‑queens boards, or a 200‑variable Sudoku encoded as Boolean constraints.
-Such encodings require thousands (or millions) of case‑splits that overwhelm {tactic}`grind`’s branching search.
-For bit‑level or pure Boolean combinatorial problems, use {tactic}`bv_decide`.  The {tactic}`bv_decide` tactic calls a state‑of‑the‑art SAT solver (e.g. CaDiCaL or Kissat) and then returns a compact, machine‑checkable certificate.
-All heavy search happens outside Lean; the certificate is replayed and verified inside Lean, so trust is preserved (verification time scales with certificate size).
+{tactic}`grind` *并非*为搜索空间发生组合爆炸的目标而设计，例如大 `n` 的鸽巢原理实例、图着色归约、高阶 N 皇后棋盘，或编码为布尔约束的 200 变量数独。
+这类编码需要成千上万（甚至数百万）次情形拆分，会压垮 {tactic}`grind` 的分支搜索。
+对于位级或纯布尔组合问题，请使用 {tactic}`bv_decide`。{tactic}`bv_decide` 策略会调用先进的 SAT 求解器（例如 CaDiCaL 或 Kissat），然后返回紧凑且可由机器检查的证书。
+所有繁重搜索都在 Lean 外部进行；证书会在 Lean 内部重放并验证，因此仍然保持可信（验证时间随证书大小增长）。
 
 :::TODO
-Include this when it's available:
-* *Full SMT problems that need substantial case analysis across multiple theories* (arrays, bit‑vectors, rich arithmetic, quantifiers, …) → use the forthcoming *`lean‑smt`* tactic—a tight Lean front‑end for CVC5 that replays unsat cores or models inside Lean.
+待功能可用后纳入以下内容：
+* 对于*需要跨多种理论进行大量情形分析的完整 SMT 问题*（数组、位向量、丰富的算术、量词等），请使用即将推出的 *`lean‑smt`* 策略——它是 CVC5 的紧密 Lean 前端，可在 Lean 内部重放不可满足核或模型。
 :::
 
 
-:::example "Congruence Closure" (open := true)
+:::example "同余闭包" (open := true)
 
-This proof succeeds instantly using {tech}[congruence closure], which discovers sets of equal terms.
+这个证明使用{tech (key := "congruence closure")}[同余闭包]立即成功；同余闭包会发现由相等项组成的集合。
 
 ```lean
 example (a b c : Nat) (h₁ : a = b) (h₂ : b = c) :
@@ -105,9 +105,9 @@ example (a b c : Nat) (h₁ : a = b) (h₂ : b = c) :
 
 :::
 
-:::example "Algebraic Reasoning" (open := true)
+:::example "代数推理" (open := true)
 
-This proof uses {tactic}`grind`'s commutative ring solver.
+这个证明使用 {tactic}`grind` 的交换环求解器。
 
 ```lean -show
 open Lean.Grind
@@ -122,9 +122,9 @@ example [CommRing α] [NoNatZeroDivisors α] (a b c : α) :
 ```
 :::
 
-:::example "Finite-Field Reasoning" (open := true)
-Arithmetic operations on {name}`Fin` overflow, wrapping around to {lean  (type := "Fin 11")}`0` when the result would be outside the bound.
-{tactic}`grind` can use this fact to prove theorems such as this:
+:::example "有限域推理" (open := true)
+{name}`Fin` 上的算术运算会溢出：当结果超出界限时，会回绕到 {lean  (type := "Fin 11")}`0`。
+{tactic}`grind` 可以利用这一事实证明如下定理：
 
 ```lean
 example (x y : Fin 11) :
@@ -135,7 +135,7 @@ example (x y : Fin 11) :
 ```
 :::
 
-:::example "Linear Integer Arithmetic with Case Analysis" (open := true)
+:::example "结合情形分析的线性整数算术" (open := true)
 
 ```lean
 example (x y : Int) :
@@ -149,24 +149,24 @@ example (x y : Int) :
 
 :::
 
-# Error Messages
+# 错误消息
 %%%
 tag := "grind-errors"
 %%%
 
-When {tactic}`grind` fails, it prints the remaining subgoal followed by all the information returned by its subsystems—the contents of the “shared whiteboard.”
-In particular, it presents equivalence classes of terms that it has determined to be equal.
-The two largest classes are shown as `True propositions` and `False propositions`, listing every literal currently known to be provable or refutable.
-Inspect these lists to spot missing facts or contradictory assumptions.
+{tactic}`grind` 失败时，会先打印剩余子目标，再打印其各子系统返回的全部信息，也就是“共享白板”上的内容。
+具体而言，它会展示由已判定相等的项构成的等价类。
+最大的两个类显示为 `True propositions` 和 `False propositions`，分别列出当前已知可证明或可证伪的每个文字。
+检查这些列表，可以找出缺失的事实或相互矛盾的假设。
 
-# Minimizing `grind` calls
+# 最小化 `grind` 调用
 
-The `grind only [...]` tactic invokes {tactic}`grind` with a limited set of theorems, which can improve performance.
-Calls to `grind only` can be conveniently constructed using {tactic}`grind?`, which automatically records the theorems used by {tactic}`grind` and suggests a suitable `grind only`.
+`grind only [...]` 策略使用受限的定理集合调用 {tactic}`grind`，从而可能提升性能。
+可以使用 {tactic}`grind?` 方便地构造 `grind only` 调用；它会自动记录 {tactic}`grind` 使用的定理，并建议合适的 `grind only`。
 
-These theorems will typically include a symbol prefix such as `=`, `←`, or `→`, indicating the
-pattern that triggered the instantiation. See the {ref "e-matching"}[section on E-matching] for details.
-Some theorems may be labelled with a `usr` prefix, which indicates that a custom pattern was used.
+这些定理通常带有 `=`、`←` 或 `→` 等符号前缀，用来表示
+触发实例化的模式。详情参见{ref "e-matching"}[关于 E-匹配的章节]。
+有些定理可能带有 `usr` 前缀，表示使用了自定义模式。
 
 {include 1 Manual.Grind.CongrClosure}
 
@@ -184,17 +184,17 @@ Some theorems may be labelled with a `usr` prefix, which indicates that a custom
 
 {include 1 Manual.Grind.Annotation}
 
-# Reducibility
+# 可约性
 
-{tech}[Reducible] definitions in terms are eagerly unfolded by {tactic}`grind`.
-This enables more efficient definitional equality comparisons and indexing.
+{tactic}`grind` 会及早展开项中的{tech (key := "Reducible")}[可约]定义。
+这使定义相等性比较和索引更高效。
 
-:::example "Reducibility and Congruence Closure"
-The definition of {name}`one` is not {tech}[reducible]:
+:::example "可约性与同余闭包"
+{name}`one` 的定义不是{tech (key := "Reducible")}[可约]的：
 ```lean
 def one := 1
 ```
-This means that {tactic}`grind` does not unfold it:
+这意味着 {tactic}`grind` 不会展开它：
 ```lean +error (name := noUnfold)
 example : one = 1 := by grind
 ```
@@ -209,25 +209,25 @@ h : ¬one = 1
   [cutsat] Assignment satisfying linear constraints
 ```
 
-{name}`two`, on the other hand, is an abbreviation and thus reducible:
+另一方面，{name}`two` 是缩写，因此可约：
 ```lean
 abbrev two := 2
 ```
 
-{tactic}`grind` unfolds {name}`two` before adding it to the “whiteboard”, allowing the proof to be completed immediately:
+{tactic}`grind` 在将 {name}`two` 加入“白板”前先展开它，从而可以立即完成证明：
 ```lean
 example : two = 2 := by grind
 ```
 :::
 
-E-matching patterns also unfold reducible definitions.
-The patterns generated for theorems about abbreviations are expressed in terms of the unfolded abbreviations.
-Abbreviations should not generally be recursive; in particular, when using {tactic}`grind`, recursive abbreviations can result in poor indexing performance and unpredictable patterns.
+E-匹配模式也会展开可约定义。
+为涉及缩写的定理生成的模式会用展开后的缩写来表示。
+缩写通常不应递归；特别是在使用 {tactic}`grind` 时，递归缩写可能导致索引性能不佳以及模式不可预测。
 
-:::example "E-matching and Unfolding Abbreviations"
-When adding {attr}`grind` annotations to theorems, E-matching patterns are generated based on the theorem statement.
-These patterns determine when the theorem is instantiated.
-The theorem {name}`one_eq_1` mentions the {tech}[semireducible] definition {name}`one`, and the resulting pattern is also {name}`one`:
+:::example "E-匹配与展开缩写"
+为定理添加 {attr}`grind` 标注时，会根据定理陈述生成 E-匹配模式。
+这些模式决定何时实例化该定理。
+定理 {name}`one_eq_1` 提到了{tech (key := "semireducible")}[半可约]定义 {name}`one`，生成的模式也同样是 {name}`one`：
 ```lean (name := one_eq_1)
 def one := 1
 
@@ -238,7 +238,7 @@ theorem one_eq_1 : one = 1 := by rfl
 one_eq_1: [one]
 ```
 
-Applying the same annotation to a theorem about the {tech}`reducible` abbreviation {name}`two` results in a pattern in which {name}`two` is unfolded:
+将相同标注应用于涉及{tech (key := "reducible")}`可约`缩写 {name}`two` 的定理，会得到一个展开了 {name}`two` 的模式：
 ```lean (name := two_eq_2)
 abbrev two := 2
 
@@ -251,9 +251,9 @@ two_eq_2: [@OfNat.ofNat `[Nat] `[2] `[instOfNatNat 2]]
 
 :::
 
-:::example "Recursive Abbreviations and `grind`"
-Using the {attr}`grind` attribute to add E-matching patterns for a recursive abbreviation's {tech}[equational lemmas] does not result in useful patterns for recursive abbreviations.
-The {attrs}`@[grind?]` attribute on this definition of the Fibonacci function results in three patterns, each corresponding to one of the three possibilities:
+:::example "递归缩写与 `grind`"
+使用 {attr}`grind` 属性为递归缩写的{tech (key := "equational lemmas")}[等式引理]添加 E-匹配模式，并不能为递归缩写生成有用的模式。
+这个斐波那契函数定义上的 {attrs}`@[grind?]` 属性会生成三个模式，分别对应三种可能情况：
 ```lean (name := fib1) -keep
 @[grind?]
 def fib : Nat → Nat
@@ -270,8 +270,8 @@ fib.eq_2: [fib `[1]]
 ```leanOutput fib1
 fib.eq_3: [fib (#0 + 2)]
 ```
-Replacing the definition with an abbreviation results in patterns in which occurrences of the function are unfolded.
-These patterns are not particularly useful:
+将该定义替换为缩写后，生成的模式会展开其中出现的函数。
+这些模式并没有多大用处：
 ```lean (name := fib2) -keep
 @[grind?]
 abbrev fib : Nat → Nat
@@ -293,12 +293,12 @@ fib.eq_3: [@HAdd.hAdd `[Nat] `[Nat] `[Nat] `[instHAdd] (fib #0) (fib (#0 + 1))]
 
 
 ```comment
-# Diagnostics
-TBD
-Threshold notices, learned equivalence classes, integer assignments, algebraic basis, performed splits, instance statistics.
+# 诊断
+待定
+阈值通知、学到的等价类、整数赋值、代数基、已执行的拆分、实例统计。
 
-# Troubleshooting & FAQ
-TBD
+# 故障排除与常见问题
+待定
 ```
 
 {include 1 Manual.Grind.ExtendedExamples}

@@ -17,61 +17,61 @@ open Verso.Doc.Elab (CodeBlockExpander)
 
 open Lean.Elab.Tactic.GuardMsgs.WhitespaceMode
 
-#doc (Manual) "Case Analysis" =>
+#doc (Manual) "情形分析" =>
 %%%
 tag := "grind-split"
 %%%
 
-In addition to congruence closure and constraint propagation, {tactic}`grind` performs case analysis.
-During case analysis, {tactic}`grind` considers each possible way that a term could have been built, or each possible value of a particular term, in a manner similar to the {tactic}`cases` and {tactic}`split` tactics.
-This case analysis is not exhaustive: {tactic}`grind` only recursively splits cases up to a configured depth limit, and configuration options and annotations control which terms are candidates for splitting.
+除同余闭包和约束传播外，{tactic}`grind` 还会进行情形分析。
+进行情形分析时，{tactic}`grind` 会考虑一个项所有可能的构造方式，或某个特定项的每个可能取值，其方式类似于 {tactic}`cases` 和 {tactic}`split` 策略。
+这种情形分析并非穷举式的：{tactic}`grind` 只会在配置的深度上限内递归拆分情形，并由配置选项和标注控制哪些项可作为拆分候选。
 
 
-# Selection Heuristics
+# 选择启发式方法
 
-{tactic}`grind` decides which sub‑term to split on by combining three sources of signal:
+{tactic}`grind` 综合以下三类信号来决定要拆分哪个子项：
 
-: Structural flags
+: 结构标志
 
-  These configuration flags determine whether {tactic}`grind` performs certain case splits:
+  以下配置标志决定 {tactic}`grind` 是否进行特定的情形拆分：
 
-  : `splitIte` (default {lean}`true`)
+  : `splitIte`（默认 {lean}`true`）
 
-    Every {keywordOf Lean.Parser.Term.ite}`if`-term should be split, as if by the {tactic}`split` tactic.
+    拆分每个 {keywordOf Lean.Parser.Term.ite}`if` 项，就像使用 {tactic}`split` 策略一样。
 
-  : `splitMatch` (default {lean}`true`)
+  : `splitMatch`（默认 {lean}`true`）
 
-    Every {keywordOf Lean.Parser.Term.match}`match`-term should be split, as if by the {tactic}`split` tactic.
+    拆分每个 {keywordOf Lean.Parser.Term.match}`match` 项，就像使用 {tactic}`split` 策略一样。
 
-  :  `splitImp` (default {lean}`false`)
+  :  `splitImp`（默认 {lean}`false`）
 
     :::leanSection
     ```lean -show
     variable {A : Prop} {B : Sort u}
     ```
-    Hypotheses of the form {lean}`A → B` whose antecedent {lean}`A` is *propositional* are split by considering all possibilities for {lean}`A`.
-    Arithmetic antecedents are special‑cased: if {lean}`A` is an arithmetic literal (that is, a proposition formed by operators such as `≤`, `=`, `¬`, {lean}`Dvd`, …) then {tactic}`grind` will split _even when `splitImp := false`_ so the integer solver can propagate facts.
+    对于形如 {lean}`A → B` 且前件 {lean}`A` 是*命题*的假设，通过考虑 {lean}`A` 的所有可能情况进行拆分。
+    算术前件会受到特殊处理：如果 {lean}`A` 是算术文字（即由 `≤`、`=`、`¬`、{lean}`Dvd` 等运算符构成的命题），那么_即使 `splitImp := false`_，{tactic}`grind` 也会拆分它，以便整数求解器传播事实。
     :::
 
-: Global limits
+: 全局限制
 
-  The {tactic}`grind` option `splits := n` caps the depth of the search tree.
-  Once a branch performs `n` splits {tactic}`grind` stops splitting further in that branch; if the branch cannot be closed it reports that the split threshold has been reached.
+  {tactic}`grind` 的 `splits := n` 选项限制搜索树的深度。
+  一旦某个分支进行了 `n` 次拆分，{tactic}`grind` 就不再继续拆分该分支；如果无法关闭该分支，它会报告已达到拆分阈值。
 
-: Manual annotations
+: 手动标注
 
-  Inductive predicates or structures may be tagged with the {attr}`grind cases` attribute.
-  {tactic}`grind` treats every instance of that predicate as a candidate for splitting.
+  可以用 {attr}`grind cases` 属性标记归纳谓词或结构。
+  {tactic}`grind` 会将该谓词的每个实例视为拆分候选。
 
 
-:::syntax attr (title := "Case Analysis")
+:::syntax attr (title := "情形分析")
 ```grammar
 grind cases
 ```
 {includeDocstring Lean.Parser.Attr.grindCases}
 :::
 
-:::syntax attr (title := "Eager Case Analysis")
+:::syntax attr (title := "及早情形分析")
 ```grammar
 grind cases eager
 ```
@@ -79,8 +79,8 @@ grind cases eager
 :::
 
 
-:::example "Splitting Conditional Expressions"
-In this example, {tactic}`grind` proves the theorem by considering both cases for the conditional:
+:::example "拆分条件表达式"
+在此示例中，{tactic}`grind` 通过考虑条件表达式的两种情况来证明定理：
 ```lean
 example (c : Bool) (x y : Nat)
     (h : (if c then x else y) = 0) :
@@ -88,14 +88,14 @@ example (c : Bool) (x y : Nat)
   grind
 ```
 
-Disabling `splitIte` causes the proof to fail:
+禁用 `splitIte` 会导致证明失败：
 ```lean +error (name := noSplitIte)
 example (c : Bool) (x y : Nat)
     (h : (if c then x else y) = 0) :
     x = 0 ∨ y = 0 := by
   grind -splitIte
 ```
-In particular, it cannot make progress after discovering that the conditional expression is equal to {lean}`0`:
+具体而言，在发现条件表达式等于 {lean}`0` 后，它无法继续推进：
 ```leanOutput noSplitIte (expandTrace := eqc)
 `grind` failed
 case grind
@@ -116,7 +116,7 @@ right : ¬y = 0
   [cutsat] Assignment satisfying linear constraints
 ```
 
-Forbidding all case splitting causes the proof to fail for the same reason:
+禁止所有情形拆分会因同样的原因导致证明失败：
 ```lean +error (name := noSplitsAtAll)
 example (c : Bool) (x y : Nat)
     (h : (if c then x else y) = 0) :
@@ -144,7 +144,7 @@ right : ¬y = 0
   [limits] Thresholds reached
 ```
 
-Allowing just one split is sufficient:
+只允许一次拆分便已足够：
 ```lean
 example (c : Bool) (x y : Nat)
     (h : (if c then x else y) = 0) :
@@ -153,8 +153,8 @@ example (c : Bool) (x y : Nat)
 ```
 :::
 
-:::example "Splitting Pattern Matching"
-Disabling case splitting on pattern matches causes {tactic}`grind` to fail in this example:
+:::example "拆分模式匹配"
+在此示例中，禁用对模式匹配的情形拆分会导致 {tactic}`grind` 失败：
 ```lean +error (name := noSplitMatch)
 example (h : y = match x with | 0 => 1 | _ => 2) :
     y > 0 := by
@@ -189,7 +189,7 @@ h_1 : y = 0
 
 [grind] Diagnostics
 ```
-Enabling the option causes the proof to succeed:
+启用该选项后证明成功：
 ```lean
 example (h : y = match x with | 0 => 1 | _ => 2) :
     y > 0 := by
@@ -197,19 +197,19 @@ example (h : y = match x with | 0 => 1 | _ => 2) :
 ```
 :::
 
-:::example "Splitting Predicates"
-{lean}`Not30` is a somewhat verbose way to state that a number is not {lean}`30`:
+:::example "拆分谓词"
+{lean}`Not30` 以一种略显冗长的方式表述一个数不等于 {lean}`30`：
 ```lean
 inductive Not30 : Nat → Prop where
   | gt : x > 30 → Not30 x
   | lt : x < 30 → Not30 x
 ```
 
-By default, {tactic}`grind` cannot show that {lean}`Not30` implies that a number is, in fact, not {lean}`30`:
+默认情况下，{tactic}`grind` 无法证明 {lean}`Not30` 确实蕴含该数不等于 {lean}`30`：
 ```lean +error (name := not30fail)
 example : Not30 n → n ≠ 30 := by grind
 ```
-This is because {tactic}`grind` does not consider both cases for {lean}`Not30`
+这是因为 {tactic}`grind` 没有考虑 {lean}`Not30` 的两种情形：
 ```leanOutput not30fail (expandTrace := eqc)
 `grind` failed
 case grind
@@ -226,14 +226,14 @@ h_1 : n = 30
   [cutsat] Assignment satisfying linear constraints
 ```
 
-Adding the {attr}`grind cases` attribute to {lean}`Not30` allows the proof to succeed:
+为 {lean}`Not30` 添加 {attr}`grind cases` 属性后，证明便能成功：
 ```lean
 attribute [grind cases] Not30
 
 example : Not30 n → n ≠ 30 := by grind
 ```
 
-Similarly, the {attr}`grind cases` attribute on {lean}`Even` allows {tactic}`grind` to perform case splits:
+类似地，{lean}`Even` 上的 {attr}`grind cases` 属性允许 {tactic}`grind` 进行情形拆分：
 ```lean (name := blah)
 @[grind cases]
 inductive Even : Nat → Prop
@@ -252,15 +252,15 @@ example (h : Even (n + 2)) : Even n := by
 
 :::
 
-# Performance
+# 性能
 
-Case analysis is powerful, but computationally expensive: each level of case splitting multiplies the search space.
-It's important to be judicious and not perform unnecessary splits.
-In particular:
-* Increase `splits` *only* when the goal genuinely needs deeper branching; each extra level multiplies the search space.
-* Disable `splitMatch` when large pattern‑matching definitions explode the tree; this can be observed by setting the {option}`trace.grind.split`.
-* Flags can be combined, e.g. `by grind -splitMatch (splits := 10) +splitImp`.
-* The {attr}`grind cases` attribute is {ref "scoped-attributes"}_scoped_.
-  The modifiers {keywordOf Lean.Parser.Term.attrKind}`local` and {keywordOf Lean.Parser.Term.attrKind}`scoped` restrict extra splitting to a section or namespace.
+情形分析功能强大，但计算代价高昂：每增加一层情形拆分，搜索空间都会成倍增长。
+因此务必谨慎，避免不必要的拆分。
+具体而言：
+* *仅当*目标确实需要更深的分支时才增大 `splits`；每多一层都会成倍扩大搜索空间。
+* 当大型模式匹配定义使搜索树急剧膨胀时，禁用 `splitMatch`；可设置 {option}`trace.grind.split` 来观察这种情况。
+* 标志可以组合使用，例如 `by grind -splitMatch (splits := 10) +splitImp`。
+* {attr}`grind cases` 属性是{ref "scoped-attributes"}_有作用域的_。
+  修饰符 {keywordOf Lean.Parser.Term.attrKind}`local` 和 {keywordOf Lean.Parser.Term.attrKind}`scoped` 可将额外拆分限制在某个节或命名空间内。
 
 {optionDocs trace.grind.split}
