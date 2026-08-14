@@ -448,7 +448,7 @@ tag := "default-instance-synth"
 如果默认实例本身带有实例隐式参数，就可能引发进一步的递归实例搜索。
 若递归搜索失败，搜索过程就会回溯并尝试下一个默认实例。
 
-# “道德上典范的”实例
+# “实质上典范的”实例
 %%%
 tag := "The-Lean-Language-Reference--Type-Classes--Instance-Synthesis--___Morally-Canonical___-Instances"
 %%%
@@ -457,7 +457,7 @@ tag := "The-Lean-Language-Reference--Type-Classes--Instance-Synthesis--___Morall
 换言之，如果对某个目标的搜索成功，且后续信息增加也不可能推翻这一成功，那么即便还存在其他可能可用的实例，也不会再次尝试该目标。
 这一优化可以防止实例合成搜索后续分支中的失败引发虚假回溯，避免用对巨大状态空间的缓慢探索替换先前分支中的快速解。
 
-该优化依赖于实例是{deftech (key := "morally canonical")}_道德上典范的_这一假设。
+该优化依赖于实例是{deftech (key := "morally canonical")}_实质上典范的_这一假设。
 即使给定类型类的重载操作存在多个潜在实现，或由于菱形而存在多种实例合成方式，也应认为_任何找到的实例都与其他实例同样好_。
 换言之，只要保证其中一个实例可用，就无需考虑_所有_潜在实例。
 可以用向后兼容选项 {option}`backward.synthInstance.canonInstances` 禁用该优化；此选项可能会在未来版本的 Lean 中移除。
