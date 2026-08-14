@@ -11,6 +11,7 @@ import Manual.BasicTypes.Nat
 import Manual.BasicTypes.Int
 import Manual.BasicTypes.String
 import Manual.BasicTypes.Array
+import Manual.BasicTypes.ByteArray
 import Manual.BasicTypes.Fin
 import Manual.BasicTypes.UInt
 import Manual.BasicTypes.BitVec
@@ -24,6 +25,7 @@ import Manual.BasicTypes.List
 import Manual.BasicTypes.Maps
 import Manual.BasicTypes.Subtype
 import Manual.BasicTypes.Thunk
+import Manual.BasicTypes.Range
 
 open Manual.FFIDocType
 
@@ -65,11 +67,11 @@ The unit type is the canonical type with exactly one element, named {name Unit.u
 It describes only a single value, which consists of said constructor applied to no arguments whatsoever.
 
 {lean}`Unit` is analogous to `void` in languages derived from C: even though `void` has no elements that can be named, it represents the return of control flow from a function with no additional information.
-In functional programming, {lean}`Unit` is the return type of things that "return nothing".
+In functional programming, {lean}`Unit` is the return type of things that “return nothing”.
 Mathematically, this is represented by a single completely uninformative value, as opposed to an empty type such as {lean}`Empty`, which represents unreachable code.
 
 :::leanSection
-```lean (show := false)
+```lean -show
 variable {m : Type → Type} [Monad m] {α : Type}
 ```
 
@@ -85,7 +87,7 @@ There are two variants of the unit type:
 
  * {lean}`Unit` is a {lean}`Type` that exists in the smallest non-propositional {tech}[universe].
 
- * {lean}`PUnit` is {tech key:="universe polymorphism"}[universe polymorphic] and can be used in any non-propositional {tech}[universe].
+ * {lean}`PUnit` is {tech (key := "universe polymorphism")}[universe polymorphic] and can be used in any non-propositional {tech}[universe].
 
 Behind the scenes, {lean}`Unit` is actually defined as {lean}`PUnit.{1}`.
 {lean}`Unit` should be preferred over {name}`PUnit` when possible to avoid unnecessary universe parameters.
@@ -101,7 +103,7 @@ If in doubt, use {lean}`Unit` until universe errors occur.
 
 {deftech}_Unit-like types_ are inductive types that have a single constructor which takes no non-proof parameters.
 {lean}`PUnit` is one such type.
-All elements of unit-like types are {tech key:="definitional equality"}[definitionally equal] to all other elements.
+All elements of unit-like types are {tech (key := "definitional equality")}[definitionally equal] to all other elements.
 
 :::example "Definitional Equality of {lean}`Unit`"
 Every term with type {lean}`Unit` is definitionally equal to every other term with type {lean}`Unit`:
@@ -143,16 +145,16 @@ inductive NotUnitLike where
   | mk (u : Unit)
 ```
 
-```lean (error:=true) (name := NotUnitLike)
+```lean +error (name := NotUnitLike)
 example (e1 e2 : NotUnitLike) : e1 = e2 := rfl
 ```
 ```leanOutput NotUnitLike
-type mismatch
+Type mismatch
   rfl
 has type
-  ?m.13 = ?m.13 : Prop
+  ?m.13 = ?m.13
 but is expected to have type
-  e1 = e2 : Prop
+  e1 = e2
 ```
 
 Constructors of unit-like types may take parameters that are proofs.
@@ -186,7 +188,7 @@ However, there is an important pragmatic difference: {lean}`Bool` classifies _va
 In other words, {lean}`Bool` is the notion of truth and falsehood that's appropriate for programs, while {lean}`Prop` is the notion that's appropriate for mathematics.
 Because proofs are erased from compiled programs, keeping {lean}`Bool` and {lean}`Prop` distinct makes it clear which parts of a Lean file are intended for computation.
 
-```lean (show := false)
+```lean -show
 section BoolProp
 
 axiom b : Bool
@@ -211,7 +213,7 @@ These propositions are called {tech}_decidable_ propositions, and have instances
 The function {name}`Decidable.decide` converts a proof-carrying {lean}`Decidable` result into a {lean}`Bool`.
 This function is also a coercion from decidable propositions to {lean}`Bool`, so {lean}`(2 = 2 : Bool)` evaluates to {lean}`true`.
 
-```lean (show := false)
+```lean -show
 /-- info: true -/
 #check_msgs in
 #eval (2 = 2 : Bool)
@@ -246,7 +248,7 @@ The prefix operator `!` is notation for {lean}`Bool.not`.
 
 ### Logical Operations
 
-```lean (show := false)
+```lean -show
 section ShortCircuit
 
 axiom BIG_EXPENSIVE_COMPUTATION : Bool
@@ -256,7 +258,7 @@ The functions {name}`cond`, {name Bool.and}`and`, and {name Bool.or}`or` are sho
 In other words, {lean}`false && BIG_EXPENSIVE_COMPUTATION` does not need to execute {lean}`BIG_EXPENSIVE_COMPUTATION` before returning `false`.
 These functions are defined using the {attr}`macro_inline` attribute, which causes the compiler to replace calls to them with their definitions while generating code, and the definitions use nested pattern matching to achieve the short-circuiting behavior.
 
-```lean (show := false)
+```lean -show
 end ShortCircuit
 ```
 
@@ -315,6 +317,10 @@ Most comparisons on Booleans should be performed using the {inst}`DecidableEq Bo
 {include 0 Manual.BasicTypes.List}
 
 {include 0 Manual.BasicTypes.Array}
+
+{include 0 Manual.BasicTypes.ByteArray}
+
+{include 0 Manual.BasicTypes.Range}
 
 {include 0 Manual.BasicTypes.Maps}
 

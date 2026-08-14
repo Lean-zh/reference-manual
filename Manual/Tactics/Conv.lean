@@ -84,28 +84,28 @@ tag := "conv-control"
 %%%
 
 
-:::conv first show := "first"
+:::conv first (show := "first")
 :::
 
-:::conv convTry_ show := "try"
+:::conv convTry_ (show := "try")
 :::
 
-:::conv «conv_<;>_» (show:="<;>") (allowMissing := true)
+:::conv «conv_<;>_» (show:="<;>") +allowMissing
 :::
 
-:::conv convRepeat_ show := "repeat"
+:::conv convRepeat_ (show := "repeat")
 :::
 
-:::conv skip show:= "skip"
+:::conv skip (show := "skip")
 :::
 
-:::conv nestedConv show:= "{ ... }"
+:::conv nestedConv (show := "{ ... }")
 :::
 
-:::conv paren show:= "( ... )"
+:::conv paren (show := "( ... )")
 :::
 
-:::conv convDone show:= "done"
+:::conv convDone (show := "done")
 :::
 
 # Goal Selection
@@ -114,31 +114,29 @@ tag := "conv-goals"
 %%%
 
 
-:::conv allGoals show:= "all_goals"
+:::conv allGoals (show := "all_goals")
 :::
 
-:::conv anyGoals show:= "any_goals"
+:::conv anyGoals (show := "any_goals")
 :::
 
-:::conv case show:= "case ... => ..."
+:::conv case (show := "case ... => ...")
 :::
 
-:::conv case' show:= "case' ... => ..."
+:::conv case' (show := "case' ... => ...")
 :::
 
-:::conv «convNext__=>_» show:= "next ... => ..."
+:::conv «convNext__=>_» (show := "next ... => ...")
 :::
 
-:::conv focus show := "focus"
+:::conv focus (show := "focus")
 :::
 
-:::conv «conv·._» show := ". ..."
+:::conv «conv·_» (show := "· ...")
 :::
 
-:::conv «conv·._» show := "· ..."
-:::
 
-:::conv failIfSuccess show := "fail_if_success"
+:::conv failIfSuccess (show := "fail_if_success")
 :::
 
 
@@ -148,19 +146,19 @@ tag := "conv-nav"
 %%%
 
 
-:::conv lhs show:= "lhs"
+:::conv lhs (show := "lhs")
 :::
 
-:::conv rhs show:= "rhs"
+:::conv rhs (show := "rhs")
 :::
 
-:::conv fun show:= "fun"
+:::conv fun (show := "fun")
 :::
 
-:::conv congr show:= "congr"
+:::conv congr (show := "congr")
 :::
 
-:::conv arg show:= "arg [@]i"
+:::conv arg (show := "arg [@]i")
 :::
 
 :::syntax Lean.Parser.Tactic.Conv.enterArg (title := "Arguments to {keyword}`enter`")
@@ -175,26 +173,26 @@ $x:ident
 ```
 :::
 
-:::conv enter show := "enter"
+:::conv enter (show := "enter")
 :::
 
 
-:::conv pattern show:= "pattern"
+:::conv pattern (show := "pattern")
 :::
 
-:::conv ext show:= "ext"
+:::conv ext (show := "ext")
 :::
 
-:::conv convArgs show := "args"
+:::conv convArgs (show := "args")
 :::
 
-:::conv convLeft show := "left"
+:::conv convLeft (show := "left")
 :::
 
-:::conv convRight show := "right"
+:::conv convRight (show := "right")
 :::
 
-:::conv convIntro___ show := "intro"
+:::conv convIntro___ (show := "intro")
 :::
 
 # Changing the Goal
@@ -207,20 +205,57 @@ tag := "conv-change"
 tag := "conv-reduction"
 %%%
 
-
-:::conv whnf show:= "whnf"
+:::conv cbv (show := "cbv")
 :::
 
-:::conv reduce show:= "reduce"
+:::example "The `cbv` Tactic"
+The {conv}`cbv` tactic can be used to reduce functions, including ones that are defined via {ref "well-founded-recursion"}[well-founded recursion], which are otherwise irreducible.
+Ordinarily, {name}`f` is only propositionally equal to its unfolding, so {tactic}`rfl` can't prove the equality {lean}`f 5 = 5`:
+```lean
+def f (n : Nat) :=
+  match n with
+  | 0 => 0
+  | n + 1 => f n + 1
+termination_by (n,0)
+```
+```lean +error (name := nonEq)
+example : f 5 = 5 := by rfl
+```
+```leanOutput nonEq
+Tactic `rfl` failed: The left-hand side
+  f 5
+is not definitionally equal to the right-hand side
+  5
+
+⊢ f 5 = 5
+```
+Using {conv}`cbv` on the left-hand side of the equality, the statement can be made true:
+```lean -show
+-- The `cbv` tactic is presently experimental, and a warning is issued when it is used.
+-- This option disables the warning:
+set_option cbv.warning false
+```
+```lean
+example : f 5 = 5 := by
+  conv =>
+    lhs
+    cbv
+```
 :::
 
-:::conv zeta show:= "zeta"
+:::conv whnf (show := "whnf")
 :::
 
-:::conv delta show:= "delta"
+:::conv reduce (show := "reduce")
 :::
 
-:::conv unfold show:= "unfold"
+:::conv zeta (show := "zeta")
+:::
+
+:::conv delta (show := "delta")
+:::
+
+:::conv unfold (show := "unfold")
 :::
 
 ## Simplification
@@ -228,13 +263,13 @@ tag := "conv-reduction"
 tag := "conv-simp"
 %%%
 
-:::conv simp show:= "simp"
+:::conv simp (show := "simp")
 :::
 
-:::conv dsimp show:= "dsimp"
+:::conv dsimp (show := "dsimp")
 :::
 
-:::conv simpMatch show:= "simp_match"
+:::conv simpMatch (show := "simp_match")
 :::
 
 ## Rewriting
@@ -242,19 +277,19 @@ tag := "conv-simp"
 tag := "conv-rw"
 %%%
 
-:::conv change show:= "change"
+:::conv change (show := "change")
 :::
 
-:::conv rewrite show:= "rewrite"
+:::conv rewrite (show := "rewrite")
 :::
 
-:::conv convRw__ show := "rw"
+:::conv convRw__ (show := "rw")
 :::
 
-:::conv convErw__ show := "erw"
+:::conv convErw__ (show := "erw")
 :::
 
-:::conv convApply_ show := "apply"
+:::conv convApply_ (show := "apply")
 :::
 
 # Nested Tactics
@@ -266,16 +301,16 @@ tag := "conv-nested"
 :::tactic Lean.Parser.Tactic.Conv.convTactic
 :::
 
-:::conv nestedTactic show:= "tactic"
+:::conv nestedTactic (show := "tactic")
 :::
 
-:::conv nestedTacticCore show:= "tactic'"
+:::conv nestedTacticCore (show := "tactic'")
 :::
 
-:::tactic Lean.Parser.Tactic.Conv.convTactic show:= "conv'"
+:::tactic Lean.Parser.Tactic.Conv.convTactic (show := "conv'")
 :::
 
-:::conv convConvSeq show := "conv => ..."
+:::conv convConvSeq (show := "conv => ...")
 :::
 
 
@@ -284,7 +319,7 @@ tag := "conv-nested"
 tag := "conv-debug"
 %%%
 
-:::conv convTrace_state show:= "trace_state"
+:::conv convTrace_state (show := "trace_state")
 :::
 
 
@@ -293,8 +328,8 @@ tag := "conv-debug"
 tag := "conv-other"
 %%%
 
-:::conv convRfl show:= "rfl"
+:::conv convRfl (show := "rfl")
 :::
 
-:::conv normCast show := "norm_cast"
+:::conv normCast (show := "norm_cast")
 :::

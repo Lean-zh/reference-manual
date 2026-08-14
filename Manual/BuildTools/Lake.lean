@@ -66,20 +66,57 @@ Dependencies and artifacts do not need to be present for a directory to be consi
 Lake is typically used in a workspace.{margin}[{lake}`init` and {lake}`new`, which create workspaces, are exceptions.]
 Workspaces typically have the following layout:
 
- * `lean-toolchain` - The {tech}[toolchain file].
- * `lakefile.toml` or `lakefile.lean` - The {tech}[package configuration] file for the root package.
- * `lake-manifest.json` - The root package's {tech}[manifest].
- * `.lake/` - Intermediate state managed by Lake, such as built {tech}[artifacts] and dependency source code.
-   * `.lake/lakefile.olean` - The root package's configuration, cached.
-   * `.lake/packages/` - The workspace's {deftech}_package directory_, which contains copies of all non-local transitive dependencies of the root package, with their built artifacts in their own `.lake` directories.
-   * `.lake/build/` - The {deftech}_build directory_, which contains built artifacts for the root package:
-     * `.lake/build/bin` - The package's {deftech}_binary directory_, which contains built executables.
-     * `.lake/build/lib` - The package's _library directory_, which contains built libraries and {tech}[`.olean` files].
-     * `.lake/build/ir` - The package's intermediate result directory, which contains generated intermediate artifacts, primarily C code.
+ * `lean-toolchain`: The {tech}[toolchain file].
+ * `lakefile.toml` or `lakefile.lean`: The {tech}[package configuration] file for the root package.
+ * `lake-manifest.json`: The root package's {tech}[manifest].
+ * `.lake/`: Intermediate state managed by Lake, such as built {tech}[artifacts] and dependency source code.
+   * `.lake/lakefile.olean`: The root package's configuration, cached.
+   * `.lake/packages/`: The workspace's {deftech}_package directory_, which contains copies of all non-local transitive dependencies of the root package, with their built artifacts in their own `.lake` directories.
+   * `.lake/build/`: The {deftech}_build directory_, which contains built artifacts for the root package:
+     * `.lake/build/bin`: The package's {deftech}_binary directory_, which contains built executables.
+     * `.lake/build/lib`: The package's _library directory_, which contains built libraries and {tech}[`.olean` files].
+     * `.lake/build/ir`: The package's intermediate result directory, which contains generated intermediate artifacts, primarily C code.
 :::
 
 :::figure "Workspace Layout" (tag :="workspace-layout")
-![Lake Workspaces](/static/figures/lake-workspace.svg)
+```diagram
+open Illuminate in
+  let txt (s : String) (size : Float := 10) : Diagram SVG :=
+    .text s { fontSize := size, anchor := TextAnchor.start }
+  let bold (s : String) (size : Float := 11) : Diagram SVG :=
+    .text s { fontSize := size, bold := true, anchor := TextAnchor.start }
+  let mono (s : String) (size : Float := 10) : Diagram SVG :=
+    .text s { fontSize := size, fontFamily := "monospace", anchor := TextAnchor.start }
+  let items (ss : List String) (size : Float := 10) : Diagram SVG :=
+    Diagram.vsep 3 (ss.map fun s => txt s size) (align := .left)
+  let borderedBox (title : String) (content : Diagram SVG)
+      (titleSize : Float := 11) (pad : Float := 8) : Diagram SVG :=
+    Diagram.vsep 4 [bold title titleSize, content] (align := .left)
+      |>.pad pad |>.frame (padding := 2) (cornerRadius := 4)
+
+  let toolchain := mono "lean-toolchain"
+  let rootPkg := borderedBox "Root package" <|
+    items [
+      "Package configuration file (lakefile.lean)",
+      "Libraries",
+      "Executables",
+      "Manifest (lake-manifest.json)"
+    ]
+  let depItems := items ["Package configuration file", "Libraries", "Executables", "Artifacts"] 8
+  let dep1 := borderedBox "Dependency 1" depItems 9 6
+  let dep2 := borderedBox "Dependency 2" depItems 9 6
+  let dots : Diagram SVG := .text "⋯" { fontSize := 14 }
+  let packages := borderedBox "Packages" <|
+    Diagram.vsep 8 [Diagram.hsep 12 [dep1, dep2], dots] (align := .left)
+  let artifacts := borderedBox "Artifacts" <|
+    items ["Built libraries", "Built executables"]
+  let lakeDir := borderedBox "Lake Directory (.lake)" <|
+    Diagram.vsep 10 [packages, artifacts] (align := .left)
+  borderedBox "Workspace" <|
+    Diagram.vsep 10 [toolchain, rootPkg, lakeDir] (align := .left)
+
+
+```
 :::
 
 :::paragraph
@@ -128,6 +165,81 @@ By default, trace messages are hidden and the others are shown.
 The threshold can be adjusted using the {lakeOpt}`--log-level` option, the {lakeOpt}`--verbose` flag, or the {lakeOpt}`--quiet` flag.
 :::
 
+## Package  Overrides
+%%%
+tag := "package-overrides"
+%%%
+
+Together, the {tech}[package configuration] and {tech}[manifest] describe the exact manner by which Lake expects to acquire dependencies.
+Usually, this involves making a local copy of a remote Git repository over the network.
+Lake terminates with an error if the remote repository cannot be accessed.
+Because the sources of dependencies are predictable, builds are reproducible across systems; packages are retrieved in the same way from the same sources on all machines.
+
+Nonetheless, there are situations where it is infeasible to acquire package dependencies the same way the original developers did.
+For example, some companies require that all dependencies are audited prior to use, and not everyone always has access to the Internet while working.
+In these situations, it is necessary to acquire packages in some other way.
+
+Lake's {deftech}_package overrides_ allow a package dependency to be redirected from one source to another without modifying any {tech}[package configurations] or {tech}[manifests].
+They do not allow packages to be added to or removed from the {tech}[workspace].
+All transitive dependencies in the workspace respect the redirection.
+The package overrides file is a JSON file that contains an alternate list of package entries.
+These entries will take precedence over those in the package's {tech}[manifest].
+This file can be provided to Lake either via the {lakeOpt}`--packages` option or by placing it at a fixed path within the Lake workspace: `.lake/package-overrides.json`.
+
+The syntax of package entries in the package overrides file mirrors that of the {tech}[manifest].
+Thus, it is possible to copy an entry from a manifest into a package overrides file (and vice versa).
+One way to determine the necessary syntax for a package entry is to add a temporary dependency to a {tech}[package configuration] that matches the desired configuration, run {lake}`update` to generate a manifest with that dependency, and then copy the entry from the manifest into the package overrides file.
+
+:::example "Making Remote Dependencies Local"
+
+Consider a use case where programs are being developed in a restricted enviroment without network access (e.g., for security reasons).
+The team wishes to compile a small tool written in Lean that depends on the [`@leanprover/Cli`](https://reservoir.lean-lang.org/@leanprover/Cli) library to provide a simple command-line interface.
+That tool's {tech}[manifest] thus looks something like this:
+
+```lakeManifest
+{
+  "version": "1.2.0",
+  "packagesDir": ".lake/packages",
+  "packages": [{
+    "url": "https://github.com/leanprover/lean4-cli",
+    "type": "git",
+    "subDir": null,
+    "scope": "leanprover",
+    "rev": "0000000000000000000000000000000000000000",
+    "name": "Cli",
+    "manifestFile": "lake-manifest.json",
+    "inputRev": null,
+    "inherited": false,
+    "configFile": "lakefile.toml"
+  }],
+  "name": "myTool",
+  "lakeDir": ".lake",
+  "fixedToolchain": false
+}
+```
+
+This manifest would instruct Lake to download the `Cli` package from the indicated GitHub URL when building this tool.
+However, the restricted environment does not have network access, so the build will fail unless Lake uses a local copy instead.
+This can be done with the following {tech}[package overrides] file:
+
+```lakePackageOverrides
+{
+  "version": "1.2.0",
+  "packages": [{
+    "type": "path",
+    "dir": "/etc/lean-packages/Cli",
+    "name": "Cli",
+    "manifestFile": "lake-manifest.json",
+    "inherited": false,
+    "configFile": "lakefile.toml"
+  }]
+}
+```
+
+With this, Lake will instead resolve the `Cli` dependency to the local package located at the path `/etc/lean-packages/Cli`.
+
+:::
+
 ## Builds
 
 :::paragraph
@@ -135,7 +247,7 @@ Producing a desired {tech}[artifact], such as a {tech}[`.olean` file] or an exec
 Builds are triggered by the {lake}`build` command or by other commands that require an artifact to be present, such as {lake}`exe`.
 A build consists of the following steps:
 
-: {deftech key:="configure package"}[Configuring] the package
+: {deftech (key := "configure package")}[Configuring] the package
 
   If {tech}[package configuration] file is newer than the cached configuration file `lakefile.olean`, then the package configuration is re-elaborated.
   This also occurs when the cached file is missing or when the {lakeOpt}`--reconfigure` or {lakeOpt}`-R` flag is provided.
@@ -155,7 +267,7 @@ A build consists of the following steps:
   During a build, Lake records which source files or other artifacts were used to produce each artifact, saving a hash of each input; these {deftech}_traces_ are saved in the {tech}[build directory].{margin}[More specifically, each artifact's trace file contains a Merkle tree hash mixture of its inputs' hashes.]
   If the inputs are all unmodified, then the corresponding artifact is not rebuilt.
   Trace files additionally record the {tech}[log] from each build task; these outputs are replayed as if the artifact had been built anew.
-  Re-using prior build products when possible is called an {deftech}_incremental build_.
+  Reusing prior build products when possible is called an {deftech}_incremental build_.
 
 : Building artifacts
 
@@ -199,7 +311,7 @@ Lake's internal API may be used to write custom facets.
 Build targets
 
 USAGE:
-  lake build [<targets>...]
+  lake build [<targets>...] [-o <mappings>]
 
 A target is specified with a string of the form:
 
@@ -241,8 +353,14 @@ TARGET EXAMPLES:        build the ...
   @a/+A:c               C file of module `A` of package `a`
   :foo                  facet `foo` of the root package
 
-A bare `lake build` command will build the default target(s) of the root package.
-Package dependencies are not updated during a build.
+A bare `lake build` command will build the default target(s) of the root
+package. Package dependencies are not updated during a build.
+
+With the Lake cache enabled, the `-o` option will cause Lake to track the
+input-to-outputs mappings of targets in the root package touched during the
+build and write them to the specified file at the end of the build. These
+mappings can then be used to upload build artifacts to a remote cache with
+`lake cache put`.
 ```
 
 
@@ -250,7 +368,7 @@ Package dependencies are not updated during a build.
 
 The facets available for packages are:
 
-```lean (show := false)
+```lean -show
 -- Always keep this in sync with the description below. It ensures that the list is complete.
 /--
 info: #[`package.barrel, `package.cache, `package.deps, `package.extraDep, `package.optBarrel, `package.optCache,
@@ -305,7 +423,7 @@ info: #[`package.barrel, `package.cache, `package.deps, `package.extraDep, `pack
 
 ::::
 
-```lean (show := false)
+```lean -show
 -- Always keep this in sync with the description below. It ensures that the list is complete.
 /--
 info: [`lean_lib.extraDep, `lean_lib.leanArts, `lean_lib.static.export, `lean_lib.shared, `lean_lib.modules, `lean_lib.static,
@@ -321,7 +439,7 @@ The facets available for libraries are:
 
 : `leanArts`
 
-  The artifacts that the Lean compiler produces for the library or executable ({tech key:=".olean files"}`*.olean`, `*.ilean`, and `*.c` files).
+  The artifacts that the Lean compiler produces for the library or executable ({tech (key := ".olean files")}`*.olean`, `*.ilean`, and `*.c` files).
 
 : `static`
 
@@ -347,39 +465,91 @@ Executables have a single `exe` facet that consists of the executable binary.
 
 :::
 
-```lean (show := false)
+```lean -show
 -- Always keep this in sync with the description below. It ensures that the list is complete.
 /--
-info: #[`module.bc, `module.bc.o, `module.c, `module.c.o, `module.c.o.export, `module.c.o.noexport, `module.deps,
-  `module.dynlib, `module.ilean, `module.imports, `module.leanArts, `module.o, `module.o.export, `module.o.noexport,
-  `module.olean, `module.precompileImports, `module.transImports]
+info: module.bc
+module.bc.o
+module.c
+module.c.o
+module.c.o.export
+module.c.o.noexport
+module.depHash
+module.depTrace
+module.deps
+module.dynlib
+module.exportInfo
+module.header
+module.ilean
+module.importAllArts
+module.importArts
+module.importInfo
+module.imports
+module.input
+module.ir
+module.ir.sig
+module.lean
+module.leanArts
+module.linkInfoExport
+module.linkInfoNoExport
+module.ltar
+module.o
+module.o.export
+module.o.noexport
+module.olean
+module.olean.private
+module.olean.server
+module.precompileImports
+module.presetup
+module.setup
+module.transImports
 -/
 #guard_msgs in
-#eval Lake.initModuleFacetConfigs.toList.toArray.map (·.1) |>.qsort (·.toString < ·.toString)
+#eval Lake.initModuleFacetConfigs.toList.toArray.map (·.1) |>.qsort (·.toString < ·.toString) |>.forM (IO.println)
 ```
 
 :::paragraph
 The facets available for modules are:
 
+: `lean`
+
+  The module's Lean source file.
+
 : `leanArts` (default)
 
- The module's Lean artifacts (`*.olean`, `*.ilean`, `*.c` files)
+ The module's Lean artifacts (`*.olean`, `*.ilean`, `*.c` files).
 
 : `deps`
 
   The module's dependencies (e.g., imports or shared libraries).
 
+: `depHash`
+
+  A hash of a module's build dependencies (e.g., imports, source, plugins).
+
+: `depTrace`
+
+  A Lake build trace data structure (i.e., composite hash and modification time) of a module's build dependencies (e.g., imports, source, plugins).
+
 : `olean`
 
- The module's {tech}[`.olean` file]
+ The module's {tech}[`.olean` file]. {TODO}[Once module system lands fully, add docs for `olean.private` and `olean.server`]
 
 : `ilean`
 
- The module's `.ilean` file, which is metadata used by the Lean language server
+ The module's `.ilean` file, which is metadata used by the Lean language server.
+
+: `header`
+
+  The parsed module header of the module's source file.
+
+: `input`
+
+  The module's processed Lean source file. Combines tracing the file with parsing its header.
 
 : `imports`
 
-  The immediate imports of the Lean module, but not the full set of transitive imports.
+  The immediate imports of the Lean module, but not the full set of transitive imports. {TODO}[Once the module system lands fully, add docs here for `module.importAllArts`, `module.importArts`]
 
 : `precompileImports`
 
@@ -389,13 +559,31 @@ The facets available for modules are:
 
   The transitive imports of the Lean module, as {tech}[`.olean` files].
 
+: `allImports`
+
+  Both the immediate and transitive imports of the Lean module.
+
+: `setup`
+
+  All of a module's dependencies: transitive local imports and shared libraries to be loaded with `--load-dynlib`.
+  Returns the list of shared libraries to load along with their search path.
+
+: `ir`
+
+  The `.ir` file produced for modules that use the {ref "module-structure"}[module system].
+
+
+: `ir.sig`
+
+  The `.ir.sig` file produced for modules that use the {ref "module-structure"}[module system].
+
 : `c`
 
- The C file produced by the Lean compiler
+ The C file produced by the Lean compiler.
 
 : `bc`
 
- LLVM bitcode file, produced by the Lean compiler
+ LLVM bitcode file, produced by the Lean compiler.
 
 : `c.o`
 
@@ -407,19 +595,31 @@ The facets available for modules are:
 
 : `c.o.noexport`
 
- The compiled object file, produced from the C file, with Lean symbols exported.
+ The compiled object file, produced from the C file, without Lean symbols exported.
 
 : `bc.o`
 
- The compiled object file, produced from the LLVM bitcode file
+ The compiled object file, produced from the LLVM bitcode file.
 
 : `o`
 
- The compiled object file for the configured backend
+ The compiled object file for the configured backend.
 
 : `dynlib`
 
-  A shared library (e.g., for the Lean option `--load-dynlib`){TODO}[Document Lean command line options, and cross-reference from here]
+  A shared library (e.g., for the Lean option `--load-dynlib`){TODO}[Document Lean command line options, and cross-reference from here].
+
+: `ltar`
+
+  A compressed archive (produced via `leantar`) of the module's build artifacts. {TODO}[Document `leantar` in the manual as well]
+
+: `linkInfoExport`
+
+  A structured representation of the linker arguments, static objects, and dynamic libraries needed to link a module and its dependencies. Objects have Lean symbols exported.
+
+: `linkInfoNoExport`
+
+  A structured representation of the linker arguments, static objects, and dynamic libraries needed to link a module and its dependencies. Objects do not Lean symbols exported.
 
 :::
 
@@ -438,8 +638,8 @@ Because they are Lean definitions, Lake scripts can only be defined in the Lean 
 
 Restore the following once we can import enough of Lake to elaborate it
 
-`````
-```lean (show := false)
+````
+```lean -show
 section
 open Lake DSL
 ```
@@ -463,10 +663,10 @@ script "list-deps" := do
 ```
 :::
 
-```lean (show := false)
+```lean -show
 end
 ```
-`````
+````
 
 :::::
 
@@ -475,17 +675,753 @@ end
 tag := "test-lint-drivers"
 %%%
 
-A {deftech}_test driver_ is responsible for running the tests for a package.
-Test drivers may be executable targets or {tech}[Lake scripts], in which case the {lake}`test` command runs them, or they may be libraries, in which case {lake}`test` causes them to be elaborated, with the expectation that test failures are registered as elaboration failures.
+A {deftech}_test driver_ runs the tests for a package.
+It can be an executable target, a {tech}[Lake script], or a library.
+Lake itself isn't a test framework: the {lake}`test` command just locates the configured target, builds it, and (for executables and scripts) runs it.
+Library drivers are exercised purely by elaboration, so they aren't run as a separate step.
+Assertions, test discovery, and reporting are up to the target itself, whether that's a third-party testing library or hand-written checks.
 
-Similarly, a {deftech}_lint driver_ is responsible for checking the code for stylistic issues.
-Lint drivers may be executables or scripts, which are run by {lake}`lint`.
+For executables and scripts, Lake treats a nonzero exit code as a test failure.
+For libraries, any elaboration error counts as a test failure, including failures of {keyword}`#guard`-style commands.
 
-A test or lint driver can be configured by either setting the {tomlField Lake.PackageConfig}`testDriver` or {tomlField Lake.PackageConfig}`lintDriver` package configuration options or by tagging a script, executable, or library with the `test_driver` or `lint_driver` attribute in a Lean-format configuration file.
-A definition in a dependency can be used as a test or lint driver by using the `<pkg>/<name>` syntax for the appropriate configuration option.
-:::TODO
-Restore the ``{attr}`` role for `test_driver` and `lint_driver` above. Right now, importing the attributes crashes the compiler.
+A {deftech}_lint driver_ is similar, but it's run by {lake}`lint` and checks the package for stylistic issues and other problems that aren't _errors_ but indicate likely problems.
+Lint drivers can only be executables or scripts, not libraries.
+
+### Configuring a Test Driver
+%%%
+tag := "lake-test-driver-config"
+%%%
+
+In a `lakefile.toml`, set {tomlField Lake.PackageConfig}`testDriver` to the name of an executable target, library target, or script defined in the same configuration:
+
+:::::example "Test Driver (`lakefile.toml`)"
+
+::::lakeToml Lake.PackageConfig _root_
+```toml
+name = "my-package"
+testDriver = "my-package-tests"
+
+[[lean_exe]]
+name = "my-package-tests"
+root = "Tests"
+```
+```expected
+{wsIdx := 0,
+  baseName := `«my-package»,
+  keyName := `«my-package»,
+  origName := `«my-package»,
+  dir := FilePath.mk ".",
+  relDir := FilePath.mk ".",
+  config :=
+    {toWorkspaceConfig := { packagesDir := FilePath.mk ".lake/packages" },
+      toLeanConfig :=
+        { buildType := Lake.BuildType.release,
+          leanOptions := #[],
+          moreLeanArgs := #[],
+          weakLeanArgs := #[],
+          moreLeancArgs := #[],
+          moreServerOptions := #[],
+          weakLeancArgs := #[],
+          moreLinkObjs := #[],
+          moreLinkLibs := #[],
+          moreLinkArgs := #[],
+          weakLinkArgs := #[],
+          backend := Lake.Backend.default,
+          platformIndependent := none,
+          dynlibs := #[],
+          plugins := #[],
+          requiresModuleSystem := false,
+          allowNonModules := false },
+      bootstrap := false,
+      extraDepTargets := #[],
+      precompileModules := false,
+      moreGlobalServerArgs := #[],
+      srcDir := FilePath.mk ".",
+      buildDir := FilePath.mk ".lake/build",
+      leanLibDir := FilePath.mk "lib/lean",
+      nativeLibDir := FilePath.mk "lib",
+      binDir := FilePath.mk "bin",
+      irDir := FilePath.mk "ir",
+      releaseRepo := none,
+      buildArchive := ELIDED,
+      preferReleaseBuild := false,
+      testDriver := "my-package-tests",
+      testDriverArgs := #[],
+      lintDriver := "",
+      lintDriverArgs := #[],
+      version := { toSemVerCore := { major := 0, minor := 0, patch := 0 }, specialDescr := "" },
+      versionTags := { filter := #<fun>, name := `default, descr? := none},
+      description := "",
+      keywords := #[],
+      homepage := "",
+      license := "",
+      licenseFiles := #[FilePath.mk "LICENSE"],
+      readmeFile := FilePath.mk "README.md",
+      reservoir := true,
+      enableArtifactCache? := none,
+      restoreAllArtifacts? := none,
+      libPrefixOnWindows := false,
+      allowImportAll := false,
+      builtinLint? := none,
+      fixedToolchain := false},
+  configFile := FilePath.mk "lakefile",
+  relConfigFile := FilePath.mk "lakefile",
+  relManifestFile := FilePath.mk "lake-manifest.json",
+  scope := "",
+  remoteUrl := "",
+  depConfigs := #[],
+  depIdxs := #[],
+  depPkgs := #[],
+  targetDecls :=
+    #[{toConfigDecl :=
+          {pkg := `«my-package»,
+            name := `«my-package-tests»,
+            kind := `lean_exe,
+            config :=
+              {toLeanConfig :=
+                  { buildType := Lake.BuildType.release,
+                    leanOptions := #[],
+                    moreLeanArgs := #[],
+                    weakLeanArgs := #[],
+                    moreLeancArgs := #[],
+                    moreServerOptions := #[],
+                    weakLeancArgs := #[],
+                    moreLinkObjs := #[],
+                    moreLinkLibs := #[],
+                    moreLinkArgs := #[],
+                    weakLinkArgs := #[],
+                    backend := Lake.Backend.default,
+                    platformIndependent := none,
+                    dynlibs := #[],
+                    plugins := #[],
+                    requiresModuleSystem := false,
+                    allowNonModules := false },
+                srcDir := FilePath.mk ".",
+                root := `Tests,
+                exeName := "my-package-tests",
+                needs := #[],
+                extraDepTargets := #[],
+                supportInterpreter := false,
+                nativeFacets := #<fun>},
+            wf_data := …},
+        pkg_eq := …}],
+  targetDeclMap :=
+    {`«my-package-tests» ↦
+        {toPConfigDecl :=
+            {toConfigDecl :=
+                {pkg := `«my-package»,
+                  name := `«my-package-tests»,
+                  kind := `lean_exe,
+                  config :=
+                    {toLeanConfig :=
+                        { buildType := Lake.BuildType.release,
+                          leanOptions := #[],
+                          moreLeanArgs := #[],
+                          weakLeanArgs := #[],
+                          moreLeancArgs := #[],
+                          moreServerOptions := #[],
+                          weakLeancArgs := #[],
+                          moreLinkObjs := #[],
+                          moreLinkLibs := #[],
+                          moreLinkArgs := #[],
+                          weakLinkArgs := #[],
+                          backend := Lake.Backend.default,
+                          platformIndependent := none,
+                          dynlibs := #[],
+                          plugins := #[],
+                          requiresModuleSystem := false,
+                          allowNonModules := false },
+                      srcDir := FilePath.mk ".",
+                      root := `Tests,
+                      exeName := "my-package-tests",
+                      needs := #[],
+                      extraDepTargets := #[],
+                      supportInterpreter := false,
+                      nativeFacets := #<fun>},
+                  wf_data := …},
+              pkg_eq := …},
+          name_eq := …},
+      },
+  defaultTargets := #[],
+  scripts := {},
+  defaultScripts := #[],
+  postUpdateHooks := #[],
+  buildArchive := ELIDED,
+  testDriver := "my-package-tests",
+  lintDriver := ""}
+```
+::::
+:::::
+
+In a `lakefile.lean`, either set the {name Lake.Package.testDriver}`testDriver` field on the {keyword}`package` declaration (as above), or tag a script, executable, or library declaration with the {attr}`test_driver` attribute.
+The attribute form is often convenient because it places the marker next to the target.
+
+:::::example "Test Driver (`lakefile.lean`)"
+
+::::lakeLean
+```lean
+import Lake
+open Lake DSL
+
+package «my-package» where
+  testDriver := "my-package-tests"
+
+lean_exe «my-package-tests» where
+  root := `Tests
+```
+```expected
+{wsIdx := 0,
+  baseName := `«my-package»,
+  keyName := Lean.Name.mkNum `«my-package» 0,
+  origName := `«my-package»,
+  dir := FilePath.mk ".",
+  relDir := FilePath.mk ".",
+  config :=
+    {toWorkspaceConfig := { packagesDir := FilePath.mk ".lake/packages" },
+      toLeanConfig :=
+        { buildType := Lake.BuildType.release,
+          leanOptions := #[],
+          moreLeanArgs := #[],
+          weakLeanArgs := #[],
+          moreLeancArgs := #[],
+          moreServerOptions := #[],
+          weakLeancArgs := #[],
+          moreLinkObjs := #[],
+          moreLinkLibs := #[],
+          moreLinkArgs := #[],
+          weakLinkArgs := #[],
+          backend := Lake.Backend.default,
+          platformIndependent := none,
+          dynlibs := #[],
+          plugins := #[],
+          requiresModuleSystem := false,
+          allowNonModules := false },
+      bootstrap := false,
+      extraDepTargets := #[],
+      precompileModules := false,
+      moreGlobalServerArgs := #[],
+      srcDir := FilePath.mk ".",
+      buildDir := FilePath.mk ".lake/build",
+      leanLibDir := FilePath.mk "lib/lean",
+      nativeLibDir := FilePath.mk "lib",
+      binDir := FilePath.mk "bin",
+      irDir := FilePath.mk "ir",
+      releaseRepo := none,
+      buildArchive := ELIDED,
+      preferReleaseBuild := false,
+      testDriver := "my-package-tests",
+      testDriverArgs := #[],
+      lintDriver := "",
+      lintDriverArgs := #[],
+      version := { toSemVerCore := { major := 0, minor := 0, patch := 0 }, specialDescr := "" },
+      versionTags := { filter := #<fun>, name := `default, descr? := none},
+      description := "",
+      keywords := #[],
+      homepage := "",
+      license := "",
+      licenseFiles := #[FilePath.mk "LICENSE"],
+      readmeFile := FilePath.mk "README.md",
+      reservoir := true,
+      enableArtifactCache? := none,
+      restoreAllArtifacts? := none,
+      libPrefixOnWindows := false,
+      allowImportAll := false,
+      builtinLint? := none,
+      fixedToolchain := false},
+  configFile := FilePath.mk "lakefile.lean",
+  relConfigFile := FilePath.mk "lakefile.lean",
+  relManifestFile := FilePath.mk "lake-manifest.json",
+  scope := "",
+  remoteUrl := "",
+  depConfigs := #[],
+  depIdxs := #[],
+  depPkgs := #[],
+  targetDecls :=
+    #[{toConfigDecl :=
+          {pkg := Lean.Name.mkNum `«my-package» 0,
+            name := `«my-package-tests»,
+            kind := `lean_exe,
+            config :=
+              {toLeanConfig :=
+                  { buildType := Lake.BuildType.release,
+                    leanOptions := #[],
+                    moreLeanArgs := #[],
+                    weakLeanArgs := #[],
+                    moreLeancArgs := #[],
+                    moreServerOptions := #[],
+                    weakLeancArgs := #[],
+                    moreLinkObjs := #[],
+                    moreLinkLibs := #[],
+                    moreLinkArgs := #[],
+                    weakLinkArgs := #[],
+                    backend := Lake.Backend.default,
+                    platformIndependent := none,
+                    dynlibs := #[],
+                    plugins := #[],
+                    requiresModuleSystem := false,
+                    allowNonModules := false },
+                srcDir := FilePath.mk ".",
+                root := `Tests,
+                exeName := "my-package-tests",
+                needs := #[],
+                extraDepTargets := #[],
+                supportInterpreter := false,
+                nativeFacets := #<fun>},
+            wf_data := …},
+        pkg_eq := …}],
+  targetDeclMap :=
+    {`«my-package-tests» ↦
+        {toPConfigDecl :=
+            {toConfigDecl :=
+                {pkg := Lean.Name.mkNum `«my-package» 0,
+                  name := `«my-package-tests»,
+                  kind := `lean_exe,
+                  config :=
+                    {toLeanConfig :=
+                        { buildType := Lake.BuildType.release,
+                          leanOptions := #[],
+                          moreLeanArgs := #[],
+                          weakLeanArgs := #[],
+                          moreLeancArgs := #[],
+                          moreServerOptions := #[],
+                          weakLeancArgs := #[],
+                          moreLinkObjs := #[],
+                          moreLinkLibs := #[],
+                          moreLinkArgs := #[],
+                          weakLinkArgs := #[],
+                          backend := Lake.Backend.default,
+                          platformIndependent := none,
+                          dynlibs := #[],
+                          plugins := #[],
+                          requiresModuleSystem := false,
+                          allowNonModules := false },
+                      srcDir := FilePath.mk ".",
+                      root := `Tests,
+                      exeName := "my-package-tests",
+                      needs := #[],
+                      extraDepTargets := #[],
+                      supportInterpreter := false,
+                      nativeFacets := #<fun>},
+                  wf_data := …},
+              pkg_eq := …},
+          name_eq := …},
+      },
+  defaultTargets := #[],
+  scripts := {},
+  defaultScripts := #[],
+  postUpdateHooks := #[],
+  buildArchive := ELIDED,
+  testDriver := "my-package-tests",
+  lintDriver := ""}
+```
+::::
+:::::
+
+Only one declaration per package can be tagged with {attr}`test_driver`.
+It is an error to use both the {attr}`test_driver` attribute and a non-empty {name Lake.Package.testDriver}`testDriver` field in the same Lake configuration file.
+
+A test driver may also be a target in a package dependency that is transitively {tech (key:="require")}[required].
+To use a target from another package, use `<pkg>/<name>` as the value of `testDriver`, where `<pkg>` is the name of the package in which the target is found..
+
+### Running Tests
+%%%
+tag := "lake-test-running"
+%%%
+
+The {lake}`test` command runs the configured driver for the {tech}[root package] only.
+Test drivers for dependencies are not run.
+
+:::paragraph
+If the test driver is an executable or a script, Lake passes the arguments from {tomlField Lake.PackageConfig}`testDriverArgs` first, then anything after `--` on the command line.
+For example,
+
+```
+lake test -- --filter Foo --verbose
+```
+
+passes `--filter Foo --verbose` to the driver after whatever {tomlField Lake.PackageConfig}`testDriverArgs` is already configured.
+Lake builds executable drivers before running them.
 :::
+
+If the test driver is a library, arguments are not accepted.
+Lake reports an error if {tomlField Lake.PackageConfig}`testDriverArgs` is non-empty or if any arguments follow `--`.
+To run the tests, the library is just {tech (key:="Lean elaborator")}[elaborated].
+
+{lake}`check-test` terminates with exit code 0 (that is, successfully) if a test driver is configured for the root package.
+It doesn't check that the named target actually exists.
+
+### Lint Drivers
+%%%
+tag := "lake-lint-drivers"
+%%%
+
+Lint drivers are configured and run similarly to {ref "lake-test-driver-config"}[test drivers].
+The Lake configuration file specifies a target that serves as the lint driver, and {lake}`lint` runs it.
+This target must be an executable or a script; unlike test drivers, lint drivers may not be libraries.
+
+In a TOML-format Lake configuration file, the package-level field {tomlField Lake.PackageConfig}`lintDriver` specifies the name of the lint driver target.
+
+:::::example "Lint Driver (`lakefile.toml`)"
+This minimal `lakefile.toml` configures a lint driver:
+
+::::lakeToml Lake.PackageConfig _root_
+```toml
+name = "my-package"
+lintDriver = "my-package-lint"
+
+[[lean_exe]]
+name = "my-package-lint"
+root = "Lint"
+```
+```expected
+{wsIdx := 0,
+  baseName := `«my-package»,
+  keyName := `«my-package»,
+  origName := `«my-package»,
+  dir := FilePath.mk ".",
+  relDir := FilePath.mk ".",
+  config :=
+    {toWorkspaceConfig := { packagesDir := FilePath.mk ".lake/packages" },
+      toLeanConfig :=
+        { buildType := Lake.BuildType.release,
+          leanOptions := #[],
+          moreLeanArgs := #[],
+          weakLeanArgs := #[],
+          moreLeancArgs := #[],
+          moreServerOptions := #[],
+          weakLeancArgs := #[],
+          moreLinkObjs := #[],
+          moreLinkLibs := #[],
+          moreLinkArgs := #[],
+          weakLinkArgs := #[],
+          backend := Lake.Backend.default,
+          platformIndependent := none,
+          dynlibs := #[],
+          plugins := #[],
+          requiresModuleSystem := false,
+          allowNonModules := false },
+      bootstrap := false,
+      extraDepTargets := #[],
+      precompileModules := false,
+      moreGlobalServerArgs := #[],
+      srcDir := FilePath.mk ".",
+      buildDir := FilePath.mk ".lake/build",
+      leanLibDir := FilePath.mk "lib/lean",
+      nativeLibDir := FilePath.mk "lib",
+      binDir := FilePath.mk "bin",
+      irDir := FilePath.mk "ir",
+      releaseRepo := none,
+      buildArchive := ELIDED,
+      preferReleaseBuild := false,
+      testDriver := "",
+      testDriverArgs := #[],
+      lintDriver := "my-package-lint",
+      lintDriverArgs := #[],
+      version := { toSemVerCore := { major := 0, minor := 0, patch := 0 }, specialDescr := "" },
+      versionTags := { filter := #<fun>, name := `default, descr? := none},
+      description := "",
+      keywords := #[],
+      homepage := "",
+      license := "",
+      licenseFiles := #[FilePath.mk "LICENSE"],
+      readmeFile := FilePath.mk "README.md",
+      reservoir := true,
+      enableArtifactCache? := none,
+      restoreAllArtifacts? := none,
+      libPrefixOnWindows := false,
+      allowImportAll := false,
+      builtinLint? := none,
+      fixedToolchain := false},
+  configFile := FilePath.mk "lakefile",
+  relConfigFile := FilePath.mk "lakefile",
+  relManifestFile := FilePath.mk "lake-manifest.json",
+  scope := "",
+  remoteUrl := "",
+  depConfigs := #[],
+  depIdxs := #[],
+  depPkgs := #[],
+  targetDecls :=
+    #[{toConfigDecl :=
+          {pkg := `«my-package»,
+            name := `«my-package-lint»,
+            kind := `lean_exe,
+            config :=
+              {toLeanConfig :=
+                  { buildType := Lake.BuildType.release,
+                    leanOptions := #[],
+                    moreLeanArgs := #[],
+                    weakLeanArgs := #[],
+                    moreLeancArgs := #[],
+                    moreServerOptions := #[],
+                    weakLeancArgs := #[],
+                    moreLinkObjs := #[],
+                    moreLinkLibs := #[],
+                    moreLinkArgs := #[],
+                    weakLinkArgs := #[],
+                    backend := Lake.Backend.default,
+                    platformIndependent := none,
+                    dynlibs := #[],
+                    plugins := #[],
+                    requiresModuleSystem := false,
+                    allowNonModules := false },
+                srcDir := FilePath.mk ".",
+                root := `Lint,
+                exeName := "my-package-lint",
+                needs := #[],
+                extraDepTargets := #[],
+                supportInterpreter := false,
+                nativeFacets := #<fun>},
+            wf_data := …},
+        pkg_eq := …}],
+  targetDeclMap :=
+    {`«my-package-lint» ↦
+        {toPConfigDecl :=
+            {toConfigDecl :=
+                {pkg := `«my-package»,
+                  name := `«my-package-lint»,
+                  kind := `lean_exe,
+                  config :=
+                    {toLeanConfig :=
+                        { buildType := Lake.BuildType.release,
+                          leanOptions := #[],
+                          moreLeanArgs := #[],
+                          weakLeanArgs := #[],
+                          moreLeancArgs := #[],
+                          moreServerOptions := #[],
+                          weakLeancArgs := #[],
+                          moreLinkObjs := #[],
+                          moreLinkLibs := #[],
+                          moreLinkArgs := #[],
+                          weakLinkArgs := #[],
+                          backend := Lake.Backend.default,
+                          platformIndependent := none,
+                          dynlibs := #[],
+                          plugins := #[],
+                          requiresModuleSystem := false,
+                          allowNonModules := false },
+                      srcDir := FilePath.mk ".",
+                      root := `Lint,
+                      exeName := "my-package-lint",
+                      needs := #[],
+                      extraDepTargets := #[],
+                      supportInterpreter := false,
+                      nativeFacets := #<fun>},
+                  wf_data := …},
+              pkg_eq := …},
+          name_eq := …},
+      },
+  defaultTargets := #[],
+  scripts := {},
+  defaultScripts := #[],
+  postUpdateHooks := #[],
+  buildArchive := ELIDED,
+  testDriver := "",
+  lintDriver := "my-package-lint"}
+```
+::::
+:::::
+
+
+In a `lakefile.lean`, either set the {name Lake.Package.lintDriver}`lintDriver` field on the {keyword}`package` declaration, or tag a script or executable declaration with the {attr}`lint_driver` attribute.
+The attribute form is often convenient because it places the marker next to the target.
+
+:::::example "Lint Driver (`lakefile.lean`)"
+
+::::lakeLean
+```lean
+import Lake
+open Lake DSL
+
+package «my-package» where
+  lintDriver := "my-package-lint"
+
+lean_exe «my-package-lint» where
+  root := `Lint
+```
+```expected
+{wsIdx := 0,
+  baseName := `«my-package»,
+  keyName := Lean.Name.mkNum `«my-package» 0,
+  origName := `«my-package»,
+  dir := FilePath.mk ".",
+  relDir := FilePath.mk ".",
+  config :=
+    {toWorkspaceConfig := { packagesDir := FilePath.mk ".lake/packages" },
+      toLeanConfig :=
+        { buildType := Lake.BuildType.release,
+          leanOptions := #[],
+          moreLeanArgs := #[],
+          weakLeanArgs := #[],
+          moreLeancArgs := #[],
+          moreServerOptions := #[],
+          weakLeancArgs := #[],
+          moreLinkObjs := #[],
+          moreLinkLibs := #[],
+          moreLinkArgs := #[],
+          weakLinkArgs := #[],
+          backend := Lake.Backend.default,
+          platformIndependent := none,
+          dynlibs := #[],
+          plugins := #[],
+          requiresModuleSystem := false,
+          allowNonModules := false },
+      bootstrap := false,
+      extraDepTargets := #[],
+      precompileModules := false,
+      moreGlobalServerArgs := #[],
+      srcDir := FilePath.mk ".",
+      buildDir := FilePath.mk ".lake/build",
+      leanLibDir := FilePath.mk "lib/lean",
+      nativeLibDir := FilePath.mk "lib",
+      binDir := FilePath.mk "bin",
+      irDir := FilePath.mk "ir",
+      releaseRepo := none,
+      buildArchive := ELIDED,
+      preferReleaseBuild := false,
+      testDriver := "",
+      testDriverArgs := #[],
+      lintDriver := "my-package-lint",
+      lintDriverArgs := #[],
+      version := { toSemVerCore := { major := 0, minor := 0, patch := 0 }, specialDescr := "" },
+      versionTags := { filter := #<fun>, name := `default, descr? := none},
+      description := "",
+      keywords := #[],
+      homepage := "",
+      license := "",
+      licenseFiles := #[FilePath.mk "LICENSE"],
+      readmeFile := FilePath.mk "README.md",
+      reservoir := true,
+      enableArtifactCache? := none,
+      restoreAllArtifacts? := none,
+      libPrefixOnWindows := false,
+      allowImportAll := false,
+      builtinLint? := none,
+      fixedToolchain := false},
+  configFile := FilePath.mk "lakefile.lean",
+  relConfigFile := FilePath.mk "lakefile.lean",
+  relManifestFile := FilePath.mk "lake-manifest.json",
+  scope := "",
+  remoteUrl := "",
+  depConfigs := #[],
+  depIdxs := #[],
+  depPkgs := #[],
+  targetDecls :=
+    #[{toConfigDecl :=
+          {pkg := Lean.Name.mkNum `«my-package» 0,
+            name := `«my-package-lint»,
+            kind := `lean_exe,
+            config :=
+              {toLeanConfig :=
+                  { buildType := Lake.BuildType.release,
+                    leanOptions := #[],
+                    moreLeanArgs := #[],
+                    weakLeanArgs := #[],
+                    moreLeancArgs := #[],
+                    moreServerOptions := #[],
+                    weakLeancArgs := #[],
+                    moreLinkObjs := #[],
+                    moreLinkLibs := #[],
+                    moreLinkArgs := #[],
+                    weakLinkArgs := #[],
+                    backend := Lake.Backend.default,
+                    platformIndependent := none,
+                    dynlibs := #[],
+                    plugins := #[],
+                    requiresModuleSystem := false,
+                    allowNonModules := false },
+                srcDir := FilePath.mk ".",
+                root := `Lint,
+                exeName := "my-package-lint",
+                needs := #[],
+                extraDepTargets := #[],
+                supportInterpreter := false,
+                nativeFacets := #<fun>},
+            wf_data := …},
+        pkg_eq := …}],
+  targetDeclMap :=
+    {`«my-package-lint» ↦
+        {toPConfigDecl :=
+            {toConfigDecl :=
+                {pkg := Lean.Name.mkNum `«my-package» 0,
+                  name := `«my-package-lint»,
+                  kind := `lean_exe,
+                  config :=
+                    {toLeanConfig :=
+                        { buildType := Lake.BuildType.release,
+                          leanOptions := #[],
+                          moreLeanArgs := #[],
+                          weakLeanArgs := #[],
+                          moreLeancArgs := #[],
+                          moreServerOptions := #[],
+                          weakLeancArgs := #[],
+                          moreLinkObjs := #[],
+                          moreLinkLibs := #[],
+                          moreLinkArgs := #[],
+                          weakLinkArgs := #[],
+                          backend := Lake.Backend.default,
+                          platformIndependent := none,
+                          dynlibs := #[],
+                          plugins := #[],
+                          requiresModuleSystem := false,
+                          allowNonModules := false },
+                      srcDir := FilePath.mk ".",
+                      root := `Lint,
+                      exeName := "my-package-lint",
+                      needs := #[],
+                      extraDepTargets := #[],
+                      supportInterpreter := false,
+                      nativeFacets := #<fun>},
+                  wf_data := …},
+              pkg_eq := …},
+          name_eq := …},
+      },
+  defaultTargets := #[],
+  scripts := {},
+  defaultScripts := #[],
+  postUpdateHooks := #[],
+  buildArchive := ELIDED,
+  testDriver := "",
+  lintDriver := "my-package-lint"}
+```
+::::
+:::::
+
+Only one declaration per package can be tagged with {attr}`lint_driver`.
+It is an error to use both the {attr}`lint_driver` attribute and a non-empty {name Lake.Package.lintDriver}`lintDriver` field in the same Lake configuration file.
+
+:::lakeSession -show
+```lean +lakefile
+import Lake
+open Lake DSL
+package p
+
+@[lint_driver]
+lean_exe Foo where
+
+@[lint_driver]
+lean_exe Bar where
+```
+```lakeCmd "lake build" +error
+error: p: only one script or executable can be tagged @[lint_driver]
+```
+:::
+
+A lint driver in a dependency package can be referenced with the same `<pkg>/<name>` syntax used for test drivers.
+
+{lake}`lint` runs the configured driver, passing {tomlField Lake.PackageConfig}`lintDriverArgs` first, then anything after `--` on the command line:
+
+```
+lake lint -- --warnings-as-errors
+```
+
+Lake also has a separate {deftech}_builtin linter_ that operates on Lean modules directly, independent of any configured driver.
+Builtin linting is enabled by the `--builtin-lint` and related flags (see {lake}`lint`), or by setting {tomlField Lake.PackageConfig}`builtinLint` to `true` in the package configuration.
+When builtin linting is active, positional `MODULE` arguments before `--` select which modules to lint, and they are _not_ passed to the configured driver.
+So `lake lint Mathlib` triggers builtin linting on `Mathlib`, whereas `lake lint -- Mathlib` passes `Mathlib` to the driver.
+The two mechanisms are independent and can run together: when both apply, Lake runs the builtin linter first and then the driver.
+
+{lake}`check-lint` exits with code 0 (that is, successfully) if a lint driver is configured for the root package or if {tomlField Lake.PackageConfig}`builtinLint` is set to `true` in its configuration.
+
 
 ## GitHub Release Builds
 %%%
@@ -513,6 +1449,51 @@ This mechanism is not technically limited to GitHub: any Git host that uses the 
 To upload a built package as an artifact to a GitHub release, Lake provides the {lake}`upload` command as a convenient shorthand.
 This command uses `tar` to pack the package's build directory into an archive and uses `gh release upload` to attach it to a pre-existing GitHub release for the specified tag.
 Thus, in order to use it, the package uploader (but not the downloader) needs to have `gh`, the GitHub CLI, installed and in `PATH`.
+
+## Artifact Caches
+%%%
+tag := "lake-cache"
+%%%
+
+*This is an experimental feature that is still undergoing development.*
+
+Lake supports a {deftech (key := "local cache")}_local artifact cache_ that stores individual build products, tracking the complete set of inputs that gave rise to them.
+Each {tech}[toolchain] has its own cache because intermediate build products are not compatible between toolchain versions.
+However, a toolchain's cache is shared between all local {tech}[workspaces] that use it, so common dependencies don't need to be rebuilt.
+If two separate workspaces with the same toolchain depend on the same package, then they can share each others' build products.
+
+Because it is an experimental feature, the local cache is disabled by default.
+It is only enabled when the {envVar}`LAKE_ARTIFACT_CACHE` environment variable is set to `true` or when the {TODO}[ref] `enableArtifactCache` field is set to `true` in the {ref "lake-config"}[configuration file].
+
+
+### Remote Artifact Caches
+%%%
+tag := "lake-cache-remote"
+%%%
+
+Build products can be retrieved from remote cache servers and placed into the local cache.
+This makes it possible to completely avoid local builds.
+The {lake}`cache get` command is used to download artifacts into the local cache.
+
+Compared to {ref "lake-github"}[GitHub release builds], the remote artifact cache is much more fine-grained.
+It tracks build products at the level of individual source files, {tech}[`.olean` files], and object code, rather than at the level of entire packages.
+
+### Mappings
+
+When passed the `-o` option, {lake}`build` tracks the inputs used to generate each build product.
+These are stored to a {deftech}_mappings file_ in JSON lines format, where each line of the file must be a valid JSON object.
+A mappings file tracks a single build, and includes all intermediate and final build products for the workspace's {tech}[root package], but not for its dependencies.
+This includes build products that were already up to date and not regenerated.
+The {lake}`cache put` command uploads the build products in the mappings file to the remote from the local cache to the remote cache.
+
+### Configuration
+
+:::paragraph
+Remote artifact caches are configured using the following environment variables:
+ * {envVar}`LAKE_CACHE_KEY`
+ * {envVar}`LAKE_CACHE_ARTIFACT_ENDPOINT`
+ * {envVar}`LAKE_CACHE_REVISION_ENDPOINT`
+:::
 
 {include 0 Manual.BuildTools.Lake.CLI}
 
@@ -604,7 +1585,7 @@ This is true for all of the monads in the Lake API, including {name Lake.ScriptM
 Monads that provide access to information about the current Lake workspace have {name Lake.MonadWorkspace}`MonadWorkspace` instances.
 In particular, there are instances for {name Lake.ScriptM}`ScriptM` and {name Lake.LakeM}`LakeM`.
 
-```lean (show := false)
+```lean -show
 section
 open Lake
 #synth MonadWorkspace ScriptM
@@ -616,7 +1597,9 @@ end
 
 {docstring Lake.getRootPackage}
 
-{docstring Lake.findPackage?}
+{docstring Lake.findPackageByName?}
+
+{docstring Lake.findPackageByKey?}
 
 {docstring Lake.findModule?}
 

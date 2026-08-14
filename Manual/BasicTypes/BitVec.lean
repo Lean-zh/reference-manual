@@ -12,6 +12,7 @@ open Verso.Genre Manual
 open Verso.Genre.Manual.InlineLean
 
 set_option pp.rawOnError true
+set_option linter.typography.dashes false -- There's a reference to a Figure 5-2 below that should not be an en dash
 
 set_option maxRecDepth 768
 
@@ -40,7 +41,7 @@ Because {name}`BitVec` is a {ref "inductive-types-trivial-wrappers"}[trivial wra
 
 # Syntax
 :::leanSection
-```lean (show := false)
+```lean -show
 variable {w n : Nat}
 ```
 There is an {inst}`OfNat (BitVec w) n` instance for all widths {lean}`w` and natural numbers {lean}`n`.
@@ -55,7 +56,7 @@ example : BitVec 8 := 0xff
 example : BitVec 8 := 255
 example : BitVec 8 := 0b1111_1111
 ```
-```lean (show := false)
+```lean -show
 -- Inline test
 example : (0xff : BitVec 8) = 255 := by rfl
 example : (0b1111_1111 : BitVec 8) = 255 := by rfl
@@ -147,11 +148,11 @@ example : BitVec 8 := 1#'(by decide)
 ```
 
 Literals that are not in bounds are not allowed:
-```lean (error := true) (name := oob)
+```lean +error (name := oob)
 example : BitVec 8 := 256#'(by decide)
 ```
 ```leanOutput oob
-tactic 'decide' proved that the proposition
+Tactic `decide` proved that the proposition
   256 < 2 ^ 8
 is false
 ```
@@ -169,6 +170,10 @@ This tactic invokes an external automated theorem prover (`cadical`) and reconst
 The resulting proofs rely only on the axiom {name}`Lean.ofReduceBool`; the external prover is not part of the trusted code base.
 
 :::example "Popcount"
+
+```imports -show
+import Std.Tactic.BVDecide
+```
 
 The function {lean}`popcount` returns the number of set bits in a bitvector.
 It can be implemented as a 32-iteration loop that tests each bit, incrementing a counter if the bit is set:
@@ -297,13 +302,13 @@ These operations treat bitvectors as sequences of bits, rather than as encodings
 
 {docstring BitVec.getMsbD}
 
-{docstring BitVec.getMsb'}
+{docstring BitVec.getMsb}
 
 {docstring BitVec.getMsb?}
 
 {docstring BitVec.getLsbD}
 
-{docstring BitVec.getLsb'}
+{docstring BitVec.getLsb}
 
 {docstring BitVec.getLsb?}
 

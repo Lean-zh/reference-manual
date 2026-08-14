@@ -26,7 +26,6 @@ set_option pp.rawOnError true
 
 set_option linter.unusedVariables false
 
-
 set_option maxRecDepth 100000
 #doc (Manual) "Type Classes" =>
 %%%
@@ -67,7 +66,7 @@ All of these possibilities are used in practice:
 
 While ordinary polymorphic definitions simply expect instantiation with arbitrary parameters, the operators overloaded with type classes are to be instantiated with {deftech}_instances_ that define the overloaded operation for some specific set of parameters.
 These {deftech}[instance-implicit] parameters are indicated in square brackets.
-At invocation sites, Lean either {deftech key:="synthesis"}_synthesizes_ {index}[instance synthesis] {index subterm:="of type class instances"}[synthesis] a suitable instance from the available candidates or signals an error.
+At invocation sites, Lean either {deftech (key := "synthesis")}_synthesizes_ {index}[instance synthesis] {index (subterm := "of type class instances")}[synthesis] a suitable instance from the available candidates or signals an error.
 Because instances may themselves have instance parameters, this search process may be recursive and result in a final composite instance value that combines code from a variety of instances.
 Thus, type class instance synthesis is also a means of constructing programs in a type-directed manner.
 
@@ -102,7 +101,7 @@ Declares a new type class.
 :::
 
 :::keepEnv
-```lean (show := false)
+```lean -show
 -- Just make sure that the `deriving` clause is legit
 class A (n : Nat) where
   k : Nat
@@ -145,21 +144,22 @@ While {keywordOf Lean.Parser.Command.declaration}`deriving` clauses are allowed 
 :::example "No Instances of Non-Classes"
 
 Lean rejects instance-implicit parameters of types that are not classes:
-```lean (error := true) (name := notClass)
+```lean +error (name := notClass)
 def f [n : Nat] : n = n := rfl
 ```
 
 ```leanOutput notClass
 invalid binder annotation, type is not a class instance
   Nat
-use the command `set_option checkBinderAnnotations false` to disable the check
+
+Note: Use the command `set_option checkBinderAnnotations false` to disable the check
 ```
 
 :::
 
 ::::example "Class vs Structure Constructors"
 A very small algebraic hierarchy can be represented either as structures ({name}`S.Magma`, {name}`S.Semigroup`, and {name}`S.Monoid` below), a mix of structures and classes ({name}`C1.Monoid`), or only using classes ({name}`C2.Magma`, {name}`C2.Semigroup`, and {name}`C2.Monoid`):
-````lean
+```lean
 namespace S
 structure Magma (α : Type u) where
   op : α → α → α
@@ -192,7 +192,7 @@ class Monoid (α : Type u) extends Semigroup α where
   ident_left : ∀ x, op ident x = x
   ident_right : ∀ x, op x ident = x
 end C2
-````
+```
 
 
 {name}`S.Monoid.mk` and {name}`C1.Monoid.mk` have identical signatures, because the parent of the class {name}`C1.Monoid` is not itself a class:
@@ -258,7 +258,7 @@ Two instances of the same class with the same parameters are not necessarily ide
 ::::example "Instances are Not Unique"
 
 This implementation of binary heap insertion is buggy:
-````lean
+```lean
 structure Heap (α : Type u) where
   contents : Array α
 deriving Repr
@@ -269,22 +269,24 @@ def Heap.bubbleUp [Ord α] (i : Nat) (xs : Heap α) : Heap α :=
   else
     let j := i / 2
     if Ord.compare xs.contents[i] xs.contents[j] == .lt then
-      Heap.bubbleUp j {xs with contents := xs.contents.swap i j}
+      Heap.bubbleUp j { xs with contents := xs.contents.swap i j }
     else xs
 
 def Heap.insert [Ord α] (x : α) (xs : Heap α) : Heap α :=
   let i := xs.contents.size
   {xs with contents := xs.contents.push x}.bubbleUp i
-````
+```
 
 The problem is that a heap constructed with one {name}`Ord` instance may later be used with another, leading to the breaking of the heap invariant.
 
-One way to correct this is to making the heap type depend on the selected `Ord` instance:
+One way to correct this is to make the heap type depend on the selected `Ord` instance:
 ```lean
 structure Heap' (α : Type u) [Ord α] where
   contents : Array α
 
-def Heap'.bubbleUp [inst : Ord α] (i : Nat) (xs : @Heap' α inst) : @Heap' α inst :=
+def Heap'.bubbleUp [inst : Ord α]
+    (i : Nat) (xs : @Heap' α inst) :
+    @Heap' α inst :=
   if h : i = 0 then xs
   else if h : i ≥ xs.contents.size then xs
   else
@@ -361,16 +363,16 @@ Because {name}`AddMul` is a {keywordOf Lean.Parser.Command.classAbbrev}`class ab
 ```
 
 However, {name}`plusTimes2` fails, because there is no {lean}`AddMul' Nat` instance—no instances whatsoever have yet been declared:
-```lean (name := plusTimes2a) (error := true)
+```lean (name := plusTimes2a) +error
 #eval plusTimes2 2 5 7
 ```
 ```leanOutput plusTimes2a
-failed to synthesize
-  AddMul' ?m.22
+failed to synthesize instance of type class
+  AddMul' ?m.8
 
-Additional diagnostic information may be available using the `set_option diagnostics true` command.
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
 ```
-Declaring an very general instance takes care of the problem for {lean}`Nat` and every other type:
+Declaring a very general instance takes care of the problem for {lean}`Nat` and every other type:
 ```lean (name := plusTimes2b)
 instance [Add α] [Mul α] : AddMul' α where
 
@@ -394,7 +396,7 @@ tag := "deriving-instances"
 Lean can automatically generate instances for many classes, a process known as {deftech}_deriving_ instances.
 Instance deriving can be invoked either when defining a type or as a stand-alone command.
 
-:::syntax Lean.Parser.Command.optDeriving (open := false) (title := "Instance Deriving (Optional)")
+:::syntax Lean.Parser.Command.optDeriving -open (title := "Instance Deriving (Optional)")
 As part of a command that creates a new inductive type, a {keywordOf Lean.Parser.Command.declaration}`deriving` clause specifies a comma-separated list of class names for which instances should be generated:
 ```grammar
 $[deriving $[$_],*]?

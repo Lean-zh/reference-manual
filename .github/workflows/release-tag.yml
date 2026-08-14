@@ -1,124 +1,93 @@
 name: Deploy Tagged Version
 
 on:
-  # 手动trigger
-  workflow_dispatch:
-  # 自动trigger
-  push:
-    tags:
-      - 'v*'  # Trigger on tags that start with 'v'
+    push:
+        tags:
+            - "v*"
 
 jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write  # This allows pushing to the repository
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0  # Fetch all history for all tags and branches
-      
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.10'
+    deploy:
+        runs-on: ubuntu-latest
+        permissions:
+            contents: write
+        env:
+            PUBLIC_URL: "https://www.leanprover.cn/reference-manual/latest/"
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
 
-      - name: Configure Git
-        # These values are recommended at:
-        #   https://github.com/actions/checkout?tab=readme-ov-file#push-a-commit-using-the-built-in-token
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            - name: Set up Python
+              uses: actions/setup-python@v5
+              with:
+                  python-version: "3.10"
 
-      - name: Run setup script prep.sh
-        run: |
-          ./deploy/prep.sh
+            - name: Configure Git
+              run: |
+                  git config --global user.name "github-actions[bot]"
+                  git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-      - name: Install deps for figures (TeX)
-        uses: zauguin/install-texlive@v4
-        with:
-          texlive_version: 2025
-          packages: >
-            scheme-small
-            latex-bin
-            fontspec
-            standalone
-            pgf
-            pdftexcmds
-            luatex85
-            lualatex-math
-            infwarerr
-            ltxcmds
-            xcolor
-            fontawesome
-            spath3
-            inter
-            epstopdf-pkg
-            tex-gyre
-            tex-gyre-math
-            unicode-math
-            amsmath
-            sourcecodepro
+            - name: Prepare build environment
+              run: ./deploy/prep.sh
 
+            - name: Install elan
+              run: |
+                  set -o pipefail
+                  curl -sSfL https://github.com/leanprover/elan/releases/download/v4.2.2/elan-x86_64-unknown-linux-gnu.tar.gz | tar xz
+                  ./elan-init -y --default-toolchain none
+                  echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
 
-      - name: Install elan
-        run: |
-          set -o pipefail
-          curl -sSfL https://github.com/leanprover/elan/releases/download/v4.1.2/elan-x86_64-unknown-linux-gnu.tar.gz | tar xz
-          ./elan-init -y --default-toolchain none
-          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+            - name: Lean version
+              run: lean --version
 
-      - name: Lean Version
-        run: |
-          lean --version
-      
-      - name: Extract version from tag
-        id: get_version
-        run: |
-          # Remove 'v' prefix from tag name
-          # VERSION=${GITHUB_REF#refs/tags/v}
-          # use Lean version instead of tag version
-          VERSION=$(lean --version | sed -E 's/^.*version[[:space:]]+([^,]+).*/\1/')
-          echo "VERSION=$VERSION" >> $GITHUB_ENV
-          echo "Version extracted: $VERSION"
+            - name: Determine Lean manual version
+              run: |
+                  VERSION=$(lean --version | sed -E 's/^.*version[[:space:]]+([^,]+).*/\1/')
+                  test -n "$VERSION"
+                  if [ "${GITHUB_EVENT_NAME}" = "push" ]; then
+                      test "${GITHUB_REF_NAME}" = "v${VERSION}" || {
+                          echo "Tag ${GITHUB_REF_NAME} does not match Lean version v${VERSION}" >&2
+                          exit 1
+                      }
+                  fi
+                  echo "VERSION=$VERSION" >> "$GITHUB_ENV"
+                  echo "Publishing Lean $VERSION to $PUBLIC_URL"
 
-      - name: Cache .lake
-        uses: actions/cache/restore@v4
-        with:
-          path: .lake
-          key: ${{ runner.os }}-${{ hashFiles('lean-toolchain') }}-${{ hashFiles('lake-manifest.json') }}-${{ hashFiles('lakefile.lean') }}-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-${{ hashFiles('lean-toolchain') }}-${{ hashFiles('lake-manifest.json') }}-${{ hashFiles('lakefile.lean') }}-${{ github.sha }}
-            ${{ runner.os }}-${{ hashFiles('lean-toolchain') }}-${{ hashFiles('lake-manifest.json') }}-${{ hashFiles('lakefile.lean') }}
-            ${{ runner.os }}-${{ hashFiles('lean-toolchain') }}-${{ hashFiles('lake-manifest.json') }}-
-            ${{ runner.os }}-${{ hashFiles('lean-toolchain') }}-
+            - name: Restore Lake cache
+              uses: actions/cache/restore@v4
+              with:
+                  path: |
+                      .lake/packages
+                      .lake/build/bin
+                      .lake/build/ir
+                      .lake/build/lib
+                  key: ${{ runner.os }}-${{ hashFiles('lean-toolchain') }}-${{ hashFiles('lake-manifest.json') }}-${{ hashFiles('lakefile.lean') }}-${{ github.sha }}
+                  restore-keys: |
+                      ${{ runner.os }}-${{ hashFiles('lean-toolchain') }}-${{ hashFiles('lake-manifest.json') }}-${{ hashFiles('lakefile.lean') }}
+                      ${{ runner.os }}-${{ hashFiles('lean-toolchain') }}-
 
-      - name: Run build script build.sh
-        run: |
-          ./deploy/build.sh
+            # Keep an explicit build check before generation and deployment.
+            - name: Build and check
+              run: ./deploy/build.sh
 
-      - name: Save cache for .lake
-        uses: actions/cache/save@v4
-        with:
-          path: .lake
-          key: ${{ runner.os }}-${{ hashFiles('lean-toolchain') }}-${{ hashFiles('lake-manifest.json') }}-${{ hashFiles('lakefile.lean') }}-${{ github.sha }}
+            - name: Save Lake cache
+              uses: actions/cache/save@v4
+              with:
+                  path: |
+                      .lake/packages
+                      .lake/build/bin
+                      .lake/build/ir
+                      .lake/build/lib
+                  key: ${{ runner.os }}-${{ hashFiles('lean-toolchain') }}-${{ hashFiles('lake-manifest.json') }}-${{ hashFiles('lakefile.lean') }}-${{ github.sha }}
 
-      - name: Generate HTML using generate.sh (output goes into /html in repo root)
-        run: |
-          ./deploy/generate.sh
+            - name: Generate production HTML
+              run: ./deploy/generate.sh
 
-      - name: Run deployment script
-        run: |
-          # The tag name is simply GITHUB_REF_NAME
-          TAG_NAME=$GITHUB_REF_NAME
-          echo "Deploying from tag: '$TAG_NAME'"
-          
+            - name: Update deploy branch
+              run: |
+                  test -d html/site/reference
+                  python deploy/release.py html/site/reference "$VERSION" "$GITHUB_SHA" deploy
 
-          python deploy/release.py html/html-multi "$VERSION" deploy
-
-      - name: Push deploy branch
-        run: |
-          git push origin deploy
-          
-        
+            - name: Push deploy branch to Lean-zh/reference-manual
+              run: git push origin deploy

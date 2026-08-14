@@ -29,7 +29,7 @@ Infix operators, notations, and other syntactic extensions to Lean make use of e
 While precedences in Lean can technically be any natural number, by convention they range from {evalPrec}`min` to {evalPrec}`max`, respectively denoted `min` and `max`.{TODO}[Fix the keywordOf operator and use it here]
 Function application has the highest precedence.
 
-:::syntax prec (open := false) (title := "Parser Precedences")
+:::syntax prec -open (title := "Parser Precedences")
 Most operator precedences consist of explicit numbers.
 The named precedence levels denote the outer edges of the range, close to the minimum or maximum, and are typically used by more involved syntax extensions.
 ```grammar
@@ -48,7 +48,7 @@ $p - $p
 ```
 
 The maximum precedence is used to parse terms that occur in a function position.
-Operators should typically not use use this level, because it can interfere with users' expectation that function application binds more tightly than any other operator, but it is useful in more involved syntax extensions to indicate how other constructs interact with function application.
+Operators should typically not use this level, because it can interfere with users' expectation that function application binds more tightly than any other operator, but it is useful in more involved syntax extensions to indicate how other constructs interact with function application.
 ```grammar
 max
 ```
@@ -59,7 +59,7 @@ This level is useful for defining syntax that should be treated as an argument t
 arg
 ```
 
-Lead precedence is less that argument precedence, and should be used for custom syntax that should not occur as a function argument, such as {keywordOf Lean.Parser.Term.let}`let`.
+Lead precedence is less than argument precedence, and should be used for custom syntax that should not occur as a function argument, such as {keywordOf Lean.Parser.Term.let}`let`.
 ```grammar
 lead
 ```

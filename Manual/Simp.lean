@@ -41,7 +41,7 @@ Aside from that, they are named according to a system of prefixes and suffixes t
 
 : `-!` suffix
 
-  Sets the {name Lean.Meta.Simp.Config.autoUnfold}`autoUnfold` configuration option to `true`, causing the simplifier unfold all definitions
+  Sets the {name Lean.Meta.Simp.Config.autoUnfold}`autoUnfold` configuration option to `true`, causing the simplifier to unfold all definitions
 
 : `-?` suffix
 
@@ -76,7 +76,7 @@ simp $_:optConfig $[only]? $[ [ $[$e],* ] ]? $[at $[$h]*]?
 :::
 
 In other words, an invocation of a simplification tactic takes the following modifiers, in order, all of which are optional:
- * A {ref "tactic-config"}[configuration options], which should include the fields of {name}`Lean.Meta.Simp.Config` or {name}`Lean.Meta.DSimp.Config`, depending on whether the simplifier being invoked is a version of {tactic}`simp` or a version of {tactic}`dsimp`.
+ * A set of {ref "tactic-config"}[configuration options], which should include the fields of {name}`Lean.Meta.Simp.Config` or {name}`Lean.Meta.DSimp.Config`, depending on whether the simplifier being invoked is a version of {tactic}`simp` or a version of {tactic}`dsimp`.
  * The {keywordOf Lean.Parser.Tactic.simp}`only` modifier excludes the default simp set, instead beginning with an empty{margin}[Technically, the simp set always includes {name}`eq_self` and {name}`iff_self` in order to discharge reflexive cases.] simp set.
  * The lemma list adds or removes lemmas from the simp set. There are three ways to specify lemmas in the lemma list:
    * `*`, which adds all assumptions in the proof state to the simp set
@@ -95,7 +95,7 @@ In other words, an invocation of a simplification tactic takes the following mod
 
 ::::example "Location specifiers for {tactic}`simp`"
 :::tacticExample
-{goal show:=false}`∀ (p : Nat → Prop) (x : Nat) (h : p (x + 5 + 2)) (h' : p (3 + x + 9)), p (6 + x + 1)`
+{goal -show}`∀ (p : Nat → Prop) (x : Nat) (h : p (x + 5 + 2)) (h' : p (3 + x + 9)), p (6 + x + 1)`
 ```setup
 intro p x h h'
 ```
@@ -121,11 +121,11 @@ h' : p (3 + x + 9)
 :::
 
 :::tacticExample
-{goal show:=false}`∀ (p : Nat → Prop) (x : Nat) (h : p (x + 5 + 2)) (h' : p (3 + x + 9)), p (6 + x + 1)`
+{goal -show}`∀ (p : Nat → Prop) (x : Nat) (h : p (x + 5 + 2)) (h' : p (3 + x + 9)), p (6 + x + 1)`
 ```setup
 intro p x h h'
 ```
-```pre (show := false)
+```pre -show
 p : Nat → Prop
 x : Nat
 h : p (x + 5 + 2)
@@ -145,11 +145,11 @@ h : p (x + 7)
 :::
 
 :::tacticExample
-{goal show:=false}`∀ (p : Nat → Prop) (x : Nat) (h : p (x + 5 + 2)) (h' : p (3 + x + 9)), p (6 + x + 1)`
+{goal -show}`∀ (p : Nat → Prop) (x : Nat) (h : p (x + 5 + 2)) (h' : p (3 + x + 9)), p (6 + x + 1)`
 ```setup
 intro p x h h'
 ```
-```pre (show := false)
+```pre -show
 p : Nat → Prop
 x : Nat
 h : p (x + 5 + 2)
@@ -169,11 +169,11 @@ h : p (x + 7)
 :::
 
 :::tacticExample
-{goal show:=false}`∀ (p : Nat → Prop) (x : Nat) (h : p (x + 5 + 2)) (h' : p (3 + x + 9)), p (6 + x + 1)`
+{goal -show}`∀ (p : Nat → Prop) (x : Nat) (h : p (x + 5 + 2)) (h' : p (3 + x + 9)), p (6 + x + 1)`
 ```setup
 intro p x h h'
 ```
-```pre (show := false)
+```pre -show
 p : Nat → Prop
 x : Nat
 h : p (x + 5 + 2)
@@ -216,7 +216,7 @@ The simplifier has three kinds of rewrite rules:
   The simplifier supports simplification procedures, known as {deftech}_simprocs_, that use Lean metaprogramming to perform rewrites that can't be efficiently specified using equations. Lean includes simprocs for the most important operations on built-in types.
 
 :::keepEnv
-```lean (show := false)
+```lean -show
 -- Validate the above description of reducibility
 
 @[irreducible]
@@ -239,7 +239,7 @@ x y : α✝
 example : foo (x, y) = (y, x) := by
   simp [foo]
 
-/-- error: simp made no progress -/
+/-- error: `simp` made no progress -/
 #check_msgs in
 example : foo (x, y) = (y, x) := by
   simp
@@ -254,7 +254,7 @@ x y : α✝
 example : foo' (x, y) = (y, x) := by
   simp [foo']
 
-/-- error: simp made no progress -/
+/-- error: `simp` made no progress -/
 #check_msgs in
 example : foo' (x, y) = (y, x) := by
   simp
@@ -290,7 +290,7 @@ They are preprocessed into rules that rewrite the proposition to {lean}`True`.
 :::::example "Rewriting Propositions"
 ::::tacticExample
 
-{goal show:=false}`∀(α β : Type) (w y : α) (x z : β), (w, x) = (y, z)`
+{goal -show}`∀(α β : Type) (w y : α) (x z : β), (w, x) = (y, z)`
 ```setup
 intro α β w y x z
 ```
@@ -323,7 +323,7 @@ Prod.mk.injEq.{u, v} {α : Type u} {β : Type v} (fst : α) (snd : β) :
 :::::
 
 In addition to rewrite rules, {tactic}`simp` has a number of built-in reduction rules, {ref "simp-config"}[controlled by the `config` parameter].
-Even when the simp set is empty, {tactic}`simp` can replace `let`-bound variables with their values, reduce {keywordOf Lean.Parser.Term.match}`match` expressions whose scrutinees are constructor applications, reduce structure projections applied to constructors, or apply lambdas to their arguments.
+Even when the simp set is empty, {tactic}`simp` can replace `let`-bound variables with their values, reduce {keywordOf Lean.Parser.Term.match}`match` expressions whose {tech (key := "match discriminant")}[discriminants] are constructor applications, reduce structure projections applied to constructors, or apply lambdas to their arguments.
 
 # Simp sets
 %%%
@@ -331,13 +331,13 @@ tag := "simp-sets"
 %%%
 
 A collection of rules used by the simplifier is called a {deftech}_simp set_.
-A simp set is specified in terms of modifications from a _default simp set_.
+A simp set is specified in terms of modifications from a {deftech}_default simp set_.
 These modifications can include adding rules, removing rules, or adding a set of rules.
 The `only` modifier to the {tactic}`simp` tactic causes it to start with an empty simp set, rather than the default one.
 Rules are added to the default simp set using the {attr}`simp` attribute.
 
 
-:::syntax attr alias := Lean.Meta.simpExtension (title := "Registering {keyword}`simp` Lemmas")
+:::syntax attr (alias := Lean.Meta.simpExtension) (title := "Registering {keyword}`simp` Lemmas")
 The {attr}`simp` attribute adds a declaration to the default simp set.
 If the declaration is a definition, the definition is marked for unfolding; if it is a theorem, then the theorem is registered as a rewrite rule.
 
@@ -358,7 +358,7 @@ simp ↓ $p?
 simp $p:prio
 ```
 
-```lean (show := false)
+```lean -show
 -- Check above claim about default priority
 /-- info: 1000 -/
 #check_msgs in
@@ -429,14 +429,18 @@ example (xs : Array Unit) : xs.size = 2 → xs = #[(), ()] := by
 ```
 The suggested rewrite is:
 ```leanOutput simpHuhDemo
-Try this: simp only [List.size_toArray, List.length_cons, List.length_nil, Nat.zero_add, Nat.reduceAdd]
+Try this:
+  [apply] simp only [List.size_toArray, List.length_cons, List.length_nil, Nat.zero_add, Nat.reduceAdd]
 ```
 which results in the more maintainable proof:
 ```lean
 example (xs : Array Unit) : xs.size = 2 → xs = #[(), ()] := by
   intros
   ext
-  simp only [List.size_toArray, List.length_cons, List.length_nil, Nat.zero_add, Nat.reduceAdd]
+  simp only [
+    List.size_toArray, List.length_cons, List.length_nil,
+    Nat.zero_add, Nat.reduceAdd
+  ]
   assumption
 ```
 

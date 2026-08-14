@@ -60,13 +60,13 @@ Signed integers wrap the corresponding unsigned integers, and use a twos-complem
 tag := "fixed-int-runtime"
 %%%
 
-In compiled code, fixed-width integer types that fit in one less bit than the platform's pointer size are always represented unboxed, without additional allocations or indirections.
+In compiled code in contexts that require {tech}[boxed] representations, fixed-width integer types that fit in one less bit than the platform's pointer size are always represented without additional allocations or indirections.
 This always includes {lean}`Int8`, {lean}`UInt8`, {lean}`Int16`, and {lean}`UInt16`.
-On 64-bit architectures, {lean}`Int32` and {lean}`UInt32` are also unboxed.
-On 32-bit architectures, {lean}`Int32` and {lean}`UInt32` are boxed, which means they may be represented by a pointer to an object on the heap.
-{lean}`ISize`, {lean}`USize`, {lean}`Int64` and {lean}`UInt64` are boxed on all architectures.
+On 64-bit architectures, {lean}`Int32` and {lean}`UInt32` are also represented without pointers.
+On 32-bit architectures, {lean}`Int32` and {lean}`UInt32` require a pointer to an object on the heap.
+{lean}`ISize`, {lean}`USize`, {lean}`Int64` and {lean}`UInt64` may require pointers on all architectures.
 
-Even though some fixed-with integer types require boxing in general, the compiler is able to represent them without boxing in code paths that use only a specific fixed-width type rather than being polymorphic, potentially after a specialization pass.
+Even though some fixed-with integer types require boxing in general, the compiler is able to represent them without boxing or pointer indirections in code paths that use only a specific fixed-width type rather than being polymorphic, potentially after a specialization pass.
 This applies in most practical situations where these types are used: their values are represented using the corresponding unsigned fixed-width C type when a constructor parameter, function parameter, function return value, or intermediate result is known to be a fixed-width integer type.
 The Lean run-time system includes primitives for storing fixed-width integers in constructors of {tech}[inductive types], and the primitive operations are defined on the corresponding C types, so boxing tends to happen at the “edges” of integer calculations rather than for each intermediate result.
 In contexts where other types might occur, such as the contents of polymorphic containers like {name}`Array`, these types are boxed, even if an array is statically known to contain only a single fixed-width integer type.{margin}[The monomorphic array type {lean}`ByteArray` avoids boxing for arrays of {lean}`UInt8`.]
@@ -98,12 +98,12 @@ def Permissions.decode (i : UInt8) : Permissions :=
   ⟨i &&& 0x01 ≠ 0, i &&& 0x02 ≠ 0, i &&& 0x04 ≠ 0⟩
 ```
 
-```lean (show := false)
+```lean -show
 -- Check the above
 theorem Permissions.decode_encode (p : Permissions) : p = .decode (p.encode) := by
   let ⟨r, w, x⟩ := p
   cases r <;> cases w <;> cases x <;>
-  simp +decide [encode, decode]
+  simp +decide [decode]
 ```
 :::
 
@@ -198,15 +198,15 @@ This is not equivalent to C's `sizeof` operator, which instead determines how ma
 {docstring Int64.ofInt}
 
 
-{docstring ISize.ofIntTruncate}
+{docstring ISize.ofIntClamp}
 
-{docstring Int8.ofIntTruncate}
+{docstring Int8.ofIntClamp}
 
-{docstring Int16.ofIntTruncate}
+{docstring Int16.ofIntClamp}
 
-{docstring Int32.ofIntTruncate}
+{docstring Int32.ofIntClamp}
 
-{docstring Int64.ofIntTruncate}
+{docstring Int64.ofIntClamp}
 
 
 {docstring ISize.ofIntLE}
@@ -254,15 +254,15 @@ This is not equivalent to C's `sizeof` operator, which instead determines how ma
 
 {docstring UInt64.ofNatLT}
 
-{docstring USize.ofNatTruncate}
+{docstring USize.ofNatClamp}
 
-{docstring UInt8.ofNatTruncate}
+{docstring UInt8.ofNatClamp}
 
-{docstring UInt16.ofNatTruncate}
+{docstring UInt16.ofNatClamp}
 
-{docstring UInt32.ofNatTruncate}
+{docstring UInt32.ofNatClamp}
 
-{docstring UInt64.ofNatTruncate}
+{docstring UInt64.ofNatClamp}
 
 {docstring USize.toNat}
 
@@ -489,14 +489,14 @@ This predicate is part of the {name}`UInt32` API.
 
 ## Bitwise Operations
 
-Typically, bitwise operations on fixed-width integers should be accessed using Lean's overloaded operators, particularly their instances of {name}`ShiftLeft`, {name}`ShiftRight`, {name}`AndOp`, {name}`OrOp`, and {name}`Xor`.
+Typically, bitwise operations on fixed-width integers should be accessed using Lean's overloaded operators, particularly their instances of {name}`ShiftLeft`, {name}`ShiftRight`, {name}`AndOp`, {name}`OrOp`, and {name}`XorOp`.
 
-```lean (show := false)
+```lean -show
 -- Check that all those instances really exist
 open Lean Elab Command in
 #eval show CommandElabM Unit from do
   let types := [`ISize, `Int8, `Int16, `Int32, `Int64, `USize, `UInt8, `UInt16, `UInt32, `UInt64]
-  let classes := [`ShiftLeft, `ShiftRight, `AndOp, `OrOp, `Xor]
+  let classes := [`ShiftLeft, `ShiftRight, `AndOp, `OrOp, `XorOp]
   for t in types do
     for c in classes do
       elabCommand <| ← `(example : $(mkIdent c):ident $(mkIdent t) := inferInstance)

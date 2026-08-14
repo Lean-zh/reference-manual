@@ -20,7 +20,7 @@ set_option pp.rawOnError true
 tag := "array-ffi"
 %%%
 
-:::ffi "lean_string_object" kind := type
+:::ffi "lean_string_object" (kind := type)
 ```
 typedef struct {
     lean_object   m_header;
@@ -33,17 +33,17 @@ The representation of arrays in C. See {ref "array-runtime"}[the description of 
 :::
 
 :::ffi "lean_is_array"
-````
+```
 bool lean_is_array(lean_object * o)
-````
+```
 
 Returns `true` if `o` is an array, or `false` otherwise.
 :::
 
 :::ffi "lean_to_array"
-````
+```
 lean_array_object * lean_to_array(lean_object * o)
-````
+```
 Performs a runtime check that `o` is indeed an array. If `o` is not an array, an assertion fails.
 :::
 

@@ -29,6 +29,23 @@ def castPaper : ArXiv where
   year := 2020
   id := "2001.10594"
 
+def constructionsOnConstructors : InProceedings where
+  title := inlines!"A Few Constructions on Constructors"
+  authors := #[inlines!"Conor McBride", inlines!"Healfdene Goguen", inlines!"James McKinna"]
+  year := 2004
+  booktitle := inlines!"Types for Proofs and Programs, International Workshop, TYPES 2004"
+  series := some (inlines!"LNCS 3839")
+  url := "https://doi.org/10.1007/11617990_12"
+
+def cuttingToTheChase : InProceedings where
+  title := inlines!"Cutting to the Chase: Solving Linear Integer Arithmetic"
+  authors := #[inlines!"Dejan Jovanović", inlines!"Leonardo de Moura"]
+  year := 2023
+  booktitle := inlines!"Automated Deduction: CADE '23"
+  series := some (inlines!"LNCS 6803")
+  url := "https://link.springer.com/chapter/10.1007/978-3-642-22438-6_26"
+
+
 def doUnchained : InProceedings where
   title := inlines!"`do` Unchained: Embracing Local Imperativity in a Purely Functional Language"
   authors := #[inlines!"Sebastian Ullrich", inlines!"Leonardo de Moura"]
@@ -42,6 +59,16 @@ def countingBeans : InProceedings where
   url := some "https://arxiv.org/abs/1908.05647"
   year := 2019
   booktitle := inlines!"Proceedings of the 31st Symposium on Implementation and Application of Functional Languages (IFL 2019)"
+
+def hoare69 : Article where
+  title := inlines!"An Axiomatic Basis for Computer Programming"
+  authors := #[inlines!"C. A. R. Hoare"]
+  journal := inlines!"Communications of the ACM"
+  year := 1969
+  volume := inlines!"12"
+  number := inlines!"10"
+  month := none
+  pages := some (576, 583)
 
 def pratt73 : InProceedings where
   title := inlines!"Top down operator precedence"

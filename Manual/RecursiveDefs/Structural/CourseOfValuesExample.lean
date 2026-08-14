@@ -21,15 +21,15 @@ open Lean.Elab.Tactic.GuardMsgs.WhitespaceMode
 This definition is equivalent to {name}`List.below`:
 ```lean
 def List.below' {α : Type u} {motive : List α → Sort u} :
-    List α → Sort (max 1 u)
+    List α → Sort (max (u + 1) u)
   | [] => PUnit
   | _ :: xs => motive xs ×' xs.below' (motive := motive)
 ```
 
-```lean (show := false)
+```lean -show
 theorem List.below_eq_below' : @List.below = @List.below' := by
   funext α motive xs
-  induction xs <;> simp [List.below, below']
+  induction xs <;> simp [below']
   congr
 ```
 
@@ -46,21 +46,21 @@ inductive Tree (α : Type u) : Type u where
 Its corresponding course-of-values table contains the realizations of the motive for all subtrees:
 ```lean
 def Tree.below' {α : Type u} {motive : Tree α → Sort u} :
-    Tree α → Sort (max 1 u)
+    Tree α → Sort (max (u + 1) u)
   | .leaf => PUnit
   | .branch left _val right =>
     (motive left ×' left.below' (motive := motive)) ×'
     (motive right ×' right.below' (motive := motive))
 ```
 
-```lean (show := false)
+```lean -show
 theorem Tree.below_eq_below' : @Tree.below = @Tree.below' := by
   funext α motive t
   induction t
   next =>
-    simp [Tree.below, Tree.below']
+    simp [Tree.below']
   next ihl ihr =>
-    simp [Tree.below, Tree.below', ihl, ihr]
+    simp [Tree.below', ihl, ihr]
 
 ```
 
@@ -130,7 +130,7 @@ def Tree.brecOn' {α : Type u}
   (t.brecOnTable (motive := motive) step).1
 ```
 
-```lean (show := false)
+```lean -show -keep
 -- Proving the above-claimed equivalence is too time consuming, but evaluating a few examples will at least catch silly mistakes!
 
 /--

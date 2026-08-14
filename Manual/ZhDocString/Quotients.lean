@@ -333,7 +333,13 @@ protected abbrev lift₂
     (c : (a₁ : α) → (b₁ : β) → (a₂ : α) → (b₂ : β) → a₁ ≈ a₂ → b₁ ≈ b₂ → f a₁ b₁ = f a₂ b₂)
     (q₁ : Quotient s₁) (q₂ : Quotient s₂)
     : φ := by
-  sorry
+  apply Quotient.lift (fun (a₁ : α) => Quotient.lift (f a₁)
+    (fun (a b : β) => c a₁ a a₁ b (Setoid.refl a₁)) q₂) _ q₁
+  intros
+  induction q₂ using Quotient.ind
+  apply c
+  assumption
+  apply Setoid.refl
 
 /-
 /--
@@ -456,7 +462,7 @@ protected abbrev recOn
 
  * `Quotient.lift` 适合定义非依值函数。
  * `Quotient.ind` 适合用于对商类型证明定理。
- * 每当目标类型为 {tech key := "subsingleton"}[子单元] 时，可以使用 `Quotient.recOnSubsingleton`。
+ * 每当目标类型为 {tech (key := "subsingleton")}[子单元] 时，可以使用 `Quotient.recOnSubsingleton`。
  * `Quotient.hrecOn` 使用异质等价，而不是通过 `Quotient.sound` 进行重写。
 
 `Quotient.rec` 是该递归子的一个变体，不同之处在于它将商类型参数放在最后。
@@ -598,10 +604,19 @@ If two values are equal in a quotient, then they are related by its equivalence 
 theorem exact {s : Setoid α} {a b : α} : Quotient.mk s a = Quotient.mk s b → a ≈ b := sorry
 -/
 
+omit [Setoid α] in
 /--
 如果两个值在商类型中是相等的，那么它们必定满足该商类型的等价关系。
 -/
-theorem exact {s : Setoid α} {a b : α} : Quotient.mk s a = Quotient.mk s b → a ≈ b := sorry
+theorem exact {s : Setoid α} {a b : α} : Quotient.mk s a = Quotient.mk s b → a ≈ b := by
+  let s' : _root_.Setoid α := {
+    r := s.r
+    iseqv := ⟨s.iseqv.refl, s.iseqv.symm, s.iseqv.trans⟩
+  }
+  intro h
+  have h' : _root_.Quotient.mk s' a = _root_.Quotient.mk s' b := h
+  change s.r a b
+  exact _root_.Quotient.exact h'
 
 /-
 opaque Quot {α : Sort u} (r : α → α → Prop) : Sort u
@@ -889,7 +904,7 @@ be easier to use:
  * `Quot.lift` 适用于定义非依值的函数。
  * `Quot.ind` 适用于证明关于商类型的定理。
  * 只要目标类型是一个 `Subsingleton`（子单元），就可以使用 `Quot.recOnSubsingleton`。
- * `Quot.hrecOn` 使用了 {tech key := "heterogeneous equality"}[异质等价]，而不是用 `Quot.sound` 进行重写。
+ * `Quot.hrecOn` 使用了 {tech (key := "heterogeneous equality")}[异质等价]，而不是用 `Quot.sound` 进行重写。
 
 `Quot.recOn` 是该递归子的一种变体，它首先传入商类型参数。
 -/

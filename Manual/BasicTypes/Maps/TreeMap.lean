@@ -17,6 +17,8 @@ open Verso.Genre Manual
 open Verso.Genre.Manual.InlineLean
 
 set_option pp.rawOnError true
+set_option maxHeartbeats 250000
+
 
 #doc (Manual) "Tree-Based Maps" =>
 %%%
@@ -26,7 +28,7 @@ tag := "TreeMap"
 
 The declarations in this section should be imported using `import Std.TreeMap`.
 
-{docstring Std.TreeMap (hideFields:=true) (hideStructureConstructor := true)}
+{docstring Std.TreeMap +hideFields +hideStructureConstructor}
 
 # Creation
 
@@ -109,10 +111,6 @@ The declarations in this section should be imported using `import Std.TreeMap`.
 
 {docstring Std.TreeMap.getEntryLTD}
 
-{docstring Std.TreeMap.getGE}
-
-{docstring Std.TreeMap.getGT}
-
 {docstring Std.TreeMap.getKeyGE}
 
 {docstring Std.TreeMap.getKeyGE!}
@@ -144,10 +142,6 @@ The declarations in this section should be imported using `import Std.TreeMap`.
 {docstring Std.TreeMap.getKeyLT?}
 
 {docstring Std.TreeMap.getKeyLTD}
-
-{docstring Std.TreeMap.getLE}
-
-{docstring Std.TreeMap.getLT}
 
 {docstring Std.TreeMap.keyAtIdx}
 
@@ -224,6 +218,12 @@ The declarations in this section should be imported using `import Std.TreeMap`.
 
 
 # Iteration
+
+{docstring Std.TreeMap.iter}
+
+{docstring Std.TreeMap.keysIter}
+
+{docstring Std.TreeMap.valuesIter}
 
 {docstring Std.TreeMap.map}
 

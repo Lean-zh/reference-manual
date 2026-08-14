@@ -28,7 +28,7 @@ tag := "terms"
 
 
 {deftech}_Terms_ are the principal means of writing mathematics and programs in Lean.
-The elaborator({tech key := "elaborator"}[繁释器]) translates them to Lean's minimal core language, which is then checked by the kernel and compiled for execution.
+The {deftech (key := "Lean elaborator")}[elaborator] translates them to Lean's minimal core language, which is then checked by the kernel and compiled for execution.
 The syntax of terms is {ref "syntax-ext"}[arbitrarily extensible]; this chapter documents the term syntax that Lean provides out-of-the-box.
 
 # Identifiers
@@ -43,7 +43,7 @@ $x:ident
 :::
 
 An identifier term is a reference to a name.{margin}[The specific lexical syntax of identifiers is described {ref "keywords-and-identifiers"}[in the section on Lean's concrete syntax].]
-Identifiers also occur in contexts where they bind names, such as {keywordOf Lean.Parser.Term.let}`let` and {keywordOf Lean.Parser.Term.fun}`fun`; however, these binding occurrences are not complete terms in and of them selves.
+Identifiers also occur in contexts where they bind names, such as {keywordOf Lean.Parser.Term.let}`let` and {keywordOf Lean.Parser.Term.fun}`fun`; however, these binding occurrences are not complete terms in and of themselves.
 The mapping from identifiers to names is not trivial: at any point in a {tech}[module], some number of {tech}[namespaces] will be open, there may be {tech}[section variables], and there may be local bindings.
 Furthermore, identifiers may contain multiple dot-separated atomic identifiers; the dot both separates namespaces from their contents and variables from fields or functions that use {tech}[field notation].
 This creates ambiguity, because an identifier `A.B.C.D.e.f` could refer to any of the following:
@@ -56,14 +56,14 @@ This creates ambiguity, because an identifier `A.B.C.D.e.f` could refer to any o
 
 This list is not exhaustive.
 Given an identifier, the elaborator must discover which name or names an identifier refers to, and whether any of the trailing components are fields or functions applied via field notation.
-This is called {deftech key:="resolve"}_resolving_ the name.
+This is called {deftech (key := "resolve")}_resolving_ the name.
 
 Some declarations in the global environment are lazily created the first time they are referenced.
 Resolving an identifier in a way that both creates one of these declarations and results in a reference to it is called {deftech}_realizing_ the name.
 The rules for resolving and realizing a name are the same, so even though this section refers only to resolving names, it applies to both.
 
 Name resolution is affected by the following:
- * {tech key:="pre-resolved identifier"}[Pre-resolved names] attached to the identifier
+ * {tech (key := "pre-resolved identifier")}[Pre-resolved names] attached to the identifier
  * The {tech}[macro scopes] attached to the identifier
  * The local bindings in scope, including auxiliary definitions created as part of the elaboration of {keywordOf Lean.Parser.Term.letrec}`let rec`.
  * Aliases created with {keywordOf Lean.Parser.Command.export}`export` in modules transitively imported by the current module
@@ -113,7 +113,8 @@ The innermost local binding of a name takes precedence over others:
 
 ::::keepEnv
 :::example "Longer Prefixes of Current Namespace Take Precedence"
-The  namespaces `A`, `B`, and `C` are nested, and `A` and `C` each contain a definition of `x`.
+The  namespaces `A`, `B`, and `C` are nested.
+Both `A` and `C` contain a definition of `x`.
 ```lean (name := NS)
 namespace A
 def x := "A.x"
@@ -194,7 +195,7 @@ Even though `A` was opened more recently than the declaration of {name}`B.x`, th
 :::example "Ambiguous Identifiers"
 In this example, `x` could refer either to {name}`A.x` or {name}`B.x`, and neither takes precedence.
 Because both have the same type, it is an error.
-```lean (name := ambi) (error := true)
+```lean (name := ambi) +error
 def A.x := "A.x"
 def B.x := "B.x"
 open A
@@ -202,7 +203,9 @@ open B
 #eval x
 ```
 ```leanOutput ambi (whitespace := lax)
-ambiguous, possible interpretations
+Ambiguous term
+  x
+Possible interpretations:
   B.x : String
 
   A.x : String
@@ -228,8 +231,8 @@ open D
 
 ## Leading `.`
 
-When an identifier beings with a dot (`.`), the type that the elaborator expects for the expression is used to resolve it, rather than the current namespace and set of open namespaces.
-{tech}[Generalized field notation] is related: leading dot notation uses the expect type of the identifier to resolve it to a name, while field notation uses the inferred type of the term immediately prior to the dot.
+When an identifier begins with a dot (`.`), the type that the elaborator expects for the expression is used to resolve it, rather than the current namespace and set of open namespaces.
+{tech}[Generalized field notation] is related: this {deftech}_leading dot notation_ uses the expected type of the identifier to resolve it to a name, while field notation uses the inferred type of the term immediately prior to the dot.
 
 Identifiers with a leading `.` are to be looked up in the {deftech}_expected type's namespace_.
 If the type expected for a term is a constant applied to zero or more arguments, then its namespace is the constant's name.
@@ -271,9 +274,9 @@ tag := "function-types"
 
 Lean's function types describe more than just the function's domain and codomain.
 They also provide instructions for elaborating application sites by indicating that some parameters are to be discovered automatically via unification or {ref "instance-synth"}[type class synthesis], that others are optional with default values, and that yet others should be synthesized using a custom tactic script.
-Furthermore, their syntax contains support for abbreviating {tech key:="currying"}[curried] functions.
+Furthermore, their syntax contains support for abbreviating {tech (key := "currying")}[curried] functions.
 
-:::syntax term title:="Function types"
+:::syntax term (title := "Function types")
 Dependent function types include an explicit name:
 ```grammar
 ($x:ident : $t) → $t2
@@ -285,7 +288,7 @@ $t1:term → $t2
 ```
 :::
 
-:::syntax term title:="Curried Function Types"
+:::syntax term (title := "Curried Function Types")
 Dependent function types may include multiple parameters that have the same type in a single set of parentheses:
 ```grammar
 ($x:ident* : $t) → $t
@@ -293,7 +296,7 @@ Dependent function types may include multiple parameters that have the same type
 This is equivalent to repeating the type annotation for each parameter name in a nested function type.
 :::
 
-:::syntax term title:="Implicit, Optional, and Auto Parameters"
+:::syntax term (title := "Implicit, Optional, and Auto Parameters")
 Function types can describe functions that take implicit, instance implicit, optional, and automatic parameters.
 All but instance implicit parameters require one or more names.
 ```grammar
@@ -339,7 +342,7 @@ tag := "function-terms"
 Terms with function types can be created via abstractions, introduced with the {keywordOf Lean.Parser.Term.fun}`fun` keyword.{margin}[In various communities, function abstractions are also known as _lambdas_, due to Alonzo Church's notation for them, or _anonymous functions_ because they don't need to be defined with a name in the global environment.]
 While abstractions in the core type theory only allow a single variable to be bound, function terms are quite flexible in the high-level Lean syntax.
 
-:::syntax term title:="Function Abstraction"
+:::syntax term (title := "Function Abstraction")
 The most basic function abstraction introduces a variable to stand for the function's parameter:
 
 ```grammar
@@ -354,13 +357,13 @@ fun $x:ident : term => $t
 ```
 :::
 
-Function definitions defined with keywords such as {keywordOf Lean.Parser.Command.declaration parser:=Lean.Parser.Command.definition}`def` desugar to {keywordOf Lean.Parser.Term.fun}`fun`.
+Function definitions defined with keywords such as {keywordOf Lean.Parser.Command.declaration (parser := Lean.Parser.Command.definition)}`def` desugar to {keywordOf Lean.Parser.Term.fun}`fun`.
 Inductive type declarations, on the other hand, introduce new values with function types (constructors and type constructors) that cannot themselves be implemented using just {keywordOf Lean.Parser.Term.fun}`fun`.
 
-:::syntax term title:="Curried Functions"
+:::syntax term (title := "Curried Functions")
 
 
-Multiple parameter names are accepted after after {keywordOf Lean.Parser.Term.fun}`fun`:
+Multiple parameter names are accepted after {keywordOf Lean.Parser.Term.fun}`fun`:
 ```grammar
 fun $x:ident $x:ident* => $t
 ```
@@ -369,7 +372,7 @@ fun $x:ident $x:ident* => $t
 fun $x:ident $x:ident* : $t:term => $t
 ```
 
-Different type annotations for multiple parameters requires parentheses:
+Different type annotations for multiple parameters require parentheses:
 
 ```grammar
 free{"fun " "(" (ident)* ": " term")" " =>" term}
@@ -407,7 +410,7 @@ Implicit parameters come in three varieties:
 
   : Instance implicit parameters
 
-    Arguments for {deftech}_instance implicit_ parameters are found via {ref "instance-synth"}[type class synthesis].
+    Arguments for {tech}_instance implicit_ parameters are found via {ref "instance-synth"}[type class synthesis].
     Instance implicit parameters are written in square brackets (`[` and `]`).
     Unlike the other kinds of implicit parameter, instance implicit parameters that are written without a `:` specify the parameter's type rather than providing a name.
     Furthermore, only a single name is allowed.
@@ -431,12 +434,12 @@ However, when the explicit argument is not provided, uses of {lean}`f` do not re
 example := f
 ```
 However, uses of `g` do require it to be solved, and fail to elaborate if there is insufficient information available:
-```lean (error := true) (name := noAlpha)
+```lean +error (name := noAlpha)
 example := g
 ```
 ```leanOutput noAlpha
-don't know how to synthesize implicit argument 'α'
-  @g ?m.6
+don't know how to synthesize implicit argument `α`
+  @g ?m.3
 context:
 ⊢ Type
 ```
@@ -444,7 +447,7 @@ context:
 ::::
 
 
-:::syntax term title := "Functions with Varying Binders"
+:::syntax term (title := "Functions with Varying Binders")
 The most general syntax for {keywordOf Lean.Parser.Term.fun}`fun` accepts a sequence of binders:
 ```grammar
 fun $p:funBinder $p:funBinder* => $t
@@ -452,7 +455,7 @@ fun $p:funBinder $p:funBinder* => $t
 :::
 
 
-:::syntax Lean.Parser.Term.funBinder title:="Function Binders"
+:::syntax Lean.Parser.Term.funBinder (title := "Function Binders")
 Function binders may be identifiers:
 ```grammar
 $x:ident
@@ -495,7 +498,7 @@ As usual, an `_` may be used instead of an identifier to create an anonymous par
 Lean's core language does not distinguish between implicit, instance, and explicit parameters: the various kinds of function and function type are definitionally equal.
 The differences can be observed only during elaboration.
 
-```lean (show := false)
+```lean -show
 -- Evidence of claims in prior paragraph
 example : ({x : Nat} → Nat) = (Nat → Nat) := rfl
 example : (fun {x} => 2 : {x : Nat} → Nat) = (fun x => 2 : Nat → Nat) := rfl
@@ -597,11 +600,14 @@ If any fresh variables were created for missing explicit positional arguments, t
 Finally, instance synthesis is invoked and as many metavariables as possible are solved:
  1. A type is inferred for the entire function application. This may cause some metavariables to be solved due to unification that occurs during type inference.
  2. The instance metavariables are synthesized. {tech}[Default instances] are only used if the inferred type is a metavariable that is the output parameter of one of the instances.
- 3. If there is an expected type, it is unified with the inferred type; however, errors resulting from this unification are discarded. If the expected and inferred types can be equal, unification can solve leftover implicit argument metavariables. If they can't be equal, an error is not thrown because a surrounding elaborator may be able to insert {tech}[coercions] or {tech key:="lift"}[monad lifts].
+ 3. If there is an expected type, it is unified with the inferred type; however, errors resulting from this unification are discarded. If the expected and inferred types can be equal, unification can solve leftover implicit argument metavariables. If they can't be equal, an error is not thrown because a surrounding elaborator may be able to insert {tech}[coercions] or {tech (key := "lift")}[monad lifts].
 
 
 ::::keepEnv
 :::example "Named Arguments"
+```lean -show
+set_option linter.unusedVariables false
+```
 The {keywordOf Lean.Parser.Command.check}`#check` command can be used to inspect the arguments that were inserted for a function call.
 
 The function {name}`sum3` takes three explicit {lean}`Nat` parameters, named `x`, `y`, and `z`.
@@ -667,19 +673,35 @@ This means that the remaining arguments can again be passed by name.
 fun x => (fun x y => sum3 x y 8) x 1 : Nat → Nat
 ```
 
-```lean (show := false)
--- This is not shown in the manual pending #6373
--- https://github.com/leanprover/lean4/issues/6373
--- When the issue is fixed, this code will stop working and the text can be updated.
-
-/--
-info: let x := 15;
-fun x y => sum3 x y x : Nat → Nat → Nat
--/
-#guard_msgs in
+Parameter names are taken from the function's _type_, and the names used for function parameters don't need to match the names used in the type.
+This means that local bindings that conflict with a parameter's name don't prevent the use of named parameters, because Lean avoids this conflicts by renaming the function's parameter while leaving the name intact in the type.
+```lean (name := sum15)
 #check let x := 15; sum3 (z := x)
 ```
-
+Here, the `x` that named {name}`sum3`'s first argument has been replaced, so as to not conflict with the surrounding {keywordOf Parser.Term.let}`let`:
+```leanOutput sum15
+let x := 15;
+fun x_1 y => sum3 x_1 y x : Nat → Nat → Nat
+```
+Even though `x` was renamed, it can still be passed by name:
+```lean (name := xNoCapture)
+#check (let x := 15; sum3 (z := x)) (x := 4)
+```
+```leanOutput xNoCapture
+(let x := 15;
+  fun x_1 y => sum3 x_1 y x)
+  4 : Nat → Nat
+```
+This is because the name `x` is still used in the type.
+Enabling the option {option}`pp.piBinderNames` shows the parameter names in the type:
+```lean (name := xRenamed)
+set_option pp.piBinderNames true in
+#check let x := 15; sum3 (z := x)
+```
+```leanOutput xRenamed
+let x := 15;
+fun x_1 y => sum3 x_1 y x : (x y : Nat) → Nat
+```
 :::
 ::::
 
@@ -709,18 +731,15 @@ If a term's type is a constant applied to zero or more arguments, then {deftech}
 The use of field notation to apply other functions is called {deftech}_generalized field notation_.
 
 The identifier after the dot is looked up in the namespace of the term's type, which is the constant's name.
-If the type is not an application of a constant (e.g., a function, a metavariable, or a universe) then it doesn't have a namespace and generalized field notation cannot be used.
+If the type is not an application of a constant (e.g. a metavariable or a universe) then it doesn't have a namespace and generalized field notation cannot be used.
+As a special case, if an expression is a function, generalized field notation will look in the `Function` namespace. Therefore, {lean}`Nat.add.uncurry` is a use of generalized field notation that is equivalent to {lean}`Function.uncurry Nat.add`.
+
 If the field is not found, but the constant can be unfolded to yield a further type which is a constant or application of a constant, then the process is repeated with the new constant.
 
 When a function is found, the term before the dot becomes an argument to the function.
 Specifically, it becomes the first explicit argument that would not be a type error.
 Aside from that, the application is elaborated as usual.
 
-::::keepEnv
-```lean (show := false)
-section
-variable (name : Username)
-```
 :::example "Generalized Field Notation"
 The type {lean}`Username` is a constant, so functions in the {name}`Username` namespace can be applied to terms with type {lean}`Username` with generalized field notation.
 ```lean
@@ -728,9 +747,9 @@ def Username := String
 ```
 
 One such function is {name}`Username.validate`, which checks that a username contains no leading whitespace and that only a small set of acceptable characters are used.
-In its definition, generalized field notation is used to call the functions {lean}`String.isPrefixOf`, {lean}`String.any`, {lean}`Char.isAlpha`, and {lean}`Char.isDigit`.
+In its definition, generalized field notation is used to call the functions {lean}`String.isPrefixOf`, {name}`String.any`, {lean}`Char.isAlpha`, and {lean}`Char.isDigit`.
 In the case of {lean}`String.isPrefixOf`, which takes two {lean}`String` arguments, {lean}`" "` is used as the first  because it's the term before the dot.
-{lean}`String.any` can be called on {lean}`name` using generalized field notation even though it has type {lean}`Username` because `Username.any` is not defined and {lean}`Username` unfolds to {lean}`String`.
+{name}`String.any` can be called on {lean}`name` using generalized field notation even though it has type {lean}`Username` because `Username.any` is not defined and {lean}`Username` unfolds to {lean}`String`.
 
 ```lean
 def Username.validate (name : Username) : Except String Unit := do
@@ -745,32 +764,35 @@ where
     !c.isDigit &&
     !c ∈ ['_', ' ']
 
-def root : Username := "root"
+def adminUser : Username := "admin"
 ```
 
-However, {lean}`Username.validate` can't be called on {lean}`"root"` using field notation, because {lean}`String` does not unfold to {lean}`Username`.
-```lean (error := true) (name := notString)
-#eval "root".validate
+However, {lean}`Username.validate` can't be called on {lean}`"admin"` using field notation, because {lean}`String` does not unfold to {lean}`Username`.
+```lean +error (name := notString)
+#eval "admin".validate
 ```
 ```leanOutput notString
-invalid field 'validate', the environment does not contain 'String.validate'
-  "root"
-has type
-  String
+Invalid field `validate`: The environment does not contain `String.validate`, so it is not possible to project the field `validate` from an expression
+  "admin"
+of type `String`
 ```
 
-{lean}`root`, on the other hand, has type {lean}`Username`:
+{lean}`adminUser`, on the other hand, has type {lean}`Username`, so the {lean}`Username.validate` function can be invoked with generalized field notation:
 ```lean (name := isUsername)
-#eval root.validate
+#eval adminUser.validate
 ```
 ```leanOutput isUsername
 Except.ok ()
 ```
-:::
-```lean (show := false)
-end
+
+Going in the other direction, {name}`String.any` *can* be called on the {lean}`Username` value {lean}`adminUser` with generalized field notation, because the type {lean}`Username` unfolds to {lean}`String`.
+```lean (name := isString1)
+#eval adminUser.any (· == 'm')
 ```
-::::
+```leanOutput isString1
+true
+```
+:::
 
 {optionDocs pp.fieldNotation}
 
@@ -859,7 +881,7 @@ $e |>.$_:fieldIdx
 :::
 
 ::::keepEnv
-```lean (show := false)
+```lean -show
 section
 universe u
 axiom T : Nat → Type u
@@ -874,17 +896,17 @@ axiom T.f : {n : Nat} → Char → T n → String
 
 Some functions are inconvenient to use with pipelines because their argument order is not conducive.
 For example, {name}`Array.push` takes an array as its first argument, not a {lean}`Nat`, leading to this error:
-```lean (name := arrPush) (error := true)
+```lean (name := arrPush) +error
 #eval #[1, 2, 3] |> Array.push 4
 ```
 ```leanOutput arrPush
-failed to synthesize
-  OfNat (Array ?m.4) 4
+failed to synthesize instance of type class
+  OfNat (Array ?m.2) 4
 numerals are polymorphic in Lean, but the numeral `4` cannot be used in a context where the expected type is
-  Array ?m.4
+  Array ?m.2
 due to the absence of the instance above
 
-Additional diagnostic information may be available using the `set_option diagnostics true` command.
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
 ```
 
 Using pipeline field notation causes the array to be inserted at the first type-correct position:
@@ -905,32 +927,43 @@ This process can be iterated:
 :::
 
 
-```lean (show := false)
+```lean -show
 end
 ```
 ::::
 
-# Literals
+# Numeric Literals
 
 There are two kinds of numeric literal: natural number literals and {deftech}[scientific literals].
-Both are overloaded via {tech key:="type class"}[type classes].
+Both are overloaded via {tech (key := "type class")}[type classes].
 
 ## Natural Numbers
 %%%
 tag := "nat-literals"
 %%%
 
-```lean (show := false)
+```lean -show
 section
 variable {n : Nat}
 ```
+
+Natural numbers can be specified in several forms:
+
+ - A sequence of digits 0 through 9 is a decimal literal
+ - `0b` or `0B` followed by a sequence of one or more 0s and 1s is a binary literal
+ - `0o` or `0O` followed by a sequence of one or more digits 0 through 7 is an octal literal
+ - `0x` or `0X` followed by a sequence of one or more hex digits (0 through 9 and A through F, case-insensitive) is a hexadecimal literal
+
+All numeric literals can also contain internal underscores, except for between the first two characters in a binary, octal, or hexadecimal literal.
+These are intended to help groups of digits in natural ways, for instance {lean}`1_000_000` or {lean}`0x_c0de_cafe`.
+(While it is possible to write the number 123 as {lean}`1_2__3`, this is not recommended.)
 
 When Lean encounters a natural number literal {lean}`n`, it interprets it via the overloaded method {lean}`OfNat.ofNat n`.
 A {tech}[default instance] of {lean}`OfNat Nat n` ensures that the type {lean}`Nat` can be inferred when no other type information is present.
 
 {docstring OfNat}
 
-```lean (show := false)
+```lean -show
 end
 ```
 
@@ -944,7 +977,8 @@ structure NatInterval where
 
 instance : Add NatInterval where
   add
-    | ⟨lo1, hi1, le1⟩, ⟨lo2, hi2, le2⟩ => ⟨lo1 + lo2, hi1 + hi2, by omega⟩
+    | ⟨lo1, hi1, le1⟩, ⟨lo2, hi2, le2⟩ =>
+      ⟨lo1 + lo2, hi1 + hi2, by grind⟩
 ```
 
 An {name}`OfNat` instance allows natural number literals to be used to represent intervals:
@@ -958,6 +992,12 @@ instance : OfNat NatInterval n where
 ```leanOutput eval8Interval
 { low := 8, high := 8, low_le_high := _ }
 ```
+```lean (name := eval7Interval)
+#eval (0b111 : NatInterval)
+```
+```leanOutput eval7Interval
+{ low := 7, high := 7, low_le_high := _ }
+```
 :::
 
 There are no separate integer literals.
@@ -965,8 +1005,7 @@ Terms such as {lean}`-5` consist of a prefix negation (which can be overloaded v
 
 ## Scientific Numbers
 
-Scientific number literals consist of a sequence of digits followed by an optional period and decimal part and an optional exponent.
-If no period or exponent is present, then the term is instead a natural number literal.
+Scientific number literals consist of a sequence of decimal digits followed (without intervening whitespace) by an optional decimal part (a period followed by zero or more decimal digits) and an optional exponent part (the letter `e` followed by an optional `+` or `-` and then followed by one or more decimal digits).
 Scientific numbers are overloaded via the {name}`OfScientific` type class.
 
 {docstring OfScientific}
@@ -1074,7 +1113,7 @@ else
 
 Array indexing requires evidence that the index in question is within the bounds of the array, so {name}`getThird` does not elaborate.
 
-```lean (error := true) (keep := false) (name := getThird1)
+```lean +error -keep (name := getThird1)
 def getThird (xs : Array α) : α := xs[2]
 ```
 ```leanOutput getThird1
@@ -1088,9 +1127,9 @@ xs : Array α
 ⊢ 2 < xs.size
 ```
 
-Relaxing the return type to {name}`Option` and adding a bounds check results the same error.
+Relaxing the return type to {name}`Option` and adding a bounds check results in the same error.
 This is because the proof that the index is in bounds was not added to the local context.
-```lean (error := true) (keep := false) (name := getThird2)
+```lean +error -keep (name := getThird2)
 def getThird (xs : Array α) : Option α :=
   if xs.size ≤ 2 then none
   else xs[2]
@@ -1166,7 +1205,7 @@ $[| $[$e,*]|* => $e]*
 ```
 :::
 
-:::syntax matchDiscr (title := "Match Discriminants") (open := false)
+:::syntax matchDiscr (title := "Match Discriminants") -open
 ```grammar
 $e:term
 ```
@@ -1200,7 +1239,7 @@ They consist of the following:
   If the identifier is a constructor, the pattern matches values built with that constructor if the argument patterns match the constructor's arguments.
   If it is a function with the {attr}`match_pattern` attribute, then the function application is unfolded and the resulting term's {tech}[normal form] is used as the pattern.
   Default arguments are inserted as usual, and their normal forms are used as patterns.
-  {tech key:="ellipsis"}[Ellipses], however, result in all further arguments being treated as universal patterns, even those with associated default values or tactics.
+  {tech (key := "ellipsis")}[Ellipses], however, result in all further arguments being treated as universal patterns, even those with associated default values or tactics.
 
 : Literals
 
@@ -1208,7 +1247,6 @@ They consist of the following:
   {ref "raw-string-literals"}[Raw string literals] are allowed as patterns, but {ref "string-interpolation"}[interpolated strings] are not.
   {ref "nat-syntax"}[Natural number literals] in patterns are interpreted by synthesizing the corresponding {name}`OfNat` instance and reducing the resulting term to {tech}[normal form], which must be a pattern.
   Similarly, {tech}[scientific literals] are interpreted via the corresponding {name}`OfScientific` instance.
-  While {lean}`Float` has such an instance, {lean}`Float`s cannot be used as patterns because the instance relies on an opaque function that can't be reduced to a valid pattern.
 
 : Structure Instances
 
@@ -1280,12 +1318,12 @@ $x:ident@$h:ident:$e
 :::
 
 
-```lean (show := false) (keep := false)
+```lean -show -keep
 -- Check claims about patterns
 
 -- Literals
 /-- error: Invalid pattern: Expected a constructor or constant marked with `[match_pattern]` -/
-#check_msgs in
+#guard_msgs in
 def foo (x : String) : String :=
   match x with
   | "abc" => ""
@@ -1300,10 +1338,38 @@ deriving Inhabited
 instance : OfNat Blah n where
   ofNat := ⟨n + 1⟩
 
+def isFiveOh : Float → Bool
+  | 5.0 => true
+  | _ => false
+
+/-- info: true -/
+#guard_msgs in
+#eval isFiveOh 5.0
+
+/-- info: false -/
+#guard_msgs in
+#eval isFiveOh 0.5
+
+def isZeroFloat : Float → Bool
+  | 0.0 => true
+  | _ => false
+
+/-- info: true -/
+#guard_msgs in
+#eval isZeroFloat 0.0
+
+/-- info: -0.000000 -/
+#guard_msgs in
+#eval (0.0 / -1.0)
+
+/-- info: false -/
+#guard_msgs in
+#eval isZeroFloat (0.0 / -1.0)
+
 /--
 error: Missing cases:
-(Blah.mk (Nat.succ (Nat.succ _)))
 (Blah.mk Nat.zero)
+(Blah.mk (Nat.succ (Nat.succ _)))
 -/
 #check_msgs in
 def abc (n : Blah) : Bool :=
@@ -1321,25 +1387,14 @@ partial instance : OfNat Blah n where
 -- This shows that the partial instance was not unfolded
 /--
 error: Dependent elimination failed: Type mismatch when solving this alternative: it has type
-  motive (instOfNatBlah_1.f 0) : Sort ?u.903
+  motive (instOfNatBlah_1.f 0)
 but is expected to have type
-  motive n✝ : Sort ?u.903
+  motive n✝
 -/
 #check_msgs in
 def defg (n : Blah) : Bool :=
   match n with
   | 0 => true
-
-/--
-error: Dependent elimination failed: Type mismatch when solving this alternative: it has type
-  motive (Float.ofScientific 25 true 1) : Sort ?u.946
-but is expected to have type
-  motive x✝ : Sort ?u.946
--/
-#check_msgs in
-def twoPointFive? : Float → Option Float
-  | 2.5 => some 2.5
-  | _ => none
 
 /--
 info: @Neg.neg.{0} Float instNegFloat
@@ -1355,23 +1410,16 @@ structure OnlyThreeOrFive where
   ok : val = 3 ∨ val = 5 := by rfl
 
 
--- Default args are synthesized in patterns too!
+-- Default args are not synthesized in patterns
 /--
-error: tactic 'rfl' failed, the left-hand side
-  n = 3
-is not definitionally equal to the right-hand side
-  n = 5
-x✝ : OnlyThreeOrFive
-n : Nat
-⊢ n = 3 ∨ n = 5
+error: Fields missing: `val2`, `ok`
 -/
 #check_msgs in
 def ggg : OnlyThreeOrFive → Nat
   | {val := n} => n
 
 /--
-error: Missing cases:
-(OnlyThreeOrFive.mk _ true _)
+error: Fields missing: `val2`
 -/
 #check_msgs in
 def hhh : OnlyThreeOrFive → Nat
@@ -1385,13 +1433,14 @@ def ggg' : OnlyThreeOrFive → Nat
 /--
 error: could not synthesize default value for parameter 'ok' using tactics
 ---
-error: tactic 'rfl' failed, the left-hand side
+error: Tactic `rfl` failed: The left-hand side
   3 = 3
 is not definitionally equal to the right-hand side
   3 = 5
+
 ⊢ 3 = 3 ∨ 3 = 5
 ---
-info: { val := 3, val2 := ?m.1743, ok := ⋯ } : OnlyThreeOrFive
+info: { val := 3, val2 := ?m.2647, ok := ⋯ } : OnlyThreeOrFive
 -/
 #check_msgs in
 #check OnlyThreeOrFive.mk 3 ..
@@ -1430,7 +1479,7 @@ In both subsequent patterns in the same match alternative and the right-hand sid
 
 
 ::::keepEnv
-```lean (show := false)
+```lean -show
 variable {α : Type u}
 ```
 
@@ -1439,14 +1488,29 @@ This {tech}[indexed family] describes mostly-balanced trees, with the depth enco
 ```lean
 inductive BalancedTree (α : Type u) : Nat → Type u where
   | empty : BalancedTree α 0
-  | branch (left : BalancedTree α n) (val : α) (right : BalancedTree α n) : BalancedTree α (n + 1)
-  | lbranch (left : BalancedTree α (n + 1)) (val : α) (right : BalancedTree α n) : BalancedTree α (n + 2)
-  | rbranch (left : BalancedTree α n) (val : α) (right : BalancedTree α (n + 1)) : BalancedTree α (n + 2)
+  | branch
+    (left : BalancedTree α n)
+    (val : α)
+    (right : BalancedTree α n) :
+    BalancedTree α (n + 1)
+  | lbranch
+    (left : BalancedTree α (n + 1))
+    (val : α)
+    (right : BalancedTree α n) :
+    BalancedTree α (n + 2)
+  | rbranch
+    (left : BalancedTree α n)
+    (val : α)
+    (right : BalancedTree α (n + 1)) :
+    BalancedTree α (n + 2)
 ```
 
 To begin the implementation of a function to construct a perfectly balanced tree with some initial element and a given depth, a {tech}[hole] can be used for the definition.
-```lean (keep := false) (name := fill1) (error := true)
-def BalancedTree.filledWith (x : α) (depth : Nat) : BalancedTree α depth := _
+```lean -keep (name := fill1) +error
+def BalancedTree.filledWith
+    (x : α) (depth : Nat) :
+    BalancedTree α depth :=
+  _
 ```
 The error message demonstrates that the tree should have the indicated depth.
 ```leanOutput fill1
@@ -1460,8 +1524,10 @@ depth : Nat
 
 Matching on the expected depth and inserting holes results in an error message for each hole.
 These messages demonstrate that the expected type has been refined, with `depth` replaced by the matched values.
-```lean (error := true) (name := fill2)
-def BalancedTree.filledWith (x : α) (depth : Nat) : BalancedTree α depth :=
+```lean +error (name := fill2)
+def BalancedTree.filledWith
+    (x : α) (depth : Nat) :
+    BalancedTree α depth :=
   match depth with
   | 0 => _
   | n + 1 => _
@@ -1487,7 +1553,7 @@ depth n : Nat
 
 Matching on the depth of a tree and the tree itself leads to a refinement of the tree's type according to the depth's pattern.
 This means that certain combinations are not well-typed, such as {lean}`0` and {name BalancedTree.branch}`branch`, because refining the second discriminant's type yields {lean}`BalancedTree α 0` which does not match the constructor's type.
-````lean (name := patfail) (error := true)
+```lean (name := patfail) +error
 def BalancedTree.isPerfectlyBalanced
     (n : Nat) (t : BalancedTree α n) : Bool :=
   match n, t with
@@ -1496,14 +1562,14 @@ def BalancedTree.isPerfectlyBalanced
     isPerfectlyBalanced left &&
     isPerfectlyBalanced right
   | _, _ => false
-````
+```
 ```leanOutput patfail
-type mismatch
+Type mismatch
   left.branch val right
 has type
-  BalancedTree ?m.54 (?m.51 + 1) : Type ?u.47
+  BalancedTree ?m.54 (?m.51 + 1)
 but is expected to have type
-  BalancedTree α 0 : Type u
+  BalancedTree α 0
 ```
 :::
 ::::
@@ -1527,7 +1593,7 @@ def last? (xs : List α) : Except String α :=
 ```
 
 Without the name, {tactic}`simp_all` is unable to find the contradiction.
-```lean (error := true) (name := namedHyp)
+```lean +error (name := namedHyp)
 def last?' (xs : List α) : Except String α :=
   match xs with
   | [] =>
@@ -1553,7 +1619,7 @@ The type that results from applying a function with this type to the discriminan
 :::example "Matching with an Explicit Motive"
 An explicit motive can be used to provide type information that is otherwise unavailable from the surrounding context.
 Attempting to match on a number and a proof that it is in fact {lean}`5` is an error, because there's no reason to connect the number to the proof:
-```lean (error := true) (name := noMotive)
+```lean +error (name := noMotive)
 #eval
   match 5, rfl with
   | 5, rfl => "ok"
@@ -1612,13 +1678,13 @@ This latter behavior can be turned off by passing the `(generalizing := false)` 
 
 :::::keepEnv
 ::::example "Matching, With and Without Generalization"
-```lean (show := false)
+```lean -show
 variable {α : Type u} (b : Bool) (ifTrue : b = true → α) (ifFalse : b = false → α)
 ```
 In this definition of {lean}`boolCases`, the assumption {lean}`b` is generalized in the type of `h` and then replaced with the actual pattern.
 This means that {lean}`ifTrue` and {lean}`ifFalse` have the types {lean}`true = true → α` and {lean}`false = false → α` in their respective cases, but `h`'s type mentions the original discriminant.
 
-```lean (error := true) (name := boolCases1) (keep := false)
+```lean +error (name := boolCases1) -keep
 def boolCases (b : Bool)
     (ifTrue : b = true → α)
     (ifFalse : b = false → α) :
@@ -1629,14 +1695,14 @@ def boolCases (b : Bool)
 ```
 The error for the first case is typical of both:
 ```leanOutput boolCases1
-Application type mismatch: In the application
-  ifTrue h
-the argument
+Application type mismatch: The argument
   h
 has type
-  b = true : Prop
+  b = true
 but is expected to have type
-  true = true : Prop
+  true = true
+in the application
+  ifTrue h
 ```
 Turning off generalization allows type checking to succeed, because {lean}`b` remains in the types of {lean}`ifTrue` and {lean}`ifFalse`.
 ```lean
@@ -1657,7 +1723,7 @@ In the generalized version, {name}`rfl` could have been used as the proof argume
 tag := "match_pattern-functions"
 %%%
 
-```lean (show := false)
+```lean -show
 section
 variable {n : Nat}
 ```
@@ -1675,13 +1741,13 @@ match_pattern
 :::
 
 ::::keepEnv
-```lean (show := false)
+```lean -show
 section
 variable {k : Nat}
 ```
 :::example "Match Patterns Follow Reduction"
 The following function can't be compiled:
-```lean (error := true) (name := nonPat)
+```lean +error (name := nonPat)
 def nonzero (n : Nat) : Bool :=
   match n with
   | 0 => false
@@ -1706,14 +1772,14 @@ No {tech}[ι-reduction] is possible, because the value being matched is a variab
 In the case of {lean}`k + 1`, that is, {lean}`Nat.add k (.succ .zero)`, the second pattern matches, so it reduces to {lean}`Nat.succ (Nat.add k .zero)`.
 The second pattern now matches, yielding {lean}`Nat.succ k`, which is a valid pattern.
 :::
-````lean (show := false)
+```lean -show
 end
-````
+```
 
 ::::
 
 
-```lean (show := false)
+```lean -show
 end
 ```
 
@@ -1791,7 +1857,7 @@ $e matches $e
 
 When branching on the result of {keywordOf Lean.«term_Matches_|»}`matches`, it's usually better to use {keywordOf termIfLet}`if let`, which can bind pattern variables in addition to checking whether a pattern matches.
 
-```lean (show := false)
+```lean -show
 /--
 info: match 4 with
 | n.succ => true
@@ -1851,7 +1917,7 @@ Specify the elaboration of pattern matching to {deftech}[auxiliary match functio
 
 # Holes
 
-A {deftech}_hole_ or {deftech}_placeholder term_ is a term that indicates the absence of instructions to the elaborator.{index}[placeholder term]{index subterm:="placeholder"}[term]
+A {deftech}_hole_ or {deftech}_placeholder term_ is a term that indicates the absence of instructions to the elaborator.{index}[placeholder term]{index (subterm := "placeholder")}[term]
 In terms, holes can be automatically filled when the surrounding context would only allow one type-correct term to be written where the hole is.
 Otherwise, a hole is an error.
 In patterns, holes represent universal patterns that can match anything.
@@ -1930,7 +1996,7 @@ show $_ by $_
 This example is unable to execute the tactic proof because the desired proposition is not known.
 As part of running the earlier tactics, the proposition is automatically refined to be one that the tactics could prove.
 However, their default cases fill it out incorrectly, leading to a proof that fails.
-```lean (name := byBusted) (error := true)
+```lean (name := byBusted) +error
 example (n : Nat) := by
   induction n
   next => rfl
@@ -1940,11 +2006,8 @@ example (n : Nat) := by
     rfl
 ```
 ```leanOutput byBusted
-tactic 'rewrite' failed, equality or iff proof expected
+Invalid rewrite argument: Expected an equality or iff proof or definition name, but `ih` is a proof of
   0 ≍ n'
-n' : Nat
-ih : 0 ≍ n'
-⊢ 0 ≍ n'.succ
 ```
 
 A prefix type ascription with {keywordOf Lean.Parser.Term.show}`show` can be used to provide the proposition being proved.
@@ -1962,22 +2025,90 @@ example (n : Nat) := show 0 + n = n by
 
 :::example "Ascribing Types to {keywordOf Lean.Parser.Term.do}`do` Blocks"
 This example lacks sufficient type information to synthesize the {name}`Pure` instance.
-```lean (name := doBusted) (error := true)
+```lean (name := doBusted) +error
 example := do
   return 5
 ```
 ```leanOutput doBusted
-typeclass instance problem is stuck, it is often due to metavariables
-  Pure ?m.64
+typeclass instance problem is stuck
+  Pure ?m.12
+
+Note: Lean will not try to resolve this typeclass instance problem because the type argument to `Pure` is a metavariable. This argument must be fully determined before Lean will try to resolve the typeclass.
+
+Hint: Adding type annotations and supplying implicit arguments to functions can give Lean more information for typeclass resolution. For example, if you have a variable `x` that you intend to be a `Nat`, but Lean reports it as having an unresolved type like `?m`, replacing `x` with `(x : Nat)` can get typeclass resolution un-stuck.
 ```
 
 A prefix type ascription with {keywordOf Lean.Parser.Term.show}`show`, together with a {tech}[hole], can be used to indicate the monad.
-The {tech key:="default instance"}[default] {lean}`OfNat _ 5` instance provides enough type information to fill the hole with {lean}`Nat`.
+The {tech (key := "default instance")}[default] {lean}`OfNat _ 5` instance provides enough type information to fill the hole with {lean}`Nat`.
 ```lean
 example := show StateM String _ from do
   return 5
 ```
 :::
+
+There is an important difference between postfix type ascriptions and {keywordOf Lean.Parser.Term.show}`show`.
+Ordinary postfix type ascriptions change the type that is expected for the term, which can change the way that the term elaborates.
+After elaboration, however, Lean infers the type of the resulting term and uses that inferred type for further elaboration tasks.
+On the other hand, {keywordOf Lean.Parser.Term.show}`show` elaborates to a term whose inferred type is the ascribed type.
+The difference can be observed when using {tech}[generalized field notation], where the ascribed type is only guaranteed to be used to resolve fields when using {keywordOf Lean.Parser.Term.show}`show`.
+
+::::example "Postfix Ascription vs `show`"
+
+:::paragraph
+This definition establishes an alternative name for {lean}`List String`:
+```lean
+def Colors := List String
+```
+:::
+
+:::paragraph
+A postfix type ascription provides the type information that's needed to determine the implicit argument {name}`String` to {name}`List.nil`, but the resulting type is still {lean}`List String`:
+```lean (name := nil)
+#check ([] : Colors)
+```
+```leanOutput nil
+[] : List String
+```
+:::
+
+:::paragraph
+When using {keywordOf Lean.Parser.Term.show}`show`, on the other hand, the elaborated term is constructed in such a way that the inferred type is {lean}`Colors`:
+```lean (name := nil2)
+#check (show Colors from [])
+```
+```leanOutput nil2
+have this := [];
+this : Colors
+```
+:::
+
+:::paragraph
+This function is designed to be invoked using {tech}[generalized field notation]:
+```lean
+def Colors.hasYellow (cs : Colors) : Bool :=
+  cs.any (·.toLower == "yellow")
+```
+:::
+
+:::paragraph
+Due to the differences in their inferred types, it can be used with {keywordOf Lean.Parser.Term.show}`show`, but not with the postfix type ascription:
+```lean (name := nil3) +error
+#eval ([] : Colors).hasYellow
+```
+```leanOutput nil3
+Invalid field `hasYellow`: The environment does not contain `List.hasYellow`, so it is not possible to project the field `hasYellow` from an expression
+  []
+of type `List String`
+```
+```lean (name := nil4)
+#eval (show Colors from []).hasYellow
+```
+```leanOutput nil4
+false
+```
+:::
+::::
+
 
 # Quotation and Antiquotation
 

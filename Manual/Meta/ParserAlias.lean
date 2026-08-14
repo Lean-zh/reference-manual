@@ -18,8 +18,9 @@ import Manual.Meta.PPrint
 
 namespace Manual
 
-open Lean Elab Term Tactic
+
 open Verso ArgParse Doc Elab Genre.Manual Html Code Highlighted.WebAssets
+open Lean Elab Term Tactic
 open SubVerso.Highlighting
 
 def parserAliasDomain := `Manual.parserAlias
@@ -68,16 +69,16 @@ def parserAlias : DirectiveExpander
     pure #[← ``(Verso.Doc.Block.other (Block.parserAlias $(quote opts.name) $(quote declName) $(quote opts.show) $(quote stackSz?) $(quote autoGroupArgs) $(quote docs?) $(quote argCount)) #[$(contents ++ userContents),*])]
 
 @[inline]
-private def getFromJson {α} [Inhabited α] [FromJson α] (v : Json) : HtmlT Genre.Manual (ReaderT ExtensionImpls IO) α:=
+private def getFromJson {α} [Inhabited α] [FromJson α] [Monad m] [Verso.MonadBuildLog (HtmlT Genre.Manual m)] (v : Json) : HtmlT Genre.Manual m α:=
   match FromJson.fromJson? (α := α) v with
   | .error e => do
-    Verso.Doc.Html.HtmlT.logError
+    reportError
       s!"Failed to deserialize parser alias data while generating HTML for a parser alias docstring.\nError: {e}\nJSON: {v}\n\n"
     pure default
   | .ok v => pure v
 
 open Verso.Genre.Manual.Markdown in
-open Lean Elab Term Parser Tactic Doc in
+open Lean Elab Term Parser Tactic in
 @[block_extension Block.parserAlias]
 def parserAlias.descr : BlockDescr where
   init st := st
@@ -86,19 +87,19 @@ def parserAlias.descr : BlockDescr where
 
   traverse id info _ := do
     let Json.arr #[ name, _, «show», _, _, _, _] := info
-      | do logError s!"Failed to deserialize docstring data while traversing a parser alias, expected array but got {info}"; pure none
+      | do reportError s!"Failed to deserialize docstring data while traversing a parser alias, expected array but got {info}"; pure none
     let .ok (name, «show») := do return (← FromJson.fromJson? (α := Name) name, ← FromJson.fromJson? (α := Option String) «show»)
-      | do logError "Failed to deserialize docstring data while traversing a parser alias"; pure none
+      | do reportError "Failed to deserialize docstring data while traversing a parser alias"; pure none
     let path ← (·.path) <$> read
     let _ ← Verso.Genre.Manual.externalTag id path <| show.getD name.toString
-    Index.addEntry id {term := Doc.Inline.code <| show.getD name.toString}
+    Index.addEntry id {term := Inline.code <| show.getD name.toString}
     modify fun st => st.saveDomainObject parserAliasDomain name.toString id
     pure none
   toHtml := some <| fun _goI goB id info contents =>
     open Verso.Doc.Html in
     open Verso.Output Html in do
       let Json.arr #[ name, declName, «show», stackSz?, autoGroupArgs, docs?, argCount] := info
-        | do Verso.Doc.Html.HtmlT.logError s!"Failed to deserialize docstring data while making HTML for parser alias, expected array but got {info}"; pure .empty
+        | do reportError s!"Failed to deserialize docstring data while making HTML for parser alias, expected array but got {info}"; pure .empty
 
       let name ← getFromJson (α := Name) name
       let declName ← getFromJson (α := Name) declName
@@ -128,7 +129,7 @@ def parserAlias.descr : BlockDescr where
         if autoGroupArgs then
           some {{"Automatically wraps arguments in a " <code>"null"</code> " node unless there's exactly one"}}
         else none
-      let meta :=
+      let metadata :=
         match grp with
         | none => {{<p>{{arity}}</p>}}
         | some g => {{<ul><li>{{arity}}</li><li>{{g}}</li></ul>}}
@@ -137,9 +138,9 @@ def parserAlias.descr : BlockDescr where
         <div class="namedocs" {{idAttr}}>
           {{permalink id xref false}}
           <span class="label">"parser alias"</span>
-          <pre class="signature hl lean block">{{← (Highlighted.seq #[x, args]).toHtml}}</pre>
+          <pre class="signature hl lean block">{{← (Highlighted.seq #[x, args]).toHtml (g := Verso.Genre.Manual)}}</pre>
           <div class="text">
-            {{meta}}
+            {{metadata}}
             {{← contents.mapM goB}}
           </div>
         </div>

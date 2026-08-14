@@ -8,6 +8,7 @@ import VersoManual
 import Manual.Meta
 import Manual.Meta.LexedText
 import Manual.Papers
+import Std.Async.Process
 
 open Manual
 open Verso.Genre
@@ -29,7 +30,7 @@ These services include:
 
     Lean does not require programmers to manually manage memory.
     Space is allocated when needed to store a value, and values that can no longer be reached (and are thus irrelevant) are deallocated.
-    In particular, Lean uses {tech key:="reference count"}[reference counting], where each allocated object maintains a count of incoming references.
+    In particular, Lean uses {tech (key := "reference count")}[reference counting], where each allocated object maintains a count of incoming references.
     The compiler emits calls to memory management routines that allocate memory and modify reference counts, and these routines are provided by the runtime, along with the data structures that represent Lean values in compiled code.
 
  : Multiple Threads
@@ -46,13 +47,31 @@ These services include:
 There are many primitive operators.
 They are described in their respective sections under {ref "basic-types"}[Basic Types].
 
+# Boxing
+%%%
+tag := "boxing"
+%%%
+
+:::paragraph
+Lean values may be represented at runtime in two ways:
+* {deftech}_Boxed_ values may be pointers to heap values or require shifting and masking.
+* {deftech}_Unboxed_ values are immediately available.
+:::
+
+Boxed values are either a pointer to an object, in which case the lowest-order bit is 0, or an immediate value, in which case the lowest-order bit is 1 and the value is found by shifting the representation to the right by one bit.
+
+Types with an unboxed representation, such as {name}`UInt8` and {tech}[enum inductive] types, are represented as the corresponding C types in contexts where the compiler can be sure that the value has said type.
+In some contexts, such as generic container types like {name}`Array`, otherwise-unboxed values must be boxed prior to storage.
+In other words, {name}`Bool.not` is called with and returns unboxed `uint8_t` values because the {tech}[enum inductive] type {name}`Bool` has an unboxed representation, but the individual {name}`Bool` values in an {lean}`Array Bool` are boxed.
+A field of type {lean}`Bool` in an inductive type's constructor is represented unboxed, while {lean}`Bool`s stored in polymorphic fields that are instantiated as {lean}`Bool` are boxed.
+
 
 # Reference Counting
 %%%
 tag := "reference-counting"
 %%%
 
-Lean uses {deftech key:="reference count"}_reference counting_ for memory management.
+Lean uses {deftech (key := "reference count")}_reference counting_ for memory management.
 Each allocated object maintains a count of how many other objects refer to it.
 When a new reference is added, the count is incremented, and when a reference is dropped, the count is decremented.
 When a reference count reaches zero, the object is no longer reachable and can play no part in the further execution of the program.
@@ -61,9 +80,9 @@ It is deallocated and all of its references to other objects are dropped, which 
 :::paragraph
 Reference counting provides a number of benefits:
 
- : Re-Use of Memory
+ : Reuse of Memory
 
-    If an object's reference count drops to zero just as another of the same size is to be allocated, then the original object's memory can be safely re-used for the new object.
+    If an object's reference count drops to zero just as another of the same size is to be allocated, then the original object's memory can be safely reused for the new object.
     As a result, many common data-structure traversals (such as {name}`List.map`) do not need to allocate memory when there is exactly one reference to the data structure to be traversed.
 
  : Opportunistic In-Place Updates
@@ -92,7 +111,7 @@ Nevertheless, multi-threaded code requires that reference count updates are sync
 To reduce this overhead, Lean values are partitioned into those which are reachable from multiple threads and those which are not.
 Single-threaded reference counts can be updated much faster than multi-threaded reference counts, and many values are accessed only on a single thread.
 Together, these techniques greatly reduce the performance overhead of reference counting.
-Because Lean cannot create cyclic data, no technique is needed to detect it.
+Because the verifiable fragment of Lean cannot create cyclic data, the Lean runtime does not have a technique to detect it.
 {citet countingBeans}[] provide more details on the implementation of reference counting in Lean.
 
 ## Observing Uniqueness
@@ -113,12 +132,13 @@ Replacing characters in a string uses an in-place update if the string is not sh
 The {name}`dbgTraceIfShared` call does nothing, indicating that the string will indeed be updated in place rather than copied.
 
 ```ioLean
-def process (str : String) : IO Unit := do
-  IO.println ((dbgTraceIfShared "String update" str).set 0 ' ')
+def process (str : String) (h : str.startPos ≠ str.endPos) : IO Unit := do
+  IO.println ((dbgTraceIfShared "String update" str).startPos.set ' ' h)
 
 def main : IO Unit := do
-  let line := (← (← IO.getStdin).getLine).trim
-  process line
+  let line := (← (← IO.getStdin).getLine).trimAscii.copy
+  if h : line.startPos ≠ line.endPos then
+    process line h
 ```
 
 When run with this input:
@@ -140,12 +160,13 @@ This version of the program retains a reference to the original string, which ne
 This fact is visible in its standard error output.
 
 ```ioLean
-def process (str : String) : IO Unit := do
-  IO.println ((dbgTraceIfShared "String update" str).set 0 ' ')
+def process (str : String) (h : str.startPos ≠ str.endPos) : IO Unit := do
+  IO.println ((dbgTraceIfShared "String update" str).startPos.set ' ' h)
 
 def main : IO Unit := do
-  let line := (← (← IO.getStdin).getLine).trim
-  process line
+  let line := (← (← IO.getStdin).getLine).trimAscii.copy
+  if h : line.startPos ≠ line.endPos then
+    process line h
   IO.println "Original input:"
   IO.println line
 ```
@@ -204,36 +225,36 @@ def process' (str : String) : String × String:=
 The IR for {lean}`process` includes no `inc` or `dec` instructions.
 If the incoming string `x_1` is a unique reference, then it is still a unique reference when passed to {name}`String.set`, which can then use in-place modification:
 ```leanOutput p1 (allowDiff := 5)
-[result]
-def process._closed_1 : obj :=
-  let x_1 : obj := "";
-  ret x_1
-def process (x_1 : obj) : obj :=
-  let x_2 : u32 := 32;
-  let x_3 : obj := 0;
-  let x_4 : obj := String.set x_1 x_3 x_2;
-  let x_5 : obj := process._closed_1;
-  let x_6 : obj := ctor_0[Prod.mk] x_4 x_5;
-  ret x_6
+[Compiler.IR] [result]
+    def process._closed_0 : obj :=
+      let x_1 : obj := "";
+      ret x_1
+    def process (x_1 : obj) : obj :=
+      let x_2 : tagged := 0;
+      let x_3 : u32 := 32;
+      let x_4 : obj := String.set x_1 x_2 x_3;
+      let x_5 : obj := process._closed_0;
+      let x_6 : obj := ctor_0[Prod.mk] x_4 x_5;
+      ret x_6
 ```
 
 The IR for {lean}`process'`, on the other hand, increments the reference count of the string just before calling {name}`String.set`.
-Thus, the modified string `x_4` is a copy, regardless of whether the reference to `x_1` is unique:
+Thus, the modified string `x_4` is a copy, regardless of whether the original reference to `x_1` is unique:
 ```leanOutput p2
-[result]
-def process' (x_1 : obj) : obj :=
-  let x_2 : u32 := 32;
-  let x_3 : obj := 0;
-  inc x_1;
-  let x_4 : obj := String.set x_1 x_3 x_2;
-  let x_5 : obj := ctor_0[Prod.mk] x_4 x_1;
-  ret x_5
+[Compiler.IR] [result]
+    def process' (x_1 : obj) : obj :=
+      let x_2 : tagged := 0;
+      let x_3 : u32 := 32;
+      inc x_1;
+      let x_4 : obj := String.set x_1 x_2 x_3;
+      let x_5 : obj := ctor_0[Prod.mk] x_4 x_1;
+      ret x_5
 ```
 :::
 
-:::example "Memory Re-Use in IR"
+:::example "Memory Reuse in IR"
 The function {lean}`discardElems` is a simplified version of {name}`List.map` that replaces every element in a list with {lean}`()`.
-Inspecting its intermediate representation demonstrates that it will re-use the list's memory when its reference is unique.
+Inspecting its intermediate representation demonstrates that it will reuse the list's memory when its reference is unique.
 
 ```lean (name := discardElems)
 set_option trace.compiler.ir.result true
@@ -246,38 +267,44 @@ def discardElems : List α → List Unit
 This emits the following IR:
 
 ```leanOutput discardElems
-[result]
-def discardElems._rarg (x_1 : obj) : obj :=
-  case x_1 : obj of
-  List.nil →
-    let x_2 : obj := ctor_0[List.nil];
-    ret x_2
-  List.cons →
-    let x_3 : u8 := isShared x_1;
-    case x_3 : u8 of
-    Bool.false →
-      let x_4 : obj := proj[1] x_1;
-      let x_5 : obj := proj[0] x_1;
-      dec x_5;
-      let x_6 : obj := discardElems._rarg x_4;
-      let x_7 : obj := ctor_0[PUnit.unit];
-      set x_1[1] := x_6;
-      set x_1[0] := x_7;
-      ret x_1
-    Bool.true →
-      let x_8 : obj := proj[1] x_1;
-      inc x_8;
-      dec x_1;
-      let x_9 : obj := discardElems._rarg x_8;
-      let x_10 : obj := ctor_0[PUnit.unit];
-      let x_11 : obj := ctor_1[List.cons] x_10 x_9;
-      ret x_11
-def discardElems (x_1 : ◾) : obj :=
-  let x_2 : obj := pap discardElems._rarg;
-  ret x_2
+[Compiler.IR] [result]
+    def discardElems._redArg (x_1 : tobj) : tobj :=
+      case x_1 : tobj of
+      List.nil →
+        let x_2 : tagged := ctor_0[List.nil];
+        ret x_2
+      List.cons →
+        let x_3 : tobj := proj[1] x_1;
+        block_4 (x_5 : tobj) (x_6 : u8) :=
+          let x_7 : tagged := ctor_0[PUnit.unit];
+          let x_8 : tobj := discardElems._redArg x_3;
+          block_9 (x_10 : obj) :=
+            ret x_10;
+          case x_6 : u8 of
+          Bool.false →
+            set x_5[1] := x_8;
+            set x_5[0] := x_7;
+            jmp block_9 x_5
+          Bool.true →
+            let x_11 : obj := ctor_1[List.cons] x_7 x_8;
+            jmp block_9 x_11;
+        let x_12 : u8 := isShared x_1;
+        case x_12 : u8 of
+        Bool.false →
+          let x_13 : tobj := proj[0] x_1;
+          dec x_13;
+          jmp block_4 x_1 x_12
+        Bool.true →
+          inc x_3;
+          dec x_1;
+          jmp block_4 ◾ x_12
+[Compiler.IR] [result]
+    def discardElems (x_1 : ◾) (x_2 : tobj) : tobj :=
+      let x_3 : tobj := discardElems._redArg x_2;
+      ret x_3
 ```
 
-In the IR, the {name}`List.cons` case explicitly checks whether the argument value is shared (i.e. whether it's reference count is greater than one).
+In the IR, the {name}`List.cons` case explicitly checks whether the argument value is shared (i.e. whether its reference count is greater than one).
 If the reference is unique, the reference count of the discarded list element `x_5` is decremented and the constructor value is reused.
 If it is shared, a new {name}`List.cons` is allocated in `x_11` for the result.
 :::
@@ -310,11 +337,11 @@ tag := "ffi"
 %%%
 
 
-**The current interface was designed for internal use in Lean and should be considered unstable**.
+*The current interface was designed for internal use in Lean and should be considered unstable*.
 It will be refined and extended in the future.
 
 Lean offers efficient interoperability with any language that supports the C ABI.
-This support is, however, currently limited to transferring Lean data types; in particular, it is not yet possible to pass or return compound data structures such as C {c}`struct`s by value from or to Lean.
+This support is, however, currently limited to transferring Lean data types; in particular, it is not yet possible to pass or return compound data structures such as C {C}`struct`s by value from or to Lean.
 
 There are two primary attributes for interoperating with other languages:
   {TODO}[It can also be used with `def` to provide an internal definition, but ensuring consistency of both definitions is up to the user.]
@@ -336,13 +363,12 @@ Exports a Lean constant with the unmangled symbol name `sym`.
 :::
 
 
-For simple examples of how to call foreign code from Lean and vice versa, see [the FFI](https://github.com/leanprover/lean4/blob/master/src/lake/examples/ffi) and [reverse FFI](https://github.com/leanprover/lean4/blob/master/src/lake/examples/reverse-ffi) examples in the Lean source repository.
+For simple examples of how to call foreign code from Lean and vice versa, see [the FFI](https://github.com/leanprover/lean4/tree/master/tests/lake/examples/ffi) and [reverse FFI](https://github.com/leanprover/lean4/tree/master/tests/lake/examples/reverse-ffi) examples in the Lean source repository.
 
 ## The Lean ABI
 
 :::leanSection
-
-```lean (show := false)
+```lean -show
 variable {α₁ αₙ β αᵢ}
 private axiom «α₂→…→αₙ₋₁».{u} : Type u
 local macro "..." : term => ``(«α₂→…→αₙ₋₁»)
@@ -350,20 +376,20 @@ local macro "..." : term => ``(«α₂→…→αₙ₋₁»)
 
 The Lean {deftech}_Application Binary Interface_ (ABI) describes how the signature of a Lean declaration is encoded in the platform-native calling convention.
 It is based on the standard C ABI and calling convention of the target platform.
-Lean declarations can be marked for interaction with foreign functions using either the attribute {attr}`extern "sym"`, which causes compiled code to use the C declaration {c}`sym` as the implementation, or the attribute {attr}`export sym`, which makes the declaration available as {c}`sym` to C.
+Lean declarations can be marked for interaction with foreign functions using either the attribute {attr}`extern "sym"`, which causes compiled code to use the C declaration {C}`sym` as the implementation, or the attribute {attr}`export sym`, which makes the declaration available as {C}`sym` to C.
 
 In both cases, the C declaration's type is derived from the Lean type of the declaration with the attribute.
-Let {lean}`α₁ → ... → αₙ → β` be the declaration's {tech key:="normal form"}[normalized] type.
+Let {lean}`α₁ → ... → αₙ → β` be the declaration's {tech (key := "normal form")}[normalized] type.
 If `n` is 0, the corresponding C declaration is
-```c
+```C
 extern s sym;
 ```
-where {c}`s` is the C translation of {lean}`β` as specified in {ref "ffi-types"}[the next section].
+where {C}`s` is the C translation of {lean}`β` as specified in {ref "ffi-types"}[the next section].
 In the case of a definition marked {attr}`extern`, the symbol's value is only guaranteed to be initialized after calling the Lean module's initializer or that of an importing module.
 The section on {ref "ffi-initialization"}[initialization] describes initializers in greater detail.
 
 If `n` is greater than 0, the corresponding C declaration is
-```c
+```C
 s sym(t₁, ..., tₙ);
 ```
 where the parameter types `tᵢ` are the C translations of the types {lean}`αᵢ`.
@@ -375,29 +401,32 @@ In the case of {attr}`extern`, all {tech}[irrelevant] types are removed first.
 tag := "ffi-types"
 %%%
 
-```lean (show := false)
+:::leanSection
+```lean -show
 universe u
 variable (p : Prop)
 private axiom «...» : Sort u
 local macro "..." : term => ``(«...»)
 ```
 
-In the {tech key:="application binary interface"}[ABI], Lean types are translated to C types as follows:
+In the {tech (key := "application binary interface")}[ABI], Lean types are translated to C types as follows:
 
-* The integer types {lean}`UInt8`, …, {lean}`UInt64`, {lean}`USize` are represented by the C types {c}`uint8_t`, ..., {c}`uint64_t`, {c}`size_t`, respectively.
-  If their {ref "fixed-int-runtime"}[run-time representation] requires boxing, then they are unboxed at the FFI boundary.
-* {lean}`Char` is represented by {c}`uint32_t`.
-* {lean}`Float` is represented by {c}`double`.
-* {name}`Nat` and {name}`Int` are represented by {c}`lean_object *`.
-  Their runtime values is either a pointer to an opaque bignum object or, if the lowest bit of the "pointer" is 1 ({c}`lean_is_scalar`), an encoded unboxed natural number or integer ({c}`lean_box`/{c}`lean_unbox`).
-* A universe {lean}`Sort u`, type constructor {lean}`... → Sort u`, or proposition {lean}`p`​` :`{lean}` Prop` is {tech}[irrelevant] and is either statically erased (see above) or represented as a {c}`lean_object *` with the runtime value {c}`lean_box(0)`
+* The integer types {lean}`UInt8`, …, {lean}`UInt64`, {lean}`USize` are represented by the C types {C}`uint8_t`, ..., {C}`uint64_t`, {C}`size_t`, respectively.
+  If their {ref "fixed-int-runtime"}[run-time representation] requires {tech (key := "boxed")}[boxing], then they are unboxed at the FFI boundary.
+* {lean}`Char` is represented by {C}`uint32_t`.
+* {lean}`Float` is represented by {C}`double`.
+* {name}`Nat` and {name}`Int` are represented by {C}`lean_object *`.
+  Their runtime values is either a pointer to an opaque bignum object or, if the lowest bit of the “pointer” is 1 ({C}`lean_is_scalar`), an encoded natural number or integer ({C}`lean_box`/{C}`lean_unbox`).
+* A universe {lean}`Sort u`, type constructor {lean}`... → Sort u`, or proposition {lean}`p`​` :`{lean}` Prop` is {tech}[irrelevant] and is either statically erased (see above) or represented as a {C}`lean_object *` with the runtime value {C}`lean_box(0)`
 * The ABI for other inductive types that don't have special compiler support depends on the specifics of the type.
   It is the same as the {ref "run-time-inductives"}[run-time representation] of these types.
-  Its runtime value is a pointer to an object of a subtype of {c}`lean_object` (see the "Inductive types" section below) or the unboxed value {c}`lean_box(cidx)` for the {c}`cidx`th constructor of an inductive type if this constructor does not have any relevant parameters.
+  Its runtime value is either a pointer to an object of a subtype of {C}`lean_object` (see the “Inductive types” section below) or it is the value {C}`lean_box(cidx)` for the {C}`cidx`th constructor of an inductive type if this constructor does not have any relevant parameters.
 
-  ```lean (show := false)
-  variable (u : Unit)
-  ```
+:::
+
+```lean -show
+variable (u : Unit)
+```
 
 :::example "`Unit` in the ABI"
 The runtime value of {lean}`u`​` : `{lean}`Unit` is always `lean_box(0)`.
@@ -408,11 +437,11 @@ The runtime value of {lean}`u`​` : `{lean}`Unit` is always `lean_box(0)`.
 tag := "ffi-borrowing"
 %%%
 
-By default, all {c}`lean_object *` parameters of an {attr}`extern` function are considered {deftech}_owned_.
-The external code is passed a “virtual RC token” and is responsible for passing this token along to another consuming function (exactly once) or freeing it via {c}`lean_dec`.
+By default, all {C}`lean_object *` parameters of an {attr}`extern` function are considered {deftech}_owned_.
+The external code is passed a “virtual RC token” and is responsible for passing this token along to another consuming function (exactly once) or freeing it via {C}`lean_dec`.
 To reduce reference counting overhead, parameters can be marked as {deftech}_borrowed_ by prefixing their type with {keywordOf Lean.Parser.Term.borrowed}`@&`.
-Borrowed objects must only be passed to other non-consuming functions (arbitrarily often) or converted to owned values using {c}`lean_inc`.
-In `lean.h`, the {c}`lean_object *` aliases {c}`lean_obj_arg` and {c}`b_lean_obj_arg` are used to mark this difference on the C side.
+Borrowed objects must only be passed to other non-consuming functions (arbitrarily often) or converted to owned values using {C}`lean_inc`.
+In `lean.h`, the {C}`lean_object *` aliases {C}`lean_obj_arg` and {C}`b_lean_obj_arg` are used to mark this difference on the C side.
 Return values and `@[export]` parameters are always owned at the moment.
 
 :::syntax term (title := "Borrowed Parameters")
@@ -427,7 +456,7 @@ Parameters may be marked as {tech}[borrowed] by prefixing their types with {keyw
 tag := "ffi-initialization"
 %%%
 
-When including Lean code in a larger program, modules must be {deftech key:="initialize"}_initialized_ before accessing any of their declarations.
+When including Lean code in a larger program, modules must be {deftech (key := "initialize")}_initialized_ before accessing any of their declarations.
 Module initialization entails:
 * initialization of all “constant definitions” (nullary functions), including closed terms lifted out of other functions,
 * execution of all code marked with the {attr}`init` attribute, and
@@ -438,48 +467,49 @@ For all other modules imported by `lean`, the initializer is run without `builti
 In other words, {attr}`init` functions are run if and only if their module is imported, regardless of whether they have native code available, while {attr}`builtin_init` functions are only run for native executable or plugins, regardless of whether their module is imported.
 The Lean compiler uses built-in initializers for purposes such as registering basic parsers that should be available even without importing their module, which is necessary for bootstrapping.
 
-The initializer for module `A.B` is called {c}`initialize_A_B` and will automatically initialize any imported modules.
-Module initializers are idempotent when run with the same `builtin` flag, but not thread-safe.
-Together with initialization of the Lean runtime, code like the following should be run exactly once before accessing any Lean declarations:
-```c
-void lean_initialize_runtime_module();
-void lean_initialize();
-lean_object * initialize_A_B(uint8_t builtin, lean_object *);
-lean_object * initialize_C(uint8_t builtin, lean_object *);
+The initializer for module `A.B` in a package `foo` is called {C}`initialize_foo_A_B`.
+For modules in the Lean core (e.g., {module}`Init.Prelude`), the initializer is called {C}`initialize_Init_Prelude`.
+Module initializers will automatically initialize any imported modules.
+They are also idempotent (when run with the same `builtin` flag), but not thread-safe.
+
+*Important for process-related functionality*: applications that use process-related functions from `libuv`, such as {name}`Std.IO.Process.getProcessTitle` and {name}`Std.IO.Process.setProcessTitle`, must call `lean_setup_args(argc, argv)` (which returns a potentially modified `argv` that must be used in place of the original) *before* calling any module initializer.
+This sets up process handling capabilities correctly, which is essential for certain system-level operations that Lean's runtime may depend on.
+
+Putting everything together, code like the following should be run exactly once before accessing any Lean declarations:
+```C
+char ** lean_setup_args(int argc, char ** argv);
+
+lean_object * initialize_A_B(uint8_t builtin);
+lean_object * initialize_C(uint8_t builtin);
 ...
 
-lean_initialize_runtime_module();
-// Necessary (and replaces `lean_initialize_runtime_module`) for code that
-// (indirectly) accesses the `Lean` package:
-//lean_initialize();
+argv = lean_setup_args(argc, argv); // if using process-related functionality
 
 lean_object * res;
 // use same default as for Lean executables
 uint8_t builtin = 1;
-res = initialize_A_B(builtin, lean_io_mk_world());
+res = initialize_foo_A_B(builtin);
 if (lean_io_result_is_ok(res)) {
     lean_dec_ref(res);
 } else {
     lean_io_result_show_error(res);
     lean_dec(res);
-    // do not access Lean declarations if initialization failed
-    return ...;
+    return ...;  // do not access Lean declarations if initialization failed
 }
-res = initialize_C(builtin, lean_io_mk_world());
+res = initialize_bar_C(builtin);
 if (lean_io_result_is_ok(res)) {
 ...
 
-// Necessary for code that (indirectly) uses `Task`
-//lean_init_task_manager();
+//lean_init_task_manager();  // necessary for code that (indirectly) uses `Task`
 lean_io_mark_end_initialization();
 ```
 
 In addition, any other thread not spawned by the Lean runtime itself must be initialized for Lean use by calling
-```c
+```C
 void lean_initialize_thread();
 ```
 and should be finalized in order to free all thread-local resources by calling
-```c
+```C
 void lean_finalize_thread();
 ```
 
@@ -488,7 +518,7 @@ void lean_finalize_thread();
 The Lean interpreter can run Lean declarations for which symbols are available in loaded shared libraries, which includes declarations that are marked {attr}`extern`.
 To run this code (e.g. with {keywordOf Lean.Parser.Command.eval}`#eval`), the following steps are necessary:
   1. The module containing the declaration and its dependencies must be compiled into a shared library
-  1. This shared library to should be provided to `lean --load-dynlib=` to run code that imports the module.
+  1. This shared library should be provided to `lean --load-dynlib=` to run code that imports the module.
 
 It is not sufficient to load the foreign library containing the external symbol because the interpreter depends on code that is emitted for each {attr}`extern` declaration.
 Thus it is not possible to interpret an {attr}`extern` declaration in the same file.

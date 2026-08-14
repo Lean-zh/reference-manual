@@ -18,7 +18,7 @@ open Verso.Genre.Manual.InlineLean
 tag := "Fin"
 %%%
 
-```lean (show := false)
+```lean -show
 section
 variable (n : Nat)
 ```
@@ -92,30 +92,30 @@ When the literal is greater than or equal to {lean}`n`, the remainder when divid
 ```
 
 If Lean can't synthesize an instance of {lean}`NeZero n`, then there is no {lean}`OfNat (Fin n)` instance:
-```lean (error := true) (name := fin0)
+```lean +error (name := fin0)
 example : Fin 0 := 0
 ```
 ```leanOutput fin0
-failed to synthesize
+failed to synthesize instance of type class
   OfNat (Fin 0) 0
 numerals are polymorphic in Lean, but the numeral `0` cannot be used in a context where the expected type is
   Fin 0
 due to the absence of the instance above
 
-Additional diagnostic information may be available using the `set_option diagnostics true` command.
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
 ```
 
-```lean (error := true) (name := finK)
+```lean +error (name := finK)
 example (k : Nat) : Fin k := 0
 ```
 ```leanOutput finK
-failed to synthesize
+failed to synthesize instance of type class
   OfNat (Fin k) 0
 numerals are polymorphic in Lean, but the numeral `0` cannot be used in a context where the expected type is
   Fin k
 due to the absence of the instance above
 
-Additional diagnostic information may be available using the `set_option diagnostics true` command.
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
 ```
 
 :::

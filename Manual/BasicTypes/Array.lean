@@ -17,6 +17,7 @@ open Verso.Genre Manual
 open Verso.Genre.Manual.InlineLean
 
 set_option pp.rawOnError true
+set_option maxHeartbeats 500000
 
 example := Char
 
@@ -55,7 +56,17 @@ The amortized overhead scales linearly with the size of the array.
 The values in the array are represented as described in the {ref "inductive-types-ffi"}[section on the foreign function interface].
 
 :::figure "Memory layout of arrays" (tag := "arrayffi")
-![Memory layout of arrays](/static/figures/array.svg)
+```diagram
+open Illuminate in
+open Manual.Diagram in
+layoutDiagram [
+  ("m_header", .header, txt "Lean object header"),
+  ("m_size", .size_t, twoLine "Byte count" "size_t"),
+  ("m_capacity", .size_t, twoLine "Allocated space" "size_t"),
+  ("m_data", .data none, some <| .styledText (base := fieldLabelStyle) <|
+    "Array data" ++ "\n" ++ "Array of " ++ family "monospace" "lean_object *")
+]
+```
 :::
 
 After the object header, an array contains:
@@ -331,7 +342,17 @@ tag := "array-api"
 
 {docstring Array.binSearchContains}
 
+
+
 ## Iteration
+
+{docstring Array.iter}
+
+{docstring Array.iterFromIdx}
+
+{docstring Array.iterM}
+
+{docstring Array.iterFromIdxM}
 
 {docstring Array.foldr}
 

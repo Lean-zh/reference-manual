@@ -29,7 +29,7 @@ tag := "custom-tactics"
 %%%
 
 
-```lean (show := false)
+```lean -show
 open Lean
 ```
 
@@ -69,7 +69,7 @@ example : 0 ≤ 4 := by
 :::
 ::::
 
-Like other Lean macros, tactic macros are {tech key:="hygiene"}[hygienic].
+Like other Lean macros, tactic macros are {tech (key := "hygiene")}[hygienic].
 References to global names are resolved when the macro is defined, and names introduced by the tactic macro cannot capture names from its invocation site.
 
 When defining a tactic macro, it's important to specify that the syntax being matched or constructed is for the syntax category `tactic`.
@@ -90,10 +90,11 @@ This is used to make a number of Lean's built-in tactics extensible—new behavi
 
 The {tactic}`trivial`, which is used by many other tactics to quickly dispatch subgoals that are not worth bothering the user with, is designed to be extended through new macro expansions.
 Lean's default {lean}`trivial` can't solve {lean}`IsEmpty []` goals:
-```lean (error := true)
+```lean
 def IsEmpty (xs : List α) : Prop :=
   ¬ xs ≠ []
-
+```
+```lean +error
 example (α : Type u) : IsEmpty (α := α) [] := by trivial
 ```
 
@@ -132,120 +133,3 @@ Multiple {keywordOf Lean.Parser.Command.macro_rules}`macro_rules` declarations a
 Backtracking is at the granularity of {keywordOf Lean.Parser.Command.macro_rules}`macro_rules` declarations, not their individual cases.
 :::
 ::::
-
-
-# The Tactic Monad
-%%%
-tag := "tactic-monad"
-draft := true
-%%%
-
-::: planned 67
- * Relationship to {name}`Lean.Elab.Term.TermElabM`, {name}`Lean.Meta.MetaM`
- * Overview of available effects
- * Checkpointing
-:::
-
-{docstring Lean.Elab.Tactic.Tactic}
-
-{docstring Lean.Elab.Tactic.TacticM}
-
-{docstring Lean.Elab.Tactic.run}
-
-{docstring Lean.Elab.Tactic.runTermElab}
-
-## Control
-
-{docstring Lean.Elab.Tactic.tryTactic}
-
-{docstring Lean.Elab.Tactic.tryTactic?}
-
-## Expressions
-
-{docstring Lean.Elab.Tactic.ensureHasNoMVars}
-
-{docstring Lean.Elab.Tactic.getFVarId}
-
-{docstring Lean.Elab.Tactic.getFVarIds}
-
-{docstring Lean.Elab.Tactic.sortMVarIdsByIndex}
-
-{docstring Lean.Elab.Tactic.sortMVarIdArrayByIndex}
-
-## Source Locations
-
-{docstring Lean.Elab.Tactic.withLocation}
-
-## Goals
-
-{docstring Lean.Elab.Tactic.getGoals}
-
-{docstring Lean.Elab.Tactic.setGoals}
-
-{docstring Lean.Elab.Tactic.getMainGoal}
-
-{docstring Lean.Elab.Tactic.getMainTag}
-
-{docstring Lean.Elab.Tactic.closeMainGoal}
-
-{docstring Lean.Elab.Tactic.focus}
-
-{docstring Lean.Elab.Tactic.tagUntaggedGoals}
-
-{docstring Lean.Elab.Tactic.getUnsolvedGoals}
-
-{docstring Lean.Elab.Tactic.pruneSolvedGoals}
-
-{docstring Lean.Elab.Tactic.appendGoals}
-
-{docstring Lean.Elab.Tactic.closeMainGoalUsing}
-
-## Term Elaboration
-
-{docstring Lean.Elab.Tactic.elabTerm}
-
-{docstring Lean.Elab.Tactic.elabTermEnsuringType}
-
-{docstring Lean.Elab.Tactic.elabTermWithHoles}
-
-
-## Low-Level Operations
-
-These operations are primarily used as part of the implementation of {name}`TacticM` or of particular tactics.
-It's rare that they are useful when implementing new tactics.
-
-### Monad Class Implementations
-
-These operations are exposed through standard Lean monad type classes.
-
-{docstring Lean.Elab.Tactic.tryCatch}
-
-{docstring Lean.Elab.Tactic.liftMetaMAtMain}
-
-{docstring Lean.Elab.Tactic.getMainModule}
-
-{docstring Lean.Elab.Tactic.orElse}
-
-### Macro Expansion
-
-{docstring Lean.Elab.Tactic.getCurrMacroScope}
-
-{docstring Lean.Elab.Tactic.adaptExpander}
-
-### Simplifier
-
-{docstring Lean.Elab.Tactic.elabSimpArgs}
-
-{docstring Lean.Elab.Tactic.elabSimpConfig}
-
-{docstring Lean.Elab.Tactic.elabSimpConfigCtxCore}
-
-{docstring Lean.Elab.Tactic.dsimpLocation'}
-
-{docstring Lean.Elab.Tactic.elabDSimpConfigCore}
-
-### Attributes
-
-{docstring Lean.Elab.Tactic.tacticElabAttribute}
-
-{docstring Lean.Elab.Tactic.mkTacticAttribute}

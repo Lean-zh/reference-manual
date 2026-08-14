@@ -19,24 +19,49 @@ import Manual.Meta.PPrint
 
 namespace Manual
 
-open Lean Elab Term Tactic
+
 open Verso ArgParse Doc Elab Genre.Manual Html Code Highlighted.WebAssets
+open Lean Elab Term Tactic
+
+/--
+Sets `linter.unusedVariables` to `false` in all `CommandContextInfo.options` within an info tree.
+
+This prevents the outer unused variable linter from re-processing variables in partial proof states
+and generating spurious warnings. Mirrors `disableUnusedVarLinterInInfoTree` in Verso's
+`InlineLean.lean`.
+-/
+private partial def disableUnusedVarLinterInInfoTree : InfoTree → InfoTree
+  | .context (.commandCtx ci) child =>
+    .context (.commandCtx { ci with options := Lean.Linter.linter.unusedVariables.set ci.options false })
+      (disableUnusedVarLinterInInfoTree child)
+  | .context pci child =>
+    .context pci (disableUnusedVarLinterInInfoTree child)
+  | .node info children =>
+    .node info (children.map disableUnusedVarLinterInInfoTree)
+  | .hole id => .hole id
+
 open Verso.Genre.Manual.InlineLean.Scopes (runWithOpenDecls runWithVariables)
 open SubVerso.Highlighting
 open SubVerso.Examples.Messages
+open Lean.Doc.Syntax
 
 structure TacticOutputConfig where
   «show» : Bool := true
   severity : Option MessageSeverity
   summarize : Bool
   whitespace : GuardMsgs.WhitespaceMode
+  expandTraces : List Name
+
+private partial def many (p : ArgParse m α) : ArgParse m (List α) :=
+  (· :: ·) <$> p <*> many p <|> pure []
 
 def TacticOutputConfig.parser [Monad m] [MonadInfoTree m] [MonadLiftT CoreM m] [MonadEnv m] [MonadError m] : ArgParse m TacticOutputConfig :=
   TacticOutputConfig.mk <$>
-    ((·.getD true) <$> .named `show .bool true) <*>
+    .flag `show true <*>
     .named `severity .messageSeverity true <*>
-    ((·.getD false) <$> .named `summarize .bool true) <*>
-    ((·.getD .exact) <$> .named `whitespace .whitespaceMode true)
+    .flag `summarize false <*>
+    ((·.getD .exact) <$> .named `whitespace .whitespaceMode true) <*>
+    (many (.named `expandTrace .name false))
 
 
 def checkTacticExample (goal : Term) (proofPrefix : Syntax) (tactic : Syntax) (pre : TSyntax `str) (post : TSyntax `str) : TermElabM Unit := do
@@ -107,8 +132,8 @@ def checkTacticExample'
   let st1 := goalsToMessageData remainingGoals
   --logInfoAt proofPrefix st1
   let goodPre ← (← addMessageContext st1).toString
-  if pre.getString.trim != goodPre.trim then
-    Verso.Doc.Suggestion.saveSuggestion pre (goodPre.take 30 ++ "…") (goodPre ++ "\n")
+  if pre.getString.trimAscii != goodPre.trimAscii then
+    Verso.Doc.Suggestion.saveSuggestion pre ((goodPre.take 30).copy ++ "…") (goodPre ++ "\n")
     logErrorAt pre m!"Mismatch. Expected {indentD goodPre}\n but got {indentD pre.getString}"
 
   let ci : ContextInfo := {
@@ -135,8 +160,8 @@ def checkTacticExample'
   --logInfoAt tactic st2
   let goodPost ← (← addMessageContext st2).toString
 
-  if post.getString.trim != goodPost.trim then
-    Verso.Doc.Suggestion.saveSuggestion post (goodPost.take 30 ++ "…") (goodPost ++ "\n")
+  if post.getString.trimAscii != goodPost.trimAscii then
+    Verso.Doc.Suggestion.saveSuggestion post ((goodPost.take 30).copy ++ "…") (goodPost ++ "\n")
     logErrorAt post m!"Mismatch. Expected {indentD goodPost}\n but got {indentD post.getString}"
 
   let ci : ContextInfo := { ci with
@@ -159,7 +184,7 @@ def checkTacticExample'
               throwErrorAt wantedOut s!"Expected severity {sevStr s}, but got {sevStr sev}"
           return sev
       for (_, m) in processed do
-        Verso.Doc.Suggestion.saveSuggestion wantedOut (m.take 30 ++ "…") m
+        Verso.Doc.Suggestion.saveSuggestion wantedOut ((m.take 30).copy ++ "…") m
       throwErrorAt wantedOut "Didn't match - expected one of: {indentD (toMessageData <| processed.map (·.2))}\nbut got:{indentD (toMessageData wantedOut.getString)}"
     else pure .information
 
@@ -173,10 +198,11 @@ where
     | .warning => "warning"
 
   mostlyEqual (ws : WhitespaceMode) (s1 s2 : String) : Bool :=
-    ws.apply s1.trim == ws.apply s2.trim
+    ws.apply s1.trimAscii.copy == ws.apply s2.trimAscii.copy
 
   mkInfoTree (elaborator : Name) (stx : Syntax) (trees : PersistentArray InfoTree) : TermElabM InfoTree := do
-    let tree := InfoTree.node (Info.ofCommandInfo { elaborator, stx }) trees
+    let tree := InfoTree.node (Info.ofCommandInfo { elaborator, stx })
+      (trees.map disableUnusedVarLinterInInfoTree)
     let ctx := PartialContextInfo.commandCtx {
       env := ← getEnv, fileMap := ← getFileMap, mctx := {}, currNamespace := ← getCurrNamespace,
       openDecls := ← getOpenDecls, options := ← getOptions, ngen := ← getNGen
@@ -292,7 +318,7 @@ def savePost [Monad m] [MonadEnv m] [MonadLog m] [MonadRef m] [MonadError m] [Ad
 def endExample (body : TSyntax `term) : DocElabM (TSyntax `term) := do
   match tacticExampleCtx.getState (← getEnv) with
   | none => throwErrorAt body "Can't end examples - never started"
-  | some {goal, setup, pre, preName, tactic, tacticName, post, postName, output, outputSeverityName} =>
+  | some { goal, setup, pre, preName, tactic := tac, tacticName, post, postName, output, outputSeverityName } =>
     modifyEnv fun env =>
       tacticExampleCtx.setState env none
     let some goal := goal
@@ -301,12 +327,12 @@ def endExample (body : TSyntax `term) : DocElabM (TSyntax `term) := do
       | throwErrorAt body "No setup specified"
     let some pre := pre
       | throwErrorAt body "No pre-state specified"
-    let some tactic := tactic
+    let some tac := tac
       | throwErrorAt body "No tactic specified"
     let some post := post
       | throwErrorAt body "No post-state specified"
 
-    let (hlPre, hlPost, hlTactic, outputSeverity) ← checkTacticExample' goal setup tactic pre post output
+    let (hlPre, hlPost, hlTactic, outputSeverity) ← checkTacticExample' goal setup tac pre post output
 
     `(let $preName : Array (Highlighted.Goal Highlighted) := $(quote hlPre)
       let $postName : Array (Highlighted.Goal Highlighted) := $(quote hlPost)
@@ -328,7 +354,7 @@ structure TacticGoalConfig where
   «show» : Bool
 
 def TacticGoalConfig.parse [Monad m] [MonadInfoTree m] [MonadLiftT CoreM m] [MonadEnv m] [MonadError m] : ArgParse m TacticGoalConfig :=
-  TacticGoalConfig.mk <$> ((·.getD true) <$> .named `show .bool true)
+  TacticGoalConfig.mk <$> (.flag `show true)
 
 @[role_expander goal]
 def goal : RoleExpander
@@ -367,7 +393,8 @@ def goal : RoleExpander
         pure #[]
 where
   mkInfoTree (elaborator : Name) (stx : Syntax) (trees : PersistentArray InfoTree) : DocElabM InfoTree := do
-    let tree := InfoTree.node (Info.ofCommandInfo { elaborator, stx }) trees
+    let tree := InfoTree.node (Info.ofCommandInfo { elaborator, stx })
+      (trees.map disableUnusedVarLinterInInfoTree)
     let ctx := PartialContextInfo.commandCtx {
       env := ← getEnv, fileMap := ← getFileMap, mctx := {}, currNamespace := ← getCurrNamespace,
       openDecls := ← getOpenDecls, options := ← getOptions, ngen := ← getNGen
@@ -414,7 +441,7 @@ def tacticOutput : CodeBlockExpander
     let outputSeverityName ← saveOutput str opts
 
     if opts.show then
-      return #[← `(Block.other {Verso.Genre.Manual.InlineLean.Block.leanOutput with data := ToJson.toJson ($outputSeverityName, $(quote str.getString), $(quote opts.summarize))} #[Block.code $(quote str.getString)])]
+      return #[← `(Block.other {Verso.Genre.Manual.InlineLean.Block.leanOutput with data := ToJson.toJson (Highlighted.Message.ofSeverityString $outputSeverityName $(quote str.getString), $(quote opts.summarize), ($(quote opts.expandTraces) : List Lean.Name))} #[Block.code $(quote str.getString)])]
     else
       return #[]
 
@@ -506,8 +533,8 @@ def proofState : CodeBlockExpander
         | other => some (⟨other⟩ : TSyntax `Lean.Parser.Command.docComment)
       let goalExpr ← runWithOpenDecls <| runWithVariables fun _ => Elab.Term.elabTerm goalStx none
       let mv ← Meta.mkFreshExprMVar (some goalExpr)
-        let Expr.mvar mvarId := mv
-          | throwError "Not an mvar!"
+      let Expr.mvar mvarId := mv
+        | throwError "Not an mvar!"
       let (remainingGoals, infoTree) ← withInfoTreeContext (mkInfoTree := mkInfoTree `proofState (← getRef)) do
             Tactic.run mvarId <|
             withoutTacticIncrementality true <|
@@ -524,14 +551,15 @@ def proofState : CodeBlockExpander
       --logInfoAt proofPrefix st1
       let stStr ← (← addMessageContext st).toString
       if let some s := desired then
-        if normalizeMetavars stStr.trim != normalizeMetavars s.getDocString.trim then
+        if normalizeMetavars stStr.trimAscii.copy != normalizeMetavars s.getDocString.trimAscii.copy then
           logErrorAt s m!"Expected: {indentD stStr}\n\nGot: {indentD s.getDocString}"
-          Verso.Doc.Suggestion.saveSuggestion s (stStr.take 30 ++ "…") ("/--\n" ++ stStr ++ "\n-/\n")
-      pure #[← `(Doc.Block.other {Block.proofState with data := ToJson.toJson (α := Option String × Array (Highlighted.Goal Highlighted)) ($(quote opts.tag), $(quote hlState))} #[Doc.Block.code $(quote stStr)])]
+          Verso.Doc.Suggestion.saveSuggestion s ((stStr.take 30).copy ++ "…") ("/--\n" ++ stStr ++ "\n-/\n")
+      pure #[← `(Block.other {Block.proofState with data := ToJson.toJson (α := Option String × Array (Highlighted.Goal Highlighted)) ($(quote opts.tag), $(quote hlState))} #[Block.code $(quote stStr)])]
 
 where
   mkInfoTree (elaborator : Name) (stx : Syntax) (trees : PersistentArray InfoTree) : DocElabM InfoTree := do
-    let tree := InfoTree.node (Info.ofCommandInfo { elaborator, stx }) trees
+    let tree := InfoTree.node (Info.ofCommandInfo { elaborator, stx })
+      (trees.map disableUnusedVarLinterInInfoTree)
     let ctx := PartialContextInfo.commandCtx {
       env := ← getEnv, fileMap := ← getFileMap, mctx := {}, currNamespace := ← getCurrNamespace,
       openDecls := ← getOpenDecls, options := ← getOptions, ngen := ← getNGen
@@ -581,10 +609,10 @@ def proofStateStyle := r#"
 
 
 @[block_extension Manual.proofState]
-def proofState.descr : BlockDescr where
+def proofState.descr : BlockDescr := withHighlighting {
   traverse id data content := do
     match FromJson.fromJson? data (α := Option String × Array (Highlighted.Goal Highlighted)) with
-    | .error e => logError s!"Error deserializing proof state info: {e}"; pure none
+    | .error e => reportError s!"Error deserializing proof state info: {e}"; pure none
     | .ok (none, _) => pure none
     | .ok (some t, v) =>
       let path ← (·.path) <$> read
@@ -592,16 +620,14 @@ def proofState.descr : BlockDescr where
       pure <| some <| Block.other {Block.proofState with id := some id, data := ToJson.toJson (α := (Option String × _)) (none, v)} content
 
   toTeX := none
-  extraCss := [highlightingStyle, proofStateStyle]
-  extraJs := [highlightingJs]
-  extraJsFiles := [("popper.js", popper), ("tippy.js", tippy)]
-  extraCssFiles := [("tippy-border.css", tippy.border.css)]
+  extraCss := [proofStateStyle]
+
   toHtml :=
     open Verso.Output.Html in
     some <| fun _ _ id data _ => do
       match FromJson.fromJson? (α := Option Tag × Array (Highlighted.Goal Highlighted)) data with
       | .error err =>
-        HtmlT.logError <| "Couldn't deserialize proof state while rendering HTML: " ++ err
+        reportError <| "Couldn't deserialize proof state while rendering HTML: " ++ err
         pure .empty
       | .ok (_, goals) =>
         let xref ← HtmlT.state
@@ -613,17 +639,18 @@ def proofState.descr : BlockDescr where
               {{← if goals.isEmpty then
                   pure {{"All goals completed! 🐙"}}
                 else
-                  .seq <$> goals.mapIndexedM (fun ⟨i, _⟩ x => withCollapsedSubgoals .never <| x.toHtml (·.toHtml) i)}}
+                  .seq <$> goals.mapIdxM fun i x => withCollapsedSubgoals (g := Verso.Genre.Manual) .never <| x.toHtml (·.toHtml) i}}
             </div>
           </div>
         }}
+}
 
 structure StateConfig where
   tag : Option String := none
   «show» : Bool := true
 
 def StateConfig.parse [Monad m] [MonadInfoTree m] [MonadLiftT CoreM m] [MonadEnv m] [MonadError m] : ArgParse m StateConfig :=
-  StateConfig.mk <$> .named `tag .string true <*> ((·.getD true) <$> .named `show .bool true)
+  StateConfig.mk <$> .named `tag .string true <*> (.flag `show true)
 
 @[code_block_expander pre]
 def pre : CodeBlockExpander
@@ -633,7 +660,7 @@ def pre : CodeBlockExpander
     -- The quote step here is to prevent the editor from showing document AST internals when the
     -- cursor is on the code block
     if opts.show then
-      pure #[← `(Doc.Block.other {Block.proofState with data := ToJson.toJson (α := Option String × Array (Highlighted.Goal Highlighted)) ($(quote opts.tag), $(hlPre))} #[Doc.Block.code $(quote str.getString)])]
+      pure #[← `(Block.other {Block.proofState with data := ToJson.toJson (α := Option String × Array (Highlighted.Goal Highlighted)) ($(quote opts.tag), $(hlPre))} #[Block.code $(quote str.getString)])]
     else
       pure #[]
 
@@ -646,6 +673,6 @@ def post : CodeBlockExpander
     -- The quote step here is to prevent the editor from showing document AST internals when the
     -- cursor is on the code block
     if opts.show then
-      pure #[← `(Doc.Block.other {Block.proofState with data := ToJson.toJson (α := Option String × Array (Highlighted.Goal Highlighted)) ($(quote opts.tag), $(hlPost))} #[Doc.Block.code $(quote str.getString)])]
+      pure #[← `(Block.other {Block.proofState with data := ToJson.toJson (α := Option String × Array (Highlighted.Goal Highlighted)) ($(quote opts.tag), $(hlPost))} #[Block.code $(quote str.getString)])]
     else
       pure #[]

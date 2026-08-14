@@ -38,7 +38,7 @@ They are thus represented identically to the base type in compiled code.
 {docstring Subtype}
 
 ::::leanSection
-```lean (show := false)
+```lean -show
 variable {α : Type u} {p : Prop}
 ```
 :::syntax term (title := "Subtypes")
@@ -58,7 +58,7 @@ The type ascription may be omitted:
 :::
 ::::
 
-Due to {tech}[proof irrelevance] and {tech key:="η-equivalence"}[η-equality], two elements of a subtype are definitionally equal when the elements of the base type are definitionally equal.
+Due to {tech}[proof irrelevance] and {tech (key := "η-equivalence")}[η-equality], two elements of a subtype are definitionally equal when the elements of the base type are definitionally equal.
 In a proof, the {tactic}`ext` tactic can be used to transform a goal of equality of elements of a subtype into equality of their values.
 
 :::example "Definitional Equality of Subtypes"
@@ -76,7 +76,7 @@ def s2 : NonEmptyString where
   val := "equal"
   property :=
     fun h =>
-      List.cons_ne_nil _ _ (String.data_eq_of_eq h)
+      List.cons_ne_nil _ _ (String.ext_iff.mp h)
 
 theorem s1_eq_s2 : s1 = s2 := by rfl
 ```
@@ -98,11 +98,12 @@ def s2 : NonEmptyString where
   val := "equal"
   property :=
     fun h =>
-      List.cons_ne_nil _ _ (String.data_eq_of_eq h)
+      List.cons_ne_nil _ _ (String.ext_iff.mp h)
 
 theorem s1_eq_s2 : s1 = s2 := by
   ext
   dsimp only [s1, s2]
+  rfl
 ```
 :::
 
@@ -112,7 +113,7 @@ This allows subtypes to be used in positions where the base type is expected, es
 :::example "Subtype Coercions"
 
 Elements of subtypes can be coerced to their base type.
-Here, {name}`nine` is coerced from a subtype of `Nat` that contains multiples of {lean type:="Nat"}`3` to {lean}`Nat`.
+Here, {name}`nine` is coerced from a subtype of `Nat` that contains multiples of {lean  (type := "Nat")}`3` to {lean}`Nat`.
 
 ```lean (name := subtype_coe)
 abbrev DivBy3 := { x : Nat // x % 3 = 0 }

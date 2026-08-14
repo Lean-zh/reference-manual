@@ -41,7 +41,7 @@ $_:attrKind notation$[:$_:prec]? $[(name := $_:ident)]? $[(priority := $_:prio)]
 ```
 :::
 
-:::syntax Lean.Parser.Command.notationItem (open := false) (title := "Notation Items")
+:::syntax Lean.Parser.Command.notationItem -open (title := "Notation Items")
 The body of a notation definition consists of a sequence of {deftech}_notation items_, which may be either string literals or identifiers with optional precedences.
 ```grammar
 $s:str
@@ -79,7 +79,7 @@ This applies both to notations that consist only of a single atom and to notatio
 Otherwise, the default precedence of the whole notation is `lead`.
 If no precedence is provided for notation items that are terms, then they default to precedence `min`.
 
-```lean (keep := false) (show := false)
+```lean -keep -show
 
 -- Test for default precedences for notations
 
@@ -186,6 +186,36 @@ def e : Nat × Int :=
 When the expansion consists of the application of a function defined in the global environment and each term in the notation occurs exactly once, an {tech}[unexpander] is generated.
 The new notation will be displayed in {tech}[proof states], error messages, and other output from Lean when matching function application terms otherwise would have been displayed.
 As with custom operators, Lean does not track whether the notation was used in the original term; it is used at every opportunity in Lean's output.
+
+:::example "Notations, Defined Functions, and Unexpanders"
+When a notation does not expand to the application of a defined function, no unexpander is generated.
+Here, the notation expands to an anonymous function:
+```lean
+notation "[" start " ⇒ " stop "]" => fun x => x > start && x < stop
+```
+
+Because there is no named function in the expansion, no unexpander can be generated:
+```lean (name := noUnexp)
+#check [5 ⇒ 8]
+```
+```leanOutput noUnexp
+fun x => decide (x > 5) && decide (x < 8) : Nat → Bool
+```
+
+Using a named function results in an unexpander, which is used for terms that consist of applications of {name}`between`:
+```lean
+def between (start stop : Nat) : Nat → Prop :=
+  fun x => x > start && x < stop
+
+notation "[" start " ⇒' " stop "]" => between start stop
+```
+```lean (name := withUnexp)
+#check [5 ⇒' 8]
+```
+```leanOutput withUnexp
+[5 ⇒' 8] : Nat → Prop
+```
+:::
 
 # Operators and Notations
 %%%

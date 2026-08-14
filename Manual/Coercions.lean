@@ -15,13 +15,47 @@ set_option pp.rawOnError true
 
 open Lean (Syntax SourceInfo)
 
+open Illuminate in
+def coeChainDiagram : Diagram SVG :=
+  let spacing := 16
+  -- Build from inside out: hcat items spanned by each brace, then vsep brace below
+  -- Level 1: Coe* with CoeTC brace
+  let level1 := Diagram.braceBelow (mono "Coe*") (mono "CoeTC")
+  -- Level 2: add CoeOut* on the left, CoeOTC brace below
+  let level2 := Diagram.braceBelow
+    (Diagram.hsep spacing [mono "CoeOut*", level1] (align := .top))
+    (mono "CoeOTC")
+  -- Level 3: add CoeHead? on the left, CoeHTC brace below
+  let level3 := Diagram.braceBelow
+    (Diagram.hsep spacing [mono "CoeHead?", level2] (align := .top))
+    (mono "CoeHTC")
+  -- Level 4: add CoeTail? on the right, CoeHTCT brace below (named)
+  let level4 := Diagram.braceBelow
+    (Diagram.hsep spacing [level3, mono "CoeTail?"] (align := .top))
+    (mono "CoeHTCT" |>.padBottom 3 |>.namedWithAnchors `CoeHTCT)
+  -- CoeDep at same level as CoeHTCT label (bottom-aligned, named)
+  let withCoeDep := Diagram.hsep 30
+    [level4, mono "CoeDep" |>.padBottom 3 |>.namedWithAnchors `CoeDep] (align := .bottom)
+  -- "or" and CoeT below, named for anchor resolution
+  let orLabel : Diagram SVG :=
+    Diagram.text "or" { fontSize := 10, italic := true } |>.pad 3 |>.namedWithAnchors `or
+  let coeTLabel : Diagram SVG := mono "CoeT" (name := `CoeT)
+  let lineStroke : Stroke := .ofWidth 1
+  Diagram.vsep 12 [withCoeDep, orLabel, coeTLabel]
+    |>.connectL `CoeHTCT.south `or.west (stroke := lineStroke)
+    |>.connectL `CoeDep.south `or.east (stroke := lineStroke)
+    |>.connectL `or.south `CoeT.north (stroke := lineStroke)
+where
+  mono (s : String) (name : Option Lean.Name := none) : Diagram SVG :=
+    .text s { fontSize := 10, fontFamily := "monospace" } (name := name)
+
 
 #doc (Manual) "Coercions" =>
 %%%
 tag := "coercions"
 %%%
 
-```lean (show := false)
+```lean -show
 section
 open Lean (TSyntax Name)
 variable {c1 c2 : Name} {α : Type u}
@@ -47,7 +81,7 @@ Coercions are found using type class {tech}[synthesis].
 The set of coercions can be extended by adding further instances of the appropriate type classes.
 :::
 
-```lean (show := false)
+```lean -show
 end
 ```
 
@@ -77,7 +111,7 @@ fun f x => { fn := fun x_1 => f ↑x }
 :::
 
 
-```lean (show := false)
+```lean -show
 section
 variable {α : Type u}
 ```
@@ -86,13 +120,13 @@ Coercions are not used to resolve {tech}[generalized field notation]: only the i
 However, a {tech}[type ascription] can be used to trigger a coercion to the type that has the desired generalized field.
 Coercions are also not used to resolve {name}`OfNat` instances: even though there is a default instance for {lean}`OfNat Nat`, a coercion from {lean}`Nat` to {lean}`α` does not allow natural number literals to be used for {lean}`α`.
 
-```lean (show := false)
+```lean -show
 end
 ```
 
-```lean (show := false)
+```lean -show
 -- Test comment about field notation
-/-- error: unknown constant 'Nat.bdiv' -/
+/-- error: Unknown constant `Nat.bdiv` -/
 #check_msgs in
 #check Nat.bdiv
 
@@ -101,10 +135,9 @@ end
 #check Int.bdiv
 
 /--
-error: invalid field 'bdiv', the environment does not contain 'Nat.bdiv'
+error: Invalid field `bdiv`: The environment does not contain `Nat.bdiv`, so it is not possible to project the field `bdiv` from an expression
   n
-has type
-  Nat
+of type `Nat`
 -/
 #check_msgs in
 example (n : Nat) := n.bdiv 2
@@ -115,17 +148,16 @@ example (n : Nat) := (n : Int).bdiv 2
 
 :::example "Coercions and Generalized Field Notation"
 
-The name {lean (error := true)}`Nat.bdiv` is not defined, but {lean}`Int.bdiv` exists.
+The name {lean +error}`Nat.bdiv` is not defined, but {lean}`Int.bdiv` exists.
 The coercion from {lean}`Nat` to {lean}`Int` is not considered when looking up the field `bdiv`:
 
-```lean (error := true) (name := natBdiv)
+```lean +error (name := natBdiv)
 example (n : Nat) := n.bdiv 2
 ```
 ```leanOutput natBdiv
-invalid field 'bdiv', the environment does not contain 'Nat.bdiv'
+Invalid field `bdiv`: The environment does not contain `Nat.bdiv`, so it is not possible to project the field `bdiv` from an expression
   n
-has type
-  Nat
+of type `Nat`
 ```
 
 This is because coercions are only inserted when there is an expected type that differs from an inferred type, and generalized fields are resolved based on the inferred type of the term before the dot.
@@ -168,7 +200,7 @@ def Bin.ofNat (n : Nat) : Bin :=
   | n + 1 => (Bin.ofNat n).succ
 ```
 
-```lean (show := false)
+```lean -show -keep
 --- Internal tests
 /-- info: [0, 1, 10, 11, 100, 101, 110, 111, 1000] -/
 #check_msgs in
@@ -182,7 +214,8 @@ def Bin.ofNat (n : Nat) : Bin :=
   Bin.done.succ.succ.succ.succ.succ.succ,
   Bin.done.succ.succ.succ.succ.succ.succ.succ,
   Bin.done.succ.succ.succ.succ.succ.succ.succ.succ]
-
+```
+```lean -show
 def Bin.toNat : Bin → Nat
   | .done => 0
   | .zero b => 2 * b.toNat
@@ -206,22 +239,23 @@ theorem Bin.ofNat_toNat_eq {n : Nat} : (Bin.ofNat n).toNat = n := by
 
 
 Even if {lean}`Bin.ofNat` is registered as a coercion, natural number literals cannot be used for {lean}`Bin`:
-```lean (name := nineFail) (error := true)
+```lean
 attribute [coe] Bin.ofNat
 
 instance : Coe Nat Bin where
   coe := Bin.ofNat
-
+```
+``` lean (name := nineFail) +error
 #eval (9 : Bin)
 ```
 ```leanOutput nineFail
-failed to synthesize
+failed to synthesize instance of type class
   OfNat Bin 9
 numerals are polymorphic in Lean, but the numeral `9` cannot be used in a context where the expected type is
   Bin
 due to the absence of the instance above
 
-Additional diagnostic information may be available using the `set_option diagnostics true` command.
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
 ```
 This is because coercions are inserted in response to mismatched types, but a failure to synthesize an {name}`OfNat` instance is not a type mismatch.
 
@@ -299,7 +333,7 @@ Coercions are also inserted when they are explicitly requested.
 Each situation in which coercions may be inserted has a corresponding prefix operator that triggers the appropriate insertion.
 :::
 
-```lean (show := false)
+```lean -show
 section
 variable {α : Type u} {α' : Type u'} {β : Type u} [Coe α α'] [Coe α' β] (e : α)
 ```
@@ -307,7 +341,7 @@ variable {α : Type u} {α' : Type u'} {β : Type u} [Coe α α'] [Coe α' β] (
 Because coercions are inserted automatically, nested {tech}[type ascriptions] provide a way to precisely control the types involved in a coercion.
 If {lean}`α` and {lean}`β` are not the same type, {lean}`((e : α) : β)` arranges for {lean}`e` to have type {lean}`α` and then inserts a coercion from {lean}`α` to {lean}`β`.
 
-```lean (show := false)
+```lean -show
 end
 ```
 
@@ -346,17 +380,17 @@ Printing the resulting definition shows that the computation is inside the funct
 ```
 ```leanOutput tomorrow
 def tomorrow : Later String :=
-{ get := fun x => Nat.fold 10000 (fun x x s => s ++ "tomorrow") "" }
+{ get := fun x => Nat.fold 10000 (fun x x_1 s => s ++ "tomorrow") "" }
 ```
 :::
 
-```lean (show := false)
+```lean -show
 section
 variable {α : Type u}
 ```
-:::example "Duplicate Evaluation in Coercions"
+::::example "Duplicate Evaluation in Coercions"
 Because the contents of {lean}`Coe` instances are unfolded during coercion insertion, coercions that use their argument more than once should be careful to ensure that evaluation occurs just once.
-This can be done by using a helper function that is not part of the instance, or by using {keywordOf Lean.Parser.Term.let}`let` to evaluate the coerced term and then re-use its resulting value.
+This can be done by using a helper function that is not part of the instance, or by using {keywordOf Lean.Parser.Term.let}`let` to evaluate the coerced term and then reuse its resulting value.
 
 The structure {name}`Twice` requires that both fields have the same value:
 ```lean
@@ -378,15 +412,13 @@ def twice (x : α) : Twice α where
 instance : Coe α (Twice α) := ⟨twice⟩
 ```
 When the {name}`Coe` instance is unfolded, the call to {name}`twice` remains, which causes its argument to be evaluated before the body of the function is executed.
-As a result, the {keywordOf Lean.Parser.Term.dbgTrace}`dbg_trace` executes just once:
+As a result, the {keywordOf Lean.Parser.Term.dbgTrace}`dbg_trace` is included in the resulting term just once:
 ```lean (name := eval1)
 #eval ((dbg_trace "hello"; 5 : Nat) : Twice Nat)
 ```
+This is used to demonstrate the effect:
 ```leanOutput eval1
 hello
-```
-```leanOutput eval1
-{ first := 5, second := 5, first_eq_second := _ }
 ```
 
 Inlining the helper into the {name}`Coe` instance results in a term that duplicates the {keywordOf Lean.Parser.Term.dbgTrace}`dbg_trace`:
@@ -400,11 +432,8 @@ instance : Coe α (Twice α) where
 hello
 hello
 ```
-```leanOutput eval2
-{ first := 5, second := 5, first_eq_second := _ }
-```
 
-Introducing an intermediate name for the result of the evaluation prevents the duplicated work:
+Introducing an intermediate name for the result of the evaluation prevents the duplication of {keywordOf Lean.Parser.Term.dbgTrace}`dbg_trace`:
 ```lean (name := eval3)
 instance : Coe α (Twice α) where
   coe x := let y := x; ⟨y, y, rfl⟩
@@ -414,12 +443,9 @@ instance : Coe α (Twice α) where
 ```leanOutput eval3
 hello
 ```
-```leanOutput eval3
-{ first := 5, second := 5, first_eq_second := _ }
-```
 
-:::
-```lean (show := false)
+::::
+```lean -show
 end
 ```
 
@@ -472,7 +498,7 @@ def four : Even := ⟨4, by omega⟩
 ```
 
 Due to coercion chaining, there is also a coercion from {name}`Even` to {name}`Int` formed by chaining the {inst}`Coe Even Nat` instance with the existing coercion from {name}`Nat` to {name}`Int`:
-```lean name := four'
+```lean (name := four')
 #eval (four : Int) - 5
 ```
 ```leanOutput four'
@@ -484,34 +510,34 @@ Due to coercion chaining, there is also a coercion from {name}`Even` to {name}`I
 Non-dependent coercions are used whenever all values of the inferred type can be coerced to the target type.
 
 :::example "Defining Dependent Coercions"
-The string "four" can be coerced into the natural number {lean type:="Nat"}`4` with this instance declaration:
-````lean (name := fourCoe)
+The string {lean}`"four"` can be coerced into the natural number {lean  (type := "Nat")}`4` with this instance declaration:
+```lean (name := fourCoe)
 instance : CoeDep String "four" Nat where
   coe := 4
 
 #eval ("four" : Nat)
-````
+```
 ```leanOutput fourCoe
 4
 ```
 
 Ordinary type errors are produced for other strings:
-```lean (error := true) (name := threeCoe)
+```lean +error (name := threeCoe)
 #eval ("three" : Nat)
 ```
 ```leanOutput threeCoe
-type mismatch
+Type mismatch
   "three"
 has type
-  String : Type
+  String
 but is expected to have type
-  Nat : Type
+  Nat
 ```
 
 :::
 
 
-```lean (show := false)
+```lean -show
 section
 variable {α α' α'' β β' «…» γ: Sort _}
 
@@ -524,7 +550,7 @@ variable [CoeHead α α'] [CoeOut α' …] [CoeOut … α''] [Coe α'' …] [Coe
 
 :::paragraph
 Non-dependent coercions may be chained: if there is a coercion from {lean}`α` to {lean}`β` and from {lean}`β` to {lean}`γ`, then there is also a coercion from {lean}`α` to {lean}`γ`.
-{index subterm:="of coercions"}[chain]
+{index (subterm:="of coercions")}[chain]
 The chain should be in the form {name}`CoeHead`$`?`{name}`CoeOut`$`*`{name}`Coe`$`*`{name}`CoeTail`$`?`, which is to say it may consist of:
 
  * An optional instance of {inst}`CoeHead α α'`, followed by
@@ -586,7 +612,7 @@ instance : Coe Bool (Decision α) := ⟨Decision.ofBool⟩
 ```
 
 With these instances, coercion chaining works:
-```lean name := chainTruthiness
+```lean (name := chainTruthiness)
 #eval ({ val := 1, isTrue := true : Truthy Nat } : Decision String)
 ```
 ```leanOutput chainTruthiness
@@ -594,7 +620,7 @@ Decision.yes
 ```
 
 Attempting to use the wrong class leads to an error:
-```lean name:=coeOutErr error:=true
+```lean (name := coeOutErr) +error
 instance : Coe (Truthy α) Bool := ⟨Truthy.isTrue⟩
 ```
 ```leanOutput coeOutErr
@@ -605,7 +631,7 @@ instance does not provide concrete values for (semi-)out-params
 :::
 
 
-```lean (show := false)
+```lean -show
 end
 ```
 
@@ -620,7 +646,7 @@ If both exist, then the {name}`CoeDep` instance takes priority.
 
 {docstring CoeT}
 
-```lean (show := false)
+```lean -show
 section
 variable {α β : Sort _} {e : α} [CoeDep α e β]
 ```
@@ -630,14 +656,14 @@ As an alternative to a chain of coercions, a term {lean}`e` of type {lean}`α` c
 Dependent coercions are useful in situations where only some of the values can be coerced; this mechanism is used to coerce only decidable propositions to {lean}`Bool`.
 They are also useful when the value itself occurs in the coercion's target type.
 
-```lean (show := false)
+```lean -show
 end
 ```
 
 {docstring CoeDep}
 
 :::example "Dependent Coercion"
-```lean (show := false)
+```lean -show
 universe u
 ```
 
@@ -662,12 +688,12 @@ def oneTwoThree : NonEmptyList Nat := ⟨[1, 2, 3], by simp⟩
 
 Arbitrary lists cannot, however, be coerced to non-empty lists, because some arbitrarily-chosen lists may indeed be empty:
 
-```lean (error := true) (name := coeFail) (keep := false)
+```lean +error (name := coeFail) -keep
 instance : Coe (List α) (NonEmptyList α) where
   coe xs := ⟨xs, _⟩
 ```
 ```leanOutput coeFail
-don't know how to synthesize placeholder for argument 'non_empty'
+don't know how to synthesize placeholder for argument `non_empty`
 context:
 α : Type u_1
 xs : List α
@@ -687,8 +713,8 @@ instance : CoeDep (List α) (x :: xs) (NonEmptyList α) where
 
 
 Dependent coercion insertion requires that the term to be coerced syntactically matches the term in the instance header.
-Lists that are known to be non-empty, but which are not syntactically instances of {lean type:= "{α : Type u} → α → List α → List α"}`(· :: ·)`, cannot be coerced with this instance.
-```lean (error := true) (name := coeFailDep)
+Lists that are known to be non-empty, but which are not syntactically instances of {lean  (type := "{α : Type u} → α → List α → List α")}`(· :: ·)`, cannot be coerced with this instance.
+```lean +error (name := coeFailDep)
 #check
   fun (xs : List Nat) =>
     let ys : List Nat := xs ++ [4]
@@ -696,12 +722,12 @@ Lists that are known to be non-empty, but which are not syntactically instances 
 ```
 When coercion insertion fails, the original type error is reported:
 ```leanOutput coeFailDep
-type mismatch
+Type mismatch
   ys
 has type
-  List Nat : Type
+  List Nat
 but is expected to have type
-  NonEmptyList Nat : Type
+  NonEmptyList Nat
 ```
 
 :::
@@ -811,7 +837,7 @@ def Weekday.fromFin : Fin 7 → Weekday
   | 6 => su
 ```
 
-```lean (show := false)
+```lean -show
 theorem Weekday.toFin_fromFin_id : Weekday.toFin (Weekday.fromFin n) = n := by
   repeat (cases ‹Fin (_ + 1)› using Fin.cases; case zero => rfl)
   apply Fin.elim0; assumption
@@ -867,10 +893,10 @@ The type classes {name}`NatCast` and {name}`IntCast` are special cases of {name}
 They exist to enable better integration with large libraries of mathematics, such as [Mathlib](https://github.com/leanprover-community/mathlib4), that make heavy use of coercions to map from the natural numbers or integers to other structures (typically rings).
 Ideally, the coercion of a natural number or integer into these structures is a {tech}[simp normal form], because it is a convenient way to denote them.
 
-When the coercion application is expected to be the {tech}[simp normal form] for a type, it is important that _all_ such coercions are {tech key:="definitional equality"}[definitionally equal] in practice.
-Otherwise, the {tech}[simp normal form] would need to choose a single chained coercion path, but lemmas could accidentally stated using a different path.
+When the coercion application is expected to be the {tech}[simp normal form] for a type, it is important that _all_ such coercions are {tech (key := "definitional equality")}[definitionally equal] in practice.
+Otherwise, the {tech}[simp normal form] would need to choose a single chained coercion path, but lemmas could accidentally be stated using a different path.
 Because {tactic}`simp`'s internal index is based on the underlying structure of the term, rather than its presentation in the surface syntax, these differences would cause the lemmas to not be applied where expected.
-{lean}`NatCast` and {lean}`IntCast` instances, on the other hand, should be defined such that they are always {tech key:="definitional equality"}[definitionally equal], avoiding the problem.
+{lean}`NatCast` and {lean}`IntCast` instances, on the other hand, should be defined such that they are always {tech (key := "definitional equality")}[definitionally equal], avoiding the problem.
 The Lean standard library's instances are arranged such that {name}`NatCast` or {name}`IntCast` instances are chosen preferentially over chains of coercion instances during coercion insertion.
 They can also be used as {name}`CoeOut` instances, allowing a graceful fallback to coercion chaining when needed.
 
@@ -927,7 +953,7 @@ structure Monoid where
   op_id_identity : ∀ (x : Carrier), op x id = x
 ```
 
-The type {lean type := "Type 1"}`Monoid` does not indicate the carrier:
+The type {lean  (type := "Type 1")}`Monoid` does not indicate the carrier:
 ```lean
 def StringMonoid : Monoid where
   Carrier := String
@@ -949,7 +975,7 @@ example : StringMonoid := "hello"
 
 :::example "Sort Coercions as Ordinary Coercions"
 The {tech}[inductive type] {name}`NatOrBool` represents the types {name}`Nat` and {name}`Bool`.
-The can be coerced to the actual types {name}`Nat` and {name}`Bool`:
+They can be coerced to the actual types {name}`Nat` and {name}`Bool`:
 ```lean
 inductive NatOrBool where
   | nat | bool
@@ -1001,7 +1027,7 @@ Unlike {name}`CoeDep`, the term itself is not taken into account during instance
 ```
 :::
 
-```lean (show := false)
+```lean -show
 section
 variable {α : Type u} {β : Type v}
 ```
@@ -1064,7 +1090,7 @@ instance : CoeFun (NamedFun α α'') (fun _ => α → α'') where
 [1, 2, 3, 4, 5, 6]
 ```
 :::
-```lean (show := false)
+```lean -show
 end
 ```
 
@@ -1253,7 +1279,9 @@ The specific rules governing the ordering of instances in the chain (namely, tha
 :::
 
 :::figure "Auxiliary Classes for Coercions" (tag := "coe-aux-classes")
-![A graphical representation of the relationships between the coercion transitive closure auxiliary classes](/static/figures/coe-chain.svg)
+```diagram
+coeChainDiagram
+```
 :::
 
 {docstring CoeHTCT}
