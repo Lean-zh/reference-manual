@@ -58,6 +58,7 @@ else
   # build output before reading the remote config, so putting these files in
   # `_build` makes them disappear between argument parsing and rendering.
   CONFIG_TMPDIR="${RUNNER_TEMP:-${TMPDIR:-/tmp}}"
+  mkdir -p "$CONFIG_TMPDIR"
   REF_REMOTE_CONFIG="$CONFIG_TMPDIR/reference-manual-production-remotes-reference.json"
   TUT_REMOTE_CONFIG="$CONFIG_TMPDIR/reference-manual-production-remotes-tutorials.json"
 
