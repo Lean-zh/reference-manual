@@ -56,6 +56,9 @@ $_:attrKind $_:attr
 每个属性自行决定如何存储其元数据，以及对特定用例而言，灵活性与性能之间怎样取舍才合适。
 
 # 作为修饰符的属性
+%%%
+tag := "The-Lean-Language-Reference--Attributes--Attributes-as-Modifiers"
+%%%
 
 属性可以作为{ref "declaration-modifiers"}[声明修饰符]添加到声明上。
 它们放在文档注释与可见性修饰符之间。
@@ -67,6 +70,9 @@ $_:attrKind $_:attr
 :::
 
 # {keyword}`attribute` 命令
+%%%
+tag := "The-Lean-Language-Reference--Attributes--The--attribute--Command"
+%%%
 
 {keywordOf Lean.Parser.Command.attribute}`attribute` 命令可用于修改声明的属性。
 一些用法示例包括：

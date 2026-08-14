@@ -26,7 +26,7 @@ Lean 中的许多类型类用于让加法、数组索引等内置记法可以重
 
 # 布尔相等性测试
 %%%
-tag := "boolean-equality-tests"
+tag := "The-Lean-Language-Reference--Type-Classes--Basic-Classes--Boolean-Equality-Tests"
 %%%
 
 布尔相等运算符 `==` 通过定义 {name}`BEq` 的实例来重载。
@@ -51,7 +51,7 @@ tag := "boolean-equality-tests"
 
 # 排序关系
 %%%
-tag := "ordering"
+tag := "The-Lean-Language-Reference--Type-Classes--Basic-Classes--Ordering"
 %%%
 
 主要有两种方式为一个类型的值规定次序：
@@ -192,7 +192,7 @@ true
 
 ## 实例构造
 %%%
-tag := "instance-construction"
+tag := "The-Lean-Language-Reference--Type-Classes--Basic-Classes--Ordering--Instance-Construction"
 %%%
 
 {docstring Ord.lex}
@@ -203,7 +203,7 @@ tag := "instance-construction"
 
 # 最小值与最大值
 %%%
-tag := "minimum-and-maximum-values"
+tag := "The-Lean-Language-Reference--Type-Classes--Basic-Classes--Minimum-and-Maximum-Values"
 %%%
 
 类 `Max` 和 `Min` 提供重载运算符，用于从两个值中选择较大者或较小者。
@@ -279,7 +279,7 @@ noncomputable example (f g : Nat → Nat) : Decidable (f = g) :=
 
 # 有元素的类型
 %%%
-tag := "inhabited-types"
+tag := "The-Lean-Language-Reference--Type-Classes--Basic-Classes--Inhabited-Types"
 %%%
 
 {docstring Inhabited}
@@ -288,7 +288,7 @@ tag := "inhabited-types"
 
 # 至多单元素类型
 %%%
-tag := "subsingleton-types"
+tag := "The-Lean-Language-Reference--Type-Classes--Basic-Classes--Subsingleton-Types"
 %%%
 
 {docstring Subsingleton}
@@ -313,7 +313,7 @@ draft := true
 
 # 算术与位运算符
 %%%
-tag := "arithmetic-and-bitwise-operators"
+tag := "The-Lean-Language-Reference--Type-Classes--Basic-Classes--Arithmetic-and-Bitwise-Operators"
 %%%
 
 {docstring Zero}
@@ -376,7 +376,7 @@ tag := "arithmetic-and-bitwise-operators"
 
 # 追加
 %%%
-tag := "append"
+tag := "The-Lean-Language-Reference--Type-Classes--Basic-Classes--Append"
 %%%
 
 {docstring HAppend}
@@ -385,7 +385,7 @@ tag := "append"
 
 # 数据查找
 %%%
-tag := "data-lookups"
+tag := "The-Lean-Language-Reference--Type-Classes--Basic-Classes--Data-Lookups"
 %%%
 
 {docstring GetElem}

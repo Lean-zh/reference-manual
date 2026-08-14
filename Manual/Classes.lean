@@ -392,6 +392,7 @@ instance [Add α] [Mul α] : AddMul' α where
 
 # 派生实例
 %%%
+file := "Deriving-Instances"
 tag := "deriving-instances"
 %%%
 

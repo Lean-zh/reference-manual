@@ -42,7 +42,7 @@ file := "Instance-Synthesis"
 
 # 实例搜索概要
 %%%
-tag := "instance-search-summary"
+tag := "The-Lean-Language-Reference--Type-Classes--Instance-Synthesis--Instance-Search-Summary"
 %%%
 
 一般而言，实例合成是一种可能任意回溯的递归搜索过程。
@@ -182,7 +182,7 @@ set_option trace.Meta.synthInstance true in
 
 # 候选实例
 %%%
-tag := "candidate-instances"
+tag := "The-Lean-Language-Reference--Type-Classes--Instance-Synthesis--Candidate-Instances"
 %%%
 
 实例合成在搜索中同时使用局部实例和全局实例。
@@ -450,7 +450,7 @@ tag := "default-instance-synth"
 
 # “道德上典范的”实例
 %%%
-tag := "morally-canonical-instances"
+tag := "The-Lean-Language-Reference--Type-Classes--Instance-Synthesis--___Morally-Canonical___-Instances"
 %%%
 
 在实例合成期间，如果目标已完全确定（即不含元变量）且搜索成功，就不会再为同一目标尝试其他实例。
@@ -487,7 +487,7 @@ tag := "instance-wrapping"
 
 # 选项
 %%%
-tag := "options"
+tag := "The-Lean-Language-Reference--Type-Classes--Instance-Synthesis--Options"
 %%%
 
 {optionDocs backward.synthInstance.canonInstances}
