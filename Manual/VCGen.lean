@@ -8,6 +8,7 @@ import VersoManual
 
 import Manual.Meta
 import Manual.Papers
+import Manual.ZhDocString.VCGenCore
 
 import Std.Tactic.Do
 
@@ -98,7 +99,7 @@ tag := "mvcgen-tactic"
 {name}`SPred` 本身并不与单子验证框架绑定。
 相关的 {name}`Assertion` 根据单子 {name}`WP` 实例的 {name}`PostShape` 输出参数所表示的状态，为该单子计算合适的 {name}`SPred`。
 
-{docstring Std.Do.SPred}
+{zhdocstring Std.Do.SPred ZhDoc.SPred}
 
 ::::leanSection
 ```lean -show
@@ -110,11 +111,11 @@ variable {P : Prop} {σ : List (Type u)}
 ```grammar
 ⌜$_:term⌝
 ```
-{includeDocstring Std.Do.«term⌜_⌝»}
+{zhincludeDocstring Std.Do.«term⌜_⌝» ZhDoc.SPred.embedSyntax}
 :::
 ::::
 
-{docstring SPred.pure}
+{zhdocstring SPred.pure ZhDoc.SPred.pure}
 
 :::example "有状态谓词"
 ```imports -show
@@ -138,26 +139,26 @@ def ItIsSecret : SPred [String] := fun s => ⌜s = "secret"⌝
 有状态谓词之间以_蕴涵_关系联系。
 有状态谓词的蕴涵定义为全称量化的蕴含：若 $`P` 和 $`Q` 是状态 $`\sigma` 上的谓词，则当 $`∀ s : \sigma, P(s) → Q(s)` 时，称 $`P` 蕴涵 $`Q`（写作 $`P \vdash_s Q`）。
 
-{docstring Std.Do.SPred.entails}
+{zhdocstring Std.Do.SPred.entails ZhDoc.SPred.entails}
 
-{docstring Std.Do.SPred.bientails}
+{zhdocstring Std.Do.SPred.bientails ZhDoc.SPred.bientails}
 
 :::syntax term (title := "`SPred` 记法") (namespace := Std.Do)
 ```grammar
 $_:term ⊢ₛ $_:term
 ```
-{includeDocstring Std.Do.«term_⊢ₛ_»}
+{zhincludeDocstring Std.Do.«term_⊢ₛ_» ZhDoc.SPred.entailsSyntax}
 
 ```grammar
 ⊢ₛ $_:term
 ```
-{includeDocstring Std.Do.«term⊢ₛ_»}
+{zhincludeDocstring Std.Do.«term⊢ₛ_» ZhDoc.SPred.tautologySyntax}
 
 ```grammar
 $_:term ⊣⊢ₛ $_:term
 ```
 
-{includeDocstring Std.Do.«term_⊣⊢ₛ_»}
+{zhincludeDocstring Std.Do.«term_⊣⊢ₛ_» ZhDoc.SPred.bientailsSyntax}
 :::
 
 :::leanSection
@@ -216,17 +217,17 @@ spred($_ ↔ $_)
 :::
 
 
-{docstring SPred.and}
+{zhdocstring SPred.and ZhDoc.SPred.and}
 
-{docstring SPred.conjunction}
+{zhdocstring SPred.conjunction ZhDoc.SPred.conjunction}
 
-{docstring SPred.or}
+{zhdocstring SPred.or ZhDoc.SPred.or}
 
-{docstring SPred.not}
+{zhdocstring SPred.not ZhDoc.SPred.not}
 
-{docstring SPred.imp}
+{zhdocstring SPred.imp ZhDoc.SPred.imp}
 
-{docstring SPred.iff}
+{zhdocstring SPred.iff ZhDoc.SPred.iff}
 
 :::syntax term (title := "谓词量词") (namespace := Std.Do)
 ```grammar
@@ -270,23 +271,23 @@ spred(∃ (_ $_* : $ty),  $_)
 每种存在量化形式都是调用 {name}`SPred.exists` 的语法糖，所传函数以被量化变量为参数。
 :::
 
-{docstring SPred.forall}
+{zhdocstring SPred.forall ZhDoc.SPred.forall}
 
-{docstring SPred.exists}
+{zhdocstring SPred.exists ZhDoc.SPred.exists}
 
 ### 有状态值
 
 正如 {name}`SPred` 表示状态上的谓词，{name}`SVal` 表示由状态导出的值。
 
-{docstring SVal}
+{zhdocstring SVal ZhDoc.SVal}
 
-{docstring SVal.getThe}
+{zhdocstring SVal.getThe ZhDoc.SVal.getThe}
 
-{docstring SVal.StateTuple}
+{zhdocstring SVal.StateTuple ZhDoc.SVal.StateTuple}
 
-{docstring SVal.curry}
+{zhdocstring SVal.curry ZhDoc.SVal.curry}
 
-{docstring SVal.uncurry}
+{zhdocstring SVal.uncurry ZhDoc.SVal.uncurry}
 
 
 ## 断言
@@ -298,13 +299,13 @@ spred(∃ (_ $_* : $ty),  $_)
 由于可以不断添加这些构造器，单子变换器的后置条件形状可以用其所变换的底层单子的后置条件形状来定义。
 在幕后，后置条件形状会被转换为状态类型列表并丢弃异常，从而将 {name}`Assertion` 转换为适当的 {name}`SPred`。
 
-{docstring PostShape}
+{zhdocstring PostShape ZhDoc.PostShape}
 
-{docstring PostShape.args}
+{zhdocstring PostShape.args ZhDoc.PostShape.args}
 
-{docstring Assertion}
+{zhdocstring Assertion ZhDoc.Assertion}
 
-{docstring PostCond}
+{zhdocstring PostCond ZhDoc.PostCond}
 
 :::syntax term (title := "后置条件")
 ```grammar
@@ -314,7 +315,7 @@ spred(∃ (_ $_* : $ty),  $_)
 :::
 
 
-{docstring ExceptConds}
+{zhdocstring ExceptConds ZhDoc.ExceptConds}
 
 :::leanSection
 ```lean -show
@@ -329,19 +330,19 @@ variable {m : Type u → Type v} {ps : PostShape.{u}} [WP m ps] {P : Assertion p
 ```grammar
 ⇓ $_* => $_
 ```
-{includeDocstring PostCond.noThrow}
+{zhincludeDocstring PostCond.noThrow ZhDoc.PostCond.noThrowSyntax}
 :::
 
-{docstring PostCond.noThrow}
+{zhdocstring PostCond.noThrow ZhDoc.PostCond.noThrow}
 
 :::syntax term (title := "部分后置条件")
 ```grammar
 ⇓? $_* => $_
 ```
-{includeDocstring PostCond.mayThrow}
+{zhincludeDocstring PostCond.mayThrow ZhDoc.PostCond.mayThrowSyntax}
 :::
 
-{docstring PostCond.mayThrow}
+{zhdocstring PostCond.mayThrow ZhDoc.PostCond.mayThrow}
 
 :::syntax term (title := "后置条件蕴涵")
 ```grammar
@@ -350,7 +351,7 @@ $_ ⊢ₚ $_
 {name}`PostCond.entails` 的语法糖。
 :::
 
-{docstring PostCond.entails}
+{zhdocstring PostCond.entails ZhDoc.PostCond.entails}
 
 
 :::syntax term (title := "后置条件合取")
@@ -360,7 +361,7 @@ $_ ∧ₚ $_
 {name}`PostCond.and` 的语法糖。
 :::
 
-{docstring PostCond.and}
+{zhdocstring PostCond.and ZhDoc.PostCond.and}
 
 :::syntax term (title := "后置条件蕴含")
 ```grammar
@@ -369,7 +370,7 @@ $_ →ₚ $_
 {name}`PostCond.imp` 的语法糖。
 :::
 
-{docstring PostCond.imp}
+{zhdocstring PostCond.imp ZhDoc.PostCond.imp}
 
 
 ## 谓词变换器
@@ -377,7 +378,7 @@ $_ →ₚ $_
 谓词变换器是一个函数，它将某种后置条件状态上的后置条件映射为该状态上的断言。
 该函数必须是{deftech}_合取的_，即必须对 {name}`PostCond.and` 满足分配律。
 
-{docstring PredTrans}
+{zhdocstring PredTrans ZhDoc.PredTrans}
 
 {docstring PredTrans.Conjunctive}
 
