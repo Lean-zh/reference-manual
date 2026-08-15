@@ -136,6 +136,7 @@ Lean 使用{deftech (key := "reference count")}_引用计数_来管理内存。
 {name}`dbgTraceIfShared` 调用没有任何输出，这表明字符串确实会原地更新，而不是先被复制。
 
 ```ioLean
+set_option linter.deprecated false in
 def process (str : String) (h : str.startPos ≠ str.endPos) : IO Unit := do
   IO.println ((dbgTraceIfShared "String update" str).startPos.set ' ' h)
 
@@ -164,6 +165,7 @@ Here is input.
 这一点可以从它的标准错误输出中看出。
 
 ```ioLean
+set_option linter.deprecated false in
 def process (str : String) (h : str.startPos ≠ str.endPos) : IO Unit := do
   IO.println ((dbgTraceIfShared "String update" str).startPos.set ' ' h)
 
@@ -265,7 +267,7 @@ set_option trace.compiler.ir.result true
 
 def discardElems : List α → List Unit
   | [] => []
-  | x :: xs => () :: discardElems xs
+  | _ :: xs => () :: discardElems xs
 ```
 
 这会生成如下 IR：
