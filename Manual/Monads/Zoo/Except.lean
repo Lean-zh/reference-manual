@@ -7,6 +7,7 @@ Author: David Thrane Christiansen
 import VersoManual
 
 import Manual.Meta
+import Manual.ZhDocString.Monads.Except
 
 import Lean.Parser.Command
 
@@ -35,25 +36,25 @@ tag := "exception-monads"
 tag := "The-Lean-Language-Reference--Functors___-Monads-and--do--Notation--Varieties-of-Monads--Exceptions--Exceptions"
 %%%
 
-{docstring Except}
+{zhdocstring Except Manual.ZhDocString.Monads.Except.Except}
 
-{docstring Except.pure}
+{zhdocstring Except.pure Manual.ZhDocString.Monads.Except.Except.pure}
 
-{docstring Except.bind}
+{zhdocstring Except.bind Manual.ZhDocString.Monads.Except.Except.bind}
 
-{docstring Except.map}
+{zhdocstring Except.map Manual.ZhDocString.Monads.Except.Except.map}
 
-{docstring Except.mapError}
+{zhdocstring Except.mapError Manual.ZhDocString.Monads.Except.Except.mapError}
 
-{docstring Except.tryCatch}
+{zhdocstring Except.tryCatch Manual.ZhDocString.Monads.Except.Except.tryCatch}
 
-{docstring Except.orElseLazy}
+{zhdocstring Except.orElseLazy Manual.ZhDocString.Monads.Except.Except.orElseLazy}
 
-{docstring Except.isOk}
+{zhdocstring Except.isOk Manual.ZhDocString.Monads.Except.Except.isOk}
 
-{docstring Except.toOption}
+{zhdocstring Except.toOption Manual.ZhDocString.Monads.Except.Except.toOption}
 
-{docstring Except.toBool}
+{zhdocstring Except.toBool Manual.ZhDocString.Monads.Except.Except.toBool}
 
 
 # 类型类
@@ -61,51 +62,51 @@ tag := "The-Lean-Language-Reference--Functors___-Monads-and--do--Notation--Varie
 tag := "The-Lean-Language-Reference--Functors___-Monads-and--do--Notation--Varieties-of-Monads--Exceptions--Type-Class"
 %%%
 
-{docstring MonadExcept}
+{zhdocstring MonadExcept Manual.ZhDocString.Monads.Except.MonadExcept}
 
-{docstring MonadExcept.ofExcept}
+{zhdocstring MonadExcept.ofExcept Manual.ZhDocString.Monads.Except.MonadExcept.ofExcept}
 
-{docstring MonadExcept.orElse}
+{zhdocstring MonadExcept.orElse Manual.ZhDocString.Monads.Except.MonadExcept.orElse}
 
-{docstring MonadExcept.orelse'}
+{zhdocstring MonadExcept.orelse' Manual.ZhDocString.Monads.Except.MonadExcept.orelse'}
 
-{docstring MonadExceptOf}
+{zhdocstring MonadExceptOf Manual.ZhDocString.Monads.Except.MonadExceptOf}
 
-{docstring throwThe}
+{zhdocstring throwThe Manual.ZhDocString.Monads.Except.throwThe}
 
-{docstring tryCatchThe}
+{zhdocstring tryCatchThe Manual.ZhDocString.Monads.Except.tryCatchThe}
 
 # “最终”计算
 %%%
 tag := "The-Lean-Language-Reference--Functors___-Monads-and--do--Notation--Varieties-of-Monads--Exceptions--___Finally___-Computations"
 %%%
 
-{docstring MonadFinally}
+{zhdocstring MonadFinally Manual.ZhDocString.Monads.Except.MonadFinally}
 
 # 变换器
 %%%
 tag := "The-Lean-Language-Reference--Functors___-Monads-and--do--Notation--Varieties-of-Monads--Exceptions--Transformer"
 %%%
 
-{docstring ExceptT}
+{zhdocstring ExceptT Manual.ZhDocString.Monads.Except.exceptT}
 
-{docstring ExceptT.lift}
+{zhdocstring ExceptT.lift Manual.ZhDocString.Monads.Except.ExceptT.lift}
 
-{docstring ExceptT.run}
+{zhdocstring ExceptT.run Manual.ZhDocString.Monads.Except.ExceptT.run}
 
-{docstring ExceptT.pure}
+{zhdocstring ExceptT.pure Manual.ZhDocString.Monads.Except.ExceptT.pure}
 
-{docstring ExceptT.bind}
+{zhdocstring ExceptT.bind Manual.ZhDocString.Monads.Except.ExceptT.bind}
 
-{docstring ExceptT.bindCont}
+{zhdocstring ExceptT.bindCont Manual.ZhDocString.Monads.Except.ExceptT.bindCont}
 
-{docstring ExceptT.tryCatch}
+{zhdocstring ExceptT.tryCatch Manual.ZhDocString.Monads.Except.ExceptT.tryCatch}
 
-{docstring ExceptT.mk}
+{zhdocstring ExceptT.mk Manual.ZhDocString.Monads.Except.ExceptT.mk}
 
-{docstring ExceptT.map}
+{zhdocstring ExceptT.map Manual.ZhDocString.Monads.Except.ExceptT.map}
 
-{docstring ExceptT.adapt}
+{zhdocstring ExceptT.adapt Manual.ZhDocString.Monads.Except.ExceptT.adapt}
 
 
 # 延续传递风格的异常单子
@@ -132,12 +133,12 @@ variable {m : Type u → Type v}
 #reduce (types := true) ExceptCpsT ε m α
 ```
 
-{docstring ExceptCpsT}
+{zhdocstring ExceptCpsT Manual.ZhDocString.Monads.Except.exceptCpsT}
 
-{docstring ExceptCpsT.runCatch}
+{zhdocstring ExceptCpsT.runCatch Manual.ZhDocString.Monads.Except.ExceptCpsT.runCatch}
 
-{docstring ExceptCpsT.runK}
+{zhdocstring ExceptCpsT.runK Manual.ZhDocString.Monads.Except.ExceptCpsT.runK}
 
-{docstring ExceptCpsT.run}
+{zhdocstring ExceptCpsT.run Manual.ZhDocString.Monads.Except.ExceptCpsT.run}
 
-{docstring ExceptCpsT.lift}
+{zhdocstring ExceptCpsT.lift Manual.ZhDocString.Monads.Except.ExceptCpsT.lift}

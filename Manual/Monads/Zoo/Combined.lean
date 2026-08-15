@@ -7,6 +7,7 @@ Author: David Thrane Christiansen
 import VersoManual
 
 import Manual.Meta
+import Manual.ZhDocString.Monads.Except
 
 import Lean.Parser.Command
 
@@ -45,17 +46,17 @@ variable (ε : Type u) (σ σ' : Type u) (α : Type u)
 #reduce (types := true) EStateM ε σ α
 ```
 
-{docstring EStateM}
+{zhdocstring EStateM Manual.ZhDocString.Monads.Except.eStateM}
 
-{docstring EStateM.Result}
+{zhdocstring EStateM.Result Manual.ZhDocString.Monads.Except.EStateM.Result}
 
-{docstring EStateM.run}
+{zhdocstring EStateM.run Manual.ZhDocString.Monads.Except.EStateM.run}
 
-{docstring EStateM.run'}
+{zhdocstring EStateM.run' Manual.ZhDocString.Monads.Except.EStateM.run'}
 
-{docstring EStateM.adaptExcept}
+{zhdocstring EStateM.adaptExcept Manual.ZhDocString.Monads.Except.EStateM.adaptExcept}
 
-{docstring EStateM.fromStateM +allowMissing}
+{zhdocstring EStateM.fromStateM Manual.ZhDocString.Monads.Except.EStateM.fromStateM}
 
 # 状态回滚
 %%%
@@ -71,12 +72,12 @@ tag := "The-Lean-Language-Reference--Functors___-Monads-and--do--Notation--Varie
 该类指定状态中可以保存和恢复的部分。
 {name}`EStateM` 随后会在错误处理前后安排保存和恢复。
 
-{docstring EStateM.Backtrackable}
+{zhdocstring EStateM.Backtrackable Manual.ZhDocString.Monads.Except.EStateM.Backtrackable}
 
 {name EStateM.Backtrackable}`Backtrackable` 有一个普遍适用的实例，它既不保存也不恢复任何内容。
 因为实例合成会优先选择最新的实例，所以只有在未定义其他实例时才会使用这个通用实例。
 
-{docstring EStateM.nonBacktrackable}
+{zhdocstring EStateM.nonBacktrackable Manual.ZhDocString.Monads.Except.EStateM.nonBacktrackable}
 
 # 实现
 %%%
@@ -85,24 +86,24 @@ tag := "The-Lean-Language-Reference--Functors___-Monads-and--do--Notation--Varie
 
 通常不会直接调用这些函数，而是通过相应的类型类访问它们。
 
-{docstring EStateM.map}
+{zhdocstring EStateM.map Manual.ZhDocString.Monads.Except.EStateM.map}
 
-{docstring EStateM.pure}
+{zhdocstring EStateM.pure Manual.ZhDocString.Monads.Except.EStateM.pure}
 
-{docstring EStateM.bind}
+{zhdocstring EStateM.bind Manual.ZhDocString.Monads.Except.EStateM.bind}
 
-{docstring EStateM.orElse}
+{zhdocstring EStateM.orElse Manual.ZhDocString.Monads.Except.EStateM.orElse}
 
-{docstring EStateM.orElse'}
+{zhdocstring EStateM.orElse' Manual.ZhDocString.Monads.Except.EStateM.orElse'}
 
-{docstring EStateM.seqRight}
+{zhdocstring EStateM.seqRight Manual.ZhDocString.Monads.Except.EStateM.seqRight}
 
-{docstring EStateM.tryCatch}
+{zhdocstring EStateM.tryCatch Manual.ZhDocString.Monads.Except.EStateM.tryCatch}
 
-{docstring EStateM.throw}
+{zhdocstring EStateM.throw Manual.ZhDocString.Monads.Except.EStateM.throw}
 
-{docstring EStateM.get}
+{zhdocstring EStateM.get Manual.ZhDocString.Monads.Except.EStateM.get}
 
-{docstring EStateM.set}
+{zhdocstring EStateM.set Manual.ZhDocString.Monads.Except.EStateM.set}
 
-{docstring EStateM.modifyGet}
+{zhdocstring EStateM.modifyGet Manual.ZhDocString.Monads.Except.EStateM.modifyGet}
