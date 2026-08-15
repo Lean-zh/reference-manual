@@ -38,6 +38,7 @@ TITLE_REPLACEMENTS = (
     (re.compile(r'title="Permalink"'), 'title="永久链接"'),
 )
 FORBIDDEN_TITLES = ("Documentation for ", "Definition of ", "Permalink")
+NO_ADDITIONAL_DOCS = "<span>无附加文档。</span>"
 VOID_TAGS = {
     "area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta",
     "param", "source", "track", "wbr",
@@ -122,6 +123,10 @@ def localize_generated_html(root: Path) -> tuple[int, int, int, int]:
         payload = docs.get(hover_id)
         if payload is None:
             raise SystemExit(f"hover id {hover_id!r} is absent from {docs_path}")
+        if hover_id.startswith("zh-"):
+            if not payload.strip():
+                docs[hover_id] = NO_ADDITIONAL_DOCS
+            continue
         translated = translated_hovers.get(hover_id)
         replacement = ""
         if translated:
@@ -133,6 +138,8 @@ def localize_generated_html(root: Path) -> tuple[int, int, int, int]:
         stripped, count = DOCSTRING_RE.subn(replacement, payload)
         if count == 0:
             continue
+        if not stripped.strip():
+            stripped = NO_ADDITIONAL_DOCS
         if translated:
             translated_count += 1
         clone_id = f"zh-{hover_id}"
@@ -162,6 +169,9 @@ def localize_generated_html(root: Path) -> tuple[int, int, int, int]:
     missing = referenced.difference(docs)
     if missing:
         raise SystemExit(f"localized hover ids missing from table: {sorted(missing)[:5]}")
+    empty = [hover_id for hover_id in referenced if not docs[hover_id].strip()]
+    if empty:
+        raise SystemExit(f"empty localized hover payloads: {sorted(empty)[:5]}")
     english_docstrings = sum(
         1
         for hover_id in referenced
