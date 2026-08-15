@@ -65,6 +65,15 @@ TARGET_PAGES = (
     "Functors___-Monads-and--do--Notation/Syntax/index.html",
     "Functors___-Monads-and--do--Notation/API-Reference/index.html",
     "Functors___-Monads-and--do--Notation/Varieties-of-Monads/index.html",
+    "Notations-and-Macros/index.html",
+    "Notations-and-Macros/Custom-Operators/index.html",
+    "Notations-and-Macros/Precedence/index.html",
+    "Notations-and-Macros/Notations/index.html",
+    "Notations-and-Macros/Defining-New-Syntax/index.html",
+    "Notations-and-Macros/Macros/index.html",
+    "Notations-and-Macros/Elaborators/index.html",
+    "Notations-and-Macros/Extending--do--Notation/index.html",
+    "Notations-and-Macros/Extending-Lean___s-Output/index.html",
 )
 
 HOVER_ATTR_RE = re.compile(r'data-verso-hover="([^"]+)"')
