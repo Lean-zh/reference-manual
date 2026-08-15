@@ -20,61 +20,62 @@ set_option pp.rawOnError true
 
 set_option linter.unusedVariables false
 
-#doc (Manual) "Elaborators" =>
+#doc (Manual) "精译器" =>
 
 %%%
 tag := "elaborators"
+file := "Elaborators"
 %%%
 
 :::seeAlso
-* Elaborators process {ref "syntax-ext"}[new syntax extensions].
+* 精译器处理 {ref "syntax-ext"}[新的语法扩展]。
 
-* {ref "quote-patterns"}[Quotation patterns] are the most typical way to destructure syntax.
+* {ref "quote-patterns"}[引用模式]是解构语法最典型的方式。
 :::
 
-While macros allow Lean to be extended by translating new syntax into existing syntax, {deftech}_elaborators_ allow the new syntax to be processed directly.
-Elaborators have access to everything that Lean itself uses to implement each feature of the language.
-Defining a new elaborator allows a language extension to be just as powerful as any built-in feature of Lean.
+宏通过把新语法翻译成已有语法来扩展 Lean，而 {deftech (key := "elaborators")}_精译器_ 则允许直接处理新语法。
+精译器可以访问 Lean 自身为实现语言各项特性所使用的一切工具。
+定义新的精译器后，语言扩展就能拥有与 Lean 任何内建特性同等的能力。
 
 :::paragraph
-Elaborators come in two varieties:
+精译器分为两类：
 
- * {deftech}_Command elaborators_ are used to add new commands to Lean.
-   Commands are implemented as side effects: they may add new constants to the global environment, extend compile-time tables such as the one that tracks {tech}[instances], they can provide feedback in the form of information, warnings, or errors, and they have full access to the {name}`IO` monad.
-   Command elaborators are associated with the {tech (key := "kind")}[syntax kinds] that they can handle.
+ * {deftech (key := "Command elaborators")}_命令精译器_ 用于向 Lean 添加新命令。
+   命令通过副作用实现：它们可以向全局环境中加入新常量，扩展编译期表（例如跟踪 {tech (key := "instances")}[实例] 的表），也可以以信息、警告或错误的形式提供反馈，并且能完全访问 {name}`IO` 单子。
+   命令精译器与它们能够处理的 {tech (key := "kind")}[语法种类] 相关联。
 
- * {deftech}_Term elaborators_ are used to implement new terms by translating the syntax into Lean's core type theory.
-   They can do everything that command elaborators can do, and they additionally have access to the local context in which the term is being elaborated.
-   Term elaborators can look up bound variables, bind new variables, unify two terms, and much more.
-   A term elaborator must return a value of type {name}`Lean.Expr`, which is the AST of the core type theory.
+ * {deftech (key := "Term elaborators")}_项精译器_ 用于通过把语法翻译到 Lean 的核心类型论中来实现新项。
+   它们能做命令精译器所能做的一切，此外还可以访问当前正在精译该项时所处的局部上下文。
+   项精译器可以查找绑定变量、绑定新变量、统一两个项，等等。
+   项精译器必须返回一个 {name}`Lean.Expr` 类型的值，也就是核心类型论的抽象语法树。
 :::
 
-This section provides an overview and a few examples of elaborators.
-Because Lean's own elaborator uses the same tools, the source code of the elaborator is a good source of further examples.
-Just like macros, multiple elaborators may be associated with a syntax kind; they are tried in order, and elaborators may delegate to the next elaborator in the table by throwing the {name Lean.Macro.Exception.unsupportedSyntax}`unsupportedSyntax` exception.
+本节概述精译器，并给出若干示例。
+Lean 自身的精译器也使用同样的工具，因此精译器源码本身就是进一步寻找示例的良好来源。
+和宏一样，多个精译器可以与同一个语法种类相关联；它们会按顺序尝试，某个精译器也可以通过抛出 {name Lean.Macro.Exception.unsupportedSyntax}`unsupportedSyntax` 异常，把处理委托给表中的下一个精译器。
 
-:::syntax command (title := "Elaboration Rules")
+:::syntax command (title := "精译规则")
 
-The {keywordOf Lean.Parser.Command.elab_rules}`elab_rules` command takes a sequence of elaboration rules, specified as syntax pattern matches, and adds each as an elaborator.
-The rules are attempted in order, before previously-defined elaborators, and later elaborators may add further options.
+{keywordOf Lean.Parser.Command.elab_rules}`elab_rules` 命令接受一组以语法模式匹配指定的精译规则，并将每一条都加入为精译器。
+这些规则会按顺序尝试，并且会先于此前定义的精译器；之后的精译器还可以继续补充更多备选项。
 
 ```grammar
 $[$d:docComment]?
 $[@[$attrs,*]]?
 $_:attrKind elab_rules $[(kind := $k)]? $[: $_]? $[<= $_]?
-  $[| `(free{(p:ident"|")?/-- Suitable syntax for {p} -/}) => $e]*
+  $[| `(free{(p:ident"|")?/-- 适用于 {p} 的语法 -/}) => $e]*
 ```
 
 :::
 
-Commands, terms, and tactics each maintain a table that maps syntax kinds to elaborators.
-The syntax category for which the elaborator should be used is specified after the colon, and must be `term`, `command`, or `tactic`.
-The {keywordOf Lean.Parser.Command.elab_rules}`<=` binds the provided identifier to the current expected type in the context in which a term is being elaborated; it may only be used for term elaborators, and if present, then `term` is implied as the syntax category.
+命令、项和策略各自都维护着一张从语法种类映射到精译器的表。
+冒号后指定精译器应当用于哪个语法类别，其值必须是 `term`、`command` 或 `tactic`。
+{keywordOf Lean.Parser.Command.elab_rules}`<=` 会把给定标识符绑定到当前项精译上下文中的期望类型；它只能用于项精译器，并且一旦出现，就隐含语法类别为 `term`。
 
 
-:::syntax attr (title := "Elaborator Attribute")
-Elaborators can be directly associated with syntax kinds by applying the appropriate attributes.
-Each takes the name of a syntax kind and associates the definition with the kind.
+:::syntax attr (title := "精译器属性")
+通过应用相应属性，可以把精译器直接关联到语法种类上。
+每个属性都接受一个语法种类名，并把定义与该种类关联起来。
 
 ```grammar
 term_elab $_
@@ -87,16 +88,19 @@ tactic $_
 ```
 :::
 
-# Command Elaborators
+# 命令精译器
+%%%
+tag := "The-Lean-Language-Reference--Notations-and-Macros--Elaborators--Command-Elaborators"
+%%%
 
 :::::leanSection
 ```lean -show
 open Lean Elab Command
 ```
-A command elaborator has type {name}`CommandElab`, which is an abbreviation for {lean}`Syntax → CommandElabM Unit`.
-Command elaborators may be implicitly defined using {keywordOf Lean.Parser.Command.elab_rules}`elab_rules`, or explicitly by defining a function and applying the {attr}`command_elab` attribute.
+命令精译器的类型是 {name}`CommandElab`，它是 {lean}`Syntax → CommandElabM Unit` 的缩写。
+命令精译器既可以用 {keywordOf Lean.Parser.Command.elab_rules}`elab_rules` 隐式定义，也可以通过定义一个函数并施加 {attr}`command_elab` 属性来显式定义。
 
-:::example "Querying the Environment"
+:::example "查询环境" (file := "Querying the Environment")
 ```imports -show
 import Lean.Elab
 ```
@@ -104,10 +108,10 @@ import Lean.Elab
 open Lean
 ```
 
-A command elaborator can be used to query the environment to discover how many constants have a given name.
-This example uses {name}`getEnv` from the {name}`MonadEnv` class to get the current environment.
-{name}`Environment.constants` yields a mapping from names to information about them (e.g. their type and whether they are a definition, {tech}[inductive type] declaration, etc).
-{name}`logInfoAt` allows informational output to be associated with syntax from the original program, and a {tech}[token antiquotation] is used to implement the Lean convention that output from interactive commands is associated with their keyword.
+命令精译器可用于查询环境，从而发现有多少常量带有某个给定名称。
+这个例子使用 {name}`MonadEnv` 类型类中的 {name}`getEnv` 来获取当前环境。
+{name}`Environment.constants` 会给出一张从名称到其信息的映射（例如其类型，以及它是定义、{tech (key := "inductive type")}[归纳类型]声明等）。
+{name}`logInfoAt` 允许把信息性输出关联到原程序中的语法上，并通过 {tech (key := "token antiquotation")}[词法单元反引用]来实现 Lean 的惯例：交互式命令的输出应当关联到其关键字。
 
 ```lean
 syntax "#count_constants " ident : command
@@ -138,17 +142,20 @@ Found 2 instances of 'interestingName'
 
 :::::
 
-# Term Elaborators
+# 项精译器
+%%%
+tag := "The-Lean-Language-Reference--Notations-and-Macros--Elaborators--Term-Elaborators"
+%%%
 
 :::::leanSection
 ```lean -show
 open Lean Elab Term
 ```
-A term elaborator has type {name}`TermElab`, which is an abbreviation for {lean}`Syntax → Option Expr → TermElabM Expr`.
-The optional {lean}`Expr` parameter is the type expected for the term being elaborated, which is `none` if no type is yet known.
-Like command elaborators, term elaborators may be implicitly defined using {keywordOf Lean.Parser.Command.elab_rules}`elab_rules`, or explicitly by defining a function and applying the {attr}`term_elab` attribute.
+项精译器的类型是 {name}`TermElab`，它是 {lean}`Syntax → Option Expr → TermElabM Expr` 的缩写。
+可选的 {lean}`Expr` 参数表示当前被精译的项的期望类型；如果尚未知晓类型，则为 `none`。
+和命令精译器一样，项精译器既可以用 {keywordOf Lean.Parser.Command.elab_rules}`elab_rules` 隐式定义，也可以通过定义函数并施加 {attr}`term_elab` 属性来显式定义。
 
-:::example "Avoiding a Type"
+:::example "避开某个类型" (file := "Avoiding a Type")
 ```imports -show
 import Lean.Elab
 ```
@@ -156,10 +163,10 @@ import Lean.Elab
 open Lean Elab Term
 ```
 
-This examples demonstrates an elaborator for syntax that is the opposite of a type ascription.
-The provided term may have any type _other_ than the one indicated, and metavariables are solved pessimistically.
-In this example, {name}`elabType` invokes the term elaborator and then ensures that the resulting term is a type.
-{name}`Meta.inferType` infers a type for a term, and {name}`Meta.isDefEq` attempts to make two terms {tech (key := "definitional equality")}[definitionally equal] by unification, returning {lean}`true` if it succeeds.
+这个例子演示了一个与类型标注相反的语法精译器。
+给定的项可以拥有除所指明类型之外的任何类型，并且元变量会以保守方式求解。
+在此例中，{name}`elabType` 会调用项精译器，并确保得到的项确实是一个类型。
+{name}`Meta.inferType` 为一个项推断类型，而 {name}`Meta.isDefEq` 则尝试通过合一让两个项 {tech (key := "definitional equality")}[定义等价]；成功时返回 {lean}`true`。
 
 ```lean
 syntax (name := notType) "(" term  " !: " term ")" : term
@@ -176,7 +183,7 @@ def elabNotType : TermElab := fun stx _ => do
   else pure e
 ```
 
-If the type position does not contain a type, then `elabType` throws an error:
+如果类型位置上给出的并不是类型，那么 `elabType` 会抛出错误：
 ```lean (name := notType) +error
 #eval ([1, 2, 3] !: "not a type")
 ```
@@ -185,7 +192,7 @@ type expected, got
   ("not a type" : String)
 ```
 
-If the term's type is definitely not equal to the provided type, then elaboration succeeds:
+如果该项的类型确定不等于所给类型，那么精译会成功：
 ```lean (name := ok)
 #eval ([1, 2, 3] !: String)
 ```
@@ -193,7 +200,7 @@ If the term's type is definitely not equal to the provided type, then elaboratio
 [1, 2, 3]
 ```
 
-If the types match, an error is thrown:
+如果类型匹配，就会抛出错误：
 ```lean (name := nope) +error
 #eval (5 !: Nat)
 ```
@@ -201,7 +208,7 @@ If the types match, an error is thrown:
 Got unwanted type Nat
 ```
 
-The type equality check may fill in missing information, so {lean  (type := "String")}`sorry` (which may have any type) is also rejected:
+类型等价性检查可能会补全缺失信息，因此 {lean  (type := "String")}`sorry`（它可以有任意类型）也会被拒绝：
 ```lean (name := unif) +error
 #eval (sorry !: String)
 ```
@@ -210,7 +217,7 @@ Got unwanted type String
 ```
 :::
 
-:::example "Using Any Local Variable"
+:::example "使用任意局部变量" (file := "Using Any Local Variable")
 ```imports -show
 import Lean.Elab
 ```
@@ -218,13 +225,13 @@ import Lean.Elab
 open Lean
 ```
 
-Term elaborators have access to the expected type and to the local context.
-This can be used to create a term analogue of the {tactic}`assumption` tactic.
+项精译器可以访问期望类型以及局部上下文。
+这可用于构造一个与 {tactic}`assumption` 策略对应的项版本。
 
-The first step is to access the local context using {name}`getLocalHyps`.
-It returns the context with the outermost bindings on the left, so it is traversed in reverse order.
-For each local assumption, a type is inferred with {name}`Meta.inferType`.
-If it can be equal to the expected type, then the assumption is returned; if no assumption is suitable, then an error is produced.
+第一步是使用 {name}`getLocalHyps` 访问局部上下文。
+它返回的上下文中，最外层绑定在左侧，因此这里按逆序遍历。
+对于每个局部假设，都用 {name}`Meta.inferType` 推断其类型。
+如果它有可能与期望类型相等，就返回该假设；若没有任何假设合适，则产生错误。
 
 ```lean
 syntax "anything!" : term
@@ -239,7 +246,7 @@ elab_rules <= expected
     throwError m!"No assumption in {hyps} has type {expected}"
 ```
 
-The new syntax finds the function's bound variable:
+这个新语法会找到函数的绑定变量：
 ```lean (name := app)
 #eval (fun (n : Nat) => 2 + anything!) 5
 ```
@@ -247,7 +254,7 @@ The new syntax finds the function's bound variable:
 7
 ```
 
-It chooses the most recent suitable variable, as desired:
+它会按预期选择最近的合适变量：
 ```lean (name := lets)
 #eval
   let x := "x"
@@ -258,7 +265,7 @@ It chooses the most recent suitable variable, as desired:
 "It was y"
 ```
 
-When no assumption is suitable, it returns an error that describes the attempt:
+当没有合适的假设时，它会返回一个描述此次尝试的错误：
 ```lean (name := noFun) +error
 #eval
   let x := Nat.zero
@@ -270,8 +277,8 @@ When no assumption is suitable, it returns an error that describes the attempt:
 No assumption in [x, y, f] has type Int → Int
 ```
 
-Because it uses unification, the natural number literal is chosen here, because numeric literals may have any type with an {name}`OfNat` instance.
-Unfortunately, there is no {name}`OfNat` instance for functions, so instance synthesis later fails.
+由于这里使用了合一，精译器会选择自然数字面量，因为数值字面量可以拥有任何带有 {name}`OfNat` 实例的类型。
+遗憾的是，函数并没有 {name}`OfNat` 实例，因此后续的实例合成会失败。
 ```lean (name := poly) +error
 #eval
   let x := 5
@@ -292,6 +299,9 @@ Hint: Type class instance resolution failures can be inspected with the `set_opt
 
 :::::
 
-# Custom Tactics
+# 自定义策略
+%%%
+tag := "The-Lean-Language-Reference--Notations-and-Macros--Elaborators--Custom-Tactics"
+%%%
 
-Custom tactics are described in the {ref "custom-tactics"}[section on tactics].
+自定义策略见 {ref "custom-tactics"}[关于策略的小节]。

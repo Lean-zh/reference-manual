@@ -9,6 +9,7 @@ import VersoManual
 import Lean.PrettyPrinter.Delaborator
 
 import Manual.Meta
+import Manual.ZhDocString.NotationsMacros.Core
 
 
 open Manual
@@ -23,80 +24,81 @@ set_option linter.unusedVariables false
 
 open Lean (Syntax Expr)
 
-#doc (Manual) "Extending Lean's Output" =>
+#doc (Manual) "扩展 Lean 的输出" =>
 %%%
 tag := "unexpand-and-delab"
+file := "Extending-Lean___s-Output"
 %%%
 
-Extending Lean with new syntax and implementing the new syntax with macros and elaborators allows users to express ideas to Lean more conveniently.
-However, Lean is an _interactive_ theorem prover: it is also important that the feedback it provides can be readily understood.
-Syntax extensions should be used in _output_ as well as in _input_.
+用新语法扩展 Lean，并用宏和精译器实现这种新语法，能让用户更方便地向 Lean 表达想法。
+不过，Lean 是一个_交互式_定理证明器：它给出的反馈也同样必须便于理解。
+语法扩展不仅应当用于_输入_，也应当用于_输出_。
 
 :::paragraph
-There are two primary mechanisms for instructing Lean to use a syntax extension in its output:
+让 Lean 在输出中使用语法扩展，主要有两种机制：
 
-: Unexpanders
+: 逆展开器
 
-  Unexpanders are the inverse of {tech}[macros].
-  Macros implement new syntax in terms of the old syntax by translation, _expanding_ the new feature into encodings in pre-existing features.
-  Like macros, {deftech}_unexpanders_ translate {lean}`Syntax` into {lean}`Syntax`; unlike macros, they transform the encodings into the new extensions.
+  逆展开器是 {tech (key := "macros")}[宏] 的逆过程。
+  宏通过翻译用旧语法实现新语法，把新特性_展开_为既有特性的编码。
+  与宏一样，{deftech (key := "unexpanders")}_逆展开器_ 会把 {lean}`Syntax` 翻译成 {lean}`Syntax`；与宏不同的是，它们会把这些编码变换回新的扩展形式。
 
-: Delaborators
+: 反精译器
 
-  Delaborators are the inverse of {tech}[elaborators].
-  While elaborators translate {lean}`Syntax` into the core type theory's {lean}`Expr`, {deftech}_delaborators_ translate {lean}`Expr`s into {lean}`Syntax`.
+  反精译器是 {tech (key := "elaborators")}[精译器] 的逆过程。
+  精译器会把 {lean}`Syntax` 翻译成核心类型论的 {lean}`Expr`，而 {deftech (key := "delaborators")}_反精译器_ 则会把 {lean}`Expr` 翻译成 {lean}`Syntax`。
 :::
 
-Before an {name}`Expr` is displayed, it is first delaborated and then unexpanded.
-The delaborator tracks the position in the original {name}`Expr` that its output originated from; this position is encoded in the resulting syntax's {name Lean.SourceInfo}`SourceInfo`.
-Just as macro expansion automatically annotates the resulting syntax with synthetic source information that correspond to the original syntax's position, the unexpansion mechanism preserves the resulting syntax's association with the underlying {name}`Expr`.
-This association enables Lean's interactive features that provide information about the resulting syntax when it is shown in {tech}[proof states] and diagnostics.
+在显示一个 {name}`Expr` 之前，系统会先对它做反精译，再做反展开。
+反精译器会跟踪其输出源自原始 {name}`Expr` 的哪个位置；这个位置信息被编码到结果语法的 {name Lean.SourceInfo}`SourceInfo` 中。
+正如宏展开会自动用与原始语法位置对应的合成源码信息来标注结果语法一样，逆展开机制也会保留结果语法与底层 {name}`Expr` 的关联。
+这种关联使 Lean 的交互功能能够在 {tech (key := "proof states")}[证明状态] 和诊断信息中显示结果语法时，提供与之相关的进一步信息。
 
-# Unexpanders
+# 逆展开器
 %%%
 tag := "Unexpanders"
 %%%
 
-Just as macros are registered in a table that maps {tech}[syntax kinds] to macro implementations, unexpanders are registered in a table that maps the names of constants to unexpander implementations.
-Before Lean displays syntax to users, it attempts to rewrite each application of a constant in the syntax according to this table.
-Occurrences of the context that are not applications are treated as applications with zero arguments.
+正如宏被注册在一张把 {tech (key := "syntax kinds")}[语法种类] 映射到宏实现的表中一样，逆展开器也被注册在一张把常量名映射到逆展开器实现的表中。
+在 Lean 向用户显示语法之前，它会尝试按照这张表重写语法中对每个常量的应用。
+上下文中那些并非应用的位置，也会被视为带零个实参的应用。
 
-Unexpansion proceeds from the inside out.
-The unexpander is passed the syntax of the application, with implicit arguments hidden, after the arguments have been unexpanded.
-If the option {option}`pp.explicit` is {lean}`true` or {option}`pp.notation` is {lean}`false`, then unexpanders are not used.
+反展开按由内向外的顺序进行。
+传给逆展开器的是应用的语法；其中隐式参数已被隐藏，而且实参已经先完成反展开。
+如果选项 {option}`pp.explicit` 为 {lean}`true`，或者 {option}`pp.notation` 为 {lean}`false`，那么就不会使用逆展开器。
 
 ::::::::leanSection
 ```lean -show
 open Lean.PrettyPrinter (Unexpander UnexpandM)
 ```
 
-An unexpander has type {lean}`Lean.PrettyPrinter.Unexpander`, which is an abbreviation for `Syntax → Lean.PrettyPrinter.UnexpandM Syntax`.
-In the remainder of this section, the names {lean}`Unexpander` and {lean}`UnexpandM` are used unqualified.
-{lean}`UnexpandM` is a monad that supports quotation and failure via its {name Lean.MonadQuotation}`MonadQuotation` and {lean}`MonadExcept Unit` instances.
+逆展开器的类型是 {lean}`Lean.PrettyPrinter.Unexpander`，它是 `Syntax → Lean.PrettyPrinter.UnexpandM Syntax` 的缩写。
+在本节剩余部分中，名称 {lean}`Unexpander` 和 {lean}`UnexpandM` 都不再带限定名。
+{lean}`UnexpandM` 是一个单子；借助其实例 {name Lean.MonadQuotation}`MonadQuotation` 与 {lean}`MonadExcept Unit`，它支持引用与失败。
 
-An unexpander should either return unexpanded syntax or fail using {lean  (type := "UnexpandM Syntax")}`throw ()`.
-If the unexpander succeeds, then the resulting syntax is unexpanded again; if it fails, then the next unexpander is tried.
-When no unexpander succeeds for the syntax, its child nodes are unexpanded until all opportunities for unexpansion are exhausted.
+逆展开器要么返回已经反展开的语法，要么使用 {lean  (type := "UnexpandM Syntax")}`throw ()` 失败。
+如果逆展开器成功，得到的语法还会再次反展开；如果失败，则会尝试下一个逆展开器。
+如果没有任何逆展开器能成功处理该语法，那么它的子节点会继续被反展开，直到所有可能的反展开机会都耗尽。
 
-{docstring Lean.PrettyPrinter.Unexpander}
+{zhdocstring Lean.PrettyPrinter.Unexpander Manual.ZhDocString.NotationsMacros.Core.PrettyPrinter.Unexpander}
 
-{docstring Lean.PrettyPrinter.UnexpandM}
+{zhdocstring Lean.PrettyPrinter.UnexpandM Manual.ZhDocString.NotationsMacros.Core.PrettyPrinter.UnexpandM}
 
-An unexpander for a constant is registered by applying the {attr}`app_unexpander` attribute.
-{ref "operators"}[Custom operators] and {ref "notations"}[notations] automatically create unexpanders for the syntax that they introduce.
+通过施加 {attr}`app_unexpander` 属性，可以为某个常量注册逆展开器。
+{ref "operators"}[自定义运算符]和 {ref "notations"}[记法]会自动为它们引入的语法创建逆展开器。
 
-:::syntax attr (title := "Unexpander Registration")
+:::syntax attr (title := "逆展开器注册")
 ```grammar
 app_unexpander $_:ident
 ```
 
-Registers an unexpander of type {name}`Unexpander` for applications of a constant.
+为某个常量的应用注册一个类型为 {name}`Unexpander` 的逆展开器。
 :::
 
 
-:::::example "Custom Unit Type"
+:::::example "自定义 Unit 类型" (file := "Custom Unit Type")
 ::::keepEnv
-A type equivalent to {lean}`Unit`, but with its own notation, can be defined as a zero-field structure and a macro:
+可以定义一个与 {lean}`Unit` 等价、但拥有自身记法的类型：把它写成一个零字段结构体，再配上一个宏即可：
 ```lean
 structure Solo where
   mk ::
@@ -108,8 +110,8 @@ macro_rules
 ```
 
 
-While the new notation can be used to write theorem statements, it does not appear in proof states.
-For example, when proving that all values of type {lean}`Solo` are equal to {lean}`‹›`, the initial proof state is:
+虽然这个新记法可以用于书写定理陈述，但它不会出现在证明状态中。
+例如，在证明所有 {lean}`Solo` 类型的值都等于 {lean}`‹›` 时，初始证明状态是：
 ```proofState
 ∀v, v = ‹› := by
 intro v
@@ -119,9 +121,9 @@ v : Solo
 -/
 
 ```
-This proof state shows the constructor using {tech}[structure instance] syntax.
-An unexpander can be used to override this choice.
-Because {name}`Solo.mk` cannot be applied to any arguments, the unexpander is free to ignore the syntax, which will always be {lean (type := "UnexpandM Syntax")}`` `(Solo.mk) ``.
+这个证明状态使用 {tech (key := "structure instance")}[结构体实例] 语法来显示构造子。
+可以用逆展开器覆盖这一选择。
+由于 {name}`Solo.mk` 不能应用于任何实参，因此逆展开器可以完全忽略它收到的语法；这个语法总会是 {lean (type := "UnexpandM Syntax")}`` `(Solo.mk) ``。
 
 ```lean
 @[app_unexpander Solo.mk]
@@ -129,7 +131,7 @@ def unexpandSolo : Lean.PrettyPrinter.Unexpander
   | _ => `(‹›)
 ```
 
-With this unexpander, the initial state of the proof now renders with the correct syntax:
+有了这个逆展开器后，证明的初始状态现在就会以正确的语法渲染出来：
 ```proofState
 ∀v, v = ‹› := by
 intro v
@@ -143,10 +145,10 @@ v : Solo
 ::::
 :::::
 
-:::::example "Unexpansion and Arguments"
+:::::example "反展开与参数" (file := "Unexpansion and Arguments")
 
-A {name}`ListCursor` represents a position in a {lean}`List`.
-{name}`ListCursor.before` contains the reversed list of elements prior to the position, and {name}`ListCursor.after` contains the elements after the position.
+{name}`ListCursor` 表示 {lean}`List` 中的一个位置。
+{name}`ListCursor.before` 保存位置之前元素构成的逆序列表，而 {name}`ListCursor.after` 保存位置之后的元素。
 
 ```lean
 structure ListCursor (α) where
@@ -155,7 +157,7 @@ structure ListCursor (α) where
 deriving Repr
 ```
 
-List cursors can be moved to the left or to the right:
+列表光标既可以向左移动，也可以向右移动：
 ```lean
 def ListCursor.left : ListCursor α → Option (ListCursor α)
   | ⟨[], _⟩ => none
@@ -166,7 +168,7 @@ def ListCursor.right : ListCursor α → Option (ListCursor α)
   | ⟨ls, r :: rs⟩ => some ⟨r :: ls, rs⟩
 ```
 
-They can also be moved all the way to the left or all the way to the right:
+它也可以一路移动到最左端或最右端：
 ```lean
 def ListCursor.rewind : ListCursor α → ListCursor α
   | xs@⟨[], _⟩ => xs
@@ -190,19 +192,19 @@ def ListCursor.toList : (xs : ListCursor α) → List α
 termination_by xs => xs.before
 ```
 
-However, the need to reverse the list of previous elements can make list cursors difficult to understand.
-A cursor can be given a notation in which a flag (`🚩`) marks the cursor's location in a list:
+不过，必须把先前元素的列表反转这一点，会让列表光标难以理解。
+可以为光标设计一种记法，用一面旗帜（`🚩`）在列表中标记光标所在的位置：
 ```lean
 syntax "[" term,* " 🚩 " term,* "]": term
 macro_rules
   | `([$ls,* 🚩 $rs,*]) =>
     ``(ListCursor.mk [$[$((ls : Array Lean.Term).reverse)],*] [$rs,*])
 ```
-In the macro, the sequences of elements have type {lean}``Syntax.TSepArray `term ","``.
-The type annotation as {lean}`Array Lean.Term` causes a coercion to fire so that {name}`Array.reverse` can be applied, and a similar coercion reinserts the separating commas.
-These coercions are described in the section on {ref "typed-syntax"}[typed syntax].
+在这个宏中，元素序列的类型是 {lean}``Syntax.TSepArray `term ","``。
+把它标注为 {lean}`Array Lean.Term` 会触发一次强制转换，从而可以应用 {name}`Array.reverse`；类似的强制转换还会把分隔逗号重新插入。
+这些强制转换见 {ref "typed-syntax"}[带类型语法] 一节。
 
-While the syntax works, it is not used in Lean's output:
+虽然这种语法可以使用，但它不会出现在 Lean 的输出中：
 ```lean (name := flagNo)
 #check [1, 2, 3 🚩 4, 5]
 ```
@@ -210,8 +212,8 @@ While the syntax works, it is not used in Lean's output:
 { before := [3, 2, 1], after := [4, 5] } : ListCursor Nat
 ```
 
-An unexpander solves this problem.
-The unexpander relies on the built-in unexpanders for list literals already having rewritten the two lists:
+逆展开器可以解决这个问题。
+这个逆展开器依赖于内建的列表字面量逆展开器，前提是它们已经把这两个列表重写好了：
 ```lean
 @[app_unexpander ListCursor.mk]
 def unexpandListCursor : Lean.PrettyPrinter.Unexpander
@@ -246,7 +248,7 @@ some [1 🚩 2, 3, 4, 5]
 ::::::::
 
 
-# Delaborators
+# 反精译器
 %%%
 tag := "delaborators"
 %%%
@@ -255,21 +257,21 @@ tag := "delaborators"
 open Lean.PrettyPrinter.Delaborator (DelabM Delab)
 open Lean (Term)
 ```
-A delaborator is function of type {lean}`Lean.PrettyPrinter.Delaborator.Delab`, which is an abbreviation for {lean}`Lean.PrettyPrinter.Delaborator.DelabM Term`.
-Unlike unexpanders, delaborators are not implemented as functions.
-This is to make it easier to implement them correctly: the monad {name}`DelabM` tracks the current position in the expression that's being delaborated so the delaboration mechanism can annotate the resulting syntax.
+反精译器的类型是 {lean}`Lean.PrettyPrinter.Delaborator.Delab`，它是 {lean}`Lean.PrettyPrinter.Delaborator.DelabM Term` 的缩写。
+与逆展开器不同，反精译器并不是按普通函数来实现的。
+这样做是为了更容易正确实现它们：单子 {name}`DelabM` 会跟踪当前正在反精译的表达式位置，从而使反精译机制能够给结果语法打上相应标注。
 
-Delaborators are registered with the {attr}`delab` attribute.
-An internal table maps the names of the constructors of {name}`Expr` (without namespaces) to delaborators.
-Additionally, the name `app.`﻿$`c` is consulted to find delaborators for applications of the constant $`c`, and the name `mdata.`﻿$`k` is consulted to find delaborators for {name}`Expr.mdata` constructors with a single key $`k` in their metadata.
+反精译器通过 {attr}`delab` 属性注册。
+内部有一张表，把 {name}`Expr` 各个构造子的名字（不带命名空间）映射到反精译器。
+此外，系统还会查询名字 `app.`﻿$`c`，以寻找常量 $`c` 的应用所对应的反精译器；也会查询名字 `mdata.`﻿$`k`，以寻找元数据中只含单个键 $`k` 的 {name}`Expr.mdata` 构造子所对应的反精译器。
 
-:::syntax attr (title := "Delaborator Registration")
-The {attr}`delab` attribute registers a delaborator for the indicated constructor or metadata key of {lean}`Expr`.
+:::syntax attr (title := "反精译器注册")
+{attr}`delab` 属性会为所指明的 {lean}`Expr` 构造子或元数据键注册一个反精译器。
 ```grammar
 delab $_:ident
 ```
 
-The {keyword}`app_delab ` attribute registers a delaborator for applications of the indicated constant after {tech (key := "resolve")}[resolving] it in the current {tech (key := "section scope")}[scope].
+{keyword}`app_delab ` 属性会在当前 {tech (key := "section scope")}[作用域] 中对常量名完成 {tech (key := "resolve")}[解析] 后，为其应用注册反精译器。
 ```grammar
 app_delab $_:ident
 ```
@@ -280,16 +282,16 @@ app_delab $_:ident
 open Lean.PrettyPrinter.Delaborator.SubExpr
 ```
 :::paragraph
-The monad {name}`DelabM` is a {tech}[reader monad] that includes access to the current position in the {lean}`Expr`.
-Recursive delaboration is performed by adjusting the reader monad's tracked position, rather than by explicitly passing a subexpression to another function.
-The most important functions for working with subexpressions in delaborators are in the namespace `Lean.PrettyPrinter.Delaborator.SubExp`:
- * {name}`getExpr` retrieves the current expression for analysis.
- * {name}`withAppFn` adjusts the current position to be that of the function in an application.
- * {name}`withAppArg` adjusts the current position to be that of the argument in an application
- * {name}`withAppFnArgs` decomposes the current expression into a non-application function and its arguments, focusing on each.
- * {name}`withBindingBody` descends into the body of a function or function type.
+单子 {name}`DelabM` 是一个 {tech (key := "reader monad")}[读取器单子]，其中包含对当前 {lean}`Expr` 位置的访问能力。
+递归反精译时，不是把某个子表达式显式传给另一个函数，而是通过调整读取器单子所跟踪的位置来完成。
+在反精译器中处理子表达式时，最重要的一些函数位于命名空间 `Lean.PrettyPrinter.Delaborator.SubExpr` 中：
+ * {name}`getExpr` 取回当前表达式以供分析。
+ * {name}`withAppFn` 把当前位置调整为应用中的函数位置。
+ * {name}`withAppArg` 把当前位置调整为应用中的实参位置。
+ * {name}`withAppFnArgs` 把当前表达式分解为一个非应用函数及其参数，并依次聚焦到它们上面。
+ * {name}`withBindingBody` 下降到函数或函数类型的主体中。
 
-Further functions to descend into the remaining constructors of {name}`Expr` are available.
+还提供了更多函数，用于下降到 {name}`Expr` 其余构造子中。
 :::
 ::::
 
@@ -299,8 +301,8 @@ Further functions to descend into the remaining constructors of {name}`Expr` are
 ::::draft
 :::planned 122
 
- * Delaboration example and combinator reference
- * Pretty printing
- * Parenthesizers
+ * 反精译示例与组合子参考
+ * 漂亮打印
+ * 括号器
 :::
 ::::

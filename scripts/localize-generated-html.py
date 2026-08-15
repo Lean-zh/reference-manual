@@ -65,6 +65,15 @@ TARGET_PAGES = (
     "Functors___-Monads-and--do--Notation/Syntax/index.html",
     "Functors___-Monads-and--do--Notation/API-Reference/index.html",
     "Functors___-Monads-and--do--Notation/Varieties-of-Monads/index.html",
+    "Notations-and-Macros/index.html",
+    "Notations-and-Macros/Custom-Operators/index.html",
+    "Notations-and-Macros/Precedence/index.html",
+    "Notations-and-Macros/Notations/index.html",
+    "Notations-and-Macros/Defining-New-Syntax/index.html",
+    "Notations-and-Macros/Macros/index.html",
+    "Notations-and-Macros/Elaborators/index.html",
+    "Notations-and-Macros/Extending--do--Notation/index.html",
+    "Notations-and-Macros/Extending-Lean___s-Output/index.html",
 )
 
 HOVER_ATTR_RE = re.compile(r'data-verso-hover="([^"]+)"')
@@ -87,10 +96,14 @@ GENERATED_UI_REPLACEMENTS = (
     ('title="文档：tactic"', 'title="文档：策略"'),
     ('title="文档：conv tactic"', 'title="文档：conv 策略"'),
     ('title="文档：syntax"', 'title="文档：语法"'),
+    ('<span class="label">parser alias</span>', '<span class="label">解析器别名</span>'),
 )
 FORBIDDEN_TITLES = ("Documentation for ", "Definition of ", "Permalink")
 NO_ADDITIONAL_DOCS = "<span>无附加文档。</span>"
-NAMEDOCS_TRANSLATIONS_PATH = Path(__file__).with_name("tactic-namedocs-zh.json")
+NAMEDOCS_TRANSLATIONS_PATHS = (
+    Path(__file__).with_name("tactic-namedocs-zh.json"),
+    Path(__file__).with_name("chapter23-namedocs-zh.json"),
+)
 VOID_TAGS = {
     "area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta",
     "param", "source", "track", "wbr",
@@ -149,16 +162,17 @@ def normalized_visible_text(fragment: str) -> str:
 
 
 def load_namedocs_translations() -> dict[str, str]:
-    if not NAMEDOCS_TRANSLATIONS_PATH.is_file():
-        return {}
-    records = json.loads(NAMEDOCS_TRANSLATIONS_PATH.read_text(encoding="utf-8"))
     translations: dict[str, str] = {}
-    for record in records:
-        source = record["source"]
-        translation = record["translation"]
-        if source in translations and translations[source] != translation:
-            raise SystemExit(f"conflicting generated-doc translation: {source[:80]!r}")
-        translations[source] = translation
+    for path in NAMEDOCS_TRANSLATIONS_PATHS:
+        if not path.is_file():
+            continue
+        records = json.loads(path.read_text(encoding="utf-8"))
+        for record in records:
+            source = record["source"]
+            translation = record["translation"]
+            if source in translations and translations[source] != translation:
+                raise SystemExit(f"conflicting generated-doc translation: {source[:80]!r}")
+            translations[source] = translation
     return translations
 
 
@@ -204,7 +218,7 @@ def localize_tactic_namedocs(text: str, translations: dict[str, str]) -> str:
     localized = NAMEDOCS_TEXT_RE.sub(replace, text)
     if missing:
         raise SystemExit(
-            f"{len(missing)} generated tactic docstrings lack translations; "
+            f"{len(missing)} generated documentation blocks lack translations; "
             f"first: {missing[0][:120]!r}"
         )
     return localized
@@ -235,7 +249,7 @@ def localize_generated_html(root: Path) -> tuple[int, int, int, int]:
         text = path.read_text(encoding="utf-8")
         text = text.replace(">Table of Contents<", ">目录<")
         text = localize_link_metadata(text)
-        if rel.startswith("Tactic-Proofs/"):
+        if rel.startswith(("Tactic-Proofs/", "Notations-and-Macros/")):
             text = localize_tactic_namedocs(text, namedocs_translations)
         parser = NamedDocsParser()
         parser.feed(text)
