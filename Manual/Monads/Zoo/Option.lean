@@ -7,6 +7,7 @@ Author: David Thrane Christiansen
 import VersoManual
 
 import Manual.Meta
+import Manual.ZhDocString.Monads.State
 
 import Lean.Parser.Command
 
@@ -30,20 +31,20 @@ tag := "option-monad"
 {lean}`Option` 单子及其变换器 {lean}`OptionT` 可以理解为描述可能提前终止并丢弃结果的计算。
 调用方可以使用 {name}`OrElse.orElse` 检查是否提前终止，并按需调用后备计算；也可以把它当作 {lean}`MonadExcept Unit` 处理。
 
-{docstring OptionT}
+{zhdocstring OptionT ZhDoc.Monads.State.OptionT}
 
-{docstring OptionT.run}
+{zhdocstring OptionT.run ZhDoc.Monads.State.OptionT.run}
 
-{docstring OptionT.lift}
+{zhdocstring OptionT.lift ZhDoc.Monads.State.OptionT.lift}
 
-{docstring OptionT.mk}
+{zhdocstring OptionT.mk ZhDoc.Monads.State.OptionT.mk}
 
-{docstring OptionT.pure}
+{zhdocstring OptionT.pure ZhDoc.Monads.State.OptionT.pure}
 
-{docstring OptionT.bind}
+{zhdocstring OptionT.bind ZhDoc.Monads.State.OptionT.bind}
 
-{docstring OptionT.fail}
+{zhdocstring OptionT.fail ZhDoc.Monads.State.OptionT.fail}
 
-{docstring OptionT.orElse}
+{zhdocstring OptionT.orElse ZhDoc.Monads.State.OptionT.orElse}
 
-{docstring OptionT.tryCatch}
+{zhdocstring OptionT.tryCatch ZhDoc.Monads.State.OptionT.tryCatch}

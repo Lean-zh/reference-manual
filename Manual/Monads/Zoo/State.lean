@@ -7,6 +7,7 @@ Author: David Thrane Christiansen
 import VersoManual
 
 import Manual.Meta
+import Manual.ZhDocString.Monads.State
 
 import Lean.Parser.Command
 
@@ -34,23 +35,23 @@ tag := "state-monads"
 tag := "The-Lean-Language-Reference--Functors___-Monads-and--do--Notation--Varieties-of-Monads--State--General-State-API"
 %%%
 
-{docstring MonadState}
+{zhdocstring MonadState ZhDoc.Monads.State.MonadState}
 
-{docstring get}
+{zhdocstring get ZhDoc.Monads.State.get}
 
-{docstring modify}
+{zhdocstring modify ZhDoc.Monads.State.modify}
 
-{docstring modifyGet}
+{zhdocstring modifyGet ZhDoc.Monads.State.modifyGet}
 
-{docstring getModify}
+{zhdocstring getModify ZhDoc.Monads.State.getModify}
 
-{docstring MonadStateOf}
+{zhdocstring MonadStateOf ZhDoc.Monads.State.MonadStateOf}
 
-{docstring getThe}
+{zhdocstring getThe ZhDoc.Monads.State.getThe}
 
-{docstring modifyThe}
+{zhdocstring modifyThe ZhDoc.Monads.State.modifyThe}
 
-{docstring modifyGetThe}
+{zhdocstring modifyGetThe ZhDoc.Monads.State.modifyGetThe}
 
 # 基于元组的状态单子
 %%%
@@ -64,31 +65,31 @@ variable {α σ : Type u}
 基于元组的状态单子把状态类型为 {lean}`σ`、产生 {lean}`α` 类型值的计算表示为函数：它接受初始状态，并产生一个值与最终状态组成的二元组，例如 {lean}`σ → α × σ`。
 {name}`Monad` 操作会在计算中正确地传递状态。
 
-{docstring StateM}
+{zhdocstring StateM ZhDoc.Monads.State.StateM}
 
-{docstring StateT}
+{zhdocstring StateT ZhDoc.Monads.State.StateT}
 
-{docstring StateT.run}
+{zhdocstring StateT.run ZhDoc.Monads.State.StateT.run}
 
-{docstring StateT.get}
+{zhdocstring StateT.get ZhDoc.Monads.State.StateT.get}
 
-{docstring StateT.set}
+{zhdocstring StateT.set ZhDoc.Monads.State.StateT.set}
 
-{docstring StateT.orElse}
+{zhdocstring StateT.orElse ZhDoc.Monads.State.StateT.orElse}
 
-{docstring StateT.failure}
+{zhdocstring StateT.failure ZhDoc.Monads.State.StateT.failure}
 
-{docstring StateT.run'}
+{zhdocstring StateT.run' ZhDoc.Monads.State.StateT.run'}
 
-{docstring StateT.bind}
+{zhdocstring StateT.bind ZhDoc.Monads.State.StateT.bind}
 
-{docstring StateT.modifyGet}
+{zhdocstring StateT.modifyGet ZhDoc.Monads.State.StateT.modifyGet}
 
-{docstring StateT.lift}
+{zhdocstring StateT.lift ZhDoc.Monads.State.StateT.lift}
 
-{docstring StateT.map}
+{zhdocstring StateT.map ZhDoc.Monads.State.StateT.map}
 
-{docstring StateT.pure}
+{zhdocstring StateT.pure ZhDoc.Monads.State.StateT.pure}
 
 # 延续传递风格的状态单子
 %%%
@@ -105,15 +106,15 @@ tag := "The-Lean-Language-Reference--Functors___-Monads-and--do--Notation--Varie
 #check_msgs in
 #reduce (types := true) StateCpsT σ Id α
 ```
-{docstring StateCpsT}
+{zhdocstring StateCpsT ZhDoc.Monads.State.StateCpsT}
 
-{docstring StateCpsT.lift}
+{zhdocstring StateCpsT.lift ZhDoc.Monads.State.StateCpsT.lift}
 
-{docstring StateCpsT.runK}
+{zhdocstring StateCpsT.runK ZhDoc.Monads.State.StateCpsT.runK}
 
-{docstring StateCpsT.run'}
+{zhdocstring StateCpsT.run' ZhDoc.Monads.State.StateCpsT.run'}
 
-{docstring StateCpsT.run}
+{zhdocstring StateCpsT.run ZhDoc.Monads.State.StateCpsT.run}
 
 # 基于可变引用的状态单子
 %%%
@@ -135,7 +136,7 @@ variable {m : Type → Type} {σ ω : Type} [STWorld σ m]
 这是因为 {name}`STWorld` 没有方法：它的存在只是为了把信息从内层单子传播到变换后的单子。
 尽管如此，它的实例仍是项；保留这些实例可能导致类型不必要地增大。
 
-{docstring STWorld}
+{zhdocstring STWorld ZhDoc.Monads.State.STWorld}
 
 :::syntax term (title := "`StateRefT`")
 {lean}`StateRefT σ m` 的语法接受两个实参：
@@ -148,16 +149,16 @@ StateRefT $_ $_
 发现 {lean}`ω` 的值后，它会生成项 {lean}`StateRefT' ω σ m`，并丢弃所合成的实例。
 :::
 
-{docstring StateRefT'}
+{zhdocstring StateRefT' ZhDoc.Monads.State.StateRefT'}
 
-{docstring StateRefT'.get}
+{zhdocstring StateRefT'.get ZhDoc.Monads.State.StateRefT'.get}
 
-{docstring StateRefT'.set}
+{zhdocstring StateRefT'.set ZhDoc.Monads.State.StateRefT'.set}
 
-{docstring StateRefT'.modifyGet}
+{zhdocstring StateRefT'.modifyGet ZhDoc.Monads.State.StateRefT'.modifyGet}
 
-{docstring StateRefT'.run}
+{zhdocstring StateRefT'.run ZhDoc.Monads.State.StateRefT'.run}
 
-{docstring StateRefT'.run'}
+{zhdocstring StateRefT'.run' ZhDoc.Monads.State.StateRefT'.run'}
 
-{docstring StateRefT'.lift}
+{zhdocstring StateRefT'.lift ZhDoc.Monads.State.StateRefT'.lift}

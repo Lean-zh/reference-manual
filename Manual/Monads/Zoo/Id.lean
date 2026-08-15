@@ -7,6 +7,7 @@ Author: David Thrane Christiansen
 import VersoManual
 
 import Manual.Meta
+import Manual.ZhDocString.Monads.State
 
 import Lean.Parser.Command
 
@@ -39,9 +40,9 @@ example : (pure (f := Id)) = (id : α → α) := rfl
 example : (bind (m := Id)) = (fun (x : α) (f : α → Id β) => f x) := rfl
 ```
 
-{docstring Id}
+{zhdocstring Id ZhDoc.Monads.State.Id}
 
-{docstring Id.run}
+{zhdocstring Id.run ZhDoc.Monads.State.Id.run}
 
 :::example "恒等单子中的局部作用"
 这段代码通过在恒等单子中模拟局部可变性，实现了一个倒数过程。
