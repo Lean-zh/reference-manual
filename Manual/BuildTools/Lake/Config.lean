@@ -13,6 +13,7 @@ import Lake.DSL
 import Manual.Meta
 import Manual.BuildTools.Lake.CLI
 import Manual.ZhDocString.BuildTools.Config
+import Manual.ZhDocString.BuildTools.Lake
 
 
 open Manual
@@ -83,7 +84,7 @@ tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Configu
 `lakefile.toml` 的顶层内容指定适用于包本身的选项，包括名称和版本等元数据、{tech (key := "workspace")}[工作区]中文件的位置，以及用于所有{tech (key := "targets")}[目标]的编译器标志等。
 唯一的必填字段是 `name`，它声明包的名称。
 
-:::::tomlTableDocs root "包配置" Lake.PackageConfig (skip := backend) (skip := releaseRepo?) (skip := buildArchive?) (skip := manifestFile) (skip := moreServerArgs) (skip := dynlibs) (skip := plugins)
+:::::tomlTableDocs root "包配置" Lake.PackageConfig (docs := ZhDoc.BuildTools.Config.PackageConfig) (skip := backend) (skip := releaseRepo?) (skip := buildArchive?) (skip := manifestFile) (skip := moreServerArgs) (skip := dynlibs) (skip := plugins)
 
 ::::tomlFieldCategory "元数据" name version versionTags description keywords homepage license licenseFiles readmeFile reservoir
 这些选项描述包。
@@ -397,7 +398,7 @@ tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Configu
  * Git 仓库，可以是本地路径或 URL
  * 本地路径
 
-::::tomlTableDocs "require" "引入包" Lake.Dependency (skip := src?) (skip := opts) (skip := subdir) (skip := version)
+::::tomlTableDocs "require" "引入包" Lake.Dependency (docs := ZhDoc.BuildTools.Config.Dependency) (skip := src?) (skip := opts) (skip := subdir) (skip := version)
 
 {tomlField Lake.Dependency}`path` 和 {tomlField Lake.Dependency}`git` 字段为依赖项指定显式来源。
 如果两者均未提供，则从 [Reservoir](https://reservoir.lean-lang.org/) 获取依赖项；如果配置了其他注册表，则从该注册表获取。
@@ -567,7 +568,7 @@ tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Configu
 
 库目标应写在 `lean_lib` 表数组中。
 
-::::tomlTableDocs "lean_lib" "库目标" Lake.LeanLibConfig (skip := backend) (skip := globs) (skip := nativeFacets)
+::::tomlTableDocs "lean_lib" "库目标" Lake.LeanLibConfig (docs := ZhDoc.BuildTools.Config.LeanLibConfig) (skip := backend) (skip := globs) (skip := nativeFacets)
 :::tomlField Lake.LeanLibConfig name "库名称" "库名称" String
 库的名称，通常与其唯一模块根同名。
 :::
@@ -668,7 +669,7 @@ precompileModules = true
 tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Declarative-TOML-Format--Executable-Targets"
 %%%
 
-:::: tomlTableDocs "lean_exe" "可执行文件目标" Lake.LeanExeConfig (skip := backend) (skip := globs) (skip := nativeFacets)
+:::: tomlTableDocs "lean_exe" "可执行文件目标" Lake.LeanExeConfig (docs := ZhDoc.BuildTools.Config.LeanExeConfig) (skip := backend) (skip := globs) (skip := nativeFacets)
 :::tomlField Lake.LeanExeConfig name "可执行文件名称" "可执行文件名称" String
 可执行文件的名称。
 :::
@@ -1022,7 +1023,7 @@ target $_:identOrStr $_? : $ty:term := $_:term
 $[where $_*]?
 ```
 
-{zhincludeDocstring Lake.DSL.externLibCommand ZhDoc.BuildTools.Config.DSL.externLibCommand}
+{zhincludeDocstring Lake.DSL.targetCommand ZhDoc.BuildTools.Config.DSL.targetCommand}
 
 :::
 
@@ -1166,7 +1167,7 @@ $[where
 
 :::
 
-{zhdocstring Lake.ScriptM ZhDoc.BuildTools.Config.ScriptM}
+{zhdocstring Lake.ScriptM ZhDoc.BuildTools.Lake.ScriptM}
 
 
 :::syntax attr (label := "属性") (title := "默认脚本")

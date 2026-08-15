@@ -114,7 +114,7 @@ tag := "chapter-24-zhdocstring-smoke"
 
 {zhincludeDocstring Lake.DSL.externLibCommand ZhDoc.BuildTools.Config.DSL.externLibCommand}
 
-{zhincludeDocstring Lake.DSL.externLibCommand ZhDoc.BuildTools.Config.DSL.externLibCommand}
+{zhincludeDocstring Lake.DSL.targetCommand ZhDoc.BuildTools.Config.DSL.targetCommand}
 
 {zhincludeDocstring Lake.DSL.packageFacetDecl ZhDoc.BuildTools.Config.DSL.packageFacetDecl}
 
@@ -132,7 +132,7 @@ tag := "chapter-24-zhdocstring-smoke"
 
 {zhincludeDocstring Lake.DSL.scriptDecl ZhDoc.BuildTools.Config.DSL.scriptDecl}
 
-{zhdocstring Lake.ScriptM ZhDoc.BuildTools.Config.ScriptM}
+{zhdocstring Lake.ScriptM ZhDoc.BuildTools.Lake.ScriptM}
 
 {zhincludeDocstring Lake.DSL.dirConst ZhDoc.BuildTools.Config.DSL.dirConst}
 

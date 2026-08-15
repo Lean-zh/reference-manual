@@ -128,6 +128,320 @@ structure LeanConfig where
   -/
   allowNonModules : Bool := false
 
+/-- 工作区的声明式配置。 -/
+structure WorkspaceConfig where
+  /--
+  Lake 下载远程依赖项的目录。
+  默认为 `defaultPackagesDir`（即 `.lake/packages`）。
+  -/
+  packagesDir : FilePath := _root_.Lake.defaultPackagesDir
+
+/-- `Package` 的声明式配置。 -/
+structure PackageConfig (p : Name) (n : Name) extends WorkspaceConfig, LeanConfig where
+  /-- **供内部使用。** 此包是否为 Lean 本身。 -/
+  bootstrap : Bool := false
+
+  /-- 每当使用此包时要构建的目标名称 `Array`。 -/
+  extraDepTargets : Array Name := #[]
+
+  /--
+  是否将包的每个模块编译为原生共享库，并在每次导入该模块时加载。这会加速元程序求值，并让
+  解释器能够运行标记为 `@[extern]` 的函数。
+
+  默认为 `false`。
+  -/
+  precompileModules : Bool := false
+
+  /--
+  传给由 `lake serve` 启动的 Lean 语言服务器（即 `lean --server`）的额外实参；既用于此包，也用于
+  同一会话中从此包浏览的任何包。
+  -/
+  moreGlobalServerArgs : Array String := #[]
+
+  /--
+  包含包的 Lean 源文件的目录。
+  默认为包目录。
+
+  （它会作为 `-R` 选项传给 `lean`。）
+  -/
+  srcDir : FilePath := "."
+
+  /--
+  Lake 应将包的构建结果输出到的目录。
+  默认为 `defaultBuildDir`（即 `.lake/build`）。
+  -/
+  buildDir : FilePath := _root_.Lake.defaultBuildDir
+
+  /--
+  Lake 应将包的二进制 Lean 库（例如 `.olean`、`.ilean` 文件）输出到的构建子目录。
+  默认为 `defaultLeanLibDir`（即 `lib`）。
+  -/
+  leanLibDir : FilePath := _root_.Lake.defaultLeanLibDir
+
+  /--
+  Lake 应将包的原生库（例如 `.a`、`.so`、`.dll` 文件）输出到的构建子目录。
+  默认为 `defaultNativeLibDir`（即 `lib`）。
+  -/
+  nativeLibDir : FilePath := _root_.Lake.defaultNativeLibDir
+
+  /--
+  Lake 应将包的二进制可执行文件输出到的构建子目录。
+  默认为 `defaultBinDir`（即 `bin`）。
+  -/
+  binDir : FilePath := _root_.Lake.defaultBinDir
+
+  /--
+  Lake 应将包的中间结果（例如 `.c` 和 `.o` 文件）输出到的构建子目录。
+  默认为 `defaultIrDir`（即 `ir`）。
+  -/
+  irDir : FilePath := _root_.Lake.defaultIrDir
+
+  /--
+  用于上传和下载此包发行版的 GitHub 仓库 URL。
+  若为 `none`（默认值），下载时 Lake 使用包的下载来源 URL（若它是依赖项），上传时使用 `gh` 的默认值。
+  -/
+  releaseRepo : Option String := none
+
+  /--
+  GitHub 云端发行版构建归档的自定义名称。
+  若为 `none`（默认值），Lake 使用 `{(pkg-)name}-{System.Platform.target}.tar.gz`。
+  -/
+  buildArchive : Option String := none
+
+  /--
+  将此包用作依赖项时，是否优先下载（来自 GitHub 的）预构建发行版，而不是从源代码构建此包。
+  -/
+  preferReleaseBuild : Bool := false
+
+  /--
+  当此包是工作区根时，由 `lake test` 使用的脚本、可执行文件或库的名称。要指向另一包中的定义，
+  请使用语法 `<pkg>/<def>`。
+
+  脚本驱动会以 `testDriverArgs` 中配置的实参为先、命令行界面上指定的实参为后（例如通过
+  `lake lint -- <args>...`），由 `lake test` 运行。可执行文件驱动会先构建，再像脚本一样运行。
+  库则只会被构建。
+  -/
+  testDriver : String := ""
+
+  /--
+  传给包的测试驱动的实参。
+  这些实参位于通过 `lake test -- <args>...` 从命令行传入的实参之前。
+  -/
+  testDriverArgs : Array String := #[]
+
+  /--
+  当此包是工作区根时，由 `lake lint` 使用的脚本或可执行文件的名称。要指向另一包中的定义，
+  请使用语法 `<pkg>/<def>`。
+
+  脚本驱动会以 `lintDriverArgs` 中配置的实参为先、命令行界面上指定的实参为后（例如通过
+  `lake lint -- <args>...`），由 `lake lint` 运行。可执行文件驱动会先构建，再像脚本一样运行。
+  -/
+  lintDriver : String := ""
+
+  /--
+  传给包的代码检查器的实参。
+  这些实参位于通过 `lake lint -- <args>...` 从命令行传入的实参之前。
+  -/
+  lintDriverArgs : Array String := #[]
+
+  /--
+  包版本。版本形式为：
+
+  ```
+  v!"<major>.<minor>.<patch>[-<specialDescr>]"
+  ```
+
+  带有 `-` 后缀的版本视为“预发行版”。
+
+  Lake 建议按以下准则递增版本：
+
+  * **主版本递增**（例如 v1.3.0 → v2.0.0）
+    表示包中有重大的破坏性变更。
+    不应期望包使用者无需手动干预就能更新到新版本。
+
+  * **次版本递增**（例如 v1.3.0 → v1.4.0）
+    表示通常应向后兼容的重要变更。
+    应期望包使用者自动更新到此版本，并能轻松修复任何破坏和/或警告。
+
+  * **补丁版本递增**（例如 v1.3.0 → v1.3.1）
+    保留用于错误修复和小幅润色。
+    应期望包使用者自动更新，且除了使用者依赖已修复错误之行为的边缘情况外，不应出现重大破坏。
+
+  **请注意，任何版本递增都可能发生不向后兼容的变更。**
+  这是因为 Lean 当前的性质（例如传递导入、丰富的元编程、证明中的可约性）使得为包定义完全稳定的
+  接口并不可行。不同版本级别只表示变更预期的重要程度以及预计迁移的难度。
+
+  `0.x.x` 形式的版本视为首次正式发行之前的开发版本。与预发行版一样，它们不必严格遵循上述准则。
+
+  未定义版本的包默认为 `0.0.0`。
+  -/
+  version : _root_.Lake.StdVer := {}
+
+  /--
+  此包仓库中应视为版本的 Git 标签。
+  包索引（例如 Reservoir）可利用此信息确定与已发行版本对应的 Git 修订版本。
+
+  默认为“类似版本”的标签，即以 `v` 开头、后跟数字的标签。
+  -/
+  versionTags : _root_.Lake.StrPat := _root_.Lake.defaultVersionTags
+
+  /-- 包的简短描述（例如供 Reservoir 使用）。 -/
+  description : String := ""
+
+  /--
+  与包关联的自定义关键词。
+  Reservoir 可使用包的关键词对相关包进行分组，让使用者更容易发现它们。
+
+  合适的关键词包括领域（例如 `math`、`software-verification`、`devtool`）、具体子主题（例如
+  `topology`、`cryptology`）和重要实现细节（例如 `dsl`、`ffi`、`cli`）。例如，Lake 的关键词可以是
+  `devtool`、`cli`、`dsl`、`package-manager` 和 `build-system`。
+  -/
+  keywords : Array String := #[]
+
+  /--
+  指向包相关信息的 URL。
+
+  Reservoir 已会包含指向包的 GitHub 仓库的链接（若包来自那里）。因此，建议使用者在此指定其他内容
+  （如果要指定的话）。
+  -/
+  homepage : String := ""
+
+  /--
+  包的许可证（若有）。
+  应为有效的 [SPDX 许可证表达式][1]。
+
+  Reservoir 要求包使用 OSI 批准的许可证才能纳入其索引，目前仅支持单标识符 SPDX 表达式。
+  OSI 批准的 SPDX 许可证标识符列表见 [SPDX 许可证列表][2]。
+
+  [1]: https://spdx.github.io/spdx-spec/v3.0/annexes/SPDX-license-expressions/
+  [2]: https://spdx.org/licenses/
+  -/
+  license : String := ""
+
+  /--
+  包含包许可证信息的文件。
+
+  这些应是使用者分发包源代码时预期附带的许可证文件；某些许可证可能需要多个文件。例如，
+  Apache 2.0 许可证要求在 `NOTICE` 文件存在时，将它与许可证一起复制。
+
+  默认为 `#["LICENSE"]`。
+  -/
+  licenseFiles : Array FilePath := #["LICENSE"]
+
+  /--
+  包的 README 路径。
+
+  README 应为包含包概述的 Markdown 文件。Reservoir 会在包页面上显示该文件渲染后的 HTML。
+  可以使用非标准位置，分别为 Reservoir 和 GitHub 提供不同的 README。
+
+  默认为 `README.md`。
+  -/
+  readmeFile : FilePath := "README.md"
+
+  /--
+  Reservoir 是否应将包纳入其索引。
+  设为 `false` 时，Reservoir 不会将包加入索引；若它已在索引中，则会在 Reservoir 下次更新时移除。
+  -/
+  reservoir : Bool := true
+
+  /--
+  是否为包启用 Lake 的本地离线产物缓存。
+
+  包的产物（即构建产品）会存入与 Lean 工具链关联的缓存，从而在各本地副本间共享。
+  使用大型项目或大型依赖项的多个副本时，这可以显著减少初次构建时间和磁盘占用。
+
+  需要注意的是，支持产物缓存的构建目标不会存储在构建目录中的通常位置。因此，依赖产物特定位置的
+  自定义构建脚本可能需要禁用此功能。
+
+  若为 `none`（默认值），则按顺序回退到：
+  * `LAKE_ARTIFACT_CACHE` 环境变量（若已设置）。
+  * 工作区根的 `enableArtifactCache` 配置（若已设置且此包是依赖项）。
+  * **Lake 的默认值**：包可以使用缓存中的产物，但不能写入缓存。
+  -/
+  enableArtifactCache? : Option Bool := none
+
+  /--
+  启用本地产物缓存后，Lake 是否应将所有缓存产物复制到构建目录。这可确保外部使用者能在构建目录中
+  找到构建结果。
+
+  若为 `none`（默认值），则按顺序回退到：
+  * `LAKE_RESTORE_ARTIFACTS` 环境变量（若已设置）。
+  * 工作区根的 `restoreAllArtifacts` 配置（若已设置且此包是依赖项）。
+  * **Lake 的默认值**：`false`。
+  -/
+  restoreAllArtifacts? : Option Bool := none
+
+  /--
+  此包的原生库在 Windows 上是否应带 `lib` 前缀。
+
+  与 Unix 不同，Windows 不要求原生库以 `lib` 开头，且按惯例通常也不这样命名。不过，为了在所有
+  平台上采用一致命名，使用者可能希望启用此选项。
+
+  默认为 `false`。
+  -/
+  libPrefixOnWindows : Bool := false
+
+  /--
+  下游包是否可以 `import all` 此包的模块。
+
+  启用后，下游使用者能够访问模块的 `private` 内部实现，包括未标记为 `@[expose]` 的定义体。
+  将来这也可能阻止依赖于 `private` 定义无法从其所在包外部访问这一事实的编译器优化。
+
+  默认为 `false`。
+  -/
+  allowImportAll : Bool := false
+
+  /--
+  是否对包运行 Lake 的内置代码检查器。
+
+  * `true` — 始终运行内置代码检查。若还配置了代码检查驱动，则先运行内置代码检查。
+  * `false` — 默认从不运行内置代码检查。若也未配置代码检查驱动，`lake check-lint` 将以非零代码退出。
+  * `none`（默认值）— 当前等同于 `false`。将来的版本中，未配置代码检查驱动时，`none` 会运行内置
+    代码检查（即作为回退时等同于 `true`）。
+  -/
+  builtinLint? : Option Bool := none
+
+  /--
+  此包是否预期仅在单一工具链（包的工具链）上工作。
+
+  这会告知 Lake 的工具链更新过程（在 `lake update` 中）优先采用此包的工具链，也无需在 Lake 缓存中
+  按工具链版本区分此包的输入到输出映射。
+
+  默认为 `false`。
+  -/
+  fixedToolchain : Bool := false
+
+/--
+`Dependency` 表示包的一个依赖项。
+它指定另一个包所依赖的包。
+此结构编码 `require` 领域特定语言语法中包含的信息。
+-/
+structure Dependency where
+  /--
+  依赖项的包名称。
+  此名称必须与其配置文件中声明的名称一致，因为该名称用于索引其目标数据类型。为此，包名称还必须
+  在依赖关系图中的所有包之间唯一。
+  -/
+  name : Name
+  /--
+  用于区分 Lake 注册表中同名包的附加限定符。在 Reservoir 中，这是包所有者。
+  -/
+  scope : String
+  /--
+  依赖项的目标版本。
+  -/
+  version : _root_.Lake.InputVer
+  /--
+  依赖项的来源。
+  若无来源，则在默认注册表（例如 Reservoir）中查找依赖项。
+  支持的来源见 `DependencySrc` 的文档。
+  -/
+  src? : Option _root_.Lake.DependencySrc
+  /--
+  传给依赖项包配置的实参。
+  -/
+  opts : _root_.Lean.NameMap String
+
 /-- Lean 库的声明式配置。 -/
 structure LeanLibConfig (name : Name) extends LeanConfig where
   /--
@@ -165,7 +479,7 @@ structure LeanLibConfig (name : Name) extends LeanConfig where
   默认为 `false`。
   -/
   libPrefixOnWindows : Bool := false
-  /-- 在可执行文件模块之前构建的目标 `Array`。 -/
+  /-- 在库模块之前构建的目标 `Array`。 -/
   needs : Array _root_.Lake.PartialBuildKey := #[]
   /--
   **已弃用。请改用 `needs`。**
@@ -313,13 +627,6 @@ inductive Backend
   -/
   | default
 
-/--
-`Script` 所用单子的类型。
-
-它是带有 Lake 配置信息的 `IO` 单子。
--/
-abbrev ScriptM := _root_.Lake.LakeT IO
-
 namespace Package
 
 /--
@@ -328,15 +635,6 @@ namespace Package
 def defaultTargets (self : _root_.Lake.Package) : Array Name := self.defaultTargets
 
 end Package
-
-namespace Dependency
-
-/--
-依赖项的目标版本。
--/
-def version (self : _root_.Lake.Dependency) : _root_.Lake.InputVer := self.version
-
-end Dependency
 
 namespace DSL
 
@@ -417,6 +715,21 @@ scoped syntax (name := externLibCommand)
 : command
 
 /--
+为包定义新的自定义目标。只有一种形式：
+
+```lean
+target «target-name» (pkg : NPackage _package.name) : α :=
+  /- build term of type `FetchM (Job α)` -/
+```
+
+`pkg` 参数（及其类型说明符）可省略。
+其类型为 `NPackage _package.name`，以可证明地表明所提供的包就是定义该目标的包。
+-/
+scoped syntax (name := targetCommand)
+  (docComment)? (Term.attributes)? "target " buildDeclSig
+: command
+
+/--
 定义新的包分面。只有一种形式：
 
 ```lean
@@ -464,7 +777,7 @@ scoped syntax (name := moduleFacetDecl)
 **示例**
 
 ```
-/-- Display a greeting -/
+/-- 显示问候语 -/
 script «script-name» (args) do
   if h : 0 < args.length then
     IO.println s!"Hello, {args[0]'h}!"
