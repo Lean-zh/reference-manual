@@ -12,3 +12,5 @@ import Manual.ZhDocString.Monads.State
 import Manual.ZhDocString.NotationsMacros.Core
 import Manual.ZhDocString.NotationsMacros.Do
 import Manual.ZhDocString.NotationsMacros.Syntax
+import Manual.ZhDocString.BuildTools.Lake
+import Manual.ZhDocString.BuildTools.Config

@@ -139,7 +139,7 @@ open Illuminate in
 :::paragraph
 {deftech (key := "target")}_目标_ 表示用户可以请求的输出。
 持久的构建输出，例如目标代码、可执行二进制文件或 {tech (key := ".olean file")}[`.olean` 文件]，被称为 {deftech (key := "artifact")}_工件_。
-在生成工件的过程中，Lake 可能需要生成进一步的工件；例如，将 Lean 程序编译为可执行文件要求它及其依赖被编译为目标文件，而这些文件本身是从 C 源文件生成的，C 源文件则是通过对 Lean 源文件进行推导并生成 {tech (key := ".olean files")}[`.olean` 文件] 得出的。
+在生成工件的过程中，Lake 可能需要生成进一步的工件；例如，将 Lean 程序编译为可执行文件要求它及其依赖被编译为目标文件，而这些文件本身是从 C 源文件生成的，C 源文件则是通过对 Lean 源文件进行精译并生成 {tech (key := ".olean files")}[`.olean` 文件] 得出的。
 该链条中的每个环节都是一个目标，Lake 会安排它们依次构建。
 处于链条起点的是 {deftech (key := "initial targets")}_初始目标_：
  * {tech (key := "Packages")}_包_ 是作为一个单元分发的 Lean 代码单元。
@@ -161,7 +161,7 @@ open Illuminate in
  1. _追踪消息_包含通常特定于运行构建的机器的内部构建详细信息，包括传递给命令外壳的 Lean 及其他工具的具体调用。
  2. _信息性消息_包含通常不表示代码有问题的常规信息输出，例如 {keywordOf Lean.Parser.Command.eval}`#eval` 命令的结果。
  3. _警告_指出潜在问题，例如未使用的变量绑定。
- 4. _错误_解释为什么解析和推导无法完成。
+ 4. _错误_解释为什么解析和精译无法完成。
 
 默认情况下，追踪消息被隐藏，其他的被显示。
 阈值可以通过 {lakeOpt}`--log-level` 选项、{lakeOpt}`--verbose` 标志或 {lakeOpt}`--quiet` 标志进行调整。
@@ -254,9 +254,9 @@ tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Concept
 
 : {deftech (key := "configure package")}[配置包]
 
-  如果 {tech (key := "package configuration")}[包配置] 文件比缓存的配置文件 `lakefile.olean` 更新，那么包配置就会被重新推导。
+  如果 {tech (key := "package configuration")}[包配置] 文件比缓存的配置文件 `lakefile.olean` 更新，那么包配置就会被重新精译。
   当缓存文件缺失或者提供了 {lakeOpt}`--reconfigure` 或 {lakeOpt}`-R` 标志时，也会发生这种情况。
-  使用 {lakeOpt}`-K` 对选项的更改不会触发配置文件的重新推导；在这些情况下，必须使用 {lakeOpt}`-R`。
+  使用 {lakeOpt}`-K` 对选项的更改不会触发配置文件的重新精译；在这些情况下，必须使用 {lakeOpt}`-R`。
 
 : 计算依赖
 
@@ -294,7 +294,7 @@ Lake 使用两种不同的哈希算法。
  * {deftech (key := "source directory")}_源码目录_ 包含可供导入的 Lean 源代码。
  * {deftech (key := "library directories")}_库目录_ 包含 {tech (key := ".olean files")}[`.olean` 文件] 以及可用于链接的共享库和静态库；它通常由 {tech (key := "root package")}[根包] 的库目录（在 `.lake/build/lib` 下）、工作区中其他包的库目录、当前 Lean 工具链的库目录以及系统库目录组成。
  * {deftech (key := "Lake home")}_Lake 主目录_ 是安装 Lake 的目录，包含二进制文件、源代码和库。
-   Lake 目录中的库在推导 Lake 配置文件时不可或缺，这样配置文件就能访问 Lean 的全部功能。
+   Lake 目录中的库在精译 Lake 配置文件时不可或缺，这样配置文件就能访问 Lean 的全部功能。
 :::
 
 ## 分面
@@ -641,7 +641,7 @@ Lake {tech (key := "package configuration")}[包配置] 文件可包含 {deftech
 
 :::::TODO
 
-一旦能够导入足够多的 Lake 以进行推导，恢复以下内容：
+一旦能够导入足够多的 Lake 以进行精译，恢复以下内容：
 
 ````
 ```lean -show
@@ -683,11 +683,11 @@ tag := "test-lint-drivers"
 {deftech (key := "test driver")}_测试驱动程序_ 负责运行一个包的测试。
 它可以是可执行目标、{tech (key := "Lake script")}[Lake 脚本] 或库。
 Lake 本身并不是测试框架：{lake}`test` 命令只是定位已配置的目标，构建它，并且（针对可执行文件和脚本）运行它。
-库的驱动程序纯粹通过推导来执行，因此它们不会作为单独的步骤运行。
+库的驱动程序纯粹通过精译来执行，因此它们不会作为单独的步骤运行。
 断言、测试发现以及报告都由目标本身决定，这既可以是第三方测试库，也可以是手写的检查。
 
 对于可执行文件和脚本，Lake 将非零退出代码视为测试失败。
-对于库，任何推导错误均算作测试失败，包括 {keyword}`#guard` 风格命令的失败。
+对于库，任何精译错误均算作测试失败，包括 {keyword}`#guard` 风格命令的失败。
 
 {deftech (key := "lint driver")}_代码检查驱动程序_ 也是类似的，只是它由 {lake}`lint` 运行，负责检查包在风格及其他方面是否存在不是_错误_但预示存在潜在问题的状况。
 代码检查驱动程序只能是可执行文件或脚本，而不能是库。
@@ -1050,7 +1050,7 @@ Lake 在运行可执行文件驱动程序前会先对其进行构建。
 
 如果测试驱动程序是库，则不接受参数。
 如果 {tomlField Lake.PackageConfig}`testDriverArgs` 不为空，或在 `--` 之后有任何参数，Lake 将报告错误。
-要运行测试，只需使用 {tech (key:="Lean elaborator")}[Lean 推导器] 对该库进行推导即可。
+要运行测试，只需使用 {tech (key:="Lean elaborator")}[Lean 精译器] 对该库进行精译即可。
 
 如果为根包配置了测试驱动程序，{lake}`check-test` 将以退出代码 0（即成功）终止。
 它不检查所命名的目标是否实际存在。
