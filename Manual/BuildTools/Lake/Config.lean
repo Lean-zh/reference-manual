@@ -12,6 +12,7 @@ import Lake.DSL
 
 import Manual.Meta
 import Manual.BuildTools.Lake.CLI
+import Manual.ZhDocString.BuildTools.Config
 
 
 open Manual
@@ -124,7 +125,7 @@ tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Configu
 
 :::tomlField Lake.PackageConfig defaultTargets "默认目标名称（数组）" "默认目标名称（数组）" String (sort := 2)
 
-{includeDocstring Lake.Package.defaultTargets -elab}
+{zhincludeDocstring Lake.Package.defaultTargets ZhDoc.BuildTools.Config.Package.defaultTargets}
 
 :::
 
@@ -429,7 +430,7 @@ Git 仓库中的依赖项，可以用 URL 字符串指定，也可以用包含�
 
 :::tomlField Lake.Dependency version "字符串形式的版本" "字符串形式的版本" String
 
-{includeDocstring Lake.Dependency.version}
+{zhincludeDocstring Lake.Dependency.version ZhDoc.BuildTools.Config.Dependency.version}
 
 :::
 
@@ -797,7 +798,7 @@ Lean 配置格式的声明式子集使用声明字段序列来指定配置选项
 
 :::syntax Lake.DSL.declField (title := "声明式字段") -open
 
-{includeDocstring Lake.DSL.declField}
+{zhincludeDocstring Lake.DSL.declField ZhDoc.BuildTools.Config.DSL.declField}
 
 ```grammar
 $_ := $_
@@ -842,7 +843,7 @@ $[where
 post_update $[$name]? $v
 ```
 
-{includeDocstring Lake.DSL.postUpdateDecl}
+{zhincludeDocstring Lake.DSL.postUpdateDecl ZhDoc.BuildTools.Config.DSL.postUpdateDecl}
 
 ::::
 
@@ -872,7 +873,7 @@ Git 修订版本可以是分支名、标签名或提交哈希。
 
 :::syntax fromClause -open (title := "包来源")
 
-{includeDocstring Lake.DSL.fromClause}
+{zhincludeDocstring Lake.DSL.fromClause ZhDoc.BuildTools.Config.DSL.fromClause}
 
 ```grammar
 from $t:term
@@ -944,7 +945,7 @@ $[where
 
 {keywordOf Lake.DSL.leanLibCommand}`lean_lib` 的字段就是 {name Lake.LeanLibConfig}`LeanLibConfig` 结构的字段。
 
-{docstring Lake.LeanLibConfig}
+{zhdocstring Lake.LeanLibConfig ZhDoc.BuildTools.Config.LeanLibConfig}
 
 ### 可执行文件
 %%%
@@ -980,7 +981,7 @@ $[where
 
 {keywordOf Lake.DSL.leanExeCommand}`lean_exe` 的字段就是 {name Lake.LeanExeConfig}`LeanExeConfig` 结构的字段。
 
-{docstring Lake.LeanExeConfig}
+{zhdocstring Lake.LeanExeConfig ZhDoc.BuildTools.Config.LeanExeConfig}
 
 ### 外部库
 %%%
@@ -1001,7 +1002,7 @@ extern_lib $_:identOrStr $_? := $_:term
 $[where $_*]?
 ```
 
-{includeDocstring Lake.DSL.externLibCommand}
+{zhincludeDocstring Lake.DSL.externLibCommand ZhDoc.BuildTools.Config.DSL.externLibCommand}
 
 :::
 
@@ -1021,7 +1022,7 @@ target $_:identOrStr $_? : $ty:term := $_:term
 $[where $_*]?
 ```
 
-{includeDocstring Lake.DSL.externLibCommand}
+{zhincludeDocstring Lake.DSL.externLibCommand ZhDoc.BuildTools.Config.DSL.externLibCommand}
 
 :::
 
@@ -1045,7 +1046,7 @@ package_facet $_:identOrStr $_? : $ty:term := $_:term
 $[where $_*]?
 ```
 
-{includeDocstring Lake.DSL.packageFacetDecl}
+{zhincludeDocstring Lake.DSL.packageFacetDecl ZhDoc.BuildTools.Config.DSL.packageFacetDecl}
 
 :::
 
@@ -1061,7 +1062,7 @@ library_facet $_:identOrStr $_? : $ty:term := $_:term
 $[where $_*]?
 ```
 
-{includeDocstring Lake.DSL.libraryFacetDecl}
+{zhincludeDocstring Lake.DSL.libraryFacetDecl ZhDoc.BuildTools.Config.DSL.libraryFacetDecl}
 
 :::
 
@@ -1076,7 +1077,7 @@ module_facet $_:identOrStr $_? : $ty:term := $_:term
 $[where $_*]?
 ```
 
-{includeDocstring Lake.DSL.moduleFacetDecl}
+{zhincludeDocstring Lake.DSL.moduleFacetDecl ZhDoc.BuildTools.Config.DSL.moduleFacetDecl}
 
 :::
 
@@ -1085,7 +1086,7 @@ $[where $_*]?
 tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Lean-Format--Configuration-Value-Types"
 %%%
 
-{docstring Lake.BuildType}
+{zhdocstring Lake.BuildType ZhDoc.BuildTools.Config.BuildType}
 
 在 Lake 的 DSL 中，{deftech (key := "globs")}[通配模式]是匹配模块名称集合的模式。
 名称可以强制转换为匹配该名称的通配模式，另有两个后缀运算符用于构造更多通配模式。
@@ -1128,13 +1129,13 @@ $_:name".+"
 
 :::
 
-{docstring Lake.Glob}
+{zhdocstring Lake.Glob ZhDoc.BuildTools.Config.Glob}
 
 
 
-{docstring Lake.LeanOption}
+{zhdocstring Lake.LeanOption ZhDoc.BuildTools.Config.LeanOption}
 
-{docstring Lake.Backend}
+{zhdocstring Lake.Backend ZhDoc.BuildTools.Config.Backend}
 
 ## 脚本
 %%%
@@ -1161,11 +1162,11 @@ $[where
   $_*]?
 ```
 
-{includeDocstring Lake.DSL.scriptDecl}
+{zhincludeDocstring Lake.DSL.scriptDecl ZhDoc.BuildTools.Config.DSL.scriptDecl}
 
 :::
 
-{docstring Lake.ScriptM}
+{zhdocstring Lake.ScriptM ZhDoc.BuildTools.Config.ScriptM}
 
 
 :::syntax attr (label := "属性") (title := "默认脚本")
@@ -1189,7 +1190,7 @@ tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Configu
 __dir__
 ```
 
-{includeDocstring Lake.DSL.dirConst}
+{zhincludeDocstring Lake.DSL.dirConst ZhDoc.BuildTools.Config.DSL.dirConst}
 
 :::
 
@@ -1198,7 +1199,7 @@ __dir__
 get_config? $t
 ```
 
-{includeDocstring Lake.DSL.getConfig}
+{zhincludeDocstring Lake.DSL.getConfig ZhDoc.BuildTools.Config.DSL.getConfig}
 
 :::
 
@@ -1210,7 +1211,7 @@ meta if $_ then
 $[else $_]?
 ```
 
-{includeDocstring Lake.DSL.metaIf}
+{zhincludeDocstring Lake.DSL.metaIf ZhDoc.BuildTools.Config.DSL.metaIf}
 
 :::
 
@@ -1226,7 +1227,7 @@ do
   $[$_:command]*
 ```
 
-{includeDocstring Lake.DSL.cmdDo}
+{zhincludeDocstring Lake.DSL.cmdDo ZhDoc.BuildTools.Config.DSL.cmdDo}
 
 :::
 
@@ -1235,6 +1236,6 @@ do
 run_io $t
 ```
 
-{includeDocstring Lake.DSL.runIO}
+{zhincludeDocstring Lake.DSL.runIO ZhDoc.BuildTools.Config.DSL.runIO}
 
 :::
