@@ -452,28 +452,29 @@ end
 ```
 
 
-# Coercing Between Types
+# 类型间强制转换
 %%%
-tag := "ordinary-coercion"
+file := some "Coercing-Between-Types"
+tag := "coercing-between-types"
 %%%
 
 :::paragraph
-Coercions between types are inserted when the Lean elaborator successfully constructs a term, inferring its type, in a context where a term of some other type was expected.
-Before signaling an error, the elaborator attempts to insert a coercion from the inferred type to the expected type by synthesizing an instance of {lean}`CoeT`.
-There are two ways that this might succeed:
- 1. There could be a chain of coercions from the inferred type to the expected type through a number of intermediate types.
-    These chained coercions are selected based on the inferred type and the expected type, but not the term being coerced.
- 2. There could be a single dependent coercion from the inferred type to the expected type.
-    Dependent coercions take the term being coerced into account as well as the inferred and expected types, but they cannot be chained.
+当 Lean 精译器成功构造出一个项并推断出其类型，而所在上下文却期望另一种类型的项时，就会插入类型间强制转换。
+在报告错误之前，精译器会尝试合成 {lean}`CoeT` 的实例，从而插入从推断类型到预期类型的强制转换。
+这一尝试可能通过两种方式成功：
+ 1. 可以存在一条经过若干中间类型、从推断类型到预期类型的强制转换链。
+    这些成链的强制转换根据推断类型和预期类型来选择，而不考虑被强制转换的项。
+ 2. 可以存在一个从推断类型到预期类型的依赖强制转换。
+    依赖强制转换除推断类型和预期类型外，还会考虑被强制转换的项，但它们不能成链。
 :::
 
-The simplest way to define a non-dependent coercion is by implementing a {name}`Coe` instance, which is enough to synthesize a {name}`CoeT` instance.
-This instance participates in chaining, and may be applied any number of times.
-The expected type of the expression is used to drive synthesis of {name}`Coe` instances, rather than the inferred type.
-For instances that can be used at most once, or instances in which the inferred type should drive synthesis, one of the other coercion classes may be needed.
+定义非依赖强制转换最简单的方式是实现一个 {name}`Coe` 实例，这足以合成一个 {name}`CoeT` 实例。
+此实例会参与成链，并且可以应用任意多次。
+合成 {name}`Coe` 实例由表达式的预期类型而非推断类型驱动。
+对于至多只能使用一次的实例，或应由推断类型驱动合成的实例，可能需要使用其他强制转换类之一。
 
-:::example "Defining Coercions"
-The type {lean}`Even` represents the even natural numbers.
+:::example "定义强制转换"
+类型 {lean}`Even` 表示偶自然数。
 
 ```lean
 structure Even where
@@ -481,15 +482,15 @@ structure Even where
   isEven : number % 2 = 0
 ```
 
-A coercion allows even numbers to be used where natural numbers are expected.
-The {attr}`coe` attribute marks the projection as a coercion so that it can be shown accordingly in proof states and error messages, as described in the {ref "coercion-impl"}[section on implementing coercions].
+强制转换使偶数可用于期望自然数的位置。
+{attr}`coe` 属性将该投影标记为强制转换，使其能在证明状态和错误消息中相应显示，具体见{ref "coercion-impl"}[实现强制转换一节]。
 ```lean
 attribute [coe] Even.number
 
 instance : Coe Even Nat where
   coe := Even.number
 ```
-With this coercion in place, even numbers can be used where natural numbers are expected.
+有了这个强制转换，就可以在期望自然数的位置使用偶数。
 ```lean (name := four)
 def four : Even := ⟨4, by omega⟩
 
@@ -499,7 +500,7 @@ def four : Even := ⟨4, by omega⟩
 5
 ```
 
-Due to coercion chaining, there is also a coercion from {name}`Even` to {name}`Int` formed by chaining the {inst}`Coe Even Nat` instance with the existing coercion from {name}`Nat` to {name}`Int`:
+由于强制转换可以成链，将 {inst}`Coe Even Nat` 实例与已有的从 {name}`Nat` 到 {name}`Int` 的强制转换连接起来，还会形成一个从 {name}`Even` 到 {name}`Int` 的强制转换：
 ```lean (name := four')
 #eval (four : Int) - 5
 ```
@@ -508,11 +509,11 @@ Due to coercion chaining, there is also a coercion from {name}`Even` to {name}`I
 ```
 :::
 
-{deftech}[Dependent coercions] are needed when the specific term being coerced is required in order to determine whether or how to coerce the term: for example, only decidable propositions can be coerced to {name}`Bool`, so the proposition in question must occur as part of the instance's type so that it can require the {name}`Decidable` instance.
-Non-dependent coercions are used whenever all values of the inferred type can be coerced to the target type.
+{deftech (key := "Dependent coercions")}[依赖强制转换]用于必须根据被强制转换的具体项来确定能否或如何转换该项的情况：例如，只有可判定命题才能强制转换为 {name}`Bool`，所以相关命题必须出现在实例类型中，以便该类型能够要求 {name}`Decidable` 实例。
+只要推断类型的所有值都能强制转换为目标类型，就使用非依赖强制转换。
 
-:::example "Defining Dependent Coercions"
-The string {lean}`"four"` can be coerced into the natural number {lean  (type := "Nat")}`4` with this instance declaration:
+:::example "定义依赖强制转换"
+通过以下实例声明，可将字符串 {lean}`"four"` 强制转换为自然数 {lean  (type := "Nat")}`4`：
 ```lean (name := fourCoe)
 instance : CoeDep String "four" Nat where
   coe := 4
@@ -523,7 +524,7 @@ instance : CoeDep String "four" Nat where
 4
 ```
 
-Ordinary type errors are produced for other strings:
+其他字符串会产生普通的类型错误：
 ```lean +error (name := threeCoe)
 #eval ("three" : Nat)
 ```
@@ -551,36 +552,36 @@ variable [CoeHead α α'] [CoeOut α' …] [CoeOut … α''] [Coe α'' …] [Coe
 ```
 
 :::paragraph
-Non-dependent coercions may be chained: if there is a coercion from {lean}`α` to {lean}`β` and from {lean}`β` to {lean}`γ`, then there is also a coercion from {lean}`α` to {lean}`γ`.
-{index (subterm:="of coercions")}[chain]
-The chain should be in the form {name}`CoeHead`$`?`{name}`CoeOut`$`*`{name}`Coe`$`*`{name}`CoeTail`$`?`, which is to say it may consist of:
+非依赖强制转换可以成链：如果存在从 {lean}`α` 到 {lean}`β` 的强制转换以及从 {lean}`β` 到 {lean}`γ` 的强制转换，那么也存在从 {lean}`α` 到 {lean}`γ` 的强制转换。
+{index (subterm:="强制转换的")}[链]
+强制转换链应具有 {name}`CoeHead`$`?`{name}`CoeOut`$`*`{name}`Coe`$`*`{name}`CoeTail`$`?` 的形式，也就是说，它可以由以下部分组成：
 
- * An optional instance of {inst}`CoeHead α α'`, followed by
- * Zero or more instances of {inst}`CoeOut α' …`, …, {inst}`CoeOut … α''`, followed by
- * Zero or more instances of {inst}`Coe α'' …`, …, {inst}`Coe … β'`, followed by
- * An optional instance of {inst}`CoeTail β' γ`
+ * 一个可选的 {inst}`CoeHead α α'` 实例，之后是
+ * 零个或多个 {inst}`CoeOut α' …`、…、{inst}`CoeOut … α''` 实例，之后是
+ * 零个或多个 {inst}`Coe α'' …`、…、{inst}`Coe … β'` 实例，之后是
+ * 一个可选的 {inst}`CoeTail β' γ` 实例
 
-Most coercions can be implemented as instances of {name}`Coe`.
-{name}`CoeHead`, {name}`CoeOut`, and {name}`CoeTail` are needed in certain special situations.
+大多数强制转换都可以实现为 {name}`Coe` 的实例。
+某些特殊情况下则需要 {name}`CoeHead`、{name}`CoeOut` 和 {name}`CoeTail`。
 
 :::
 
 
 
-{name}`CoeHead` and {name}`CoeOut` instances are chained from the inferred type towards the expected type.
-In other words, information in the type found for the term is used to resolve a chain of instances.
-{name}`Coe` and {name}`CoeTail` instances are chained from the expected type towards the inferred type, so information in the expected type is used to resolve a chain of instances.
-If these chains meet in the middle, a coercion has been found.
-This is reflected in their type signatures: {name}`CoeHead` and {name}`CoeOut` use {tech}[semi-output parameters] for the coercion's target, while {name}`Coe` and {name}`CoeTail` use {tech}[semi-output parameters] for the coercions' source.
+{name}`CoeHead` 和 {name}`CoeOut` 实例从推断类型朝预期类型方向成链。
+换言之，会使用为该项得到的类型中的信息来解析实例链。
+{name}`Coe` 和 {name}`CoeTail` 实例从预期类型朝推断类型方向成链，因此会使用预期类型中的信息来解析实例链。
+如果这些链在中间相遇，就找到了一个强制转换。
+这体现在它们的类型签名中：{name}`CoeHead` 和 {name}`CoeOut` 将{tech (key := "semi-output parameters")}[半输出参数]用于强制转换的目标，而 {name}`Coe` 和 {name}`CoeTail` 将{tech (key := "semi-output parameters")}[半输出参数]用于强制转换的源。
 
-When an instance provides a value for a {tech}[semi-output parameter], the value is used during instance synthesis.
-However, if no value is provided, then a value may be assigned by the synthesis algorithm.
-Consequently, every semi-output parameter should be assigned a type when an instance is selected.
-This means that {name}`CoeOut` should be used when the variables that occur in the coercion's output are a subset of those in its input, and {name}`Coe` should be used when the variables in the input are a subset of those in the output.
+当实例为{tech (key := "semi-output parameter")}[半输出参数]提供值时，该值会在实例合成期间使用。
+但是，如果没有提供值，则合成算法可以为其赋值。
+因此，选择实例时，应为每个半输出参数指派一个类型。
+这意味着，当强制转换输出中出现的变量是输入中变量的子集时，应使用 {name}`CoeOut`；当输入中的变量是输出中变量的子集时，则应使用 {name}`Coe`。
 
-:::example "`CoeOut` vs `Coe` instances"
-A {name}`Truthy` value is a value paired with an indication of whether it should be considered to be true or false.
-A {name}`Decision` is either {name Decision.yes}`yes`, {name Decision.no}`no`, or {name Decision.maybe}`maybe`, with the latter containing further data for consideration.
+:::example "`CoeOut` 与 `Coe` 实例"
+{name}`Truthy` 值由一个值和一个指示该值应视为真还是假的标志配对组成。
+{name}`Decision` 可以是 {name Decision.yes}`yes`、{name Decision.no}`no` 或 {name Decision.maybe}`maybe`，其中最后一种还包含需要考虑的其他数据。
 
 ```lean
 structure Truthy (α : Type) where
@@ -593,8 +594,8 @@ inductive Decision (α : Type) where
   | no
 ```
 
-{noVale "Made-up word for example purposes"}[“Truthy”] values can be converted to {name}`Bool`s by forgetting the contained value.
-{name}`Bool`s can be converted to {name}`Decision`s by discounting the {name Decision.maybe}`maybe` case.
+{noVale "为示例编造的词语"}[“Truthy”] 值可以通过忽略其中包含的值转换为 {name}`Bool`。
+{name}`Bool` 可以通过排除 {name Decision.maybe}`maybe` 情况转换为 {name}`Decision`。
 ```lean
 @[coe]
 def Truthy.toBool : Truthy α → Bool :=
@@ -606,14 +607,14 @@ def Decision.ofBool : Bool → Decision α
   | false => .no
 ```
 
-{name}`Truthy.toBool` must be a {name}`CoeOut` instance, because the target of the coercion contains fewer unknown type variables than the source, while {name}`Decision.ofBool` must be a {name}`Coe` instance, because the source of the coercion contains fewer variables than the target:
+{name}`Truthy.toBool` 必须是 {name}`CoeOut` 实例，因为强制转换的目标比源包含更少的未知类型变量；而 {name}`Decision.ofBool` 必须是 {name}`Coe` 实例，因为强制转换的源比目标包含更少的变量：
 ```lean
 instance : CoeOut (Truthy α) Bool := ⟨Truthy.isTrue⟩
 
 instance : Coe Bool (Decision α) := ⟨Decision.ofBool⟩
 ```
 
-With these instances, coercion chaining works:
+有了这些实例，强制转换就可以成链：
 ```lean (name := chainTruthiness)
 #eval ({ val := 1, isTrue := true : Truthy Nat } : Decision String)
 ```
@@ -621,7 +622,7 @@ With these instances, coercion chaining works:
 Decision.yes
 ```
 
-Attempting to use the wrong class leads to an error:
+尝试使用错误的类会导致错误：
 ```lean (name := coeOutErr) +error
 instance : Coe (Truthy α) Bool := ⟨Truthy.isTrue⟩
 ```
@@ -643,8 +644,8 @@ end
 
 {docstring CoeTail}
 
-Instances of {name}`CoeT` can be synthesized when an appropriate chain of instances exists, or when there is a single applicable {name}`CoeDep` instance.{margin}[When coercing from {lean}`Nat` to another type, a {name}`NatCast` instances also suffices.]
-If both exist, then the {name}`CoeDep` instance takes priority.
+存在适当的实例链或单个适用的 {name}`CoeDep` 实例时，可以合成 {name}`CoeT` 的实例。{margin}[从 {lean}`Nat` 强制转换到另一类型时，{name}`NatCast` 实例也足够。]
+如果二者都存在，则优先使用 {name}`CoeDep` 实例。
 
 {docstring CoeT}
 
@@ -653,10 +654,10 @@ section
 variable {α β : Sort _} {e : α} [CoeDep α e β]
 ```
 
-Dependent coercions may not be chained.
-As an alternative to a chain of coercions, a term {lean}`e` of type {lean}`α` can be coerced to {lean}`β` using an instance of {inst}`CoeDep α e β`.
-Dependent coercions are useful in situations where only some of the values can be coerced; this mechanism is used to coerce only decidable propositions to {lean}`Bool`.
-They are also useful when the value itself occurs in the coercion's target type.
+依赖强制转换不能成链。
+作为强制转换链的替代方案，可以使用 {inst}`CoeDep α e β` 实例将类型为 {lean}`α` 的项 {lean}`e` 强制转换为 {lean}`β`。
+依赖强制转换适用于只有部分值可以强制转换的情况；这一机制用于仅将可判定命题强制转换为 {lean}`Bool`。
+当值本身出现在强制转换的目标类型中时，它们也很有用。
 
 ```lean -show
 end
@@ -664,13 +665,13 @@ end
 
 {docstring CoeDep}
 
-:::example "Dependent Coercion"
+:::example "依赖强制转换"
 ```lean -show
 universe u
 ```
 
-A type of non-empty lists can be defined as a pair of a list and a proof that it is not empty.
-This type can be coerced to ordinary lists by applying the projection:
+非空列表类型可以定义为一个列表与其非空证明组成的二元组。
+通过应用投影，可以将此类型强制转换为普通列表：
 
 ```lean
 structure NonEmptyList (α : Type u) : Type u where
@@ -681,14 +682,14 @@ instance : Coe (NonEmptyList α) (List α) where
   coe xs := xs.contents
 ```
 
-The coercion works as expected:
+该强制转换如预期般工作：
 ```lean
 def oneTwoThree : NonEmptyList Nat := ⟨[1, 2, 3], by simp⟩
 
 #eval (oneTwoThree : List Nat) ++ [4]
 ```
 
-Arbitrary lists cannot, however, be coerced to non-empty lists, because some arbitrarily-chosen lists may indeed be empty:
+然而，任意列表不能强制转换为非空列表，因为任意选取的某些列表确实可能为空：
 
 ```lean +error (name := coeFail) -keep
 instance : Coe (List α) (NonEmptyList α) where
@@ -702,7 +703,7 @@ xs : List α
 ⊢ xs ≠ []
 ```
 
-A dependent coercion can restrict the domain of the coercion to only lists that are not empty:
+依赖强制转换可以把强制转换的定义域限制为非空列表：
 ```lean (name := coeOk)
 instance : CoeDep (List α) (x :: xs) (NonEmptyList α) where
   coe := ⟨x :: xs, by simp⟩
@@ -714,15 +715,15 @@ instance : CoeDep (List α) (x :: xs) (NonEmptyList α) where
 ```
 
 
-Dependent coercion insertion requires that the term to be coerced syntactically matches the term in the instance header.
-Lists that are known to be non-empty, but which are not syntactically instances of {lean  (type := "{α : Type u} → α → List α → List α")}`(· :: ·)`, cannot be coerced with this instance.
+插入依赖强制转换要求被转换的项在语法上与实例头中的项匹配。
+已知非空、但在语法上不是 {lean  (type := "{α : Type u} → α → List α → List α")}`(· :: ·)` 实例的列表，无法使用此实例进行强制转换。
 ```lean +error (name := coeFailDep)
 #check
   fun (xs : List Nat) =>
     let ys : List Nat := xs ++ [4]
     (ys : NonEmptyList Nat)
 ```
-When coercion insertion fails, the original type error is reported:
+强制转换插入失败时，会报告原始类型错误：
 ```leanOutput coeFailDep
 Type mismatch
   ys
@@ -734,26 +735,26 @@ but is expected to have type
 
 :::
 
-:::syntax term (title := "Coercions")
+:::syntax term (title := "强制转换")
 ```grammar
 ↑$_:term
 ```
 
-Coercions can be explicitly placed using the prefix operator {keywordOf coeNotation}`↑`.
+可以使用前缀运算符 {keywordOf coeNotation}`↑` 显式放置强制转换。
 :::
 
-Unlike using nested {tech}[type ascriptions], the {keywordOf coeNotation}`↑` syntax for placing coercions does not require the involved types to be written explicitly.
+与使用嵌套的{tech (key := "type ascriptions")}[类型标注]不同，用于放置强制转换的 {keywordOf coeNotation}`↑` 语法不要求显式写出所涉及的类型。
 
-:::example "Controlling Coercion Insertion"
+:::example "控制强制转换插入"
 
-Instance synthesis and coercion insertion interact with one another.
-Synthesizing an instance may make type information known that later triggers coercion insertion.
-The specific placement of coercions may matter.
+实例合成与强制转换插入会相互作用。
+合成实例可能会使类型信息变为已知，随后触发强制转换插入。
+强制转换的具体放置位置可能会影响结果。
 
-In this definition of {lean}`sub`, the {inst}`Sub Int` instance is synthesized based on the function's return type.
-This instance requires that the two parameters also be {lean}`Int`s, but they are {lean}`Nat`s.
-Coercions are inserted around each argument to the subtraction operator.
-This can be seen in the output of {keywordOf Lean.Parser.Command.print}`#print`.
+在 {lean}`sub` 的这个定义中，会根据函数的返回类型合成 {inst}`Sub Int` 实例。
+此实例要求两个参数也为 {lean}`Int`，但它们是 {lean}`Nat`。
+减法运算符的每个实参外都会插入强制转换。
+这可以从 {keywordOf Lean.Parser.Command.print}`#print` 的输出中看出。
 
 ```lean (name := subThenCoe)
 def sub (n k : Nat) : Int := n - k
@@ -765,16 +766,16 @@ def sub : Nat → Nat → Int :=
 fun n k => ↑n - ↑k
 ```
 
-Placing the coercion operator outside the subtraction causes the elaborator to attempt to infer a type for the subtraction and then insert a coercion.
-Because the arguments are both {lean}`Nat`s, the {inst}`Sub Nat` instance is selected, leading to the difference being a {lean}`Nat`.
-The difference is then coerced to an {lean}`Int`.
+将强制转换运算符放在减法外部，会使精译器先尝试推断减法的类型，再插入强制转换。
+因为实参都是 {lean}`Nat`，所以会选择 {inst}`Sub Nat` 实例，从而使差值成为 {lean}`Nat`。
+然后再将该差值强制转换为 {lean}`Int`。
 ```lean (name:=coeThenSub)
 def sub' (n k : Nat) : Int := ↑ (n - k)
 
 #print sub'
 ```
 
-These two functions are not equivalent because subtraction of natural numbers truncates at zero:
+这两个函数并不等价，因为自然数减法会在零处截断：
 ```lean (name := subRes)
 #eval sub 4 8
 ```
@@ -791,17 +792,17 @@ These two functions are not equivalent because subtraction of natural numbers tr
 :::
 
 
-## Implementing Coercions
+## 实现强制转换
 %%%
 tag := "coercion-impl"
 %%%
 
-The appropriate {name}`CoeHead`, {name}`CoeOut`, {name}`Coe`, or {name}`CoeTail` instance is sufficient to cause a desired coercion to be inserted.
-However, the implementation of the coercion should be registered as a coercion using the {attr}`coe` attribute.
-This causes Lean to display uses of the coercion with the {keywordOf coeNotation}`↑` operator.
-It also causes the {tactic}`norm_cast` tactic to treat the coercion as a cast, rather than as an ordinary function.
+适当的 {name}`CoeHead`、{name}`CoeOut`、{name}`Coe` 或 {name}`CoeTail` 实例足以使所需的强制转换得以插入。
+不过，强制转换的实现应使用 {attr}`coe` 属性注册为强制转换。
+这会使 Lean 使用 {keywordOf coeNotation}`↑` 运算符显示强制转换的使用。
+这也会使 {tactic}`norm_cast` 策略将该强制转换视为数值转换，而不是普通函数。
 
-:::syntax attr (title := "Coercion Declarations")
+:::syntax attr (title := "强制转换声明")
 ```grammar
 coe
 ```
@@ -810,15 +811,15 @@ coe
 
 :::
 
-:::example "Implementing Coercions"
-The {tech}[enum inductive] type {lean}`Weekday` represents the days of the week:
+:::example "实现强制转换"
+{tech (key := "enum inductive")}[枚举归纳]类型 {lean}`Weekday` 表示一周中的各天：
 ```lean
 inductive Weekday where
   | mo | tu | we | th | fr | sa | su
 ```
 
-As a seven-element type, it contains the same information as {lean}`Fin 7`.
-There is a bijection:
+作为一个七元素类型，它与 {lean}`Fin 7` 包含相同的信息。
+二者之间存在双射：
 ```lean
 def Weekday.toFin : Weekday → Fin 7
   | mo => 0
@@ -848,7 +849,7 @@ theorem Weekday.fromFin_toFin_id : Weekday.fromFin (Weekday.toFin w) = w := by
   cases w <;> rfl
 ```
 
-Each type can be coerced to the other:
+每种类型都可以强制转换为另一种：
 ```lean
 instance : Coe Weekday (Fin 7) where
   coe := Weekday.toFin
@@ -857,8 +858,8 @@ instance : Coe (Fin 7) Weekday where
   coe := Weekday.fromFin
 ```
 
-While this works, instances of the coercions that occur in Lean's output are not presented using the coercion operator, which is what Lean users expect.
-Instead, the name {lean}`Weekday.fromFin` is used explicitly:
+虽然这样可以工作，但 Lean 输出中出现的强制转换实例并未按 Lean 用户所期望的方式使用强制转换运算符呈现。
+相反，其中显式使用了名称 {lean}`Weekday.fromFin`：
 ```lean (name := wednesday)
 def wednesday : Weekday := (2 : Fin 7)
 
@@ -870,7 +871,7 @@ Weekday.fromFin 2
 ```
 
 
-Adding the {attr}`coe` attribute to the definition of a coercion causes it to be displayed using the coercion operator:
+为强制转换的定义添加 {attr}`coe` 属性，会使其使用强制转换运算符显示：
 ```lean (name := friday)
 attribute [coe] Weekday.fromFin
 attribute [coe] Weekday.toFin
@@ -886,21 +887,21 @@ def friday : Weekday :=
 
 :::
 
-## Coercions from Natural Numbers and Integers
+## 自然数与整数的强制转换
 %%%
 tag := "nat-api-cast"
 %%%
 
-The type classes {name}`NatCast` and {name}`IntCast` are special cases of {name}`Coe` that are used to define a coercion from {lean}`Nat` or {lean}`Int` to some other type that is in some sense canonical.
-They exist to enable better integration with large libraries of mathematics, such as [Mathlib](https://github.com/leanprover-community/mathlib4), that make heavy use of coercions to map from the natural numbers or integers to other structures (typically rings).
-Ideally, the coercion of a natural number or integer into these structures is a {tech}[simp normal form], because it is a convenient way to denote them.
+类型类 {name}`NatCast` 和 {name}`IntCast` 是 {name}`Coe` 的特殊情况，用于定义从 {lean}`Nat` 或 {lean}`Int` 到某种在一定意义上具有典范性的其他类型的强制转换。
+它们的存在是为了更好地集成大型数学库，例如 [Mathlib](https://github.com/leanprover-community/mathlib4)；这类库大量使用强制转换，将自然数或整数映射到其他结构（通常是环）。
+理想情况下，将自然数或整数强制转换到这些结构所得的形式应为{tech (key := "simp normal form")}[simp 规范形]，因为这是一种方便的表示方式。
 
-When the coercion application is expected to be the {tech}[simp normal form] for a type, it is important that _all_ such coercions are {tech (key := "definitional equality")}[definitionally equal] in practice.
-Otherwise, the {tech}[simp normal form] would need to choose a single chained coercion path, but lemmas could accidentally be stated using a different path.
-Because {tactic}`simp`'s internal index is based on the underlying structure of the term, rather than its presentation in the surface syntax, these differences would cause the lemmas to not be applied where expected.
-{lean}`NatCast` and {lean}`IntCast` instances, on the other hand, should be defined such that they are always {tech (key := "definitional equality")}[definitionally equal], avoiding the problem.
-The Lean standard library's instances are arranged such that {name}`NatCast` or {name}`IntCast` instances are chosen preferentially over chains of coercion instances during coercion insertion.
-They can also be used as {name}`CoeOut` instances, allowing a graceful fallback to coercion chaining when needed.
+当强制转换的应用预期成为某类型的{tech (key := "simp normal form")}[simp 规范形]时，重要的是实践中_所有_这类强制转换都应{tech (key := "definitional equality")}[定义相等]。
+否则，{tech (key := "simp normal form")}[simp 规范形]就必须选择唯一一条成链的强制转换路径，但引理却可能不慎使用另一条路径来陈述。
+由于 {tactic}`simp` 的内部索引基于项的底层结构，而不是项在表层语法中的呈现方式，这些差异会使引理无法在预期位置应用。
+另一方面，{lean}`NatCast` 和 {lean}`IntCast` 实例应定义成始终{tech (key := "definitional equality")}[定义相等]，从而避免这个问题。
+Lean 标准库对实例的安排使得插入强制转换时，会优先选择 {name}`NatCast` 或 {name}`IntCast` 实例，而不是强制转换实例链。
+它们也可以用作 {name}`CoeOut` 实例，从而在需要时平稳回退到强制转换链。
 
 {docstring NatCast}
 
