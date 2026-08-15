@@ -9,6 +9,7 @@ import VersoManual
 import Lean.Parser.Term
 
 import Manual.Meta
+import Manual.ZhDocString.Tactics
 
 import Manual.Tactics.Reference
 import Manual.Tactics.Conv
@@ -23,73 +24,76 @@ set_option linter.unusedVariables false
 
 open Lean.Elab.Tactic
 
-#doc (Manual) "Tactic Proofs" =>
+#doc (Manual) "策略证明" =>
 %%%
 tag := "tactics"
+file := "Tactic-Proofs"
 %%%
 
-The tactic language is a special-purpose programming language for constructing proofs.
-In Lean, {tech}[propositions] are represented by types, and proofs are terms that inhabit these types.
-{margin}[The {ref "propositions"}[section on propositions] describes propositions in more detail.]
-While terms are designed to make it convenient to indicate a specific inhabitant of a type, tactics are designed to make it convenient to demonstrate that a type is inhabited.
-This distinction exists because it's important that definitions pick out the precise objects of interest and that programs return the intended results, but proof irrelevance means that there's no _technical_ reason to prefer one proof term over another.
-For example, given two assumptions of a given type, a program must be carefully written to use the correct one, while a proof may use either without consequence.
+策略语言是一种用于构造证明的专用编程语言。
+在 Lean 中，{tech (key := "propositions")}[命题]由类型表示，而证明则是这些类型的项。
+{margin}[{ref "propositions"}[命题一节]更详细地介绍了命题。]
+项的设计目标是便于指出类型的某个特定元素，而策略的设计目标则是便于证明某个类型存在元素。
+之所以作此区分，是因为定义必须精确地选出所关注的对象、程序必须返回预期结果；但证明无关性意味着，从_技术_上说，并没有理由偏好某个证明项而非另一个。
+例如，给定同一类型的两个假设时，程序必须仔细编写以使用正确的那个，而证明使用任一个都不会造成影响。
 
-Tactics are imperative programs that modify a {deftech}_proof state_.{index}[proof state]
-A proof state consists of an ordered sequence of {deftech}_goals_, which are contexts of local assumptions together with types to be inhabited; a tactic may either _succeed_ with a possibly-empty sequence of further goals (called {deftech}_subgoals_) or _fail_ if it cannot make progress.
-If a tactic succeeds with no subgoals, then the proof is complete.
-If it succeeds with one or more subgoals, then its goal or goals will be proved when those subgoals have been proved.
-The first goal in the proof state is called the {deftech}_main goal_.{index (subterm := "main")}[goal]{index}[main goal]
-While most tactics affect only the main goal, operators such as {tactic}`<;>` and {tactic}`all_goals` can be used to apply a tactic to many goals, and operators such as bullets, {tactic}`next` or {tactic}`case` can narrow the focus of subsequent tactics to only a single goal in the proof state.
+策略是修改{deftech (key := "proof state")}_证明状态_的命令式程序。{index}[proof state]
+证明状态由一列有序的{deftech (key := "goals")}_目标_组成；每个目标都是局部假设的上下文以及一个需要构造元素的类型。策略可能_成功_并产生一列可能为空的后续目标（称为{deftech (key := "subgoals")}_子目标_），也可能因无法取得进展而_失败_。
+如果策略成功且没有子目标，证明就完成了。
+如果策略成功并产生一个或多个子目标，那么当这些子目标都得到证明时，原目标也就得到证明。
+证明状态中的第一个目标称为{deftech (key := "main goal")}_主目标_。{index (subterm := "main")}[goal]{index}[main goal]
+大多数策略只影响主目标，但可以用 {tactic}`<;>` 和 {tactic}`all_goals` 等运算符将策略应用到多个目标；也可以用项目符号、{tactic}`next` 或 {tactic}`case` 等运算符，将后续策略的焦点缩小到证明状态中的单个目标。
 
-Behind the scenes, tactics construct {deftech}[proof terms].
-Proof terms are independently checkable evidence of a theorem's truth, written in Lean's type theory.
-Each proof is checked in the {tech}[kernel], and can be verified with independently-implemented external checkers, so the worst outcome from a bug in a tactic is a confusing error message, rather than an incorrect proof.
-Each goal in a tactic proof corresponds to an incomplete portion of a proof term.
+在幕后，策略会构造{deftech (key := "proof terms")}[证明项]。
+证明项是以 Lean 类型论书写、可独立检查的定理成立证据。
+每个证明都会由{tech (key := "kernel")}[内核]检查，也可由独立实现的外部检查器验证；因此，策略中的缺陷最坏只会导致令人困惑的错误消息，而不会产生错误的证明。
+策略证明中的每个目标都对应证明项中尚未完成的一部分。
 
-# Running Tactics
+# 运行策略
 %%%
 tag := "by"
+file := "Running-Tactics"
 %%%
 
 :::TODO
-The syntax of `by` is showing with commas instead of semicolons below
+下面展示的 `by` 语法使用了逗号而不是分号
 :::
 
-:::syntax Lean.Parser.Term.byTactic (title := "Tactic Proofs with {keyword}`by`")
-Tactics are included in terms using {keywordOf Lean.Parser.Term.byTactic}`by`, which is followed by a sequence of tactics in which each has the same indentation:
+:::syntax Lean.Parser.Term.byTactic (title := "使用 {keyword}`by` 的策略证明")
+使用 {keywordOf Lean.Parser.Term.byTactic}`by` 可在项中包含策略；其后是一列缩进相同的策略：
 ```grammar
 by
 $t
 ```
 
-Alternatively, explicit braces and semicolons may be used:
+也可以改用显式的大括号和分号：
 ```grammar
 by { $t* }
 ```
 :::
 
-Tactics are invoked using the {keywordOf Lean.Parser.Term.byTactic}`by` term.
-When the elaborator encounters {keywordOf Lean.Parser.Term.byTactic}`by`, it invokes the tactic interpreter to construct the resulting term.
-Tactic proofs may be embedded via {keywordOf Lean.Parser.Term.byTactic}`by` in any context in which a term can occur.
+策略通过 {keywordOf Lean.Parser.Term.byTactic}`by` 项调用。
+精译器遇到 {keywordOf Lean.Parser.Term.byTactic}`by` 时，会调用策略解释器来构造结果项。
+凡是允许出现项的上下文，都可以通过 {keywordOf Lean.Parser.Term.byTactic}`by` 嵌入策略证明。
 
-# Reading Proof States
+# 阅读证明状态
 %%%
 tag := "proof-states"
+file := "Reading-Proof-States"
 %%%
 
-The goals in a proof state are displayed in order, with the main goal on top.
-Goals may be either named or anonymous.
-Named goals are indicated with `case` at the top (called a {deftech}_case label_), while anonymous goals have no such indicator.
-Tactics assign goal names, typically on the basis of constructor names, parameter names, structure field names, or the nature of the reasoning step implemented by the tactic.
+证明状态中的目标按顺序显示，主目标位于最上方。
+目标可以具名，也可以匿名。
+具名目标的顶部以 `case` 标示（称为{deftech (key := "case label")}_分支标签_），匿名目标则没有这种标示。
+策略会为目标分配名称，通常依据构造器名称、参数名称、结构字段名称，或策略所实现推理步骤的性质来命名。
 
-::::example "Named goals"
+::::example (file := "Named goals") "具名目标"
 ```customCSS
 #lawful-option-cases .goal-name { background-color: var(--lean-compl-yellow); }
 ```
 
-This proof state contains four goals, all of which are named.
-This is part of a proof that the {lean}`Monad Option` instance is lawful (that is, to provide the {lean}`LawfulMonad Option` instance), and the case names (highlighted below) come from the names of the fields of {name}`LawfulMonad`.
+此证明状态包含四个目标，并且全都有名称。
+这是证明 {lean}`Monad Option` 实例满足定律（即提供 {lean}`LawfulMonad Option` 实例）的一部分；分支名称（在下方突出显示）来自 {name}`LawfulMonad` 的字段名。
 
 ```proofState (tag := "lawful-option-cases")
 LawfulMonad Option := by
@@ -106,8 +110,8 @@ rotate_right
 ::::
 
 
-::::example "Anonymous Goals"
-This proof state contains a single anonymous goal.
+::::example (file := "Anonymous Goals") "匿名目标"
+此证明状态包含一个匿名目标。
 
 ```proofState
 ∀ (n k : Nat), n + k = k + n := by
@@ -115,10 +119,10 @@ intro n k
 ```
 ::::
 
-The {tactic}`case` and {tactic}`case'` tactics can be used to select a new main goal using the desired goal's name.
-When names are assigned in the context of a goal which itself has a name, the new goals' names are appended to the main goal's name with a dot (`'.', Unicode FULL STOP (0x2e)`) between them.
+可以使用 {tactic}`case` 和 {tactic}`case'` 策略，按目标名称选择新的主目标。
+在本身具名的目标上下文中分配名称时，新目标的名称会附加到主目标名称之后，并以点号（`'.', Unicode FULL STOP (0x2e)`）分隔。
 
-::::example "Hierarchical Goal Names"
+::::example (file := "Hierarchical Goal Names") "分层目标名称"
 
 :::tacticExample
 ```setup
@@ -127,7 +131,7 @@ induction n
 ```
 
 
-In the course of an attempt to prove {goal}`∀ (n k : Nat), n + k = k + n`, this proof state can occur:
+尝试证明 {goal}`∀ (n k : Nat), n + k = k + n` 的过程中，可能出现此证明状态：
 ```pre
 case zero
 k : Nat
@@ -139,7 +143,7 @@ a✝ : n✝ + k = k + n✝
 ⊢ n✝ + 1 + k = k + (n✝ + 1)
 ```
 
-After {tacticStep}`induction k`, the two new cases' names have `zero` as a prefix, because they were created in a goal named `zero`:
+执行 {tacticStep}`induction k` 后，两个新分支的名称都以 `zero` 为前缀，因为它们是在名为 `zero` 的目标中创建的：
 
 ```customCSS
 #hierarchical-case-names .goal:not(:last-child) .goal-name { background-color: var(--lean-compl-yellow); }
@@ -163,17 +167,17 @@ a✝ : n✝ + k = k + n✝
 ::::
 
 
-Each goal consists of a sequence of assumptions and a desired conclusion.
-Each assumption has a name and a type; the conclusion is a type.
-Assumptions are either arbitrary elements of some type or statements that are presumed true.
+每个目标都由一列假设和一个待证结论组成。
+每个假设都有名称和类型；结论则是一个类型。
+假设要么是某个类型的任意元素，要么是被假定为真的陈述。
 
-::::example "Assumption Names and Conclusion"
+::::example (file := "Assumption Names and Conclusion") "假设名称与结论"
 
 ```customCSS
 #ex-assumption-names .hypothesis .name { background-color: var(--lean-compl-yellow); }
 ```
 
-This goal has four assumptions:
+此目标有四个假设：
 
 ```proofState (tag := "ex-assumption-names")
 ∀ (α) (xs : List α), xs ++ [] = xs := by
@@ -191,30 +195,30 @@ axiom xs : List α
 axiom ih : xs ++ [] = xs
 ```
 
-They are:
+它们是：
 
- * {lean}`α`, an arbitrary type
- * {lean}`x`, an arbitrary {lean}`α`
- * {lean}`xs`, an arbitrary {lean}`List α`
- * {lean}`ih`, an induction hypothesis that asserts that appending the empty list to {lean}`xs` is equal to {lean}`xs`.
+ * {lean}`α`，任意类型
+ * {lean}`x`，任意的 {lean}`α`
+ * {lean}`xs`，任意的 {lean}`List α`
+ * {lean}`ih`，归纳假设，断言在 {lean}`xs` 后追加空列表仍等于 {lean}`xs`。
 
-The conclusion is the statement that prepending `x` to both sides of the equality in the induction hypothesis results in equal lists.
+结论断言：在归纳假设的等式两边都前置 `x`，所得列表仍然相等。
 :::
 
 ::::
 
-Some assumptions are {deftech}_inaccessible_, {index}[inaccessible] {index (subterm := "inaccessible")}[assumption] which means that they cannot be referred to explicitly by name.
-Inaccessible assumptions occur when an assumption is created without a specified name or when the assumption's name is shadowed by a later assumption.
-Inaccessible assumptions should be regarded as anonymous; they are presented as if they had names because they may be referred to in later assumptions or in the conclusion, and displaying a name allows these references to be distinguished from one another.
-In particular, inaccessible assumptions are presented with daggers (`†`) after their names.
+有些假设是{deftech (key := "inaccessible")}_不可访问的_，{index}[inaccessible] {index (subterm := "inaccessible")}[assumption]这意味着无法按名称显式引用它们。
+创建假设时未指定名称，或假设名称被后来的假设遮蔽时，就会出现不可访问的假设。
+不可访问的假设应视为匿名假设；之所以仍显示得像是具名，是因为后续假设或结论可能引用它们，而显示名称可以区分这些引用。
+具体而言，不可访问假设的名称后会显示剑标（`†`）。
 
 
-::::example "Accessible Assumption Names"
+::::example (file := "Accessible Assumption Names") "可访问的假设名称"
 ```customCSS
 #option-cases-accessible .hypothesis .name { background-color: var(--lean-compl-yellow); }
 ```
 
-In this proof state, all assumptions are accessible.
+在此证明状态中，所有假设都可访问。
 
 ```proofState (tag := "option-cases-accessible")
 LawfulMonad Option := by
@@ -231,13 +235,13 @@ rotate_right
 ::::
 
 
-::::example "Inaccessible Assumption Names"
+::::example (file := "Inaccessible Assumption Names") "不可访问的假设名称"
 ```customCSS
 #option-cases-inaccessible .hypotheses .hypothesis:nth-child(even) .name { background-color: var(--lean-compl-yellow); }
 ```
 
-In this proof state, only the first and third assumptions are accessible.
-The second and fourth are inaccessible, and their names include a dagger to indicate that they cannot be referenced.
+在此证明状态中，只有第一个和第三个假设可访问。
+第二个和第四个假设不可访问，其名称中的剑标表示无法引用它们。
 
 ```proofState (tag := "option-cases-inaccessible")
 LawfulMonad Option := by
@@ -254,31 +258,31 @@ rotate_right
 ::::
 
 
-Inaccessible assumptions can still be used.
-Tactics such as {tactic}`assumption` or {tactic}`simp` can scan the entire list of assumptions, finding one that is useful, and {tactic}`contradiction` can eliminate the current goal by finding an impossible assumption without naming it.
-Other tactics, such as {tactic}`rename_i` and {tactic}`next`, can be used to name inaccessible assumptions, making them accessible.
-Additionally, assumptions can be referred to by their type, by writing the type in single guillemets.
+不可访问的假设仍然可以使用。
+{tactic}`assumption` 或 {tactic}`simp` 等策略可以扫描整个假设列表并找出有用的假设；{tactic}`contradiction` 则能找出不可能成立的假设来消除当前目标，而无需为其命名。
+{tactic}`rename_i` 和 {tactic}`next` 等其他策略可以为不可访问的假设命名，使其变得可访问。
+此外，还可以把类型写在单书名号中，按类型引用假设。
 
-::::syntax term (title := "Assumptions by Type")
-Single guillemets around a term represent a reference to some term in scope with that type.
+::::syntax term (title := "按类型引用假设")
+用单书名号括起一个项，表示引用作用域内具有该类型的某个项。
 
 ```grammar
 ‹$t›
 ```
 
-This can be used to refer to local lemmas by their theorem statement rather than by name, or to refer to assumptions regardless of whether they have explicit names.
+这样便可按定理陈述而非名称引用局部引理，也可引用假设而不论其是否有显式名称。
 ::::
 
-::::example "Assumptions by Type"
+::::example (file := "Assumptions by Type") "按类型引用假设"
 
 :::keepEnv
 ```lean -show
 variable (n : Nat)
 ```
-In the following proof, {tactic}`cases` is repeatedly used to analyze a number.
-At the beginning of the proof, the number is named `x`, but {tactic}`cases` generates an inaccessible name for subsequent numbers.
-Rather than providing names, the proof takes advantage of the fact that there is a single assumption of type {lean}`Nat` at any given time and uses {lean}`‹Nat›` to refer to it.
-After the iteration, there is an assumption that `n + 3 < 3`, which {tactic}`contradiction` can use to remove the goal from consideration.
+在以下证明中，反复使用 {tactic}`cases` 分析一个数。
+证明开始时，这个数名为 `x`，但 {tactic}`cases` 会为后续的数生成不可访问的名称。
+该证明没有提供名称，而是利用任一时刻都只有一个 {lean}`Nat` 类型假设这一事实，以 {lean}`‹Nat›` 引用它。
+迭代结束后会有假设 `n + 3 < 3`，{tactic}`contradiction` 可以利用它消除该目标。
 :::
 ```lean
 example : x < 3 → x ∈ [0, 1, 2] := by
@@ -290,9 +294,9 @@ example : x < 3 → x ∈ [0, 1, 2] := by
 ```
 ::::
 
-::::example "Assumptions by Type, Outside Proofs"
+::::example (file := "Assumptions by Type, Outside Proofs") "证明之外按类型引用假设"
 
-Single-guillemet syntax also works outside of proofs:
+单书名号语法在证明之外也可使用：
 
 ```lean (name := evalGuillemets)
 #eval
@@ -304,21 +308,22 @@ Single-guillemet syntax also works outside of proofs:
 2
 ```
 
-This is generally not a good idea for non-propositions, however—when it matters _which_ element of a type is selected, it's better to select it explicitly.
+不过，对于非命题而言，这通常不是好主意——当选中的是类型中的_哪个_元素很重要时，最好显式选择。
 ::::
 
-## Hiding Proofs and Large Terms
+## 隐藏证明与大型项
 %%%
 tag := "hiding-terms-in-proof-states"
+file := "Hiding Proofs and Large Terms"
 %%%
 
-Terms in proof states can be quite big, and there may be many assumptions.
-Because of definitional proof irrelevance, proof terms typically give little useful information.
-By default, they are not shown in goals in proof states unless they are {deftech}_atomic_, meaning that they contain no subterms.
-Hiding proofs is controlled by two options: {option}`pp.proofs` turns the feature on and off, while {option}`pp.proofs.threshold` determines a size threshold for proof hiding.
+证明状态中的项可能相当庞大，假设也可能很多。
+由于定义式证明无关性，证明项通常提供不了多少有用信息。
+默认情况下，它们不会显示在证明状态的目标中，除非它们是{deftech (key := "atomic")}_原子的_，即不包含子项。
+隐藏证明由两个选项控制：{option}`pp.proofs` 用于开关该功能，{option}`pp.proofs.threshold` 则确定隐藏证明的大小阈值。
 
-:::example "Hiding Proof Terms"
-In this proof state, the proof that `0 < n` is hidden.
+:::example (file := "Hiding Proof Terms") "隐藏证明项"
+在此证明状态中，`0 < n` 的证明被隐藏了。
 
 ```proofState
 ∀ (n : Nat) (i : Fin n), i.val > 5 → (⟨0, by cases i; omega⟩ : Fin n) < i := by
@@ -335,39 +340,40 @@ gt : ↑i > 5
 
 
 
-{optionDocs pp.proofs}
+{zhOptionDocs pp.proofs ZhDoc.Tactics.Option.pp.proofs}
 
-{optionDocs pp.proofs.threshold}
+{zhOptionDocs pp.proofs.threshold ZhDoc.Tactics.Option.pp.proofs.threshold}
 
 
-Additionally, non-proof terms may be hidden when they are too large.
-In particular, Lean will hide terms that are below a configurable depth threshold, and it will hide the remainder of a term once a certain amount in total has been printed.
-Showing deep terms can be enabled or disabled with the option {option}`pp.deepTerms`, and the depth threshold can be configured with the option {option}`pp.deepTerms.threshold`.
-The maximum number of pretty printer steps can be configured with the option {option}`pp.maxSteps`.
-Printing very large terms can lead to slowdowns or even stack overflows in tooling; please be conservative when adjusting these options' values.
+此外，非证明项过大时也可能被隐藏。
+具体而言，Lean 会隐藏深度超过可配置阈值的项；总输出量达到一定程度后，也会隐藏项的其余部分。
+可以用选项 {option}`pp.deepTerms` 启用或禁用深层项显示，并用 {option}`pp.deepTerms.threshold` 配置深度阈值。
+美化打印器的最大步数可用选项 {option}`pp.maxSteps` 配置。
+打印非常大的项可能导致工具变慢，甚至栈溢出；调整这些选项的值时请务必谨慎。
 
-{optionDocs pp.deepTerms}
+{zhOptionDocs pp.deepTerms ZhDoc.Tactics.Option.pp.deepTerms}
 
-{optionDocs pp.deepTerms.threshold}
+{zhOptionDocs pp.deepTerms.threshold ZhDoc.Tactics.Option.pp.deepTerms.threshold}
 
-{optionDocs pp.maxSteps}
+{zhOptionDocs pp.maxSteps ZhDoc.Tactics.Option.pp.maxSteps}
 
-## Metavariables
+## 元变量
 %%%
 tag := "metavariables-in-proofs"
+file := "Metavariables"
 %%%
 
-Terms that begin with a question mark are {deftech}_metavariables_ that correspond to an unknown value.
-They may stand for either {tech}[universe] levels or for terms.
-Some metavariables arise as part of Lean's elaboration process, when not enough information is yet available to determine a value.
-These metavariables' names have a numeric component at the end, such as `?m.392` or `?u.498`.
-Other metavariables come into existence as a result of tactics or {tech}[synthetic holes].
-These metavariables' names do not have a numeric component.
-Metavariables that result from tactics frequently appear as goals whose {tech}[case labels] match the name of the metavariable.
+以问号开头的项是{deftech (key := "metavariables")}_元变量_，对应某个未知值。
+它们既可以代表{tech (key := "universe")}[宇宙]层级，也可以代表项。
+有些元变量产生于 Lean 的精译过程，即现有信息尚不足以确定某个值之时。
+这些元变量名称的末尾带有数字部分，例如 `?m.392` 或 `?u.498`。
+其他元变量则由策略或{tech (key := "synthetic holes")}[合成孔洞]产生。
+这些元变量的名称不带数字部分。
+由策略产生的元变量经常表现为目标，其{tech (key := "case labels")}[分支标签]与元变量名称一致。
 
 
-::::example "Universe Level Metavariables"
-In this proof state, the universe level of `α` is unknown:
+::::example (file := "Universe Level Metavariables") "宇宙层级元变量"
+在此证明状态中，`α` 的宇宙层级未知：
 ```proofState
 ∀ (α : _) (x : α) (xs : List α), x ∈ xs → xs.length > 0 := by
   intros α x xs elem
@@ -381,9 +387,9 @@ elem : x ∈ xs
 ```
 ::::
 
-::::example "Type Metavariables"
-In this proof state, the type of list elements is unknown.
-The metavariable is repeated because the unknown type must be the same in both positions.
+::::example (file := "Type Metavariables") "类型元变量"
+在此证明状态中，列表元素的类型未知。
+该元变量重复出现，因为两个位置上的未知类型必须相同。
 ```proofState
 ∀ (x : _) (xs : List _), x ∈ xs → xs.length > 0 := by
   intros x xs elem
@@ -397,7 +403,7 @@ elem : x ∈ xs
 ::::
 
 
-::::example "Metavariables in Proofs"
+::::example (file := "Metavariables in Proofs") "证明中的元变量"
 
 :::tacticExample
 
@@ -407,14 +413,14 @@ elem : x ∈ xs
   intros i j k h1 h2
 ```
 
-In this proof state,
+在此证明状态中，
 ```pre
 i j k : Nat
 h1 : i < j
 h2 : j < k
 ⊢ i < k
 ```
-applying the tactic {tacticStep}`apply Nat.lt_trans` results in the following proof state, in which the middle value of the transitivity step `?m` is unknown:
+应用策略 {tacticStep}`apply Nat.lt_trans` 后得到如下证明状态，其中传递步骤的中间值 `?m` 未知：
 ```post
 case h₁
 i j k : Nat
@@ -437,7 +443,7 @@ h2 : j < k
 :::
 ::::
 
-::::example "Explicitly-Created Metavariables"
+::::example (file := "Explicitly-Created Metavariables") "显式创建的元变量"
 :::tacticExample
 {goal -show}`∀ (i j k  : Nat), i < j → j < k → i < k`
 
@@ -445,15 +451,15 @@ h2 : j < k
   intros i j k h1 h2
 ```
 
-Explicit named holes are represented by metavariables, and additionally give rise to proof goals.
-In this proof state,
+显式具名孔洞由元变量表示，并且还会产生证明目标。
+在此证明状态中，
 ```pre
 i j k : Nat
 h1 : i < j
 h2 : j < k
 ⊢ i < k
 ```
-applying the tactic {tacticStep}`apply @Nat.lt_trans i ?middle k ?p1 ?p2` results in the following proof state, in which the middle value of the transitivity step `?middle` is unknown and goals have been created for each of the named holes in the term:
+应用策略 {tacticStep}`apply @Nat.lt_trans i ?middle k ?p1 ?p2` 后得到如下证明状态，其中传递步骤的中间值 `?middle` 未知，并为项中的每个具名孔洞创建了目标：
 ```post
 case middle
 i j k : Nat
@@ -476,53 +482,56 @@ h2 : j < k
 :::
 ::::
 
-The display of metavariable numbers can be disabled using the {option}`pp.mvars`.
-This can be useful when using features such as {keywordOf Lean.guardMsgsCmd}`#guard_msgs` that match Lean's output against a desired string, which is very useful when writing tests for custom tactics.
+可以使用选项 {option}`pp.mvars` 禁用元变量编号的显示。
+使用 {keywordOf Lean.guardMsgsCmd}`#guard_msgs` 这类将 Lean 输出与预期字符串匹配的功能时，这一点很有用；这类功能对于编写自定义策略测试尤为有用。
 
-{optionDocs pp.mvars}
+{zhOptionDocs pp.mvars ZhDoc.Tactics.Option.pp.mvars}
 
 ::::draft
 :::planned 68
-Demonstrate and explain diff labels that show the difference between the steps of a proof state.
+演示并解释用于显示证明状态各步骤差异的差异标签。
 :::
 ::::
 
-# The Tactic Language
+# 策略语言
 %%%
 tag := "tactic-language"
+file := "The-Tactic-Language"
 %%%
 
-A tactic script consists of a sequence of tactics, separated either by semicolons or newlines.
-When separated by newlines, tactics must be indented to the same level.
-Explicit curly braces and semicolons may be used instead of indentation.
-Tactic sequences may be grouped by parentheses.
-This allows a sequence of tactics to be used in a position where a single tactic would otherwise be grammatically expected.
+策略脚本由一列策略组成，各策略之间用分号或换行分隔。
+使用换行分隔时，各策略必须具有相同的缩进层级。
+可以用显式的花括号和分号代替缩进。
+策略序列可以用圆括号分组。
+这样便可在语法上原本只接受单个策略的位置使用一列策略。
 
-Generally, execution proceeds from top to bottom, with each tactic running in the proof state left behind by the prior tactic.
-The tactic language contains a number of control structures that can modify this flow.
+通常，执行从上到下进行，每个策略都在前一策略留下的证明状态中运行。
+策略语言包含多种可以修改这一流程的控制结构。
 
-Each tactic is a syntax extension in the `tactic` category.
-This means that tactics are free to define their own concrete syntax and parsing rules.
-However, with a few exceptions, the majority of tactics can be identified by a leading keyword; the exceptions are typically frequently-used built-in control structures such as {tactic}`<;>`.
+每个策略都是 `tactic` 类别中的语法扩展。
+这意味着策略可以自由定义自己的具体语法和解析规则。
+不过，除少数例外，大多数策略都可以通过开头的关键字识别；例外通常是 {tactic}`<;>` 这类常用的内置控制结构。
 
-## Control Structures
+## 控制结构
 %%%
 tag := "tactic-language-control"
+file := "Control Structures"
 %%%
 
-Strictly speaking, there is no fundamental distinction between control structures and other tactics.
-Any tactic is free to take others as arguments and arrange for their execution in any context that it sees fit.
-Even if a distinction is arbitrary, however, it can still be useful.
-The tactics in this section are those that resemble traditional control structures from programming, or those that _only_ recombine other tactics rather than making progress themselves.
+严格来说，控制结构与其他策略之间没有根本区别。
+任何策略都可以自由地接受其他策略作为参数，并安排它们在其认为合适的任意上下文中执行。
+不过，即使这种区分是人为的，它仍然可能有用。
+本节中的策略要么类似于编程中的传统控制结构，要么_仅仅_重新组合其他策略而自身不推进证明。
 
-### Success and Failure
+### 成功与失败
 %%%
 tag := "tactic-language-success-failure"
+file := "Success and Failure"
 %%%
 
-When run in a proof state, every tactic either succeeds or fails.
-Tactic failure is akin to exceptions: failures typically “bubble up” until handled.
-Unlike exceptions, there is no operator to distinguish between reasons for failure; {tactic}`first` simply takes the first branch that succeeds.
+在证明状态中运行时，每个策略要么成功，要么失败。
+策略失败类似于异常：失败通常会不断“向上冒泡”，直至被处理。
+与异常不同，没有运算符可以区分失败原因；{tactic}`first` 只是采用第一个成功的分支。
 
 ::: tactic "fail"
 :::
@@ -537,23 +546,24 @@ Unlike exceptions, there is no operator to distinguish between reasons for failu
 :::
 
 
-### Branching
+### 分支
 %%%
 tag := "tactic-language-branching"
+file := "Branching"
 %%%
 
-Tactic proofs may use pattern matching and conditionals.
-However, their meaning is not quite the same as it is in terms.
-While terms are expected to be executed once the values of their variables are known, proofs are executed with their variables left abstract and should consider _all_ cases simultaneously.
-Thus, when {keyword}`if` and {keyword}`match` are used in tactics, their meaning is reasoning by cases rather than selection of a concrete branch.
-All of their branches are executed, and the condition or pattern match is used to refine the main goal with more information in each branch, rather than to select a single branch.
+策略证明可以使用模式匹配和条件表达式。
+不过，它们的含义与在项中并不完全相同。
+项应在变量值已知后执行；而证明执行时变量仍保持抽象，因此应同时考虑_所有_情况。
+因此，在策略中使用 {keyword}`if` 和 {keyword}`match` 时，它们表示分类推理，而不是选择某个具体分支。
+它们的所有分支都会执行；条件或模式匹配用于在每个分支中以更多信息精化主目标，而不是选出单个分支。
 
 :::tactic "if"
 
 :::
 
-:::example "Reasoning by cases with `if`"
-In each branch of the {keywordOf Lean.Parser.Tactic.tacIfThenElse}`if`, an assumption is added that reflects whether `n = 0`.
+:::example (file := "Reasoning by cases with if") "使用 `if` 分类推理"
+在 {keywordOf Lean.Parser.Tactic.tacIfThenElse}`if` 的每个分支中，都会加入一个反映 `n = 0` 是否成立的假设。
 
 ```lean
 example (n : Nat) : if n = 0 then n < 1 else n > 0 := by
@@ -567,13 +577,13 @@ example (n : Nat) : if n = 0 then n < 1 else n > 0 := by
 
 :::tactic Lean.Parser.Tactic.match (show := "match")
 
-When pattern matching, instances of the {tech (key := "match discriminant")}[discriminant] in the goal are replaced with the patterns that match them in each branch.
-Each branch must then prove the refined goal.
-Compared to the `cases` tactic, using `match` can allow a greater degree of flexibility in the cases analysis being performed, but the requirement that each branch solve its goal completely makes it more difficult to incorporate into larger automation scripts.
+进行模式匹配时，目标中{tech (key := "match discriminant")}[判别项]的各个实例会在每个分支中替换为与之匹配的模式。
+随后每个分支都必须证明精化后的目标。
+与 `cases` 策略相比，使用 `match` 可以让分类分析更加灵活；但每个分支都必须彻底解决其目标，因此更难将其纳入较大的自动化脚本。
 :::
 
-:::example "Reasoning by cases with `match`"
-In each branch of the {keywordOf Lean.Parser.Tactic.match}`match`, the discriminant `n` has been replaced by either `0` or `k + 1`.
+:::example (file := "Reasoning by cases with match") "使用 `match` 分类推理"
+在 {keywordOf Lean.Parser.Tactic.match}`match` 的每个分支中，判别项 `n` 都被替换为 `0` 或 `k + 1`。
 ```lean
 example (n : Nat) : if n = 0 then n < 1 else n > 0 := by
   match n with
@@ -584,14 +594,15 @@ example (n : Nat) : if n = 0 then n < 1 else n > 0 := by
 ```
 :::
 
-### Goal Selection
+### 目标选择
 %%%
 tag := "tactic-language-goal-selection"
+file := "Goal Selection"
 %%%
 
 
-Most tactics affect the {tech}[main goal].
-Goal selection tactics provide a way to treat a different goal as the main one, rearranging the sequence of goals in the proof state.
+大多数策略会影响{tech (key := "main goal")}[主目标]。
+目标选择策略提供了将其他目标视作主目标的方法，会重新排列证明状态中的目标序列。
 
 
 :::tactic "case"
@@ -607,21 +618,22 @@ Goal selection tactics provide a way to treat a different goal as the main one, 
 :::tactic "rotate_right"
 :::
 
-#### Sequencing
+#### 顺序执行
 %%%
 tag := "tactic-language-sequencing"
+file := "Sequencing"
 %%%
 
-In addition to running tactics one after the other, each being used to solve the main goal, the tactic language supports sequencing tactics according to the way in which goals are produced.
-The {tactic}`<;>` tactic combinator allows a tactic to be applied to _every_ {tech}[subgoal] produced by some other tactic.
-If no new goals are produced, then the second tactic is not run.
+除了依次运行策略、让每个策略解决主目标之外，策略语言还支持根据目标的产生方式来顺序执行策略。
+策略组合子 {tactic}`<;>` 可以将某个策略应用到另一策略产生的_每个_{tech (key := "subgoal")}[子目标]。
+如果没有产生新目标，就不会运行第二个策略。
 
 :::tactic "<;>"
 
-If the tactic fails on any of the {tech}[subgoals], then the whole {tactic}`<;>` tactic fails.
+如果该策略在任一{tech (key := "subgoals")}[子目标]上失败，整个 {tactic}`<;>` 策略就会失败。
 :::
 
-::::example "Subgoal Sequencing"
+::::example (file := "Subgoal Sequencing") "子目标顺序执行"
 :::tacticExample
 
 ```setup
@@ -631,13 +643,13 @@ If the tactic fails on any of the {tech}[subgoals], then the whole {tactic}`<;>`
 
 {goal -show}`∀x, x = 1 ∨ x = 2 → x < 3`
 
-In this proof state:
+在此证明状态中：
 ```pre
 x : Nat
 h : x = 1 ∨ x = 2
 ⊢ x < 3
 ```
-the tactic {tacticStep}`cases h` yields the following two goals:
+策略 {tacticStep}`cases h` 会产生以下两个目标：
 ```post
 case inl
 x : Nat
@@ -665,7 +677,7 @@ h : x = 1 ∨ x = 2
 ⊢ x < 3
 ```
 
-Running {tacticStep}`cases h ; simp [*]` causes {tactic}`simp` to solve the first goal, leaving the second behind:
+运行 {tacticStep}`cases h ; simp [*]` 后，{tactic}`simp` 会解决第一个目标，留下第二个目标：
 ```post
 case inr
 x : Nat
@@ -689,7 +701,7 @@ h : x = 1 ∨ x = 2
 ⊢ x < 3
 ```
 
-Replacing the `;` with {tactic}`<;>` and running {tacticStep}`cases h <;> simp [*]` solves *both* of the new goals with {tactic}`simp`:
+将 `;` 替换为 {tactic}`<;>` 并运行 {tacticStep}`cases h <;> simp [*]`，会用 {tactic}`simp` 解决新产生的_两个_目标：
 
 ```post
 
@@ -699,13 +711,14 @@ Replacing the `;` with {tactic}`<;>` and running {tacticStep}`cases h <;> simp [
 
 ::::
 
-#### Working on Multiple Goals
+#### 处理多个目标
 %%%
 tag := "tactic-language-multiple-goals"
+file := "Working on Multiple Goals"
 %%%
 
-The tactics {tactic}`all_goals` and {tactic}`any_goals` allow a tactic to be applied to every goal in the proof state.
-The difference between them is that if the tactic fails for in any of the goals, {tactic}`all_goals` itself fails, while {tactic}`any_goals` fails only if the tactic fails in all of the goals.
+策略 {tactic}`all_goals` 和 {tactic}`any_goals` 允许将一个策略应用到证明状态中的每个目标。
+两者的区别在于：如果策略在任一目标上失败，{tactic}`all_goals` 自身就会失败；而只有策略在所有目标上都失败时，{tactic}`any_goals` 才会失败。
 
 :::tactic "all_goals"
 :::
@@ -714,18 +727,19 @@ The difference between them is that if the tactic fails for in any of the goals,
 :::
 
 
-### Focusing
+### 聚焦
 %%%
 tag := "tactic-language-focusing"
+file := "Focusing"
 %%%
 
-Focusing tactics remove some subset of the proof goals (typically leaving only the main goal) from the consideration of some further tactics.
-In addition to the tactics described here, the {tactic}`case` and {tactic}`case'` tactics focus on the selected goal.
+聚焦策略会让后续策略不再考虑证明目标的某个子集（通常只留下主目标）。
+除这里介绍的策略外，{tactic}`case` 和 {tactic}`case'` 策略也会聚焦于所选目标。
 
 :::tactic Lean.cdot (show := "·")
 
-It is generally considered good Lean style to use bullets whenever a tactic line results in more than one new subgoal.
-This makes it easier to read and maintain proofs, because the connections between steps of reasoning are more clear and any change in the number of subgoals while editing the proof will have a localized effect.
+通常认为，只要一行策略产生了多个新子目标，使用项目符号就是良好的 Lean 风格。
+这样证明更易阅读和维护，因为推理步骤之间的联系更加清晰，而且编辑证明时子目标数量的任何变化都只会产生局部影响。
 :::
 
 :::tactic "next"
@@ -735,9 +749,10 @@ This makes it easier to read and maintain proofs, because the connections betwee
 :::tactic "focus"
 :::
 
-### Repetition and Iteration
+### 重复与迭代
 %%%
 tag := "tactic-language-iteration"
+file := "Repetition and Iteration"
 %%%
 
 :::tactic "iterate"
@@ -753,43 +768,44 @@ tag := "tactic-language-iteration"
 :::
 
 
-## Names and Hygiene
+## 名称与卫生性
 %%%
 tag := "tactic-language-hygiene"
+file := "Names and Hygiene"
 %%%
 
-Behind the scenes, tactics generate proof terms.
-These proof terms exist in a local context, because assumptions in proof states correspond to local binders in terms.
-Uses of assumptions correspond to variable references.
-It is very important that the naming of assumptions be predictable; otherwise, small changes to the internal implementation of a tactic could either lead to variable capture or to a broken reference if they cause different names to be selected.
+在幕后，策略会生成证明项。
+这些证明项存在于局部上下文中，因为证明状态中的假设对应项中的局部绑定器。
+使用假设对应于引用变量。
+假设的命名必须可预测，这一点非常重要；否则，策略内部实现的微小变更一旦导致选中不同的名称，就可能引发变量捕获或引用失效。
 
-Lean's tactic language is _hygienic_. {index (subterm := "in tactics")}[hygiene]
-This means that the tactic language respects lexical scope: names that occur in a tactic refer to the enclosing binding in the source code, rather than being determined by the generated code, and the tactic framework is responsible for maintaining this property.
-Variable references in tactic scripts refer either to names that were in scope at the beginning of the script or to bindings that were explicitly introduced as part of the tactics, rather than to the names chosen for use in the proof term behind the scenes.
+Lean 的策略语言具有_卫生性_。{index (subterm := "in tactics")}[hygiene]
+这意味着策略语言遵守词法作用域：策略中出现的名称引用源代码中包围它的绑定，而不是由生成的代码决定；策略框架负责维持这一性质。
+策略脚本中的变量引用，要么指向脚本开始时就在作用域内的名称，要么指向策略显式引入的绑定，而不是幕后为证明项选用的名称。
 
-A consequence of hygienic tactics is that the only way to refer to an assumption is to explicitly name it.
-Tactics cannot assign assumption names themselves, but must rather accept names from users; users are correspondingly obligated to provide names for assumptions that they wish to refer to.
-When an assumption does not have a user-provided name, it is shown in the proof state with a dagger (`'†', DAGGER	0x2020`).
-The dagger indicates that the name is _inaccessible_ and cannot be explicitly referred to.
+策略具有卫生性的一个结果是：引用假设的唯一方式是显式为其命名。
+策略不能自行分配假设名称，而必须接受用户提供的名称；相应地，用户若想引用某个假设，就必须为其提供名称。
+当假设没有用户提供的名称时，它在证明状态中显示时会带有剑标（`'†', DAGGER\t0x2020`）。
+剑标表示该名称_不可访问_，无法被显式引用。
 
-Hygiene can be disabled by setting the option {option}`tactic.hygienic` to `false`.
-This is not recommended, as many tactics rely on the hygiene system to prevent capture and thus do not incur the overhead of careful manual name selection.
+将选项 {option}`tactic.hygienic` 设为 `false` 可以禁用卫生性。
+不建议这样做，因为许多策略依赖卫生系统来防止捕获，因而无需付出仔细手动选择名称的开销。
 
-{optionDocs tactic.hygienic}
+{zhOptionDocs tactic.hygienic ZhDoc.Tactics.Option.tactic.hygienic}
 
-::::example "Tactic hygiene: inaccessible assumptions"
+::::example (file := "Tactic hygiene: inaccessible assumptions") "策略卫生性：不可访问的假设"
 :::tacticExample
 
 ```setup
 skip
 ```
-When proving that {goal}`∀ (n : Nat), 0 + n = n`, the initial proof state is:
+证明 {goal}`∀ (n : Nat), 0 + n = n` 时，初始证明状态为：
 
 ```pre
 ⊢ ∀ (n : Nat), 0 + n = n
 ```
 
-The tactic {tacticStep}`intro` results in a proof state with an inaccessible assumption:
+策略 {tacticStep}`intro` 会产生一个带有不可访问假设的证明状态：
 
 ```post
 n✝ : Nat
@@ -798,19 +814,19 @@ n✝ : Nat
 :::
 ::::
 
-::::example "Tactic hygiene: accessible assumptions"
+::::example (file := "Tactic hygiene: accessible assumptions") "策略卫生性：可访问的假设"
 :::tacticExample
 
 ```setup
 skip
 ```
-When proving that {goal}`∀ (n : Nat), 0 + n = n`, the initial proof state is:
+证明 {goal}`∀ (n : Nat), 0 + n = n` 时，初始证明状态为：
 
 ```pre
 ⊢ ∀ (n : Nat), 0 + n = n
 ```
 
-The tactic {tacticStep}`intro n`, with the explicit name `n`, results in a proof state with an accessibly-named assumption:
+策略 {tacticStep}`intro n` 显式提供名称 `n`，会产生一个假设名称可访问的证明状态：
 
 ```post
 n : Nat
@@ -819,25 +835,27 @@ n : Nat
 :::
 ::::
 
-### Accessing Assumptions
+### 访问假设
 %%%
 tag := "tactic-language-assumptions"
+file := "Accessing Assumptions"
 %%%
 
-Many tactics provide a means of specifying names for the assumptions that they introduce.
-For example, {tactic}`intro` and {tactic}`intros` take assumption names as arguments, and {tactic}`induction`'s {keywordOf Lean.Parser.Tactic.induction}`with`-form allows simultaneous case selection, assumption naming, and focusing.
-When an assumption does not have a name, one can be assigned using {tactic}`next`, {tactic}`case`, or {tactic}`rename_i`.
+许多策略提供了为其引入的假设指定名称的方法。
+{tactic}`intro` 和 {tactic}`intros` 例如会接受假设名称作为参数；{tactic}`induction` 的 {keywordOf Lean.Parser.Tactic.induction}`with` 形式则可以同时选择分支、命名假设并聚焦。
+假设没有名称时，可以使用 {tactic}`next`、{tactic}`case` 或 {tactic}`rename_i` 为其分配名称。
 
 :::tactic "rename_i"
 :::
 
-## Assumption Management
+## 假设管理
 %%%
 tag := "tactic-language-assumption-management"
+file := "Assumption Management"
 %%%
 
-Larger proofs can benefit from management of proof states, removing irrelevant assumptions and making their names easier to understand.
-Along with these operators, {tactic}`rename_i` allows inaccessible assumptions to be renamed, and {tactic}`intro`, {tactic}`intros` and {tactic}`rintro` convert goals that are implications or universal quantification into goals with additional assumptions.
+较大的证明可受益于证明状态管理：移除无关假设，并使假设名称更易理解。
+除这些运算符外，{tactic}`rename_i` 可以重命名不可访问的假设；{tactic}`intro`、{tactic}`intros` 和 {tactic}`rintro` 则把蕴含或全称量化目标转换为带有额外假设的目标。
 
 :::tactic "rename"
 :::
@@ -849,13 +867,14 @@ Along with these operators, {tactic}`rename_i` allows inaccessible assumptions t
 :::
 
 
-## Local Definitions and Proofs
+## 局部定义与证明
 %%%
 tag := "tactic-language-local-defs"
+file := "Local Definitions and Proofs"
 %%%
 
-{tactic}`have` and {tactic}`let` both create local assumptions.
-Generally speaking, {tactic}`have` should be used when proving an intermediate lemma; {tactic}`let` should be reserved for local definitions.
+{tactic}`have` 和 {tactic}`let` 都会创建局部假设。
+一般来说，证明中间引理时应使用 {tactic}`have`；{tactic}`let` 应留给局部定义。
 
 :::tactic Lean.Parser.Tactic.tacticHave__
 :::
@@ -875,25 +894,26 @@ Generally speaking, {tactic}`have` should be used when proving an intermediate l
 :::tactic Lean.Parser.Tactic.tacticLet'__
 :::
 
-## Configuration
+## 配置
 %%%
 tag := "tactic-config"
+file := "Configuration"
 %%%
 
-Many tactics are configurable.{index (subterm := "of tactics")}[configuration]
-By convention, tactics share a configuration syntax, described using {syntaxKind}`optConfig`.
-The specific options available to each tactic are described in the tactic's documentation.
+许多策略都可配置。{index (subterm := "of tactics")}[configuration]
+按照约定，各策略共享一种配置语法，以 {syntaxKind}`optConfig` 描述。
+每个策略可用的具体选项会在该策略的文档中说明。
 
-:::syntax Lean.Parser.Tactic.optConfig -open (title := "Tactic Configuration")
-A tactic configuration consists of zero or more {deftech}[configuration items]:
+:::syntax Lean.Parser.Tactic.optConfig -open (title := "策略配置")
+策略配置由零个或多个{deftech (key := "configuration items")}[配置项]组成：
 ```grammar
 $x:configItem*
 ```
 :::
 
-:::syntax Lean.Parser.Tactic.configItem -open (title := "Tactic Configuration Items")
-Each configuration item has a name that corresponds to an underlying tactic option.
-Boolean options may be enabled or disabled using prefix `+` and `-`:
+:::syntax Lean.Parser.Tactic.configItem -open (title := "策略配置项")
+每个配置项都有一个名称，对应底层的策略选项。
+布尔选项可以使用前缀 `+` 和 `-` 启用或禁用：
 ```grammar
 +$x
 ```
@@ -901,25 +921,26 @@ Boolean options may be enabled or disabled using prefix `+` and `-`:
 -$x
 ```
 
-Options may be assigned specific values using a syntax similar to that for named function arguments:
+可以使用类似于具名函数参数的语法，为选项赋予具体值：
 ```grammar
 ($x:ident := $t)
 ```
 
-Finally, the name `config` is reserved; it is used to pass an entire set of options as a data structure.
-The specific type expected depends on the tactic.
+最后，名称 `config` 是保留名称，用于将整组选项作为数据结构传递。
+所需的具体类型取决于策略。
 ```grammar
 (config := $t)
 ```
 
 :::
 
-## Namespace and Option Management
+## 命名空间与选项管理
 %%%
 tag := "tactic-language-namespaces-options"
+file := "Namespace and Option Management"
 %%%
 
-Namespaces and options can be adjusted in tactic scripts using the same syntax as in terms.
+在策略脚本中，可以使用与项中相同的语法调整命名空间和选项。
 
 :::tactic Lean.Parser.Tactic.set_option (show := "set_option")
 :::
@@ -927,13 +948,14 @@ Namespaces and options can be adjusted in tactic scripts using the same syntax a
 :::tactic Lean.Parser.Tactic.open (show := "open")
 :::
 
-### Controlling Unfolding
+### 控制展开
 %%%
 tag := "tactic-language-unfolding"
+file := "Controlling Unfolding"
 %%%
 
-By default, only definitions marked reducible are unfolded, except when checking definitional equality.
-These operators allow this default to be adjusted for some part of a tactic script.
+默认情况下，除检查定义相等性时外，只有标记为可归约的定义才会展开。
+这些运算符可以在策略脚本的某一部分调整此默认行为。
 
 :::tactic Lean.Parser.Tactic.withReducibleAndInstances
 :::
@@ -945,37 +967,39 @@ These operators allow this default to be adjusted for some part of a tactic scri
 :::
 
 
-# Options
+# 选项
 %%%
 tag := "tactic-language-options"
+file := "Options"
 %%%
 
-These options affect the meaning of tactics.
+这些选项会影响策略的含义。
 
-{optionDocs tactic.customEliminators}
+{zhOptionDocs tactic.customEliminators ZhDoc.Tactics.Option.tactic.customEliminators}
 
-{optionDocs tactic.skipAssignedInstances}
+{zhOptionDocs tactic.skipAssignedInstances ZhDoc.Tactics.Option.tactic.skipAssignedInstances}
 
-{optionDocs tactic.simp.trace}
+{zhOptionDocs tactic.simp.trace ZhDoc.Tactics.Option.tactic.simp.trace}
 
 
 {include 0 Manual.Tactics.Reference}
 
 {include 0 Manual.Tactics.Conv}
 
-# Naming Bound Variables
+# 命名绑定变量
 %%%
 tag := "bound-variable-name-hints"
+file := "Naming-Bound-Variables"
 %%%
 
-When the {ref "the-simplifier"}[simplifier] or the {tactic}`rw` tactic introduce new binding forms such as function parameters, they select a name for the bound variable based on the one in the statement of the rewrite rule being applied.
-This name is made unique if necessary.
-In some situations, such as {ref "well-founded-preprocessing"}[preprocessing definitions for termination proofs that use well-founded recursion], the names that appear in termination proof obligations should be the corresponding names written in the original function definition.
+当{ref "the-simplifier"}[简化器]或 {tactic}`rw` 策略引入函数参数等新的绑定形式时，会根据所应用重写规则的陈述中的名称，为绑定变量选择名称。
+必要时会使该名称保持唯一。
+在某些情况下，例如{ref "well-founded-preprocessing"}[为使用良基递归的终止性证明预处理定义]时，终止性证明义务中出现的名称应当是原函数定义中写下的对应名称。
 
-The {name}`binderNameHint` {tech}[gadget] can be used to indicate that a bound variable should be named according to the variables bound in some other term.
-By convention, the term {lean}`()` is used to indicate that a name should _not_ be taken from the original definition.
+{name}`binderNameHint` {tech (key := "gadget")}[小工具]可用于指示：应根据其他某个项中绑定的变量来命名一个绑定变量。
+按照约定，项 {lean}`()` 用于表示名称_不应_取自原定义。
 
-{docstring binderNameHint}
+{zhdocstring binderNameHint ZhDoc.Tactics.binderNameHint}
 
 
 {include 0 Manual.Tactics.Custom}

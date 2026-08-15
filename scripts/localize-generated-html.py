@@ -50,9 +50,23 @@ TARGET_PAGES = (
     "Terms/Quotation-and-Antiquotation/index.html",
     "Terms/do--Notation/index.html",
     "Terms/Proofs/index.html",
+    "Tactic-Proofs/index.html",
+    "Tactic-Proofs/Reading-Proof-States/index.html",
+    "Tactic-Proofs/Running-Tactics/index.html",
+    "Tactic-Proofs/Naming-Bound-Variables/index.html",
+    "Tactic-Proofs/The-Tactic-Language/index.html",
+    "Tactic-Proofs/Options/index.html",
+    "Tactic-Proofs/Tactic-Reference/index.html",
+    "Tactic-Proofs/Targeted-Rewriting-with--conv/index.html",
+    "Tactic-Proofs/Custom-Tactics/index.html",
 )
 
 HOVER_ATTR_RE = re.compile(r'data-verso-hover="([^"]+)"')
+VERSO_LINKS_RE = re.compile(r'data-verso-links="([^"]+)"')
+NAMEDOCS_TEXT_RE = re.compile(
+    r'(<div class="namedocs"[^>]*>.*?<div class="text">)(.*?)(</div>\s*</div>)',
+    re.DOTALL,
+)
 DOCSTRING_RE = re.compile(
     r'(?:<span class="sep"></span>)?<code class="docstring">.*?</code>', re.DOTALL
 )
@@ -61,8 +75,16 @@ TITLE_REPLACEMENTS = (
     (re.compile(r'title="Definition of ([^"]*)"'), r'title="定义：\1"'),
     (re.compile(r'title="Permalink"'), 'title="永久链接"'),
 )
+GENERATED_UI_REPLACEMENTS = (
+    ('<span class="label">tactic</span>', '<span class="label">策略</span>'),
+    ('<span class="label">conv tactic</span>', '<span class="label">conv 策略</span>'),
+    ('title="文档：tactic"', 'title="文档：策略"'),
+    ('title="文档：conv tactic"', 'title="文档：conv 策略"'),
+    ('title="文档：syntax"', 'title="文档：语法"'),
+)
 FORBIDDEN_TITLES = ("Documentation for ", "Definition of ", "Permalink")
 NO_ADDITIONAL_DOCS = "<span>无附加文档。</span>"
+NAMEDOCS_TRANSLATIONS_PATH = Path(__file__).with_name("tactic-namedocs-zh.json")
 VOID_TAGS = {
     "area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta",
     "param", "source", "track", "wbr",
@@ -116,6 +138,79 @@ class NamedDocsParser(HTMLParser):
             self.text.append(data)
 
 
+def normalized_visible_text(fragment: str) -> str:
+    return " ".join(html.unescape(re.sub(r"<[^>]+>", " ", fragment)).split())
+
+
+def load_namedocs_translations() -> dict[str, str]:
+    if not NAMEDOCS_TRANSLATIONS_PATH.is_file():
+        return {}
+    records = json.loads(NAMEDOCS_TRANSLATIONS_PATH.read_text(encoding="utf-8"))
+    translations: dict[str, str] = {}
+    for record in records:
+        source = record["source"]
+        translation = record["translation"]
+        if source in translations and translations[source] != translation:
+            raise SystemExit(f"conflicting generated-doc translation: {source[:80]!r}")
+        translations[source] = translation
+    return translations
+
+
+def localize_link_metadata(text: str) -> str:
+    replacements = {
+        "Documentation for tactic": "策略文档",
+        "Documentation for syntax": "语法文档",
+    }
+
+    def replace(match: re.Match[str]) -> str:
+        links = json.loads(html.unescape(match.group(1)))
+        for link in links:
+            link["long"] = replacements.get(link.get("long"), link.get("long"))
+        encoded = html.escape(
+            json.dumps(links, ensure_ascii=False, separators=(",", ":")), quote=True
+        )
+        return f'data-verso-links="{encoded}"'
+
+    return VERSO_LINKS_RE.sub(replace, text)
+
+
+def localize_tactic_namedocs(text: str, translations: dict[str, str]) -> str:
+    missing: list[str] = []
+
+    def replace(match: re.Match[str]) -> str:
+        source = normalized_visible_text(match.group(2))
+        translation = translations.get(source)
+        if translation is None and (
+            not re.search(r"[A-Za-z]{3}", source)
+            or re.search(r"[\u3400-\u9fff]", source)
+        ):
+            return match.group(0)
+        if translation is None:
+            missing.append(source)
+            return match.group(0)
+        anchors = "".join(
+            f'<span id="{html.escape(anchor, quote=True)}"></span>'
+            for anchor in dict.fromkeys(re.findall(r'\bid="([^"]+)"', match.group(2)))
+        )
+        body = anchors + f"\n                  <p>{html.escape(translation)}</p>\n                  "
+        return match.group(1) + body + match.group(3)
+
+    localized = NAMEDOCS_TEXT_RE.sub(replace, text)
+    if missing:
+        raise SystemExit(
+            f"{len(missing)} generated tactic docstrings lack translations; "
+            f"first: {missing[0][:120]!r}"
+        )
+    return localized
+
+
+def strip_english_inline_docstrings(text: str) -> str:
+    def replace(match: re.Match[str]) -> str:
+        return match.group(0) if re.search(r"[\u3400-\u9fff]", match.group(0)) else ""
+
+    return DOCSTRING_RE.sub(replace, text)
+
+
 def localize_generated_html(root: Path) -> tuple[int, int, int, int]:
     docs_path = root / "-verso-docs.json"
     if not docs_path.is_file():
@@ -123,6 +218,7 @@ def localize_generated_html(root: Path) -> tuple[int, int, int, int]:
     docs: dict[str, str] = json.loads(docs_path.read_text(encoding="utf-8"))
 
     page_text: dict[Path, str] = {}
+    namedocs_translations = load_namedocs_translations()
     title_count = 0
     hover_ids: set[str] = set()
     translated_hovers: dict[str, str] = {}
@@ -131,12 +227,19 @@ def localize_generated_html(root: Path) -> tuple[int, int, int, int]:
         if not path.is_file():
             raise SystemExit(f"missing translated page: {path}")
         text = path.read_text(encoding="utf-8")
+        text = text.replace(">Table of Contents<", ">目录<")
+        text = localize_link_metadata(text)
+        if rel.startswith("Tactic-Proofs/"):
+            text = localize_tactic_namedocs(text, namedocs_translations)
         parser = NamedDocsParser()
         parser.feed(text)
         translated_hovers.update(parser.translations)
+        text = strip_english_inline_docstrings(text)
         for pattern, replacement in TITLE_REPLACEMENTS:
             text, count = pattern.subn(replacement, text)
             title_count += count
+        for source, replacement in GENERATED_UI_REPLACEMENTS:
+            text = text.replace(source, replacement)
         page_text[path] = text
         hover_ids.update(HOVER_ATTR_RE.findall(text))
 
@@ -152,6 +255,8 @@ def localize_generated_html(root: Path) -> tuple[int, int, int, int]:
                 docs[hover_id] = NO_ADDITIONAL_DOCS
             continue
         translated = translated_hovers.get(hover_id)
+        if translated and not re.search(r"[\u3400-\u9fff]", translated):
+            translated = None
         replacement = ""
         if translated:
             replacement = (
@@ -159,7 +264,7 @@ def localize_generated_html(root: Path) -> tuple[int, int, int, int]:
                 + html.escape(translated)
                 + "</code>"
             )
-        stripped, count = DOCSTRING_RE.subn(replacement, payload)
+        stripped, count = DOCSTRING_RE.subn(lambda _match: replacement, payload)
         if count == 0:
             continue
         if not stripped.strip():

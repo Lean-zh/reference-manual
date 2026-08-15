@@ -18,26 +18,27 @@ set_option pp.rawOnError true
 
 set_option linter.unusedVariables false
 
-#doc (Manual) "Targeted Rewriting with {tactic}`conv`" =>
+#doc (Manual) "使用 {tactic}`conv` 定向重写" =>
 %%%
+file := "Targeted-Rewriting-with--conv"
 tag := "conv"
 %%%
 
-The {tactic}`conv`, or conversion, tactic allows targeted rewriting within a goal.
-The argument to {tactic}`conv` is written in a separate language that interoperates with the main tactic language; it features commands to navigate to specific subterms within the goal along with commands that allow these subterms to be rewritten.
-{tactic}`conv` is useful when rewrites should only be applied in part of a goal (e.g. only on one side of an equality), rather than across the board, or when rewrites should be applied underneath a binder that prevents tactics like {tactic}`rw` from accessing the term.
+{tactic}`conv`（即转换）策略允许在目标内进行定向重写。
+{tactic}`conv` 的参数以一种与主策略语言互操作的独立语言编写；它既提供在目标内导航到特定子项的命令，也提供重写这些子项的命令。
+当重写只应应用于目标的一部分（例如只应用于等式的一侧）而非全局应用时，或者重写应在某个绑定器之下进行、因而 {tactic}`rw` 等策略无法访问该项时，{tactic}`conv` 很有用。
 
-The conversion tactic language is very similar to the main tactic language: it uses the same proof states, tactics work primarily on the main goal and may either fail or succeed with a sequence of new goals, and macro expansion is interleaved with tactic execution.
-Unlike the main tactic language, in which tactics are intended to eventually solve goals, the {tactic}`conv` tactic is used to _change_ a goal so that it becomes amenable to further processing in the main tactic language.
-Goals that are intended to be rewritten with {tactic}`conv` are shown with a vertical bar instead of a turnstile.
+转换策略语言与主策略语言非常相似：二者使用相同的证明状态；策略主要作用于主目标，并且可能失败，也可能成功并产生一系列新目标；宏展开与策略执行交错进行。
+主策略语言中的策略旨在最终解决目标；与之不同，{tactic}`conv` 策略用于_改变_目标，使其适合由主策略语言进一步处理。
+准备使用 {tactic}`conv` 重写的目标会以竖线而非推导符显示。
 
 :::tactic "conv"
 :::
 
-::::example "Navigation and Rewriting with {tactic}`conv`"
+::::example "使用 {tactic}`conv` 导航并重写" (file := "Navigation and Rewriting with conv")
 
-In this example, there are multiple instances of addition, and {tactic}`rw` would by default rewrite the first instance that it encounters.
-Using {tactic}`conv` to navigate to the specific subterm before rewriting leaves {tactic}`rw` no choice but to rewrite the correct term.
+在此示例中，加法出现了多次，而 {tactic}`rw` 默认会重写它遇到的第一个实例。
+先使用 {tactic}`conv` 导航到特定子项再进行重写，{tactic}`rw` 就只能重写正确的项。
 
 ```lean
 example (x y z : Nat) : x + (y + z) = (x + z) + y := by
@@ -50,12 +51,12 @@ example (x y z : Nat) : x + (y + z) = (x + z) + y := by
 
 ::::
 
-::::example "Rewriting Under Binders with {tactic}`conv`"
+::::example "使用 {tactic}`conv` 在绑定器下重写" (file := "Rewriting Under Binders with conv")
 
-In this example, addition occurs under binders, so {tactic}`rw` can't be used.
-However, after using {tactic}`conv` to navigate to the function body, it succeeds.
-The nested use of {tactic}`conv` causes control to return to the current position in the term after performing further conversions on one of its subterms.
-Because the goal is a reflexive equation after rewriting, {tactic}`conv` automatically closes it.
+在此示例中，加法位于绑定器之下，因此不能使用 {tactic}`rw`。
+不过，在使用 {tactic}`conv` 导航到函数体之后，重写便会成功。
+嵌套使用 {tactic}`conv` 会在对当前项的某个子项执行进一步转换之后，让控制返回该项中的当前位置。
+由于重写后的目标是自反等式，{tactic}`conv` 会自动将其关闭。
 
 ```lean
 example :
@@ -78,8 +79,9 @@ example :
 
 ::::
 
-# Control Structures
+# 控制结构
 %%%
+file := "Control Structures"
 tag := "conv-control"
 %%%
 
@@ -108,8 +110,9 @@ tag := "conv-control"
 :::conv convDone (show := "done")
 :::
 
-# Goal Selection
+# 目标选择
 %%%
+file := "Goal Selection"
 tag := "conv-goals"
 %%%
 
@@ -140,8 +143,9 @@ tag := "conv-goals"
 :::
 
 
-# Navigation
+# 导航
 %%%
+file := "Navigation"
 tag := "conv-nav"
 %%%
 
@@ -161,7 +165,7 @@ tag := "conv-nav"
 :::conv arg (show := "arg [@]i")
 :::
 
-:::syntax Lean.Parser.Tactic.Conv.enterArg (title := "Arguments to {keyword}`enter`")
+:::syntax Lean.Parser.Tactic.Conv.enterArg (title := "{keyword}`enter` 的参数")
 ```grammar
 $i:num
 ```
@@ -195,22 +199,24 @@ $x:ident
 :::conv convIntro___ (show := "intro")
 :::
 
-# Changing the Goal
+# 改变目标
 %%%
+file := "Changing the Goal"
 tag := "conv-change"
 %%%
 
-## Reduction
+## 归约
 %%%
+file := "Reduction"
 tag := "conv-reduction"
 %%%
 
 :::conv cbv (show := "cbv")
 :::
 
-:::example "The `cbv` Tactic"
-The {conv}`cbv` tactic can be used to reduce functions, including ones that are defined via {ref "well-founded-recursion"}[well-founded recursion], which are otherwise irreducible.
-Ordinarily, {name}`f` is only propositionally equal to its unfolding, so {tactic}`rfl` can't prove the equality {lean}`f 5 = 5`:
+:::example "`cbv` 策略" (file := "The cbv Tactic")
+{conv}`cbv` 策略可用于归约函数，其中包括通过 {ref "well-founded-recursion"}[良基递归]定义、在其他情况下不可归约的函数。
+通常，{name}`f` 与其展开仅命题相等，因此 {tactic}`rfl` 无法证明等式 {lean}`f 5 = 5`：
 ```lean
 def f (n : Nat) :=
   match n with
@@ -229,7 +235,7 @@ is not definitionally equal to the right-hand side
 
 ⊢ f 5 = 5
 ```
-Using {conv}`cbv` on the left-hand side of the equality, the statement can be made true:
+在等式左侧使用 {conv}`cbv`，即可使该陈述成立：
 ```lean -show
 -- The `cbv` tactic is presently experimental, and a warning is issued when it is used.
 -- This option disables the warning:
@@ -258,8 +264,9 @@ example : f 5 = 5 := by
 :::conv unfold (show := "unfold")
 :::
 
-## Simplification
+## 化简
 %%%
+file := "Simplification"
 tag := "conv-simp"
 %%%
 
@@ -272,8 +279,9 @@ tag := "conv-simp"
 :::conv simpMatch (show := "simp_match")
 :::
 
-## Rewriting
+## 重写
 %%%
+file := "Rewriting"
 tag := "conv-rw"
 %%%
 
@@ -292,8 +300,9 @@ tag := "conv-rw"
 :::conv convApply_ (show := "apply")
 :::
 
-# Nested Tactics
+# 嵌套策略
 %%%
+file := "Nested Tactics"
 tag := "conv-nested"
 %%%
 
@@ -314,8 +323,9 @@ tag := "conv-nested"
 :::
 
 
-# Debugging Utilities
+# 调试工具
 %%%
+file := "Debugging Utilities"
 tag := "conv-debug"
 %%%
 
@@ -323,8 +333,9 @@ tag := "conv-debug"
 :::
 
 
-# Other
+# 其他
 %%%
+file := "Other"
 tag := "conv-other"
 %%%
 

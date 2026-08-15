@@ -17,12 +17,13 @@ set_option pp.rawOnError true
 
 set_option linter.unusedVariables false
 
-#doc (Manual) "Simplification" =>
+#doc (Manual) "化简" =>
 %%%
 tag := "simp-tactics"
+file := "Simplification"
 %%%
 
-The simplifier is described in greater detail in {ref "the-simplifier"}[its dedicated chapter].
+专门介绍{ref "the-simplifier"}[化简器的章节]对其有更详细的说明。
 
 :::tactic "simp"
 :::
