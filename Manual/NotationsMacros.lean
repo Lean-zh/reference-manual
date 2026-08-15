@@ -32,6 +32,7 @@ set_option linter.unusedVariables false
 #doc (Manual) "记法与宏" =>
 %%%
 tag := "language-extension"
+file := "Notations-and-Macros"
 %%%
 
 不同的数学领域有各自的记法惯例，许多记法在不同领域中会以不同含义重复使用。
@@ -61,6 +62,7 @@ Lean 使用多种机制解决记法可扩展性问题，每种机制负责问题
 # 宏
 %%%
 tag := "macros"
+file := "Macros"
 %%%
 
 {deftech (key := "Macros")}_宏_是从 {name Lean.Syntax}`Syntax` 到 {name Lean.Syntax}`Syntax` 的变换，发生在{tech (key := "elaborator") -normalize}[精译]期间以及{ref "tactic-macros"}[策略执行]期间。

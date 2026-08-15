@@ -23,6 +23,7 @@ set_option linter.unusedVariables false
 #doc (Manual) "记法" =>
 %%%
 tag := "notations"
+file := "Notations"
 %%%
 
 术语 {deftech (key := "notation")}_记法_ 在 Lean 中有两种用法：它既可以指代用简洁方式写下想法这一一般概念，也可以指代一种语言特性，这种特性使得只需很少代码就能方便地实现记法。

@@ -23,6 +23,7 @@ set_option linter.unusedVariables false
 #doc (Manual) "定义新语法" =>
 %%%
 tag := "syntax-ext"
+file := "Defining-New-Syntax"
 %%%
 
 Lean 对语法的统一表示非常一般且灵活。
@@ -69,6 +70,9 @@ Lean 的解析器会产生一棵具体语法树，其类型为 {name}`Lean.Synta
 {docstring Lean.Syntax.Preresolved}
 
 # 语法节点种类
+%%%
+tag := "The-Lean-Language-Reference--Notations-and-Macros--Defining-New-Syntax--Syntax-Node-Kinds"
+%%%
 
 语法节点种类通常用来标识产生该节点的解析器。
 运算符或记法被赋予的名称（以及它们自动生成的内部名称）就会出现在这里。
@@ -85,6 +89,9 @@ Lean 的解析器会把每个关键字原子 `KW` 包装进一个单元素节点
 {docstring Lean.Syntax.setKind}
 
 # 记号与字面量种类
+%%%
+tag := "The-Lean-Language-Reference--Notations-and-Macros--Defining-New-Syntax--Token-and-Literal-Kinds"
+%%%
 
 解析器生成的基本记号都关联着若干具名种类。
 通常，单记号语法产生式由一个包含单个 {name Lean.Syntax.atom}`atom` 的 {name Lean.Syntax.node}`node` 构成；保存在节点中的种类使得这个值能够被识别。
@@ -131,6 +138,9 @@ info: Lean.Syntax.node (Lean.SourceInfo.none) `str #[Lean.Syntax.atom (Lean.Sour
 {docstring Lean.fieldIdxKind}
 
 # 内部种类
+%%%
+tag := "The-Lean-Language-Reference--Notations-and-Macros--Defining-New-Syntax--Internal-Kinds"
+%%%
 
 {docstring Lean.groupKind}
 
@@ -168,6 +178,9 @@ tag := "source-info"
 {docstring Lean.SourceInfo}
 
 # 检查语法
+%%%
+tag := "The-Lean-Language-Reference--Notations-and-Macros--Defining-New-Syntax--Inspecting-Syntax"
+%%%
 
 ```lean -show
 section Inspecting
@@ -427,6 +440,9 @@ variable {ks : SyntaxNodeKinds} {sep : String}
 
 
 # 别名
+%%%
+tag := "The-Lean-Language-Reference--Notations-and-Macros--Defining-New-Syntax--Aliases"
+%%%
 
 为常用的带类型语法形式提供了若干别名。
 这些别名使代码可以在更高的抽象层次上书写。

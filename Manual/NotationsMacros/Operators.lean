@@ -23,6 +23,7 @@ set_option linter.unusedVariables false
 #doc (Manual) "自定义运算符" =>
 %%%
 tag := "operators"
+file := "Custom-Operators"
 %%%
 
 Lean 支持自定义中缀、前缀和后缀运算符。

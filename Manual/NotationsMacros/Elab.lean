@@ -24,6 +24,7 @@ set_option linter.unusedVariables false
 
 %%%
 tag := "elaborators"
+file := "Elaborators"
 %%%
 
 :::seeAlso
@@ -88,6 +89,9 @@ tactic $_
 :::
 
 # 命令精译器
+%%%
+tag := "The-Lean-Language-Reference--Notations-and-Macros--Elaborators--Command-Elaborators"
+%%%
 
 :::::leanSection
 ```lean -show
@@ -139,6 +143,9 @@ Found 2 instances of 'interestingName'
 :::::
 
 # 项精译器
+%%%
+tag := "The-Lean-Language-Reference--Notations-and-Macros--Elaborators--Term-Elaborators"
+%%%
 
 :::::leanSection
 ```lean -show
@@ -293,5 +300,8 @@ Hint: Type class instance resolution failures can be inspected with the `set_opt
 :::::
 
 # 自定义策略
+%%%
+tag := "The-Lean-Language-Reference--Notations-and-Macros--Elaborators--Custom-Tactics"
+%%%
 
 自定义策略见 {ref "custom-tactics"}[关于策略的小节]。

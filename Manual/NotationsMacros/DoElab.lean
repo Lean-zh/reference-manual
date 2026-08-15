@@ -27,6 +27,7 @@ open Lean
 #doc (Manual) "扩展 `do` 记法" =>
 %%%
 tag := "do-elab"
+file := "Extending--do--Notation"
 %%%
 
 宏与精译器可以用来通过新命令和新项扩展 Lean。
@@ -46,6 +47,9 @@ tag := "do-elab"
 :::
 
 # 精译概览
+%%%
+tag := "The-Lean-Language-Reference--Notations-and-Macros--Extending--do--Notation--Elaboration-Overview"
+%%%
 
 {tech (key := "syntax kind")}[语法种类] `doElem` 表示单个 {tech (key := "do-elements")}[`do` 元素]。
 由这些元素构成的序列则由语法种类 {name}`doSeq` 表示，它构成了 {keywordOf Lean.Parser.Term.do}`do` 块的主体。
@@ -60,6 +64,9 @@ tag := "do-elab"
 如果某个 {keywordOf Lean.Parser.Term.do}`do` 元素仅由一个项组成，那么 Lean 解析器会把它包裹在语法种类 {name Lean.Parser.Term.doExpr}`doExpr` 中；它的精译器会调用项精译器，并确保该项具有适合当前 {keywordOf Lean.Parser.Term.do}`do` 块的正确类型。
 
 # `do` 记法中的宏
+%%%
+tag := "The-Lean-Language-Reference--Notations-and-Macros--Extending--do--Notation--Macros-in--do--Notation"
+%%%
 
 宏展开发生在 {keywordOf Lean.Parser.Term.do}`do` 元素的精译期间。
 {keywordOf Lean.Parser.Term.do}`do` 元素宏与项宏或命令宏在本质上并无区别；它们的差别只在于：它们是为 `doElem` 语法类别中的语法而定义的。
@@ -169,6 +176,9 @@ def getEven : IO { n : Nat // n % 2 = 0 ∨ n % 3 = 0} := do
 ::::
 
 ## 局限性
+%%%
+tag := "The-Lean-Language-Reference--Notations-and-Macros--Extending--do--Notation--Macros-in--do--Notation--Limitations"
+%%%
 
 :::paragraph
 当某个扩展可以实现成宏时，通常最好就这么做。
@@ -231,6 +241,9 @@ but is expected to have type
 ::::
 
 # 精译
+%%%
+tag := "The-Lean-Language-Reference--Notations-and-Macros--Extending--do--Notation--Elaboration"
+%%%
 
 
 {keywordOf Lean.Parser.Term.do}`do` 元素的精译发生在 {name Lean.Elab.Do.DoElabM}`DoElabM` 单子中。
@@ -285,6 +298,9 @@ doElem_elab
 {docstring Lean.Elab.Do.elabDoElems1 +allowMissing}
 
 ## 单子操作
+%%%
+tag := "The-Lean-Language-Reference--Notations-and-Macros--Extending--do--Notation--Elaboration--Monad-Operations"
+%%%
 
 精译框架提供了若干辅助函数，让构造当前单子及其操作的应用变得更方便也更高效。
 
@@ -297,6 +313,9 @@ doElem_elab
 {docstring Lean.Elab.Do.mkPUnitUnit}
 
 ## 续延
+%%%
+tag := "The-Lean-Language-Reference--Notations-and-Macros--Extending--do--Notation--Elaboration--Continuations"
+%%%
 
 {keywordOf Lean.Parser.Term.do}`do` 精译续延由一个等待当前元素结果的精译器，以及若干元数据（例如该结果期望具有的类型）共同组成。
 
@@ -622,6 +641,9 @@ doElem_control_info
 {docstring Lean.Elab.Do.InferControlInfo.ofLetOrReassignArrow +allowMissing}
 
 ## 可变变量
+%%%
+tag := "The-Lean-Language-Reference--Notations-and-Macros--Extending--do--Notation--Elaboration--Mutable-Variables"
+%%%
 
 上下文中的一个重要组成部分，是当前正在精译的 {keywordOf Lean.Parser.Term.do}`do` 元素可用的那组可变变量。
 这组信息存放在两个字段中：{name Lean.Elab.Do.Context.mutVars}`mutVars` 给出最初绑定这些变量的标识符，而 {name Lean.Elab.Do.Context.mutVarDefs}`mutVarDefs` 则把它们的名字映射到表示这些变量的局部变量上。

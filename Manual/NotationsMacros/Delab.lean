@@ -26,6 +26,7 @@ open Lean (Syntax Expr)
 #doc (Manual) "扩展 Lean 的输出" =>
 %%%
 tag := "unexpand-and-delab"
+file := "Extending-Lean___s-Output"
 %%%
 
 用新语法扩展 Lean，并用宏和精译器实现这种新语法，能让用户更方便地向 Lean 表达想法。

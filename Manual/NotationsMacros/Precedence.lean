@@ -23,6 +23,7 @@ set_option linter.unusedVariables false
 #doc (Manual) "优先级" =>
 %%%
 tag := "precedence"
+file := "Precedence"
 %%%
 
 中缀运算符、记法以及 Lean 的其他语法扩展都会使用显式的 {tech (key := "precedence")}[优先级] 标注。
