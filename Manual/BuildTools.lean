@@ -21,49 +21,49 @@ open Verso.Genre.Manual.InlineLean
 open Lean.Elab.Tactic.GuardMsgs.WhitespaceMode
 
 
-#doc (Manual) "Build Tools and Distribution" =>
+#doc (Manual) "构建工具与发行" =>
 %%%
 tag := "build-tools-and-distribution"
-shortContextTitle := "Build Tools"
+shortContextTitle := "构建工具"
 %%%
 
 :::paragraph
-The Lean {deftech}_toolchain_ is the collection of command-line tools that are used to check proofs and compile programs in collections of Lean files.
-Toolchains are managed by `elan`, which installs toolchains as needed.
-Lean toolchains are designed to be self-contained, and most command-line users will never need to explicitly invoke any other than `lake` and `elan`.
-They contain the following tools:
+Lean {deftech (key := "toolchain")}[工具链]是一组命令行工具，用于检查证明并编译由多个 Lean 文件组成的程序。
+工具链由 `elan` 管理；它会按需安装工具链。
+Lean 工具链采用自包含设计，大多数命令行用户除了 `lake` 和 `elan` 之外，无需显式调用其中的其他工具。
+其中包含以下工具：
 
 : `lean`
 
-  The Lean compiler, used to elaborate and compile a Lean source file.
+  Lean 编译器，用于精译和编译 Lean 源文件。
 
 : `lake`
 
-  The Lean build tool, used to incrementally invoke `lean` and other tools while tracking dependencies.
+  Lean 构建工具，在跟踪依赖关系的同时增量调用 `lean` 和其他工具。
 
 : `leanc`
 
-  The C compiler that ships with Lean, which is a version of [Clang](https://clang.llvm.org/).
+  Lean 随附的 C 编译器，它是 [Clang](https://clang.llvm.org/) 的一个版本。
 
 : `leanmake`
 
-  An implementation of the `make` build tool, used for compiling C dependencies.
+  `make` 构建工具的一种实现，用于编译 C 依赖项。
 
 : `leanchecker`
 
-  A tool that replays elaboration results from {tech}[`.olean` files] through the Lean kernel, providing additional assurance that all terms were properly checked.
+  一种通过 Lean 内核重放 {tech (key := ".olean files")}[`.olean` 文件]中精译结果的工具，为所有项均已得到正确检查提供额外保证。
 :::
 
-In addition to these build tools, toolchains contain files that are needed to build Lean code.
-This includes source code, {tech}[`.olean` files], compiled libraries, C header files, and the compiled Lean run-time system.
-They also include external proof automation tools that are used by tactics included with Lean, such as `cadical` for {tactic}`bv_decide`.
+除这些构建工具外，工具链还包含构建 Lean 代码所需的文件。
+其中包括源代码、{tech (key := ".olean files")}[`.olean` 文件]、已编译的库、C 头文件以及已编译的 Lean 运行时系统。
+其中还包括 Lean 随附策略所使用的外部证明自动化工具，例如 {tactic}`bv_decide` 使用的 `cadical`。
 
 
 {include 0 Manual.BuildTools.Lake}
 
 {include 0 Manual.BuildTools.Elan}
 
-# Reservoir
+# Reservoir 包仓库
 %%%
 tag := "reservoir"
 draft := true
@@ -71,7 +71,7 @@ draft := true
 
 
 ::: planned 76
- * Concepts
- * Package and toolchain versions
- * Tags and builds
+ * 概念
+ * 包与工具链版本
+ * 标签与构建
 :::
