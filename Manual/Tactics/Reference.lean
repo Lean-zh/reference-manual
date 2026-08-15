@@ -700,7 +700,7 @@ example (x : List Nat) (h : x = countdown 2) :
 ```
 :::
 
-:::example "作为非终结策略的 `cbv`" (file := "`cbv` as a Non-Finishing Tactic")
+:::example "作为非终结策略的 `cbv`" (file := "cbv as a Non-Finishing Tactic")
 与 {tactic}`decide` 不同，{tactic}`cbv` 不是终结策略。
 它会尽可能化简目标，但可能留下需要进一步推理的目标。
 这里，{tactic}`cbv` 归约了对 {lean}`countdown` 的调用，但留下了成员关系目标：
@@ -779,7 +779,7 @@ file := "{tactic}`decide_cbv`"
 :::tactic Lean.Parser.Tactic.decide_cbv (show := "decide_cbv")
 :::
 
-:::example "`decide_cbv`" (file := "`decide_cbv`")
+:::example "`decide_cbv`" (file := "decide_cbv")
 {tactic}`decide_cbv` 策略通过{tech (key := "call-by-value evaluation")}[传值求值]归约 {name}`Decidable` 实例，从而关闭属于可判定命题的目标：
 ```lean
 example : 2 + 3 = 5 ∧ 10 < 20 := by
@@ -798,7 +798,7 @@ example : isAllPositive [1, 2, 3] = true := by
 ```
 :::
 
-::::example "使用 `decide_cbv` 检验素数幂" (file := "Prime Power Testing with `decide_cbv`")
+::::example "使用 `decide_cbv` 检验素数幂" (file := "Prime Power Testing with decide_cbv")
 由于 {tactic}`decide_cbv` 使用命题展开，它可以求值涉及{ref "well-founded-recursion"}[良基递归]函数的复杂判定过程。
 这里，{lean}`Nat.minFac` 找出一个数的最小除数，而辅助函数 {lean}`minFacAux` 搜索最小奇除数：
 ```lean
@@ -867,7 +867,7 @@ cbv_eval ←
 ```
 :::
 
-:::example "`cbv_eval`" (file := "`cbv_eval`")
+:::example "`cbv_eval`" (file := "cbv_eval")
 可以使用自定义重写规则控制 {tactic}`cbv` 如何求值特定函数。
 例如，朴素的反转定义 {lean}`slowReverse` 因反复使用 {name}`List.append` 而具有二次复杂度。
 通过 {lean}`fastReverse` 提供尾递归刻画后，{tactic}`cbv` 可以高效地求值 {lean}`slowReverse`：
@@ -910,7 +910,7 @@ cbv_opaque
 ```
 :::
 
-::::example "使用 `@[cbv_opaque]` 的不透明定义" (file := "Opaque Definitions with `@[cbv_opaque]`")
+::::example "使用 `@[cbv_opaque]` 的不透明定义" (file := "Opaque Definitions with @[cbv_opaque]")
 将 {lean}`countdown` 标记为 {attr}`cbv_opaque` 会阻止 {tactic}`cbv` 展开它，因此先前由 {tactic}`cbv` 关闭的目标现在仍未解决：
 ```lean
 def countdown (n : Nat) : List Nat :=
@@ -942,12 +942,12 @@ file := "Custom Simplification Procedures"
 %%%
 
 :::paragraph
-{deftech (key := "cbv simplification procedure")}[`cbv` 化简过程]（{tactic}`cbv` simproc）是一种用户定义的元程序，{tactic}`cbv` 会在匹配给定模式的子表达式上调用它。
-{attr}`cbv_eval` 规则仅限于静态相等式，而 {tactic}`cbv` simproc 可以执行任意计算，以决定如何重写子表达式。
+{deftech (key := "cbv simplification procedure")}[`cbv` 化简过程]是一种用户定义的元程序，{tactic}`cbv` 会在匹配给定模式的子表达式上调用它。
+{attr}`cbv_eval` 规则仅限于静态相等式，而 {tactic}`cbv` 化简过程可以执行任意计算，以决定如何重写子表达式。
 常见用途包括定义对字面值上的函数进行求值的过程，或使控制流短路。
 
-{tactic}`cbv` 使用的 simproc 类型为 {name}`Lean.Meta.Sym.Simp.Simproc`，不同于 {tactic}`simp` 策略使用的 {name}`Lean.Meta.Simp.Simproc` 类型。
-这两个系统彼此独立：注册 {tactic}`cbv` simproc 不会影响 {tactic}`simp`，反之亦然。
+{tactic}`cbv` 使用的化简过程类型为 {name}`Lean.Meta.Sym.Simp.Simproc`，不同于 {tactic}`simp` 策略使用的 {name}`Lean.Meta.Simp.Simproc` 类型。
+这两个系统彼此独立：注册 {tactic}`cbv` 化简过程不会影响 {tactic}`simp`，反之亦然。
 :::
 
 :::syntax command (title := "自定义 `cbv` 化简过程")
@@ -1019,7 +1019,7 @@ cbv_simproc cbv_eval
 :::
 
 
-::::example "声明 `cbv_simproc`" (file := "Declaring a `cbv_simproc`")
+::::example "声明 `cbv_simproc`" (file := "Declaring a cbv_simproc")
 
 ```imports -show
 import Lean.Meta.Tactic.Cbv.CbvSimproc
@@ -1080,7 +1080,7 @@ cbv_simproc ↓ evalListHead (List.head? _) := fun e => do
 
 theorem cbv_simproc_test : [5 + 5,6].head? = .some 10 := by cbv
 ```
-检查证明项可以确认化简过程已经触发：{name}`List.head?_cons` 直接出现在证明中，表明 {tactic}`cbv` 使用了 simproc 的重写，而不是通过展开 {name}`List.head?` 的定义来归约它。
+检查证明项可以确认化简过程已经触发：{name}`List.head?_cons` 直接出现在证明中，表明 {tactic}`cbv` 使用了化简过程的重写，而不是通过展开 {name}`List.head?` 的定义来归约它。
 
 ```lean -show (name := cbvSimprocTest)
 #print cbv_simproc_test

@@ -168,7 +168,7 @@ def localize_generated_html(root: Path) -> tuple[int, int, int, int]:
                 + html.escape(translated)
                 + "</code>"
             )
-        stripped, count = DOCSTRING_RE.subn(replacement, payload)
+        stripped, count = DOCSTRING_RE.subn(lambda _match: replacement, payload)
         if count == 0:
             continue
         if not stripped.strip():

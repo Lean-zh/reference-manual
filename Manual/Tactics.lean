@@ -346,7 +346,7 @@ gt : ↑i > 5
 
 
 此外，非证明项过大时也可能被隐藏。
-具体而言，Lean 会隐藏位于可配置深度阈值以下的项；总输出量达到一定程度后，也会隐藏项的其余部分。
+具体而言，Lean 会隐藏深度超过可配置阈值的项；总输出量达到一定程度后，也会隐藏项的其余部分。
 可以用选项 {option}`pp.deepTerms` 启用或禁用深层项显示，并用 {option}`pp.deepTerms.threshold` 配置深度阈值。
 美化打印器的最大步数可用选项 {option}`pp.maxSteps` 配置。
 打印非常大的项可能导致工具变慢，甚至栈溢出；调整这些选项的值时请务必谨慎。
@@ -562,7 +562,7 @@ file := "Branching"
 
 :::
 
-:::example (file := "Reasoning by cases with `if`") "使用 `if` 分类推理"
+:::example (file := "Reasoning by cases with if") "使用 `if` 分类推理"
 在 {keywordOf Lean.Parser.Tactic.tacIfThenElse}`if` 的每个分支中，都会加入一个反映 `n = 0` 是否成立的假设。
 
 ```lean
@@ -582,7 +582,7 @@ example (n : Nat) : if n = 0 then n < 1 else n > 0 := by
 与 `cases` 策略相比，使用 `match` 可以让分类分析更加灵活；但每个分支都必须彻底解决其目标，因此更难将其纳入较大的自动化脚本。
 :::
 
-:::example (file := "Reasoning by cases with `match`") "使用 `match` 分类推理"
+:::example (file := "Reasoning by cases with match") "使用 `match` 分类推理"
 在 {keywordOf Lean.Parser.Tactic.match}`match` 的每个分支中，判别项 `n` 都被替换为 `0` 或 `k + 1`。
 ```lean
 example (n : Nat) : if n = 0 then n < 1 else n > 0 := by
