@@ -337,41 +337,42 @@ Lean 提供了用于并行和并发程序的原语，并使用{tech (key := "tas
 Lean 运行时系统包含一个任务管理器，负责为任务分配硬件资源。
 关于它以及用于定义任务的 API，可参阅{ref "concurrency"}[多线程程序一节]中的详细说明。
 
-# Foreign Function Interface
+# 外部函数接口
 %%%
 tag := "ffi"
+file := some "Foreign-Function-Interface"
 %%%
 
 
-*The current interface was designed for internal use in Lean and should be considered unstable*.
-It will be refined and extended in the future.
+*当前接口是为 Lean 内部使用而设计的，应视为不稳定接口*。
+未来将对其加以改进和扩展。
 
-Lean offers efficient interoperability with any language that supports the C ABI.
-This support is, however, currently limited to transferring Lean data types; in particular, it is not yet possible to pass or return compound data structures such as C {C}`struct`s by value from or to Lean.
+Lean 能与任何支持 C ABI 的语言高效互操作。
+不过，目前这种支持仅限于传递 Lean 数据类型；尤其是，尚无法在 Lean 与 C 之间按值传入或返回 C {C}`struct` 等复合数据结构。
 
-There are two primary attributes for interoperating with other languages:
-  {TODO}[It can also be used with `def` to provide an internal definition, but ensuring consistency of both definitions is up to the user.]
+与其他语言互操作主要使用两个属性：
+  {TODO}[它也可以与 `def` 一起使用以提供内部定义，但用户需自行确保两个定义一致。]
 * `@[export sym] def leanSym : ...`
 
-:::syntax attr (title := "External Symbols")
+:::syntax attr (title := "外部符号")
 ```grammar
 extern $s:str
 ```
 
-Binds a Lean declaration to the specified external symbol.
+将 Lean 声明绑定到指定的外部符号。
 :::
 
-:::syntax attr (title := "Exported Symbols")
+:::syntax attr (title := "导出的符号")
 ```grammar
 export $x:ident
 ```
-Exports a Lean constant with the unmangled symbol name `sym`.
+以未经名称修饰的符号名 `sym` 导出 Lean 常量。
 :::
 
 
-For simple examples of how to call foreign code from Lean and vice versa, see [the FFI](https://github.com/leanprover/lean4/tree/master/tests/lake/examples/ffi) and [reverse FFI](https://github.com/leanprover/lean4/tree/master/tests/lake/examples/reverse-ffi) examples in the Lean source repository.
+有关如何从 Lean 调用外部代码以及反向调用的简单示例，请参阅 Lean 源码仓库中的 [FFI](https://github.com/leanprover/lean4/tree/master/tests/lake/examples/ffi) 和[反向 FFI](https://github.com/leanprover/lean4/tree/master/tests/lake/examples/reverse-ffi) 示例。
 
-## The Lean ABI
+## Lean ABI
 
 :::leanSection
 ```lean -show
@@ -380,29 +381,29 @@ private axiom «α₂→…→αₙ₋₁».{u} : Type u
 local macro "..." : term => ``(«α₂→…→αₙ₋₁»)
 ```
 
-The Lean {deftech}_Application Binary Interface_ (ABI) describes how the signature of a Lean declaration is encoded in the platform-native calling convention.
-It is based on the standard C ABI and calling convention of the target platform.
-Lean declarations can be marked for interaction with foreign functions using either the attribute {attr}`extern "sym"`, which causes compiled code to use the C declaration {C}`sym` as the implementation, or the attribute {attr}`export sym`, which makes the declaration available as {C}`sym` to C.
+Lean 的{deftech (key := "Application Binary Interface")}_应用二进制接口_（ABI）描述了如何按照平台原生调用约定对 Lean 声明的签名进行编码。
+它以目标平台的标准 C ABI 和调用约定为基础。
+可以用属性 {attr}`extern "sym"` 或 {attr}`export sym` 标记 Lean 声明，使其与外部函数交互：前者令编译后的代码使用 C 声明 {C}`sym` 作为实现，后者则使该声明以 {C}`sym` 的名称供 C 使用。
 
-In both cases, the C declaration's type is derived from the Lean type of the declaration with the attribute.
-Let {lean}`α₁ → ... → αₙ → β` be the declaration's {tech (key := "normal form")}[normalized] type.
-If `n` is 0, the corresponding C declaration is
+在这两种情况下，C 声明的类型都从带该属性之声明的 Lean 类型推导而来。
+设 {lean}`α₁ → ... → αₙ → β` 是该声明经过{tech (key := "normal form")}[规范化]的类型。
+若 `n` 为 0，则相应的 C 声明为
 ```C
 extern s sym;
 ```
-where {C}`s` is the C translation of {lean}`β` as specified in {ref "ffi-types"}[the next section].
-In the case of a definition marked {attr}`extern`, the symbol's value is only guaranteed to be initialized after calling the Lean module's initializer or that of an importing module.
-The section on {ref "ffi-initialization"}[initialization] describes initializers in greater detail.
+其中，{C}`s` 是按照{ref "ffi-types"}[下一节]所述规则将 {lean}`β` 转换成的 C 类型。
+对于标有 {attr}`extern` 的定义，只有在调用该 Lean 模块或某个导入它的模块的初始化器之后，才能保证符号的值已经初始化。
+有关{ref "ffi-initialization"}[初始化]的一节将更详细地介绍初始化器。
 
-If `n` is greater than 0, the corresponding C declaration is
+若 `n` 大于 0，则相应的 C 声明为
 ```C
 s sym(t₁, ..., tₙ);
 ```
-where the parameter types `tᵢ` are the C translations of the types {lean}`αᵢ`.
-In the case of {attr}`extern`, all {tech}[irrelevant] types are removed first.
+其中，形参类型 `tᵢ` 是类型 {lean}`αᵢ` 转换成的 C 类型。
+对于 {attr}`extern`，会先移除所有{tech (key := "irrelevant")}[不相关]类型。
 :::
 
-### Translating Types from Lean to C
+### 将 Lean 类型转换为 C 类型
 %%%
 tag := "ffi-types"
 %%%
@@ -415,18 +416,18 @@ private axiom «...» : Sort u
 local macro "..." : term => ``(«...»)
 ```
 
-In the {tech (key := "application binary interface")}[ABI], Lean types are translated to C types as follows:
+在{tech (key := "application binary interface")}[ABI] 中，Lean 类型按以下方式转换为 C 类型：
 
-* The integer types {lean}`UInt8`, …, {lean}`UInt64`, {lean}`USize` are represented by the C types {C}`uint8_t`, ..., {C}`uint64_t`, {C}`size_t`, respectively.
-  If their {ref "fixed-int-runtime"}[run-time representation] requires {tech (key := "boxed")}[boxing], then they are unboxed at the FFI boundary.
-* {lean}`Char` is represented by {C}`uint32_t`.
-* {lean}`Float` is represented by {C}`double`.
-* {name}`Nat` and {name}`Int` are represented by {C}`lean_object *`.
-  Their runtime values is either a pointer to an opaque bignum object or, if the lowest bit of the “pointer” is 1 ({C}`lean_is_scalar`), an encoded natural number or integer ({C}`lean_box`/{C}`lean_unbox`).
-* A universe {lean}`Sort u`, type constructor {lean}`... → Sort u`, or proposition {lean}`p`​` :`{lean}` Prop` is {tech}[irrelevant] and is either statically erased (see above) or represented as a {C}`lean_object *` with the runtime value {C}`lean_box(0)`
-* The ABI for other inductive types that don't have special compiler support depends on the specifics of the type.
-  It is the same as the {ref "run-time-inductives"}[run-time representation] of these types.
-  Its runtime value is either a pointer to an object of a subtype of {C}`lean_object` (see the “Inductive types” section below) or it is the value {C}`lean_box(cidx)` for the {C}`cidx`th constructor of an inductive type if this constructor does not have any relevant parameters.
+* 整数类型 {lean}`UInt8`、……、{lean}`UInt64`、{lean}`USize` 分别由 C 类型 {C}`uint8_t`、……、{C}`uint64_t`、{C}`size_t` 表示。
+  若其{ref "fixed-int-runtime"}[运行时表示]需要{tech (key := "boxed")}[装箱]，则会在 FFI 边界处将其拆箱。
+* {lean}`Char` 由 {C}`uint32_t` 表示。
+* {lean}`Float` 由 {C}`double` 表示。
+* {name}`Nat` 和 {name}`Int` 由 {C}`lean_object *` 表示。
+  它们的运行时值要么是指向不透明大整数对象的指针；要么在“指针”的最低位为 1（{C}`lean_is_scalar`）时，是经过编码的自然数或整数（{C}`lean_box`/{C}`lean_unbox`）。
+* 宇宙 {lean}`Sort u`、类型构造器 {lean}`... → Sort u` 或命题 {lean}`p`​` :`{lean}` Prop` 都是{tech (key := "irrelevant")}[不相关]的，它们要么被静态擦除（见上文），要么由运行时值为 {C}`lean_box(0)` 的 {C}`lean_object *` 表示。
+* 其他没有编译器特殊支持的归纳类型采用何种 ABI，取决于该类型的具体情况。
+  其 ABI 与这些类型的{ref "run-time-inductives"}[运行时表示]相同。
+  其运行时值要么是指向 {C}`lean_object` 某个子类型对象的指针（见下文“归纳类型”一节）；要么，当归纳类型的第 {C}`cidx` 个构造器没有任何相关参数时，是值 {C}`lean_box(cidx)`。
 
 :::
 
@@ -434,54 +435,54 @@ In the {tech (key := "application binary interface")}[ABI], Lean types are trans
 variable (u : Unit)
 ```
 
-:::example "`Unit` in the ABI"
-The runtime value of {lean}`u`​` : `{lean}`Unit` is always `lean_box(0)`.
+:::example "ABI 中的 `Unit`"
+{lean}`u`​` : `{lean}`Unit` 的运行时值始终为 `lean_box(0)`。
 :::
 
-### Borrowing
+### 借用
 %%%
 tag := "ffi-borrowing"
 %%%
 
-By default, all {C}`lean_object *` parameters of an {attr}`extern` function are considered {deftech}_owned_.
-The external code is passed a “virtual RC token” and is responsible for passing this token along to another consuming function (exactly once) or freeing it via {C}`lean_dec`.
-To reduce reference counting overhead, parameters can be marked as {deftech}_borrowed_ by prefixing their type with {keywordOf Lean.Parser.Term.borrowed}`@&`.
-Borrowed objects must only be passed to other non-consuming functions (arbitrarily often) or converted to owned values using {C}`lean_inc`.
-In `lean.h`, the {C}`lean_object *` aliases {C}`lean_obj_arg` and {C}`b_lean_obj_arg` are used to mark this difference on the C side.
-Return values and `@[export]` parameters are always owned at the moment.
+默认情况下，{attr}`extern` 函数的所有 {C}`lean_object *` 形参都被视为{deftech (key := "owned")}_拥有_。
+外部代码会收到一个“虚拟引用计数令牌”，并负责将该令牌传递给另一个消耗型函数（恰好一次），或通过 {C}`lean_dec` 释放它。
+为减少引用计数开销，可以在形参类型前加上 {keywordOf Lean.Parser.Term.borrowed}`@&`，将其标记为{deftech (key := "borrowed")}_借用_。
+借用对象只能传给其他非消耗型函数（次数不限），或使用 {C}`lean_inc` 将其转换为拥有值。
+在 `lean.h` 中，{C}`lean_object *` 的别名 {C}`lean_obj_arg` 和 {C}`b_lean_obj_arg` 用于在 C 端标示这种区别。
+目前，返回值和 `@[export]` 形参始终是拥有的。
 
-:::syntax term (title := "Borrowed Parameters")
+:::syntax term (title := "借用形参")
 ```grammar
 @& $_
 ```
-Parameters may be marked as {tech}[borrowed] by prefixing their types with {keyword}`@&`.
+在形参类型前加上 {keyword}`@&`，即可将其标记为{tech (key := "borrowed")}[借用]。
 :::
 
-## Initialization
+## 初始化
 %%%
 tag := "ffi-initialization"
 %%%
 
-When including Lean code in a larger program, modules must be {deftech (key := "initialize")}_initialized_ before accessing any of their declarations.
-Module initialization entails:
-* initialization of all “constant definitions” (nullary functions), including closed terms lifted out of other functions,
-* execution of all code marked with the {attr}`init` attribute, and
-* execution of all code marked with the {attr}`builtin_init` attribute, if the `builtin` parameter of the module initializer has been set.
+将 Lean 代码纳入更大的程序时，必须先对模块进行{deftech (key := "initialize")}_初始化_，然后才能访问其中的任何声明。
+模块初始化包括：
+* 初始化所有“常量定义”（零元函数），其中包括从其他函数中提升出来的闭项；
+* 执行所有标有 {attr}`init` 属性的代码；以及
+* 如果设置了模块初始化器的 `builtin` 形参，则执行所有标有 {attr}`builtin_init` 属性的代码。
 
-The module initializer is automatically run with the `builtin` flag for executables compiled from Lean code and for “plugins” loaded with `lean --plugin`.
-For all other modules imported by `lean`, the initializer is run without `builtin`.
-In other words, {attr}`init` functions are run if and only if their module is imported, regardless of whether they have native code available, while {attr}`builtin_init` functions are only run for native executable or plugins, regardless of whether their module is imported.
-The Lean compiler uses built-in initializers for purposes such as registering basic parsers that should be available even without importing their module, which is necessary for bootstrapping.
+对于从 Lean 代码编译出的可执行文件，以及通过 `lean --plugin` 加载的“插件”，模块初始化器会自动带 `builtin` 标志运行。
+对于 `lean` 导入的所有其他模块，初始化器运行时不带 `builtin`。
+换言之，无论模块是否有可用的原生代码，当且仅当模块被导入时，才会运行其 {attr}`init` 函数；而无论模块是否被导入，{attr}`builtin_init` 函数都只会为原生可执行文件或插件运行。
+Lean 编译器使用内置初始化器来完成诸如注册基础解析器之类的工作；即使不导入这些解析器所属的模块，它们也应当可用，这是自举所必需的。
 
-The initializer for module `A.B` in a package `foo` is called {C}`initialize_foo_A_B`.
-For modules in the Lean core (e.g., {module}`Init.Prelude`), the initializer is called {C}`initialize_Init_Prelude`.
-Module initializers will automatically initialize any imported modules.
-They are also idempotent (when run with the same `builtin` flag), but not thread-safe.
+包 `foo` 中模块 `A.B` 的初始化器名为 {C}`initialize_foo_A_B`。
+对于 Lean 核心中的模块（例如 {module}`Init.Prelude`），其初始化器名为 {C}`initialize_Init_Prelude`。
+模块初始化器会自动初始化所有已导入的模块。
+使用相同的 `builtin` 标志运行时，它们还具有幂等性，但并非线程安全。
 
-*Important for process-related functionality*: applications that use process-related functions from `libuv`, such as {name}`Std.IO.Process.getProcessTitle` and {name}`Std.IO.Process.setProcessTitle`, must call `lean_setup_args(argc, argv)` (which returns a potentially modified `argv` that must be used in place of the original) *before* calling any module initializer.
-This sets up process handling capabilities correctly, which is essential for certain system-level operations that Lean's runtime may depend on.
+*关于进程相关功能的重要事项*：使用 `libuv` 中进程相关函数（例如 {name}`Std.IO.Process.getProcessTitle` 和 {name}`Std.IO.Process.setProcessTitle`）的应用程序，必须在调用任何模块初始化器*之前*调用 `lean_setup_args(argc, argv)`（它会返回一个可能经过修改的 `argv`，必须用其替代原始的 `argv`）。
+这样可以正确设置进程处理能力，而 Lean 运行时所依赖的某些系统级操作离不开这些能力。
 
-Putting everything together, code like the following should be run exactly once before accessing any Lean declarations:
+综上所述，在访问任何 Lean 声明之前，应当恰好运行一次如下代码：
 ```C
 char ** lean_setup_args(int argc, char ** argv);
 
@@ -510,22 +511,22 @@ if (lean_io_result_is_ok(res)) {
 lean_io_mark_end_initialization();
 ```
 
-In addition, any other thread not spawned by the Lean runtime itself must be initialized for Lean use by calling
+此外，凡不是由 Lean 运行时自身生成的线程，都必须调用以下函数进行初始化，才能供 Lean 使用：
 ```C
 void lean_initialize_thread();
 ```
-and should be finalized in order to free all thread-local resources by calling
+并且应当调用以下函数终结线程，以释放所有线程局部资源：
 ```C
 void lean_finalize_thread();
 ```
 
-## `@[extern]` in the Interpreter
+## 解释器中的 `@[extern]`
 
-The Lean interpreter can run Lean declarations for which symbols are available in loaded shared libraries, which includes declarations that are marked {attr}`extern`.
-To run this code (e.g. with {keywordOf Lean.Parser.Command.eval}`#eval`), the following steps are necessary:
-  1. The module containing the declaration and its dependencies must be compiled into a shared library
-  1. This shared library should be provided to `lean --load-dynlib=` to run code that imports the module.
+Lean 解释器可以运行符号存在于已加载共享库中的 Lean 声明，其中包括标有 {attr}`extern` 的声明。
+要运行此类代码（例如使用 {keywordOf Lean.Parser.Command.eval}`#eval`），必须完成以下步骤：
+  1. 将包含该声明的模块及其依赖项编译为共享库
+  1. 通过 `lean --load-dynlib=` 提供该共享库，以运行导入此模块的代码。
 
-It is not sufficient to load the foreign library containing the external symbol because the interpreter depends on code that is emitted for each {attr}`extern` declaration.
-Thus it is not possible to interpret an {attr}`extern` declaration in the same file.
-The Lean source repository contains an example of this usage in [`tests/compiler/foreign`](https://github.com/leanprover/lean4/tree/master/tests/compiler/foreign/).
+仅加载包含外部符号的外部库并不足够，因为解释器还依赖于为每个 {attr}`extern` 声明生成的代码。
+因此，无法在同一文件中解释 {attr}`extern` 声明。
+Lean 源码仓库的 [`tests/compiler/foreign`](https://github.com/leanprover/lean4/tree/master/tests/compiler/foreign/) 中包含这种用法的示例。
