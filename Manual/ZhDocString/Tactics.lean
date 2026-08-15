@@ -23,7 +23,7 @@ class Trans (r : α → β → Sort u) (s : β → γ → Sort v)
 为绑定器名称提供提示，但不改变表达式的值。化简器在使用带此标记的重写规则时，
 可用 `binder` 的名称命名新引入的绑定器。
 -/
-@[simp, expose, implicit_reducible]
+@[simp, implicit_reducible]
 def binderNameHint {α : Sort u} {β : Sort v} {γ : Sort w}
     (_v : α) (_binder : β) (e : γ) : γ := e
 
