@@ -23,70 +23,77 @@ set_option maxRecDepth 3000
 
 set_option linter.unusedVariables false
 
-#doc (Manual) "Attributes" =>
+#doc (Manual) "属性" =>
 %%%
 tag := "attributes"
+file := "Attributes"
 htmlSplit := .never
 %%%
 
-{deftech}_Attributes_ are an extensible set of compile-time annotations on declarations.
-They can be added as a {ref "declaration-modifiers"}[declaration modifier] or using the {keywordOf Lean.Parser.Command.attribute}`attribute` command.
+{deftech (key := "Attributes")}_属性_是施加在声明上的一组可扩展编译期注解。
+它们既可以作为{ref "declaration-modifiers"}[声明修饰符]添加，也可以用 {keywordOf Lean.Parser.Command.attribute}`attribute` 命令添加。
 
-Attributes can associate information with declarations in compile-time tables (including {tech}[custom simp sets], {tech}[macros], and {tech}[instances]), impose additional requirements on definitions (e.g. rejecting them if their type is not a type class), or generate additional code.
-As with {tech}[macros] and custom {tech}[elaborators] for terms, commands, and tactics, the {tech}[syntax category] `attr` of attributes is designed to be extended, and there is a table that maps each extension to a compile-time program that interprets it.
+属性可以在编译期表中将信息与声明关联起来（包括{tech (key := "custom simp sets")}[自定义 simp 集]、{tech (key := "macros")}[宏]和{tech (key := "instances")}[实例]），可以对定义施加额外要求（例如，当定义的类型不是类型类时拒绝它），也可以生成额外代码。
+与项、命令和策略的{tech (key := "macros")}[宏]及自定义{tech (key := "elaborators")}[精译器]一样，属性的{tech (key := "syntax category")}[语法类别] `attr` 也被设计为可扩展的；有一张表将每个扩展映射到解释它的编译期程序。
 
-Attributes are applied as {deftech}_attribute instances_ that pair a scope indicator with an attribute.
-These may occur either in attributes as declaration modifiers or the stand-alone {keywordOf Lean.Parser.Command.attribute}`attribute` command.
+属性以{deftech (key := "attribute instances")}_属性实例_的形式应用；属性实例将一个作用域指示符与一个属性配成一对。
+它们既可以出现在作为声明修饰符的属性中，也可以出现在独立的 {keywordOf Lean.Parser.Command.attribute}`attribute` 命令中。
 
-:::syntax Lean.Parser.Term.attrInstance (title := "Attribute Instances")
+:::syntax Lean.Parser.Term.attrInstance (title := "属性实例")
 ```grammar
 $_:attrKind $_:attr
 ```
 
-An `attrKind` is the optional {ref "scoped-attributes"}[attribute scope] keywords {keyword}`local` or {keyword}`scoped`.
-These control the visibility of the attribute's effects.
-The attribute itself is anything from the extensible {tech}[syntax category] `attr`.
+`attrKind` 是可选的{ref "scoped-attributes"}[属性作用域]关键字 {keyword}`local` 或 {keyword}`scoped`。
+它们控制属性效果的可见范围。
+属性本身可以是可扩展{tech (key := "syntax category")}[语法类别] `attr` 中的任何内容。
 :::
 
-The attribute system is very powerful: attributes can associate arbitrary information with declarations and generate any number of helpers.
-This imposes some design trade-offs: storing this information takes space, and retrieving it takes time.
-As a result, some attributes can only be applied to a declaration in the module where the declaration is defined.
-This allows lookups to be much faster in large projects, because they don't need to examine data for all modules.
-Each attribute determines how to store its own metadata and what the appropriate tradeoff between flexibility and performance is for a given use case.
+属性系统非常强大：属性可以将任意信息与声明关联起来，并生成任意数量的辅助声明。
+这会带来一些设计上的取舍：存储这些信息会占用空间，检索它们则会耗费时间。
+因此，有些属性只能应用于定义该声明的模块中的声明。
+这样，在大型项目中查询会快得多，因为无需检查所有模块的数据。
+每个属性自行决定如何存储其元数据，以及对特定用例而言，灵活性与性能之间怎样取舍才合适。
 
-# Attributes as Modifiers
+# 作为修饰符的属性
+%%%
+tag := "The-Lean-Language-Reference--Attributes--Attributes-as-Modifiers"
+%%%
 
-Attributes can be added to declarations as a {ref "declaration-modifiers"}[declaration modifier].
-They are placed between the documentation comment and the visibility modifiers.
+属性可以作为{ref "declaration-modifiers"}[声明修饰符]添加到声明上。
+它们放在文档注释与可见性修饰符之间。
 
-:::syntax Lean.Parser.Term.attributes -open (title := "Attributes")
+:::syntax Lean.Parser.Term.attributes -open (title := "属性")
 ```grammar
 @[$_:attrInstance,*]
 ```
 :::
 
-# The {keyword}`attribute` Command
+# {keyword}`attribute` 命令
+%%%
+tag := "The-Lean-Language-Reference--Attributes--The--attribute--Command"
+%%%
 
-The {keywordOf Lean.Parser.Command.attribute}`attribute` command can be used to modify a declaration's attributes.
-Some example uses include:
- * registering a pre-existing declaration as an {tech}[instance] in the local scope by adding {attr}`instance`,
- * marking a pre-existing theorem as a simp lemma or an extensionality lemma, using {attr}`simp` or {attr}`ext`, and
- * temporarily removing a simp lemma from the default {tech}[simp set].
+{keywordOf Lean.Parser.Command.attribute}`attribute` 命令可用于修改声明的属性。
+一些用法示例包括：
+ * 通过添加 {attr}`instance`，在局部作用域中将已有声明注册为{tech (key := "instance")}[实例]；
+ * 使用 {attr}`simp` 或 {attr}`ext`，将已有定理标记为 simp 引理或外延性引理；以及
+ * 暂时从默认{tech (key := "simp set")}[simp 集]中移除一个 simp 引理。
 
-:::syntax command (title := "Attribute Modification")
-The {keywordOf Lean.Parser.Command.attribute}`attribute` command adds or removes attributes from an existing declaration.
-The identifier is the name whose attributes are being modified.
+:::syntax command (title := "修改属性")
+{keywordOf Lean.Parser.Command.attribute}`attribute` 命令为已有声明添加属性或从中移除属性。
+标识符是要修改属性的名称。
 ```grammar
 attribute [$_,*] $_
 ```
 :::
 
-In addition to attribute instances that add an attribute to an existing declaration, some attributes can be removed; this is called {deftech}_erasing_ the attribute.
-Attributes can be erased by preceding their name with `-`.
-Not all attributes support erasure, however.
+除了用于向已有声明添加属性的属性实例之外，有些属性还可以被移除；这称为{deftech (key := "erasing")}_擦除_属性。
+在属性名称前加上 `-` 即可擦除该属性。
+不过，并非所有属性都支持擦除。
 
-:::syntax Lean.Parser.Command.eraseAttr (title := "Erasing Attributes")
-Attributes are erased by preceding their name with a `-`.
+:::syntax Lean.Parser.Command.eraseAttr (title := "擦除属性")
+在属性名称前加上 `-` 即可擦除该属性。
 
 ```grammar
 -$_:ident
@@ -94,28 +101,28 @@ Attributes are erased by preceding their name with a `-`.
 :::
 
 
-# Scoped Attributes
+# 有作用域的属性
 %%%
 tag := "scoped-attributes"
 %%%
 
-Many attributes can be applied in a particular scope.
-This determines whether the attribute's effect is visible only in the current section scope, in namespaces that open the current namespace, or everywhere.
-These scope indications are also used to control {ref "syntax-rules"}[syntax extensions] and {ref "instance-attribute"}[type class instances].
-Each attribute is responsible for defining precisely what these terms mean for its particular effect.
+许多属性可以应用于特定作用域。
+这决定了属性的效果是仅在当前小节作用域中可见、在打开当前命名空间的作用域内可见，还是处处可见。
+这些作用域指示也用于控制{ref "syntax-rules"}[语法扩展]和{ref "instance-attribute"}[类型类实例]。
+每个属性都负责精确定义这些术语对其特定效果意味着什么。
 
-:::syntax attrKind -open (title := "Attribute Scopes") (alias := Lean.Parser.Term.attrKind)
-Globally-scoped declarations (the default) are in effect whenever the {tech}[module] in which they're established is transitively imported.
-They are indicated by the absence of another scope modifier.
+:::syntax attrKind -open (title := "属性作用域") (alias := Lean.Parser.Term.attrKind)
+具有全局作用域的声明（默认情形）会在建立它们的{tech (key := "module")}[模块]被传递导入时生效。
+不写其他作用域修饰符即表示全局作用域。
 ```grammar
 ```
 
-Locally-scoped declarations are in effect only for the extent of the {tech}[section scope] in which they are established.
+具有局部作用域的声明只在建立它们的{tech (key := "section scope")}[小节作用域]范围内生效。
 ```grammar
 local
 ```
 
-Scoped declarations are in effect whenever the {tech (key := "current namespace")}[namespace] in which they are established is opened.
+具有命名空间作用域的声明会在建立它们的{tech (key := "current namespace")}[命名空间]被打开时生效。
 ```grammar
 scoped
 ```

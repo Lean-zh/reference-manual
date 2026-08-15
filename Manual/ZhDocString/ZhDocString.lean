@@ -40,6 +40,25 @@ private def finalNameComponent : Name → String
   | .str _ s => s
   | .num _ n => toString n
 
+private def translatedDeclLabel : Block.Docstring.DeclType → String
+  | .structure false .. => "结构体"
+  | .structure true .. => "类型类"
+  | .def .safe => "定义"
+  | .def .unsafe => "不安全定义"
+  | .def .partial => "部分定义"
+  | .opaque .unsafe => "不安全不透明定义"
+  | .opaque _ => "不透明定义"
+  | .inductive _ _ false => "归纳类型"
+  | .inductive _ 0 true => "归纳命题"
+  | .inductive _ _ true => "归纳谓词"
+  | .axiom _ => "公理"
+  | .theorem => "定理"
+  | .ctor n _ => s!"{n} 的构造子"
+  | .quotPrim _ => "原语"
+  | .recursor .unsafe => "不安全递归器"
+  | .recursor _ => "递归器"
+  | .other => ""
+
 /--
 Render the declaration and signatures of `enName`, using documentation text from `zhName`.
 The two declarations must have matching constructors and fields; mismatches are errors rather than
@@ -55,6 +74,9 @@ meta def zhdocstring : BlockCommandOf ZhDocstringOpts
     let enSignature ← Signature.forName enName
     let extras ← translatedExtras enStx enName zhName enDeclType zhDeclType
     let altNames ← getStoredSuggestions enName
+    let customLabel := customLabel.orElse fun _ =>
+      let label := translatedDeclLabel enDeclType
+      if label.isEmpty then none else some label
     ``(Verso.Doc.Block.other
         (Verso.Genre.Manual.Block.docstring $(quote enName) $(quote enDeclType)
           $(quote enSignature) $(quote customLabel) $(quote altNames.toArray))

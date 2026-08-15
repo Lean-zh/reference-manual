@@ -186,7 +186,7 @@ def example.descr : BlockDescr where
             -- This link is `display: none` hidden by default, and enabled by maybeShowLiveLinks,
             -- assuming we detect that we're a sufficiently recent version of the manual
             -- to be compatible with the versions served by https://live.lean-lang.org
-            {{ <div class="live-link"><a href={{href}}>"Live ↪"</a></div> }}
+            {{ <div class="live-link"><a href={{href}}>"在线查看 ↪"</a></div> }}
           pure {{
             <details class="example" {{attrs}}>
               <summary class="description">{{← description.mapM goI}}</summary>

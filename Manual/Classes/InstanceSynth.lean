@@ -7,6 +7,7 @@ Author: David Thrane Christiansen
 import VersoManual
 
 import Manual.Meta
+import Manual.ZhDocString.Classes.InstanceSynth
 import Manual.Papers
 
 
@@ -16,85 +17,89 @@ open Verso.Genre.Manual
 open Verso.Genre.Manual.InlineLean
 
 
-#doc (Manual) "Instance Synthesis" =>
+#doc (Manual) "实例合成" =>
 %%%
 tag := "instance-synth"
+file := "Instance-Synthesis"
 %%%
 
 
-Instance synthesis is a recursive search procedure that either finds an instance for a given type class or fails.
-In other words, given a type that is registered as a type class, instance synthesis attempts to construct a term with said type.
-It respects {tech}[reducibility]: {tech}[semireducible] or {tech}[irreducible] definitions are not unfolded, so instances for a definition are not automatically treated as instances for its unfolding unless it is {tech}[reducible].
-There may be multiple possible instances for a given class; in this case, declared priorities and order of declaration are used as tiebreakers, in that order, with more recent instances taking precedence over earlier ones with the same priority.
+实例合成是一种递归搜索过程：它要么为给定的类型类找到实例，要么失败。
+换言之，给定一个注册为类型类的类型，实例合成会尝试构造一个具有该类型的项。
+它遵循{tech (key := "reducibility")}[可约性]：{tech (key := "semireducible")}[半可约]或{tech (key := "irreducible")}[不可约]定义不会被展开，因此，除非某个定义是{tech (key := "reducible")}[可约的]，否则该定义的实例不会自动被视为其展开结果的实例。
+一个给定的类可能有多个可用实例；此时依次以声明的优先级和声明顺序打破平局，同一优先级下，较新的实例优先于较早的实例。
 
-This search procedure is efficient in the presence of diamonds and does not loop indefinitely when there are cycles.
-{deftech}_Diamonds_ occur when there is more than one route to a given goal, and {deftech}_cycles_ are situations when two instances each could be solved if the other were solved.
-Diamonds occur regularly in practice when encoding mathematical concepts using type classes, and Lean's coercion feature {TODO}[link] naturally leads to cycles, e.g. between finite sets and finite multisets.
+该搜索过程在存在菱形时仍然高效，遇到循环时也不会无限循环。
+当到达同一目标的路径不止一条时，就会出现{deftech (key := "Diamonds")}_菱形_；而{deftech (key := "cycles")}_循环_则是两个实例各自在另一个实例得到解决后便可解决的情形。
+实践中，用类型类编码数学概念时经常会出现菱形，而 Lean 的强制类型转换功能 {TODO}[链接] 会自然地产生循环，例如有限集合与有限多重集合之间的循环。
 
-Instance synthesis can be tested using the {keywordOf Lean.Parser.Command.synth}`#synth` command.
-Additionally, {name}`inferInstance` and {name}`inferInstanceAs` can be used to synthesize an instance in a position where the instance itself is needed.
-{name}`inferInstance` with a type annotation and {name}`inferInstanceAs` are not equivalent; {name}`inferInstanceAs` {ref "instance-wrapping"}[preprocesses the synthesized instance] to prevent unintentional leakage of implementation details into interfaces.
+可以使用 {keywordOf Lean.Parser.Command.synth}`#synth` 命令测试实例合成。
+此外，可以在需要实例本身的位置使用 {name}`inferInstance` 和 {name}`inferInstanceAs` 合成实例。
+带类型标注的 {name}`inferInstance` 与 {name}`inferInstanceAs` 并不等价；{name}`inferInstanceAs` 会{ref "instance-wrapping"}[预处理合成出的实例]，以防实现细节无意间泄漏到接口中。
 
-{docstring inferInstance}
+{zhdocstring inferInstance ZhDoc.Classes.InstanceSynth.inferInstance}
 
-{docstring inferInstanceAs}
+{zhdocstring inferInstanceAs ZhDoc.Classes.InstanceSynth.inferInstanceAs}
 
-# Instance Search Summary
+# 实例搜索概要
+%%%
+tag := "The-Lean-Language-Reference--Type-Classes--Instance-Synthesis--Instance-Search-Summary"
+%%%
 
-Generally speaking, instance synthesis is a recursive search procedure that may, in general, backtrack arbitrarily.
-Synthesis may _succeed_ with an instance term, _fail_ if no such term can be found, or get _stuck_ if there is insufficient information.
-A detailed description of the instance synthesis algorithm is available in {citet tabledRes}[].
-An instance search problem is given by a type class applied to concrete arguments; these argument values may or may not be known.
-Instance search attempts every locally-bound variable whose type is a class, as well as each registered instance, in order of priority and definition.
-When candidate instances themselves have instance-implicit parameters, they impose further synthesis tasks.
+一般而言，实例合成是一种可能任意回溯的递归搜索过程。
+合成可能以一个实例项_成功_；若找不到这样的项，则会_失败_；若信息不足，则会_卡住_。
+{citet tabledRes}[] 中给出了实例合成算法的详细说明。
+实例搜索问题由应用于具体参数的类型类给出；这些参数值可能已知，也可能未知。
+实例搜索会按优先级和定义顺序，尝试每个类型为类的局部绑定变量以及每个已注册实例。
+当候选实例本身带有实例隐式参数时，它们会引入更多合成任务。
 
-A problem is only attempted when all of the input parameters to the type class are known.
-When a problem cannot yet be attempted, then that branch is stuck; progress in other subproblems may result in the problem becoming solvable.
-Output or semi-output parameters may be either known or unknown at the start of instance search.
-Output parameters are ignored when checking whether an instance matches the problem, while semi-output parameters are considered.
+只有当类型类的所有输入参数均已知时，才会尝试解决问题。
+若某个问题尚不能尝试，该分支便会卡住；其他子问题取得进展后，这个问题可能变得可解。
+实例搜索开始时，输出参数或半输出参数既可以已知，也可以未知。
+检查实例是否匹配问题时会忽略输出参数，但会考虑半输出参数。
 
-Every candidate solution for a given problem is saved in a table; this prevents infinite regress in case of cycles as well as exponential search overheads in the presence of diamonds (that is, multiple paths by which the same goal can be achieved).
-A branch of the search fails when any of the following occur:
- * All potential instances have been attempted, and the search space is exhausted.
- * The instance size limit specified by the option {option}`synthInstance.maxSize` is reached.
- * The synthesized value of an output parameter does not match the specified value in the search problem.
-Failed branches are not retried.
+给定问题的每个候选解都会保存在表中；这既能防止循环导致无限递归，也能避免菱形（即存在多条路径可达成同一目标）造成指数级搜索开销。
+出现以下任一情况时，搜索分支失败：
+ * 所有潜在实例均已尝试，搜索空间已耗尽。
+ * 达到选项 {option}`synthInstance.maxSize` 指定的实例大小上限。
+ * 输出参数的合成值与搜索问题中指定的值不匹配。
+失败的分支不会重试。
 
-If search would otherwise fail or get stuck, the search process attempts to use matching {tech}[default instances] in order of priority.
-For default instances, the input parameters do not need to be fully known, and may be instantiated by the instances parameter values.
-Default instances may take instance-implicit parameters, which induce further recursive search.
+若搜索原本会失败或卡住，搜索过程会按优先级尝试使用匹配的{tech (key := "default instances")}[默认实例]。
+对于默认实例，输入参数不必完全已知，可以用该实例的参数值进行实例化。
+默认实例可以接受实例隐式参数，这会引发进一步的递归搜索。
 
-Successful branches in which the problem is fully known (that is, in which there are no unsolved metavariables) are pruned, and further potentially-successful instances are not attempted, because no later instance could cause the previously-succeeding branch to fail.
+若成功分支中的问题已完全确定（即不存在未解决的元变量），该分支便会被剪枝，并且不再尝试其他可能成功的实例，因为后续实例不可能使先前已成功的分支转为失败。
 
-# Instance Search Problems
+# 实例搜索问题
 %%%
 tag := "instance-search"
 %%%
 
-Instance search occurs during the elaboration of (potentially nullary) function applications.
-Some of the implicit parameters' values are forced by others; for instance, an implicit type parameter may be solved using the type of a later value argument that is explicitly provided.
-Implicit parameters may also be solved using information from the expected type at that point in the program.
-The search for instance implicit arguments may make use of the implicit argument values that have been found, and may additionally solve others.
+实例搜索发生在函数应用（参数个数可能为零）的精译过程中。
+某些隐式参数的值会由其他参数强制确定；例如，可以利用稍后显式提供的值参数的类型来解决一个隐式类型参数。
+隐式参数也可以利用程序中该处的预期类型信息来解决。
+搜索实例隐式参数时，可以利用已找到的隐式参数值，也可能顺带解决其他隐式参数。
 
-Instance synthesis begins with the type of the instance-implicit parameter.
-This type must be the application of a type class to zero or more arguments; these argument values may be known or unknown when search begins.
-If an argument to a class is unknown, the search process will not instantiate it unless the corresponding parameter is {ref "class-output-parameters"}[marked as an output parameter], explicitly making it an output of the instance synthesis routine.
+实例合成从实例隐式参数的类型开始。
+该类型必须是类型类对零个或多个参数的应用；搜索开始时，这些参数值可能已知，也可能未知。
+若类的某个参数未知，搜索过程不会将其实例化，除非对应形参被{ref "class-output-parameters"}[标记为输出参数]，从而明确成为实例合成过程的输出。
 
-Search may succeed, fail, or get stuck; a stuck search may occur when an unknown argument value becoming known might enable progress to be made.
-Stuck searches may be re-invoked when the elaborator has discovered one of the previously-unknown implicit arguments.
-If this does not occur, stuck searches become failures.
+搜索可能成功、失败或卡住；如果某个未知参数值变为已知后可能推动搜索进展，搜索就可能卡住。
+当精译器确定了某个先前未知的隐式参数时，可能会重新调用卡住的搜索。
+若未发生这种情况，卡住的搜索就会转为失败。
 
-::::example "Tracing Instance Search"
+::::example "跟踪实例搜索"
 
-Setting the {option}`trace.Meta.synthInstance` option to {lean}`true` causes Lean to emit a trace of the process for synthesizing an instance of a type class.
-This trace can be used to understand how instance synthesis succeeds and why it fails.
+将 {option}`trace.Meta.synthInstance` 选项设为 {lean}`true`，会让 Lean 输出合成类型类实例的过程跟踪。
+该跟踪可用于理解实例合成如何成功以及为何失败。
 
 :::paragraph
-Here, we can see the steps Lean takes to conclude that there exists an element of the type {lean}`(Nat ⊕ Empty)` (specifically the element {lean}`Sum.inl 0`):
-Clicking a `▶` symbol expands that branch of the trace, and clicking the `▼` collapses an expanded branch.
+这里可以看到 Lean 为得出类型 {lean}`(Nat ⊕ Empty)` 存在元素（具体而言是元素 {lean}`Sum.inl 0`）这一结论而采取的步骤：
+点击 `▶` 符号会展开跟踪中的对应分支，点击 `▼` 则会折叠已展开的分支。
 
 ```lean -show
--- Hide Lake details that are intruding here
+-- 隐藏此处混入的 Lake 细节
 attribute [-instance] Lake.inhabitedOfNilTrace Lake.inhabitedOfMonadCycle
 ```
 
@@ -105,7 +110,7 @@ set_option trace.Meta.synthInstance true in
 ```
 
 ```comment
-IF THE LEAN OUTPUT BELOW CHANGES, IT MAY ALSO BE NECESSARY TO UPDATE THE NARRATIVE VERSION OF THIS STORY THAT FOLLOWS
+如果下方 LEAN 输出发生变化，可能还需要更新随后对此过程的叙述
 ```
 ```leanOutput trace (expandTrace := Meta.synthInstance) (expandTrace := Meta.synthInstance.apply) (expandTrace := Meta.synthInstance.resume)
 [Meta.synthInstance] ✅️ Nonempty (Sum Nat Empty)
@@ -147,45 +152,48 @@ IF THE LEAN OUTPUT BELOW CHANGES, IT MAY ALSO BE NECESSARY TO UPDATE THE NARRATI
 :::
 
 :::paragraph
-By exploring the trace, it is possible to follow the depth-first, backtracking search that Lean uses for type class instance search.
-This can take a little practice to get used to!
-In the example above, Lean follows these steps:
+通过查看跟踪，可以观察 Lean 在类型类实例搜索中采用的深度优先回溯搜索。
+要熟悉它可能需要一些练习！
+在上例中，Lean 依次执行以下步骤：
 
-* Lean considers the first goal, {lean}`Nonempty (Sum Nat Empty)`. Lean sees four ways of possibly satisfying this goal:
-  - The {name}`Sum.nonemptyRight` instance, which would create a sub-goal {lean}`Nonempty Empty`.
-  - The {name}`Sum.nonemptyLeft` instance, which would create a sub-goal {lean}`Nonempty Nat`.
-  - The {name}`instNonemptyOfMonad` instance, which would create two sub-goals {lean}`Monad (Sum Nat)` and {lean}`Nonempty Nat`.
-  - The {name}`instNonemptyOfInhabited` instance, which would create a sub-goal {lean}`Inhabited (Sum Nat Empty)`.
-* It applies {name}`Sum.nonemptyRight`, which succeeds, leaving a new goal: {lean}`Nonempty Empty`.
-* The first sub-goal, {lean}`Nonempty Empty`, is considered. Lean sees two ways of possibly satisfying this goal:
-  - The {name}`instNonemptyOfMonad` instance, which is rejected.
-    It can't be used because the type {lean}`Empty` is not the application of a monad to a type.
-  - The {name}`instNonemptyOfInhabited` instance, which would create a sub-goal {lean}`Inhabited Empty`.
-* The newly-generated sub-goal, {lean}`Inhabited Empty`, is considered.
-  Lean only sees one way of possibly satisfying this goal, {name}`instInhabitedOfMonad`, which is rejected.
-  As before, this is because the type {lean}`Empty` is not the application of a monad to a type.
-* At this point, there are no remaining options for achieving the original first sub-goal.
-  The search backtracks, using the instance {name}`Sum.nonemptyLeft`, which requires an instance of {lean}`Nonempty Nat`.
-  This search eventually succeeds, via the {inst}`Inhabited Nat` instance.
+* Lean 首先考虑目标 {lean}`Nonempty (Sum Nat Empty)`。Lean 发现有四种可能满足该目标的方式：
+  - {name}`Sum.nonemptyRight` 实例，它会产生子目标 {lean}`Nonempty Empty`。
+  - {name}`Sum.nonemptyLeft` 实例，它会产生子目标 {lean}`Nonempty Nat`。
+  - {name}`instNonemptyOfMonad` 实例，它会产生两个子目标 {lean}`Monad (Sum Nat)` 与 {lean}`Nonempty Nat`。
+  - {name}`instNonemptyOfInhabited` 实例，它会产生子目标 {lean}`Inhabited (Sum Nat Empty)`。
+* 它应用 {name}`Sum.nonemptyRight` 并成功，留下新目标 {lean}`Nonempty Empty`。
+* 接着考虑第一个子目标 {lean}`Nonempty Empty`。Lean 发现有两种可能满足该目标的方式：
+  - {name}`instNonemptyOfMonad` 实例，但它被拒绝。
+    它不能使用，因为类型 {lean}`Empty` 不是某个单子对类型的应用。
+  - {name}`instNonemptyOfInhabited` 实例，它会产生子目标 {lean}`Inhabited Empty`。
+* 接着考虑新产生的子目标 {lean}`Inhabited Empty`。
+  Lean 只发现一种可能满足该目标的方式，即 {name}`instInhabitedOfMonad`，但它被拒绝。
+  原因同前：类型 {lean}`Empty` 不是某个单子对类型的应用。
+* 此时，已经没有其他选项可以达成最初的第一个子目标。
+  搜索于是回溯，改用 {name}`Sum.nonemptyLeft` 实例，而它需要一个 {lean}`Nonempty Nat` 实例。
+  该搜索最终通过 {inst}`Inhabited Nat` 实例取得成功。
 :::
 
-The third and fourth original candidates are never considered.
-Once the search for {lean}`Nonempty Nat` succeeds, the {keywordOf Lean.Parser.Command.synth}`#synth` command finishes and outputs the solution:
+最初的第三、第四个候选项从未被考虑。
+一旦对 {lean}`Nonempty Nat` 的搜索成功，{keywordOf Lean.Parser.Command.synth}`#synth` 命令便会结束并输出解：
 ```leanOutput trace
 @Sum.nonemptyLeft Nat Empty (@instNonemptyOfInhabited Nat instInhabitedNat)
 ```
 ::::
 
-# Candidate Instances
+# 候选实例
+%%%
+tag := "The-Lean-Language-Reference--Type-Classes--Instance-Synthesis--Candidate-Instances"
+%%%
 
-Instance synthesis uses both local and global instances in its search.
-{deftech}_Local instances_ are those available in the local context; they may be either parameters to a function or locally defined with `let`. {TODO}[xref to docs for `let`]
-Local instances do not need to be indicated specially; any local variable whose type is a type class is a candidate for instance synthesis.
-{deftech}_Global instances_ are those available in the global environment; every global instance is a defined name with the {attr}`instance` attribute applied.{margin}[{keywordOf Lean.Parser.Command.declaration}`instance` declarations automatically apply the {attr}`instance` attribute.]
+实例合成在搜索中同时使用局部实例和全局实例。
+{deftech (key := "Local instances")}_局部实例_是局部上下文中可用的实例；它们可以是函数的参数，也可以用 `let` 在局部定义。{TODO}[指向 `let` 文档的交叉引用]
+局部实例无需特别标示；任何类型为类型类的局部变量都是实例合成的候选项。
+{deftech (key := "Global instances")}_全局实例_是全局环境中可用的实例；每个全局实例都是一个应用了 {attr}`instance` 属性的已定义名称。{margin}[{keywordOf Lean.Parser.Command.declaration}`instance` 声明会自动应用 {attr}`instance` 属性。]
 
 ::::keepEnv
-:::example "Local Instances"
-In this example, {lean}`addPairs` contains a locally-defined instance of {lean}`Add NatPair`:
+:::example "局部实例"
+在本例中，{lean}`addPairs` 包含一个局部定义的 {lean}`Add NatPair` 实例：
 ```lean
 structure NatPair where
   x : Nat
@@ -196,13 +204,13 @@ def addPairs (p1 p2 : NatPair) : NatPair :=
     ⟨fun ⟨x1, y1⟩ ⟨x2, y2⟩ => ⟨x1 + x2, y1 + y2⟩⟩
   p1 + p2
 ```
-The local instance is used for the addition, having been found by instance synthesis.
+实例合成找到该局部实例，并将其用于加法。
 :::
 ::::
 
 ::::keepEnv
-:::example "Local Instances Have Priority"
-Here, {lean}`addPairs` contains a locally-defined instance of {lean}`Add NatPair`, even though there is a global instance:
+:::example "局部实例优先"
+这里虽然已有全局实例，{lean}`addPairs` 仍包含一个局部定义的 {lean}`Add NatPair` 实例：
 ```lean
 structure NatPair where
   x : Nat
@@ -217,7 +225,7 @@ def addPairs (p1 p2 : NatPair) : NatPair :=
     ⟨fun _ _ => ⟨0, 0⟩⟩
   p1 + p2
 ```
-The local instance is selected instead of the global one:
+最终选择的是局部实例，而非全局实例：
 ```lean (name:=addPairsOut)
 #eval addPairs ⟨1, 2⟩ ⟨5, 2⟩
 ```
@@ -227,23 +235,23 @@ The local instance is selected instead of the global one:
 :::
 ::::
 
-# Instance Parameters and Synthesis
+# 实例参数与合成
 %%%
 tag := "instance-synth-parameters"
 %%%
 
-The search process for instances is largely governed by class parameters.
-Type classes take a certain number of parameters, and instances are tried during the search when their choice of parameters is _compatible_ with those in the class type for which the instance is being synthesized.
+实例的搜索过程主要由类参数支配。
+类型类接受一定数量的参数；搜索期间，如果某个实例所选的参数与当前正在合成实例的类类型中的参数_兼容_，就会尝试该实例。
 
-Instances themselves may also take parameters, but the role of instances' parameters in instance synthesis is very different.
-Instances' parameters represent either variables that may be instantiated by instance synthesis or further synthesis work to be done before the instance can be used.
-In particular, parameters to instances may be explicit, implicit, or instance-implicit.
-If they are instance implicit, then they induce further recursive instance searching, while explicit or implicit parameters must be solved by unification.
+实例本身也可以接受参数，但实例的参数在实例合成中扮演的角色大不相同。
+实例的参数要么表示可由实例合成实例化的变量，要么表示使用该实例前需要完成的进一步合成工作。
+具体而言，实例的参数可以是显式的、隐式的或实例隐式的。
+若参数是实例隐式的，就会引发进一步的递归实例搜索；而显式或隐式参数必须通过合一来解决。
 
 ::::keepEnv
-:::example "Implicit and Explicit Parameters to Instances"
-While instances typically take parameters either implicitly or instance-implicitly, explicit parameters may be filled out as if they were implicit during instance synthesis.
-In this example, {name}`aNonemptySumInstance` is found by synthesis, applied explicitly to {lean}`Nat`, which is needed to make it type-correct.
+:::example "实例的隐式参数与显式参数"
+虽然实例通常以隐式或实例隐式方式接受参数，但在实例合成过程中，显式参数也可以像隐式参数一样被填充。
+本例中，合成过程找到 {name}`aNonemptySumInstance`，并将它显式应用于 {lean}`Nat`，这是保证类型正确所必需的。
 ```lean
 instance aNonemptySumInstance
     (α : Type) {β : Type} [inst : Nonempty α] :
@@ -256,41 +264,41 @@ instance aNonemptySumInstance
 set_option pp.explicit true in
 #synth Nonempty (Nat ⊕ Empty)
 ```
-In the output, both the explicit argument {lean}`Nat` and the implicit argument {lean}`Empty` were found by unification with the search goal, while the {lean}`Nonempty Nat` instance was found via recursive instance synthesis.
+输出中，显式参数 {lean}`Nat` 和隐式参数 {lean}`Empty` 都是通过与搜索目标合一找到的，而 {lean}`Nonempty Nat` 实例则通过递归实例合成找到。
 ```leanOutput instSearch
 @aNonemptySumInstance Nat Empty (@instNonemptyOfInhabited Nat instInhabitedNat)
 ```
 :::
 ::::
 
-# Output Parameters
+# 输出参数
 %%%
 tag := "class-output-parameters"
 %%%
 
-By default, the parameters of a type class are considered to be _inputs_ to the search process.
-If the parameters are not known, then the search process gets stuck, because choosing an instance would require the parameters to have values that match those in the instance, which cannot be determined on the basis of incomplete information.
-In most cases, guessing instances would make instance synthesis unpredictable.
+默认情况下，类型类的参数被视为搜索过程的_输入_。
+如果参数未知，搜索过程就会卡住，因为选择实例要求参数值与该实例中的值匹配，而依据不完整的信息无法确定这些值。
+在大多数情况下，猜测实例会使实例合成变得不可预测。
 
-In some cases, however, the choice of one parameter should cause an automatic choice of another.
-For example, the overloaded membership predicate type class {name}`Membership` treats the type of elements of a data structure as an output, so that the type of element can be determined by the type of data structure at a use site, instead of requiring that there be sufficient type annotations to determine _both_ types prior to starting instance synthesis.
-An element of a {lean}`List Nat` can be concluded to be a {lean}`Nat` simply on the basis of its membership in the list.
+然而在某些情况下，一个参数的选择应当自动决定另一个参数。
+例如，重载成员关系谓词的类型类 {name}`Membership` 将数据结构中元素的类型视为输出，因此在使用位置可以由数据结构的类型确定元素类型，而无需在实例合成开始前提供足够的类型标注来同时确定_两种_类型。
+仅凭某个元素属于 {lean}`List Nat`，就可以断定该元素是 {lean}`Nat`。
 
 ```signature -show
--- Test the above claim
+-- 测试上述说法
 Membership.{u, v} (α : outParam (Type u)) (γ : Type v) : Type (max u v)
 ```
 
-Type class parameters can be declared as outputs by wrapping their types in the {name}`outParam` {tech}[gadget].
-When a class parameter is an {deftech}_output parameter_, instance synthesis will not require that it be known; in fact, any existing value is ignored completely.
-The first instance that matches the input parameters is selected, and that instance's assignment of the output parameter becomes its value.
-If there was a pre-existing value, then it is compared with the assignment after synthesis is complete, and it is an error if they do not match.
+可以用 {name}`outParam` 这一{tech (key := "gadget")}[小工具]包装类型类参数的类型，从而将参数声明为输出。
+当类参数是{deftech (key := "output parameter")}_输出参数_时，实例合成不会要求它已知；事实上，任何已有值都会被完全忽略。
+会选中第一个匹配输入参数的实例，并将该实例为输出参数指定的值作为其值。
+如果原先已有值，则在合成完成后将其与指定值比较；二者不匹配即为错误。
 
-{docstring outParam}
+{zhdocstring outParam ZhDoc.Classes.InstanceSynth.outParam}
 
-::::example "Output Parameters and Stuck Search"
+::::example "输出参数与卡住的搜索"
 :::keepEnv
-This serialization framework provides a way to convert values to some underlying storage type:
+这个序列化框架提供了将值转换为某种底层存储类型的方法：
 ```lean
 class Serialize (input output : Type) where
   ser : input → output
@@ -305,11 +313,11 @@ instance [Serialize α γ] [Serialize β γ] [Append γ] :
     | (x, y) => ser x ++ ser y
 ```
 
-In this example, the output type is unknown.
+在本例中，输出类型未知。
 ```lean +error (name := noOutputType)
 example := ser (2, 3)
 ```
-Instance synthesis can't select the {lean}`Serialize Nat String` instance, and thus the {lean}`Append String` instance, because that would require instantiating the output type as {lean}`String`, so the search gets stuck:
+实例合成无法选择 {lean}`Serialize Nat String` 实例，因而也无法选择 {lean}`Append String` 实例，因为这要求将输出类型实例化为 {lean}`String`，所以搜索会卡住：
 ```leanOutput noOutputType
 typeclass instance problem is stuck
   Serialize (Nat × Nat) ?m.5
@@ -318,13 +326,13 @@ Note: Lean will not try to resolve this typeclass instance problem because the s
 
 Hint: Adding type annotations and supplying implicit arguments to functions can give Lean more information for typeclass resolution. For example, if you have a variable `x` that you intend to be a `Nat`, but Lean reports it as having an unresolved type like `?m`, replacing `x` with `(x : Nat)` can get typeclass resolution un-stuck.
 ```
-As the message indicates, one way to fix the problem is to supply an expected type:
+正如消息所示，一种修复方法是提供预期类型：
 ```lean
 example : String := ser (2, 3)
 ```
 :::
 :::keepEnv
-The other is to make the output type into an output parameter:
+另一种方法是将输出类型改为输出参数：
 ```lean
 class Serialize (input : Type) (output : outParam Type) where
   ser : input → output
@@ -338,7 +346,7 @@ instance [Serialize α γ] [Serialize β γ] [Append γ] :
   ser
     | (x, y) => ser x ++ ser y
 ```
-Now, instance synthesis is free to select the {lean}`Serialize Nat String` instance, which solves the unknown implicit `output` parameter of {name}`ser`:
+现在，实例合成可以自由选择 {lean}`Serialize Nat String` 实例，从而解决 {name}`ser` 的未知隐式参数 `output`：
 ```lean
 example := ser (2, 3)
 ```
@@ -346,9 +354,9 @@ example := ser (2, 3)
 ::::
 
 ::::keepEnv
-:::example "Output Parameters with Pre-Existing Values"
-The class {name}`OneSmaller` represents a way to transform non-maximal elements of a type into elements of a type that has one fewer elements.
-There are two separate instances that can match an input type {lean}`Option Bool`, with different outputs:
+:::example "已有值的输出参数"
+类 {name}`OneSmaller` 表示一种转换方式：将某类型的非最大元素转换为元素数量少一个的类型中的元素。
+有两个不同的实例都能匹配输入类型 {lean}`Option Bool`，但它们的输出不同：
 ```lean
 class OneSmaller (α : Type) (β : outParam Type) where
   biggest : α
@@ -370,7 +378,7 @@ instance : OneSmaller Bool Unit where
   shrink
     | false, _ => ()
 ```
-Because instance synthesis selects the most recently defined instance, the following code is an error:
+由于实例合成会选择最近定义的实例，以下代码会报错：
 ```lean +error (name := nosmaller)
 #check OneSmaller.shrink (β := Bool) (some false) sorry
 ```
@@ -380,23 +388,23 @@ failed to synthesize instance of type class
 
 Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
 ```
-The {lean}`OneSmaller (Option Bool) (Option Unit)` instance was selected during instance synthesis, without regard to the supplied value of `β`.
+实例合成选择了 {lean}`OneSmaller (Option Bool) (Option Unit)` 实例，而没有考虑所提供的 `β` 值。
 :::
 ::::
 
-{deftech}_Semi-output parameters_ are like output parameters in that they are not required to be known prior to synthesis commencing; unlike output parameters, their values are taken into account when selecting instances.
+{deftech (key := "Semi-output parameters")}_半输出参数_与输出参数相似，都无需在合成开始前已知；但与输出参数不同，选择实例时会考虑半输出参数的值。
 
-{docstring semiOutParam}
+{zhdocstring semiOutParam ZhDoc.Classes.InstanceSynth.semiOutParam}
 
-Semi-output parameters impose a requirement on instances: each instance of a class with semi-output parameters should determine the values of its semi-output parameters.
+半输出参数对实例施加了一项要求：带有半输出参数的类的每个实例，都应当确定其半输出参数的值。
 :::TODO
-What goes wrong if they can't?
+如果无法确定，会出现什么问题？
 :::
 
 ::::keepEnv
-:::example "Semi-Output Parameters with Pre-Existing Values"
-The class {name}`OneSmaller` represents a way to transform non-maximal elements of a type into elements of a type that one fewer elements.
-It has two separate instances that can match an input type {lean}`Option Bool`, with different outputs:
+:::example "已有值的半输出参数"
+类 {name}`OneSmaller` 表示一种转换方式：将某类型的非最大元素转换为元素数量少一个的类型中的元素。
+它有两个不同的实例都能匹配输入类型 {lean}`Option Bool`，但输出不同：
 ```lean
 class OneSmaller (α : Type) (β : semiOutParam Type) where
   biggest : α
@@ -419,7 +427,7 @@ instance : OneSmaller Bool Unit where
     | false, _ => ()
 ```
 
-Because instance synthesis takes semi-output parameters into account when selecting instances, the {lean}`OneSmaller (Option Bool) (Option Unit)` instance is passed over due to the supplied value for `β`:
+由于实例合成在选择实例时会考虑半输出参数，所提供的 `β` 值使 {lean}`OneSmaller (Option Bool) (Option Unit)` 实例被跳过：
 ```lean (name := nosmaller2)
 #check OneSmaller.shrink (β := Bool) (some false) sorry
 ```
@@ -429,64 +437,70 @@ OneSmaller.shrink (some false) ⋯ : Bool
 :::
 ::::
 
-# Default Instances
+# 默认实例
 %%%
 tag := "default-instance-synth"
 %%%
 
-When instance synthesis would otherwise fail, having not selected an instance, the {deftech}_default instances_ specified using the {attr}`default_instance` attribute are attempted in order of priority.
-When priorities are equal, more recently-defined default instances are chosen before earlier ones.
-The first default instance that causes the search to succeed is chosen.
+当实例合成没有选中实例、原本将要失败时，会按优先级尝试使用 {attr}`default_instance` 属性指定的{deftech (key := "default instances")}_默认实例_。
+优先级相同时，较新定义的默认实例先于较早定义的默认实例。
+会选择第一个使搜索成功的默认实例。
 
-Default instances may induce further recursive instance search if the default instances themselves have instance-implicit parameters.
-If the recursive search fails, the search process backtracks and the next default instance is tried.
+如果默认实例本身带有实例隐式参数，就可能引发进一步的递归实例搜索。
+若递归搜索失败，搜索过程就会回溯并尝试下一个默认实例。
 
-# “Morally Canonical” Instances
+# “实质上典范的”实例
+%%%
+tag := "The-Lean-Language-Reference--Type-Classes--Instance-Synthesis--___Morally-Canonical___-Instances"
+%%%
 
-During instance synthesis, if a goal is fully known (that is, contains no metavariables) and search succeeds, no further instances will be attempted for that same goal.
-In other words, when search succeeds for a goal in a way that can't be refuted by a subsequent increase in information, the goal will not be attempted again, even if there are other instances that could potentially have been used.
-This optimization can prevent a failure in a later branch of an instance synthesis search from causing spurious backtracking that replaces a fast solution from an earlier branch with a slow exploration of a large state space.
+在实例合成期间，如果目标已完全确定（即不含元变量）且搜索成功，就不会再为同一目标尝试其他实例。
+换言之，如果对某个目标的搜索成功，且后续信息增加也不可能推翻这一成功，那么即便还存在其他可能可用的实例，也不会再次尝试该目标。
+这一优化可以防止实例合成搜索后续分支中的失败引发虚假回溯，避免用对巨大状态空间的缓慢探索替换先前分支中的快速解。
 
-The optimization relies on the assumption that instances are {deftech}_morally canonical_.
-Even if there is more than one potential implementation of a given type class's overloaded operations, or more than one way to synthesize an instance due to diamonds, _any discovered instance should be considered as good as any other_.
-In other words, there's no need to consider _all_ potential instances so long as one of them has been guaranteed to work.
-The optimization may be disabled with the backwards-compatibility option {option}`backward.synthInstance.canonInstances`, which may be removed in a future version of Lean.
+该优化依赖于实例是{deftech (key := "morally canonical")}_实质上典范的_这一假设。
+即使给定类型类的重载操作存在多个潜在实现，或由于菱形而存在多种实例合成方式，也应认为_任何找到的实例都与其他实例同样好_。
+换言之，只要保证其中一个实例可用，就无需考虑_所有_潜在实例。
+可以用向后兼容选项 {option}`backward.synthInstance.canonInstances` 禁用该优化；此选项可能会在未来版本的 Lean 中移除。
 
-Code that uses instance-implicit parameters should be prepared to consider all instances as equivalent.
-In other words, it should be robust in the face of differences in synthesized instances.
-When the code relies on instances _in fact_ being equivalent, it should either explicitly manipulate instances (e.g. via local definitions, by saving them in structure fields, or having a structure inherit from the appropriate class) or it should make this dependency explicit in the type, so that different choices of instance lead to incompatible types.
+使用实例隐式参数的代码应当准备好将所有实例视为等价。
+换言之，它应当能够稳健应对合成实例之间的差异。
+如果代码依赖实例_事实上_等价，那么它要么应显式操纵实例（例如通过局部定义、将实例保存在结构字段中，或让结构继承适当的类），要么应在类型中明确体现这一依赖，使不同的实例选择产生不兼容的类型。
 
-# Wrapping Synthesized Instances
+# 包装合成出的实例
 %%%
 tag := "instance-wrapping"
 %%%
 
-After {name}`inferInstanceAs` or the default {keywordOf Lean.Parser.Command.declaration}`deriving` handler synthesize an instance, the instance body is processed to ensure that its type and the types of its fields match the expected types at {name Lean.Meta.TransparencyMode.instances}`instances` transparency, which unfolds only {tech}[reducible] and {tech}[implicit reducible] definitions.
-This processing prevents the internals of the instance's definition from being leaked when the instance is reduced at lower than {tech}[semireducible] transparency, which could induce unintended dependencies between different parts of a code base.
+在 {name}`inferInstanceAs` 或默认的 {keywordOf Lean.Parser.Command.declaration}`deriving` 处理器合成实例后，会处理实例体，以确保其实例类型和各字段类型在 {name Lean.Meta.TransparencyMode.instances}`instances` 透明度下与预期类型匹配；该透明度只展开{tech (key := "reducible")}[可约]定义和{tech (key := "implicit reducible")}[隐式可约]定义。
+这一处理可以防止实例在低于{tech (key := "semireducible")}[半可约]透明度下归约时泄漏其实例定义的内部细节，因为这种泄漏可能在代码库的不同部分之间引入非预期依赖。
 
-If the expected type is a proposition, the instance is wrapped in an auxiliary theorem.
-Otherwise, the synthesized instance is reduced to weak head normal form at {name Lean.Meta.TransparencyMode.instances}`instances` transparency.
-If the result is a constructor application, each field is processed:
-* Sub-instance fields are replaced by a freshly synthesized instance for their type when one can be found.
-  This ensures that the instance is the same as that which would be found by client code that synthesized the instance, avoiding a situation in which multiple paths to an instance (called _diamonds_) yield instances that are not {tech (key := "definitional equality")}[definitionally equal] to one another other.
-  When synthesis does not find an instance, the field is recursively wrapped using this procedure.
-* Proof fields whose types are not definitionally equal to the expected type are wrapped in auxiliary theorems that hide the difference in types.
-* Data fields whose types do not match the expected type are wrapped in auxiliary definitions with the appropriate reducibility.
+如果预期类型是命题，实例会被包装在一个辅助定理中。
+否则，合成出的实例会在 {name Lean.Meta.TransparencyMode.instances}`instances` 透明度下归约到弱头范式。
+如果结果是构造器应用，则会处理每个字段：
+* 如果能为子实例字段的类型找到新合成的实例，就用该实例替换该字段。
+  这可确保该实例与客户端代码自行合成实例时找到的实例相同，避免通往实例的多条路径（称为_菱形_）产生彼此并非{tech (key := "definitional equality")}[定义相等]的实例。
+  如果合成没有找到实例，就用此过程递归包装该字段。
+* 类型与预期类型并非定义相等的证明字段，会被包装在辅助定理中，以隐藏类型差异。
+* 类型与预期类型不匹配的数据字段，会被包装在具有适当可约性的辅助定义中。
 
-If the instance does not reduce to a constructor application and its type does not match the expected type, then it is wrapped in an auxiliary definition with the appropriate reducibility.
+如果实例无法归约为构造器应用且其类型与预期类型不匹配，就会被包装在具有适当可约性的辅助定义中。
 
-# Options
+# 选项
+%%%
+tag := "The-Lean-Language-Reference--Type-Classes--Instance-Synthesis--Options"
+%%%
 
-{optionDocs backward.synthInstance.canonInstances}
+{zhOptionDocs backward.synthInstance.canonInstances ZhDoc.Classes.InstanceSynth.Option.backward.synthInstance.canonInstances}
 
-{optionDocs synthInstance.maxHeartbeats}
+{zhOptionDocs synthInstance.maxHeartbeats ZhDoc.Classes.InstanceSynth.Option.synthInstance.maxHeartbeats}
 
-{optionDocs synthInstance.maxSize}
+{zhOptionDocs synthInstance.maxSize ZhDoc.Classes.InstanceSynth.Option.synthInstance.maxSize}
 
-{optionDocs backward.inferInstanceAs.wrap}
+{zhOptionDocs backward.inferInstanceAs.wrap ZhDoc.Classes.InstanceSynth.Option.backward.inferInstanceAs.wrap}
 
-{optionDocs backward.inferInstanceAs.wrap.reuseSubInstances}
+{zhOptionDocs backward.inferInstanceAs.wrap.reuseSubInstances ZhDoc.Classes.InstanceSynth.Option.backward.inferInstanceAs.wrap.reuseSubInstances}
 
-{optionDocs backward.inferInstanceAs.wrap.instances}
+{zhOptionDocs backward.inferInstanceAs.wrap.instances ZhDoc.Classes.InstanceSynth.Option.backward.inferInstanceAs.wrap.instances}
 
-{optionDocs backward.inferInstanceAs.wrap.data}
+{zhOptionDocs backward.inferInstanceAs.wrap.data ZhDoc.Classes.InstanceSynth.Option.backward.inferInstanceAs.wrap.data}
