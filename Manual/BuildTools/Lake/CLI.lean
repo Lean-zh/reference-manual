@@ -262,6 +262,9 @@ fun o =>
 ```
 
 # 选项
+%%%
+tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Options"
+%%%
 
 Lake 的命令行界面提供了许多全局选项以及执行重要任务的子命令。
 单字符标志不能组合；`-HR` 不等于 `-H -R`。
@@ -337,6 +340,9 @@ Lake 的命令行界面提供了许多全局选项以及执行重要任务的子
   尝试下载支持的包的构建缓存
 
 # 控制输出
+%%%
+tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Controlling-Output"
+%%%
 
 这些选项允许控制在构建时生成的{tech (key := "log")}[日志]。
 除了显示或隐藏消息之外，还可以使构建在发出警告甚至信息时失败；这可用于强制实施不允许在构建期间输出的风格指南。
@@ -406,6 +412,9 @@ tag := "automatic-toolchain-updates"
 
 
 # 创建包
+%%%
+tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Creating-Packages"
+%%%
 
 ```lakeHelp "new"
 Create a Lean package in a new directory
@@ -466,6 +475,9 @@ version of the configuration file, respectively. The default is TOML.
 :::
 
 # 构建与运行
+%%%
+tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Building-and-Running"
+%%%
 
 ```lakeHelp "build"
 Build targets
@@ -714,6 +726,9 @@ the workspace's root package's additional Lean arguments and the given args
 :::
 
 # 模块导入
+%%%
+tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Module-Imports"
+%%%
 
 ```lakeHelp shake
 Minimize imports in Lean source files
@@ -815,11 +830,17 @@ ANNOTATIONS:
 ::::
 
 # 开发工具
+%%%
+tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Development-Tools"
+%%%
 
 Lake 包含了对指定标准开发工具和工作流的支持。
 在命令行上，可以使用适当的 `lake` 子命令调用这些工具。
 
 ## 测试和代码检查
+%%%
+tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Development-Tools--Tests-and-Linters"
+%%%
 
 ```lakeHelp test
 Test the workspace's root package using its configured test driver
@@ -1015,6 +1036,9 @@ package or its dependencies. It merely verifies that one is specified.
 
 
 ## 脚本
+%%%
+tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Development-Tools--Scripts"
+%%%
 
 ```lakeHelp script
 Manage Lake scripts
@@ -1074,6 +1098,9 @@ A bare `lake run` command will run the default script(s) of the root package
 
 
 ## 语言服务器
+%%%
+tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Development-Tools--Language-Server"
+%%%
 
 ```lakeHelp serve
 Start the Lean language server
@@ -1093,6 +1120,9 @@ with the package configuration's `moreServerArgs` field and `args`.
 :::
 
 # 依赖管理
+%%%
+tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Dependency-Management"
+%%%
 
 ```lakeHelp update
 Update dependencies and save them to the manifest
@@ -1127,6 +1157,9 @@ A bare `lake update` will upgrade all dependencies.
 :::
 
 # 打包和分发
+%%%
+tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Packaging-and-Distribution"
+%%%
 
 ```lakeHelp "upload"
 Upload build artifacts to a GitHub release
@@ -1144,6 +1177,9 @@ then uploads the asset to the pre-existing GitHub release `tag` using `gh`.
 :::
 
 ## 缓存的云端构建
+%%%
+tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Packaging-and-Distribution--Cached-Cloud-Builds"
+%%%
 
 *这些命令仍然是实验性的。*
 它们可能会在 Lake 的未来版本中根据用户反馈发生变化。
@@ -1187,6 +1223,9 @@ the package's `buildArchive` in its Lake directory (`.lake`).
 
 
 # 本地缓存
+%%%
+tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Local-Caches"
+%%%
 
 {lake}`cache get`、{lake}`cache put` 和 {lake}`cache add` 用于与远程缓存服务器交互。
 这些命令是*实验性的*，并且仅在启用了{ref "lake-cache"}[本地缓存]时有用。
@@ -1569,6 +1608,9 @@ specify it with `--rev`.
 
 
 # 配置文件
+%%%
+tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Configuration-Files"
+%%%
 
 
 ```lakeHelp "translate-config"

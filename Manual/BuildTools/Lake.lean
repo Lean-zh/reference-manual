@@ -28,6 +28,7 @@ open Lean.Elab.Tactic.GuardMsgs.WhitespaceMode
 #doc (Manual) "Lake" =>
 %%%
 tag := "lake"
+file := "Lake"
 %%%
 
 Lake 是标准的 Lean 构建工具。
@@ -241,6 +242,9 @@ Lake 的 {deftech (key := "package overrides")}_包覆盖_ 允许将包依赖从
 :::
 
 ## 构建
+%%%
+tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Concepts-and-Terminology--Builds"
+%%%
 
 :::paragraph
 生成所需的 {tech (key := "artifact")}[工件]，比如 {tech (key := ".olean file")}[`.olean` 文件] 或可执行二进制文件，被称为 {deftech (key := "build")}_构建_。
@@ -1433,6 +1437,9 @@ Lake 支持将构建工件（即归档后的构建目录）上传到包的 GitHu
 可以使用 {envVar}`LAKE_NO_CACHE` 环境变量来禁用此功能。
 
 ### 下载
+%%%
+tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Concepts-and-Terminology--GitHub-Release-Builds--Downloading"
+%%%
 
 要下载工件，应配置包选项 `releaseRepo` 和 `buildArchive`，使其指向托管发布版本的 GitHub 仓库以及其中正确的工件名称（如果默认设置不充分）。
 然后，设置 `preferReleaseBuild := true`，指示 Lake 将其作为额外的包依赖项获取并解包。
@@ -1445,6 +1452,9 @@ Lake 在内部使用 `curl` 下载发布版本，并使用 `tar` 将其解包，
 该机制在技术上不仅限于 GitHub：任何使用相同 URL 方案的 Git 托管平台同样适用。
 
 ### 上传
+%%%
+tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Concepts-and-Terminology--GitHub-Release-Builds--Uploading"
+%%%
 
 要将构建的包作为工件上传到 GitHub 发布版本，Lake 提供了 {lake}`upload` 命令作为便捷的简写。
 此命令使用 `tar` 将包的构建目录打包为归档，并使用 `gh release upload` 将其附加到指定标签下预先存在的 GitHub 发布版本中。
@@ -1479,6 +1489,9 @@ tag := "lake-cache-remote"
 它追踪源代码文件级别、{tech (key := ".olean files")}[`.olean` 文件] 以及目标代码级别的构建产物，而不是整个包级别的。
 
 ### 映射
+%%%
+tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Concepts-and-Terminology--Artifact-Caches--Mappings"
+%%%
 
 当传递 `-o` 选项时，{lake}`build` 会追踪用于生成每个构建产物的输入。
 它们被存储为 JSON 行格式的 {deftech (key := "mappings file")}_映射文件_，文件中每一行都必须是一个有效的 JSON 对象。
@@ -1487,6 +1500,9 @@ tag := "lake-cache-remote"
 {lake}`cache put` 命令从本地缓存把映射文件中的构建产物上传到远程缓存。
 
 ### 配置
+%%%
+tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Concepts-and-Terminology--Artifact-Caches--Configuration"
+%%%
 
 :::paragraph
 使用以下环境变量配置远程工件缓存：
@@ -1510,6 +1526,9 @@ tag := "lake-api"
 {docstring Lake.ScriptM}
 
 ## 访问环境
+%%%
+tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Script-API-Reference--Accessing-the-Environment"
+%%%
 
 提供对当前 Lake 环境信息（例如 Lean、Lake 以及其它工具的位置）访问权限的单子具备 {name Lake.MonadLakeEnv}`MonadLakeEnv` 实例。
 Lake API 中的所有单子皆是如此，包括 {name Lake.ScriptM}`ScriptM`。
@@ -1527,6 +1546,9 @@ Lake API 中的所有单子皆是如此，包括 {name Lake.ScriptM}`ScriptM`。
 {docstring Lake.getElanToolchain}
 
 ### 搜索路径辅助函数
+%%%
+tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Script-API-Reference--Accessing-the-Environment--Search-Path-Helpers"
+%%%
 
 {docstring Lake.getEnvLeanPath}
 
@@ -1535,6 +1557,9 @@ Lake API 中的所有单子皆是如此，包括 {name Lake.ScriptM}`ScriptM`。
 {docstring Lake.getEnvSharedLibPath}
 
 ### Elan 安装辅助函数
+%%%
+tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Script-API-Reference--Accessing-the-Environment--Elan-Install-Helpers"
+%%%
 
 {docstring Lake.getElanInstall?}
 
@@ -1543,6 +1568,9 @@ Lake API 中的所有单子皆是如此，包括 {name Lake.ScriptM}`ScriptM`。
 {docstring Lake.getElan?}
 
 ### Lean 安装辅助函数
+%%%
+tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Script-API-Reference--Accessing-the-Environment--Lean-Install-Helpers"
+%%%
 
 {docstring Lake.getLeanInstall}
 
@@ -1569,6 +1597,9 @@ Lake API 中的所有单子皆是如此，包括 {name Lake.ScriptM}`ScriptM`。
 {docstring Lake.getLeanCc?}
 
 ### Lake 安装辅助函数
+%%%
+tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Script-API-Reference--Accessing-the-Environment--Lake-Install-Helpers"
+%%%
 
 {docstring Lake.getLakeInstall}
 
@@ -1581,6 +1612,9 @@ Lake API 中的所有单子皆是如此，包括 {name Lake.ScriptM}`ScriptM`。
 {docstring Lake.getLake}
 
 ## 访问工作区
+%%%
+tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Script-API-Reference--Accessing-the-Workspace"
+%%%
 
 提供对当前 Lake 工作区信息访问权限的单子具备 {name Lake.MonadWorkspace}`MonadWorkspace` 实例。
 特别是，有针对 {name Lake.ScriptM}`ScriptM` 和 {name Lake.LakeM}`LakeM` 的实例。

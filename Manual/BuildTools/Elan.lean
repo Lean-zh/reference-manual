@@ -23,6 +23,7 @@ open Lean.Elab.Tactic.GuardMsgs.WhitespaceMode
 %%%
 tag := "elan"
 shortContextTitle := "Elan"
+file := "Managing-Toolchains-with-Elan"
 %%%
 
 Elan 是 Lean 工具链管理器。

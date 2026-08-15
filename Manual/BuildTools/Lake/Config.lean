@@ -75,6 +75,9 @@ TOML 文件表示将键映射到值的_表_。
 
 
 ## 包配置
+%%%
+tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Declarative-TOML-Format--Package-Configuration"
+%%%
 
 `lakefile.toml` 的顶层内容指定适用于包本身的选项，包括名称和版本等元数据、{tech (key := "workspace")}[工作区]中文件的位置，以及用于所有{tech (key := "targets")}[目标]的编译器标志等。
 唯一的必填字段是 `name`，它声明包的名称。
@@ -383,6 +386,9 @@ name = "Sorting"
 :::::
 
 ## 依赖项
+%%%
+tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Declarative-TOML-Format--Dependencies"
+%%%
 
 依赖项在包配置的 {toml}`[[require]]` 字段数组中指定，其中同时指定每个包的名称和来源。
 来源有三类：
@@ -554,6 +560,9 @@ source = {type = "git", url = "https://example.com/example.git"}
 :::::
 
 ## 库目标
+%%%
+tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Declarative-TOML-Format--Library-Targets"
+%%%
 
 库目标应写在 `lean_lib` 表数组中。
 
@@ -654,6 +663,9 @@ precompileModules = true
 :::::
 
 ## 可执行文件目标
+%%%
+tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Declarative-TOML-Format--Executable-Targets"
+%%%
 
 :::: tomlTableDocs "lean_exe" "可执行文件目标" Lake.LeanExeConfig (skip := backend) (skip := globs) (skip := nativeFacets)
 :::tomlField Lake.LeanExeConfig name "可执行文件名称" "可执行文件名称" String
@@ -777,6 +789,9 @@ open Lean (NameMap)
 ```
 
 ## 声明式字段
+%%%
+tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Lean-Format--Declarative-Fields"
+%%%
 
 Lean 配置格式的声明式子集使用声明字段序列来指定配置选项。
 
@@ -790,6 +805,9 @@ $_ := $_
 :::
 
 ## 包
+%%%
+tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Lean-Format--Packages"
+%%%
 ::::syntax command (title := "包配置")
 ```grammar
 $[$_:docComment]?
@@ -830,6 +848,9 @@ post_update $[$name]? $v
 
 
 ## 依赖项
+%%%
+tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Lean-Format--Dependencies"
+%%%
 
 依赖项使用 {keywordOf Lake.DSL.requireDecl}`require` 声明指定。
 
@@ -865,6 +886,9 @@ from git $t $[@ $t]? $[/ $t]?
 
 
 ## 目标
+%%%
+tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Lean-Format--Targets"
+%%%
 
 
 
@@ -882,6 +906,9 @@ default_target
 :::
 
 ### 库
+%%%
+tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Lean-Format--Targets--Libraries"
+%%%
 
 
 :::syntax command (title := "库目标")
@@ -920,6 +947,9 @@ $[where
 {docstring Lake.LeanLibConfig}
 
 ### 可执行文件
+%%%
+tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Lean-Format--Targets--Executables"
+%%%
 
 :::syntax command (title := "可执行文件目标")
 
@@ -953,6 +983,9 @@ $[where
 {docstring Lake.LeanExeConfig}
 
 ### 外部库
+%%%
+tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Lean-Format--Targets--External-Libraries"
+%%%
 
 由于外部库可以用任意语言编写并需要任意构建步骤，它们被定义为在 {name Lake.FetchM}`FetchM` 单子中编写、生成 {name Lake.Job}`Job` 的程序。
 外部库目标应生成一个执行构建并返回所得静态库位置的构建作业。
@@ -973,6 +1006,9 @@ $[where $_*]?
 :::
 
 ### 自定义目标
+%%%
+tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Lean-Format--Targets--Custom-Targets"
+%%%
 
 可以使用 Lake API，以自定义目标定义任意增量构建的产物。
 
@@ -990,6 +1026,9 @@ $[where $_*]?
 :::
 
 ### 自定义分面
+%%%
+tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Lean-Format--Targets--Custom-Facets"
+%%%
 
 自定义分面允许从模块、库或包增量构建额外产物。
 
@@ -1042,6 +1081,9 @@ $[where $_*]?
 :::
 
 ## 配置值类型
+%%%
+tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Lean-Format--Configuration-Value-Types"
+%%%
 
 {docstring Lake.BuildType}
 
@@ -1095,6 +1137,9 @@ $_:name".+"
 {docstring Lake.Backend}
 
 ## 脚本
+%%%
+tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Lean-Format--Scripts"
+%%%
 
 Lake 脚本用于自动化需要访问包配置、但不参与从代码增量构建产物的任务。
 脚本在 {name Lake.ScriptM}`ScriptM` 单子中运行；它是在 {name}`IO` 上叠加一个提供包配置访问能力的{tech (key := "reader monad")}[读取器单子]{tech (key := "monad transformer")}[变换器]。
@@ -1135,6 +1180,9 @@ default_script
 
 
 ## 实用工具
+%%%
+tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Lean-Format--Utilities"
+%%%
 
 :::syntax term (title := "当前目录")
 ```grammar
