@@ -21,6 +21,9 @@ set_option pp.rawOnError true
 set_option linter.unusedVariables false
 
 #doc (Manual) "恒等" =>
+%%%
+tag := "The-Lean-Language-Reference--Functors___-Monads-and--do--Notation--Varieties-of-Monads--Identity"
+%%%
 
 恒等单子 {name}`Id` 完全没有任何作用。
 {name}`Id` 以及对应的 {name}`pure` 实现都是恒等函数，而 {name}`bind` 是反向函数应用。

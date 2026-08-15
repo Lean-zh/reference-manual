@@ -30,6 +30,9 @@ tag := "state-monads"
 即便是使用元组的实现，由于 Lean 会在值具有唯一引用时采用修改，其运行时实际上也可能使用修改；但这要求编程风格优先使用 {name}`modify` 和 {name}`modifyGet`，而非 {name}`get` 和 {name}`set`。
 
 # 通用状态 API
+%%%
+tag := "The-Lean-Language-Reference--Functors___-Monads-and--do--Notation--Varieties-of-Monads--State--General-State-API"
+%%%
 
 {docstring MonadState}
 
@@ -50,6 +53,9 @@ tag := "state-monads"
 {docstring modifyGetThe}
 
 # 基于元组的状态单子
+%%%
+tag := "The-Lean-Language-Reference--Functors___-Monads-and--do--Notation--Varieties-of-Monads--State--Tuple-Based-State-Monads"
+%%%
 
 ```lean -show
 variable {α σ : Type u}
@@ -85,6 +91,9 @@ variable {α σ : Type u}
 {docstring StateT.pure}
 
 # 延续传递风格的状态单子
+%%%
+tag := "The-Lean-Language-Reference--Functors___-Monads-and--do--Notation--Varieties-of-Monads--State--State-Monads-in-Continuation-Passing-Style"
+%%%
 
 延续传递风格的状态单子把有状态计算表示为函数：对于任意类型，该函数接受初始状态和一个延续（建模为函数），而延续接受一个值和更新后的状态。
 这种类型的一个例子是 {lean}`(δ : Type u) → σ → (α → σ → δ) → δ`，不过 {lean}`StateCpsT` 是可应用于任意单子的变换器。
@@ -107,6 +116,9 @@ variable {α σ : Type u}
 {docstring StateCpsT.run}
 
 # 基于可变引用的状态单子
+%%%
+tag := "The-Lean-Language-Reference--Functors___-Monads-and--do--Notation--Varieties-of-Monads--State--State-Monads-from-Mutable-References"
+%%%
 
 ```lean -show
 variable {m : Type → Type} {σ ω : Type} [STWorld σ m]

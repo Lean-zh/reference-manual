@@ -25,16 +25,26 @@ set_option linter.unusedVariables false
 set_option guard_msgs.diff true
 
 #doc (Manual) "语法" =>
+%%%
+tag := "The-Lean-Language-Reference--Functors___-Monads-and--do--Notation--Syntax"
+file := "Syntax"
+%%%
 
 Lean 通过特殊语法支持使用函子、应用函子和单子进行编程：
  * 为最常用的操作提供了中缀运算符。
  * 一种称为 {tech (key := "do-notation")}[{keywordOf Lean.Parser.Term.do}`do` 记法]的嵌入式语言，允许在单子中编写程序时使用命令式语法。
 
 # 中缀运算符
+%%%
+tag := "The-Lean-Language-Reference--Functors___-Monads-and--do--Notation--Syntax--Infix-Operators"
+%%%
 
 中缀运算符主要适用于较小的表达式，或不存在 {lean}`Monad` 实例的情况。
 
 ## 函子
+%%%
+tag := "The-Lean-Language-Reference--Functors___-Monads-and--do--Notation--Syntax--Infix-Operators--Functors"
+%%%
 
 ```lean -show
 section FOps
@@ -61,6 +71,9 @@ end FOps
 ```
 
 ## 应用函子
+%%%
+tag := "The-Lean-Language-Reference--Functors___-Monads-and--do--Notation--Syntax--Infix-Operators--Applicative-Functors"
+%%%
 
 ```lean -show
 section AOps
@@ -161,6 +174,9 @@ What is your favorite natural number?
 :::::
 
 ## 单子
+%%%
+tag := "The-Lean-Language-Reference--Functors___-Monads-and--do--Notation--Syntax--Infix-Operators--Monads"
+%%%
 
 单子主要通过 {tech (key := "do-notation")}[{keywordOf Lean.Parser.Term.do}`do` 记法]使用。
 不过，有时用运算符描述单子计算会更方便。
@@ -226,6 +242,9 @@ variable {m : Type → Type} [Monad m] {α β γ: Type} {e1 : m Unit} {e : β} {
 ```
 
 ## 顺序计算
+%%%
+tag := "The-Lean-Language-Reference--Functors___-Monads-and--do--Notation--Syntax--do--Notation--Sequential-Computations"
+%%%
 
 {tech (key := "do-element")}[{keywordOf Lean.Parser.Term.do}`do` 元素]的一种形式是项。
 
@@ -923,6 +942,9 @@ end
 ```
 
 ## 用于迭代的类型类
+%%%
+tag := "The-Lean-Language-Reference--Functors___-Monads-and--do--Notation--Syntax--do--Notation--Type-Classes-for-Iteration"
+%%%
 
 若要在没有成员关系证明的 {keywordOf Lean.Parser.Term.doFor}`for` 循环中使用，集合必须实现 {name}`ForIn` 类型类。
 额外实现 {lean}`ForIn'` 后，还可以使用带成员关系证明的 {keywordOf Lean.Parser.Term.doFor}`for` 循环。

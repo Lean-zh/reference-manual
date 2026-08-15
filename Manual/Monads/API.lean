@@ -21,6 +21,10 @@ set_option pp.rawOnError true
 set_option linter.unusedVariables false
 
 #doc (Manual) "API 参考" =>
+%%%
+tag := "The-Lean-Language-Reference--Functors___-Monads-and--do--Notation--API-Reference"
+file := "API-Reference"
+%%%
 
 除了这里介绍的通用函数之外，按照惯例，每种集合类型的命名空间中还会定义一些函数，作为其 API 的一部分：
  * `mapM` 映射一个单子函数。
@@ -70,18 +74,27 @@ These values were kept:
 ::::
 
 # 丢弃结果
+%%%
+tag := "The-Lean-Language-Reference--Functors___-Monads-and--do--Notation--API-Reference--Discarding-Results"
+%%%
 
 当使用某个仅为副作用而返回值的动作时，函数 {name}`discard` 尤其有用。
 
 {docstring discard}
 
 # 控制流
+%%%
+tag := "The-Lean-Language-Reference--Functors___-Monads-and--do--Notation--API-Reference--Control-Flow"
+%%%
 
 {docstring guard}
 
 {docstring optional}
 
 # 提升布尔操作
+%%%
+tag := "The-Lean-Language-Reference--Functors___-Monads-and--do--Notation--API-Reference--Lifting-Boolean-Operations"
+%%%
 
 {docstring andM}
 
@@ -90,6 +103,9 @@ These values were kept:
 {docstring notM}
 
 # 克莱斯利复合
+%%%
+tag := "The-Lean-Language-Reference--Functors___-Monads-and--do--Notation--API-Reference--Kleisli-Composition"
+%%%
 
 {deftech (key := "Kleisli composition")}_克莱斯利复合_是单子函数的复合，类似于普通函数所用的 {name}`Function.comp`。
 
@@ -98,6 +114,9 @@ These values were kept:
 {docstring Bind.kleisliLeft}
 
 # 重排实参的操作
+%%%
+tag := "The-Lean-Language-Reference--Functors___-Monads-and--do--Notation--API-Reference--Re-Ordered-Operations"
+%%%
 
 有时，对函数的第二个实参进行部分应用会更方便。
 以下函数反转实参顺序，使这一做法更容易。

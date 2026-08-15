@@ -37,6 +37,7 @@ set_option linter.unusedVariables false
 #doc (Manual) "单子的种类" =>
 %%%
 tag := "monad-varieties"
+file := "Varieties-of-Monads"
 %%%
 
 {lean}`IO` 单子具有非常多的作用，用于编写需要与外部世界交互的程序。
@@ -74,6 +75,9 @@ tag := "monad-varieties"
 
 
 # 单子类型类
+%%%
+tag := "The-Lean-Language-Reference--Functors___-Monads-and--do--Notation--Varieties-of-Monads--Monad-Type-Classes"
+%%%
 
 使用 {lean}`MonadState` 和 {lean}`MonadExcept` 这样的类型类，可以让客户端代码对单子具有多态性。
 结合自动提升，程序便能在许多不同的单子中复用，也更能适应重构。

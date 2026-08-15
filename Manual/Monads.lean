@@ -29,9 +29,9 @@ set_option linter.unusedVariables false
 set_option maxRecDepth 1024
 
 #doc (Manual) "函子、单子与 `do` 记法" =>
-
 %%%
 tag := "monads-and-do"
+file := "Functors___-Monads-and--do--Notation"
 %%%
 
 类型类 {name}`Functor`、{name}`Applicative` 和 {name}`Monad` 为函数式编程提供了基本工具。{margin}[关于如何使用这些抽象进行编程的介绍，参见 [_Lean 函数式编程_](https://lean-lang.org/functional_programming_in_lean/functor-applicative-monad.html)。]

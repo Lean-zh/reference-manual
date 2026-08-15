@@ -23,6 +23,7 @@ set_option linter.unusedVariables false
 #doc (Manual) "提升单子" =>
 %%%
 tag := "lifting-monads"
+file := "Lifting-Monads"
 %%%
 
 ::::keepEnv
@@ -161,6 +162,9 @@ but is expected to have type
 {optionDocs autoLift}
 
 # 反向提升
+%%%
+tag := "The-Lean-Language-Reference--Functors___-Monads-and--do--Notation--Lifting-Monads--Reversing-Lifts"
+%%%
 
 ```lean -show
 variable {m n : Type u → Type v} {α ε : Type u}
@@ -177,12 +181,18 @@ variable {m n : Type u → Type v} {α ε : Type u}
 {lean}`MonadControl m n` 的实例说明如何把 {lean}`m` 中的任意动作解释到 {lean}`n` 中，同时提供一个“反向解释器”，让该 {lean}`m` 动作能够运行 {lean}`n` 动作。
 
 ## 单子函子
+%%%
+tag := "The-Lean-Language-Reference--Functors___-Monads-and--do--Notation--Lifting-Monads--Reversing-Lifts--Monad-Functors"
+%%%
 
 {docstring MonadFunctor}
 
 {docstring MonadFunctorT}
 
 ## 使用 `MonadControl` 进行可逆提升
+%%%
+tag := "The-Lean-Language-Reference--Functors___-Monads-and--do--Notation--Lifting-Monads--Reversing-Lifts--Reversible-Lifting-with--MonadControl"
+%%%
 
 {docstring MonadControl}
 

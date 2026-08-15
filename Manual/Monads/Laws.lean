@@ -23,6 +23,7 @@ set_option linter.unusedVariables false
 #doc (Manual) "定律" =>
 %%%
 tag := "monad-laws"
+file := "Laws"
 %%%
 
 ::::keepEnv

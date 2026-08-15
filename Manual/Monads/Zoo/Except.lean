@@ -31,6 +31,9 @@ tag := "exception-monads"
 归纳类型 {name}`Except` 刻画了这一模式，而它本身也是单子。
 
 # 异常
+%%%
+tag := "The-Lean-Language-Reference--Functors___-Monads-and--do--Notation--Varieties-of-Monads--Exceptions--Exceptions"
+%%%
 
 {docstring Except}
 
@@ -54,6 +57,9 @@ tag := "exception-monads"
 
 
 # 类型类
+%%%
+tag := "The-Lean-Language-Reference--Functors___-Monads-and--do--Notation--Varieties-of-Monads--Exceptions--Type-Class"
+%%%
 
 {docstring MonadExcept}
 
@@ -70,10 +76,16 @@ tag := "exception-monads"
 {docstring tryCatchThe}
 
 # “最终”计算
+%%%
+tag := "The-Lean-Language-Reference--Functors___-Monads-and--do--Notation--Varieties-of-Monads--Exceptions--___Finally___-Computations"
+%%%
 
 {docstring MonadFinally}
 
 # 变换器
+%%%
+tag := "The-Lean-Language-Reference--Functors___-Monads-and--do--Notation--Varieties-of-Monads--Exceptions--Transformer"
+%%%
 
 {docstring ExceptT}
 
@@ -97,6 +109,9 @@ tag := "exception-monads"
 
 
 # 延续传递风格的异常单子
+%%%
+tag := "The-Lean-Language-Reference--Functors___-Monads-and--do--Notation--Varieties-of-Monads--Exceptions--Exception-Monads-in-Continuation-Passing-Style"
+%%%
 
 ```lean -show
 universe u

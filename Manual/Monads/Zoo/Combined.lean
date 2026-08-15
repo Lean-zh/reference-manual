@@ -21,6 +21,9 @@ set_option pp.rawOnError true
 set_option linter.unusedVariables false
 
 #doc (Manual) "组合错误与状态单子" =>
+%%%
+tag := "The-Lean-Language-Reference--Functors___-Monads-and--do--Notation--Varieties-of-Monads--Combined-Error-and-State-Monads"
+%%%
 
 ```lean -show
 variable (ε : Type u) (σ σ' : Type u) (α : Type u)
@@ -55,6 +58,9 @@ variable (ε : Type u) (σ σ' : Type u) (α : Type u)
 {docstring EStateM.fromStateM +allowMissing}
 
 # 状态回滚
+%%%
+tag := "The-Lean-Language-Reference--Functors___-Monads-and--do--Notation--Varieties-of-Monads--Combined-Error-and-State-Monads--State-Rollback"
+%%%
 
 以不同顺序组合 {name}`StateT` 和 {name}`ExceptT`，会使异常与状态产生不同的交互。
 一种顺序会在捕获异常时回滚状态变更；另一种顺序则会保留变更。
@@ -73,6 +79,9 @@ variable (ε : Type u) (σ σ' : Type u) (α : Type u)
 {docstring EStateM.nonBacktrackable}
 
 # 实现
+%%%
+tag := "The-Lean-Language-Reference--Functors___-Monads-and--do--Notation--Varieties-of-Monads--Combined-Error-and-State-Monads--Implementations"
+%%%
 
 通常不会直接调用这些函数，而是通过相应的类型类访问它们。
 
