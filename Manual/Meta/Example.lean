@@ -18,11 +18,14 @@ open Lean Elab
 
 namespace Manual
 
-def Block.example (descriptionString : String) (name : Option String) (opened : Bool) (liveText : Option String := none) : Block where
+def Block.example (descriptionString : String) (name : Option String) (opened : Bool)
+    (liveText : Option String := none) (file : Option String := none) : Block where
   -- FIXME: This should be a double-backtickable name
   name := `Manual.example
   data := ToJson.toJson (descriptionString, name, opened, (none : Option Tag), liveText)
-  properties := .empty |>.insert `Verso.Genre.Manual.exampleDefContext descriptionString
+  properties := (({} : Verso.NameMap String)
+    |>.insert `Verso.Genre.Manual.exampleDefContext descriptionString)
+    |>.insert `Manual.exampleExtractionContext (file.getD descriptionString)
 
 /-- The type of the Json stored with Block.example -/
 abbrev ExampleBlockJson := String × Option String × Bool × Option Tag × Option String
@@ -31,6 +34,8 @@ structure ExampleConfig where
   description : TSyntaxArray `inline
   /-- Name for refs -/
   tag : Option String := none
+  /-- Stable source-extraction path component, independent of the displayed title. -/
+  file : Option String := none
   keep : Bool := false
   opened : Bool := false
 
@@ -41,6 +46,7 @@ variable [Monad m] [MonadInfoTree m] [MonadLiftT CoreM m] [MonadEnv m] [MonadErr
 def ExampleConfig.parse  : ArgParse m ExampleConfig :=
   ExampleConfig.mk <$> .positional `description .inlinesString
                    <*> .named `tag .string true
+                   <*> .named `file .string true
                    <*> (.named `keep .bool true <&> (·.getD false))
                    <*> (.named `open .bool true <&> (·.getD false))
 
@@ -134,7 +140,8 @@ def «example» : DirectiveExpanderOf ExampleConfig
 
     -- Examples are represented using the first block to hold the description. Storing it in the JSON
     -- entails repeated (de)serialization.
-    ``(Block.other (Block.example $(quote descriptionString) $(quote cfg.tag) (opened := $(quote cfg.opened)) $(quote liveLinkContent))
+    ``(Block.other (Block.example $(quote descriptionString) $(quote cfg.tag) (opened := $(quote cfg.opened))
+         $(quote liveLinkContent) $(quote cfg.file))
          #[Block.para #[$description,*], $blocks,*])
 
 @[block_extension «example»]

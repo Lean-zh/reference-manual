@@ -7,6 +7,7 @@ Author: David Thrane Christiansen
 import VersoManual
 
 import Manual.Meta
+import Manual.ZhDocString.Terms
 
 open Verso.Genre Manual
 open Verso.Genre.Manual.InlineLean
@@ -21,73 +22,75 @@ set_option linter.constructorNameAsVariable false
 
 set_option guard_msgs.diff true
 
-#doc (Manual) "Terms" =>
+#doc (Manual) "项" =>
 %%%
 tag := "terms"
+file := some "Terms"
 %%%
 
 
-{deftech}_Terms_ are the principal means of writing mathematics and programs in Lean.
-The {deftech (key := "Lean elaborator")}[elaborator] translates them to Lean's minimal core language, which is then checked by the kernel and compiled for execution.
-The syntax of terms is {ref "syntax-ext"}[arbitrarily extensible]; this chapter documents the term syntax that Lean provides out-of-the-box.
+{deftech (key := "Terms")}_项_是在 Lean 中书写数学和程序的主要手段。
+{deftech (key := "Lean elaborator")}[精译器]将它们翻译为 Lean 的最小核心语言，随后由内核检查并编译执行。
+项的语法可以{ref "syntax-ext"}[任意扩展]；本章介绍 Lean 原生提供的项语法。
 
-# Identifiers
+# 标识符
 %%%
 tag := "identifiers-and-resolution"
+file := some "Identifiers"
 %%%
 
-:::syntax term (title := "Identifiers")
+:::syntax term (title := "标识符")
 ```
 $x:ident
 ```
 :::
 
-An identifier term is a reference to a name.{margin}[The specific lexical syntax of identifiers is described {ref "keywords-and-identifiers"}[in the section on Lean's concrete syntax].]
-Identifiers also occur in contexts where they bind names, such as {keywordOf Lean.Parser.Term.let}`let` and {keywordOf Lean.Parser.Term.fun}`fun`; however, these binding occurrences are not complete terms in and of themselves.
-The mapping from identifiers to names is not trivial: at any point in a {tech}[module], some number of {tech}[namespaces] will be open, there may be {tech}[section variables], and there may be local bindings.
-Furthermore, identifiers may contain multiple dot-separated atomic identifiers; the dot both separates namespaces from their contents and variables from fields or functions that use {tech}[field notation].
-This creates ambiguity, because an identifier `A.B.C.D.e.f` could refer to any of the following:
+标识符项是对名称的引用。{margin}[标识符的具体词法语法见 {ref "keywords-and-identifiers"}[Lean 具体语法一节]。]
+标识符也会出现在绑定名称的上下文中，例如 {keywordOf Lean.Parser.Term.let}`let` 和 {keywordOf Lean.Parser.Term.fun}`fun`；不过，这些绑定位置本身并不是完整的项。
+标识符到名称的映射并不简单：在{tech (key := "module")}[模块]中的任意位置，都可能打开了若干{tech (key := "namespaces")}[命名空间]，还可能存在{tech (key := "section variables")}[节变量]和局部绑定。
+此外，标识符可以包含多个由点分隔的原子标识符；点既用于分隔命名空间与其内容，也用于分隔变量与采用{tech (key := "field notation")}[字段表示法]的字段或函数。
+这会产生歧义，因为标识符 `A.B.C.D.e.f` 可能指下列任一含义：
 
- * A name `f` in the namespace `A.B.C.D.e` (for instance, a function defined in `e`'s {keywordOf Lean.Parser.Command.declaration}`where` block).
- * An application of `T.f` to `A.B.C.D.e` if `A.B.C.D.e` has type `T`
- * A projection of field `f` from a structure named `A.B.C.D.e`
- * A series of field projections `B.C.D.e` from structure value `A`, followed by an application of `f` using field notation
- * If namespace `Q` is opened, it could be a reference to any of the above with a `Q` prefix, such as a name `f` in the namespace `Q.A.B.C.D.e`
+ * 命名空间 `A.B.C.D.e` 中的名称 `f`（例如，在 `e` 的 {keywordOf Lean.Parser.Command.declaration}`where` 块中定义的函数）
+ * 若 `A.B.C.D.e` 的类型为 `T`，则是将 `T.f` 应用于 `A.B.C.D.e`
+ * 从名为 `A.B.C.D.e` 的结构中投影字段 `f`
+ * 从结构值 `A` 依次投影字段 `B.C.D.e`，再用字段表示法应用 `f`
+ * 若命名空间 `Q` 已打开，则可能指上述任一带 `Q` 前缀的含义，例如命名空间 `Q.A.B.C.D.e` 中的名称 `f`
 
-This list is not exhaustive.
-Given an identifier, the elaborator must discover which name or names an identifier refers to, and whether any of the trailing components are fields or functions applied via field notation.
-This is called {deftech (key := "resolve")}_resolving_ the name.
+此列表并不穷尽所有可能。
+给定一个标识符，精译器必须找出它指向哪个或哪些名称，并判断末尾的组成部分中是否有字段，或通过字段表示法应用的函数。
+这称为对名称进行{deftech (key := "resolve")}_解析_。
 
-Some declarations in the global environment are lazily created the first time they are referenced.
-Resolving an identifier in a way that both creates one of these declarations and results in a reference to it is called {deftech}_realizing_ the name.
-The rules for resolving and realizing a name are the same, so even though this section refers only to resolving names, it applies to both.
+全局环境中的某些声明会在首次被引用时惰性创建。
+若解析标识符的过程既创建了这样的声明，又得到对它的引用，就称为{deftech (key := "realizing")}_实现_该名称。
+名称解析与名称实现遵循相同规则，因此本节虽只提及名称解析，但内容同时适用于二者。
 
-Name resolution is affected by the following:
- * {tech (key := "pre-resolved identifier")}[Pre-resolved names] attached to the identifier
- * The {tech}[macro scopes] attached to the identifier
- * The local bindings in scope, including auxiliary definitions created as part of the elaboration of {keywordOf Lean.Parser.Term.letrec}`let rec`.
- * Aliases created with {keywordOf Lean.Parser.Command.export}`export` in modules transitively imported by the current module
- * The current {tech}[section scope], in particular the {tech}[current namespace], opened namespaces, and section variables
-
-
-Any prefix of an identifier can resolve to a set of names.
-The suffix that was not included in the resolution process is then treated as field projections or field notation.
-Resolutions of longer prefixes take precedence over resolutions of shorter prefixes; in other words, as few components as of the identifier as possible are treated as field notation.
-An identifier prefix may refer to any of the following, with earlier items taking precedence over later ones:
- 1. A locally-bound variable whose name is identical to the identifier prefix, including macro scopes, with closer local bindings taking precedence over outer local bindings.
- 2. A local auxiliary definition whose name is identical to the identifier prefix
- 3. A {tech}[section variable] whose name is identical to the identifier prefix
- 3. A global name that is identical to a prefix of the {tech}[current namespace] appended to the identifier prefix, or for which an alias exists in a prefix of the current namespace, with longer prefixes of the current namespace taking precedence over shorter ones
- 4. A global name that has been brought into scope via {keywordOf Lean.Parser.Command.open}`open` commands that is identical to the identifier prefix
+名称解析受以下因素影响：
+ * 附加到标识符上的{tech (key := "pre-resolved identifier")}[预解析名称]
+ * 附加到标识符上的{tech (key := "macro scopes")}[宏作用域]
+ * 作用域内的局部绑定，包括精译 {keywordOf Lean.Parser.Term.letrec}`let rec` 时创建的辅助定义
+ * 当前模块传递导入的模块中用 {keywordOf Lean.Parser.Command.export}`export` 创建的别名
+ * 当前{tech (key := "section scope")}[节作用域]，尤其是{tech (key := "current namespace")}[当前命名空间]、已打开的命名空间和节变量
 
 
-If an identifier resolves to multiple names, then the elaborator attempts to use all of them.
-If exactly one of them succeeds, then it is used as the meaning of the identifier.
-It is an error if more than one succeed or if all fail.
+标识符的任意前缀都可能解析为一组名称。
+未参与解析过程的后缀随后会被视为字段投影或字段表示法。
+较长前缀的解析优先于较短前缀；换言之，标识符中应尽可能少地把组成部分视为字段表示法。
+标识符前缀可以指下列任一项，越靠前者优先级越高：
+ 1. 名称（包括宏作用域）与标识符前缀相同的局部绑定变量；较近的局部绑定优先于外层局部绑定
+ 2. 名称与标识符前缀相同的局部辅助定义
+ 3. 名称与标识符前缀相同的{tech (key := "section variable")}[节变量]
+ 3. 与“{tech (key := "current namespace")}[当前命名空间]的某个前缀加上标识符前缀”相同的全局名称，或在当前命名空间的某个前缀中存在别名的全局名称；当前命名空间的较长前缀优先于较短前缀
+ 4. 通过 {keywordOf Lean.Parser.Command.open}`open` 命令引入作用域、且与标识符前缀相同的全局名称
+
+
+若标识符解析为多个名称，精译器会尝试使用其中每一个。
+若恰好只有一个成功，就将其作为该标识符的含义。
+若成功者不止一个，或全部失败，都会报错。
 
 ::::keepEnv
-:::example "Local Names Take Precedence"
-Local bindings take precedence over global bindings:
+:::example "局部名称优先" (file := "Local Names Take Precedence")
+局部绑定优先于全局绑定：
 ```lean (name := localOverGlobal)
 def x := "global"
 
@@ -98,7 +101,7 @@ def x := "global"
 ```leanOutput localOverGlobal
 "local"
 ```
-The innermost local binding of a name takes precedence over others:
+名称最内层的局部绑定优先于其他绑定：
 ```lean (name := innermostLocal)
 #eval
   let x := "outer"
@@ -112,9 +115,9 @@ The innermost local binding of a name takes precedence over others:
 ::::
 
 ::::keepEnv
-:::example "Longer Prefixes of Current Namespace Take Precedence"
-The  namespaces `A`, `B`, and `C` are nested.
-Both `A` and `C` contain a definition of `x`.
+:::example "当前命名空间的较长前缀优先" (file := "Longer Prefixes of Current Namespace Take Precedence")
+命名空间 `A`、`B` 和 `C` 相互嵌套。
+`A` 和 `C` 都包含 `x` 的定义。
 ```lean (name := NS)
 namespace A
 def x := "A.x"
@@ -123,14 +126,14 @@ namespace C
 def x := "A.B.C.x"
 ```
 
-When the current namespace is `A.B.C`, {lean}`x` resolves to {lean}`A.B.C.x`.
+当前命名空间为 `A.B.C` 时，{lean}`x` 解析为 {lean}`A.B.C.x`。
 ```lean (name := NSC)
 #eval x
 ```
 ```leanOutput NSC
 "A.B.C.x"
 ```
-When the current namespace is `A.B`, {lean}`x` resolves to {lean}`A.x`.
+当前命名空间为 `A.B` 时，{lean}`x` 解析为 {lean}`A.x`。
 ```lean (name := NSB)
 end C
 #eval x
@@ -142,8 +145,8 @@ end C
 ::::
 
 ::::keepEnv
-:::example "Longer Identifier Prefixes Take Precedence"
-When an identifier could refer to different projections from names, the one with the longest name takes precedence:
+:::example "较长的标识符前缀优先" (file := "Longer Identifier Prefixes Take Precedence")
+当标识符可能指从不同名称进行的投影时，名称最长者优先：
 ```lean
 structure A where
   y : String
@@ -156,8 +159,8 @@ deriving Repr
 def y : B := ⟨⟨"shorter"⟩⟩
 def y.y : A := ⟨"longer"⟩
 ```
-Given the above declarations, {lean}`y.y.y` could in principle refer either to the {name A.y}`y` field of the {name B.y}`y` field of {name}`y`, or to the {name A.y}`y` field of {name}`y.y`.
-It refers to the {name A.y}`y` field of {name}`y.y`, because the name {name}`y.y` is a longer prefix of `y.y.y` than the name {name}`y`:
+给定上述声明，{lean}`y.y.y` 原则上既可指 {name}`y` 的 {name B.y}`y` 字段的 {name A.y}`y` 字段，也可指 {name}`y.y` 的 {name A.y}`y` 字段。
+它指 {name}`y.y` 的 {name A.y}`y` 字段，因为名称 {name}`y.y` 是 `y.y.y` 比名称 {name}`y` 更长的前缀：
 ```lean (name := yyy)
 #eval y.y.y
 ```
@@ -168,8 +171,8 @@ It refers to the {name A.y}`y` field of {name}`y.y`, because the name {name}`y.y
 ::::
 
 ::::keepEnv
-:::example "Current Namespace Contents Take Precedence Over Opened Namespaces"
-When an identifier could refer either to a name defined in a prefix of the current namespace or to an opened namespace, the former takes precedence.
+:::example "当前命名空间的内容优先于已打开的命名空间" (file := "Current Namespace Contents Take Precedence Over Opened Namespaces")
+当标识符既可能指当前命名空间某个前缀中定义的名称，也可能指已打开命名空间中的名称时，前者优先。
 ```lean
 namespace A
 def x := "A.x"
@@ -181,7 +184,7 @@ namespace C
 open A
 #eval x
 ```
-Even though `A` was opened more recently than the declaration of {name}`B.x`, the identifier `x` resolves to {name}`B.x` rather than {name}`A.x` because `B` is a prefix of the current namespace `B.C`.
+尽管打开 `A` 的时间晚于 {name}`B.x` 的声明，标识符 `x` 仍解析为 {name}`B.x` 而非 {name}`A.x`，因为 `B` 是当前命名空间 `B.C` 的前缀。
 ```lean (name := nestedVsOpen)
 #eval x
 ```
@@ -192,9 +195,9 @@ Even though `A` was opened more recently than the declaration of {name}`B.x`, th
 ::::
 
 
-:::example "Ambiguous Identifiers"
-In this example, `x` could refer either to {name}`A.x` or {name}`B.x`, and neither takes precedence.
-Because both have the same type, it is an error.
+:::example "有歧义的标识符" (file := "Ambiguous Identifiers")
+在此例中，`x` 既可能指 {name}`A.x`，也可能指 {name}`B.x`，且二者都不优先。
+由于二者类型相同，因此会报错。
 ```lean (name := ambi) +error
 def A.x := "A.x"
 def B.x := "B.x"
@@ -213,8 +216,8 @@ Possible interpretations:
 :::
 
 
-:::example "Disambiguation via Typing"
-When otherwise-ambiguous names have different types, the types are used to disambiguate:
+:::example "通过类型消歧" (file := "Disambiguation via Typing")
+当原本有歧义的名称类型不同时，会利用类型消除歧义：
 ```lean (name := ambiNo)
 def C.x := "C.x"
 def D.x := 3
@@ -229,22 +232,26 @@ open D
 
 
 
-## Leading `.`
+## 前导 `.`
+%%%
+tag := "The-Lean-Language-Reference--Terms--Identifiers--Leading--___"
+file := "Leading `.`"
+%%%
 
-When an identifier begins with a dot (`.`), the type that the elaborator expects for the expression is used to resolve it, rather than the current namespace and set of open namespaces.
-{tech}[Generalized field notation] is related: this {deftech}_leading dot notation_ uses the expected type of the identifier to resolve it to a name, while field notation uses the inferred type of the term immediately prior to the dot.
+当标识符以点（`.`）开头时，会使用精译器对表达式的预期类型来解析它，而不是使用当前命名空间和已打开命名空间的集合。
+{tech (key := "Generalized field notation")}[广义字段表示法]与此相关：这种{deftech (key := "leading dot notation")}_前导点表示法_使用标识符的预期类型将其解析为名称，而字段表示法使用紧邻点之前的项的推断类型。
 
-Identifiers with a leading `.` are to be looked up in the {deftech}_expected type's namespace_.
-If the type expected for a term is a constant applied to zero or more arguments, then its namespace is the constant's name.
-If the type is not an application of a constant (e.g., a function, a metavariable, or a universe) then it doesn't have a namespace.
+带前导 `.` 的标识符会在{deftech (key := "expected type's namespace")}_预期类型的命名空间_中查找。
+若项的预期类型是应用于零个或多个实参的常量，则其命名空间就是该常量的名称。
+若该类型不是常量的应用（例如函数、元变量或宇宙），则它没有命名空间。
 
-If the name is not found in the expected type's namespace, but the constant can be unfolded to yield another constant, then its namespace is consulted.
-This process is repeated until something other than an application of a constant is encountered, or until the constant can't be unfolded.
+若在预期类型的命名空间中找不到该名称，但展开这个常量能得到另一常量，则转而查找后者的命名空间。
+重复此过程，直到遇到并非常量应用的内容，或常量无法继续展开为止。
 
 ::::keepEnv
-:::example "Leading `.`"
-The expected type for {name List.replicate}`.replicate` is `List Unit`.
-This type's namespace is `List`, so {name List.replicate}`.replicate` resolves to {name List.replicate}`List.replicate`.
+:::example "前导 `.`" (file := "Leading `.`")
+{name List.replicate}`.replicate` 的预期类型是 `List Unit`。
+该类型的命名空间是 `List`，因此 {name List.replicate}`.replicate` 解析为 {name List.replicate}`List.replicate`。
 ```lean (name := dotRep)
 #eval show List Unit from .replicate 3 ()
 ```
@@ -253,10 +260,10 @@ This type's namespace is `List`, so {name List.replicate}`.replicate` resolves t
 ```
 :::
 
-:::example "Leading `.` and Unfolding Definitions"
-The expected type for {name List.replicate}`.replicate` is `MyList Unit`.
-This type's namespace is `MyList`, but there is no definition `MyList.replicate`.
-Unfolding {lean}`MyList Unit` yields {lean}`List Unit`, so {name List.replicate}`.replicate` resolves to {name List.replicate}`List.replicate`.
+:::example "前导 `.` 与展开定义" (file := "Leading `.` and Unfolding Definitions")
+{name List.replicate}`.replicate` 的预期类型是 `MyList Unit`。
+该类型的命名空间是 `MyList`，但不存在定义 `MyList.replicate`。
+展开 {lean}`MyList Unit` 得到 {lean}`List Unit`，因此 {name List.replicate}`.replicate` 解析为 {name List.replicate}`List.replicate`。
 ```lean (name := dotRep)
 def MyList α := List α
 #eval show MyList Unit from .replicate 3 ()
@@ -267,38 +274,39 @@ def MyList α := List α
 :::
 ::::
 
-# Function Types
+# 函数类型
 %%%
 tag := "function-types"
+file := some "Function-Types"
 %%%
 
-Lean's function types describe more than just the function's domain and codomain.
-They also provide instructions for elaborating application sites by indicating that some parameters are to be discovered automatically via unification or {ref "instance-synth"}[type class synthesis], that others are optional with default values, and that yet others should be synthesized using a custom tactic script.
-Furthermore, their syntax contains support for abbreviating {tech (key := "currying")}[curried] functions.
+Lean 的函数类型所描述的不只是函数的定义域和值域。
+它们还为应用处的精译提供指令：某些参数应通过合一或{ref "instance-synth"}[类型类合成]自动确定，某些参数是带默认值的可选参数，还有一些参数应使用自定义策略脚本合成。
+此外，其语法还支持简写{tech (key := "currying")}[柯里化]函数。
 
-:::syntax term (title := "Function types")
-Dependent function types include an explicit name:
+:::syntax term (title := "函数类型")
+依赖函数类型包含显式名称：
 ```grammar
 ($x:ident : $t) → $t2
 ```
 
-Non-dependent function types do not:
+非依赖函数类型则不包含：
 ```grammar
 $t1:term → $t2
 ```
 :::
 
-:::syntax term (title := "Curried Function Types")
-Dependent function types may include multiple parameters that have the same type in a single set of parentheses:
+:::syntax term (title := "柯里化函数类型")
+依赖函数类型可在同一对圆括号中包含多个类型相同的参数：
 ```grammar
 ($x:ident* : $t) → $t
 ```
-This is equivalent to repeating the type annotation for each parameter name in a nested function type.
+这等价于在嵌套函数类型中为每个参数名称重复类型标注。
 :::
 
-:::syntax term (title := "Implicit, Optional, and Auto Parameters")
-Function types can describe functions that take implicit, instance implicit, optional, and automatic parameters.
-All but instance implicit parameters require one or more names.
+:::syntax term (title := "隐式、可选与自动参数")
+函数类型可以描述接受隐式参数、实例隐式参数、可选参数和自动参数的函数。
+除实例隐式参数外，其他参数都要求一个或多个名称。
 ```grammar
 ($x:ident* : $t := $e) → $t
 ```
@@ -320,8 +328,8 @@ All but instance implicit parameters require one or more names.
 
 :::
 
-:::example "Multiple Parameters, Same Type"
-The type of {name}`Nat.add` can be written in the following ways:
+:::example "多个同类型参数" (file := "Multiple Parameters, Same Type")
+{name}`Nat.add` 的类型可以用以下方式书写：
 
  * {lean}`Nat → Nat → Nat`
 
@@ -329,41 +337,42 @@ The type of {name}`Nat.add` can be written in the following ways:
 
  * {lean}`(a b : Nat) → Nat`
 
-The last two types allow the function to be used with {tech}[named arguments]; aside from this, all three are equivalent.
+后两种类型允许用{tech (key := "named arguments")}[具名实参]调用函数；除此之外，三者等价。
 :::
 
-# Functions
+# 函数
 
 %%%
 tag := "function-terms"
+file := some "Functions"
 %%%
 
 
-Terms with function types can be created via abstractions, introduced with the {keywordOf Lean.Parser.Term.fun}`fun` keyword.{margin}[In various communities, function abstractions are also known as _lambdas_, due to Alonzo Church's notation for them, or _anonymous functions_ because they don't need to be defined with a name in the global environment.]
-While abstractions in the core type theory only allow a single variable to be bound, function terms are quite flexible in the high-level Lean syntax.
+可以通过由 {keywordOf Lean.Parser.Term.fun}`fun` 关键字引入的抽象来创建函数类型的项。{margin}[在不同社群中，函数抽象也称为 _λ 抽象_，源于 Alonzo Church 为其采用的记法；也称为_匿名函数_，因为不必在全局环境中用名称定义它们。]
+核心类型论中的抽象只允许绑定单个变量，而 Lean 的高层语法中的函数项则相当灵活。
 
-:::syntax term (title := "Function Abstraction")
-The most basic function abstraction introduces a variable to stand for the function's parameter:
+:::syntax term (title := "函数抽象")
+最基本的函数抽象引入一个变量来代表函数参数：
 
 ```grammar
 fun $x:ident => $t
 ```
 
-At elaboration time, Lean must be able to determine the function's domain.
-A type ascription is one way to provide this information:
+精译时，Lean 必须能够确定函数的定义域。
+类型标注是提供这一信息的一种方式：
 
 ```grammar
 fun $x:ident : term => $t
 ```
 :::
 
-Function definitions defined with keywords such as {keywordOf Lean.Parser.Command.declaration (parser := Lean.Parser.Command.definition)}`def` desugar to {keywordOf Lean.Parser.Term.fun}`fun`.
-Inductive type declarations, on the other hand, introduce new values with function types (constructors and type constructors) that cannot themselves be implemented using just {keywordOf Lean.Parser.Term.fun}`fun`.
+用 {keywordOf Lean.Parser.Command.declaration (parser := Lean.Parser.Command.definition)}`def` 等关键字定义的函数定义会脱糖为 {keywordOf Lean.Parser.Term.fun}`fun`。
+另一方面，归纳类型声明会引入具有函数类型的新值（构造器和类型构造器），它们本身无法只用 {keywordOf Lean.Parser.Term.fun}`fun` 实现。
 
-:::syntax term (title := "Curried Functions")
+:::syntax term (title := "柯里化函数")
 
 
-Multiple parameter names are accepted after {keywordOf Lean.Parser.Term.fun}`fun`:
+{keywordOf Lean.Parser.Term.fun}`fun` 后可接受多个参数名称：
 ```grammar
 fun $x:ident $x:ident* => $t
 ```
@@ -372,68 +381,69 @@ fun $x:ident $x:ident* => $t
 fun $x:ident $x:ident* : $t:term => $t
 ```
 
-Different type annotations for multiple parameters require parentheses:
+多个参数使用不同类型标注时需要圆括号：
 
 ```grammar
 free{"fun " "(" (ident)* ": " term")" " =>" term}
 ```
 
-These are equivalent to writing nested {keywordOf Lean.Parser.Term.fun}`fun` terms.
+这些写法等价于书写嵌套的 {keywordOf Lean.Parser.Term.fun}`fun` 项。
 :::
 
-The {keywordOf Lean.Parser.Term.fun}`=>` may be replaced by {keywordOf Lean.Parser.Term.fun}`↦` in all of the syntax described in this section.
+本节所述的所有语法中，{keywordOf Lean.Parser.Term.fun}`=>` 都可以替换为 {keywordOf Lean.Parser.Term.fun}`↦`。
 
-Function abstractions may also use pattern matching syntax as part of their parameter specification, avoiding the need to introduce a local variable that is immediately destructured.
-This syntax is described in the {ref "pattern-fun"}[section on pattern matching].
+函数抽象还可以在参数规格中使用模式匹配语法，从而不必引入一个随即就要解构的局部变量。
+此语法见{ref "pattern-fun"}[模式匹配一节]。
 
-## Implicit Parameters
+## 隐式参数
 %%%
 tag := "implicit-functions"
+file := "Implicit Parameters"
 %%%
 
 
-Lean supports implicit parameters to functions.
-This means that Lean itself can supply arguments to functions, rather than requiring users to supply all needed arguments.
-Implicit parameters come in three varieties:
+Lean 支持函数的隐式参数。
+这意味着 Lean 自身可以为函数提供实参，而不要求用户提供全部所需实参。
+隐式参数分为三类：
 
-  : Ordinary implicit parameters
+  : 普通隐式参数
 
-    Ordinary {deftech}[implicit] parameters are function parameters that Lean should determine values for via unification.
-    In other words, each call site should have exactly one potential argument value that would cause the function call as a whole to be well-typed.
-    The Lean elaborator attempts to find values for all implicit arguments at each occurrence of a function.
-    Ordinary implicit parameters are written in curly braces (`{` and `}`).
+    普通{deftech (key := "implicit")}[隐式]参数是应由 Lean 通过合一确定其值的函数参数。
+    换言之，每个调用处都应恰好存在一个候选实参值，使整个函数调用良类型。
+    每次函数出现时，Lean 精译器都会尝试为所有隐式实参寻找值。
+    普通隐式参数写在花括号（`{` 和 `}`）中。
 
-  : Strict implicit parameters
+  : 严格隐式参数
 
-    {deftech}_Strict implicit_ parameters are identical to ordinary implicit parameters, except Lean will only attempt to find argument values when subsequent explicit arguments are provided at a call site.
-    Strict implicit parameters are written in double curly braces (`⦃` and `⦄`, or `{{` and `}}`).
+    {deftech (key := "Strict implicit")}_严格隐式_参数与普通隐式参数相同，区别在于只有调用处提供了后续显式实参时，Lean 才会尝试寻找实参值。
+    严格隐式参数写在双花括号（`⦃` 和 `⦄`，或 `{{` 和 `}}`）中。
 
-  : Instance implicit parameters
+  : 实例隐式参数
 
-    Arguments for {tech}_instance implicit_ parameters are found via {ref "instance-synth"}[type class synthesis].
-    Instance implicit parameters are written in square brackets (`[` and `]`).
-    Unlike the other kinds of implicit parameter, instance implicit parameters that are written without a `:` specify the parameter's type rather than providing a name.
-    Furthermore, only a single name is allowed.
-    Most instance implicit parameters omit the parameter name because instances synthesized as parameters to functions are already available in the functions' bodies, even without being named explicitly.
+    {tech (key := "instance implicit")}_实例隐式_参数的实参通过{ref "instance-synth"}[类型类合成]查找。
+    实例隐式参数写在方括号（`[` 和 `]`）中。
+    与其他种类的隐式参数不同，不带 `:` 书写的实例隐式参数指定的是参数类型，而不是提供名称。
+    此外，只允许一个名称。
+    大多数实例隐式参数会省略参数名称，因为作为函数参数合成的实例即使没有显式命名，也已经可以在函数体中使用。
 
 ::::keepEnv
-:::example "Ordinary vs Strict Implicit Parameters"
-The difference between the functions {lean}`f` and {lean}`g` is that `α` is strictly implicit in {lean}`f`:
+:::example "普通隐式参数与严格隐式参数" (file := "Ordinary vs Strict Implicit Parameters")
+函数 {lean}`f` 与 {lean}`g` 的区别在于，`α` 在 {lean}`f` 中是严格隐式的：
 ```lean
 def f ⦃α : Type⦄ : α → α := fun x => x
 def g {α : Type} : α → α := fun x => x
 ```
 
-These functions are elaborated identically when applied to concrete arguments:
+应用于具体实参时，这两个函数的精译结果相同：
 ```lean
 example : f 2 = g 2 := rfl
 ```
 
-However, when the explicit argument is not provided, uses of {lean}`f` do not require the implicit `α` to be solved:
+然而，未提供显式实参时，使用 {lean}`f` 不要求求解隐式的 `α`：
 ```lean
 example := f
 ```
-However, uses of `g` do require it to be solved, and fail to elaborate if there is insufficient information available:
+但使用 `g` 的确要求求解它；若可用信息不足，精译就会失败：
 ```lean +error (name := noAlpha)
 example := g
 ```
@@ -447,42 +457,42 @@ context:
 ::::
 
 
-:::syntax term (title := "Functions with Varying Binders")
-The most general syntax for {keywordOf Lean.Parser.Term.fun}`fun` accepts a sequence of binders:
+:::syntax term (title := "带不同绑定器的函数")
+{keywordOf Lean.Parser.Term.fun}`fun` 最一般的语法接受一系列绑定器：
 ```grammar
 fun $p:funBinder $p:funBinder* => $t
 ```
 :::
 
 
-:::syntax Lean.Parser.Term.funBinder (title := "Function Binders")
-Function binders may be identifiers:
+:::syntax Lean.Parser.Term.funBinder (title := "函数绑定器")
+函数绑定器可以是标识符：
 ```grammar
 $x:ident
 ```
-parenthesized sequences of identifiers:
+带圆括号的标识符序列：
 ```grammar
 ($x:ident $y:ident*)
 ```
-sequences of identifiers with a type ascription:
+带类型标注的标识符序列：
 ```grammar
 ($x:ident $y:ident* : $t)
 ```
-implicit parameters, with or without a type ascription:
+带或不带类型标注的隐式参数：
 ```grammar
 {$x:ident $x:ident*}
 ```
 ```grammar
 {$x:ident $x:ident* : $t}
 ```
-instance implicits, anonymous or named:
+匿名或具名的实例隐式参数：
 ```grammar
 [$t:term]
 ```
 ```grammar
 [$x:ident : $t]
 ```
-or strict implicit parameters, with or without a type ascription:
+或者带或不带类型标注的严格隐式参数：
 ```grammar
 ⦃$x:ident $x:ident*⦄
 ```
@@ -490,16 +500,16 @@ or strict implicit parameters, with or without a type ascription:
 ⦃$x:ident* : $t⦄
 ```
 
-As usual, an `_` may be used instead of an identifier to create an anonymous parameter, and `⦃` and `⦄` may alternatively be written using `{{` and `}}`, respectively.
+与往常一样，可以用 `_` 代替标识符来创建匿名参数；`⦃` 和 `⦄` 也可分别写成 `{{` 和 `}}`。
 :::
 
 
 
-Lean's core language does not distinguish between implicit, instance, and explicit parameters: the various kinds of function and function type are definitionally equal.
-The differences can be observed only during elaboration.
+Lean 的核心语言不区分隐式参数、实例参数和显式参数：各种函数及函数类型在定义上相等。
+这些区别只能在精译过程中观察到。
 
 ```lean -show
--- Evidence of claims in prior paragraph
+-- 上一段论述的佐证
 example : ({x : Nat} → Nat) = (Nat → Nat) := rfl
 example : (fun {x} => 2 : {x : Nat} → Nat) = (fun x => 2 : Nat → Nat) := rfl
 example : ([x : Repr Nat] → Nat) = (Repr Nat → Nat) := rfl
@@ -507,12 +517,12 @@ example : (⦃x : Nat⦄ → Nat) = (Nat → Nat) := rfl
 ```
 
 
-If the expected type of a function includes implicit parameters, but its binders do not, then the resulting function may end up with more parameters than the binders indicated in the code.
-This is because the implicit parameters are added automatically.
+若函数的预期类型包含隐式参数，而其绑定器不包含，则所得函数最终的参数可能比代码中的绑定器所指明的更多。
+这是因为隐式参数会自动添加。
 
-:::example "Implicit Parameters from Types"
-The identity function can be written with a single explicit parameter.
-As long as its type is known, the implicit type parameter is added automatically.
+:::example "来自类型的隐式参数" (file := "Implicit Parameters from Types")
+恒等函数可以只用一个显式参数书写。
+只要其类型已知，隐式类型参数就会自动添加。
 ```lean (name := funImplAdd)
 #check (fun x => x : {α : Type} → α → α)
 ```
@@ -520,7 +530,7 @@ As long as its type is known, the implicit type parameter is added automatically
 fun {α} x => x : {α : Type} → α → α
 ```
 
-The following are all equivalent:
+以下写法全都等价：
 ```lean (name := funImplThere)
 #check (fun {α} x => x : {α : Type} → α → α)
 ```
@@ -544,21 +554,22 @@ fun {α} x => x : {α : Type} → α → α
 
 :::
 
-# Function Application
+# 函数应用
 %%%
 tag := "function-application"
+file := some "Function-Application"
 %%%
 
-Ordinarily, function application is written using juxtaposition: the argument is placed after the function, with at least one space between them.
-In Lean's type theory, all functions take exactly one argument and produce exactly one value.
-All function applications combine a single function with a single argument.
-Multiple arguments are represented via currying.
+通常，函数应用以并置方式书写：实参放在函数之后，二者之间至少有一个空格。
+在 Lean 的类型论中，所有函数都恰好接受一个实参并产生一个值。
+每个函数应用都将一个函数与一个实参组合起来。
+多个实参通过柯里化表示。
 
-The high-level term language treats a function together with one or more arguments as a single unit, and supports additional features such as implicit, optional, and by-name arguments along with ordinary positional arguments.
-The elaborator converts these to the simpler model of the core type theory.
+高层项语言将函数及其一个或多个实参视为一个整体，除普通位置实参外，还支持隐式实参、可选实参和具名实参等附加功能。
+精译器会将这些转换为核心类型论中更简单的模型。
 
-:::freeSyntax term (title := "Function Application")
-A function application consists of a term followed by one or more arguments, or by zero or more arguments and a final {deftech}[ellipsis].
+:::freeSyntax term (title := "函数应用")
+函数应用由一个项后接一个或多个实参组成；也可以后接零个或多个实参，并以{deftech (key := "ellipsis")}[省略号]结尾。
 ```grammar
 $e:term $e:argument+
 ***************
@@ -566,9 +577,9 @@ $e:term $e:argument* ".."
 ```
 :::
 
-{TODO}[Annotate with syntax kinds for incoming hyperlinks during traversal pass]
-:::freeSyntax Lean.Parser.Term.argument (title := "Arguments")
-Function arguments are either terms or {deftech}[named arguments].
+{TODO}[在遍历阶段用语法种类作标注，以供传入超链接使用]
+:::freeSyntax Lean.Parser.Term.argument (title := "实参")
+函数实参可以是项，也可以是{deftech (key := "named arguments")}[具名实参]。
 ```grammar
 $e:term
 ***********
@@ -576,46 +587,46 @@ $e:term
 ```
 :::
 
-The function's core-language type determines the placement of the arguments in the final expression.
-Function types include names for their expected parameters.
-In Lean's core language, non-dependent function types are encoded as dependent function types in which the parameter name does not occur in the body.
-Furthermore, they are chosen internally such that they cannot be written as the name of a named argument; this is important to prevent accidental capture.
+函数的核心语言类型决定实参在最终表达式中的位置。
+函数类型包含其预期参数的名称。
+在 Lean 的核心语言中，非依赖函数类型编码为参数名称不出现在类型体中的依赖函数类型。
+此外，这些名称由内部选取，无法写作具名实参的名称；这对于防止意外捕获十分重要。
 
-Each parameter expected by the function has a name.
-Recurring over the function's argument types, arguments are selected from the sequence of arguments as follows:
- * If the parameter's name matches the name provided for a named argument, then that argument is selected.
- * If the parameter is {tech}[implicit], a fresh metavariable is created with the parameter's type and selected.
- * If the parameter is {tech}[instance implicit], a fresh instance metavariable is created with the parameter's type and inserted. Instance metavariables are scheduled for later synthesis.
- * If the parameter is a {tech}[strict implicit] parameter and there are any named or positional arguments that have not yet been selected, a fresh metavariable is created with the parameter's type and selected.
- * If the parameter is explicit, then the next positional argument is selected and elaborated. If there are no positional arguments:
-   * If the parameter is declared as an {tech}[optional parameter], then its default value is selected as the argument.
-   * If the parameter is an {tech}[automatic parameter] then its associated tactic script is executed to construct the argument.
-   * If the parameter is neither optional nor automatic, and no ellipsis is present, then a fresh variable is selected as the argument. If there is an ellipsis, a fresh metavariable is selected as if the argument were implicit.
+函数预期的每个参数都有名称。
+递归遍历函数的实参类型时，按以下方式从实参序列中选择实参：
+ * 若参数名称与某个具名实参提供的名称匹配，则选择该实参。
+ * 若参数是{tech (key := "implicit")}[隐式]参数，则创建并选择一个具有该参数类型的新元变量。
+ * 若参数是{tech (key := "instance implicit")}[实例隐式]参数，则创建并插入一个具有该参数类型的新实例元变量。实例元变量会被安排稍后合成。
+ * 若参数是{tech (key := "strict implicit")}[严格隐式]参数，且仍有尚未选择的具名或位置实参，则创建并选择一个具有该参数类型的新元变量。
+ * 若参数是显式参数，则选择并精译下一个位置实参。若没有位置实参：
+   * 若参数声明为{tech (key := "optional parameter")}[可选参数]，则选择其默认值作为实参。
+   * 若参数是{tech (key := "automatic parameter")}[自动参数]，则执行其关联的策略脚本来构造实参。
+   * 若参数既非可选也非自动，且没有省略号，则选择一个新变量作为实参。若有省略号，则像实参为隐式的一样选择一个新元变量。
 
-As a special case, when the function application occurs in a {ref "pattern-matching"}[pattern] and there is an ellipsis, optional and automatic arguments become universal patterns (`_`) instead of being inserted.
+有一种特殊情况：当函数应用出现在{ref "pattern-matching"}[模式]中且存在省略号时，可选实参和自动实参会变为通配模式（`_`），而不是被插入。
 
-It is an error if the type is not a function type and arguments remain.
-After all arguments have been inserted and there is an ellipsis, then the missing arguments are all set to fresh metavariables, just as if they were implicit arguments.
-If any fresh variables were created for missing explicit positional arguments, the entire application is wrapped in a {keywordOf Lean.Parser.Term.fun}`fun` term that binds them.
-Finally, instance synthesis is invoked and as many metavariables as possible are solved:
- 1. A type is inferred for the entire function application. This may cause some metavariables to be solved due to unification that occurs during type inference.
- 2. The instance metavariables are synthesized. {tech}[Default instances] are only used if the inferred type is a metavariable that is the output parameter of one of the instances.
- 3. If there is an expected type, it is unified with the inferred type; however, errors resulting from this unification are discarded. If the expected and inferred types can be equal, unification can solve leftover implicit argument metavariables. If they can't be equal, an error is not thrown because a surrounding elaborator may be able to insert {tech}[coercions] or {tech (key := "lift")}[monad lifts].
+若类型不是函数类型但仍有实参剩余，则会报错。
+插入所有实参后，若存在省略号，则所有缺失的实参都会设为新元变量，如同它们是隐式实参一样。
+若为缺失的显式位置实参创建了新变量，则整个应用会包裹在绑定这些变量的 {keywordOf Lean.Parser.Term.fun}`fun` 项中。
+最后调用实例合成，并尽可能求解更多元变量：
+ 1. 推断整个函数应用的类型。类型推断期间发生的合一可能会求解某些元变量。
+ 2. 合成实例元变量。仅当推断类型是某个实例的输出参数元变量时，才使用{tech (key := "Default instances")}[默认实例]。
+ 3. 若存在预期类型，则将其与推断类型合一；但会丢弃此次合一产生的错误。若预期类型与推断类型可能相等，合一就能求解剩余的隐式实参元变量。若二者不可能相等，也不会抛出错误，因为外围精译器或许能插入{tech (key := "coercions")}[强制转换]或{tech (key := "lift")}[单子提升]。
 
 
 ::::keepEnv
-:::example "Named Arguments"
+:::example "具名实参" (file := "Named Arguments")
 ```lean -show
 set_option linter.unusedVariables false
 ```
-The {keywordOf Lean.Parser.Command.check}`#check` command can be used to inspect the arguments that were inserted for a function call.
+可以使用 {keywordOf Lean.Parser.Command.check}`#check` 命令查看为函数调用插入了哪些实参。
 
-The function {name}`sum3` takes three explicit {lean}`Nat` parameters, named `x`, `y`, and `z`.
+函数 {name}`sum3` 接受三个显式的 {lean}`Nat` 参数，名称分别为 `x`、`y` 和 `z`。
 ```lean
 def sum3 (x y z : Nat) : Nat := x + y + z
 ```
 
-All three arguments can be provided positionally.
+三个实参都可以按位置提供。
 ```lean (name := sum31)
 #check sum3 1 3 8
 ```
@@ -623,7 +634,7 @@ All three arguments can be provided positionally.
 sum3 1 3 8 : Nat
 ```
 
-They can also be provided by name.
+它们也可以按名称提供。
 ```lean (name := sum32)
 #check sum3 (x := 1) (y := 3) (z := 8)
 ```
@@ -631,7 +642,7 @@ They can also be provided by name.
 sum3 1 3 8 : Nat
 ```
 
-When arguments are provided by name, it can be in any order.
+按名称提供实参时，可以采用任意顺序。
 ```lean (name := sum33)
 #check sum3 (y := 3) (z := 8) (x := 1)
 ```
@@ -639,7 +650,7 @@ When arguments are provided by name, it can be in any order.
 sum3 1 3 8 : Nat
 ```
 
-Named and positional arguments may be freely intermixed.
+具名实参与位置实参可以自由混用。
 ```lean (name := sum34)
 #check sum3 1 (z := 8) (y := 3)
 ```
@@ -647,8 +658,8 @@ Named and positional arguments may be freely intermixed.
 sum3 1 3 8 : Nat
 ```
 
-Named and positional arguments may be freely intermixed.
-If an argument is provided by name, it is used, even if it occurs after a positional argument that could have been used.
+具名实参与位置实参可以自由混用。
+若按名称提供了实参，就会使用该实参，即使它出现在本可使用的位置实参之后。
 ```lean (name := sum342)
 #check sum3 1 (x := 8) (y := 3)
 ```
@@ -656,7 +667,7 @@ If an argument is provided by name, it is used, even if it occurs after a positi
 sum3 8 3 1 : Nat
 ```
 
-If a named argument is to be inserted after arguments that aren't provided, a function is created in which the provided argument is filled out.
+若要在尚未提供的实参之后插入具名实参，则会创建一个已填入所提供实参的函数。
 ```lean (name := sum35)
 #check sum3 (z := 8)
 ```
@@ -664,8 +675,8 @@ If a named argument is to be inserted after arguments that aren't provided, a fu
 fun x y => sum3 x y 8 : Nat → Nat → Nat
 ```
 
-Behind the scenes, the names of the arguments are preserved in the function type.
-This means that the remaining arguments can again be passed by name.
+在幕后，实参名称会保留在函数类型中。
+这意味着其余实参仍可再次按名称传递。
 ```lean (name := sum36)
 #check (sum3 (z := 8)) (y := 1)
 ```
@@ -673,17 +684,17 @@ This means that the remaining arguments can again be passed by name.
 fun x => (fun x y => sum3 x y 8) x 1 : Nat → Nat
 ```
 
-Parameter names are taken from the function's _type_, and the names used for function parameters don't need to match the names used in the type.
-This means that local bindings that conflict with a parameter's name don't prevent the use of named parameters, because Lean avoids this conflicts by renaming the function's parameter while leaving the name intact in the type.
+参数名称取自函数的_类型_，函数参数所用名称不必与类型中使用的名称匹配。
+这意味着，与参数名称冲突的局部绑定不会妨碍具名参数的使用，因为 Lean 会重命名函数参数以避免冲突，同时保持类型中的名称不变。
 ```lean (name := sum15)
 #check let x := 15; sum3 (z := x)
 ```
-Here, the `x` that named {name}`sum3`'s first argument has been replaced, so as to not conflict with the surrounding {keywordOf Parser.Term.let}`let`:
+这里，用于命名 {name}`sum3` 第一个实参的 `x` 已被替换，以免与外围的 {keywordOf Parser.Term.let}`let` 冲突：
 ```leanOutput sum15
 let x := 15;
 fun x_1 y => sum3 x_1 y x : Nat → Nat → Nat
 ```
-Even though `x` was renamed, it can still be passed by name:
+尽管 `x` 已被重命名，仍可按名称传递它：
 ```lean (name := xNoCapture)
 #check (let x := 15; sum3 (z := x)) (x := 4)
 ```
@@ -692,8 +703,8 @@ Even though `x` was renamed, it can still be passed by name:
   fun x_1 y => sum3 x_1 y x)
   4 : Nat → Nat
 ```
-This is because the name `x` is still used in the type.
-Enabling the option {option}`pp.piBinderNames` shows the parameter names in the type:
+这是因为类型中仍使用名称 `x`。
+启用选项 {option}`pp.piBinderNames` 可显示类型中的参数名称：
 ```lean (name := xRenamed)
 set_option pp.piBinderNames true in
 #check let x := 15; sum3 (z := x)
@@ -706,50 +717,51 @@ fun x_1 y => sum3 x_1 y x : (x y : Nat) → Nat
 ::::
 
 
-Optional and automatic parameters are not part of Lean's core type theory.
-They are encoded using the {name}`optParam` and {name}`autoParam` {tech}[gadgets].
+可选参数和自动参数并非 Lean 核心类型论的一部分。
+它们使用 {name}`optParam` 和 {name}`autoParam` {tech (key := "gadgets")}[辅助机制]进行编码。
 
-{docstring optParam}
+{zhdocstring optParam ZhDoc.Terms.optParam}
 
-{docstring autoParam}
+{zhdocstring autoParam ZhDoc.Terms.autoParam}
 
-## Generalized Field Notation
+## 广义字段表示法
 %%%
 tag := "generalized-field-notation"
+file := "Generalized Field Notation"
 %%%
 
-The {ref "structure-fields"}[section on structure fields] describes the notation for projecting a field from a term whose type is a structure.
-Generalized field notation consists of a term followed by a dot (`.`) and an identifier, not separated by spaces.
+{ref "structure-fields"}[关于结构字段的小节]介绍了从类型为结构的项中投影字段的表示法。
+广义字段表示法由一个项、一个点号（`.`）和一个标识符依次组成，三者之间不能有空格。
 
-:::syntax term (title := "Field Notation")
+:::syntax term (title := "字段表示法")
 ```grammar
 $e:term.$f:ident
 ```
 :::
 
-If a term's type is a constant applied to zero or more arguments, then {deftech}[field notation] can be used to apply a function to it, regardless of whether the term is a structure or type class instance that has fields.
-The use of field notation to apply other functions is called {deftech}_generalized field notation_.
+如果一个项的类型是应用于零个或多个参数的常量，那么无论该项是不是拥有字段的结构或类型类实例，都可以用{deftech (key := "field notation")}[字段表示法]将一个函数应用于它。
+使用字段表示法应用其他函数称为{deftech (key := "generalized field notation")}_广义字段表示法_。
 
-The identifier after the dot is looked up in the namespace of the term's type, which is the constant's name.
-If the type is not an application of a constant (e.g. a metavariable or a universe) then it doesn't have a namespace and generalized field notation cannot be used.
-As a special case, if an expression is a function, generalized field notation will look in the `Function` namespace. Therefore, {lean}`Nat.add.uncurry` is a use of generalized field notation that is equivalent to {lean}`Function.uncurry Nat.add`.
+点号后的标识符会在该项类型的命名空间中查找，也就是在这个常量名称所对应的命名空间中查找。
+如果类型不是常量的应用（例如，它是一个元变量或宇宙），那么它就没有命名空间，因而不能使用广义字段表示法。
+特别地，如果表达式是函数，广义字段表示法会在 `Function` 命名空间中查找。因此，{lean}`Nat.add.uncurry` 是广义字段表示法的一种用法，它等价于 {lean}`Function.uncurry Nat.add`。
 
-If the field is not found, but the constant can be unfolded to yield a further type which is a constant or application of a constant, then the process is repeated with the new constant.
+如果找不到该字段，但可以展开这个常量，得到另一个常量或常量应用类型，那么就用新的常量重复这一过程。
 
-When a function is found, the term before the dot becomes an argument to the function.
-Specifically, it becomes the first explicit argument that would not be a type error.
-Aside from that, the application is elaborated as usual.
+找到函数后，点号前的项会成为该函数的一个参数。
+具体而言，它会成为第一个不会导致类型错误的显式参数。
+除此之外，该应用会照常精译。
 
-:::example "Generalized Field Notation"
-The type {lean}`Username` is a constant, so functions in the {name}`Username` namespace can be applied to terms with type {lean}`Username` with generalized field notation.
+:::example "广义字段表示法" (file := "Generalized Field Notation")
+类型 {lean}`Username` 是常量，因此可以用广义字段表示法，将 {name}`Username` 命名空间中的函数应用于类型为 {lean}`Username` 的项。
 ```lean
 def Username := String
 ```
 
-One such function is {name}`Username.validate`, which checks that a username contains no leading whitespace and that only a small set of acceptable characters are used.
-In its definition, generalized field notation is used to call the functions {lean}`String.isPrefixOf`, {name}`String.any`, {lean}`Char.isAlpha`, and {lean}`Char.isDigit`.
-In the case of {lean}`String.isPrefixOf`, which takes two {lean}`String` arguments, {lean}`" "` is used as the first  because it's the term before the dot.
-{name}`String.any` can be called on {lean}`name` using generalized field notation even though it has type {lean}`Username` because `Username.any` is not defined and {lean}`Username` unfolds to {lean}`String`.
+{name}`Username.validate` 就是这样的函数之一，它检查用户名是否没有前导空白，且是否只使用了少量允许的字符。
+在其定义中，广义字段表示法用于调用函数 {lean}`String.isPrefixOf`、{name}`String.any`、{lean}`Char.isAlpha` 和 {lean}`Char.isDigit`。
+{lean}`String.isPrefixOf` 接受两个 {lean}`String` 参数；在这里，{lean}`" "` 用作第一个参数，因为它是点号前的项。
+虽然 {lean}`name` 的类型是 {lean}`Username`，但仍可用广义字段表示法对它调用 {name}`String.any`，这是因为 `Username.any` 没有定义，而 {lean}`Username` 可展开为 {lean}`String`。
 
 ```lean
 def Username.validate (name : Username) : Except String Unit := do
@@ -767,7 +779,7 @@ where
 def adminUser : Username := "admin"
 ```
 
-However, {lean}`Username.validate` can't be called on {lean}`"admin"` using field notation, because {lean}`String` does not unfold to {lean}`Username`.
+然而，不能用字段表示法对 {lean}`"admin"` 调用 {lean}`Username.validate`，因为 {lean}`String` 不会展开为 {lean}`Username`。
 ```lean +error (name := notString)
 #eval "admin".validate
 ```
@@ -777,7 +789,7 @@ Invalid field `validate`: The environment does not contain `String.validate`, so
 of type `String`
 ```
 
-{lean}`adminUser`, on the other hand, has type {lean}`Username`, so the {lean}`Username.validate` function can be invoked with generalized field notation:
+另一方面，{lean}`adminUser` 的类型是 {lean}`Username`，因此可以用广义字段表示法调用 {lean}`Username.validate` 函数：
 ```lean (name := isUsername)
 #eval adminUser.validate
 ```
@@ -785,7 +797,7 @@ of type `String`
 Except.ok ()
 ```
 
-Going in the other direction, {name}`String.any` *can* be called on the {lean}`Username` value {lean}`adminUser` with generalized field notation, because the type {lean}`Username` unfolds to {lean}`String`.
+反过来，确实可以用广义字段表示法对 {lean}`Username` 值 {lean}`adminUser` 调用 {name}`String.any`，因为类型 {lean}`Username` 可展开为 {lean}`String`。
 ```lean (name := isString1)
 #eval adminUser.any (· == 'm')
 ```
@@ -794,18 +806,18 @@ true
 ```
 :::
 
-{optionDocs pp.fieldNotation}
+{zhOptionDocs pp.fieldNotation ZhDoc.Terms.Option.pp.fieldNotation}
 
-:::syntax attr (title := "Controlling Field Notation")
-The {attr}`pp_nodot` attribute causes Lean's pretty printer to not use field notation when printing a function.
+:::syntax attr (title := "控制字段表示法")
+{attr}`pp_nodot` 属性使 Lean 的美化打印器在打印函数时不使用字段表示法。
 ```grammar
 pp_nodot
 ```
 :::
 
 ::::keepEnv
-:::example "Turning Off Field Notation"
-{lean}`Nat.half` is printed using field notation by default.
+:::example "关闭字段表示法" (file := "Turning Off Field Notation")
+默认情况下，{lean}`Nat.half` 使用字段表示法打印。
 ```lean
 def Nat.half : Nat → Nat
   | 0 | 1 => 0
@@ -817,7 +829,7 @@ def Nat.half : Nat → Nat
 ```leanOutput succ1
 Nat.zero.half : Nat
 ```
-Adding {attr}`pp_nodot` to {name}`Nat.half` causes ordinary function application syntax to be used instead when displaying the term.
+为 {name}`Nat.half` 添加 {attr}`pp_nodot` 后，显示该项时会改用普通的函数应用语法。
 ```lean (name := succ2)
 attribute [pp_nodot] Nat.half
 
@@ -829,28 +841,32 @@ Nat.half Nat.zero : Nat
 :::
 ::::
 
-## Pipeline Syntax
+## 管道语法
+%%%
+tag := "The-Lean-Language-Reference--Terms--Function-Application--Pipeline-Syntax"
+file := "Pipeline Syntax"
+%%%
 
-Pipeline syntax provides alternative ways to write function applications.
-Repeated pipelines use parsing precedence instead of nested parentheses to nest applications of functions to positional arguments.
+管道语法提供了函数应用的其他写法。
+重复使用管道时，可借助解析优先级把函数依次应用于位置参数，而不必使用嵌套括号。
 
-:::syntax term (title := "Pipelines")
-Right pipe notation applies the term to the right of the pipe to the one on its left.
+:::syntax term (title := "管道")
+右管道表示法把管道右侧的项应用于左侧的项。
 ```grammar
 $e |> $e
 ```
-Left pipe notation applies the term on the left of the pipe to the one on its right.
+左管道表示法把管道左侧的项应用于右侧的项。
 ```grammar
 $e <| $e
 ```
 :::
 
-The intuition behind right pipeline notation is that the values on the left are being fed to the first function, its results are fed to the second one, and so forth.
-In left pipeline notation, values on the right are fed leftwards.
+右管道表示法背后的直观理解是：左侧的值被送入第一个函数，其结果再送入第二个函数，以此类推。
+在左管道表示法中，右侧的值向左传递。
 
-:::example "Right pipeline notation"
-Right pipelines can be used to call a series of functions on a term.
-For readers, they tend to emphasize the data that's being transformed.
+:::example "右管道表示法" (file := "Right pipeline notation")
+右管道可以在一个项上依次调用一系列函数。
+对读者而言，它往往更强调正在变换的数据。
 ```lean (name := rightPipe)
 #eval "Hello!" |> String.toList |> List.reverse |> List.head!
 ```
@@ -859,9 +875,9 @@ For readers, they tend to emphasize the data that's being transformed.
 ```
 :::
 
-:::example "Left pipeline notation"
-Left pipelines can be used to call a series of functions on a term.
-They tend to emphasize the functions over the data.
+:::example "左管道表示法" (file := "Left pipeline notation")
+左管道可以在一个项上依次调用一系列函数。
+它往往更强调函数而非数据。
 ```lean (name := lPipe)
 #eval List.head! <| List.reverse <| String.toList <| "Hello!"
 ```
@@ -870,8 +886,8 @@ They tend to emphasize the functions over the data.
 ```
 :::
 
-:::syntax term (title := "Pipeline Fields")
-There is a version of pipeline notation that's used for {tech}[generalized field notation].
+:::syntax term (title := "管道字段")
+管道表示法还有一个用于{tech (key := "generalized field notation")}[广义字段表示法]的版本。
 ```grammar
 $e |>.$_:ident
 ```
@@ -889,13 +905,13 @@ variable {e : T 3} {arg : Char}
 axiom T.f : {n : Nat} → Char → T n → String
 ```
 
-{lean}`e |>.f arg` is an alternative syntax for {lean}`(e).f arg`.
+{lean}`e |>.f arg` 是 {lean}`(e).f arg` 的另一种语法。
 
 
-:::example "Pipeline Fields"
+:::example "管道字段" (file := "Pipeline Fields")
 
-Some functions are inconvenient to use with pipelines because their argument order is not conducive.
-For example, {name}`Array.push` takes an array as its first argument, not a {lean}`Nat`, leading to this error:
+有些函数的参数顺序不便于使用管道。
+例如，{name}`Array.push` 的第一个参数是数组，而不是 {lean}`Nat`，因而会产生以下错误：
 ```lean (name := arrPush) +error
 #eval #[1, 2, 3] |> Array.push 4
 ```
@@ -909,7 +925,7 @@ due to the absence of the instance above
 Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
 ```
 
-Using pipeline field notation causes the array to be inserted at the first type-correct position:
+使用管道字段表示法会把数组插入第一个类型正确的位置：
 ```lean (name := arrPush2)
 #eval #[1, 2, 3] |>.push 4
 ```
@@ -917,7 +933,7 @@ Using pipeline field notation causes the array to be inserted at the first type-
 #[1, 2, 3, 4]
 ```
 
-This process can be iterated:
+这一过程可以反复进行：
 ```lean (name := arrPush3)
 #eval #[1, 2, 3] |>.push 4 |>.reverse |>.push 0 |>.reverse
 ```
@@ -932,14 +948,19 @@ end
 ```
 ::::
 
-# Numeric Literals
+# 数值字面量
+%%%
+tag := "The-Lean-Language-Reference--Terms--Numeric-Literals"
+file := "Numeric-Literals"
+%%%
 
-There are two kinds of numeric literal: natural number literals and {deftech}[scientific literals].
-Both are overloaded via {tech (key := "type class")}[type classes].
+数值字面量分为两类：自然数字面量和{deftech (key := "scientific literals")}[科学计数字面量]。
+二者都通过{tech (key := "type class")}[类型类]重载。
 
-## Natural Numbers
+## 自然数
 %%%
 tag := "nat-literals"
+file := "Natural Numbers"
 %%%
 
 ```lean -show
@@ -947,28 +968,28 @@ section
 variable {n : Nat}
 ```
 
-Natural numbers can be specified in several forms:
+自然数可以用以下几种形式指定：
 
- - A sequence of digits 0 through 9 is a decimal literal
- - `0b` or `0B` followed by a sequence of one or more 0s and 1s is a binary literal
- - `0o` or `0O` followed by a sequence of one or more digits 0 through 7 is an octal literal
- - `0x` or `0X` followed by a sequence of one or more hex digits (0 through 9 and A through F, case-insensitive) is a hexadecimal literal
+ - 由数字 0 至 9 组成的序列是十进制字面量
+ - `0b` 或 `0B` 后跟由一个或多个 0 与 1 组成的序列，是二进制字面量
+ - `0o` 或 `0O` 后跟由一个或多个 0 至 7 的数字组成的序列，是八进制字面量
+ - `0x` 或 `0X` 后跟由一个或多个十六进制数字（0 至 9 以及 A 至 F，不区分大小写）组成的序列，是十六进制字面量
 
-All numeric literals can also contain internal underscores, except for between the first two characters in a binary, octal, or hexadecimal literal.
-These are intended to help groups of digits in natural ways, for instance {lean}`1_000_000` or {lean}`0x_c0de_cafe`.
-(While it is possible to write the number 123 as {lean}`1_2__3`, this is not recommended.)
+所有数值字面量内部都可以包含下划线，但二进制、八进制或十六进制字面量的前两个字符之间除外。
+这些下划线旨在帮助以自然方式对数字分组，例如 {lean}`1_000_000` 或 {lean}`0x_c0de_cafe`。
+（虽然可以将数字 123 写成 {lean}`1_2__3`，但不推荐这样做。）
 
-When Lean encounters a natural number literal {lean}`n`, it interprets it via the overloaded method {lean}`OfNat.ofNat n`.
-A {tech}[default instance] of {lean}`OfNat Nat n` ensures that the type {lean}`Nat` can be inferred when no other type information is present.
+Lean 遇到自然数字面量 {lean}`n` 时，会通过重载方法 {lean}`OfNat.ofNat n` 解释它。
+{lean}`OfNat Nat n` 的一个{tech (key := "default instance")}[默认实例]确保在没有其他类型信息时可以推断出类型 {lean}`Nat`。
 
-{docstring OfNat}
+{zhdocstring OfNat ZhDoc.Terms.OfNat}
 
 ```lean -show
 end
 ```
 
-:::example "Custom Natural Number Literals"
-The structure {lean}`NatInterval` represents an interval of natural numbers.
+:::example "自定义自然数字面量" (file := "Custom Natural Number Literals")
+结构 {lean}`NatInterval` 表示一个自然数区间。
 ```lean
 structure NatInterval where
   low : Nat
@@ -981,7 +1002,7 @@ instance : Add NatInterval where
       ⟨lo1 + lo2, hi1 + hi2, by grind⟩
 ```
 
-An {name}`OfNat` instance allows natural number literals to be used to represent intervals:
+{name}`OfNat` 实例使自然数字面量可以用来表示区间：
 ```lean
 instance : OfNat NatInterval n where
   ofNat := ⟨n, n, by omega⟩
@@ -1000,43 +1021,55 @@ instance : OfNat NatInterval n where
 ```
 :::
 
-There are no separate integer literals.
-Terms such as {lean}`-5` consist of a prefix negation (which can be overloaded via the {name}`Neg` type class) applied to a natural number literal.
+并没有单独的整数字面量。
+{lean}`-5` 这样的项由应用于自然数字面量的前缀取负操作构成（它可以通过 {name}`Neg` 类型类重载）。
 
-## Scientific Numbers
+## 科学计数
+%%%
+tag := "The-Lean-Language-Reference--Terms--Numeric-Literals--Scientific-Numbers"
+file := "Scientific Numbers"
+%%%
 
-Scientific number literals consist of a sequence of decimal digits followed (without intervening whitespace) by an optional decimal part (a period followed by zero or more decimal digits) and an optional exponent part (the letter `e` followed by an optional `+` or `-` and then followed by one or more decimal digits).
-Scientific numbers are overloaded via the {name}`OfScientific` type class.
+科学计数字面量由一个十进制数字序列、一个可选的小数部分（句点后跟零个或多个十进制数字）和一个可选的指数部分（字母 `e` 后跟可选的 `+` 或 `-`，再跟一个或多个十进制数字）组成，各部分之间不能有空白。
+科学计数字面量通过 {name}`OfScientific` 类型类重载。
 
-{docstring OfScientific}
+{zhdocstring OfScientific ZhDoc.Terms.OfScientific}
 
-There are an {lean}`OfScientific` instances for {name}`Float` and {name}`Float32`, but no separate floating-point literals.
+存在用于 {name}`Float` 和 {name}`Float32` 的 {lean}`OfScientific` 实例，但不存在单独的浮点字面量。
 
-## Strings
+## 字符串
+%%%
+tag := "The-Lean-Language-Reference--Terms--Numeric-Literals--Strings"
+file := "Strings"
+%%%
 
-String literals are described in the {ref "string-syntax"}[chapter on strings.]
+字符串字面量在{ref "string-syntax"}[关于字符串的章节]中介绍。
 
-## Lists and Arrays
+## 列表与数组
+%%%
+tag := "The-Lean-Language-Reference--Terms--Numeric-Literals--Lists-and-Arrays"
+file := "Lists and Arrays"
+%%%
 
-List and array literals contain comma-separated sequences of elements inside of brackets, with arrays prefixed by a hash mark (`#`).
-Array literals are interpreted as list literals wrapped in a call to a conversion.
-For performance reasons, very large list and array literals are converted to sequences of local definitions, rather than just iterated applications of the list constructor.
+列表和数组字面量是在方括号内以逗号分隔的元素序列，数组的方括号前还带有井号（`#`）。
+数组字面量会被解释为由转换调用包裹的列表字面量。
+出于性能考虑，非常长的列表和数组字面量会被转换为一系列局部定义，而不仅仅是列表构造器的迭代应用。
 
-:::syntax term (title := "List Literals")
+:::syntax term (title := "列表字面量")
 ```grammar
 [$_,*]
 ```
 :::
 
-:::syntax term (title := "Array Literals")
+:::syntax term (title := "数组字面量")
 ```grammar
 #[$_,*]
 ```
 :::
 
-:::example "Long List Literals"
-This list contains 32 elements.
-The generated code is an iterated application of {name}`List.cons`:
+:::example "长列表字面量" (file := "Long List Literals")
+此列表包含 32 个元素。
+生成的代码是 {name}`List.cons` 的迭代应用：
 ```lean (name := almostLong)
 #check
   [1,1,1,1,1,1,1,1,
@@ -1048,7 +1081,7 @@ The generated code is an iterated application of {name}`List.cons`:
 [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1] : List Nat
 ```
 
-With 33 elements, the list literal becomes a sequence of local definitions:
+包含 33 个元素时，列表字面量会变成一系列局部定义：
 ```lean (name := indeedLong)
 #check
   [1,1,1,1,1,1,1,1,
@@ -1073,24 +1106,29 @@ let y := 1 :: 1 :: 1 :: 1 :: y;
 
 :::
 
-# Structures and Constructors
+# 结构与构造器
+%%%
+tag := "The-Lean-Language-Reference--Terms--Structures-and-Constructors"
+file := "Structures-and-Constructors"
+%%%
 
-{ref "anonymous-constructor-syntax"}[Anonymous constructors] and {ref "structure-constructors"}[structure instance syntax] are described in their respective sections.
+{ref "anonymous-constructor-syntax"}[匿名构造器]和{ref "structure-constructors"}[结构实例语法]在各自的小节中介绍。
 
-# Conditionals
+# 条件表达式
 %%%
 tag := "if-then-else"
+file := "Conditionals"
 %%%
 
-The conditional expression is used to check whether a proposition is true or false.{margin}[Despite their syntactic similarity, the {keywordOf Lean.Parser.Tactic.tacIfThenElse}`if` used {ref "tactic-language-branching"}[in the tactic language] and the {keywordOf Lean.Parser.Term.doIf}`if` used {ref "tactic-language-branching"}[in `do`-notation] are separate syntactic forms, documented in their own sections.]
-This requires that the proposition has a {name}`Decidable` instance, because it's not possible to check whether _arbitrary_ propositions are true or false.
-There is also a {tech}[coercion] from {name}`Bool` to {lean}`Prop` that results in a decidable proposition (namely, that the {name}`Bool` in question is equal to {name}`true`), described in the {ref "decidable-propositions"}[section on decidability].
+条件表达式用于检查一个命题是真是假。{margin}[尽管语法相似，{ref "tactic-language-branching"}[策略语言中]使用的 {keywordOf Lean.Parser.Tactic.tacIfThenElse}`if` 和{ref "tactic-language-branching"}[`do` 记法中]使用的 {keywordOf Lean.Parser.Term.doIf}`if` 是各自独立的语法形式，并在各自的小节中介绍。]
+这要求该命题具有 {name}`Decidable` 实例，因为不可能检查_任意_命题是真是假。
+从 {name}`Bool` 到 {lean}`Prop` 还有一个{tech (key := "coercion")}[强制转换]，它会产生一个可判定命题（即所涉及的 {name}`Bool` 等于 {name}`true`）；这在{ref "decidable-propositions"}[关于可判定性的小节]中介绍。
 
-There are two versions of the conditional expression: one simply performs a case distinction, while the other additionally adds an assumption about the proposition's truth or falsity to the local context.
-This allows run-time checks to generate compile-time evidence that can be used to statically rule out errors.
+条件表达式有两个版本：一个只进行情况区分，另一个还会向局部上下文中加入关于该命题为真或为假的假设。
+这使运行时检查能够生成编译时证据，以便静态排除错误。
 
-:::syntax term (title := "Conditionals")
-Without a name annotation, the conditional expression expresses only control flow.
+:::syntax term (title := "条件表达式")
+没有名称标注时，条件表达式只表达控制流。
 ```grammar
 if $e then
   $e
@@ -1098,7 +1136,7 @@ else
   $e
 ```
 
-With the name annotation, the branches of the {keywordOf termDepIfThenElse}`if` have access to a local assumption that the proposition is respectively true or false.
+有名称标注时，{keywordOf termDepIfThenElse}`if` 的两个分支可以分别使用关于该命题为真或为假的局部假设。
 ```grammar
 if $h : $e then
   $e
@@ -1109,9 +1147,9 @@ else
 
 
 ::::keepEnv
-:::example "Checking Array Bounds"
+:::example "检查数组边界" (file := "Checking Array Bounds")
 
-Array indexing requires evidence that the index in question is within the bounds of the array, so {name}`getThird` does not elaborate.
+数组索引要求有证据表明相应索引位于数组边界内，因此 {name}`getThird` 无法精译。
 
 ```lean +error -keep (name := getThird1)
 def getThird (xs : Array α) : α := xs[2]
@@ -1127,8 +1165,8 @@ xs : Array α
 ⊢ 2 < xs.size
 ```
 
-Relaxing the return type to {name}`Option` and adding a bounds check results in the same error.
-This is because the proof that the index is in bounds was not added to the local context.
+将返回类型放宽为 {name}`Option` 并添加边界检查后，仍会得到相同的错误。
+这是因为索引位于边界内的证明没有被加入局部上下文。
 ```lean +error -keep (name := getThird2)
 def getThird (xs : Array α) : Option α :=
   if xs.size ≤ 2 then none
@@ -1145,7 +1183,7 @@ xs : Array α
 ⊢ 2 < xs.size
 ```
 
-Naming the proof `h` is sufficient to enable the tactics that perform bounds checking to succeed, even though it does not occur explicitly in the text of the program.
+为证明命名为 `h`，就足以使执行边界检查的策略成功，尽管它并未显式出现在程序文本中。
 ```lean
 def getThird (xs : Array α) : Option α :=
   if h : xs.size ≤ 2 then none
@@ -1155,11 +1193,11 @@ def getThird (xs : Array α) : Option α :=
 :::
 ::::
 
-There is also a pattern-matching version of {keywordOf termIfLet}`if`.
-If the pattern matches, then it takes the first branch, binding the pattern variables.
-If the pattern does not match, then it takes the second branch.
+{keywordOf termIfLet}`if` 还有一个模式匹配版本。
+如果模式匹配，就进入第一个分支并绑定模式变量。
+如果模式不匹配，就进入第二个分支。
 
-:::syntax term (title := "Pattern-Matching Conditionals")
+:::syntax term (title := "模式匹配条件表达式")
 ```grammar
 if let $p := $e then
   $e
@@ -1169,8 +1207,8 @@ else
 :::
 
 
-If a {name}`Bool`-only conditional statement is ever needed, the {keywordOf boolIfThenElse}`bif` variant can be used.
-:::syntax term (title := "Boolean-Only Conditional")
+如果需要只接受 {name}`Bool` 的条件语句，可以使用 {keywordOf boolIfThenElse}`bif` 变体。
+:::syntax term (title := "仅布尔值条件表达式")
 ```grammar
 bif $e then
   $e
@@ -1180,21 +1218,22 @@ else
 :::
 
 
-# Pattern Matching
+# 模式匹配
 %%%
 tag := "pattern-matching"
+file := "Pattern-Matching"
 %%%
 
 
-{deftech}_Pattern matching_ is a way to recognize and destructure values using a syntax of {deftech}_patterns_ that are a subset of the terms.
-A pattern that recognizes and destructures a value is similar to the syntax that would be used to construct the value.
-One or more {deftech}_match discriminants_ are simultaneously compared to a series of {deftech}_match alternatives_.
-Discriminants may be named.
-Each alternative contains one or more comma-separated sequences of patterns; all pattern sequences must contain the same number of patterns as there are discriminants.
-When a pattern sequence matches all of the discriminants, the term following the corresponding {keywordOf Lean.Parser.Term.match}`=>` is evaluated in an environment extended with values for each {tech}[pattern variable] as well as an equality hypothesis for each named discriminant.
-This term is called the {deftech}_right-hand side_ of the match alternative.
+{deftech (key := "Pattern matching")}_模式匹配_是一种使用{deftech (key := "patterns")}_模式_语法识别值并解构值的方法；模式是项的一个子集。
+用于识别并解构值的模式，其语法类似于构造该值时所使用的语法。
+一个或多个{deftech (key := "match discriminants")}_匹配判别式_会同时与一系列{deftech (key := "match alternatives")}_匹配分支_进行比较。
+判别式可以命名。
+每个分支都包含一个或多个以逗号分隔的模式序列；所有模式序列所含的模式数都必须与判别式的数量相同。
+当一个模式序列匹配全部判别式时，就在扩展后的环境中求值对应 {keywordOf Lean.Parser.Term.match}`=>` 之后的项；该环境包含每个{tech (key := "pattern variable")}[模式变量]的值，以及每个具名判别式的一个相等性假设。
+这个项称为匹配分支的{deftech (key := "right-hand side")}_右侧_。
 
-:::syntax term (title := "Pattern Matching")
+:::syntax term (title := "模式匹配")
 ```grammar
 match
     $[(generalizing := $e)]?
@@ -1205,7 +1244,7 @@ $[| $[$e,*]|* => $e]*
 ```
 :::
 
-:::syntax matchDiscr (title := "Match Discriminants") -open
+:::syntax matchDiscr (title := "匹配判别式") -open
 ```grammar
 $e:term
 ```
@@ -1214,68 +1253,68 @@ $h:ident : $e:term
 ```
 :::
 
-Pattern matching expressions may alternatively use {tech}[quasiquotations] as patterns, matching the corresponding {name}`Lean.Syntax` values and treating the contents of {tech}[antiquotations] as ordinary patterns.
-Quotation patterns are compiled differently than other patterns, so if one pattern in a {keywordOf Lean.Parser.Term.match}`match` is syntax, then all of them must be.
-Quotation patterns are described in {ref "quote-patterns"}[the section on quotations].
+模式匹配表达式也可以使用{tech (key := "quasiquotations")}[准引用]作为模式：它匹配对应的 {name}`Lean.Syntax` 值，并将{tech (key := "antiquotations")}[反引用]的内容视为普通模式。
+引用模式的编译方式不同于其他模式，因此如果一个 {keywordOf Lean.Parser.Term.match}`match` 中有一个模式是语法，那么所有模式都必须是语法。
+引用模式见{ref "quote-patterns"}[引用一节]。
 
-Patterns are a subset of the terms.
-They consist of the following:
+模式是项的一个子集。
+模式由以下形式组成：
 
-: Catch-All Patterns
+: 全匹配模式
 
-  The hole syntax {lean}`_` is a pattern that matches any value and binds no pattern variables.
-  Catch-all patterns are not entirely equivalent to unused pattern variables.
-  They can be used in positions where the pattern's typing would otherwise require a more specific {tech}[inaccessible pattern], while variables cannot be used in these positions.
+  空洞语法 {lean}`_` 是一种匹配任意值且不绑定任何模式变量的模式。
+  全匹配模式并不完全等价于未使用的模式变量。
+  在模式的类型检查原本会要求更具体的{tech (key := "inaccessible pattern")}[不可访问模式]的位置，可以使用全匹配模式，而变量不能用于这些位置。
 
-: Identifiers
+: 标识符
 
-  If an identifier is not bound in the current scope and is not applied to arguments, then it represents a pattern variable.
-  {deftech}_Pattern variables_ match any value, and the values thus matched are bound to the pattern variable in the local environment in which the {tech}[right-hand side] is evaluated.
-  If the identifier is bound, it is a pattern if it is bound to the {tech}[constructor] of an {tech}[inductive type] or if its definition has the {attr}`match_pattern` attribute.
+  如果一个标识符未在当前作用域中绑定，也没有应用于实参，那么它表示一个模式变量。
+  {deftech (key := "Pattern variables")}_模式变量_匹配任意值；如此匹配到的值会绑定到模式变量，并加入求值{tech (key := "right-hand side")}[右侧]时所使用的局部环境。
+  如果标识符已绑定，那么当它绑定到某个{tech (key := "inductive type")}[归纳类型]的{tech (key := "constructor")}[构造器]，或其定义带有 {attr}`match_pattern` 属性时，它可以作为模式。
 
-: Applications
+: 应用
 
-  Function applications are patterns if the function being applied is an identifier that is bound to a constructor or that has the {attr}`match_pattern` attribute and if all arguments are also patterns.
-  If the identifier is a constructor, the pattern matches values built with that constructor if the argument patterns match the constructor's arguments.
-  If it is a function with the {attr}`match_pattern` attribute, then the function application is unfolded and the resulting term's {tech}[normal form] is used as the pattern.
-  Default arguments are inserted as usual, and their normal forms are used as patterns.
-  {tech (key := "ellipsis")}[Ellipses], however, result in all further arguments being treated as universal patterns, even those with associated default values or tactics.
+  如果函数应用中的函数是绑定到构造器或带有 {attr}`match_pattern` 属性的标识符，并且所有实参也都是模式，那么该函数应用就是模式。
+  如果该标识符是构造器，那么当实参模式与构造器的实参匹配时，此模式便匹配由该构造器构造的值。
+  如果它是带有 {attr}`match_pattern` 属性的函数，则展开该函数应用，并将所得项的{tech (key := "normal form")}[范式]用作模式。
+  默认实参会照常插入，并将其范式用作模式。
+  不过，{tech (key := "ellipsis")}[省略号]会使后续所有实参都被视为全匹配模式，即便这些实参带有相关的默认值或策略。
 
-: Literals
+: 字面量
 
-  {ref "char-syntax"}[Character literals] and {ref "string-syntax"}[string literals] are patterns that match the corresponding character or string.
-  {ref "raw-string-literals"}[Raw string literals] are allowed as patterns, but {ref "string-interpolation"}[interpolated strings] are not.
-  {ref "nat-syntax"}[Natural number literals] in patterns are interpreted by synthesizing the corresponding {name}`OfNat` instance and reducing the resulting term to {tech}[normal form], which must be a pattern.
-  Similarly, {tech}[scientific literals] are interpreted via the corresponding {name}`OfScientific` instance.
+  {ref "char-syntax"}[字符字面量]和{ref "string-syntax"}[字符串字面量]是匹配相应字符或字符串的模式。
+  {ref "raw-string-literals"}[原始字符串字面量]可以用作模式，但{ref "string-interpolation"}[插值字符串]不可以。
+  模式中的{ref "nat-syntax"}[自然数字面量]通过合成相应的 {name}`OfNat` 实例来解释，并将所得项归约为{tech (key := "normal form")}[范式]；该范式必须是模式。
+  类似地，{tech (key := "scientific literals")}[科学计数字面量]通过相应的 {name}`OfScientific` 实例解释。
 
-: Structure Instances
+: 结构体实例
 
-  {tech}[Structure instances] may be used as patterns.
-  They are interpreted as the corresponding structure constructor.
+  {tech (key := "Structure instances")}[结构体实例]可以用作模式。
+  它们会被解释为相应的结构体构造器。
 
-: Quoted names
+: 引用名称
 
-  Quoted names, such as {lean}`` `x `` and {lean}``` ``none ```, match the corresponding {name}`Lean.Name` value.
+  {lean}`` `x `` 和 {lean}``` ``none ``` 等引用名称会匹配相应的 {name}`Lean.Name` 值。
 
-: Macros
+: 宏
 
-  Macros in patterns are expanded.
-  They are patterns if the resulting expansions are patterns.
+  模式中的宏会被展开。
+  如果展开结果是模式，那么这些宏就是模式。
 
-: Inaccessible patterns
+: 不可访问模式
 
-  {deftech}[Inaccessible patterns] are patterns that are forced to have a particular value by later typing constraints.
-  Any term may be used as an inaccessible term.
-  Inaccessible terms are parenthesized, with a preceding period (`.`).
+  {deftech (key := "Inaccessible patterns")}[不可访问模式]是因后续类型约束而被迫具有特定值的模式。
+  任何项都可以用作不可访问项。
+  不可访问项写在圆括号中，并以句点（`.`）开头。
 
-:::syntax term (title := "Inaccessible Patterns")
+:::syntax term (title := "不可访问模式")
 ```grammar
 .($e)
 ```
 :::
 
-:::example "Inaccessible Patterns"
-A number's _parity_ is whether it's even or odd:
+:::example "不可访问模式" (file := "Inaccessible Patterns")
+一个数的_奇偶性_指它是偶数还是奇数：
 ```lean
 inductive Parity : Nat → Type where
   | even (h : Nat) : Parity (h + h)
@@ -1293,22 +1332,22 @@ def Nat.parity (n : Nat) : Parity n :=
       eq ▸ .even (h + 1)
 ```
 
-Because a value of type {lean}`Parity` contains half of a number (rounded down) as part of its representation of evenness or oddness, division by two can be implemented (in an unconventional manner) by finding a parity and then extracting the number.
+由于 {lean}`Parity` 类型的值在表示奇偶性时包含该数的一半（向下取整），因此可以先求奇偶性再提取其中的数，以一种非常规方式实现除以二。
 ```lean
 def half (n : Nat) : Nat :=
   match n, n.parity with
   | .(h + h),     .even h => h
   | .(h + h + 1), .odd h  => h
 ```
-Because the index structure of {name}`Parity.even` and {name}`Parity.odd` force the number to have a certain form that is not otherwise a valid pattern, patterns that match on it must use inaccessible patterns for the number being divided.
+由于 {name}`Parity.even` 和 {name}`Parity.odd` 的索引结构迫使该数具有某种原本不是合法模式的特定形式，因此匹配它的模式必须对被除数使用不可访问模式。
 :::
 
-Patterns may additionally be named.
-{deftech}[Named patterns] associate a name with a pattern; in subsequent patterns and on the right-hand side of the match alternative, the name refers to the part of the value that was matched by the given pattern.
-Named patterns are written with an `@` between the name and the pattern.
-Just like discriminants, named patterns may also be provided with names for equality assumptions.
+模式还可以命名。
+{deftech (key := "Named patterns")}[具名模式]把名称与模式关联起来；在后续模式和匹配分支的右侧中，该名称指代由给定模式匹配到的那部分值。
+具名模式在名称与模式之间写一个 `@`。
+与判别式一样，也可以为具名模式的相等性假设提供名称。
 
-:::syntax term (title := "Named Patterns")
+:::syntax term (title := "具名模式")
 ```grammar
 $x:ident@$e
 ```
@@ -1319,9 +1358,9 @@ $x:ident@$h:ident:$e
 
 
 ```lean -show -keep
--- Check claims about patterns
+-- 检查关于模式的论断
 
--- Literals
+-- 字面量
 /-- error: Invalid pattern: Expected a constructor or constant marked with `[match_pattern]` -/
 #guard_msgs in
 def foo (x : String) : String :=
@@ -1384,7 +1423,7 @@ partial instance : OfNat Blah n where
       | n + 1 => f n
     f n
 
--- This shows that the partial instance was not unfolded
+-- 这表明偏函数实例没有被展开
 /--
 error: Dependent elimination failed: Type mismatch when solving this alternative: it has type
   motive (instOfNatBlah_1.f 0)
@@ -1410,7 +1449,7 @@ structure OnlyThreeOrFive where
   ok : val = 3 ∨ val = 5 := by rfl
 
 
--- Default args are not synthesized in patterns
+-- 模式中不会合成默认实参
 /--
 error: Fields missing: `val2`, `ok`
 -/
@@ -1425,11 +1464,11 @@ error: Fields missing: `val2`
 def hhh : OnlyThreeOrFive → Nat
   | {val := n, ok := p} => n
 
--- Ellipses don't synth default args in patterns
+-- 模式中的省略号不会合成默认实参
 def ggg' : OnlyThreeOrFive → Nat
   | .mk n .. => n
 
--- Ellipses do synth default args via tactics, but not exprs, otherwise
+-- 省略号会通过策略合成默认实参，但不会以其他方式合成表达式默认实参
 /--
 error: could not synthesize default value for parameter 'ok' using tactics
 ---
@@ -1467,15 +1506,19 @@ info: fun y =>
 
 ```
 
-## Types
+## 类型
+%%%
+tag := "The-Lean-Language-Reference--Terms--Pattern-Matching--Types"
+file := "Types"
+%%%
 
-Each discriminant must be well typed.
-Because patterns are a subset of terms, their types can also be checked.
-Each pattern that matches a given discriminant must have the same type as the corresponding discriminant.
+每个判别式都必须类型正确。
+因为模式是项的一个子集，所以也可以检查它们的类型。
+匹配某个判别式的每个模式，都必须与相应的判别式具有相同类型。
 
-The {tech}[right-hand side] of each match alternative should have the same type as the overall {keywordOf Lean.Parser.Term.match}`match` term.
-To support dependent types, matching a discriminant against a pattern refines the types that are expected within the scope of the pattern.
-In both subsequent patterns in the same match alternative and the right-hand side's type, occurrences of the discriminant are replaced by the pattern that it was matched against.
+每个匹配分支的{tech (key := "right-hand side")}[右侧]都应与整个 {keywordOf Lean.Parser.Term.match}`match` 项具有相同类型。
+为支持依赖类型，将判别式与模式匹配会精化模式作用域内的预期类型。
+在同一匹配分支的后续模式以及右侧的类型中，出现的判别式都会替换为与之匹配的模式。
 
 
 ::::keepEnv
@@ -1483,8 +1526,8 @@ In both subsequent patterns in the same match alternative and the right-hand sid
 variable {α : Type u}
 ```
 
-:::example "Type Refinement"
-This {tech}[indexed family] describes mostly-balanced trees, with the depth encoded in the type.
+:::example "类型精化" (file := "Type Refinement")
+这个{tech (key := "indexed family")}[索引族]描述近乎平衡的树，并将深度编码在类型中。
 ```lean
 inductive BalancedTree (α : Type u) : Nat → Type u where
   | empty : BalancedTree α 0
@@ -1505,14 +1548,14 @@ inductive BalancedTree (α : Type u) : Nat → Type u where
     BalancedTree α (n + 2)
 ```
 
-To begin the implementation of a function to construct a perfectly balanced tree with some initial element and a given depth, a {tech}[hole] can be used for the definition.
+为了开始实现一个函数，用给定的初始元素构造指定深度的完全平衡树，可以在定义中使用{tech (key := "hole")}[空洞]。
 ```lean -keep (name := fill1) +error
 def BalancedTree.filledWith
     (x : α) (depth : Nat) :
     BalancedTree α depth :=
   _
 ```
-The error message demonstrates that the tree should have the indicated depth.
+错误消息表明树应具有指定的深度。
 ```leanOutput fill1
 don't know how to synthesize placeholder
 context:
@@ -1522,8 +1565,8 @@ depth : Nat
 ⊢ BalancedTree α depth
 ```
 
-Matching on the expected depth and inserting holes results in an error message for each hole.
-These messages demonstrate that the expected type has been refined, with `depth` replaced by the matched values.
+对预期深度进行匹配并插入空洞，会为每个空洞产生一条错误消息。
+这些消息表明预期类型已经精化，其中 `depth` 被匹配到的值替换。
 ```lean +error (name := fill2)
 def BalancedTree.filledWith
     (x : α) (depth : Nat) :
@@ -1532,7 +1575,7 @@ def BalancedTree.filledWith
   | 0 => _
   | n + 1 => _
 ```
-The first hole yields the following message:
+第一个空洞产生以下消息：
 ```leanOutput fill2
 don't know how to synthesize placeholder
 context:
@@ -1541,7 +1584,7 @@ x : α
 depth : Nat
 ⊢ BalancedTree α 0
 ```
-The second hole yields the following message:
+第二个空洞产生以下消息：
 ```leanOutput fill2
 don't know how to synthesize placeholder
 context:
@@ -1551,8 +1594,8 @@ depth n : Nat
 ⊢ BalancedTree α (n + 1)
 ```
 
-Matching on the depth of a tree and the tree itself leads to a refinement of the tree's type according to the depth's pattern.
-This means that certain combinations are not well-typed, such as {lean}`0` and {name BalancedTree.branch}`branch`, because refining the second discriminant's type yields {lean}`BalancedTree α 0` which does not match the constructor's type.
+同时匹配树的深度和树本身，会根据深度模式精化树的类型。
+这意味着某些组合不是良类型的，例如 {lean}`0` 与 {name BalancedTree.branch}`branch`，因为精化第二个判别式的类型会得到 {lean}`BalancedTree α 0`，它与构造器的类型不匹配。
 ```lean (name := patfail) +error
 def BalancedTree.isPerfectlyBalanced
     (n : Nat) (t : BalancedTree α n) : Bool :=
@@ -1574,15 +1617,19 @@ but is expected to have type
 :::
 ::::
 
-### Pattern Equality Proofs
+### 模式相等性证明
+%%%
+tag := "The-Lean-Language-Reference--Terms--Pattern-Matching--Types--Pattern-Equality-Proofs"
+file := "Pattern Equality Proofs"
+%%%
 
-When a discriminant is named, {keywordOf Lean.Parser.Term.match}`match` generates a proof that the pattern and discriminant are equal, binding it to the provided name in the {tech}[right-hand side].
-This is useful to bridge the gap between dependent pattern matching on indexed families and APIs that expect explicit propositional arguments, and it can help tactics that make use of assumptions to succeed.
+当判别式具名时，{keywordOf Lean.Parser.Term.match}`match` 会生成模式与判别式相等的证明，并在{tech (key := "right-hand side")}[右侧]中把它绑定到所提供的名称。
+这有助于衔接对索引族的依赖模式匹配与要求显式命题实参的 API，也能帮助利用假设的策略成功执行。
 
-:::example "Pattern Equality Proofs"
-The function {lean}`last?`, which either throws an exception or returns the last element of its argument, uses the standard library function {lean}`List.getLast`.
-This function expects a proof that the list in question is nonempty.
-Naming the match on `xs` ensures that there's an assumption in scope that states that `xs` is equal to `_ :: _`, which {tactic}`simp_all` uses to discharge the goal.
+:::example "模式相等性证明" (file := "Pattern Equality Proofs")
+函数 {lean}`last?` 要么抛出异常，要么返回其实参的最后一个元素；它使用标准库函数 {lean}`List.getLast`。
+该函数要求提供相关列表非空的证明。
+为对 `xs` 的匹配命名，可确保作用域中存在一个断言 `xs` 等于 `_ :: _` 的假设，{tactic}`simp_all` 会用它完成目标。
 ```lean
 def last? (xs : List α) : Except String α :=
   match h : xs with
@@ -1592,7 +1639,7 @@ def last? (xs : List α) : Except String α :=
     .ok <| xs.getLast (show xs ≠ [] by intro h'; simp_all)
 ```
 
-Without the name, {tactic}`simp_all` is unable to find the contradiction.
+如果没有该名称，{tactic}`simp_all` 就无法找到矛盾。
 ```lean +error (name := namedHyp)
 def last?' (xs : List α) : Except String α :=
   match xs with
@@ -1606,19 +1653,23 @@ simp_all made no progress
 ```
 :::
 
-### Explicit Motives
+### 显式动机
+%%%
+tag := "The-Lean-Language-Reference--Terms--Pattern-Matching--Types--Explicit-Motives"
+file := "Explicit Motives"
+%%%
 
-Pattern matching is not a built-in primitive of Lean.
-Instead, it is translated to applications of {tech}[recursors] via {tech}[auxiliary matching functions].
-Both require a {tech}_motive_ that explains the relationship between the discriminant and the resulting type.
-Generally, the {keywordOf Lean.Parser.Term.match}`match` elaborator is capable of synthesizing an appropriate motive, and the refinement of types that occurs during pattern matching is a result of the motive that was selected.
-In some specialized circumstances, a different motive may be needed and may be provided explicitly using the `(motive := …)` syntax of {keywordOf Lean.Parser.Term.match}`match`.
-This motive should be a function type that expects at least as many parameters as there are discriminants.
-The type that results from applying a function with this type to the discriminants in order is the type of the entire {keywordOf Lean.Parser.Term.match}`match` term, and the type that results from applying a function with this type to all patterns in each alternative is the type of that alternative's {tech}[right-hand side].
+模式匹配并不是 Lean 的内建原语。
+相反，它通过{tech (key := "auxiliary matching functions")}[辅助匹配函数]翻译成对{tech (key := "recursors")}[递归器]的应用。
+二者都需要一个{tech (key := "motive")}_动机_来说明判别式与结果类型之间的关系。
+通常，{keywordOf Lean.Parser.Term.match}`match` 精译器能够合成适当的动机，而模式匹配过程中发生的类型精化正是所选动机的结果。
+在某些特殊情况下，可能需要不同的动机；可以使用 {keywordOf Lean.Parser.Term.match}`match` 的 `(motive := …)` 语法显式提供它。
+该动机应当是函数类型，并且至少接受与判别式数量相同的参数。
+依次将这种类型的函数应用于各判别式所得的类型，就是整个 {keywordOf Lean.Parser.Term.match}`match` 项的类型；将它应用于每个分支中的所有模式所得的类型，则是该分支{tech (key := "right-hand side")}[右侧]的类型。
 
-:::example "Matching with an Explicit Motive"
-An explicit motive can be used to provide type information that is otherwise unavailable from the surrounding context.
-Attempting to match on a number and a proof that it is in fact {lean}`5` is an error, because there's no reason to connect the number to the proof:
+:::example "使用显式动机进行匹配" (file := "Matching with an Explicit Motive")
+显式动机可以提供周围上下文原本无法给出的类型信息。
+试图同时匹配一个数以及它确实为 {lean}`5` 的证明会产生错误，因为没有理由把这个数与该证明联系起来：
 ```lean +error (name := noMotive)
 #eval
   match 5, rfl with
@@ -1628,7 +1679,7 @@ Attempting to match on a number and a proof that it is in fact {lean}`5` is an e
 Invalid match expression: This pattern contains metavariables:
   Eq.refl ?m.76
 ```
-An explicit motive explains the relationship between the discriminants:
+显式动机说明了各判别式之间的关系：
 ```lean (name := withMotive)
 #eval
   match (motive := (n : Nat) → n = 5 → String) 5, rfl with
@@ -1639,22 +1690,26 @@ An explicit motive explains the relationship between the discriminants:
 ```
 :::
 
-### Discriminant Refinement
+### 判别式精化
+%%%
+tag := "The-Lean-Language-Reference--Terms--Pattern-Matching--Types--Discriminant-Refinement"
+file := "Discriminant Refinement"
+%%%
 
-When matching on an indexed family, the indices must also be discriminants.
-Otherwise, the pattern would not be well typed: it is a type error if an index is just a variable but the type of a constructor requires a more specific value.
-However, a process called {deftech}[discriminant refinement] automatically adds indices as additional discriminants.
+匹配索引族时，其索引也必须作为判别式。
+否则模式将不是良类型的：如果某个索引只是变量，而构造器的类型要求更具体的值，就会产生类型错误。
+不过，称为{deftech (key := "discriminant refinement")}[判别式精化]的过程会自动把索引添加为额外的判别式。
 
 ::::keepEnv
-:::example "Discriminant Refinement"
-In the definition of {lean}`f`, the equality proof is the only discriminant.
-However, equality is an indexed family, and the match is only valid when `n` is an additional discriminant.
+:::example "判别式精化" (file := "Discriminant Refinement")
+在 {lean}`f` 的定义中，相等性证明是唯一的判别式。
+然而，相等性是索引族，只有将 `n` 作为额外的判别式时，该匹配才有效。
 ```lean
 def f (n : Nat) (p : n = 3) : String :=
   match p with
   | rfl => "ok"
 ```
-Using {keywordOf Lean.Parser.Command.print}`#print` demonstrates that the additional discriminant was added automatically.
+使用 {keywordOf Lean.Parser.Command.print}`#print` 可以看出额外的判别式已自动添加。
 ```lean (name := fDef)
 #print f
 ```
@@ -1667,22 +1722,23 @@ fun n p =>
 :::
 ::::
 
-### Generalization
+### 泛化
 %%%
 tag := "match-generalization"
+file := "Generalization"
 %%%
 
-The pattern match elaborator automatically determines the motive by finding occurrences of the discriminants in the expected type, generalizing them in the types of subsequent discriminants so that the appropriate pattern can be substituted.
-Additionally, occurrences of the discriminants in the types of variables in the context are generalized and substituted by default.
-This latter behavior can be turned off by passing the `(generalizing := false)` flag to {keywordOf Lean.Parser.Term.match}`match`.
+模式匹配精译器通过在预期类型中查找判别式的出现位置，自动确定动机；它在后续判别式的类型中泛化这些出现位置，以便代入相应的模式。
+此外，默认情况下，上下文中变量类型里出现的判别式也会被泛化并替换。
+向 {keywordOf Lean.Parser.Term.match}`match` 传入 `(generalizing := false)` 标志可以关闭后一行为。
 
 :::::keepEnv
-::::example "Matching, With and Without Generalization"
+::::example "启用与禁用泛化的匹配" (file := "Matching, With and Without Generalization")
 ```lean -show
 variable {α : Type u} (b : Bool) (ifTrue : b = true → α) (ifFalse : b = false → α)
 ```
-In this definition of {lean}`boolCases`, the assumption {lean}`b` is generalized in the type of `h` and then replaced with the actual pattern.
-This means that {lean}`ifTrue` and {lean}`ifFalse` have the types {lean}`true = true → α` and {lean}`false = false → α` in their respective cases, but `h`'s type mentions the original discriminant.
+在 {lean}`boolCases` 的这个定义中，假设 {lean}`b` 在 `h` 的类型中被泛化，随后替换为实际模式。
+这意味着在各自的分支中，{lean}`ifTrue` 和 {lean}`ifFalse` 的类型分别为 {lean}`true = true → α` 和 {lean}`false = false → α`，但 `h` 的类型提到了原判别式。
 
 ```lean +error (name := boolCases1) -keep
 def boolCases (b : Bool)
@@ -1693,7 +1749,7 @@ def boolCases (b : Bool)
   | true  => ifTrue h
   | false => ifFalse h
 ```
-The error for the first case is typical of both:
+第一个分支的错误是二者共有的典型错误：
 ```leanOutput boolCases1
 Application type mismatch: The argument
   h
@@ -1704,7 +1760,7 @@ but is expected to have type
 in the application
   ifTrue h
 ```
-Turning off generalization allows type checking to succeed, because {lean}`b` remains in the types of {lean}`ifTrue` and {lean}`ifFalse`.
+关闭泛化后，类型检查能够成功，因为 {lean}`b` 会保留在 {lean}`ifTrue` 和 {lean}`ifFalse` 的类型中。
 ```lean
 def boolCases (b : Bool)
     (ifTrue : b = true → α)
@@ -1714,13 +1770,14 @@ def boolCases (b : Bool)
   | true  => ifTrue h
   | false => ifFalse h
 ```
-In the generalized version, {name}`rfl` could have been used as the proof arguments as an alternative.
+在泛化版本中，也可以改用 {name}`rfl` 作为证明实参。
 ::::
 :::::
 
-## Custom Pattern Functions
+## 自定义模式函数
 %%%
 tag := "match_pattern-functions"
+file := "Custom Pattern Functions"
 %%%
 
 ```lean -show
@@ -1728,13 +1785,13 @@ section
 variable {n : Nat}
 ```
 
-In patterns, defined constants with the {attr}`match_pattern` attribute are unfolded and normalized rather than rejected.
-This allows a more convenient syntax to be used for many patterns.
-In the standard library, {name}`Nat.add`, {name}`HAdd.hAdd`, {name}`Add.add`, and {name}`Neg.neg` all have this attribute, which allows patterns like {lean}`n + 1` instead of {lean}`Nat.succ n`.
-Similarly, {name}`Unit` and {name}`Unit.unit` are definitions that set the respective {tech}[universe parameters] of {name}`PUnit` and {name}`PUnit.unit` to 0; the {attr}`match_pattern` attribute on {name}`Unit.unit` allows it to be used in patterns, where it expands to {lean}`PUnit.unit.{0}`.
+在模式中，带有 {attr}`match_pattern` 属性的已定义常量会被展开并规范化，而不是被拒绝。
+这使许多模式可以使用更方便的语法。
+标准库中的 {name}`Nat.add`、{name}`HAdd.hAdd`、{name}`Add.add` 和 {name}`Neg.neg` 都带有此属性，因此可以使用 {lean}`n + 1` 这样的模式，而不必写 {lean}`Nat.succ n`。
+类似地，{name}`Unit` 和 {name}`Unit.unit` 是把 {name}`PUnit` 和 {name}`PUnit.unit` 各自的{tech (key := "universe parameters")}[宇宙参数]设为 0 的定义；{name}`Unit.unit` 上的 {attr}`match_pattern` 属性使其可用于模式，并在其中展开为 {lean}`PUnit.unit.{0}`。
 
-:::syntax attr (title := "Attribute for Match Patterns")
-The {attr}`match_pattern` attribute indicates that a definition should be unfolded, rather than rejected, in a pattern.
+:::syntax attr (title := "匹配模式属性")
+{attr}`match_pattern` 属性表示某个定义在模式中应被展开，而不是被拒绝。
 ```grammar
 match_pattern
 ```
@@ -1745,32 +1802,32 @@ match_pattern
 section
 variable {k : Nat}
 ```
-:::example "Match Patterns Follow Reduction"
-The following function can't be compiled:
+:::example "匹配模式遵循归约" (file := "Match Patterns Follow Reduction")
+以下函数无法编译：
 ```lean +error (name := nonPat)
 def nonzero (n : Nat) : Bool :=
   match n with
   | 0 => false
   | 1 + k => true
 ```
-The error message on the pattern `1 + _` is:
+模式 `1 + _` 上的错误消息是：
 ```leanOutput nonPat
 Invalid pattern(s): `k` is an explicit pattern variable, but it only occurs in positions that are inaccessible to pattern matching:
   .(Nat.add 1 k)
 ```
 
-This is because {name}`Nat.add` is defined by recursion on its second parameter, equivalently to:
+这是因为 {name}`Nat.add` 通过对第二个参数递归来定义，等价于：
 ```lean
 def add : Nat → Nat → Nat
   | a, Nat.zero   => a
   | a, Nat.succ b => Nat.succ (Nat.add a b)
 ```
 
-No {tech}[ι-reduction] is possible, because the value being matched is a variable, not a constructor.
-{lean}`1 + k` gets stuck as {lean}`Nat.add 1 k`, which is not a valid pattern.
+由于被匹配的值是变量而不是构造器，无法进行{tech (key := "ι-reduction")}[ι-归约]。
+{lean}`1 + k` 停滞为 {lean}`Nat.add 1 k`，而后者不是合法模式。
 
-In the case of {lean}`k + 1`, that is, {lean}`Nat.add k (.succ .zero)`, the second pattern matches, so it reduces to {lean}`Nat.succ (Nat.add k .zero)`.
-The second pattern now matches, yielding {lean}`Nat.succ k`, which is a valid pattern.
+对于 {lean}`k + 1`，即 {lean}`Nat.add k (.succ .zero)`，第二个模式匹配，因此它归约为 {lean}`Nat.succ (Nat.add k .zero)`。
+此时第二个模式再次匹配，得到 {lean}`Nat.succ k`，这是一个合法模式。
 :::
 ```lean -show
 end
@@ -1784,23 +1841,24 @@ end
 ```
 
 
-## Pattern Matching Functions
+## 模式匹配函数
 %%%
 tag := "pattern-fun"
+file := "Pattern Matching Functions"
 %%%
 
-:::syntax term (title := "Pattern-Matching Functions")
-Functions may be specified via pattern matching by writing a sequence of patterns after {keywordOf Lean.Parser.Term.fun}`fun`, each preceded by a vertical bar (`|`).
+:::syntax term (title := "模式匹配函数")
+可以通过模式匹配指定函数：在 {keywordOf Lean.Parser.Term.fun}`fun` 之后写一系列模式，每个模式前都加竖线（`|`）。
 ```grammar
 fun
   $[| $pat,* => $term]*
 ```
-This desugars to a function that immediately pattern-matches on its arguments.
+它会脱糖为一个立即对其实参进行模式匹配的函数。
 :::
 
 ::::keepEnv
-:::example "Pattern-Matching Functions"
-{lean}`isZero` is defined using a pattern-matching function abstraction, while {lean}`isZero'` is defined using a pattern match expression:
+:::example "模式匹配函数" (file := "Pattern-Matching Functions")
+{lean}`isZero` 使用模式匹配函数抽象定义，而 {lean}`isZero'` 使用模式匹配表达式定义：
 ```lean
 def isZero : Nat → Bool :=
   fun
@@ -1813,15 +1871,15 @@ def isZero' : Nat → Bool :=
     | 0 => true
     | _ => false
 ```
-Because the former is syntactic sugar for the latter, they are definitionally equal:
+由于前者是后者的语法糖，两者在定义上相等：
 ```lean
 example : isZero = isZero' := rfl
 ```
-The desugaring is visible in the output of {keywordOf Lean.Parser.Command.print}`#print`:
+{keywordOf Lean.Parser.Command.print}`#print` 的输出可显示脱糖结果：
 ```lean (name := isZero)
 #print isZero
 ```
-outputs
+输出
 ```leanOutput isZero
 def isZero : Nat → Bool :=
 fun x =>
@@ -1829,11 +1887,11 @@ fun x =>
   | 0 => true
   | x => false
 ```
-while
+而
 ```lean (name := isZero')
 #print isZero'
 ```
-outputs
+输出
 ```leanOutput isZero'
 def isZero' : Nat → Bool :=
 fun n =>
@@ -1844,18 +1902,22 @@ fun n =>
 :::
 ::::
 
-## Other Pattern Matching Operators
+## 其他模式匹配运算符
+%%%
+tag := "The-Lean-Language-Reference--Terms--Pattern-Matching--Other-Pattern-Matching-Operators"
+file := "Other Pattern Matching Operators"
+%%%
 
-In addition to {keywordOf Lean.Parser.Term.match}`match` and {keywordOf termIfLet}`if let`, there are a few other operators that perform pattern matching.
+除 {keywordOf Lean.Parser.Term.match}`match` 和 {keywordOf termIfLet}`if let` 外，还有一些其他运算符会执行模式匹配。
 
-:::syntax term (title := "The {keyword}`matches` Operator")
-The {keywordOf Lean.«term_Matches_|»}`matches` operator returns {lean}`true` if the term on the left matches the pattern on the right.
+:::syntax term (title := "{keyword}`matches` 运算符")
+如果左侧的项与右侧的模式匹配，{keywordOf Lean.«term_Matches_|»}`matches` 运算符就返回 {lean}`true`。
 ```grammar
 $e matches $e
 ```
 :::
 
-When branching on the result of {keywordOf Lean.«term_Matches_|»}`matches`, it's usually better to use {keywordOf termIfLet}`if let`, which can bind pattern variables in addition to checking whether a pattern matches.
+根据 {keywordOf Lean.«term_Matches_|»}`matches` 的结果进行分支时，通常最好使用 {keywordOf termIfLet}`if let`；它除了检查模式是否匹配外，还能绑定模式变量。
 
 ```lean -show
 /--
@@ -1867,77 +1929,82 @@ info: match 4 with
 #check 4 matches (n + 1)
 ```
 
-If there are no constructor patterns that could match a discriminant or sequence of discriminants, then the code in question is unreachable, as there must be a false assumption in the local context.
-The {keywordOf Lean.Parser.Term.nomatch}`nomatch` expression is a match with zero cases that can have any type whatsoever, so long as there are no possible cases that could match the discriminants.
+如果没有任何构造器模式能够匹配一个判别式或一组判别式，那么相关代码不可达，因为局部上下文中必然存在一个错误假设。
+{keywordOf Lean.Parser.Term.nomatch}`nomatch` 表达式是一个没有任何分支的匹配；只要不存在可能匹配判别式的分支，它就可以具有任意类型。
 
-:::syntax term (title := "Caseless Pattern Matches")
+:::syntax term (title := "无分支模式匹配")
 ```grammar
 nomatch $e,*
 ```
 :::
 
 ::::keepEnv
-:::example "Inconsistent Indices"
-There are no constructor patterns that can match both proofs in this example:
+:::example "不一致的索引" (file := "Inconsistent Indices")
+本例中没有任何构造器模式能同时匹配这两个证明：
 ```lean
 example (p1 : x = "Hello") (p2 : x = "world") : False :=
   nomatch p1, p2
 ```
 
-This is because they separately refine the value of `x` to unequal strings.
-Thus, the {keywordOf Lean.Parser.Term.nomatch}`nomatch` operator allows the example's body to prove {lean}`False` (or any other proposition or type).
+这是因为它们分别把 `x` 的值精化为两个不相等的字符串。
+因此，{keywordOf Lean.Parser.Term.nomatch}`nomatch` 运算符使示例主体能够证明 {lean}`False`（或任意其他命题或类型）。
 :::
 ::::
 
-When the expected type is a function type, {keywordOf Lean.Parser.Term.nofun}`nofun` is shorthand for a function that takes as many parameters as the type indicates in which the body is {keywordOf Lean.Parser.Term.nomatch}`nomatch` applied to all of the parameters.
-:::syntax term (title := "Caseless Functions")
+当预期类型是函数类型时，{keywordOf Lean.Parser.Term.nofun}`nofun` 是一种简写：它构造一个接受类型所指定数量参数的函数，并以应用于全部参数的 {keywordOf Lean.Parser.Term.nomatch}`nomatch` 作为函数体。
+:::syntax term (title := "无分支函数")
 ```grammar
 nofun
 ```
 :::
 
 ::::keepEnv
-:::example "Impossible Functions"
-Instead of introducing arguments for both equality proofs and then using both in a {keywordOf Lean.Parser.Term.nomatch}`nomatch`, it is possible to use {keywordOf Lean.Parser.Term.nofun}`nofun`.
+:::example "不可能的函数" (file := "Impossible Functions")
+可以使用 {keywordOf Lean.Parser.Term.nofun}`nofun`，而不必为两个相等性证明都引入实参，再在 {keywordOf Lean.Parser.Term.nomatch}`nomatch` 中使用二者。
 ```lean
 example : x = "Hello" → x = "world" → False := nofun
 ```
 :::
 ::::
 
-## Elaborating Pattern Matching
+## 精译模式匹配
 %%%
 tag := "pattern-match-elaboration"
 draft := true
+file := "Elaborating Pattern Matching"
 %%%
 
 :::planned 209
-Specify the elaboration of pattern matching to {deftech}[auxiliary match functions].
+规定如何把模式匹配精译为{deftech (key := "auxiliary match functions")}[辅助匹配函数]。
 :::
 
-# Holes
+# 空洞
+%%%
+tag := "The-Lean-Language-Reference--Terms--Holes"
+file := "Holes"
+%%%
 
-A {deftech}_hole_ or {deftech}_placeholder term_ is a term that indicates the absence of instructions to the elaborator.{index}[placeholder term]{index (subterm := "placeholder")}[term]
-In terms, holes can be automatically filled when the surrounding context would only allow one type-correct term to be written where the hole is.
-Otherwise, a hole is an error.
-In patterns, holes represent universal patterns that can match anything.
+{deftech (key := "hole")}_空洞_或{deftech (key := "placeholder term")}_占位项_是一种表示没有向精译器提供指令的项。{index}[占位项]{index (subterm := "占位符")}[项]
+在项中，如果周围上下文只允许在空洞处写下一个类型正确的项，空洞就可以自动填充。
+否则，空洞会导致错误。
+在模式中，空洞表示可以匹配任何值的全匹配模式。
 
 
-:::syntax term (title := "Holes")
-Holes are written with underscores.
+:::syntax term (title := "空洞")
+空洞用下划线书写。
 ```grammar
 _
 ```
 :::
 
 ::::keepEnv
-:::example "Filling Holes with Unification"
-The function {lean}`the` can be used similarly to {keywordOf Lean.Parser.Term.show}`show` or a {tech}[type ascription].
+:::example "通过合一填充空洞" (file := "Filling Holes with Unification")
+函数 {lean}`the` 的用法类似于 {keywordOf Lean.Parser.Term.show}`show` 或{tech (key := "type ascription")}[类型标注]。
 ```lean
 def the (α : Sort u) (x : α) : α := x
 ```
-If the second parameter's type can be inferred, then the first parameter can be a hole.
-Both of these commands are equivalent:
+如果可以推断第二个参数的类型，那么第一个参数可以是空洞。
+以下两个命令等价：
 ```lean
 #check the String "Hello!"
 
@@ -1947,11 +2014,11 @@ Both of these commands are equivalent:
 ::::
 
 
-When writing proofs, it can be convenient to explicitly introduce unknown values.
-This is done via {deftech}_synthetic holes_, which are never solved by unification and may occur in multiple positions.
-They are primarily useful in tactic proofs, and are described in {ref "metavariables-in-proofs"}[the section on metavariables in proofs].
+编写证明时，显式引入未知值可能很方便。
+这通过{deftech (key := "synthetic holes")}_合成空洞_实现；合成空洞永远不会通过合一求解，并且可以出现在多个位置。
+它们主要用于策略证明，详见{ref "metavariables-in-proofs"}[证明中的元变量一节]。
 
-:::syntax term (title := "Synthetic Holes")
+:::syntax term (title := "合成空洞")
 ```grammar
 ?$x:ident
 ```
@@ -1960,42 +2027,46 @@ They are primarily useful in tactic proofs, and are described in {ref "metavaria
 ```
 :::
 
-# Type Ascription
+# 类型标注
+%%%
+tag := "The-Lean-Language-Reference--Terms--Type-Ascription"
+file := "Type-Ascription"
+%%%
 
-{deftech}_Type ascriptions_ explicitly annotate terms with their types.
-They are a way to provide Lean with the expected type for a term.
-This type must be definitionally equal to the type that is expected based on the term's context.
-Type ascriptions are useful for more than just documenting a program:
- * There may not be sufficient information in the program text to derive a type for a term. Ascriptions are one way to provide the type.
- * An inferred type may not be the one that was desired for a term.
- * The expected type of a term is used to drive the insertion of {tech}[coercions], and ascriptions are one way to control where coercions are inserted.
+{deftech (key := "Type ascriptions")}_类型标注_显式地以类型标注项。
+它们是向 Lean 提供项的预期类型的一种方式。
+该类型必须与根据项的上下文所预期的类型定义相等。
+类型标注不仅能用于记录程序，还可用于：
+ * 程序文本中可能没有足够的信息来推导某项的类型。标注是提供该类型的一种方式。
+ * 推断出的类型可能不是该项所需的类型。
+ * 项的预期类型用于驱动{tech (key := "coercions")}[强制转换]的插入，而标注是控制强制转换插入位置的一种方式。
 
-:::syntax term (title := "Postfix Type Ascriptions")
-Type ascriptions must be surrounded by parentheses.
-They indicate that the first term's type is the second term.
+:::syntax term (title := "后缀类型标注")
+类型标注必须由圆括号包围。
+它们表示第一个项的类型是第二个项。
 ```grammar
 ($_ : $_)
 ```
 :::
 
 
-In cases where the term that requires a type ascription is long, such as a tactic proof or a {keywordOf Lean.Parser.Term.do}`do` block, the postfix type ascription with its mandatory parentheses can be difficult to read.
-Additionally, for both proofs and {keywordOf Lean.Parser.Term.do}`do` blocks, the term's type is essential to its interpretation.
-In these cases, the prefix versions can be easier to read.
-:::syntax term (title := "Prefix Type Ascriptions")
+如果需要类型标注的项很长，例如策略证明或 {keywordOf Lean.Parser.Term.do}`do` 块，那么带有强制圆括号的后缀类型标注可能难以阅读。
+此外，无论是证明还是 {keywordOf Lean.Parser.Term.do}`do` 块，项的类型对其解释都至关重要。
+在这些情况下，前缀形式可能更易阅读。
+:::syntax term (title := "前缀类型标注")
 ```grammar
 show $_ from $_
 ```
-When the term in the body of {keywordOf Lean.Parser.Term.show}`show` is a tactic proof, the keyword {keywordOf Lean.Parser.Term.show}`from` may be omitted.
+当 {keywordOf Lean.Parser.Term.show}`show` 主体中的项是策略证明时，可以省略关键字 {keywordOf Lean.Parser.Term.show}`from`。
 ```grammar
 show $_ by $_
 ```
 :::
 
-:::example "Ascribing Statements to Proofs"
-This example is unable to execute the tactic proof because the desired proposition is not known.
-As part of running the earlier tactics, the proposition is automatically refined to be one that the tactics could prove.
-However, their default cases fill it out incorrectly, leading to a proof that fails.
+:::example "为证明标注命题" (file := "Ascribing Statements to Proofs")
+此示例无法执行策略证明，因为所需的命题未知。
+在运行前面的策略时，该命题会自动精化为策略能够证明的命题。
+然而，它们的默认分支错误地补全了该命题，导致证明失败。
 ```lean (name := byBusted) +error
 example (n : Nat) := by
   induction n
@@ -2010,8 +2081,8 @@ Invalid rewrite argument: Expected an equality or iff proof or definition name, 
   0 ≍ n'
 ```
 
-A prefix type ascription with {keywordOf Lean.Parser.Term.show}`show` can be used to provide the proposition being proved.
-This can be useful in syntactic contexts where adding it as a local definition would be inconvenient.
+可以使用带 {keywordOf Lean.Parser.Term.show}`show` 的前缀类型标注来提供待证明的命题。
+在不方便把它添加为局部定义的语法上下文中，这很有用。
 ```lean
 example (n : Nat) := show 0 + n = n by
   induction n
@@ -2023,8 +2094,8 @@ example (n : Nat) := show 0 + n = n by
 ```
 :::
 
-:::example "Ascribing Types to {keywordOf Lean.Parser.Term.do}`do` Blocks"
-This example lacks sufficient type information to synthesize the {name}`Pure` instance.
+:::example "为 {keywordOf Lean.Parser.Term.do}`do` 块标注类型" (file := "Ascribing Types to {keywordOf Lean.Parser.Term.do}`do` Blocks")
+此示例缺少足够的类型信息来合成 {name}`Pure` 实例。
 ```lean (name := doBusted) +error
 example := do
   return 5
@@ -2038,31 +2109,31 @@ Note: Lean will not try to resolve this typeclass instance problem because the t
 Hint: Adding type annotations and supplying implicit arguments to functions can give Lean more information for typeclass resolution. For example, if you have a variable `x` that you intend to be a `Nat`, but Lean reports it as having an unresolved type like `?m`, replacing `x` with `(x : Nat)` can get typeclass resolution un-stuck.
 ```
 
-A prefix type ascription with {keywordOf Lean.Parser.Term.show}`show`, together with a {tech}[hole], can be used to indicate the monad.
-The {tech (key := "default instance")}[default] {lean}`OfNat _ 5` instance provides enough type information to fill the hole with {lean}`Nat`.
+带 {keywordOf Lean.Parser.Term.show}`show` 的前缀类型标注与{tech (key := "hole")}[空洞]结合，可以用来指出单子。
+{tech (key := "default instance")}[默认]的 {lean}`OfNat _ 5` 实例提供了足够的类型信息，可用 {lean}`Nat` 填充空洞。
 ```lean
 example := show StateM String _ from do
   return 5
 ```
 :::
 
-There is an important difference between postfix type ascriptions and {keywordOf Lean.Parser.Term.show}`show`.
-Ordinary postfix type ascriptions change the type that is expected for the term, which can change the way that the term elaborates.
-After elaboration, however, Lean infers the type of the resulting term and uses that inferred type for further elaboration tasks.
-On the other hand, {keywordOf Lean.Parser.Term.show}`show` elaborates to a term whose inferred type is the ascribed type.
-The difference can be observed when using {tech}[generalized field notation], where the ascribed type is only guaranteed to be used to resolve fields when using {keywordOf Lean.Parser.Term.show}`show`.
+后缀类型标注与 {keywordOf Lean.Parser.Term.show}`show` 之间有一项重要区别。
+普通后缀类型标注会改变项的预期类型，从而可能改变项的精译方式。
+然而，精译之后，Lean 会推断所得项的类型，并将该推断类型用于后续精译任务。
+另一方面，{keywordOf Lean.Parser.Term.show}`show` 会精译为一个推断类型就是所标注类型的项。
+使用{tech (key := "generalized field notation")}[广义字段表示法]时可以观察到这一区别：只有使用 {keywordOf Lean.Parser.Term.show}`show`，才能保证以所标注类型解析字段。
 
-::::example "Postfix Ascription vs `show`"
+::::example "后缀标注与 `show`" (file := "Postfix Ascription vs `show`")
 
 :::paragraph
-This definition establishes an alternative name for {lean}`List String`:
+此定义为 {lean}`List String` 建立了一个别名：
 ```lean
 def Colors := List String
 ```
 :::
 
 :::paragraph
-A postfix type ascription provides the type information that's needed to determine the implicit argument {name}`String` to {name}`List.nil`, but the resulting type is still {lean}`List String`:
+后缀类型标注提供了确定 {name}`List.nil` 的隐式实参 {name}`String` 所需的类型信息，但所得类型仍然是 {lean}`List String`：
 ```lean (name := nil)
 #check ([] : Colors)
 ```
@@ -2072,7 +2143,7 @@ A postfix type ascription provides the type information that's needed to determi
 :::
 
 :::paragraph
-When using {keywordOf Lean.Parser.Term.show}`show`, on the other hand, the elaborated term is constructed in such a way that the inferred type is {lean}`Colors`:
+另一方面，使用 {keywordOf Lean.Parser.Term.show}`show` 时，精译后的项会以一种使其推断类型为 {lean}`Colors` 的方式构造：
 ```lean (name := nil2)
 #check (show Colors from [])
 ```
@@ -2083,7 +2154,7 @@ this : Colors
 :::
 
 :::paragraph
-This function is designed to be invoked using {tech}[generalized field notation]:
+此函数设计为通过{tech (key := "generalized field notation")}[广义字段表示法]调用：
 ```lean
 def Colors.hasYellow (cs : Colors) : Bool :=
   cs.any (·.toLower == "yellow")
@@ -2091,7 +2162,7 @@ def Colors.hasYellow (cs : Colors) : Bool :=
 :::
 
 :::paragraph
-Due to the differences in their inferred types, it can be used with {keywordOf Lean.Parser.Term.show}`show`, but not with the postfix type ascription:
+由于推断类型不同，它可以与 {keywordOf Lean.Parser.Term.show}`show` 一起使用，却不能与后缀类型标注一起使用：
 ```lean (name := nil3) +error
 #eval ([] : Colors).hasYellow
 ```
@@ -2110,14 +2181,26 @@ false
 ::::
 
 
-# Quotation and Antiquotation
+# 引用与反引用
+%%%
+tag := "The-Lean-Language-Reference--Terms--Quotation-and-Antiquotation"
+file := "Quotation-and-Antiquotation"
+%%%
 
-Quotation terms are described in the {ref "quotation"}[section on quotation].
+引用项见{ref "quotation"}[引用一节]。
 
-# `do`-Notation
+# `do` 表示法
+%%%
+tag := "The-Lean-Language-Reference--Terms--do--Notation"
+file := "do--Notation"
+%%%
 
-{keywordOf Lean.Parser.Term.do}`do`-notation is described {ref "do-notation"}[in the chapter on monads.]
+{keywordOf Lean.Parser.Term.do}`do` 表示法见{ref "do-notation"}[单子一章]。
 
-# Proofs
+# 证明
+%%%
+tag := "The-Lean-Language-Reference--Terms--Proofs"
+file := "Proofs"
+%%%
 
-The syntax for invoking tactics ({keywordOf Lean.Parser.Term.byTactic}`by`) is described in {ref "by"}[the section on proofs].
+调用策略的语法（{keywordOf Lean.Parser.Term.byTactic}`by`）见{ref "by"}[证明一节]。

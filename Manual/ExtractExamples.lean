@@ -34,7 +34,9 @@ partial def extractExamples (_mode : Mode) (cfg : Manual.Config) (_state : Trave
 
 where
   part : Part Manual → ExtractM Unit
-    | .mk _ titleString _ intro subParts => withReader (·.push titleString) do
+    | .mk _ titleString metadata intro subParts =>
+      let extractionTitle := metadata.bind (·.file) |>.getD titleString
+      withReader (·.push extractionTitle) do
       for b in intro do block b
       for p in subParts do part p
   block : Block Manual → ExtractM Unit
@@ -46,8 +48,10 @@ where
           let context ← read
           let some txt := liveText
             | return ()
+          let extractionTitle :=
+            which.properties[`Manual.exampleExtractionContext]?.getD descrString
           modify fun saved =>
-            saved.push (context.push descrString, txt)
+            saved.push (context.push extractionTitle, txt)
       for b in contents do block b
     | .concat bs | .blockquote bs =>
       for b in bs do block b
