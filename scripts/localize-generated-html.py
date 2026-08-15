@@ -234,6 +234,17 @@ def strip_english_inline_docstrings(text: str) -> str:
     return DOCSTRING_RE.sub(replace, text)
 
 
+def add_stable_alias_anchor(text: str, stable_id: str, generated_id: str) -> str:
+    """Preserve an upstream fragment when duplicate definitions receive a `-next` ID."""
+    if f'id="{stable_id}"' in text or f'id="{generated_id}"' not in text:
+        return text
+    marker = f'<code class="env-var" id="{generated_id}">'
+    if marker not in text:
+        raise SystemExit(f"cannot place stable alias for generated anchor {generated_id!r}")
+    replacement = f'<span id="{stable_id}"></span>' + marker
+    return text.replace(marker, replacement, 1)
+
+
 def localize_generated_html(root: Path) -> tuple[int, int, int, int]:
     docs_path = root / "-verso-docs.json"
     if not docs_path.is_file():
@@ -252,6 +263,7 @@ def localize_generated_html(root: Path) -> tuple[int, int, int, int]:
         text = path.read_text(encoding="utf-8")
         text = text.replace(">Table of Contents<", ">目录<")
         text = localize_link_metadata(text)
+        text = add_stable_alias_anchor(text, "ELAN_HOME", "ELAN_HOME-next")
         if rel.startswith(("Tactic-Proofs/", "Notations-and-Macros/")):
             text = localize_tactic_namedocs(text, namedocs_translations)
         parser = NamedDocsParser()
