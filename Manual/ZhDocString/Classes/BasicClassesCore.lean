@@ -132,9 +132,9 @@ class Zero (α : Type u) where
   zero : α
 
 /-- `n ≠ 0` 的类型类版本。 -/
-class NeZero {R : Type u} [Zero R] (n : R) : Prop where
+class NeZero {R : Type u} [_root_.Zero R] (n : R) : Prop where
   /-- 命题 `n` 不等于零。 -/
-  out : n ≠ Zero.zero
+  out : n ≠ (0 : R)
 
 /--
 异质加法记法的类型类。

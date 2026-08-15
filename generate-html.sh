@@ -91,6 +91,10 @@ lake --quiet exe generate-manual --verbose --resume-html-multi multi.json --remo
 echo "Running generate-tutorials with args --verbose --resume tutorials.json --remote-config $TUT_REMOTE_CONFIG"
 lake --quiet exe generate-tutorials --verbose --resume tutorials.json --remote-config "$TUT_REMOTE_CONFIG"
 
+# Localize generated browser tooltips on translated reference pages without
+# changing the hover payloads used by untranslated chapters.
+python3 scripts/localize-generated-html.py "$REF_SOURCE"
+
 # Set up output directories
 echo "Setting up output directories"
 mkdir -p "$OUTPUT/reference"

@@ -223,6 +223,7 @@ Lean 中有七个标准公理。前三个公理是使用 Lean 开展数学工作
 调用函数 {name}`Lean.reduceBool` 和 {name}`Lean.reduceNat` 可以让编译器执行计算；这能大幅提升反射式证明实现的性能。
 
 ```lean
+set_option linter.deprecated false in
 def largeNumber : Nat := Lean.reduceNat (230_000 + 4_500 + 1_000_067)
 ```
 
@@ -241,6 +242,7 @@ def largeNumber : Nat := Lean.reduceNat (230_000 + 4_500 + 1_000_067)
 这样就能针对每个公理所证明的确切命题进行审查。
 
 ```lean (name := printAxExC2)
+set_option linter.defProp false in
 def bigSum : (List.range 1_001).sum = 500_500 := by native_decide
 #print axioms bigSum
 ```
@@ -270,6 +272,8 @@ tag := "print-axioms"
 这可用于审查证明所作的假设，例如检测一个证明是否传递地依赖 {tactic}`sorry` 策略。
 
 ```lean
+set_option linter.defProp false in
+set_option warn.sorry false in
 def lazy : 4 == 2 + 1 + 1 := by sorry
 ```
 ```lean (name := printAxEx4)
