@@ -7,6 +7,7 @@ Author: David Thrane Christiansen
 import VersoManual
 
 import Manual.Meta
+import Manual.ZhDocString.NotationsMacros.Do
 
 import Lean.Parser.Command
 
@@ -40,7 +41,7 @@ file := "Extending--do--Notation"
 可扩展的 {keywordOf Lean.Parser.Term.do}`do` 记法是在 Lean 4.29.0 版本中引入的；在此之前，它并不可扩展。
 可扩展的 {keywordOf Lean.Parser.Term.do}`do` 精译器受选项 {option}`backward.do.legacy` 控制，其默认值为 {name}`false`：
 
-{optionDocs backward.do.legacy}
+{zhOptionDocs backward.do.legacy ZhDoc.NotationsMacros.Do.backwardDoLegacy}
 
 当 {option}`backward.do.legacy` 为 {name}`false` 时，可扩展精译器会启用。
 自定义 {keywordOf Lean.Parser.Term.do}`do` 元素精译器会扩展 {ref "do-notation"}[关于单子语法的小节]中描述的脱糖过程。
@@ -253,34 +254,34 @@ tag := "The-Lean-Language-Reference--Notations-and-Macros--Extending--do--Notati
 与把精译后项返回给外围精译上下文的项精译器不同，{keywordOf Lean.Parser.Term.do}`do` 元素精译器会调用所提供的续延，以安排该 {keywordOf Lean.Parser.Term.do}`do` 块其余部分的精译。
 
 
-{docstring Lean.Elab.Do.Context +allowMissing}
+{zhdocstring Lean.Elab.Do.Context ZhDoc.NotationsMacros.Do.Context}
 
-{docstring Lean.Elab.Do.MonadInfo +allowMissing}
+{zhdocstring Lean.Elab.Do.MonadInfo ZhDoc.NotationsMacros.Do.MonadInfo}
 
-{docstring Lean.Elab.Do.CodeLiveness}
+{zhdocstring Lean.Elab.Do.CodeLiveness ZhDoc.NotationsMacros.Do.CodeLiveness}
 
 为避免实现中的循环依赖，{name Lean.Elab.Do.Context.contInfo}`Context.contInfo` 与 {name Lean.Elab.Do.Context.ops}`Context.ops` 字段都是在构造后再填入内容的引用。
 可以使用 {name Lean.Elab.Do.ContInfoRef.toContInfo}`ContInfoRef.toContInfo` 与 {name Lean.Elab.Do.DoOpsRef.toDoOps}`DoOpsRef.toDoOps` 取回底层数据：
 
-{docstring Lean.Elab.Do.ContInfoRef.toContInfo +allowMissing}
+{zhdocstring Lean.Elab.Do.ContInfoRef.toContInfo ZhDoc.NotationsMacros.Do.ContInfoRef.toContInfo}
 
-{docstring Lean.Elab.Do.ContInfo +allowMissing}
+{zhdocstring Lean.Elab.Do.ContInfo ZhDoc.NotationsMacros.Do.ContInfo}
 
-{docstring Lean.Elab.Do.DoOpsRef.toDoOps +allowMissing}
+{zhdocstring Lean.Elab.Do.DoOpsRef.toDoOps ZhDoc.NotationsMacros.Do.DoOpsRef.toDoOps}
 
-{docstring Lean.Elab.Do.DoOps +allowMissing}
+{zhdocstring Lean.Elab.Do.DoOps ZhDoc.NotationsMacros.Do.DoOps}
 
 精译器通过 {attr}`doElem_elab` 属性与语法种类关联。
 它们应当具有类型 {name Lean.Elab.Do.DoElab}`DoElab`。
 除了精译器之外，每个通过精译器实现的自定义 {keywordOf Lean.Parser.Term.do}`do` 元素还必须提供 {ref "do-elab-control-info"}[控制信息]。
 
-{docstring Lean.Elab.Do.DoElab}
+{zhdocstring Lean.Elab.Do.DoElab ZhDoc.NotationsMacros.Do.DoElab}
 
 :::syntax attr (title := "`do` 元素精译器")
 ```grammar
 doElem_elab
 ```
-{includeDocstring Lean.Elab.Do.doElemElabAttribute}
+{zhincludeDocstring Lean.Elab.Do.doElemElabAttribute ZhDoc.NotationsMacros.Do.doElemElabAttribute}
 :::
 
 此外，也可以使用 {keywordOf Lean.Parser.Command.«elab_rules»}`elab_rules` 来同时定义精译器并把它关联到语法上。
@@ -291,11 +292,11 @@ doElem_elab
 要精译非空数组中的一组 {keywordOf Lean.Parser.Term.do}`do` 元素，请调用 {name Lean.Elab.Do.elabDoElems1}`elabDoElems1`。
 要精译一整个 {keywordOf Lean.Parser.Term.do}`do` 元素序列，请调用 {name Lean.Elab.Do.elabDoSeq}`elabDoSeq`。
 
-{docstring Lean.Elab.Do.elabDoElem +allowMissing}
+{zhdocstring Lean.Elab.Do.elabDoElem ZhDoc.NotationsMacros.Do.elabDoElem}
 
-{docstring Lean.Elab.Do.elabDoSeq +allowMissing}
+{zhdocstring Lean.Elab.Do.elabDoSeq ZhDoc.NotationsMacros.Do.elabDoSeq}
 
-{docstring Lean.Elab.Do.elabDoElems1 +allowMissing}
+{zhdocstring Lean.Elab.Do.elabDoElems1 ZhDoc.NotationsMacros.Do.elabDoElems1}
 
 ## 单子操作
 %%%
@@ -304,13 +305,13 @@ tag := "The-Lean-Language-Reference--Notations-and-Macros--Extending--do--Notati
 
 精译框架提供了若干辅助函数，让构造当前单子及其操作的应用变得更方便也更高效。
 
-{docstring Lean.Elab.Do.mkMonadApp}
+{zhdocstring Lean.Elab.Do.mkMonadApp ZhDoc.NotationsMacros.Do.mkMonadApp}
 
-{docstring Lean.Elab.Do.mkPureApp}
+{zhdocstring Lean.Elab.Do.mkPureApp ZhDoc.NotationsMacros.Do.mkPureApp}
 
-{docstring Lean.Elab.Do.mkBindApp}
+{zhdocstring Lean.Elab.Do.mkBindApp ZhDoc.NotationsMacros.Do.mkBindApp}
 
-{docstring Lean.Elab.Do.mkPUnitUnit}
+{zhdocstring Lean.Elab.Do.mkPUnitUnit ZhDoc.NotationsMacros.Do.mkPUnitUnit}
 
 ## 续延
 %%%
@@ -319,19 +320,19 @@ tag := "The-Lean-Language-Reference--Notations-and-Macros--Extending--do--Notati
 
 {keywordOf Lean.Parser.Term.do}`do` 精译续延由一个等待当前元素结果的精译器，以及若干元数据（例如该结果期望具有的类型）共同组成。
 
-{docstring Lean.Elab.Do.DoElemCont}
+{zhdocstring Lean.Elab.Do.DoElemCont ZhDoc.NotationsMacros.Do.DoElemCont}
 
-{docstring Lean.Elab.Do.DoElemContKind +allowMissing}
+{zhdocstring Lean.Elab.Do.DoElemContKind ZhDoc.NotationsMacros.Do.DoElemContKind}
 
 许多精译器都要求续延对其结果期待某个特定类型。
 例如，精译器在不返回结果时，其结果类型往往应为 {name}`Unit`。
 尽早检查这一类型，通常能得到更好的错误信息：
 
-{docstring Lean.Elab.Do.DoElemCont.ensureUnit}
+{zhdocstring Lean.Elab.Do.DoElemCont.ensureUnit ZhDoc.NotationsMacros.Do.DoElemCont.ensureUnit}
 
-{docstring Lean.Elab.Do.DoElemCont.ensureUnitAt}
+{zhdocstring Lean.Elab.Do.DoElemCont.ensureUnitAt ZhDoc.NotationsMacros.Do.DoElemCont.ensureUnitAt}
 
-{docstring Lean.Elab.Do.DoElemCont.ensureHasTypeAt}
+{zhdocstring Lean.Elab.Do.DoElemCont.ensureHasTypeAt ZhDoc.NotationsMacros.Do.DoElemCont.ensureHasTypeAt}
 
 调用续延，就是向它提供当前 {keywordOf Lean.Parser.Term.do}`do` 元素的结果。
 主要有三种方式可以做到这一点。
@@ -339,11 +340,11 @@ tag := "The-Lean-Language-Reference--Notations-and-Macros--Extending--do--Notati
 {name Lean.Elab.Do.DoElemCont.elabAsSyntacticallyDeadCode}`DoElemCont.elabAsSyntacticallyDeadCode` 会在一个断言代码不可达的上下文中调用续延，这通常会导致续延不生成任何代码；如果那里确实有代码，还会向用户发出警告。
 {name Lean.Elab.Do.DoElemCont.mkBindUnlessPure}`DoElemCont.mkBindUnlessPure` 负责把 {keywordOf Lean.Parser.Term.do}`do` 记法标准地脱糖为对 {name}`bind` 的应用；当某个 {keywordOf Lean.Parser.Term.do}`do` 元素只是一项且该项具有单子类型时，它就用来在精译后调用续延；其中还包含一项优化：会把包裹在 {name}`pure` 外面的 {name}`bind` 替换为 {keywordOf Lean.Parser.Term.«let»}`let` 绑定。
 
-{docstring Lean.Elab.Do.DoElemCont.continueWithUnit}
+{zhdocstring Lean.Elab.Do.DoElemCont.continueWithUnit ZhDoc.NotationsMacros.Do.DoElemCont.continueWithUnit}
 
-{docstring Lean.Elab.Do.DoElemCont.elabAsSyntacticallyDeadCode}
+{zhdocstring Lean.Elab.Do.DoElemCont.elabAsSyntacticallyDeadCode ZhDoc.NotationsMacros.Do.DoElemCont.elabAsSyntacticallyDeadCode}
 
-{docstring Lean.Elab.Do.DoElemCont.mkBindUnlessPure}
+{zhdocstring Lean.Elab.Do.DoElemCont.mkBindUnlessPure ZhDoc.NotationsMacros.Do.DoElemCont.mkBindUnlessPure}
 
 :::example "调用续延" (file := "Invoking Continuations")
 ```imports -show
@@ -414,7 +415,7 @@ some ()
 如果一个续延可能被多次调用，那么它就是 {deftech (key := "duplicable")}_可复制_ 的；否则它就是 {deftech (key := "nonduplicable")}_不可复制_ 的。
 不可复制的续延可以通过 {name Lean.Elab.Do.DoElemCont.withDuplicableCont}`DoElemCont.withDuplicableCont` 转换成可复制的续延。
 
-{docstring Lean.Elab.Do.DoElemCont.withDuplicableCont}
+{zhdocstring Lean.Elab.Do.DoElemCont.withDuplicableCont ZhDoc.NotationsMacros.Do.DoElemCont.withDuplicableCont}
 
 不可达代码无需精译。
 当某个 {keywordOf Lean.Parser.Term.do}`do` 元素的精译器已经检测到续延精译的结果不可达时，它可以直接返回自己的结果项，而不是把它交给精译续延。
@@ -506,15 +507,15 @@ tag := "do-elab-return-continue-break"
 {keywordOf Lean.Parser.Term.doReturn}`return` 总是允许出现，而 {keywordOf Lean.Parser.Term.doBreak}`break` 与 {keywordOf Lean.Parser.Term.doContinue}`continue` 只在循环体内部合法。
 在精译过程中，这三种跳转都由续延来表示。
 
-{docstring Lean.Elab.Do.getReturnCont +allowMissing}
+{zhdocstring Lean.Elab.Do.getReturnCont ZhDoc.NotationsMacros.Do.getReturnCont}
 
-{docstring Lean.Elab.Do.getBreakCont +allowMissing}
+{zhdocstring Lean.Elab.Do.getBreakCont ZhDoc.NotationsMacros.Do.getBreakCont}
 
-{docstring Lean.Elab.Do.getContinueCont +allowMissing}
+{zhdocstring Lean.Elab.Do.getContinueCont ZhDoc.NotationsMacros.Do.getContinueCont}
 
 这三个续延会借助辅助函数 {name Lean.Elab.Do.enterLoopBody}`enterLoopBody` 安装到上下文中。
 
-{docstring Lean.Elab.Do.enterLoopBody}
+{zhdocstring Lean.Elab.Do.enterLoopBody ZhDoc.NotationsMacros.Do.enterLoopBody}
 
 :::example "单次迭代循环" (file := "Single-Iteration Loop")
 ```imports -show
@@ -600,45 +601,45 @@ tag := "do-elab-control-info"
 ```grammar
 doElem_control_info
 ```
-{includeDocstring Lean.Elab.Do.controlInfoElemAttribute}
+{zhincludeDocstring Lean.Elab.Do.controlInfoElemAttribute ZhDoc.NotationsMacros.Do.controlInfoElemAttribute}
 :::
 
-{docstring Lean.Elab.Do.ControlInfoHandler}
+{zhdocstring Lean.Elab.Do.ControlInfoHandler ZhDoc.NotationsMacros.Do.ControlInfoHandler}
 
 如果某个 {keywordOf Lean.Parser.Term.do}`do` 元素既不重新赋值变量，也不会提前返回或终止执行，那么处理器可以返回 {name Lean.Elab.Do.ControlInfo.pure}`ControlInfo.pure`。
 如果它表示一段没有常规出口且也没有其他控制效应的代码，那么处理器可以返回 {name Lean.Elab.Do.ControlInfo.empty}`ControlInfo.empty`；否则，应把 {name Lean.Elab.Do.ControlInfo.numRegularExits}`ControlInfo.numRegularExits` 设为 {lean}`0`，把 {name Lean.Elab.Do.ControlInfo.noFallthrough}`ControlInfo.noFallthrough` 设为 {lean}`true`，同时记录任何提前返回、重新赋值或循环终止行为。
 
 
-{docstring Lean.Elab.Do.ControlInfo}
+{zhdocstring Lean.Elab.Do.ControlInfo ZhDoc.NotationsMacros.Do.ControlInfo}
 
-{docstring Lean.Elab.Do.ControlInfo.pure +allowMissing}
+{zhdocstring Lean.Elab.Do.ControlInfo.pure ZhDoc.NotationsMacros.Do.ControlInfo.pure}
 
-{docstring Lean.Elab.Do.ControlInfo.empty}
+{zhdocstring Lean.Elab.Do.ControlInfo.empty ZhDoc.NotationsMacros.Do.ControlInfo.empty}
 
 如果某个 {keywordOf Lean.Parser.Term.do}`do` 元素自身又包含其他 {keywordOf Lean.Parser.Term.do}`do` 元素，那么它可以使用组合子 {name Lean.Elab.Do.ControlInfo.sequence}`ControlInfo.sequence` 和 {name Lean.Elab.Do.ControlInfo.alternative}`ControlInfo.alternative` 来合并其子元素的控制信息。
 {name Lean.Elab.Do.ControlInfo.sequence}`ControlInfo.sequence` 用于顺序步骤，{name Lean.Elab.Do.ControlInfo.alternative}`ControlInfo.alternative` 用于合并控制流分支。
 
-{docstring Lean.Elab.Do.ControlInfo.sequence +allowMissing}
+{zhdocstring Lean.Elab.Do.ControlInfo.sequence ZhDoc.NotationsMacros.Do.ControlInfo.sequence}
 
-{docstring Lean.Elab.Do.ControlInfo.alternative +allowMissing}
+{zhdocstring Lean.Elab.Do.ControlInfo.alternative ZhDoc.NotationsMacros.Do.ControlInfo.alternative}
 
 一般来说，应当使用 {name Lean.Elab.Do.inferControlInfoElem}`inferControlInfoElem` 或 {name Lean.Elab.Do.inferControlInfoSeq}`inferControlInfoSeq` 来计算控制信息。
 
-{docstring Lean.Elab.Do.inferControlInfoElem +allowMissing}
+{zhdocstring Lean.Elab.Do.inferControlInfoElem ZhDoc.NotationsMacros.Do.inferControlInfoElem}
 
-{docstring Lean.Elab.Do.inferControlInfoSeq +allowMissing}
+{zhdocstring Lean.Elab.Do.inferControlInfoSeq ZhDoc.NotationsMacros.Do.inferControlInfoSeq}
 
 在某些高级情形下，可能需要使用 {namespace}`Lean.Elab.Do.InferControlInfo` 中的某个函数：
 
-{docstring Lean.Elab.Do.InferControlInfo.ofElem +allowMissing}
+{zhdocstring Lean.Elab.Do.InferControlInfo.ofElem ZhDoc.NotationsMacros.Do.InferControlInfo.ofElem}
 
-{docstring Lean.Elab.Do.InferControlInfo.ofSeq +allowMissing}
+{zhdocstring Lean.Elab.Do.InferControlInfo.ofSeq ZhDoc.NotationsMacros.Do.InferControlInfo.ofSeq}
 
-{docstring Lean.Elab.Do.InferControlInfo.ofOptionSeq +allowMissing}
+{zhdocstring Lean.Elab.Do.InferControlInfo.ofOptionSeq ZhDoc.NotationsMacros.Do.InferControlInfo.ofOptionSeq}
 
-{docstring Lean.Elab.Do.InferControlInfo.ofLetOrReassign +allowMissing}
+{zhdocstring Lean.Elab.Do.InferControlInfo.ofLetOrReassign ZhDoc.NotationsMacros.Do.InferControlInfo.ofLetOrReassign}
 
-{docstring Lean.Elab.Do.InferControlInfo.ofLetOrReassignArrow +allowMissing}
+{zhdocstring Lean.Elab.Do.InferControlInfo.ofLetOrReassignArrow ZhDoc.NotationsMacros.Do.InferControlInfo.ofLetOrReassignArrow}
 
 ## 可变变量
 %%%
@@ -650,7 +651,7 @@ tag := "The-Lean-Language-Reference--Notations-and-Macros--Extending--do--Notati
 由于 {tech (key := "hygiene")}[卫生] 机制，{name Lean.Elab.Do.Context.mutVars}`mutVars` 中的标识符带有 {tech (key := "macro scopes")}[宏作用域]；不过，{inst}`ToMessageData MutVar` 实例会自动将其移除。
 如果以其他方式显示这些名字，那么在构造面向用户的错误信息之前，应先使用 {name}`Name.simpMacroScopes` 去除宏作用域。
 
-{docstring Lean.Elab.Do.MutVar}
+{zhdocstring Lean.Elab.Do.MutVar ZhDoc.NotationsMacros.Do.MutVar}
 
 每个可变变量都至少对应一个精译后的变量（{name}`Expr.fvar`）。
 这些精译后的变量存在于一个跟踪其用户可见名称的局部上下文中。
@@ -660,15 +661,15 @@ tag := "The-Lean-Language-Reference--Notations-and-Macros--Extending--do--Notati
 当某个可变变量通过 {keywordOf Lean.Parser.Term.doLet}`let mut` 建立时，会创建一个 {keywordOf Lean.Parser.Term.«let»}`let` 绑定来表示它，并把初始变量的绑定标识符与 {name}`Expr.fvar` 加入围绕续延所使用的上下文；这个续延会在 {name}`withReader` 下被调用，以便加入新变量。
 在建立该 {keywordOf Lean.Parser.Term.«let»}`let` 绑定之后，使用 {name Lean.Elab.Do.declareMutVar}`declareMutVar` 来注册一个可变变量，或注册它们组成的数组。
 
-{docstring Lean.Elab.Do.declareMutVar}
+{zhdocstring Lean.Elab.Do.declareMutVar ZhDoc.NotationsMacros.Do.declareMutVar}
 
-{docstring Lean.Elab.Do.declareMutVars}
+{zhdocstring Lean.Elab.Do.declareMutVars ZhDoc.NotationsMacros.Do.declareMutVars}
 
 若要确保某个标识符指向的是可变变量，请使用 {name Lean.Elab.Do.throwUnlessMutVarDeclared}`throwUnlessMutVarDeclared`：
 
-{docstring Lean.Elab.Do.throwUnlessMutVarDeclared}
+{zhdocstring Lean.Elab.Do.throwUnlessMutVarDeclared ZhDoc.NotationsMacros.Do.throwUnlessMutVarDeclared}
 
-{docstring Lean.Elab.Do.throwUnlessMutVarsDeclared}
+{zhdocstring Lean.Elab.Do.throwUnlessMutVarsDeclared ZhDoc.NotationsMacros.Do.throwUnlessMutVarsDeclared}
 
 ::::example "跟踪可变变量" (file := "Tracing Mutable Variables")
 ```imports -show
@@ -799,13 +800,13 @@ tag := "do-elab-effect-lift"
 例如，如果内部的 {keywordOf Lean.Parser.Term.do}`do` 序列修改了某个变量，那么包装与解包代码就会像 {name}`StateT` 那样，安排把该变量传入被提升的代码并以元组形式返回。
 如果内部的 {keywordOf Lean.Parser.Term.do}`do` 序列可能抛出异常，那么提升后的版本就类似于一次对 {name}`ExceptT` 的使用。
 
-{docstring Lean.Elab.Do.EffectForwarder +allowMissing}
+{zhdocstring Lean.Elab.Do.EffectForwarder ZhDoc.NotationsMacros.Do.EffectForwarder}
 
-{docstring Lean.Elab.Do.EffectForwarder.ofCont +allowMissing}
+{zhdocstring Lean.Elab.Do.EffectForwarder.ofCont ZhDoc.NotationsMacros.Do.EffectForwarder.ofCont}
 
-{docstring Lean.Elab.Do.EffectForwarder.lift +allowMissing}
+{zhdocstring Lean.Elab.Do.EffectForwarder.lift ZhDoc.NotationsMacros.Do.EffectForwarder.lift}
 
-{docstring Lean.Elab.Do.EffectForwarder.restoreCont +allowMissing}
+{zhdocstring Lean.Elab.Do.EffectForwarder.restoreCont ZhDoc.NotationsMacros.Do.EffectForwarder.restoreCont}
 
 :::example "{name}`withReader` 的语法" (file := "Syntax for withReader")
 ```imports -show
