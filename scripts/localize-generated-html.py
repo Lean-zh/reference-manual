@@ -36,6 +36,20 @@ TARGET_PAGES = (
     "Run-Time-Code/Reference-Counting/index.html",
     "Run-Time-Code/Multi-Threaded-Execution/index.html",
     "Run-Time-Code/Foreign-Function-Interface/index.html",
+    "Terms/index.html",
+    "Terms/Identifiers/index.html",
+    "Terms/Function-Types/index.html",
+    "Terms/Functions/index.html",
+    "Terms/Function-Application/index.html",
+    "Terms/Numeric-Literals/index.html",
+    "Terms/Structures-and-Constructors/index.html",
+    "Terms/Conditionals/index.html",
+    "Terms/Pattern-Matching/index.html",
+    "Terms/Holes/index.html",
+    "Terms/Type-Ascription/index.html",
+    "Terms/Quotation-and-Antiquotation/index.html",
+    "Terms/do--Notation/index.html",
+    "Terms/Proofs/index.html",
 )
 
 HOVER_ATTR_RE = re.compile(r'data-verso-hover="([^"]+)"')
