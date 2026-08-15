@@ -49,7 +49,7 @@ where
           let some txt := liveText
             | return ()
           let extractionTitle :=
-            which.properties[`Verso.Genre.Manual.exampleDefContext]?.getD descrString
+            which.properties[`Manual.exampleExtractionContext]?.getD descrString
           modify fun saved =>
             saved.push (context.push extractionTitle, txt)
       for b in contents do block b

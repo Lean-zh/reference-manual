@@ -23,7 +23,9 @@ def Block.example (descriptionString : String) (name : Option String) (opened : 
   -- FIXME: This should be a double-backtickable name
   name := `Manual.example
   data := ToJson.toJson (descriptionString, name, opened, (none : Option Tag), liveText)
-  properties := .empty |>.insert `Verso.Genre.Manual.exampleDefContext (file.getD descriptionString)
+  properties := (({} : Verso.NameMap String)
+    |>.insert `Verso.Genre.Manual.exampleDefContext descriptionString)
+    |>.insert `Manual.exampleExtractionContext (file.getD descriptionString)
 
 /-- The type of the Json stored with Block.example -/
 abbrev ExampleBlockJson := String × Option String × Bool × Option Tag × Option String
