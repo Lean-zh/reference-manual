@@ -7,6 +7,7 @@ Author: David Thrane Christiansen
 import VersoManual
 
 import Manual.Meta
+import Manual.ZhDocString.NotationsMacros.Core
 import Manual.Papers
 
 import Manual.NotationsMacros.Operators
@@ -194,11 +195,11 @@ tag := "macro-monad"
 宏展开不能直接修改环境、执行合一、检查当前局部上下文，也不能进行任何只在某个特定上下文中才有意义的操作。
 因此，同一套宏机制可以贯穿 Lean 使用，也使宏比{tech (key := "elaborators")}[精译器]更容易编写。
 
-{docstring Lean.MacroM}
+{zhdocstring Lean.MacroM Manual.ZhDocString.NotationsMacros.Core.MacroM}
 
-{docstring Lean.Macro.expandMacro?}
+{zhdocstring Lean.Macro.expandMacro? Manual.ZhDocString.NotationsMacros.Core.Macro.expandMacro?}
 
-{docstring Lean.Macro.trace}
+{zhdocstring Lean.Macro.trace Manual.ZhDocString.NotationsMacros.Core.Macro.trace}
 
 ### 异常与错误
 %%%
@@ -209,13 +210,13 @@ tag := "macro-exceptions"
 它表示当前宏无法展开所收到的语法，但并未发生错误。
 由 {name Lean.Macro.throwError}`throwError` 和 {name Lean.Macro.throwErrorAt}`throwErrorAt` 抛出的异常会终止宏展开，并向用户报告错误。
 
-{docstring Lean.Macro.throwUnsupported}
+{zhdocstring Lean.Macro.throwUnsupported Manual.ZhDocString.NotationsMacros.Core.Macro.throwUnsupported}
 
-{docstring Lean.Macro.Exception.unsupportedSyntax}
+{zhdocstring Lean.Macro.Exception.unsupportedSyntax Manual.ZhDocString.NotationsMacros.Core.Macro.Exception.unsupportedSyntax}
 
-{docstring Lean.Macro.throwError}
+{zhdocstring Lean.Macro.throwError Manual.ZhDocString.NotationsMacros.Core.Macro.throwError}
 
-{docstring Lean.Macro.throwErrorAt}
+{zhdocstring Lean.Macro.throwErrorAt Manual.ZhDocString.NotationsMacros.Core.Macro.throwErrorAt}
 
 ### 与卫生性相关的操作
 %%%
@@ -225,9 +226,9 @@ tag := "macro-monad-hygiene"
 {tech (key := "Hygiene")}[卫生性]通过向语法中出现的标识符添加{tech (key := "macro scopes")}[宏作用域]来实现。
 通常，{tech (key := "quotation")}[引用]过程会添加所有必要的作用域，但直接构造语法的宏必须为其引入的标识符添加宏作用域。
 
-{docstring Lean.Macro.withFreshMacroScope}
+{zhdocstring Lean.Macro.withFreshMacroScope Manual.ZhDocString.NotationsMacros.Core.Macro.withFreshMacroScope}
 
-{docstring Lean.Macro.addMacroScope}
+{zhdocstring Lean.Macro.addMacroScope Manual.ZhDocString.NotationsMacros.Core.Macro.addMacroScope}
 
 ### 查询环境
 %%%
@@ -237,13 +238,13 @@ tag := "macro-environment"
 宏只能有限地查询环境。
 它们可以检查常量是否存在并解析名称，但无法进行更深入的内省。
 
-{docstring Lean.Macro.hasDecl}
+{zhdocstring Lean.Macro.hasDecl Manual.ZhDocString.NotationsMacros.Core.Macro.hasDecl}
 
-{docstring Lean.Macro.getCurrNamespace}
+{zhdocstring Lean.Macro.getCurrNamespace Manual.ZhDocString.NotationsMacros.Core.Macro.getCurrNamespace}
 
-{docstring Lean.Macro.resolveNamespace}
+{zhdocstring Lean.Macro.resolveNamespace Manual.ZhDocString.NotationsMacros.Core.Macro.resolveNamespace}
 
-{docstring Lean.Macro.resolveGlobalName}
+{zhdocstring Lean.Macro.resolveGlobalName Manual.ZhDocString.NotationsMacros.Core.Macro.resolveGlobalName}
 
 ## 引用
 %%%

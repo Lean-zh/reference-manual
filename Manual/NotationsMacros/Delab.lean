@@ -9,6 +9,7 @@ import VersoManual
 import Lean.PrettyPrinter.Delaborator
 
 import Manual.Meta
+import Manual.ZhDocString.NotationsMacros.Core
 
 
 open Manual
@@ -79,9 +80,9 @@ open Lean.PrettyPrinter (Unexpander UnexpandM)
 如果反展开器成功，得到的语法还会再次反展开；如果失败，则会尝试下一个反展开器。
 如果没有任何反展开器能成功处理该语法，那么它的子节点会继续被反展开，直到所有可能的反展开机会都耗尽。
 
-{docstring Lean.PrettyPrinter.Unexpander}
+{zhdocstring Lean.PrettyPrinter.Unexpander Manual.ZhDocString.NotationsMacros.Core.PrettyPrinter.Unexpander}
 
-{docstring Lean.PrettyPrinter.UnexpandM}
+{zhdocstring Lean.PrettyPrinter.UnexpandM Manual.ZhDocString.NotationsMacros.Core.PrettyPrinter.UnexpandM}
 
 通过施加 {attr}`app_unexpander` 属性，可以为某个常量注册反展开器。
 {ref "operators"}[自定义运算符]和 {ref "notations"}[记法]会自动为它们引入的语法创建反展开器。
