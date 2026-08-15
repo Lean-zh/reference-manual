@@ -13,6 +13,7 @@ import Lake.Build.Module
 
 
 import Manual.Meta
+import Manual.ZhDocString.BuildTools.Lake
 import Manual.BuildTools.Lake.CLI
 import Manual.BuildTools.Lake.Config
 
@@ -1523,7 +1524,7 @@ tag := "lake-api"
 除了普通的 {lean}`IO` 效应，Lake 脚本还能访问 Lake 环境（它提供了有关当前工具链的信息，例如 Lean 编译器的位置）以及当前的工作区。
 这一访问权限是在 {name Lake.ScriptM}`ScriptM` 中提供的。
 
-{docstring Lake.ScriptM}
+{zhdocstring Lake.ScriptM ZhDoc.BuildTools.Lake.ScriptM}
 
 ## 访问环境
 %%%
@@ -1533,83 +1534,83 @@ tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Script-
 提供对当前 Lake 环境信息（例如 Lean、Lake 以及其它工具的位置）访问权限的单子具备 {name Lake.MonadLakeEnv}`MonadLakeEnv` 实例。
 Lake API 中的所有单子皆是如此，包括 {name Lake.ScriptM}`ScriptM`。
 
-{docstring Lake.MonadLakeEnv}
+{zhdocstring Lake.MonadLakeEnv ZhDoc.BuildTools.Lake.MonadLakeEnv}
 
-{docstring Lake.getLakeEnv}
+{zhdocstring Lake.getLakeEnv ZhDoc.BuildTools.Lake.getLakeEnv}
 
-{docstring Lake.getNoCache}
+{zhdocstring Lake.getNoCache ZhDoc.BuildTools.Lake.getNoCache}
 
-{docstring Lake.getTryCache}
+{zhdocstring Lake.getTryCache ZhDoc.BuildTools.Lake.getTryCache}
 
-{docstring Lake.getPkgUrlMap}
+{zhdocstring Lake.getPkgUrlMap ZhDoc.BuildTools.Lake.getPkgUrlMap}
 
-{docstring Lake.getElanToolchain}
+{zhdocstring Lake.getElanToolchain ZhDoc.BuildTools.Lake.getElanToolchain}
 
 ### 搜索路径辅助函数
 %%%
 tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Script-API-Reference--Accessing-the-Environment--Search-Path-Helpers"
 %%%
 
-{docstring Lake.getEnvLeanPath}
+{zhdocstring Lake.getEnvLeanPath ZhDoc.BuildTools.Lake.getEnvLeanPath}
 
-{docstring Lake.getEnvLeanSrcPath}
+{zhdocstring Lake.getEnvLeanSrcPath ZhDoc.BuildTools.Lake.getEnvLeanSrcPath}
 
-{docstring Lake.getEnvSharedLibPath}
+{zhdocstring Lake.getEnvSharedLibPath ZhDoc.BuildTools.Lake.getEnvSharedLibPath}
 
 ### Elan 安装辅助函数
 %%%
 tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Script-API-Reference--Accessing-the-Environment--Elan-Install-Helpers"
 %%%
 
-{docstring Lake.getElanInstall?}
+{zhdocstring Lake.getElanInstall? ZhDoc.BuildTools.Lake.getElanInstall?}
 
-{docstring Lake.getElanHome?}
+{zhdocstring Lake.getElanHome? ZhDoc.BuildTools.Lake.getElanHome?}
 
-{docstring Lake.getElan?}
+{zhdocstring Lake.getElan? ZhDoc.BuildTools.Lake.getElan?}
 
 ### Lean 安装辅助函数
 %%%
 tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Script-API-Reference--Accessing-the-Environment--Lean-Install-Helpers"
 %%%
 
-{docstring Lake.getLeanInstall}
+{zhdocstring Lake.getLeanInstall ZhDoc.BuildTools.Lake.getLeanInstall}
 
-{docstring Lake.getLeanSysroot}
+{zhdocstring Lake.getLeanSysroot ZhDoc.BuildTools.Lake.getLeanSysroot}
 
-{docstring Lake.getLeanSrcDir}
+{zhdocstring Lake.getLeanSrcDir ZhDoc.BuildTools.Lake.getLeanSrcDir}
 
-{docstring Lake.getLeanLibDir}
+{zhdocstring Lake.getLeanLibDir ZhDoc.BuildTools.Lake.getLeanLibDir}
 
-{docstring Lake.getLeanIncludeDir}
+{zhdocstring Lake.getLeanIncludeDir ZhDoc.BuildTools.Lake.getLeanIncludeDir}
 
-{docstring Lake.getLeanSystemLibDir}
+{zhdocstring Lake.getLeanSystemLibDir ZhDoc.BuildTools.Lake.getLeanSystemLibDir}
 
-{docstring Lake.getLean}
+{zhdocstring Lake.getLean ZhDoc.BuildTools.Lake.getLean}
 
-{docstring Lake.getLeanc}
+{zhdocstring Lake.getLeanc ZhDoc.BuildTools.Lake.getLeanc}
 
-{docstring Lake.getLeanSharedLib}
+{zhdocstring Lake.getLeanSharedLib ZhDoc.BuildTools.Lake.getLeanSharedLib}
 
-{docstring Lake.getLeanAr}
+{zhdocstring Lake.getLeanAr ZhDoc.BuildTools.Lake.getLeanAr}
 
-{docstring Lake.getLeanCc}
+{zhdocstring Lake.getLeanCc ZhDoc.BuildTools.Lake.getLeanCc}
 
-{docstring Lake.getLeanCc?}
+{zhdocstring Lake.getLeanCc? ZhDoc.BuildTools.Lake.getLeanCc?}
 
 ### Lake 安装辅助函数
 %%%
 tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Script-API-Reference--Accessing-the-Environment--Lake-Install-Helpers"
 %%%
 
-{docstring Lake.getLakeInstall}
+{zhdocstring Lake.getLakeInstall ZhDoc.BuildTools.Lake.getLakeInstall}
 
-{docstring Lake.getLakeHome}
+{zhdocstring Lake.getLakeHome ZhDoc.BuildTools.Lake.getLakeHome}
 
-{docstring Lake.getLakeSrcDir}
+{zhdocstring Lake.getLakeSrcDir ZhDoc.BuildTools.Lake.getLakeSrcDir}
 
-{docstring Lake.getLakeLibDir}
+{zhdocstring Lake.getLakeLibDir ZhDoc.BuildTools.Lake.getLakeLibDir}
 
-{docstring Lake.getLake}
+{zhdocstring Lake.getLake ZhDoc.BuildTools.Lake.getLake}
 
 ## 访问工作区
 %%%
@@ -1627,32 +1628,32 @@ open Lake
 end
 ```
 
-{docstring Lake.MonadWorkspace}
+{zhdocstring Lake.MonadWorkspace ZhDoc.BuildTools.Lake.MonadWorkspace}
 
-{docstring Lake.getRootPackage}
+{zhdocstring Lake.getRootPackage ZhDoc.BuildTools.Lake.getRootPackage}
 
-{docstring Lake.findPackageByName?}
+{zhdocstring Lake.findPackageByName? ZhDoc.BuildTools.Lake.findPackageByName?}
 
-{docstring Lake.findPackageByKey?}
+{zhdocstring Lake.findPackageByKey? ZhDoc.BuildTools.Lake.findPackageByKey?}
 
-{docstring Lake.findModule?}
+{zhdocstring Lake.findModule? ZhDoc.BuildTools.Lake.findModule?}
 
-{docstring Lake.findLeanExe?}
+{zhdocstring Lake.findLeanExe? ZhDoc.BuildTools.Lake.findLeanExe?}
 
-{docstring Lake.findLeanLib?}
+{zhdocstring Lake.findLeanLib? ZhDoc.BuildTools.Lake.findLeanLib?}
 
-{docstring Lake.findExternLib?}
+{zhdocstring Lake.findExternLib? ZhDoc.BuildTools.Lake.findExternLib?}
 
-{docstring Lake.getLeanPath}
+{zhdocstring Lake.getLeanPath ZhDoc.BuildTools.Lake.getLeanPath}
 
-{docstring Lake.getLeanSrcPath}
+{zhdocstring Lake.getLeanSrcPath ZhDoc.BuildTools.Lake.getLeanSrcPath}
 
-{docstring Lake.getSharedLibPath}
+{zhdocstring Lake.getSharedLibPath ZhDoc.BuildTools.Lake.getSharedLibPath}
 
-{docstring Lake.getAugmentedLeanPath}
+{zhdocstring Lake.getAugmentedLeanPath ZhDoc.BuildTools.Lake.getAugmentedLeanPath}
 
-{docstring Lake.getAugmentedLeanSrcPath }
+{zhdocstring Lake.getAugmentedLeanSrcPath ZhDoc.BuildTools.Lake.getAugmentedLeanSrcPath}
 
-{docstring Lake.getAugmentedSharedLibPath}
+{zhdocstring Lake.getAugmentedSharedLibPath ZhDoc.BuildTools.Lake.getAugmentedSharedLibPath}
 
-{docstring Lake.getAugmentedEnv}
+{zhdocstring Lake.getAugmentedEnv ZhDoc.BuildTools.Lake.getAugmentedEnv}
