@@ -109,7 +109,7 @@ structure LeanConfig where
   此包或库是否应视为面向模块系统设计。
 
   启用后，只要某模块导入此代码单元的模块却没有使用模块系统（即没有 `module` 头部），Lake 就会
-  发出警告。这既适用于下游使用者，也适用于同一包中的非模块文件，表明该代码单元的 API 预期采用
+  发出警告。这既适用于下游使用者，也适用于同一包中的非模块文件，表明该代码单元的接口预期采用
   模块系统的可见性与精译语义。
 
   导入方可在自己的包或库上设置 `allowNonModules := true` 来选择不接收该警告。
@@ -128,7 +128,7 @@ structure LeanConfig where
   -/
   allowNonModules : Bool := false
 
-/-- 工作区的声明式配置。 -/
+/-- `Workspace` 的声明式配置。 -/
 structure WorkspaceConfig where
   /--
   Lake 下载远程依赖项的目录。
@@ -174,7 +174,7 @@ structure PackageConfig (p : Name) (n : Name) extends WorkspaceConfig, LeanConfi
 
   /--
   Lake 应将包的二进制 Lean 库（例如 `.olean`、`.ilean` 文件）输出到的构建子目录。
-  默认为 `defaultLeanLibDir`（即 `lib`）。
+  默认为 `defaultLeanLibDir`（即 `lib/lean`）。
   -/
   leanLibDir : FilePath := _root_.Lake.defaultLeanLibDir
 
@@ -218,7 +218,7 @@ structure PackageConfig (p : Name) (n : Name) extends WorkspaceConfig, LeanConfi
   请使用语法 `<pkg>/<def>`。
 
   脚本驱动会以 `testDriverArgs` 中配置的实参为先、命令行界面上指定的实参为后（例如通过
-  `lake lint -- <args>...`），由 `lake test` 运行。可执行文件驱动会先构建，再像脚本一样运行。
+  `lake test -- <args>...`），由 `lake test` 运行。可执行文件驱动会先构建，再像脚本一样运行。
   库则只会被构建。
   -/
   testDriver : String := ""
@@ -702,7 +702,7 @@ syntax fromClause := " from " fromSource
 
 ```lean
 extern_lib «target-name» (pkg : NPackage _package.name) :=
-  /- build term of type `FetchM (Job FilePath)` -/
+  /- 构造类型为 `FetchM (Job FilePath)` 的项 -/
 ```
 
 `pkg` 参数（及其类型说明符）可省略。
@@ -719,7 +719,7 @@ scoped syntax (name := externLibCommand)
 
 ```lean
 target «target-name» (pkg : NPackage _package.name) : α :=
-  /- build term of type `FetchM (Job α)` -/
+  /- 构造类型为 `FetchM (Job α)` 的项 -/
 ```
 
 `pkg` 参数（及其类型说明符）可省略。
@@ -734,7 +734,7 @@ scoped syntax (name := targetCommand)
 
 ```lean
 package_facet «facet-name» (pkg : Package) : α :=
-  /- build term of type `FetchM (Job α)` -/
+  /- 构造类型为 `FetchM (Job α)` 的项 -/
 ```
 
 `pkg` 参数（及其类型说明符）可省略。
@@ -748,7 +748,7 @@ scoped syntax (name := packageFacetDecl)
 
 ```lean
 library_facet «facet-name» (lib : LeanLib) : α :=
-  /- build term of type `FetchM (Job α)` -/
+  /- 构造类型为 `FetchM (Job α)` 的项 -/
 ```
 
 `lib` 参数（及其类型说明符）可省略。
@@ -762,7 +762,7 @@ scoped syntax (name := libraryFacetDecl)
 
 ```lean
 module_facet «facet-name» (mod : Module) : α :=
-  /- build term of type `FetchM (Job α)` -/
+  /- 构造类型为 `FetchM (Job α)` 的项 -/
 ```
 
 `mod` 参数（及其类型说明符）可省略。

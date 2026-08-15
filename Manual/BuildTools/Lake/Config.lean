@@ -45,7 +45,7 @@ Lake 为{tech (key := "package configuration")}[包配置]文件提供两种格�
 
   Lean 配置格式更灵活，允许自定义目标、分面和脚本。
   它提供一种嵌入式领域特定语言，用于描述 TOML 格式所提供配置选项的声明式子集。
-  此外，Lake API 还可用于表达声明式选项无法表达的构建配置。
+  此外，Lake 接口 还可用于表达声明式选项无法表达的构建配置。
 
 {lake}`translate-config` 命令可用于在两种格式之间自动转换。
 :::
@@ -1012,7 +1012,7 @@ $[where $_*]?
 tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Lean-Format--Targets--Custom-Targets"
 %%%
 
-可以使用 Lake API，以自定义目标定义任意增量构建的产物。
+可以使用 Lake 接口，以自定义目标定义任意增量构建的产物。
 
 :::syntax command (title := "自定义目标")
 
@@ -1038,7 +1038,7 @@ tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Configu
 :::syntax command (title := "自定义包分面")
 
 包分面允许从整个包生成一个或一组产物。
-Lake API 可查询包中的库；因此，包分面的一个常见用途是构建每个库的指定分面。
+Lake 接口 可查询包中的库；因此，包分面的一个常见用途是构建每个库的指定分面。
 
 ```grammar
 $[$_:docComment]?
@@ -1054,7 +1054,7 @@ $[where $_*]?
 :::syntax command (title := "自定义库分面")
 
 库分面允许从库生成一个或一组产物。
-Lake API 可查询库中的模块；因此，库分面的一个常见用途是构建每个模块的指定分面。
+Lake 接口 可查询库中的模块；因此，库分面的一个常见用途是构建每个模块的指定分面。
 
 ```grammar
 $[$_:docComment]?
