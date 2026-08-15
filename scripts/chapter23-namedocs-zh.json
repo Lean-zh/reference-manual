@@ -1,0 +1,44 @@
+[
+    {
+        "page": "Notations-and-Macros/Defining-New-Syntax/index.html",
+        "id": "zh-9135",
+        "source": "Arity is sum of arguments' arities withPosition(p) runs p while setting the \"saved position\" to the current position. This has no effect on its own, but various other parsers access this position to achieve some composite effect: colGt , colGe , colEq compare the column of the saved position to the current position, used to implement Python-style indentation sensitive blocks lineEq ensures that the current position is still on the same line as the saved position, used to implement composite tokens The saved position is only available in the read-only state, which is why this is a scoping parser: after the withPosition(..) block the saved position will be restored to its original value. This parser has the same arity as p - it just forwards the results of p .",
+        "translation": "参数元数是各实参元数之和。`withPosition(p)` 在运行 `p` 时把“已保存位置”设为当前位置。这本身不产生效果，但其他解析器会读取该位置以实现组合行为：`colGt`、`colGe` 和 `colEq` 将已保存位置的列与当前位置的列比较，用于实现类似 Python 的缩进敏感代码块；`lineEq` 确保当前位置仍与已保存位置处于同一行，用于实现复合词法单元。已保存位置只存在于只读状态中，因此这是一个定界解析器：离开 `withPosition(..)` 块后，已保存位置会恢复原值。此解析器与 `p` 的元数相同，只转发 `p` 的结果。"
+    },
+    {
+        "page": "Notations-and-Macros/Defining-New-Syntax/index.html",
+        "id": "zh-9136",
+        "source": "Arity is sum of arguments' arities withoutPosition(p) runs p without the saved position, meaning that position-checking parsers like colGt will have no effect. This is usually used by bracketing constructs like (...) so that the user can locally override whitespace sensitivity. This parser has the same arity as p - it just forwards the results of p .",
+        "translation": "参数元数是各实参元数之和。`withoutPosition(p)` 在没有已保存位置的情况下运行 `p`，因此 `colGt` 等位置检查解析器不会生效。它通常用于 `(...)` 之类的括号结构，让用户能在局部关闭空白敏感性。此解析器与 `p` 的元数相同，只转发 `p` 的结果。"
+    },
+    {
+        "page": "Notations-and-Macros/Defining-New-Syntax/index.html",
+        "id": null,
+        "source": "Arity: 1 Automatically wraps arguments in a null node unless there's exactly one",
+        "translation": "元数：1。除非恰好只有一个实参，否则自动用 `null` 节点包裹实参。"
+    },
+    {
+        "page": "Notations-and-Macros/Defining-New-Syntax/index.html",
+        "id": "zh-9137",
+        "source": "Arity: 0 Automatically wraps arguments in a null node unless there's exactly one The colGt parser requires that the next token starts a strictly greater column than the saved position (see withPosition ). This can be used for whitespace sensitive syntax for the arguments to a tactic, to ensure that the following tactic is not interpreted as an argument. example (x : False) : False := by revert x exact id Here, the revert tactic is followed by a list of colGt ident , because otherwise it would interpret exact as an identifier and try to revert a variable named exact . This parser has arity 0 - it does not capture anything.",
+        "translation": "元数：0。除非恰好只有一个实参，否则自动用 `null` 节点包裹实参。解析器 `colGt` 要求下一个词法单元的起始列严格大于已保存位置的列（参见 `withPosition`）。它可用于策略实参等空白敏感语法，确保后续策略不会被解释成实参。示例中，`revert` 后接 `colGt ident` 列表；否则会把 `exact` 解释为标识符，并尝试回退名为 `exact` 的变量。此解析器元数为 0，不捕获任何内容。"
+    },
+    {
+        "page": "Notations-and-Macros/Defining-New-Syntax/index.html",
+        "id": "zh-9138",
+        "source": "Arity: 0 Automatically wraps arguments in a null node unless there's exactly one The colGe parser requires that the next token starts from at least the column of the saved position (see withPosition ), but allows it to be more indented. This can be used for whitespace sensitive syntax to ensure that a block does not go outside a certain indentation scope. For example it is used in the lean grammar for else if , to ensure that the else is not less indented than the if it matches with. This parser has arity 0 - it does not capture anything.",
+        "translation": "元数：0。除非恰好只有一个实参，否则自动用 `null` 节点包裹实参。解析器 `colGe` 要求下一个词法单元的起始列不小于已保存位置的列（参见 `withPosition`），同时允许更深缩进。它可用于空白敏感语法，确保代码块不越出给定缩进作用域。例如，Lean 的 `else if` 语法用它保证 `else` 的缩进不小于与之匹配的 `if`。此解析器元数为 0，不捕获任何内容。"
+    },
+    {
+        "page": "Notations-and-Macros/Defining-New-Syntax/index.html",
+        "id": "zh-9139",
+        "source": "Arity: 0 Automatically wraps arguments in a null node unless there's exactly one The colEq parser ensures that the next token starts at exactly the column of the saved position (see withPosition ). This can be used to do whitespace sensitive syntax like a by block or do block, where all the lines have to line up. This parser has arity 0 - it does not capture anything.",
+        "translation": "元数：0。除非恰好只有一个实参，否则自动用 `null` 节点包裹实参。解析器 `colEq` 确保下一个词法单元恰好从已保存位置所在列开始（参见 `withPosition`）。它可用于 `by` 块、`do` 块等空白敏感语法，其中各行必须对齐。此解析器元数为 0，不捕获任何内容。"
+    },
+    {
+        "page": "Notations-and-Macros/Defining-New-Syntax/index.html",
+        "id": "zh-9140",
+        "source": "Arity: 0 Automatically wraps arguments in a null node unless there's exactly one The lineEq parser requires that the current token is on the same line as the saved position (see withPosition ). This can be used to ensure that composite tokens are not \"broken up\" across different lines. For example, else if is parsed using lineEq to ensure that the two tokens are on the same line. This parser has arity 0 - it does not capture anything.",
+        "translation": "元数：0。除非恰好只有一个实参，否则自动用 `null` 节点包裹实参。解析器 `lineEq` 要求当前词法单元与已保存位置位于同一行（参见 `withPosition`）。它可确保复合词法单元不会被换行拆开。例如，`else if` 使用 `lineEq` 解析，以确保两个词法单元位于同一行。此解析器元数为 0，不捕获任何内容。"
+    }
+]
