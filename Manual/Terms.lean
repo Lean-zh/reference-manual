@@ -721,43 +721,43 @@ fun x_1 y => sum3 x_1 y x : (x y : Nat) → Nat
 
 {docstring autoParam}
 
-## Generalized Field Notation
+## 广义字段表示法
 %%%
 tag := "generalized-field-notation"
 %%%
 
-The {ref "structure-fields"}[section on structure fields] describes the notation for projecting a field from a term whose type is a structure.
-Generalized field notation consists of a term followed by a dot (`.`) and an identifier, not separated by spaces.
+{ref "structure-fields"}[关于结构字段的小节]介绍了从类型为结构的项中投影字段的表示法。
+广义字段表示法由一个项、一个点号（`.`）和一个标识符依次组成，三者之间不能有空格。
 
-:::syntax term (title := "Field Notation")
+:::syntax term (title := "字段表示法")
 ```grammar
 $e:term.$f:ident
 ```
 :::
 
-If a term's type is a constant applied to zero or more arguments, then {deftech}[field notation] can be used to apply a function to it, regardless of whether the term is a structure or type class instance that has fields.
-The use of field notation to apply other functions is called {deftech}_generalized field notation_.
+如果一个项的类型是应用于零个或多个参数的常量，那么无论该项是不是拥有字段的结构或类型类实例，都可以用{deftech (key := "field notation")}[字段表示法]将一个函数应用于它。
+使用字段表示法应用其他函数称为{deftech (key := "generalized field notation")}_广义字段表示法_。
 
-The identifier after the dot is looked up in the namespace of the term's type, which is the constant's name.
-If the type is not an application of a constant (e.g. a metavariable or a universe) then it doesn't have a namespace and generalized field notation cannot be used.
-As a special case, if an expression is a function, generalized field notation will look in the `Function` namespace. Therefore, {lean}`Nat.add.uncurry` is a use of generalized field notation that is equivalent to {lean}`Function.uncurry Nat.add`.
+点号后的标识符会在该项类型的命名空间中查找，也就是在这个常量名称所对应的命名空间中查找。
+如果类型不是常量的应用（例如，它是一个元变量或宇宙），那么它就没有命名空间，因而不能使用广义字段表示法。
+特别地，如果表达式是函数，广义字段表示法会在 `Function` 命名空间中查找。因此，{lean}`Nat.add.uncurry` 是广义字段表示法的一种用法，它等价于 {lean}`Function.uncurry Nat.add`。
 
-If the field is not found, but the constant can be unfolded to yield a further type which is a constant or application of a constant, then the process is repeated with the new constant.
+如果找不到该字段，但可以展开这个常量，得到另一个常量或常量应用类型，那么就用新的常量重复这一过程。
 
-When a function is found, the term before the dot becomes an argument to the function.
-Specifically, it becomes the first explicit argument that would not be a type error.
-Aside from that, the application is elaborated as usual.
+找到函数后，点号前的项会成为该函数的一个参数。
+具体而言，它会成为第一个不会导致类型错误的显式参数。
+除此之外，该应用会照常精译。
 
-:::example "Generalized Field Notation"
-The type {lean}`Username` is a constant, so functions in the {name}`Username` namespace can be applied to terms with type {lean}`Username` with generalized field notation.
+:::example "广义字段表示法"
+类型 {lean}`Username` 是常量，因此可以用广义字段表示法，将 {name}`Username` 命名空间中的函数应用于类型为 {lean}`Username` 的项。
 ```lean
 def Username := String
 ```
 
-One such function is {name}`Username.validate`, which checks that a username contains no leading whitespace and that only a small set of acceptable characters are used.
-In its definition, generalized field notation is used to call the functions {lean}`String.isPrefixOf`, {name}`String.any`, {lean}`Char.isAlpha`, and {lean}`Char.isDigit`.
-In the case of {lean}`String.isPrefixOf`, which takes two {lean}`String` arguments, {lean}`" "` is used as the first  because it's the term before the dot.
-{name}`String.any` can be called on {lean}`name` using generalized field notation even though it has type {lean}`Username` because `Username.any` is not defined and {lean}`Username` unfolds to {lean}`String`.
+{name}`Username.validate` 就是这样的函数之一，它检查用户名是否没有前导空白，且是否只使用了少量允许的字符。
+在其定义中，广义字段表示法用于调用函数 {lean}`String.isPrefixOf`、{name}`String.any`、{lean}`Char.isAlpha` 和 {lean}`Char.isDigit`。
+{lean}`String.isPrefixOf` 接受两个 {lean}`String` 参数；在这里，{lean}`" "` 用作第一个参数，因为它是点号前的项。
+虽然 {lean}`name` 的类型是 {lean}`Username`，但仍可用广义字段表示法对它调用 {name}`String.any`，这是因为 `Username.any` 没有定义，而 {lean}`Username` 可展开为 {lean}`String`。
 
 ```lean
 def Username.validate (name : Username) : Except String Unit := do
@@ -775,7 +775,7 @@ where
 def adminUser : Username := "admin"
 ```
 
-However, {lean}`Username.validate` can't be called on {lean}`"admin"` using field notation, because {lean}`String` does not unfold to {lean}`Username`.
+然而，不能用字段表示法对 {lean}`"admin"` 调用 {lean}`Username.validate`，因为 {lean}`String` 不会展开为 {lean}`Username`。
 ```lean +error (name := notString)
 #eval "admin".validate
 ```
@@ -785,7 +785,7 @@ Invalid field `validate`: The environment does not contain `String.validate`, so
 of type `String`
 ```
 
-{lean}`adminUser`, on the other hand, has type {lean}`Username`, so the {lean}`Username.validate` function can be invoked with generalized field notation:
+另一方面，{lean}`adminUser` 的类型是 {lean}`Username`，因此可以用广义字段表示法调用 {lean}`Username.validate` 函数：
 ```lean (name := isUsername)
 #eval adminUser.validate
 ```
@@ -793,7 +793,7 @@ of type `String`
 Except.ok ()
 ```
 
-Going in the other direction, {name}`String.any` *can* be called on the {lean}`Username` value {lean}`adminUser` with generalized field notation, because the type {lean}`Username` unfolds to {lean}`String`.
+反过来，确实可以用广义字段表示法对 {lean}`Username` 值 {lean}`adminUser` 调用 {name}`String.any`，因为类型 {lean}`Username` 可展开为 {lean}`String`。
 ```lean (name := isString1)
 #eval adminUser.any (· == 'm')
 ```
@@ -804,16 +804,16 @@ true
 
 {optionDocs pp.fieldNotation}
 
-:::syntax attr (title := "Controlling Field Notation")
-The {attr}`pp_nodot` attribute causes Lean's pretty printer to not use field notation when printing a function.
+:::syntax attr (title := "控制字段表示法")
+{attr}`pp_nodot` 属性使 Lean 的美化打印器在打印函数时不使用字段表示法。
 ```grammar
 pp_nodot
 ```
 :::
 
 ::::keepEnv
-:::example "Turning Off Field Notation"
-{lean}`Nat.half` is printed using field notation by default.
+:::example "关闭字段表示法"
+默认情况下，{lean}`Nat.half` 使用字段表示法打印。
 ```lean
 def Nat.half : Nat → Nat
   | 0 | 1 => 0
@@ -825,7 +825,7 @@ def Nat.half : Nat → Nat
 ```leanOutput succ1
 Nat.zero.half : Nat
 ```
-Adding {attr}`pp_nodot` to {name}`Nat.half` causes ordinary function application syntax to be used instead when displaying the term.
+为 {name}`Nat.half` 添加 {attr}`pp_nodot` 后，显示该项时会改用普通的函数应用语法。
 ```lean (name := succ2)
 attribute [pp_nodot] Nat.half
 
@@ -837,28 +837,31 @@ Nat.half Nat.zero : Nat
 :::
 ::::
 
-## Pipeline Syntax
+## 管道语法
+%%%
+tag := "The-Lean-Language-Reference--Terms--Function-Application--Pipeline-Syntax"
+%%%
 
-Pipeline syntax provides alternative ways to write function applications.
-Repeated pipelines use parsing precedence instead of nested parentheses to nest applications of functions to positional arguments.
+管道语法提供了函数应用的其他写法。
+重复使用管道时，可借助解析优先级把函数依次应用于位置参数，而不必使用嵌套括号。
 
-:::syntax term (title := "Pipelines")
-Right pipe notation applies the term to the right of the pipe to the one on its left.
+:::syntax term (title := "管道")
+右管道表示法把管道右侧的项应用于左侧的项。
 ```grammar
 $e |> $e
 ```
-Left pipe notation applies the term on the left of the pipe to the one on its right.
+左管道表示法把管道左侧的项应用于右侧的项。
 ```grammar
 $e <| $e
 ```
 :::
 
-The intuition behind right pipeline notation is that the values on the left are being fed to the first function, its results are fed to the second one, and so forth.
-In left pipeline notation, values on the right are fed leftwards.
+右管道表示法背后的直观理解是：左侧的值被送入第一个函数，其结果再送入第二个函数，以此类推。
+在左管道表示法中，右侧的值向左传递。
 
-:::example "Right pipeline notation"
-Right pipelines can be used to call a series of functions on a term.
-For readers, they tend to emphasize the data that's being transformed.
+:::example "右管道表示法"
+右管道可以在一个项上依次调用一系列函数。
+对读者而言，它往往更强调正在变换的数据。
 ```lean (name := rightPipe)
 #eval "Hello!" |> String.toList |> List.reverse |> List.head!
 ```
@@ -867,9 +870,9 @@ For readers, they tend to emphasize the data that's being transformed.
 ```
 :::
 
-:::example "Left pipeline notation"
-Left pipelines can be used to call a series of functions on a term.
-They tend to emphasize the functions over the data.
+:::example "左管道表示法"
+左管道可以在一个项上依次调用一系列函数。
+它往往更强调函数而非数据。
 ```lean (name := lPipe)
 #eval List.head! <| List.reverse <| String.toList <| "Hello!"
 ```
@@ -878,8 +881,8 @@ They tend to emphasize the functions over the data.
 ```
 :::
 
-:::syntax term (title := "Pipeline Fields")
-There is a version of pipeline notation that's used for {tech}[generalized field notation].
+:::syntax term (title := "管道字段")
+管道表示法还有一个用于{tech (key := "generalized field notation")}[广义字段表示法]的版本。
 ```grammar
 $e |>.$_:ident
 ```
@@ -897,13 +900,13 @@ variable {e : T 3} {arg : Char}
 axiom T.f : {n : Nat} → Char → T n → String
 ```
 
-{lean}`e |>.f arg` is an alternative syntax for {lean}`(e).f arg`.
+{lean}`e |>.f arg` 是 {lean}`(e).f arg` 的另一种语法。
 
 
-:::example "Pipeline Fields"
+:::example "管道字段"
 
-Some functions are inconvenient to use with pipelines because their argument order is not conducive.
-For example, {name}`Array.push` takes an array as its first argument, not a {lean}`Nat`, leading to this error:
+有些函数的参数顺序不便于使用管道。
+例如，{name}`Array.push` 的第一个参数是数组，而不是 {lean}`Nat`，因而会产生以下错误：
 ```lean (name := arrPush) +error
 #eval #[1, 2, 3] |> Array.push 4
 ```
@@ -917,7 +920,7 @@ due to the absence of the instance above
 Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
 ```
 
-Using pipeline field notation causes the array to be inserted at the first type-correct position:
+使用管道字段表示法会把数组插入第一个类型正确的位置：
 ```lean (name := arrPush2)
 #eval #[1, 2, 3] |>.push 4
 ```
@@ -925,7 +928,7 @@ Using pipeline field notation causes the array to be inserted at the first type-
 #[1, 2, 3, 4]
 ```
 
-This process can be iterated:
+这一过程可以反复进行：
 ```lean (name := arrPush3)
 #eval #[1, 2, 3] |>.push 4 |>.reverse |>.push 0 |>.reverse
 ```
@@ -940,12 +943,16 @@ end
 ```
 ::::
 
-# Numeric Literals
+# 数值字面量
+%%%
+tag := "numeric-literals"
+file := "Numeric-Literals"
+%%%
 
-There are two kinds of numeric literal: natural number literals and {deftech}[scientific literals].
-Both are overloaded via {tech (key := "type class")}[type classes].
+数值字面量分为两类：自然数字面量和{deftech (key := "scientific literals")}[科学计数字面量]。
+二者都通过{tech (key := "type class")}[类型类]重载。
 
-## Natural Numbers
+## 自然数
 %%%
 tag := "nat-literals"
 %%%
@@ -955,19 +962,19 @@ section
 variable {n : Nat}
 ```
 
-Natural numbers can be specified in several forms:
+自然数可以用以下几种形式指定：
 
- - A sequence of digits 0 through 9 is a decimal literal
- - `0b` or `0B` followed by a sequence of one or more 0s and 1s is a binary literal
- - `0o` or `0O` followed by a sequence of one or more digits 0 through 7 is an octal literal
- - `0x` or `0X` followed by a sequence of one or more hex digits (0 through 9 and A through F, case-insensitive) is a hexadecimal literal
+ - 由数字 0 至 9 组成的序列是十进制字面量
+ - `0b` 或 `0B` 后跟由一个或多个 0 与 1 组成的序列，是二进制字面量
+ - `0o` 或 `0O` 后跟由一个或多个 0 至 7 的数字组成的序列，是八进制字面量
+ - `0x` 或 `0X` 后跟由一个或多个十六进制数字（0 至 9 以及 A 至 F，不区分大小写）组成的序列，是十六进制字面量
 
-All numeric literals can also contain internal underscores, except for between the first two characters in a binary, octal, or hexadecimal literal.
-These are intended to help groups of digits in natural ways, for instance {lean}`1_000_000` or {lean}`0x_c0de_cafe`.
-(While it is possible to write the number 123 as {lean}`1_2__3`, this is not recommended.)
+所有数值字面量内部都可以包含下划线，但二进制、八进制或十六进制字面量的前两个字符之间除外。
+这些下划线旨在帮助以自然方式对数字分组，例如 {lean}`1_000_000` 或 {lean}`0x_c0de_cafe`。
+（虽然可以将数字 123 写成 {lean}`1_2__3`，但不推荐这样做。）
 
-When Lean encounters a natural number literal {lean}`n`, it interprets it via the overloaded method {lean}`OfNat.ofNat n`.
-A {tech}[default instance] of {lean}`OfNat Nat n` ensures that the type {lean}`Nat` can be inferred when no other type information is present.
+Lean 遇到自然数字面量 {lean}`n` 时，会通过重载方法 {lean}`OfNat.ofNat n` 解释它。
+{lean}`OfNat Nat n` 的一个{tech (key := "default instance")}[默认实例]确保在没有其他类型信息时可以推断出类型 {lean}`Nat`。
 
 {docstring OfNat}
 
@@ -975,8 +982,8 @@ A {tech}[default instance] of {lean}`OfNat Nat n` ensures that the type {lean}`N
 end
 ```
 
-:::example "Custom Natural Number Literals"
-The structure {lean}`NatInterval` represents an interval of natural numbers.
+:::example "自定义自然数字面量"
+结构 {lean}`NatInterval` 表示一个自然数区间。
 ```lean
 structure NatInterval where
   low : Nat
@@ -989,7 +996,7 @@ instance : Add NatInterval where
       ⟨lo1 + lo2, hi1 + hi2, by grind⟩
 ```
 
-An {name}`OfNat` instance allows natural number literals to be used to represent intervals:
+{name}`OfNat` 实例使自然数字面量可以用来表示区间：
 ```lean
 instance : OfNat NatInterval n where
   ofNat := ⟨n, n, by omega⟩
@@ -1008,43 +1015,52 @@ instance : OfNat NatInterval n where
 ```
 :::
 
-There are no separate integer literals.
-Terms such as {lean}`-5` consist of a prefix negation (which can be overloaded via the {name}`Neg` type class) applied to a natural number literal.
+并没有单独的整数字面量。
+{lean}`-5` 这样的项由应用于自然数字面量的前缀取负操作构成（它可以通过 {name}`Neg` 类型类重载）。
 
-## Scientific Numbers
+## 科学计数
+%%%
+tag := "The-Lean-Language-Reference--Terms--Numeric-Literals--Scientific-Numbers"
+%%%
 
-Scientific number literals consist of a sequence of decimal digits followed (without intervening whitespace) by an optional decimal part (a period followed by zero or more decimal digits) and an optional exponent part (the letter `e` followed by an optional `+` or `-` and then followed by one or more decimal digits).
-Scientific numbers are overloaded via the {name}`OfScientific` type class.
+科学计数字面量由一个十进制数字序列、一个可选的小数部分（句点后跟零个或多个十进制数字）和一个可选的指数部分（字母 `e` 后跟可选的 `+` 或 `-`，再跟一个或多个十进制数字）组成，各部分之间不能有空白。
+科学计数字面量通过 {name}`OfScientific` 类型类重载。
 
 {docstring OfScientific}
 
-There are an {lean}`OfScientific` instances for {name}`Float` and {name}`Float32`, but no separate floating-point literals.
+存在用于 {name}`Float` 和 {name}`Float32` 的 {lean}`OfScientific` 实例，但不存在单独的浮点字面量。
 
-## Strings
+## 字符串
+%%%
+tag := "The-Lean-Language-Reference--Terms--Numeric-Literals--Strings"
+%%%
 
-String literals are described in the {ref "string-syntax"}[chapter on strings.]
+字符串字面量在{ref "string-syntax"}[关于字符串的章节]中介绍。
 
-## Lists and Arrays
+## 列表与数组
+%%%
+tag := "The-Lean-Language-Reference--Terms--Numeric-Literals--Lists-and-Arrays"
+%%%
 
-List and array literals contain comma-separated sequences of elements inside of brackets, with arrays prefixed by a hash mark (`#`).
-Array literals are interpreted as list literals wrapped in a call to a conversion.
-For performance reasons, very large list and array literals are converted to sequences of local definitions, rather than just iterated applications of the list constructor.
+列表和数组字面量是在方括号内以逗号分隔的元素序列，数组的方括号前还带有井号（`#`）。
+数组字面量会被解释为由转换调用包裹的列表字面量。
+出于性能考虑，非常长的列表和数组字面量会被转换为一系列局部定义，而不仅仅是列表构造器的迭代应用。
 
-:::syntax term (title := "List Literals")
+:::syntax term (title := "列表字面量")
 ```grammar
 [$_,*]
 ```
 :::
 
-:::syntax term (title := "Array Literals")
+:::syntax term (title := "数组字面量")
 ```grammar
 #[$_,*]
 ```
 :::
 
-:::example "Long List Literals"
-This list contains 32 elements.
-The generated code is an iterated application of {name}`List.cons`:
+:::example "长列表字面量"
+此列表包含 32 个元素。
+生成的代码是 {name}`List.cons` 的迭代应用：
 ```lean (name := almostLong)
 #check
   [1,1,1,1,1,1,1,1,
@@ -1056,7 +1072,7 @@ The generated code is an iterated application of {name}`List.cons`:
 [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1] : List Nat
 ```
 
-With 33 elements, the list literal becomes a sequence of local definitions:
+包含 33 个元素时，列表字面量会变成一系列局部定义：
 ```lean (name := indeedLong)
 #check
   [1,1,1,1,1,1,1,1,
@@ -1081,24 +1097,29 @@ let y := 1 :: 1 :: 1 :: 1 :: y;
 
 :::
 
-# Structures and Constructors
+# 结构与构造器
+%%%
+tag := "structures-and-constructors"
+file := "Structures-and-Constructors"
+%%%
 
-{ref "anonymous-constructor-syntax"}[Anonymous constructors] and {ref "structure-constructors"}[structure instance syntax] are described in their respective sections.
+{ref "anonymous-constructor-syntax"}[匿名构造器]和{ref "structure-constructors"}[结构实例语法]在各自的小节中介绍。
 
-# Conditionals
+# 条件表达式
 %%%
 tag := "if-then-else"
+file := "Conditionals"
 %%%
 
-The conditional expression is used to check whether a proposition is true or false.{margin}[Despite their syntactic similarity, the {keywordOf Lean.Parser.Tactic.tacIfThenElse}`if` used {ref "tactic-language-branching"}[in the tactic language] and the {keywordOf Lean.Parser.Term.doIf}`if` used {ref "tactic-language-branching"}[in `do`-notation] are separate syntactic forms, documented in their own sections.]
-This requires that the proposition has a {name}`Decidable` instance, because it's not possible to check whether _arbitrary_ propositions are true or false.
-There is also a {tech}[coercion] from {name}`Bool` to {lean}`Prop` that results in a decidable proposition (namely, that the {name}`Bool` in question is equal to {name}`true`), described in the {ref "decidable-propositions"}[section on decidability].
+条件表达式用于检查一个命题是真是假。{margin}[尽管语法相似，{ref "tactic-language-branching"}[策略语言中]使用的 {keywordOf Lean.Parser.Tactic.tacIfThenElse}`if` 和{ref "tactic-language-branching"}[`do` 记法中]使用的 {keywordOf Lean.Parser.Term.doIf}`if` 是各自独立的语法形式，并在各自的小节中介绍。]
+这要求该命题具有 {name}`Decidable` 实例，因为不可能检查_任意_命题是真是假。
+从 {name}`Bool` 到 {lean}`Prop` 还有一个{tech (key := "coercion")}[强制转换]，它会产生一个可判定命题（即所涉及的 {name}`Bool` 等于 {name}`true`）；这在{ref "decidable-propositions"}[关于可判定性的小节]中介绍。
 
-There are two versions of the conditional expression: one simply performs a case distinction, while the other additionally adds an assumption about the proposition's truth or falsity to the local context.
-This allows run-time checks to generate compile-time evidence that can be used to statically rule out errors.
+条件表达式有两个版本：一个只进行情况区分，另一个还会向局部上下文中加入关于该命题为真或为假的假设。
+这使运行时检查能够生成编译时证据，以便静态排除错误。
 
-:::syntax term (title := "Conditionals")
-Without a name annotation, the conditional expression expresses only control flow.
+:::syntax term (title := "条件表达式")
+没有名称标注时，条件表达式只表达控制流。
 ```grammar
 if $e then
   $e
@@ -1106,7 +1127,7 @@ else
   $e
 ```
 
-With the name annotation, the branches of the {keywordOf termDepIfThenElse}`if` have access to a local assumption that the proposition is respectively true or false.
+有名称标注时，{keywordOf termDepIfThenElse}`if` 的两个分支可以分别使用关于该命题为真或为假的局部假设。
 ```grammar
 if $h : $e then
   $e
@@ -1117,9 +1138,9 @@ else
 
 
 ::::keepEnv
-:::example "Checking Array Bounds"
+:::example "检查数组边界"
 
-Array indexing requires evidence that the index in question is within the bounds of the array, so {name}`getThird` does not elaborate.
+数组索引要求有证据表明相应索引位于数组边界内，因此 {name}`getThird` 无法精译。
 
 ```lean +error -keep (name := getThird1)
 def getThird (xs : Array α) : α := xs[2]
@@ -1135,8 +1156,8 @@ xs : Array α
 ⊢ 2 < xs.size
 ```
 
-Relaxing the return type to {name}`Option` and adding a bounds check results in the same error.
-This is because the proof that the index is in bounds was not added to the local context.
+将返回类型放宽为 {name}`Option` 并添加边界检查后，仍会得到相同的错误。
+这是因为索引位于边界内的证明没有被加入局部上下文。
 ```lean +error -keep (name := getThird2)
 def getThird (xs : Array α) : Option α :=
   if xs.size ≤ 2 then none
@@ -1153,7 +1174,7 @@ xs : Array α
 ⊢ 2 < xs.size
 ```
 
-Naming the proof `h` is sufficient to enable the tactics that perform bounds checking to succeed, even though it does not occur explicitly in the text of the program.
+为证明命名为 `h`，就足以使执行边界检查的策略成功，尽管它并未显式出现在程序文本中。
 ```lean
 def getThird (xs : Array α) : Option α :=
   if h : xs.size ≤ 2 then none
@@ -1163,11 +1184,11 @@ def getThird (xs : Array α) : Option α :=
 :::
 ::::
 
-There is also a pattern-matching version of {keywordOf termIfLet}`if`.
-If the pattern matches, then it takes the first branch, binding the pattern variables.
-If the pattern does not match, then it takes the second branch.
+{keywordOf termIfLet}`if` 还有一个模式匹配版本。
+如果模式匹配，就进入第一个分支并绑定模式变量。
+如果模式不匹配，就进入第二个分支。
 
-:::syntax term (title := "Pattern-Matching Conditionals")
+:::syntax term (title := "模式匹配条件表达式")
 ```grammar
 if let $p := $e then
   $e
@@ -1177,8 +1198,8 @@ else
 :::
 
 
-If a {name}`Bool`-only conditional statement is ever needed, the {keywordOf boolIfThenElse}`bif` variant can be used.
-:::syntax term (title := "Boolean-Only Conditional")
+如果需要只接受 {name}`Bool` 的条件语句，可以使用 {keywordOf boolIfThenElse}`bif` 变体。
+:::syntax term (title := "仅布尔值条件表达式")
 ```grammar
 bif $e then
   $e
