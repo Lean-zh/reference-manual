@@ -75,6 +75,13 @@ TITLE_REPLACEMENTS = (
     (re.compile(r'title="Definition of ([^"]*)"'), r'title="定义：\1"'),
     (re.compile(r'title="Permalink"'), 'title="永久链接"'),
 )
+GENERATED_UI_REPLACEMENTS = (
+    ('<span class="label">tactic</span>', '<span class="label">策略</span>'),
+    ('<span class="label">conv tactic</span>', '<span class="label">conv 策略</span>'),
+    ('title="文档：tactic"', 'title="文档：策略"'),
+    ('title="文档：conv tactic"', 'title="文档：conv 策略"'),
+    ('title="文档：syntax"', 'title="文档：语法"'),
+)
 FORBIDDEN_TITLES = ("Documentation for ", "Definition of ", "Permalink")
 NO_ADDITIONAL_DOCS = "<span>无附加文档。</span>"
 NAMEDOCS_TRANSLATIONS_PATH = Path(__file__).with_name("tactic-namedocs-zh.json")
@@ -227,6 +234,8 @@ def localize_generated_html(root: Path) -> tuple[int, int, int, int]:
         for pattern, replacement in TITLE_REPLACEMENTS:
             text, count = pattern.subn(replacement, text)
             title_count += count
+        for source, replacement in GENERATED_UI_REPLACEMENTS:
+            text = text.replace(source, replacement)
         page_text[path] = text
         hover_ids.update(HOVER_ATTR_RE.findall(text))
 
