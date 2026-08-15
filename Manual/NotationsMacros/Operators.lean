@@ -20,46 +20,46 @@ set_option pp.rawOnError true
 
 set_option linter.unusedVariables false
 
-#doc (Manual) "Custom Operators" =>
+#doc (Manual) "自定义运算符" =>
 %%%
 tag := "operators"
 %%%
 
-Lean supports custom infix, prefix, and postfix operators.
-New operators can be added by any Lean library, and the new operators have equal status to those that are part of the language.
-Each new operator is assigned an interpretation as a function, after which uses of the operator are translated into uses of the function.
-The operator's translation into a function call is referred to as its {deftech}_expansion_.
-If this function is a {tech}[type class] {tech}[method], then the resulting operator can be overloaded by defining instances of the class.
+Lean 支持自定义中缀、前缀和后缀运算符。
+任何 Lean 库都可以添加新运算符，而这些新运算符与语言内置运算符具有同等地位。
+每个新运算符都会被赋予一个作为函数的解释，随后对该运算符的使用会被翻译为对该函数的使用。
+运算符到函数调用的这种翻译被称为它的 {deftech (key := "expansion")}_展开_。
+如果这个函数是某个 {tech (key := "type class")}[类型类] {tech (key := "method")}[方法]，那么就可以通过定义该类的实例来重载生成的运算符。
 
-All operators have a {deftech}_precedence_.
-Operator precedence determines the order of operations for unparenthesized expressions: because multiplication has a higher precedence than addition, {lean}`2 + 3 * 4` is equivalent to {lean}`2 + (3 * 4)`, and {lean}`2 * 3 + 4` is equivalent to {lean}`(2 * 3) + 4`.
-Infix operators additionally have an {deftech}_associativity_ that determines the meaning of a chain of operators that have the same precedence:
+所有运算符都有一个 {deftech (key := "precedence")}_优先级_。
+运算符优先级决定了无括号表达式中的运算顺序：由于乘法的优先级高于加法，{lean}`2 + 3 * 4` 等价于 {lean}`2 + (3 * 4)`，而 {lean}`2 * 3 + 4` 等价于 {lean}`(2 * 3) + 4`。
+中缀运算符还具有一个 {deftech (key := "associativity")}_结合性_，它决定了同一优先级的一串运算符应如何理解：
 
-: {deftech}[Left-associative]
+: {deftech (key := "Left-associative")}[左结合]
 
-  These operators nest to the left.
-  Addition is left- associative, so {lean}`2 + 3 + 4 + 5` is equivalent to {lean}`((2 + 3) + 4) + 5`.
+  这类运算符向左嵌套。
+  加法是左结合的，因此 {lean}`2 + 3 + 4 + 5` 等价于 {lean}`((2 + 3) + 4) + 5`。
 
-: {deftech}[Right-associative]
+: {deftech (key := "Right-associative")}[右结合]
 
-  These operators nest to the right.
-  The product type is right-associative, so {lean}`Nat × String × Unit × Option Int` is equivalent to {lean}`Nat × (String × (Unit × Option Int))`.
+  这类运算符向右嵌套。
+  积类型是右结合的，因此 {lean}`Nat × String × Unit × Option Int` 等价于 {lean}`Nat × (String × (Unit × Option Int))`。
 
-: {deftech}[Non-associative]
+: {deftech (key := "Non-associative")}[非结合]
 
-  Chaining these operators is a syntax error.
-  Explicit parenthesization is required.
-  Equality is non-associative, so the following is an error:
+  将这类运算符串接起来会导致语法错误。
+  必须显式加括号。
+  等号是非结合的，因此下面的写法是错误的：
 
   ```syntaxError eqs (category := term)
   1 + 2 = 3 = 2 + 1
   ```
-  The parser error is:
+  解析器错误为：
   ```leanOutput eqs
   <example>:1:10-1:11: expected end of input
   ```
 ::::keepEnv
-:::example "Precedence for Prefix and Infix Operators"
+:::example "前缀与中缀运算符的优先级" (file := "Precedence for Prefix and Infix Operators")
 ```lean -show
 axiom A : Prop
 axiom B : Prop
@@ -67,42 +67,42 @@ example : (¬A ∧ B = (¬A) ∧ B) = (¬A ∧ ((B = ¬A) ∧ B)) := rfl
 example : (¬A ∧ B) = ((¬A) ∧ B) := rfl
 ```
 
-The proposition {lean}`¬A ∧ B` is equivalent to {lean}`(¬A) ∧ B`, because `¬` has a higher precedence than `∧`.
-Because `∧` has higher precedence than `=` and is right-associative, {lean}`¬A ∧ B = (¬A) ∧ B` is equivalent to {lean}`¬A ∧ ((B = ¬A) ∧ B)`.
+命题 {lean}`¬A ∧ B` 等价于 {lean}`(¬A) ∧ B`，因为 `¬` 的优先级高于 `∧`。
+由于 `∧` 的优先级高于 `=`，并且它是右结合的，所以 {lean}`¬A ∧ B = (¬A) ∧ B` 等价于 {lean}`¬A ∧ ((B = ¬A) ∧ B)`。
 :::
 ::::
 
-Lean provides commands for defining new operators:
-:::syntax command (title := "Operator Declarations")
-Non-associative infix operators are defined using {keywordOf Lean.Parser.Command.mixfix}`infix`:
+Lean 提供了用于定义新运算符的命令：
+:::syntax command (title := "运算符声明")
+非结合中缀运算符使用 {keywordOf Lean.Parser.Command.mixfix}`infix` 定义：
 ```grammar
 $[$_:docComment]?
 $[$_:attributes]?
 $_:attrKind infix:$_ $[(name := $x)]? $[(priority := $_:prio)]? $s:str => $t:term
 ```
 
-Left-associative infix operators are defined using {keywordOf Lean.Parser.Command.mixfix}`infixl`:
+左结合中缀运算符使用 {keywordOf Lean.Parser.Command.mixfix}`infixl` 定义：
 ```grammar
 $[$_:docComment]?
 $[$_:attributes]?
 $_:attrKind infixl:$_ $[(name := $x)]? $[(priority := $_:prio)]? $s:str => $t:term
 ```
 
-Right-associative infix operators are defined using {keywordOf Lean.Parser.Command.mixfix}`infixr`:
+右结合中缀运算符使用 {keywordOf Lean.Parser.Command.mixfix}`infixr` 定义：
 ```grammar
 $[$_:docComment]?
 $[$_:attributes]?
 $_:attrKind infixr:$_ $[(name := $x)]? $[(priority := $_:prio)]? $s:str => $t:term
 ```
 
-Prefix operators are defined using {keywordOf Lean.Parser.Command.mixfix}`prefix`:
+前缀运算符使用 {keywordOf Lean.Parser.Command.mixfix}`prefix` 定义：
 ```grammar
 $[$_:docComment]?
 $[$_:attributes]?
 $_:attrKind prefix:$_ $[(name := $x)]? $[(priority := $_:prio)]? $s:str => $t:term
 ```
 
-Postfix operators are defined using {keywordOf Lean.Parser.Command.mixfix}`postfix`:
+后缀运算符使用 {keywordOf Lean.Parser.Command.mixfix}`postfix` 定义：
 ```grammar
 $[$_:docComment]?
 $[$_:attributes]?
@@ -110,71 +110,71 @@ $_:attrKind postfix:$_ $[(name := $x)]? $[(priority := $_:prio)]? $s:str => $t:t
 ```
 :::
 
-Each of these commands may be preceded by {tech}[documentation comments] and {tech}[attributes].
-The documentation comment is shown when the user hovers their mouse over the operator, and attributes may invoke arbitrary metaprograms, just as for any other declaration.
-The attribute {attr}`inherit_doc` causes the documentation of the function that implements the operator to be reused for the operator itself.
+这些命令前面都可以带有 {tech (key := "documentation comments")}[文档注释] 和 {tech (key := "attributes")}[属性]。
+当用户将鼠标悬停在运算符上时，会显示该文档注释；而属性则和其他任何声明一样，可以调用任意元程序。
+{attr}`inherit_doc` 属性会让实现该运算符的函数的文档被复用于运算符本身。
 
-Operators interact with {tech}[section scopes] in the same manner as attributes.
-By default, operators are available in any module that transitively imports the one in which they are established, but they may be declared `scoped` or `local` to restrict their availability either to contexts in which the current namespace has been opened or to the current {tech}[section scope], respectively.
+运算符与 {tech (key := "section scopes")}[节作用域] 的交互方式和属性相同。
+默认情况下，运算符在任何传递导入了其定义所在模块的模块中都可用；但也可以将其声明为 `scoped` 或 `local`，分别把可用范围限制为当前命名空间已被打开的上下文，或者当前的 {tech (key := "section scope")}[节作用域]。
 
-Custom operators require a {ref "precedence"}[precedence] specifier, following a colon.
-There is no default precedence to fall back to for custom operators.
+自定义运算符需要在冒号后提供一个 {ref "precedence"}[优先级] 说明。
+自定义运算符没有可回退使用的默认优先级。
 
-Operators may be explicitly named.
-This name denotes the extension to Lean's syntax, and is primarily used for metaprogramming.
-If no name is explicitly provided, then Lean generates one based on the operator.
-The specifics of the assignment of this name should not be relied upon, both because the internal name assignment algorithm may change and because the introduction of similar operators in upstream dependencies may lead to a clash, in which case Lean will modify the assigned name until it is unique.
+运算符也可以显式命名。
+这个名字表示对 Lean 语法的扩展，主要用于元编程。
+如果没有显式提供名字，Lean 会根据运算符自动生成一个。
+不应依赖这个名字的具体分配方式，因为内部命名算法可能改变，而且上游依赖中引入相似运算符也可能造成冲突；在这种情况下，Lean 会修改所分配的名字，直到它唯一为止。
 
 ::::keepEnv
-:::example "Assigned Operator Names"
-Given this infix operator:
+:::example "自动分配的运算符名称" (file := "Assigned Operator Names")
+给定这个中缀运算符：
 ```lean
 infix:90 " ⤴ " => Option.getD
 ```
-the internal name {name}`«term_⤴_»` is assigned to the resulting parser extension.
+生成的解析器扩展会被赋予内部名称 {name}`«term_⤴_»`。
 :::
 ::::
 
 ::::keepEnv
-:::example "Provided Operator Names"
-Given this infix operator:
+:::example "显式提供的运算符名称" (file := "Provided Operator Names")
+给定这个中缀运算符：
 ```lean
 infix:90 (name := getDOp) " ⤴ " => Option.getD
 ```
-the resulting parser extension is named {name}`getDOp`.
+生成的解析器扩展会命名为 {name}`getDOp`。
 :::
 ::::
 
 ::::keepEnv
-:::example "Inheriting Documentation"
-Given this infix operator:
+:::example "继承文档" (file := "Inheriting Documentation")
+给定这个中缀运算符：
 ```lean
 @[inherit_doc]
 infix:90 " ⤴ " => Option.getD
 ```
-the resulting parser extension has the same documentation as {name}`Option.getD`.
+生成的解析器扩展具有与 {name}`Option.getD` 相同的文档。
 :::
 ::::
 
 
 
-When multiple operators are defined that share the same syntax, Lean's parser attempts all of them.
-If more than one succeed, the one that used the most input is selected—this is called the {deftech}_local longest-match rule_.
-In some cases, parsing multiple operators may succeed, all of them covering the same range of the input.
-In these cases, the operator's {tech}[priority] is used to select the appropriate result.
-Finally, if multiple operators with the same priority tie for the longest match, the parser saves all of the results, and the elaborator attempts each in turn, failing if elaboration does not succeed on exactly one of them.
+当定义了多个共享同一语法的运算符时，Lean 的解析器会尝试它们全部。
+如果有多个成功，就会选择消耗输入最多的那个——这被称为 {deftech (key := "local longest-match rule")}_局部最长匹配规则_。
+在某些情况下，多个运算符的解析都可能成功，并且它们覆盖的是输入中的同一范围。
+这时会使用运算符的 {tech (key := "priority")}[优先级] 来选择合适的结果。
+最后，如果多个同优先级运算符在最长匹配上并列，解析器就会保留所有结果，并由精译器逐个尝试；如果不能恰好有一个成功精译，则整体失败。
 
 :::::keepEnv
 
-::::example "Ambiguous Operators and Priorities"
+::::example "歧义运算符与优先级" (file := "Ambiguous Operators and Priorities")
 
 :::keepEnv
-Defining an alternative implementation of `+` as {lean}`Or` requires only an infix operator declaration.
+将 `+` 的另一种实现定义为 {lean}`Or` 只需要一条中缀运算符声明。
 ```lean
 infix:65  " + " => Or
 ```
 
-With this declaration, Lean attempts to elaborate addition both using the built-in syntax for {name}`HAdd.hAdd` and the new syntax for {lean}`Or`:
+有了这个声明，Lean 在精译加法时会同时尝试使用 {name}`HAdd.hAdd` 的内置语法和 {lean}`Or` 的新语法：
 ```lean (name := trueOrFalse1)
 #check True + False
 ```
@@ -188,7 +188,7 @@ True + False : Prop
 2 + 2 : Nat
 ```
 
-However, because the new operator is not associative, the {tech}[local longest-match rule] means that only {name}`HAdd.hAdd` applies to an unparenthesized three-argument version:
+不过，由于这个新运算符不是结合的，{tech (key := "local longest-match rule")}[局部最长匹配规则] 意味着只有 {name}`HAdd.hAdd` 能应用于不加括号的三参数写法：
 ```lean +error (name := trueOrFalseOrTrue1)
 #check True + False + True
 ```
@@ -202,7 +202,7 @@ Hint: Type class instance resolution failures can be inspected with the `set_opt
 :::
 
 :::keepEnv
-If the infix operator is declared with high priority, then Lean does not try the built-in {name}`HAdd.hAdd` operator in ambiguous cases:
+如果把这个中缀运算符声明为高优先级，那么在有歧义的情况下 Lean 就不会尝试内置的 {name}`HAdd.hAdd` 运算符：
 ```lean
 infix:65 (priority := high)  " + " => Or
 ```
@@ -226,7 +226,7 @@ due to the absence of the instance above
 Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
 ```
 
-The new operator is not associative, so the {tech}[local longest-match rule] means that only {name}`HAdd.hAdd` applies to the three-argument version:
+这个新运算符不是结合的，因此 {tech (key := "local longest-match rule")}[局部最长匹配规则] 意味着只有 {name}`HAdd.hAdd` 能应用于三参数写法：
 ```lean +error (name := trueOrFalseOrTrue2)
 #check True + False + True
 ```
@@ -242,29 +242,29 @@ Hint: Type class instance resolution failures can be inspected with the `set_opt
 :::::
 
 
-The actual operator is provided as a string literal.
-The new operator must satisfy the following requirements:
- * It must contain at least one character.
- * The first character may not be a single or double quote (`'` or `"`), unless the operator is `''`.
- * It may not begin with a backtick (`` ` ``) followed by a character that would be a valid prefix of a quoted name.
- * It may not begin with a digit.
- * It may not include internal whitespace.
+实际的运算符以字符串字面量给出。
+新运算符必须满足下列要求：
+ * 它至少必须包含一个字符。
+ * 第一个字符不能是单引号或双引号（`'` 或 `"`），除非运算符本身是 `''`。
+ * 它不能以反引号（`` ` ``）开头，后面也不能紧跟一个可作为引用名称合法前缀的字符。
+ * 它不能以数字开头。
+ * 它不能包含内部空白。
 
-The operator string literal may begin or end with a space.
-These are not part of the operator's syntax, and their presence does not require spaces around uses of the operator.
-However, the presence of spaces cause Lean to insert spaces when showing the operator to the user.
-Omitting them causes the operator's arguments to be displayed immediately next to the operator itself.
+运算符字符串字面量可以以空格开头或结尾。
+这些空格不属于运算符语法的一部分，它们的存在也不会要求在使用运算符时必须在两侧留空格。
+不过，空格的存在会使 Lean 在向用户显示运算符时插入空格。
+省略这些空格会让运算符参数在显示时紧贴运算符本身。
 
 
 :::keepEnv
 ```lean -show
--- Test claim about internal whitespace in preceding paragraph
+-- 验证前一段关于内部空白的说法
 /-- error: invalid atom -/
 #check_msgs in
 infix:99 " <<<< >>>> " => Nat.add
 
 
---- Test further claims about allowed atoms
+--- 进一步验证关于合法原子的说法
 /-- error: invalid atom -/
 #check_msgs in
 infix:9 (name := bogus) "" => Nat.mul
@@ -274,7 +274,7 @@ infix:9 (name := bogus) "" => Nat.mul
 #check_msgs in
 infix:9 (name := alsobogus) " ` " => Nat.mul
 
--- this one's OK
+-- 这个可以
 #check_msgs in
 infix:9 (name := nonbogus) " `` " => Nat.mul
 
@@ -285,28 +285,28 @@ infix:9 (name := bogus) "`a" => Nat.mul
 ```
 :::
 
-Finally, the operator's meaning is provided, separated from the operator by {keywordOf Lean.Parser.Command.mixfix}`=>`.
-This may be any Lean term.
-Uses of the operator are desugared into function applications, with the provided term in the function position.
-Prefix and postfix operators apply the term to their single argument as an explicit argument.
-Infix operators apply the term to the left and right arguments, in that order.
-Other than its ability to accept arguments at each call site, there are no specific requirements imposed on the term.
-Operators may construct functions, so the term may expect more parameters than the operator.
-Implicit and {tech}[instance-implicit] parameters are resolved at each application site, which allows the operator to be defined by a {tech}[type class] {tech}[method].
+最后，运算符的含义通过 {keywordOf Lean.Parser.Command.mixfix}`=>` 给出，并与运算符本身分隔开。
+这里可以是任意 Lean 项。
+对运算符的使用会被解糖为函数应用，并把给定项放在函数位置。
+前缀和后缀运算符会把该项应用到自己的单个显式参数上。
+中缀运算符则会按顺序把该项应用到左参数和右参数上。
+除了要能在每个使用点接收参数之外，对这个项没有其他特殊要求。
+运算符可以构造函数，因此这个项可以期待比运算符更多的参数。
+隐式参数和 {tech (key := "instance-implicit")}[实例隐式] 参数会在每个应用点被解析，这使得运算符可以由某个 {tech (key := "type class")}[类型类] {tech (key := "method")}[方法] 来定义。
 
 ```lean -show -keep
--- Double-check claims about operators above
+-- 再次核对上面对运算符的说法
 prefix:max "blah" => Nat.add
 #check (blah 5)
 ```
 
-If the term consists either of a name from the global environment or of an application of such a name to one or more arguments, then Lean automatically generates an {tech}[unexpander] for the operator.
-This means that the operator will be displayed in {tech}[proof states], error messages, and other output from Lean when the function term otherwise would have been displayed.
-Lean does not track whether the operator was used in the original term; it is inserted at every opportunity.
+如果这个项要么是全局环境中的一个名称，要么是这样一个名称对一个或多个参数的应用，那么 Lean 会自动为该运算符生成一个 {tech (key := "unexpander")}[逆展开器]。
+这意味着，凡是原本会显示相应函数项的地方，运算符都会显示在 Lean 的 {tech (key := "proof states")}[证明状态]、错误消息和其他输出中。
+Lean 不会跟踪原始项里是否真的使用了该运算符；只要有机会，它就会把它插入进去。
 
 :::::keepEnv
-::::example "Custom Operators in Lean's Output"
-The function {lean}`perhapsFactorial` computes a factorial for a number if it's not too large.
+::::example "Lean 输出中的自定义运算符" (file := "Custom Operators in Lean's Output")
+函数 {lean}`perhapsFactorial` 会在数字不太大时计算它的阶乘。
 ```lean
 def fact : Nat → Nat
   | 0 => 1
@@ -316,12 +316,12 @@ def perhapsFactorial (n : Nat) : Option Nat :=
   if n < 8 then some (fact n) else none
 ```
 
-The postfix interrobang operator can be used to represent it.
+可以用后缀惊叹问号运算符来表示它。
 ```lean
 postfix:90 "‽" => perhapsFactorial
 ```
 
-When attempting to prove that {lean}`∀ n, n ≥ 8 → (perhapsFactorial n).isNone`, the initial proof state uses the new operator, even though the theorem as written does not:
+在尝试证明 {lean}`∀ n, n ≥ 8 → (perhapsFactorial n).isNone` 时，初始证明状态会使用这个新运算符，尽管定理原文并没有这样写：
 ```proofState
 ∀ n, n ≥ 8 → (perhapsFactorial n).isNone := by skip
 /--
@@ -332,9 +332,9 @@ When attempting to prove that {lean}`∀ n, n ≥ 8 → (perhapsFactorial n).isN
 ::::
 :::::
 
-:::example "Infix Operators, Defined Functions, and Unexpanders"
-When an operator does not expand to the application of a defiend function, no unexpander is generated.
-Here, the postfix interrobang expands to an anonymous function that takes a factorial if its argument is not too large.
+:::example "中缀运算符、已定义函数与逆展开器" (file := "Infix Operators, Defined Functions, and Unexpanders")
+当运算符不会展开成对某个已定义函数的应用时，就不会生成逆展开器。
+这里，后缀惊叹问号会展开成一个匿名函数：当参数不太大时，它会取其阶乘。
 
 ```lean
 def fact : Nat → Nat
@@ -345,7 +345,7 @@ set_option quotPrecheck false in
 postfix:90 "‽" => fun (n : Nat) => if n < 8 then some (fact n) else none
 ```
 
-Because there is no named function in the expansion, no unexpander can be generated:
+由于展开式中没有具名函数，因此无法生成逆展开器：
 ```lean (name := noUnexp)
 #check 7‽
 ```
@@ -353,7 +353,7 @@ Because there is no named function in the expansion, no unexpander can be genera
 (fun n => if n < 8 then some (fact n) else none) 7 : Option Nat
 ```
 
-Using a named function results in an unexpander, which is used for terms that consist of applications of {name}`perhapsFactorial`:
+使用具名函数则会产生一个逆展开器，它会用于那些由 {name}`perhapsFactorial` 的应用构成的项：
 ```lean
 def perhapsFactorial (n : Nat) : Option Nat :=
   if n < 8 then some (fact n) else none
