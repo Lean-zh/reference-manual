@@ -8,6 +8,7 @@ import VersoManual
 import Manual.Meta
 import Manual.Meta.LexedText
 import Manual.Papers
+import Manual.ZhDocString.Runtime
 import Std.Async.Process
 
 open Manual
@@ -123,7 +124,7 @@ Lean 使用{deftech (key := "reference count")}_引用计数_来管理内存。
 原语 {name}`dbgTraceIfShared` 可用于检查数据结构是否存在别名。
 调用它时，它会原样返回参数；如果参数的引用计数大于一，则打印所提供的跟踪消息。
 
-{docstring dbgTraceIfShared}
+{zhdocstring dbgTraceIfShared ZhDoc.Runtime.dbgTraceIfShared}
 
 受 {keywordOf Lean.Parser.Command.eval}`#eval` 具体实现方式的影响，将 {name}`dbgTraceIfShared` 与 {keywordOf Lean.Parser.Command.eval}`#eval` 一同使用可能产生误导。
 应当改在明确经过编译并运行的代码中使用它。
@@ -206,7 +207,7 @@ shared RC String update
 引用计数操作的具体方式可能取决于内联等优化阶段的结果。
 绝大多数 Lean 代码无须关注这些细节就能获得良好性能，但在编写性能关键型代码时，掌握如何诊断唯一引用相关的问题可能非常重要。
 
-{optionDocs trace.compiler.ir.result}
+{zhOptionDocs trace.compiler.ir.result ZhDoc.Runtime.Option.trace.compiler.ir.result}
 
 :::example "IR 中的引用计数"
 通过编译器中间表示（IR）可以观察引用计数何时递增，这有助于诊断以下情形：本以为某个值只有一个传入引用，但它实际上却被共享。
@@ -411,7 +412,8 @@ tag := "ffi-types"
 :::leanSection
 ```lean -show
 universe u
-variable (p : Prop)
+variable (_p : Prop)
+local notation "p" => _p
 private axiom «...» : Sort u
 local macro "..." : term => ``(«...»)
 ```
@@ -490,10 +492,10 @@ lean_object * initialize_A_B(uint8_t builtin);
 lean_object * initialize_C(uint8_t builtin);
 ...
 
-argv = lean_setup_args(argc, argv); // if using process-related functionality
+argv = lean_setup_args(argc, argv); // 使用进程相关功能时
 
 lean_object * res;
-// use same default as for Lean executables
+// 使用与 Lean 可执行文件相同的默认值
 uint8_t builtin = 1;
 res = initialize_foo_A_B(builtin);
 if (lean_io_result_is_ok(res)) {
@@ -501,13 +503,13 @@ if (lean_io_result_is_ok(res)) {
 } else {
     lean_io_result_show_error(res);
     lean_dec(res);
-    return ...;  // do not access Lean declarations if initialization failed
+    return ...;  // 初始化失败时，不得访问 Lean 声明
 }
 res = initialize_bar_C(builtin);
 if (lean_io_result_is_ok(res)) {
 ...
 
-//lean_init_task_manager();  // necessary for code that (indirectly) uses `Task`
+//lean_init_task_manager();  // （间接）使用 `Task` 的代码需要调用此函数
 lean_io_mark_end_initialization();
 ```
 

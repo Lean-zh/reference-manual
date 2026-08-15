@@ -31,6 +31,11 @@ TARGET_PAGES = (
     "Coercions/Coercing-to-Sorts/index.html",
     "Coercions/Coercing-to-Function-Types/index.html",
     "Coercions/Implementation-Details/index.html",
+    "Run-Time-Code/index.html",
+    "Run-Time-Code/Boxing/index.html",
+    "Run-Time-Code/Reference-Counting/index.html",
+    "Run-Time-Code/Multi-Threaded-Execution/index.html",
+    "Run-Time-Code/Foreign-Function-Interface/index.html",
 )
 
 HOVER_ATTR_RE = re.compile(r'data-verso-hover="([^"]+)"')
