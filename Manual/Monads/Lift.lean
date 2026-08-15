@@ -20,7 +20,7 @@ set_option pp.rawOnError true
 
 set_option linter.unusedVariables false
 
-#doc (Manual) "Lifting Monads" =>
+#doc (Manual) "提升单子" =>
 %%%
 tag := "lifting-monads"
 %%%
@@ -32,18 +32,18 @@ variable {m m' n : Type u → Type v} [Monad m] [Monad m'] [Monad n] [MonadLift 
 variable {α β : Type u}
 ```
 
-When one monad is at least as capable as another, then actions from the latter monad can be used in a context that expects actions from the former.
-This is called {deftech (key := "lift")}_lifting_ the action from one monad to another.
-Lean automatically inserts lifts when they are available; lifts are defined in the {name}`MonadLift` type class.
-Automatic monad lifting is attempted before the general {tech}[coercion] mechanism.
+当一个单子的能力至少与另一个单子相当时，后者的动作便可用于期望前者动作的上下文中。
+这称为将动作从一个单子{deftech (key := "lift")}_提升_到另一个单子。
+有可用的提升时，Lean 会自动插入它们；提升由类型类 {name}`MonadLift` 定义。
+自动单子提升会在通用的{tech (key := "coercion")}[强制转换]机制之前尝试。
 
 {docstring MonadLift}
 
-{tech (key := "lift")}[Lifting] between monads is reflexive and transitive:
- * Any monad can run its own actions.
- * Lifts from {lean}`m` to {lean}`m'` and from {lean}`m'` to {lean}`n` can be composed to yield a lift from {lean}`m` to {lean}`n`.
-The utility type class {name}`MonadLiftT` constructs lifts via the reflexive and transitive closure of {name}`MonadLift` instances.
-Users should not define new instances of {name}`MonadLiftT`, but it is useful as an instance implicit parameter to a polymorphic function that needs to run actions from multiple monads in some user-provided monad.
+单子之间的{tech (key := "lift")}[提升]具有自反性和传递性：
+ * 任意单子都能运行自己的动作。
+ * 从 {lean}`m` 到 {lean}`m'` 的提升与从 {lean}`m'` 到 {lean}`n` 的提升可以复合，得到从 {lean}`m` 到 {lean}`n` 的提升。
+辅助类型类 {name}`MonadLiftT` 通过 {name}`MonadLift` 实例的自反传递闭包构造提升。
+用户不应定义新的 {name}`MonadLiftT` 实例；不过，当多态函数需要在用户提供的某个单子中运行多个单子的动作时，它很适合作为该函数的实例隐式参数。
 
 {docstring MonadLiftT}
 
@@ -52,16 +52,16 @@ section
 variable {m : Type → Type u}
 ```
 
-:::example "Monad Lifts in Function Signatures"
-The function {name}`IO.withStdin` has the following signature:
+:::example "函数签名中的单子提升"
+函数 {name}`IO.withStdin` 具有以下签名：
 ```signature
 IO.withStdin.{u} {m : Type → Type u} {α : Type}
   [Monad m] [MonadFinally m] [MonadLiftT BaseIO m]
   (h : IO.FS.Stream) (x : m α) :
   m α
 ```
-Because it doesn't require its parameter to precisely be in {name}`IO`, it can be used in many monads, and the body does not need to restrict itself to {name}`IO`.
-The instance implicit parameter {lean}`MonadLiftT BaseIO m` allows the reflexive transitive closure of {name}`MonadLift` to be used to assemble the lift.
+由于它不要求参数严格位于 {name}`IO` 中，因此可用于许多单子，其函数体也无需局限于 {name}`IO`。
+实例隐式参数 {lean}`MonadLiftT BaseIO m` 允许使用 {name}`MonadLift` 的自反传递闭包来组装提升。
 :::
 
 ```lean -show
@@ -69,28 +69,28 @@ end
 ```
 
 
-When a term of type {lean}`n β` is expected, but the provided term has type {lean}`m α`, and the two types are not definitionally equal, Lean attempts to insert lifts and coercions before reporting an error.
-There are the following possibilities:
- 1. If {lean}`m` and {lean}`n` can be unified to the same monad, then {lean}`α` and {lean}`β` are not the same.
-    In this case, no monad lifts are necessary, but the value in the monad must be {tech (key := "coercion")}[coerced].
-    If the appropriate coercion is found, then a call to {name}`Lean.Internal.coeM` is inserted, which has the following signature:
+当期望类型为 {lean}`n β` 的项，但提供的项类型为 {lean}`m α`，且两种类型并非定义相等时，Lean 会先尝试插入提升和强制转换，再报告错误。
+可能有以下几种情况：
+ 1. 如果 {lean}`m` 和 {lean}`n` 能统一为同一个单子，那么 {lean}`α` 和 {lean}`β` 并不相同。
+    此时不需要单子提升，但必须对单子中的值进行{tech (key := "coercion")}[强制转换]。
+    如果找到了适当的强制转换，就会插入对 {name}`Lean.Internal.coeM` 的调用，其签名如下：
     ```signature
     Lean.Internal.coeM.{u, v} {m : Type u → Type v} {α β : Type u}
       [(a : α) → CoeT α a β] [Monad m]
       (x : m α) :
       m β
     ```
- 2. If {lean}`α` and {lean}`β` can be unified, then the monads differ.
-    In this case, a monad lift is necessary to transform an expression with type {lean}`m α` to {lean}`n α`.
-    If {lean}`m` can be lifted to {lean}`n` (that is, there is an instance of {lean}`MonadLiftT m n`) then a call to {name}`liftM`, which is an alias for {name}`MonadLiftT.monadLift`, is inserted.
+ 2. 如果 {lean}`α` 和 {lean}`β` 可以统一，那么不同的是两个单子。
+    此时需要单子提升，将类型为 {lean}`m α` 的表达式变换为 {lean}`n α`。
+    如果 {lean}`m` 可以提升到 {lean}`n`（即存在 {lean}`MonadLiftT m n` 的实例），就会插入对 {name}`liftM` 的调用；它是 {name}`MonadLiftT.monadLift` 的别名。
     ```signature
     liftM.{u, v, w}
       {m : Type u → Type v} {n : Type u → Type w}
       [self : MonadLiftT m n] {α : Type u} :
       m α → n α
     ```
- 3. If neither {lean}`m` and {lean}`n` nor {lean}`α` and {lean}`β` can be unified, but {lean}`m` can be lifted into {lean}`n` and {lean}`α` can be {tech (key := "coercion")}[coerced] to {lean}`β`, then a lift and a coercion can be combined.
-    This is done by inserting a call to {name}`Lean.Internal.liftCoeM`:
+ 3. 如果 {lean}`m` 与 {lean}`n`、{lean}`α` 与 {lean}`β` 都无法统一，但 {lean}`m` 可以提升到 {lean}`n`，且 {lean}`α` 可以{tech (key := "coercion")}[强制转换]为 {lean}`β`，那么可以组合一次提升与一次强制转换。
+    具体做法是插入对 {name}`Lean.Internal.liftCoeM` 的调用：
     ```signature
     Lean.Internal.liftCoeM.{u, v, w}
       {m : Type u → Type v} {n : Type u → Type w}
@@ -100,18 +100,18 @@ There are the following possibilities:
       n β
     ```
 
-As their names suggest, {name}`Lean.Internal.coeM` and {name}`Lean.Internal.liftCoeM` are implementation details, not part of the public API.
-In the resulting terms, occurrences of {name}`Lean.Internal.coeM`, {name}`Lean.Internal.liftCoeM`, and coercions are unfolded.
+顾名思义，{name}`Lean.Internal.coeM` 和 {name}`Lean.Internal.liftCoeM` 属于实现细节，并非公共 API 的一部分。
+在最终生成的项中，出现的 {name}`Lean.Internal.coeM`、{name}`Lean.Internal.liftCoeM` 和强制转换都会被展开。
 
 ::::
 
 ::::keepEnv
-:::example "Lifting `IO` Monads"
-There is an instance of {lean}`MonadLift BaseIO IO`, so any `BaseIO` action can be run in `IO` as well:
+:::example "提升 `IO` 单子"
+存在 {lean}`MonadLift BaseIO IO` 的实例，因此任意 `BaseIO` 动作也可以在 `IO` 中运行：
 ```lean
 def fromBaseIO (act : BaseIO α) : IO α := act
 ```
-Behind the scenes, {name}`liftM` is inserted:
+在幕后，系统插入了 {name}`liftM`：
 ```lean (name := fromBase)
 #check fun {α} (act : BaseIO α) => (act : IO α)
 ```
@@ -122,9 +122,9 @@ fun {α} act => liftM act : {α : Type} → BaseIO α → EIO IO.Error α
 ::::
 
 :::::keepEnv
-::::example "Lifting Transformed Monads"
-There are also instances of {name}`MonadLift` for most of the standard library's {tech}[monad transformers], so base monad actions can be used in transformed monads without additional work.
-For example, state monad actions can be lifted across reader and exception transformers, allowing compatible monads to be intermixed freely:
+::::example "提升经过变换的单子"
+标准库的大多数{tech (key := "monad transformers")}[单子变换器]也有 {name}`MonadLift` 实例，因此无需额外工作，便可在经过变换的单子中使用基础单子动作。
+例如，状态单子动作可以跨越读取器变换器和异常变换器进行提升，从而自由混用兼容的单子：
 ```lean -keep
 def incrBy (n : Nat) : StateM Nat Unit := modify (· + n)
 
@@ -133,7 +133,7 @@ def incrOrFail : ReaderT Nat (ExceptT String (StateM Nat)) Unit := do
   incrBy (← read)
 ```
 
-Disabling lifting causes an error:
+禁用提升会导致错误：
 ```lean (name := noLift) +error
 set_option autoLift false
 
@@ -156,33 +156,33 @@ but is expected to have type
 :::::
 
 
-Automatic lifting can be disabled by setting {option}`autoLift` to {lean}`false`.
+将选项 {option}`autoLift` 设为 {lean}`false` 可以禁用自动提升。
 
 {optionDocs autoLift}
 
-# Reversing Lifts
+# 反向提升
 
 ```lean -show
 variable {m n : Type u → Type v} {α ε : Type u}
 ```
 
-Monad lifting is not always sufficient to combine monads.
-Many operations provided by monads are higher order, taking an action _in the same monad_ as a parameter.
-Even if these operations are lifted to some more powerful monad, their arguments are still restricted to the original monad.
+单子提升并不总足以组合单子。
+单子提供的许多操作都是高阶的，会接收_同一个单子中_的动作作为参数。
+即使把这些操作提升到更强大的单子中，它们的实参仍受限于原单子。
 
-There are two type classes that support this kind of “reverse lifting”: {name}`MonadFunctor` and {name}`MonadControl`.
-An instance of {lean}`MonadFunctor m n` explains how to interpret a fully-polymorphic function in {lean}`m` into {lean}`n`.
-This polymorphic function must work for _all_ types {lean}`α`: it has type {lean}`{α : Type u} → m α → n α`.
-Such a function can be thought of as one that may have effects, but can't do so based on specific values that are provided.
-An instance of {lean}`MonadControl m n` explains how to interpret an arbitrary action from {lean}`m` into {lean}`n`, while at the same time providing a “reverse interpreter” that allows the {lean}`m` action to run {lean}`n` actions.
+有两个类型类支持这种“反向提升”：{name}`MonadFunctor` 和 {name}`MonadControl`。
+{lean}`MonadFunctor m n` 的实例说明如何把 {lean}`m` 中的完全多态函数解释到 {lean}`n` 中。
+这个多态函数必须适用于_所有_类型 {lean}`α`：其类型为 {lean}`{α : Type u} → m α → n α`。
+可以认为这样的函数或许会产生效应，但不能依据所提供的具体值来产生效应。
+{lean}`MonadControl m n` 的实例说明如何把 {lean}`m` 中的任意动作解释到 {lean}`n` 中，同时提供一个“反向解释器”，让该 {lean}`m` 动作能够运行 {lean}`n` 动作。
 
-## Monad Functors
+## 单子函子
 
 {docstring MonadFunctor}
 
 {docstring MonadFunctorT}
 
-## Reversible Lifting with `MonadControl`
+## 使用 `MonadControl` 进行可逆提升
 
 {docstring MonadControl}
 
@@ -194,16 +194,16 @@ An instance of {lean}`MonadControl m n` explains how to interpret an arbitrary a
 
 
 ::::keepEnv
-:::example "Exceptions and Lifting"
-One example is {name}`Except.tryCatch`:
+:::example "异常与提升"
+一个例子是 {name}`Except.tryCatch`：
 ```signature
 Except.tryCatch.{u, v} {ε : Type u} {α : Type v}
   (ma : Except ε α) (handle : ε → Except ε α) :
   Except ε α
 ```
-Both of its parameters are in {lean}`Except ε`.
-{name}`MonadLift` can lift the entire application of the handler.
-The function {lean}`getBytes`, which extracts the single bytes from an array of {lean}`Nat`s using state and exceptions, is written without {keywordOf Lean.Parser.Term.do}`do`-notation or automatic lifting in order to make its structure explicit.
+它的两个参数都位于 {lean}`Except ε` 中。
+{name}`MonadLift` 可以提升处理器的整个应用。
+函数 {lean}`getBytes` 使用状态和异常从 {lean}`Nat` 数组中提取各个字节；为了明确展示其结构，编写时没有使用 {keywordOf Lean.Parser.Term.do}`do` 记法或自动提升。
 ```lean
 set_option autoLift false
 
@@ -227,12 +227,12 @@ def getBytes (input : Array Nat) :
 ```leanOutput getBytesEval1
 Except.ok #[1, 58, 255, 2]
 ```
-{name}`getBytes` uses an `Option` returned from the lifted action to signal the desired state updates.
-This quickly becomes unwieldy if there is more than one way to react to the inner action, such as saving handled exceptions.
-Ideally, state updates would be performed within the {name}`tryCatch` call directly.
+{name}`getBytes` 使用提升后的动作所返回的 `Option` 来表示所需的状态更新。
+如果对内部动作有多种响应方式，例如保存已处理的异常，这种做法很快就会变得难以驾驭。
+理想情况下，应当直接在 {name}`tryCatch` 调用内部执行状态更新。
 
 
-Attempting to save bytes and handled exceptions does not work, however, because the arguments to {name}`Except.tryCatch` have type {lean}`Except String Unit`:
+然而，尝试保存字节和已处理的异常并不可行，因为 {name}`Except.tryCatch` 的实参类型为 {lean}`Except String Unit`：
 ```lean +error (name := getBytesErr) -keep
 def getBytes' (input : Array Nat) :
     StateT (Array String)
@@ -253,9 +253,9 @@ failed to synthesize instance of type class
 Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
 ```
 
-Because {name}`StateT` has a {name}`MonadControl` instance, {name}`control` can be used instead of {name}`liftM`.
-It provides the inner action with an interpreter for the outer monad.
-In the case of {name}`StateT`, this interpreter expects that the inner monad returns a tuple that includes the updated state, and takes care of providing the initial state and extracting the updated state from the tuple.
+因为 {name}`StateT` 有一个 {name}`MonadControl` 实例，所以可以用 {name}`control` 代替 {name}`liftM`。
+它为内部动作提供外部单子的解释器。
+对于 {name}`StateT`，该解释器期望内部单子返回一个包含更新后状态的元组，并负责提供初始状态以及从元组中提取更新后的状态。
 
 ```lean
 def getBytes' (input : Array Nat) :
