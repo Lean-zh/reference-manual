@@ -9,3 +9,6 @@ import Manual.ZhDocString.Language.InductiveTypes.LogicalModel
 import Manual.ZhDocString.Monads.Core
 import Manual.ZhDocString.Monads.Except
 import Manual.ZhDocString.Monads.State
+import Manual.ZhDocString.NotationsMacros.Core
+import Manual.ZhDocString.NotationsMacros.Do
+import Manual.ZhDocString.NotationsMacros.Syntax
