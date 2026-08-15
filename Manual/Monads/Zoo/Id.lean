@@ -20,16 +20,16 @@ set_option pp.rawOnError true
 
 set_option linter.unusedVariables false
 
-#doc (Manual) "Identity" =>
+#doc (Manual) "恒等" =>
 
-The identity monad {name}`Id` has no effects whatsoever.
-Both {name}`Id` and the corresponding implementation of {name}`pure` are the identity function, and {name}`bind` is reversed function application.
-The identity monad has two primary use cases:
- 1. It can be the type of a {keywordOf Lean.Parser.Term.do}`do` block that implements a pure function with local effects.
- 2. It can be placed at the bottom of a stack of monad transformers.
+恒等单子 {name}`Id` 完全没有任何作用。
+{name}`Id` 以及对应的 {name}`pure` 实现都是恒等函数，而 {name}`bind` 是反向函数应用。
+恒等单子主要有两种用途：
+ 1. 它可以作为 {keywordOf Lean.Parser.Term.do}`do` 块的类型，用局部作用实现纯函数。
+ 2. 它可以放在单子变换器栈的最底层。
 
 ```lean -show
--- Verify claims
+-- 验证上述说法
 example : Id = id := rfl
 example : Id.run (α := α) = id := rfl
 example : (pure (f := Id)) = (id : α → α) := rfl
@@ -40,8 +40,8 @@ example : (bind (m := Id)) = (fun (x : α) (f : α → Id β) => f x) := rfl
 
 {docstring Id.run}
 
-:::example "Local Effects with the Identity Monad"
-This code block implements a countdown procedure by using simulated local mutability in the identity monad.
+:::example "恒等单子中的局部作用"
+这段代码通过在恒等单子中模拟局部可变性，实现了一个倒数过程。
 ```lean (name := idDo)
 #eval Id.run do
   let mut xs := []

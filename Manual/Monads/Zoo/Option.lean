@@ -20,15 +20,15 @@ set_option pp.rawOnError true
 
 set_option linter.unusedVariables false
 
-#doc (Manual) "Option" =>
+#doc (Manual) "可选值" =>
 %%%
 tag := "option-monad"
 %%%
 
-Ordinarily, {lean}`Option` is thought of as data, similarly to a nullable type.
-It can also be considered as a monad, and thus a way of performing computations.
-The {lean}`Option` monad and its transformer {lean}`OptionT` can be understood as describing computations that may terminate early, discarding the results.
-Callers can check for early termination and invoke a fallback if desired using {name}`OrElse.orElse` or by treating it as a {lean}`MonadExcept Unit`.
+通常，{lean}`Option` 被视为数据，类似于可空类型。
+它也可以被视为单子，从而成为一种执行计算的方式。
+{lean}`Option` 单子及其变换器 {lean}`OptionT` 可以理解为描述可能提前终止并丢弃结果的计算。
+调用方可以使用 {name}`OrElse.orElse` 检查是否提前终止，并按需调用后备计算；也可以把它当作 {lean}`MonadExcept Unit` 处理。
 
 {docstring OptionT}
 
