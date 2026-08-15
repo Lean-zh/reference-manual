@@ -7,6 +7,7 @@ Author: David Thrane Christiansen
 import VersoManual
 
 import Manual.Meta
+import Manual.ZhDocString.Monads.Core
 import Manual.Papers
 
 import Manual.Monads.Syntax
@@ -28,36 +29,36 @@ set_option pp.rawOnError true
 set_option linter.unusedVariables false
 set_option maxRecDepth 1024
 
-#doc (Manual) "Functors, Monads and `do`-Notation" =>
-
+#doc (Manual) "函子、单子与 `do` 记法" =>
 %%%
 tag := "monads-and-do"
+file := "Functors___-Monads-and--do--Notation"
 %%%
 
-The type classes {name}`Functor`, {name}`Applicative`, and {name}`Monad` provide fundamental tools for functional programming.{margin}[An introduction to programming with these abstractions is available in [_Functional Programming in Lean_](https://lean-lang.org/functional_programming_in_lean/functor-applicative-monad.html).]
-While they are inspired by the concepts of functors and monads in category theory, the versions used for programming are more limited.
-The type classes in Lean's standard library represent the concepts as used for programming, rather than the general mathematical definition.
+类型类 {name}`Functor`、{name}`Applicative` 和 {name}`Monad` 为函数式编程提供了基本工具。{margin}[关于如何使用这些抽象进行编程的介绍，参见 [_Lean 函数式编程_](https://lean-lang.org/functional_programming_in_lean/functor-applicative-monad.html)。]
+它们的灵感来自范畴论中的函子和单子概念，但编程中使用的版本限制更多。
+Lean 标准库中的类型类所表示的是用于编程的概念，而非一般的数学定义。
 
-Instances of {deftech}[{name}`Functor`] allow an operation to be applied consistently throughout some polymorphic context.
-Examples include transforming each element of a list by applying a function and creating new {lean}`IO` actions by arranging for a pure function to be applied to the result of an existing {lean}`IO` action.
-Instances of {deftech}[{name}`Monad`] allow side effects with data dependencies to be encoded; examples include using a tuple to simulate mutable state, a sum type to simulate exceptions, and representing actual side effects with {lean}`IO`.
-{deftech}[{name}`Applicative` functors] occupy a middle ground: like monads, they allow functions computed with effects to be applied to arguments that are computed with effects, but they do not allow sequential data dependencies where the output of an effect forms an input into another effectful operation.
+{deftech (key := "Functor")}[{name}`Functor` 函子]的实例允许在某种多态上下文中一致地应用操作。
+例如，可以通过应用函数来变换列表中的每个元素，也可以安排将纯函数应用于现有 {lean}`IO` 动作的结果，从而创建新的 {lean}`IO` 动作。
+{deftech (key := "Monad")}[{name}`Monad` 单子]的实例允许编码带有数据依赖的副作用；例如，用元组模拟可变状态、用和类型模拟异常，以及用 {lean}`IO` 表示真实的副作用。
+{deftech (key := "Applicative functors")}[{name}`Applicative` 应用函子]介于二者之间：它们与单子一样，允许把通过效应计算出的函数应用于同样通过效应计算出的实参；但不允许顺序数据依赖，即一个效应的输出成为另一个效应操作的输入。
 
-The additional type classes {name}`Pure`, {name}`Bind`, {name}`SeqLeft`, {name}`SeqRight`, and {name}`Seq` capture individual operations from {name}`Applicative` and {name}`Monad`, allowing them to be overloaded and used with types that are not necessarily {name}`Applicative` functors or {name}`Monad`s.
-The {name}`Alternative` type class describes applicative functors that additionally have some notion of failure and recovery.
+另外几个类型类 {name}`Pure`、{name}`Bind`、{name}`SeqLeft`、{name}`SeqRight` 和 {name}`Seq` 分别抽取了 {name}`Applicative` 与 {name}`Monad` 中的单项操作，使这些操作可以重载，并用于不一定是 {name}`Applicative` 应用函子或 {name}`Monad` 单子的类型。
+类型类 {name}`Alternative` 描述还具有某种失败与恢复概念的应用函子。
 
 
-{docstring Functor}
+{zhdocstring Functor Manual.ZhDocString.Monads.Core.Functor}
 
-{docstring Pure}
+{zhdocstring Pure Manual.ZhDocString.Monads.Core.Pure}
 
-{docstring Seq}
+{zhdocstring Seq Manual.ZhDocString.Monads.Core.Seq}
 
-{docstring SeqLeft}
+{zhdocstring SeqLeft Manual.ZhDocString.Monads.Core.SeqLeft}
 
-{docstring SeqRight}
+{zhdocstring SeqRight Manual.ZhDocString.Monads.Core.SeqRight}
 
-{docstring Applicative}
+{zhdocstring Applicative Manual.ZhDocString.Monads.Core.Applicative}
 
 
 :::::keepEnv
@@ -67,10 +68,10 @@ section
 variable {α : Type u} {β : Type u}
 ```
 
-::::example "Lists with Lengths as Applicative Functors"
+::::example "以定长列表作为应用函子" (file := "Lists with Lengths as Applicative Functors")
 
-The structure {name}`LenList` pairs a list with a proof that it has the desired length.
-As a consequence, its `zipWith` operator doesn't require a fallback in case the lengths of its inputs differ.
+结构 {name}`LenList` 将列表与其长度为所需值的证明配对。
+因此，它的 `zipWith` 运算无需为输入长度不同时提供后备方案。
 
 ```lean
 structure LenList (length : Nat) (α : Type u) where
@@ -103,8 +104,8 @@ def LenList.zipWith (f : α → β → γ)
     simp [List.length_zipWith, *]
 ```
 
-The well-behaved {name}`Applicative` instance applies functions to arguments element-wise.
-Because {name}`Applicative` extends {name}`Functor`, a separate {name}`Functor` instance is not necessary, and {name Functor.map}`map` can be defined as part of the {name}`Applicative` instance.
+这个行为良好的 {name}`Applicative` 实例逐元素地将函数应用于实参。
+由于 {name}`Applicative` 扩展了 {name}`Functor`，无需另外定义 {name}`Functor` 实例；{name Functor.map}`map` 可以作为 {name}`Applicative` 实例的一部分来定义。
 
 ```lean
 instance : Applicative (LenList n) where
@@ -116,7 +117,7 @@ instance : Applicative (LenList n) where
   seq {α β} fs xs := fs.zipWith (· ·) (xs ())
 ```
 
-The well-behaved {name}`Monad` instance takes the diagonal of the results of applying the function:
+这个行为良好的 {name}`Monad` 实例取函数应用结果的对角线：
 
 ```lean
 @[simp]
@@ -142,11 +143,11 @@ end
 :::::
 
 
-{docstring Alternative}
+{zhdocstring Alternative Manual.ZhDocString.Monads.Core.Alternative}
 
-{docstring Bind}
+{zhdocstring Bind Manual.ZhDocString.Monads.Core.Bind}
 
-{docstring Monad}
+{zhdocstring Monad Manual.ZhDocString.Monads.Core.Monad}
 
 {include 0 Manual.Monads.Laws}
 

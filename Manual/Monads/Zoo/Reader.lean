@@ -7,6 +7,7 @@ Author: David Thrane Christiansen
 import VersoManual
 
 import Manual.Meta
+import Manual.ZhDocString.Monads.State
 
 import Lean.Parser.Command
 
@@ -20,37 +21,37 @@ set_option pp.rawOnError true
 
 set_option linter.unusedVariables false
 
-#doc (Manual) "Reader" =>
+#doc (Manual) "读取器" =>
 %%%
 tag := "reader-monad"
 %%%
 
-{docstring MonadReader}
+{zhdocstring MonadReader ZhDoc.Monads.State.MonadReader}
 
-{docstring MonadReaderOf}
+{zhdocstring MonadReaderOf ZhDoc.Monads.State.MonadReaderOf}
 
-{docstring readThe}
+{zhdocstring readThe ZhDoc.Monads.State.readThe}
 
-{docstring MonadWithReader}
+{zhdocstring MonadWithReader ZhDoc.Monads.State.MonadWithReader}
 
-{docstring MonadWithReaderOf}
+{zhdocstring MonadWithReaderOf ZhDoc.Monads.State.MonadWithReaderOf}
 
-{docstring withTheReader}
+{zhdocstring withTheReader ZhDoc.Monads.State.withTheReader}
 
-{docstring ReaderT}
+{zhdocstring ReaderT ZhDoc.Monads.State.ReaderT}
 
-{docstring ReaderM}
+{zhdocstring ReaderM ZhDoc.Monads.State.ReaderM}
 
-{docstring ReaderT.run}
+{zhdocstring ReaderT.run ZhDoc.Monads.State.ReaderT.run}
 
-{docstring ReaderT.read}
+{zhdocstring ReaderT.read ZhDoc.Monads.State.ReaderT.read}
 
-{docstring ReaderT.adapt}
+{zhdocstring ReaderT.adapt ZhDoc.Monads.State.ReaderT.adapt}
 
-{docstring ReaderT.pure}
+{zhdocstring ReaderT.pure ZhDoc.Monads.State.ReaderT.pure}
 
-{docstring ReaderT.bind}
+{zhdocstring ReaderT.bind ZhDoc.Monads.State.ReaderT.bind}
 
-{docstring ReaderT.orElse}
+{zhdocstring ReaderT.orElse ZhDoc.Monads.State.ReaderT.orElse}
 
-{docstring ReaderT.failure}
+{zhdocstring ReaderT.failure ZhDoc.Monads.State.ReaderT.failure}

@@ -59,6 +59,12 @@ TARGET_PAGES = (
     "Tactic-Proofs/Tactic-Reference/index.html",
     "Tactic-Proofs/Targeted-Rewriting-with--conv/index.html",
     "Tactic-Proofs/Custom-Tactics/index.html",
+    "Functors___-Monads-and--do--Notation/index.html",
+    "Functors___-Monads-and--do--Notation/Laws/index.html",
+    "Functors___-Monads-and--do--Notation/Lifting-Monads/index.html",
+    "Functors___-Monads-and--do--Notation/Syntax/index.html",
+    "Functors___-Monads-and--do--Notation/API-Reference/index.html",
+    "Functors___-Monads-and--do--Notation/Varieties-of-Monads/index.html",
 )
 
 HOVER_ATTR_RE = re.compile(r'data-verso-hover="([^"]+)"')

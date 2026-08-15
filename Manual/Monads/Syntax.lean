@@ -7,6 +7,7 @@ Author: David Thrane Christiansen
 import VersoManual
 
 import Manual.Meta
+import Manual.ZhDocString.Monads.Core
 import Manual.Papers
 
 import Lean.Parser.Command
@@ -24,31 +25,41 @@ set_option linter.unusedVariables false
 
 set_option guard_msgs.diff true
 
-#doc (Manual) "Syntax" =>
+#doc (Manual) "语法" =>
+%%%
+tag := "The-Lean-Language-Reference--Functors___-Monads-and--do--Notation--Syntax"
+file := "Syntax"
+%%%
 
-Lean supports programming with functors, applicative functors, and monads via special syntax:
- * Infix operators are provided for the most common operations.
- * An embedded language called {tech}[{keywordOf Lean.Parser.Term.do}`do`-notation] allows the use of imperative syntax when writing programs in a monad.
+Lean 通过特殊语法支持使用函子、应用函子和单子进行编程：
+ * 为最常用的操作提供了中缀运算符。
+ * 一种称为 {tech (key := "do-notation")}[{keywordOf Lean.Parser.Term.do}`do` 记法]的嵌入式语言，允许在单子中编写程序时使用命令式语法。
 
-# Infix Operators
+# 中缀运算符
+%%%
+tag := "The-Lean-Language-Reference--Functors___-Monads-and--do--Notation--Syntax--Infix-Operators"
+%%%
 
-Infix operators are primarily useful in smaller expressions, or when there is no {lean}`Monad` instance.
+中缀运算符主要适用于较小的表达式，或不存在 {lean}`Monad` 实例的情况。
 
-## Functors
+## 函子
+%%%
+tag := "The-Lean-Language-Reference--Functors___-Monads-and--do--Notation--Syntax--Infix-Operators--Functors"
+%%%
 
 ```lean -show
 section FOps
 variable {f : Type u → Type v} [Functor f] {α β : Type u} {g : α → β} {x : f α}
 ```
-There are two infix operators for {name}`Functor.map`.
+{name}`Functor.map` 有两个中缀运算符。
 
-:::syntax term (title := "Functor Operators")
-{lean}`g <$> x` is short for {lean}`Functor.map g x`.
+:::syntax term (title := "函子运算符")
+{lean}`g <$> x` 是 {lean}`Functor.map g x` 的简写。
 ```grammar
 $_ <$> $_
 ```
 
-{lean}`x <&> g` is short for {lean}`Functor.map g x`.
+{lean}`x <&> g` 是 {lean}`Functor.map g x` 的简写。
 ```grammar
 $_ <&> $_
 ```
@@ -60,37 +71,40 @@ example : x <&> g = Functor.map g x := by rfl
 end FOps
 ```
 
-## Applicative Functors
+## 应用函子
+%%%
+tag := "The-Lean-Language-Reference--Functors___-Monads-and--do--Notation--Syntax--Infix-Operators--Applicative-Functors"
+%%%
 
 ```lean -show
 section AOps
 variable {f : Type u → Type v} [Applicative f] [Alternative f] {α β : Type u} {g : f (α → β)} {x e1 e e' : f α} {e2 : f β}
 ```
 
-:::syntax term (title := "Applicative Operators")
-{lean}`g <*> x` is short for {lean}`Seq.seq g (fun () => x)`.
-The function is inserted to delay evaluation because control might not reach the argument.
+:::syntax term (title := "应用函子运算符")
+{lean}`g <*> x` 是 {lean}`Seq.seq g (fun () => x)` 的简写。
+插入该函数是为了延迟求值，因为控制流可能不会到达此参数。
 ```grammar
 $_ <*> $_
 ```
 
-{lean}`e1 *> e2` is short for {lean}`SeqRight.seqRight e1 (fun () => e2)`.
+{lean}`e1 *> e2` 是 {lean}`SeqRight.seqRight e1 (fun () => e2)` 的简写。
 ```grammar
 $_ *> $_
 ```
 
-{lean}`e1 <* e2` is short for {lean}`SeqLeft.seqLeft e1 (fun () => e2)`.
+{lean}`e1 <* e2` 是 {lean}`SeqLeft.seqLeft e1 (fun () => e2)` 的简写。
 ```grammar
 $_ <* $_
 ```
 :::
 
-Many applicative functors also support failure and recovery via the {name}`Alternative` type class.
-This class also has an infix operator.
+许多应用函子还通过 {name}`Alternative` 类型类支持失败与恢复。
+这个类也有一个中缀运算符。
 
-:::syntax term (title := "Alternative Operators")
-{lean}`e <|> e'` is short for {lean}`OrElse.orElse e (fun () => e')`.
-The function is inserted to delay evaluation because control might not reach the argument.
+:::syntax term (title := "备选运算符")
+{lean}`e <|> e'` 是 {lean}`OrElse.orElse e (fun () => e')` 的简写。
+插入该函数是为了延迟求值，因为控制流可能不会到达此参数。
 ```grammar
 $_ <|> $_
 ```
@@ -112,11 +126,11 @@ structure User where
   favoriteNat : Nat
 def main : IO Unit := pure ()
 ```
-::::example "Infix `Functor` and `Applicative` Operators"
-A common functional programming idiom is to use a pure function in some context with effects by applying it via {name}`Functor.map` and {name}`Seq.seq`.
-The function is applied to its sequence of arguments using `<$>`, and the arguments are separated by `<*>`.
+::::example "`Functor` 与 `Applicative` 的中缀运算符"
+函数式编程中一种常见的惯用法，是通过 {name}`Functor.map` 和 {name}`Seq.seq` 将纯函数应用于某个带效果的语境中。
+函数通过 `<$>` 应用于一系列实参，各实参之间用 `<*>` 分隔。
 
-In this example, the constructor {name}`User.mk` is applied via this idiom in the body of {lean}`main`.
+在此示例中，{lean}`main` 的函数体使用这一惯用法来应用构造函数 {name}`User.mk`。
 :::ioExample
 ```ioLean
 def getName : IO String := do
@@ -141,13 +155,13 @@ def main : IO Unit := do
   let user ← User.mk <$> getName <*> getFavoriteNat
   IO.println (repr user)
 ```
-When run with this input:
+使用以下输入运行时：
 ```stdin
 A. Lean User
 None
 42
 ```
-it produces this output:
+会产生以下输出：
 ```stdout
 What is your name?
 What is your favorite natural number?
@@ -160,29 +174,32 @@ What is your favorite natural number?
 ::::
 :::::
 
-## Monads
+## 单子
+%%%
+tag := "The-Lean-Language-Reference--Functors___-Monads-and--do--Notation--Syntax--Infix-Operators--Monads"
+%%%
 
-Monads are primarily used via {tech}[{keywordOf Lean.Parser.Term.do}`do`-notation].
-However, it can sometimes be convenient to describe monadic computations via operators.
+单子主要通过 {tech (key := "do-notation")}[{keywordOf Lean.Parser.Term.do}`do` 记法]使用。
+不过，有时用运算符描述单子计算会更方便。
 
 ```lean -show
 section MOps
 variable {m : Type u → Type v} [Monad m] {α β : Type u} {act : m α} {f : α → m β} {g : β → m γ}
 ```
 
-:::syntax term (title := "Monad Operators")
+:::syntax term (title := "单子运算符")
 
-{lean}`act >>= f` is syntax for {lean}`Bind.bind act f`.
+{lean}`act >>= f` 是 {lean}`Bind.bind act f` 的语法。
 ```grammar
 $_ >>= $_
 ```
 
-Similarly, the reversed operator {lean}`f =<< act` is syntax for {lean}`Bind.bind act f`.
+类似地，反向运算符 {lean}`f =<< act` 也是 {lean}`Bind.bind act f` 的语法。
 ```grammar
 $_ =<< $_
 ```
 
-The Kleisli composition operators {name}`Bind.kleisliRight` and {name}`Bind.kleisliLeft` also have infix operators.
+Kleisli 复合运算符 {name}`Bind.kleisliRight` 和 {name}`Bind.kleisliLeft` 也有中缀形式。
 ```grammar
 $_ >=> $_
 ```
@@ -201,23 +218,23 @@ end MOps
 ```
 
 
-# `do`-Notation
+# `do` 记法
 %%%
 tag := "do-notation"
 %%%
 
-Monads are primarily used via {deftech}[{keywordOf Lean.Parser.Term.do}`do`-notation], which is an embedded language for programming in an imperative style.
-It provides familiar syntax for sequencing effectful operations, early return, local mutable variables, loops, and exception handling.
-All of these features are translated to the operations of the {lean}`Monad` type class, with a few of them requiring addition instances of classes such as {lean}`ForIn` that specify iteration over containers.
-For more details about the design of {keywordOf Lean.Parser.Term.do}`do`-notation, please consult {citet doUnchained}[].
+单子主要通过 {deftech (key := "do-notation")}[{keywordOf Lean.Parser.Term.do}`do` 记法]使用；这是一种以命令式风格编程的嵌入式语言。
+它为依次执行带效果的操作、提前返回、局部可变变量、循环和异常处理提供了熟悉的语法。
+所有这些功能都会翻译为 {lean}`Monad` 类型类的操作，其中少数功能还需要 {lean}`ForIn` 等类型类的额外实例，以规定如何遍历容器。
+有关 {keywordOf Lean.Parser.Term.do}`do` 记法设计的更多细节，请参阅 {citet doUnchained}[]。
 
-A {keywordOf Lean.Parser.Term.do}`do` term consists of the keyword {keywordOf Lean.Parser.Term.do}`do` followed by a sequence of {deftech}_{keywordOf Lean.Parser.Term.do}`do` elements_.
+{keywordOf Lean.Parser.Term.do}`do` 项由关键字 {keywordOf Lean.Parser.Term.do}`do` 后接一系列 {deftech (key := "do elements")}_{keywordOf Lean.Parser.Term.do}`do` 元素_组成。
 
-:::syntax term (title := "`do`-Notation")
+:::syntax term (title := "`do` 记法")
 ```grammar
 do $stmt*
 ```
-The elements in a {keywordOf Lean.Parser.Term.do}`do` may be separated by semicolons; otherwise, each should be on its own line and they should have equal indentation.
+{keywordOf Lean.Parser.Term.do}`do` 中的元素可以用分号分隔；否则，每个元素应各占一行，并且缩进量相同。
 :::
 
 ```lean -show
@@ -225,24 +242,27 @@ section
 variable {m : Type → Type} [Monad m] {α β γ: Type} {e1 : m Unit} {e : β} {es : m α}
 ```
 
-## Sequential Computations
+## 顺序计算
+%%%
+tag := "The-Lean-Language-Reference--Functors___-Monads-and--do--Notation--Syntax--do--Notation--Sequential-Computations"
+%%%
 
-One form of {tech}[{keywordOf Lean.Parser.Term.do}`do`-element] is a term.
+{tech (key := "do-element")}[{keywordOf Lean.Parser.Term.do}`do` 元素]的一种形式是项。
 
-:::syntax Lean.Parser.Term.doSeqItem (title := "Terms in `do`-Notation")
+:::syntax Lean.Parser.Term.doSeqItem (title := "`do` 记法中的项")
 ```grammar
 $e:term
 ```
 :::
 
 
-A term followed by a sequence of elements is translated to a use of {name}`bind`; in particular, {lean}`do e1; es` is translated to {lean}`e1 >>= fun () => do es`.
+一个项后接一系列元素时，会被翻译为对 {name}`bind` 的使用；具体而言，{lean}`do e1; es` 会被翻译为 {lean}`e1 >>= fun () => do es`。
 
 
 :::table +header
 *
-  * {keywordOf Lean.Parser.Term.do}`do` Element
-  * Desugaring
+  * {keywordOf Lean.Parser.Term.do}`do` 元素
+  * 去糖
 *
   * ```leanTerm
     do
@@ -260,42 +280,42 @@ def ex1b := e1 >>= fun () => do es
 example : @ex1a = @ex1b := by rfl
 ```
 
-The result of the term's computation may also be named, allowing it to be used in subsequent steps.
-This is done using {keywordOf Lean.Parser.Term.doLet}`let`.
+也可以为该项的计算结果命名，以便在后续步骤中使用。
+这通过 {keywordOf Lean.Parser.Term.doLet}`let` 完成。
 
 ```lean -show
 section
 variable {e1 : m β} {e1? : m (Option β)} {fallback : m α} {e2 : m γ} {f : β → γ → m Unit} {g : γ → α} {h : β → m γ}
 ```
 
-:::syntax Lean.Parser.Term.doSeqItem (title := "Data Dependence in `do`-Notation")
-There are two forms of monadic {keywordOf Lean.Parser.Term.doLet}`let`-binding in a {keywordOf Lean.Parser.Term.do}`do` block.
-The first binds an identifier to the result, with an optional type annotation:
+:::syntax Lean.Parser.Term.doSeqItem (title := "`do` 记法中的数据依赖")
+{keywordOf Lean.Parser.Term.do}`do` 块中的单子 {keywordOf Lean.Parser.Term.doLet}`let` 绑定有两种形式。
+第一种将一个标识符绑定到结果，并可附带类型标注：
 ```grammar
 let $x:ident$[:$e]? ← $e:term
 ```
-The second binds a pattern to the result.
-The fallback clause, beginning with `|`, specifies the behavior when the pattern does not match the result.
+第二种将一个模式绑定到结果。
+以 `|` 开头的后备子句规定了模式与结果不匹配时的行为。
 ```grammar
 let $x:term ← $e:term
   $[| $e]?
 ```
 :::
-This syntax is also translated to a use of {name}`bind`.
-{lean}`do let x ← e1; es` is translated to {lean}`e1 >>= fun x => do es`, and fallback clauses are translated to default pattern matches.
-{keywordOf Lean.Parser.Term.doLet}`let` may also be used with the standard definition syntax `:=` instead of `←`.
-This indicates a pure, rather than monadic, definition:
-:::syntax Lean.Parser.Term.doSeqItem (title := "Local Definitions in `do`-Notation")
+这种语法也会被翻译为对 {name}`bind` 的使用。
+{lean}`do let x ← e1; es` 会被翻译为 {lean}`e1 >>= fun x => do es`，而后备子句会被翻译为默认模式匹配。
+{keywordOf Lean.Parser.Term.doLet}`let` 也可以使用标准定义语法 `:=`，而非 `←`。
+这表示纯定义，而非单子定义：
+:::syntax Lean.Parser.Term.doSeqItem (title := "`do` 记法中的局部定义")
 ```grammar
 let $v := $e:term
 ```
 :::
-{lean}`do let x := e; es` is translated to {lean}`let x := e; do es`.
+{lean}`do let x := e; es` 会被翻译为 {lean}`let x := e; do es`。
 
 :::table +header
 *
-  * {keywordOf Lean.Parser.Term.do}`do` Element
-  * Desugaring
+  * {keywordOf Lean.Parser.Term.do}`do` 元素
+  * 去糖
 *
   * ```leanTerm
     do
@@ -332,7 +352,7 @@ let $v := $e:term
 :::
 
 ```lean -show -keep
--- Test desugarings
+-- 测试去糖结果
 def ex1a := do
     let x ← e1
     es
@@ -364,16 +384,16 @@ def ex3b :=
     do es
 example : @ex3a = @ex3b := by rfl
 ```
-Within a {keywordOf Lean.Parser.Term.do}`do` block, `←` may be used as a prefix operator.
-The expression to which it is applied is replaced with a fresh variable, which is bound using {name}`bind` just before the current step.
-This allows monadic effects to be used in positions that otherwise might expect a pure value, while still maintaining the distinction between _describing_ an effectful computation and actually _executing_ its effects.
-Multiple occurrences of `←` are processed from left to right, inside to outside.
+在 {keywordOf Lean.Parser.Term.do}`do` 块中，`←` 可以用作前缀运算符。
+它所作用的表达式会被一个新变量替换，并在当前步骤之前用 {name}`bind` 绑定该变量。
+这样就能在原本可能需要纯值的位置使用单子效果，同时仍然区分对带效果计算的_描述_与对其效果的实际_执行_。
+多个 `←` 按从左到右、从内到外的顺序处理。
 
-::::figure "Example Nested Action Desugarings"
+::::figure "嵌套动作去糖示例"
 :::table +header
 *
-  * Example {keywordOf Lean.Parser.Term.do}`do` Element
-  * Desugaring
+  * {keywordOf Lean.Parser.Term.do}`do` 元素示例
+  * 去糖
 *
   * ```leanTerm
     do
@@ -404,7 +424,7 @@ Multiple occurrences of `←` are processed from left to right, inside to outsid
 ::::
 
 ```lean -show -keep
--- Test desugarings
+-- 测试去糖结果
 def ex1a := do
   f (← e1) (← e2)
   es
@@ -425,19 +445,19 @@ def ex2b := do
 example : @ex2a = @ex2b := by rfl
 ```
 
-In addition to convenient support for sequential computations with data dependencies, {keywordOf Lean.Parser.Term.do}`do`-notation also supports the local addition of a variety of effects, including early return, local mutable state, and loops with early termination.
-These effects are implemented via transformations of the entire {keywordOf Lean.Parser.Term.do}`do` block in a manner akin to {tech}[monad transformers], rather than via a local desugaring.
+除了便利地支持具有数据依赖的顺序计算外，{keywordOf Lean.Parser.Term.do}`do` 记法还支持在局部加入多种效果，包括提前返回、局部可变状态以及可提前终止的循环。
+这些效果通过变换整个 {keywordOf Lean.Parser.Term.do}`do` 块来实现，其方式类似于{tech (key := "monad transformers")}[单子变换器]，而不是通过局部去糖实现。
 
-## Early Return
+## 提前返回
 %%%
 tag := "early-return"
 %%%
 
-Early return terminates a computation immediately with a given value.
-The value is returned from the closest containing {keywordOf Lean.Parser.Term.do}`do` block; however, this may not be the closest `do` keyword.
-The rules for determining the extent of a {keywordOf Lean.Parser.Term.do}`do` block are described {ref "closest-do-block"}[in their own section].
+提前返回会立即以给定值终止计算。
+该值从包含它的最近 {keywordOf Lean.Parser.Term.do}`do` 块返回；但这个块未必由最近的 `do` 关键字引入。
+确定 {keywordOf Lean.Parser.Term.do}`do` 块范围的规则在{ref "closest-do-block"}[专门的一节]中介绍。
 
-:::syntax Lean.Parser.Term.doSeqItem (title := "Early Return")
+:::syntax Lean.Parser.Term.doSeqItem (title := "提前返回")
 ```grammar
 return $e
 ```
@@ -447,23 +467,23 @@ return
 ```
 :::
 
-Not all monads include early return.
-Thus, when a {keywordOf Lean.Parser.Term.do}`do` block contains {keywordOf Lean.Parser.Term.doReturn}`return`, the code needs to be rewritten to simulate the effect.
-A program that uses early return to compute a value of type {lean}`α` in a monad {lean}`m` can be thought of as a program in the monad {lean}`ExceptT α m α`: early-returned values take the exception pathway, while ordinary returns do not.
-Then, an outer handler can return the value from either code paths.
-Internally, the {keywordOf Lean.Parser.Term.do}`do` elaborator performs a translation very much like this one.
+并非所有单子都包含提前返回。
+因此，当 {keywordOf Lean.Parser.Term.do}`do` 块包含 {keywordOf Lean.Parser.Term.doReturn}`return` 时，需要改写代码来模拟这一效果。
+在单子 {lean}`m` 中使用提前返回来计算 {lean}`α` 类型值的程序，可以视为单子 {lean}`ExceptT α m α` 中的程序：提前返回的值走异常路径，普通返回则不走。
+随后，外层处理器可以返回任一路径产生的值。
+在内部，{keywordOf Lean.Parser.Term.do}`do` 精译器执行的翻译与此非常相似。
 
-On its own, {keywordOf Lean.Parser.Term.doReturn}`return` is short for {keywordOf Lean.Parser.Term.doReturn}`return`​` `​{lean}`()`.
+单独使用时，{keywordOf Lean.Parser.Term.doReturn}`return` 是 {keywordOf Lean.Parser.Term.doReturn}`return`​` `​{lean}`()` 的简写。
 
-## Local Mutable State
+## 局部可变状态
 %%%
 tag := "let-mut"
 %%%
 
-Local mutable state is mutable state that cannot escape the {keywordOf Lean.Parser.Term.do}`do` block in which it is defined.
-The {keywordOf Lean.Parser.Term.doLet}`let mut` binder introduces a locally-mutable binding.
-:::syntax Lean.Parser.Term.doSeqItem (title := "Local Mutability")
-Mutable bindings may be initialized either with pure computations or with monadic computations:
+局部可变状态是无法逸出其定义所在 {keywordOf Lean.Parser.Term.do}`do` 块的可变状态。
+{keywordOf Lean.Parser.Term.doLet}`let mut` 绑定器引入局部可变绑定。
+:::syntax Lean.Parser.Term.doSeqItem (title := "局部可变性")
+可变绑定既可以用纯计算初始化，也可以用单子计算初始化：
 ```grammar
 let mut $x := $e
 ```
@@ -471,7 +491,7 @@ let mut $x := $e
 let mut $x ← $e
 ```
 
-Similarly, they can be mutated either with pure values or the results of monad computations:
+类似地，它们既可以用纯值更新，也可以用单子计算的结果更新：
 ```grammar (of := Lean.Parser.Term.doReassign)
 $x:ident$[: $_]?  := $e:term
 ```
@@ -487,21 +507,21 @@ $x:term ← $e:term
 ```
 :::
 
-These locally-mutable bindings are less powerful than a {tech}[state monad] because they are not mutable outside their lexical scope; this also makes them easier to reason about.
-When {keywordOf Lean.Parser.Term.do}`do` blocks contain mutable bindings, the {keywordOf Lean.Parser.Term.do}`do` elaborator transforms the expression similarly to the way that {lean}`StateT` would, constructing a new monad and initializing it with the correct values.
+这些局部可变绑定不如{tech (key := "state monad")}[状态单子]强大，因为它们在词法作用域之外不可变；这也使其更易于推理。
+当 {keywordOf Lean.Parser.Term.do}`do` 块包含可变绑定时，{keywordOf Lean.Parser.Term.do}`do` 精译器会以类似 {lean}`StateT` 的方式变换表达式：构造一个新单子，并用正确的值将其初始化。
 
-## Control Structures
+## 控制结构
 %%%
 tag := "do-control-structures"
 %%%
 
-There are {keywordOf Lean.Parser.Term.do}`do` elements that correspond to most of Lean's term-level control structures.
-When they occur as a step in a {keywordOf Lean.Parser.Term.do}`do` block, they are interpreted as {keywordOf Lean.Parser.Term.do}`do` elements rather than terms.
-Each branch of the control structures is a sequence of {keywordOf Lean.Parser.Term.do}`do` elements, rather than a term, and some of them are more syntactically flexible than their corresponding terms.
+有一些 {keywordOf Lean.Parser.Term.do}`do` 元素对应于 Lean 的大多数项级控制结构。
+当它们作为 {keywordOf Lean.Parser.Term.do}`do` 块中的一个步骤出现时，会被解释为 {keywordOf Lean.Parser.Term.do}`do` 元素而不是项。
+控制结构的每个分支都是一系列 {keywordOf Lean.Parser.Term.do}`do` 元素，而不是一个项；其中一些在语法上比对应的项更灵活。
 
-:::syntax Lean.Parser.Term.doSeqItem (title := "Conditionals")
-In a {keywordOf Lean.Parser.Term.do}`do` block, {keywordOf Lean.Parser.Term.doIf}`if` statements may omit their {keywordOf Lean.Parser.Term.doIf}`else` branch.
-Omitting an {keywordOf Lean.Parser.Term.doIf}`else` branch is equivalent to using {name}`pure`{lean}` ()` as the contents of the branch.
+:::syntax Lean.Parser.Term.doSeqItem (title := "条件语句")
+在 {keywordOf Lean.Parser.Term.do}`do` 块中，{keywordOf Lean.Parser.Term.doIf}`if` 语句可以省略 {keywordOf Lean.Parser.Term.doIf}`else` 分支。
+省略 {keywordOf Lean.Parser.Term.doIf}`else` 分支等价于以 {name}`pure`{lean}` ()` 作为该分支的内容。
 ```grammar
 if $[$h :]? $e then
   $e*
@@ -510,10 +530,10 @@ $[else
 ```
 :::
 
-Syntactically, the {keywordOf Lean.Parser.Term.doIf}`then` branch cannot be omitted.
-For these cases, {keywordOf Lean.Parser.Term.doUnless}`unless` only executes its body when the condition is false.
-The {keywordOf Lean.Parser.Term.do}`do` in {keywordOf Lean.Parser.Term.doUnless}`unless` is part of its syntax and does not induce a nested {keywordOf Lean.Parser.Term.do}`do` block.
-:::syntax Lean.Parser.Term.doSeqItem (title := "Reverse Conditionals")
+从语法上说，{keywordOf Lean.Parser.Term.doIf}`then` 分支不能省略。
+对于这类情况，{keywordOf Lean.Parser.Term.doUnless}`unless` 仅在条件为假时执行其主体。
+{keywordOf Lean.Parser.Term.doUnless}`unless` 中的 {keywordOf Lean.Parser.Term.do}`do` 是其语法的一部分，不会引入嵌套的 {keywordOf Lean.Parser.Term.do}`do` 块。
+:::syntax Lean.Parser.Term.doSeqItem (title := "反向条件语句")
 ```grammar
 unless $e do
   $e*
@@ -521,9 +541,9 @@ unless $e do
 :::
 
 
-When {keywordOf Lean.Parser.Term.doMatch}`match` is used in a {keywordOf Lean.Parser.Term.do}`do` block, each branch is considered to be part of the same block.
-Otherwise, it is equivalent to the {keywordOf Lean.Parser.Term.match}`match` term.
-:::syntax Lean.Parser.Term.doSeqItem (title := "Pattern Matching")
+在 {keywordOf Lean.Parser.Term.do}`do` 块中使用 {keywordOf Lean.Parser.Term.doMatch}`match` 时，每个分支都被视为同一块的一部分。
+除此之外，它等价于 {keywordOf Lean.Parser.Term.match}`match` 项。
+:::syntax Lean.Parser.Term.doSeqItem (title := "模式匹配")
 ```grammar
 match $[$[$h :]? $e],* with
   $[| $t,* => $e*]*
@@ -531,28 +551,28 @@ match $[$[$h :]? $e],* with
 :::
 
 
-## Iteration
+## 迭代
 %%%
 tag := "monad-iteration-syntax"
 %%%
 
-Within a {keywordOf Lean.Parser.Term.do}`do` block, {keywordOf Lean.Parser.Term.doFor}`for`​`…`​{keywordOf Lean.Parser.Term.doFor}`in` loops allow iteration over a data structure.
-The body of the loop is part of the containing {keywordOf Lean.Parser.Term.do}`do` block, so local effects such as early return and mutable variables may be used.
+在 {keywordOf Lean.Parser.Term.do}`do` 块中，{keywordOf Lean.Parser.Term.doFor}`for`​`…`​{keywordOf Lean.Parser.Term.doFor}`in` 循环可用于遍历数据结构。
+循环体是包含它的 {keywordOf Lean.Parser.Term.do}`do` 块的一部分，因此可以使用提前返回和可变变量等局部效果。
 
-:::syntax Lean.Parser.Term.doSeqItem (title := "Iteration over Collections")
+:::syntax Lean.Parser.Term.doSeqItem (title := "遍历集合")
 ```grammar
 for $[$[$h :]? $x in $y],* do
   $e*
 ```
 :::
 
-A {keywordOf Lean.Parser.Term.doFor}`for`​`…`​{keywordOf Lean.Parser.Term.doFor}`in` loop requires at least one clause that specifies the iteration to be performed, which consists of an optional membership proof name followed by a colon (`:`), a pattern to bind, the keyword {keywordOf Lean.Parser.Term.doFor}`in`, and a collection term.
-The pattern, which may just be an {tech}[identifier], must match any element of the collection; patterns in this position cannot be used as implicit filters.
-Further clauses may be provided by separating them with commas.
-Each collection is iterated over at the same time, and iteration stops when any of the collections runs out of elements.
+{keywordOf Lean.Parser.Term.doFor}`for`​`…`​{keywordOf Lean.Parser.Term.doFor}`in` 循环至少需要一个规定如何迭代的子句；该子句由可选的成员关系证明名称及其后的冒号（`:`）、要绑定的模式、关键字 {keywordOf Lean.Parser.Term.doFor}`in` 和一个集合项组成。
+该模式可以只是一个{tech (key := "identifier")}[标识符]，但必须能匹配集合中的任意元素；此处的模式不能用作隐式过滤器。
+还可以用逗号分隔并提供更多子句。
+各集合会同时迭代；任一集合耗尽元素时，迭代即停止。
 
-:::example "Iteration Over Multiple Collections"
-When iterating over multiple collections, iteration stops when any of the collections runs out of elements.
+:::example "同时遍历多个集合"
+同时遍历多个集合时，任一集合耗尽元素，迭代即停止。
 ```lean (name := earlyStop)
 #eval Id.run do
   let mut v := #[]
@@ -566,9 +586,9 @@ When iterating over multiple collections, iteration stops when any of the collec
 :::
 
 ::::keepEnv
-:::example "Iteration over Array Indices with {keywordOf Lean.Parser.Term.doFor}`for`"
+:::example "使用 {keywordOf Lean.Parser.Term.doFor}`for` 遍历数组索引"
 
-When iterating over the valid indices for an array with {keywordOf Lean.Parser.Term.doFor}`for`, naming the membership proof allows the tactic that searches for proofs that array indices are in bounds to succeed.
+使用 {keywordOf Lean.Parser.Term.doFor}`for` 遍历数组的有效索引时，为成员关系证明命名，可以使搜索数组索引未越界证明的策略成功。
 ```lean -keep
 def satisfyingIndices
     (p : α → Prop) [DecidablePred p]
@@ -579,10 +599,10 @@ def satisfyingIndices
   return out
 ```
 
-Omitting the hypothesis name causes the array lookup to fail, because no proof is available in the context that the iteration variable is within the specified range.
+省略假设名称会导致数组查找失败，因为上下文中没有证明迭代变量处于指定范围内的证据。
 
 ```lean -keep -show
--- test it
+-- 测试
 /--
 error: failed to prove index is valid, possible solutions:
   - Use `have`-expressions to prove the index is valid
@@ -623,13 +643,13 @@ def satisfyingIndices (p : α → Prop) [DecidablePred p] (xs : Array α) : Arra
 :::::keepEnv
 ::::leanSection
 
-Iteration with `for`-loops is translated into uses of `ForIn.forIn`, which is an analogue of `ForM.forM` with added support for local mutations and early termination.
-{name}`ForIn.forIn` receives an initial value for the local mutable state and a monadic action as parameters, along with the collection being iterated over.
-The monadic action passed to {name}`ForIn.forIn` takes a current state as a parameter and, after carrying out actions in the monad {lean}`m`, returns either {name}`ForInStep.yield` to indicate that iteration should continue with an updated set of local mutable values, or {name}`ForInStep.done` to indicate that {keywordOf Lean.Parser.Term.doBreak}`break` or {keywordOf Lean.Parser.Term.doReturn}`return` was executed.
-When iteration is complete, {name}`ForIn.forIn` returns the final values of the local mutable values.
+使用 `for` 循环的迭代会被翻译为对 `ForIn.forIn` 的使用；它类似于 `ForM.forM`，但增加了对局部修改和提前终止的支持。
+{name}`ForIn.forIn` 接收局部可变状态的初始值、一个单子动作以及要遍历的集合作为参数。
+传给 {name}`ForIn.forIn` 的单子动作以当前状态为参数，并在单子 {lean}`m` 中执行动作后返回 {name}`ForInStep.yield` 或 {name}`ForInStep.done`：前者表示应使用更新后的一组局部可变值继续迭代，后者表示执行了 {keywordOf Lean.Parser.Term.doBreak}`break` 或 {keywordOf Lean.Parser.Term.doReturn}`return`。
+迭代完成时，{name}`ForIn.forIn` 返回各局部可变值的最终值。
 
-The specific desugaring of a loop depends on how state and early termination are used in its body.
-Here are some examples:
+循环的具体去糖方式取决于其主体如何使用状态和提前终止。
+下面是一些示例：
 ```lean -show
 axiom «<B>» : Type u
 axiom «<b>» : β
@@ -641,8 +661,8 @@ macro "…" : term => `((«<b>» : β))
 
 :::table +header
 *
-  * {keywordOf Lean.Parser.Term.do}`do` Element
-  * Desugaring
+  * {keywordOf Lean.Parser.Term.do}`do` 元素
+  * 去糖
 *
   * ```leanTerm (type := "m α")
     do
@@ -714,12 +734,12 @@ macro "…" : term => `((«<b>» : β))
 :::::
 
 
-The body of a {keywordOf Lean.doElemWhile_Do_}`while` loop is repeated while the condition remains true.
-It is possible to write infinite loops using them in functions that are not marked {keywordOf Lean.Parser.Command.declaration}`partial`.
-This is because the {keywordOf Lean.Parser.Command.declaration}`partial` modifier only applies to non-termination or infinite regress induced by the function being defined, and not by those that it calls.
-The translation of {keywordOf Lean.doElemWhile_Do_}`while` loops relies on a separate helper.
+只要条件保持为真，{keywordOf Lean.doElemWhile_Do_}`while` 循环的主体就会重复执行。
+可以在未标记为 {keywordOf Lean.Parser.Command.declaration}`partial` 的函数中使用它们编写无限循环。
+这是因为 {keywordOf Lean.Parser.Command.declaration}`partial` 修饰符只适用于被定义函数自身导致的不终止或无限递归，而不适用于它所调用的函数所导致的情况。
+{keywordOf Lean.doElemWhile_Do_}`while` 循环的翻译依赖一个单独的辅助函数。
 
-:::syntax Lean.Parser.Term.doSeqItem (title := "Conditional Loops")
+:::syntax Lean.Parser.Term.doSeqItem (title := "条件循环")
 ```grammar
 while $e do
   $e*
@@ -730,11 +750,11 @@ while $h : $e do
 ```
 :::
 
-The body of a {keywordOf Lean.doElemRepeat__Until_}`repeat`-{keywordOf Lean.doElemRepeat__Until_}`until` loop is always executed at least once.
-After each iteration, the condition is checked, and the loop is repeated when the condition is *false*.
-When the condition becomes true, iteration stops.
+{keywordOf Lean.doElemRepeat__Until_}`repeat`-{keywordOf Lean.doElemRepeat__Until_}`until` 循环的主体总会至少执行一次。
+每次迭代后都会检查条件；条件为_假_时继续循环。
+条件变为真时，迭代停止。
 
-:::syntax Lean.Parser.Term.doSeqItem (title := "Post-Tested Loops")
+:::syntax Lean.Parser.Term.doSeqItem (title := "后测试循环")
 ```grammar
 repeat
   $e*
@@ -743,20 +763,20 @@ until $_
 :::
 
 
-The body of a {keywordOf Lean.doElemRepeat_}`repeat` loop is repeated until a {keywordOf Lean.Parser.Term.doBreak}`break` statement is executed.
-Just like {keywordOf Lean.doElemWhile_Do_}`while` loops, these loops can be used in functions that are not marked {keywordOf Lean.Parser.Command.declaration}`partial`.
+{keywordOf Lean.doElemRepeat_}`repeat` 循环的主体会重复执行，直至执行 {keywordOf Lean.Parser.Term.doBreak}`break` 语句。
+与 {keywordOf Lean.doElemWhile_Do_}`while` 循环一样，这些循环也可用于未标记为 {keywordOf Lean.Parser.Command.declaration}`partial` 的函数。
 
-:::syntax Lean.Parser.Term.doSeqItem (title := "Unconditional Loops")
+:::syntax Lean.Parser.Term.doSeqItem (title := "无条件循环")
 ```grammar
 repeat
   $e*
 ```
 :::
 
-The {keywordOf Lean.Parser.Term.doContinue}`continue` statement skips the rest of the body of the closest enclosing {keywordOf Lean.doElemRepeat_}`repeat`, {keywordOf Lean.doElemWhile_Do_}`while`, or {keywordOf Lean.Parser.Term.doFor}`for` loop, moving on to the next iteration.
-The {keywordOf Lean.Parser.Term.doBreak}`break` statement terminates the closest enclosing {keywordOf Lean.doElemRepeat_}`repeat`, {keywordOf Lean.doElemWhile_Do_}`while`, or {keywordOf Lean.Parser.Term.doFor}`for` loop, stopping iteration.
+{keywordOf Lean.Parser.Term.doContinue}`continue` 语句会跳过最近外层 {keywordOf Lean.doElemRepeat_}`repeat`、{keywordOf Lean.doElemWhile_Do_}`while` 或 {keywordOf Lean.Parser.Term.doFor}`for` 循环主体的剩余部分，进入下一次迭代。
+{keywordOf Lean.Parser.Term.doBreak}`break` 语句会终止最近外层的 {keywordOf Lean.doElemRepeat_}`repeat`、{keywordOf Lean.doElemWhile_Do_}`while` 或 {keywordOf Lean.Parser.Term.doFor}`for` 循环，使迭代停止。
 
-:::syntax Lean.Parser.Term.doSeqItem (title := "Loop Control Statements")
+:::syntax Lean.Parser.Term.doSeqItem (title := "循环控制语句")
 ```grammar
 continue
 ```
@@ -765,11 +785,11 @@ break
 ```
 :::
 
-In addition to {keywordOf Lean.Parser.Term.doBreak}`break`, loops can always be terminated by effects in the current monad.
-Throwing an exception from a loop terminates the loop.
+除了 {keywordOf Lean.Parser.Term.doBreak}`break`，循环始终可以由当前单子中的效果终止。
+从循环中抛出异常会终止循环。
 
-:::example "Terminating Loops in the {lean}`Option` Monad"
-The {name}`failure` method from the {name}`Alternative` class can be used to terminate an otherwise-infinite loop in the {name}`Option` monad.
+:::example "在 {lean}`Option` 单子中终止循环"
+{name}`Alternative` 类的 {name}`failure` 方法可用于终止 {name}`Option` 单子中原本会无限运行的循环。
 
 ```lean (name := natBreak)
 #eval show Option Nat from do
@@ -784,34 +804,34 @@ none
 ```
 :::
 
-## Identifying `do` Blocks
+## 识别 `do` 块
 %%%
 tag := "closest-do-block"
 %%%
 
-Many features of {keywordOf Lean.Parser.Term.do}`do`-notation have an effect on the {deftech}[current {keywordOf Lean.Parser.Term.do}`do` block].
-In particular, early return aborts the current block, causing it to evaluate to the returned value, and mutable bindings can only be mutated in the block in which they are defined.
-Understanding these features requires a precise definition of what it means to be in the “same” block.
+{keywordOf Lean.Parser.Term.do}`do` 记法的许多功能都会影响{deftech (key := "current do block")}[当前 {keywordOf Lean.Parser.Term.do}`do` 块]。
+具体而言，提前返回会中止当前块，使其求值为返回值；而可变绑定只能在其定义所在的块中修改。
+要理解这些功能，需要精确定义何谓处于“同一”块中。
 
-Empirically, this can be checked using the Lean language server.
-When the cursor is on a {keywordOf Lean.Parser.Term.doReturn}`return` statement, the corresponding {keywordOf Lean.Parser.Term.do}`do` keyword is highlighted.
-Attempting to mutate a mutable binding outside of the same {keywordOf Lean.Parser.Term.do}`do` block results in an error message.
+在实际操作中，可以使用 Lean 语言服务器检查这一点。
+当光标位于 {keywordOf Lean.Parser.Term.doReturn}`return` 语句上时，对应的 {keywordOf Lean.Parser.Term.do}`do` 关键字会高亮显示。
+尝试在同一 {keywordOf Lean.Parser.Term.do}`do` 块之外修改可变绑定会产生错误消息。
 
-:::figure "Highlighting {keywordOf Lean.Parser.Term.do}`do`"
+:::figure "高亮显示 {keywordOf Lean.Parser.Term.do}`do`"
 
-![Highlighting do from return](/static/screenshots/do-return-hl-1.png)
+![从 return 高亮显示 do](/static/screenshots/do-return-hl-1.png)
 
-![Highlighting do from return with errors](/static/screenshots/do-return-hl-2.png)
+![出现错误时从 return 高亮显示 do](/static/screenshots/do-return-hl-2.png)
 :::
 
-The rules are as follows:
- * Each element immediately nested under the {keywordOf Lean.Parser.Term.do}`do` keyword that begins a block belongs to that block.
- * Each element immediately nested under the {keywordOf Lean.Parser.Term.do}`do` keyword that is an element in a containing {keywordOf Lean.Parser.Term.do}`do` block belongs to the outer block.
- * Elements in the branches of an {keywordOf Lean.Parser.Term.doIf}`if`, {keywordOf Lean.Parser.Term.doMatch}`match`, or {keywordOf Lean.Parser.Term.doUnless}`unless` element belong to the same {keywordOf Lean.Parser.Term.do}`do` block as the control structure that contains them. The {keywordOf Lean.Parser.Term.doUnless}`do` keyword that is part of the syntax of {keywordOf Lean.Parser.Term.doUnless}`unless` does not introduce a new {keywordOf Lean.Parser.Term.do}`do` block.
- * Elements in the body of {keywordOf Lean.doElemRepeat_}`repeat`, {keywordOf Lean.doElemWhile_Do_}`while`, and {keywordOf Lean.Parser.Term.doFor}`for` belong to the same {keywordOf Lean.Parser.Term.do}`do` block as the loop  that contains them. The {keywordOf Lean.Parser.Term.doFor}`do` keyword that is part of the syntax of {keywordOf Lean.doElemWhile_Do_}`while` and {keywordOf Lean.Parser.Term.doFor}`for` does not introduce a new {keywordOf Lean.Parser.Term.do}`do` block.
+规则如下：
+ * 直接嵌套在开启某个块的 {keywordOf Lean.Parser.Term.do}`do` 关键字下的每个元素都属于该块。
+ * 如果一个 {keywordOf Lean.Parser.Term.do}`do` 关键字本身是外层 {keywordOf Lean.Parser.Term.do}`do` 块中的元素，那么直接嵌套在该关键字下的每个元素都属于外层块。
+ * {keywordOf Lean.Parser.Term.doIf}`if`、{keywordOf Lean.Parser.Term.doMatch}`match` 或 {keywordOf Lean.Parser.Term.doUnless}`unless` 元素各分支中的元素，与包含它们的控制结构属于同一 {keywordOf Lean.Parser.Term.do}`do` 块。作为 {keywordOf Lean.Parser.Term.doUnless}`unless` 语法一部分的 {keywordOf Lean.Parser.Term.doUnless}`do` 关键字不会引入新的 {keywordOf Lean.Parser.Term.do}`do` 块。
+ * {keywordOf Lean.doElemRepeat_}`repeat`、{keywordOf Lean.doElemWhile_Do_}`while` 和 {keywordOf Lean.Parser.Term.doFor}`for` 主体中的元素，与包含它们的循环属于同一 {keywordOf Lean.Parser.Term.do}`do` 块。作为 {keywordOf Lean.doElemWhile_Do_}`while` 和 {keywordOf Lean.Parser.Term.doFor}`for` 语法一部分的 {keywordOf Lean.Parser.Term.doFor}`do` 关键字不会引入新的 {keywordOf Lean.Parser.Term.do}`do` 块。
 
 ```lean -show
--- Test nested `do` rules
+-- 测试嵌套的 `do` 规则
 
 /-- info: ((), 6) -/
 #check_msgs in
@@ -847,8 +867,8 @@ info: ((), 6)
 ```
 
 ::::keepEnv
-:::example "Nested `do` and Branches"
-The following example outputs {lean}`6` rather than {lean}`7`:
+:::example "嵌套的 `do` 与分支"
+以下示例输出 {lean}`6` 而不是 {lean}`7`：
 ```lean (name := nestedDo)
 def test : StateM Nat Unit := do
   set 5
@@ -864,8 +884,8 @@ def test : StateM Nat Unit := do
 ((), 6)
 ```
 
-This is because the {keywordOf Lean.Parser.Term.doReturn}`return` statement under the {keywordOf Lean.Parser.Term.doIf}`if` belongs to the same {keywordOf Lean.Parser.Term.do}`do` as its immediate parent, which itself belongs to the same {keywordOf Lean.Parser.Term.do}`do` as the {keywordOf Lean.Parser.Term.doIf}`if`.
-If {keywordOf Lean.Parser.Term.do}`do` blocks that occurred as elements in other {keywordOf Lean.Parser.Term.do}`do` blocks instead created new blocks, then the example would output {lean}`7`.
+这是因为 {keywordOf Lean.Parser.Term.doIf}`if` 下的 {keywordOf Lean.Parser.Term.doReturn}`return` 语句与其直接父级属于同一 {keywordOf Lean.Parser.Term.do}`do`，而该父级本身又与 {keywordOf Lean.Parser.Term.doIf}`if` 属于同一 {keywordOf Lean.Parser.Term.do}`do`。
+如果作为其他 {keywordOf Lean.Parser.Term.do}`do` 块中元素出现的 {keywordOf Lean.Parser.Term.do}`do` 块会创建新块，那么该示例将输出 {lean}`7`。
 :::
 ::::
 
@@ -874,7 +894,7 @@ end
 ```
 
 ```lean -show
--- tests for this section
+-- 本节测试
 set_option pp.all true
 
 /--
@@ -922,19 +942,22 @@ end
 
 ```
 
-## Type Classes for Iteration
+## 用于迭代的类型类
+%%%
+tag := "The-Lean-Language-Reference--Functors___-Monads-and--do--Notation--Syntax--do--Notation--Type-Classes-for-Iteration"
+%%%
 
-To be used with {keywordOf Lean.Parser.Term.doFor}`for` loops without membership proofs, collections must implement the {name}`ForIn` type class.
-Implementing {lean}`ForIn'` additionally allows the use of {keywordOf Lean.Parser.Term.doFor}`for` loops with membership proofs.
+若要在没有成员关系证明的 {keywordOf Lean.Parser.Term.doFor}`for` 循环中使用，集合必须实现 {name}`ForIn` 类型类。
+额外实现 {lean}`ForIn'` 后，还可以使用带成员关系证明的 {keywordOf Lean.Parser.Term.doFor}`for` 循环。
 
-{docstring ForIn}
+{zhdocstring ForIn Manual.ZhDocString.Monads.Core.ForIn}
 
-{docstring ForIn'}
+{zhdocstring ForIn' Manual.ZhDocString.Monads.Core.ForIn'}
 
-{docstring ForInStep}
+{zhdocstring ForInStep Manual.ZhDocString.Monads.Core.ForInStep}
 
-{docstring ForInStep.value}
+{zhdocstring ForInStep.value Manual.ZhDocString.Monads.Core.ForInStep.value}
 
-{docstring ForM}
+{zhdocstring ForM Manual.ZhDocString.Monads.Core.ForM}
 
-{docstring ForM.forIn}
+{zhdocstring ForM.forIn Manual.ZhDocString.Monads.Core.ForM.forIn}

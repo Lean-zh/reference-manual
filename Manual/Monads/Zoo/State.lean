@@ -7,6 +7,7 @@ Author: David Thrane Christiansen
 import VersoManual
 
 import Manual.Meta
+import Manual.ZhDocString.Monads.State
 
 import Lean.Parser.Command
 
@@ -20,75 +21,84 @@ set_option pp.rawOnError true
 
 set_option linter.unusedVariables false
 
-#doc (Manual) "State" =>
+#doc (Manual) "状态" =>
 %%%
 tag := "state-monads"
 %%%
 
-{tech}[State monads] provide access to a mutable value.
-The underlying implementation may use a tuple to simulate mutability, or it may use something like {name}`ST.Ref` to ensure mutation.
-Even those implementations that use a tuple may in fact use mutation at run-time due to Lean's use of mutation when there are unique references to values, but this requires a programming style that prefers {name}`modify` and {name}`modifyGet` over {name}`get` and {name}`set`.
+{tech (key := "State monads")}[状态单子]提供对可变值的访问。
+底层实现可以使用元组模拟可变性，也可以使用 {name}`ST.Ref` 之类的机制确保发生修改。
+即便是使用元组的实现，由于 Lean 会在值具有唯一引用时采用修改，其运行时实际上也可能使用修改；但这要求编程风格优先使用 {name}`modify` 和 {name}`modifyGet`，而非 {name}`get` 和 {name}`set`。
 
-# General State API
+# 通用状态接口
+%%%
+tag := "The-Lean-Language-Reference--Functors___-Monads-and--do--Notation--Varieties-of-Monads--State--General-State-API"
+%%%
 
-{docstring MonadState}
+{zhdocstring MonadState ZhDoc.Monads.State.MonadState}
 
-{docstring get}
+{zhdocstring get ZhDoc.Monads.State.get}
 
-{docstring modify}
+{zhdocstring modify ZhDoc.Monads.State.modify}
 
-{docstring modifyGet}
+{zhdocstring modifyGet ZhDoc.Monads.State.modifyGet}
 
-{docstring getModify}
+{zhdocstring getModify ZhDoc.Monads.State.getModify}
 
-{docstring MonadStateOf}
+{zhdocstring MonadStateOf ZhDoc.Monads.State.MonadStateOf}
 
-{docstring getThe}
+{zhdocstring getThe ZhDoc.Monads.State.getThe}
 
-{docstring modifyThe}
+{zhdocstring modifyThe ZhDoc.Monads.State.modifyThe}
 
-{docstring modifyGetThe}
+{zhdocstring modifyGetThe ZhDoc.Monads.State.modifyGetThe}
 
-# Tuple-Based State Monads
+# 基于元组的状态单子
+%%%
+tag := "The-Lean-Language-Reference--Functors___-Monads-and--do--Notation--Varieties-of-Monads--State--Tuple-Based-State-Monads"
+%%%
 
 ```lean -show
 variable {α σ : Type u}
 ```
 
-The tuple-based state monads represent a computation with states that have type {lean}`σ` yielding values of type {lean}`α` as functions that take a starting state and yield a value paired with a final state, e.g. {lean}`σ → α × σ`.
-The {name}`Monad` operations thread the state correctly through the computation.
+基于元组的状态单子把状态类型为 {lean}`σ`、产生 {lean}`α` 类型值的计算表示为函数：它接受初始状态，并产生一个值与最终状态组成的二元组，例如 {lean}`σ → α × σ`。
+{name}`Monad` 操作会在计算中正确地传递状态。
 
-{docstring StateM}
+{zhdocstring StateM ZhDoc.Monads.State.StateM}
 
-{docstring StateT}
+{zhdocstring StateT ZhDoc.Monads.State.StateT}
 
-{docstring StateT.run}
+{zhdocstring StateT.run ZhDoc.Monads.State.StateT.run}
 
-{docstring StateT.get}
+{zhdocstring StateT.get ZhDoc.Monads.State.StateT.get}
 
-{docstring StateT.set}
+{zhdocstring StateT.set ZhDoc.Monads.State.StateT.set}
 
-{docstring StateT.orElse}
+{zhdocstring StateT.orElse ZhDoc.Monads.State.StateT.orElse}
 
-{docstring StateT.failure}
+{zhdocstring StateT.failure ZhDoc.Monads.State.StateT.failure}
 
-{docstring StateT.run'}
+{zhdocstring StateT.run' ZhDoc.Monads.State.StateT.run'}
 
-{docstring StateT.bind}
+{zhdocstring StateT.bind ZhDoc.Monads.State.StateT.bind}
 
-{docstring StateT.modifyGet}
+{zhdocstring StateT.modifyGet ZhDoc.Monads.State.StateT.modifyGet}
 
-{docstring StateT.lift}
+{zhdocstring StateT.lift ZhDoc.Monads.State.StateT.lift}
 
-{docstring StateT.map}
+{zhdocstring StateT.map ZhDoc.Monads.State.StateT.map}
 
-{docstring StateT.pure}
+{zhdocstring StateT.pure ZhDoc.Monads.State.StateT.pure}
 
-# State Monads in Continuation Passing Style
+# 延续传递风格的状态单子
+%%%
+tag := "The-Lean-Language-Reference--Functors___-Monads-and--do--Notation--Varieties-of-Monads--State--State-Monads-in-Continuation-Passing-Style"
+%%%
 
-Continuation-passing-style state monads represent stateful computations as functions that, for any type whatsoever, take an initial state and a continuation (modeled as a function) that accepts a value and an updated state.
-An example of such a type is {lean}`(δ : Type u) → σ → (α → σ → δ) → δ`, though {lean}`StateCpsT` is a transformer that can be applied to any monad.
-State monads in continuation passing style have different performance characteristics than tuple-based state monads; for some applications, it may be worth benchmarking them.
+延续传递风格的状态单子把有状态计算表示为函数：对于任意类型，该函数接受初始状态和一个延续（建模为函数），而延续接受一个值和更新后的状态。
+这种类型的一个例子是 {lean}`(δ : Type u) → σ → (α → σ → δ) → δ`，不过 {lean}`StateCpsT` 是可应用于任意单子的变换器。
+延续传递风格的状态单子与基于元组的状态单子具有不同的性能特征；对某些应用而言，值得对它们进行基准测试。
 
 
 ```lean -show
@@ -96,56 +106,59 @@ State monads in continuation passing style have different performance characteri
 #check_msgs in
 #reduce (types := true) StateCpsT σ Id α
 ```
-{docstring StateCpsT}
+{zhdocstring StateCpsT ZhDoc.Monads.State.StateCpsT}
 
-{docstring StateCpsT.lift}
+{zhdocstring StateCpsT.lift ZhDoc.Monads.State.StateCpsT.lift}
 
-{docstring StateCpsT.runK}
+{zhdocstring StateCpsT.runK ZhDoc.Monads.State.StateCpsT.runK}
 
-{docstring StateCpsT.run'}
+{zhdocstring StateCpsT.run' ZhDoc.Monads.State.StateCpsT.run'}
 
-{docstring StateCpsT.run}
+{zhdocstring StateCpsT.run ZhDoc.Monads.State.StateCpsT.run}
 
-# State Monads from Mutable References
+# 基于可变引用的状态单子
+%%%
+tag := "The-Lean-Language-Reference--Functors___-Monads-and--do--Notation--Varieties-of-Monads--State--State-Monads-from-Mutable-References"
+%%%
 
 ```lean -show
 variable {m : Type → Type} {σ ω : Type} [STWorld σ m]
 ```
 
-The monad {lean}`StateRefT σ m` is a specialized state monad transformer that can be used when {lean}`m` is a monad to which {name}`ST` computations can be lifted.
-It implements the operations of {name}`MonadState` using an {name}`ST.Ref`, rather than pure functions.
-This ensures that mutation is actually used at run time.
+单子 {lean}`StateRefT σ m` 是专门的状态单子变换器；当 {lean}`m` 是可以提升 {name}`ST` 计算的单子时，便可使用它。
+它使用 {name}`ST.Ref` 而非纯函数来实现 {name}`MonadState` 的操作。
+这确保了运行时确实会使用修改。
 
-{name}`ST` and {name}`EST` require a phantom type parameter that's used together with {name}`runST`'s polymorphic function argument to encapsulate mutability.
-Rather than require this as a parameter to the transformer, an auxiliary type class {name}`STWorld` is used to propagate it directly from {lean}`m`.
+{name}`ST` 和 {name}`EST` 需要一个幽灵类型参数，它与 {name}`runST` 的多态函数实参共同用于封装可变性。
+与其要求把它作为变换器的参数，不如使用辅助类型类 {name}`STWorld`，直接从 {lean}`m` 传播该参数。
 
-The transformer itself is defined as a {ref "syntax-ext"}[syntax extension] and an {ref "elaborators"}[elaborator], rather than an ordinary function.
-This is because {name}`STWorld` has no methods: it exists only to propagate information from the inner monad to the transformed monad.
-Nonetheless, its instances are terms; keeping them around could lead to unnecessarily large types.
+变换器本身被定义为{ref "syntax-ext"}[语法扩展]和{ref "elaborators"}[精译器]，而非普通函数。
+这是因为 {name}`STWorld` 没有方法：它的存在只是为了把信息从内层单子传播到变换后的单子。
+尽管如此，它的实例仍是项；保留这些实例可能导致类型不必要地增大。
 
-{docstring STWorld}
+{zhdocstring STWorld ZhDoc.Monads.State.STWorld}
 
 :::syntax term (title := "`StateRefT`")
-The syntax for {lean}`StateRefT σ m` accepts two arguments:
+{lean}`StateRefT σ m` 的语法接受两个实参：
 
 ```grammar
 StateRefT $_ $_
 ```
 
-Its elaborator synthesizes an instance of {lean}`STWorld ω m` to ensure that {lean}`m` supports mutable references.
-Having discovered the value of {lean}`ω`, it then produces the term {lean}`StateRefT' ω σ m`, discarding the synthesized instance.
+它的精译器会合成 {lean}`STWorld ω m` 的实例，以确保 {lean}`m` 支持可变引用。
+发现 {lean}`ω` 的值后，它会生成项 {lean}`StateRefT' ω σ m`，并丢弃所合成的实例。
 :::
 
-{docstring StateRefT'}
+{zhdocstring StateRefT' ZhDoc.Monads.State.StateRefT'}
 
-{docstring StateRefT'.get}
+{zhdocstring StateRefT'.get ZhDoc.Monads.State.StateRefT'.get}
 
-{docstring StateRefT'.set}
+{zhdocstring StateRefT'.set ZhDoc.Monads.State.StateRefT'.set}
 
-{docstring StateRefT'.modifyGet}
+{zhdocstring StateRefT'.modifyGet ZhDoc.Monads.State.StateRefT'.modifyGet}
 
-{docstring StateRefT'.run}
+{zhdocstring StateRefT'.run ZhDoc.Monads.State.StateRefT'.run}
 
-{docstring StateRefT'.run'}
+{zhdocstring StateRefT'.run' ZhDoc.Monads.State.StateRefT'.run'}
 
-{docstring StateRefT'.lift}
+{zhdocstring StateRefT'.lift ZhDoc.Monads.State.StateRefT'.lift}
