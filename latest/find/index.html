@@ -1,4 +1,4 @@
-<!-- Generated from commit 2c9bd87da4d400a807ddc61ada28c9abf4c22ab0 at 2026-08-15T03:26:51Z -->
+<!-- Generated from commit ad2a92ec07a68616a11f8609ba791ecea4211e44 at 2026-08-15T04:21:44Z -->
 <!DOCTYPE html><html>
   <head>
     <script>
@@ -2232,169 +2232,6 @@ a.technical-term:hover {
 .namedocs.warn > .label { border-color: #cc3333; color: #a02020; }
 .namedocs.warn > .text { border-top: none; }
 </style><script>
-      function openDetailsForHashTarget() {
-  // Get the current hash from the URL
-  const hash = window.location.hash;
-
-  // Exit early if no hash is present
-  if (!hash) return;
-
-  // Remove the # to get the actual ID
-  const targetId = hash.substring(1);
-
-  // Find the target element
-  const targetElement = document.getElementById(targetId);
-
-  // Exit if target element doesn't exist
-  if (!targetElement) return;
-
-  // Find the closest details element that contains the target
-  const detailsElement = targetElement.closest('details');
-
-  // If the target is inside a details element, open it
-  if (detailsElement) {
-    detailsElement.open = true;
-  }
-}
-
-function liveLinkUrlOfCodez(codez) {
-  if (window.metadata !== undefined && window.metadata.stable) {
-    return "https://live.lean-lang.org/#project=mathlib-stable&codez=" + codez;
-  }
-  if (window.metadata !== undefined && window.metadata.latest) {
-    return "https://live.lean-lang.org/#codez=" + codez;
-  }
-  return undefined;
-}
-
-function maybeShowLiveLinks() {
-  if (liveLinkUrlOfCodez('') !== undefined) {
-    const style = document.createElement('style');
-    style.textContent = `.live-link { display: initial !important; }`;
-    document.head.appendChild(style);
-  }
-}
-
-function openLiveLink(codez) {
-  const url = liveLinkUrlOfCodez(codez);
-  if (url !== undefined) {
-    window.open(url, '_blank')
-  }
-  else {
-    // This case shouldn't be possible, because maybeShowLiveLinks returns undefined,
-    // then maybeShowLiveLinks wouldn't have ever shown the links in the first place.
-    // Just in case, throw up a dialog.
-    alert("Don't know which version of live to use. Please report this at https://github.com/leanprover/reference-manual/issues");
-  }
-}
-
-function pageInit() {
-  openDetailsForHashTarget();
-  maybeShowLiveLinks();
-}
-
-// Run the function when the page loads
-document.addEventListener('DOMContentLoaded', pageInit);
-
-// Also run when the hash changes (for single-page applications)
-window.addEventListener('hashchange', pageInit);
-
-// Run immediately in case the script loads after DOMContentLoaded
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', pageInit);
-} else {
-  pageInit();
-}
-</script>
-    <script>
-      
-window.addEventListener("load", () => {
-  const innerProps = {
-    onShow(inst) { console.log(inst); },
-    onHide(inst) { console.log(inst); },
-    content(tgt) {
-      const content = document.createElement("span");
-      const state = tgt.querySelector(".hover-info").cloneNode(true);
-      state.style.display = "block";
-      content.appendChild(state);
-      /* Render docstrings - TODO server-side */
-      if ('undefined' !== typeof marked) {
-          for (const d of content.querySelectorAll("code.docstring, pre.docstring")) {
-              const str = d.innerText;
-              const html = marked.parse(str);
-              const rendered = document.createElement("div");
-              rendered.classList.add("docstring");
-              rendered.innerHTML = html;
-              d.parentNode.replaceChild(rendered, d);
-          }
-      }
-      content.style.display = "block";
-      content.className = "hl lean popup";
-      return content;
-    }
-  };
-  const outerProps = {
-    allowHtml: true,
-    theme: "lean",
-    placement: 'bottom-start',
-    maxWidth: "none",
-    delay: 100,
-    moveTransition: 'transform 0.2s ease-out',
-    onTrigger(inst, event) {
-      const ref = event.currentTarget;
-      const block = ref.closest('.hl.lean');
-      block.querySelectorAll('.active').forEach((i) => i.classList.remove('active'));
-      ref.classList.add("active");
-    },
-    onUntrigger(inst, event) {
-      const ref = event.currentTarget;
-      const block = ref.closest('.hl.lean');
-      block.querySelectorAll('.active').forEach((i) => i.classList.remove('active'));
-    }
-  };
-  tippy.createSingleton(tippy('pre.grammar.hl.lean .nonterminal.documented, pre.grammar.hl.lean .from-nonterminal.documented, pre.grammar.hl.lean .local-name.documented', innerProps), outerProps);
-});
-</script>
-    <script>
-      
-window.addEventListener('DOMContentLoaded', () => {
-  const tabLists = document.querySelectorAll('.error-example-tab-list')
-  tabLists.forEach(tabList => {
-    const tabs = tabList.querySelectorAll(':scope > [role="tab"]')
-
-    const setActiveTab = (e) => {
-      for (const tab of tabs) {
-        const controllee = document.getElementById(tab.getAttribute('aria-controls'))
-        if (tab === e.target) {
-          tab.setAttribute('aria-selected', true)
-          controllee.classList.remove('error-example-tabpanel-hidden')
-        } else {
-          tab.setAttribute('aria-selected', false)
-          controllee.classList.add('error-example-tabpanel-hidden')
-        }
-      }
-    }
-
-    tabs.forEach(tab => {
-      tab.addEventListener('click', setActiveTab)
-    })
-
-    let focusedIdx = 0
-    tabList.addEventListener('keydown', e => {
-      if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
-        tabs[focusedIdx].setAttribute('tabindex', -1)
-        focusedIdx =
-          e.key === 'ArrowRight'
-          ? (focusedIdx + 1) % tabs.length
-          : (focusedIdx - 1 + tabs.length) % tabs.length
-        tabs[focusedIdx].setAttribute('tabindex', 0)
-        tabs[focusedIdx].focus()
-      }
-    })
-  })
-})
-  </script>
-    <script>
       window.xref = {"Verso.Genre.Manual.section":
  {"title": "Sections or chapters of the manual",
   "description": null,
@@ -4297,13 +4134,13 @@ window.addEventListener('DOMContentLoaded', () => {
    "runtime":
    [{"id": "runtime",
      "data":
-     {"title": "Run-Time Code",
+     {"title": "运行时代码",
       "shortTitle": null,
       "sectionNum": "12.",
       "searchPriority": 50,
       "context":
       [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Run-Time Code", "shortTitle": null, "number": "12"}]},
+       {"title": "运行时代码", "shortTitle": null, "number": "12"}]},
      "address": "/Run-Time-Code/"}],
    "run-time-inductives":
    [{"id": "run-time-inductives",
@@ -4989,14 +4826,14 @@ window.addEventListener('DOMContentLoaded', () => {
    "reference-counting":
    [{"id": "reference-counting",
      "data":
-     {"title": "Reference Counting",
+     {"title": "引用计数",
       "shortTitle": null,
       "sectionNum": "12.2.",
       "searchPriority": 50,
       "context":
       [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Run-Time Code", "shortTitle": null, "number": "12"},
-       {"title": "Reference Counting", "shortTitle": null, "number": "2"}]},
+       {"title": "运行时代码", "shortTitle": null, "number": "12"},
+       {"title": "引用计数", "shortTitle": null, "number": "2"}]},
      "address": "/Run-Time-Code/Reference-Counting/"}],
    "reference-boxes":
    [{"id": "reference-boxes",
@@ -8748,65 +8585,55 @@ window.addEventListener('DOMContentLoaded', () => {
    "ffi-types":
    [{"id": "ffi-types",
      "data":
-     {"title": "Translating Types from Lean to C",
+     {"title": "将 Lean 类型转换为 C 类型",
       "shortTitle": null,
       "sectionNum": "12.4.1.1.",
       "searchPriority": 50,
       "context":
       [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Run-Time Code", "shortTitle": null, "number": "12"},
-       {"title": "Foreign Function Interface",
-        "shortTitle": null,
-        "number": "4"},
-       {"title": "The Lean ABI", "shortTitle": null, "number": "1"},
-       {"title": "Translating Types from Lean to C",
-        "shortTitle": null,
-        "number": "1"}]},
+       {"title": "运行时代码", "shortTitle": null, "number": "12"},
+       {"title": "外部函数接口", "shortTitle": null, "number": "4"},
+       {"title": "Lean ABI", "shortTitle": null, "number": "1"},
+       {"title": "将 Lean 类型转换为 C 类型", "shortTitle": null, "number": "1"}]},
      "address": "/Run-Time-Code/Foreign-Function-Interface/"}],
    "ffi-initialization":
    [{"id": "ffi-initialization",
      "data":
-     {"title": "Initialization",
+     {"title": "初始化",
       "shortTitle": null,
       "sectionNum": "12.4.2.",
       "searchPriority": 50,
       "context":
       [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Run-Time Code", "shortTitle": null, "number": "12"},
-       {"title": "Foreign Function Interface",
-        "shortTitle": null,
-        "number": "4"},
-       {"title": "Initialization", "shortTitle": null, "number": "2"}]},
+       {"title": "运行时代码", "shortTitle": null, "number": "12"},
+       {"title": "外部函数接口", "shortTitle": null, "number": "4"},
+       {"title": "初始化", "shortTitle": null, "number": "2"}]},
      "address": "/Run-Time-Code/Foreign-Function-Interface/"}],
    "ffi-borrowing":
    [{"id": "ffi-borrowing",
      "data":
-     {"title": "Borrowing",
+     {"title": "借用",
       "shortTitle": null,
       "sectionNum": "12.4.1.2.",
       "searchPriority": 50,
       "context":
       [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Run-Time Code", "shortTitle": null, "number": "12"},
-       {"title": "Foreign Function Interface",
-        "shortTitle": null,
-        "number": "4"},
-       {"title": "The Lean ABI", "shortTitle": null, "number": "1"},
-       {"title": "Borrowing", "shortTitle": null, "number": "2"}]},
+       {"title": "运行时代码", "shortTitle": null, "number": "12"},
+       {"title": "外部函数接口", "shortTitle": null, "number": "4"},
+       {"title": "Lean ABI", "shortTitle": null, "number": "1"},
+       {"title": "借用", "shortTitle": null, "number": "2"}]},
      "address": "/Run-Time-Code/Foreign-Function-Interface/"}],
    "ffi":
    [{"id": "ffi",
      "data":
-     {"title": "Foreign Function Interface",
+     {"title": "外部函数接口",
       "shortTitle": null,
       "sectionNum": "12.4.",
       "searchPriority": 50,
       "context":
       [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Run-Time Code", "shortTitle": null, "number": "12"},
-       {"title": "Foreign Function Interface",
-        "shortTitle": null,
-        "number": "4"}]},
+       {"title": "运行时代码", "shortTitle": null, "number": "12"},
+       {"title": "外部函数接口", "shortTitle": null, "number": "4"}]},
      "address": "/Run-Time-Code/Foreign-Function-Interface/"}],
    "exported-names":
    [{"id": "exported-names",
@@ -10175,14 +10002,14 @@ window.addEventListener('DOMContentLoaded', () => {
    "boxing":
    [{"id": "boxing",
      "data":
-     {"title": "Boxing",
+     {"title": "装箱",
       "shortTitle": null,
       "sectionNum": "12.1.",
       "searchPriority": 50,
       "context":
       [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Run-Time Code", "shortTitle": null, "number": "12"},
-       {"title": "Boxing", "shortTitle": null, "number": "1"}]},
+       {"title": "运行时代码", "shortTitle": null, "number": "12"},
+       {"title": "装箱", "shortTitle": null, "number": "1"}]},
      "address": "/Run-Time-Code/Boxing/"}],
    "bound-variable-name-hints":
    [{"id": "bound-variable-name-hints",
@@ -10954,6 +10781,74 @@ window.addEventListener('DOMContentLoaded', () => {
         "shortTitle": null,
         "number": "6"}]},
      "address": "/Source Files and Modules/"}],
+   "Lean-__________________--_______________--__________________--_______________--____LSQ_extern_RSQ_":
+   [{"id":
+     "Lean-__________________--_______________--__________________--_______________--____LSQ_extern_RSQ_",
+     "data":
+     {"title": "解释器中的  @[extern]",
+      "shortTitle": null,
+      "sectionNum": "12.4.3.",
+      "searchPriority": 50,
+      "context":
+      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
+       {"title": "运行时代码", "shortTitle": null, "number": "12"},
+       {"title": "外部函数接口", "shortTitle": null, "number": "4"},
+       {"title": "解释器中的  @[extern]", "shortTitle": null, "number": "3"}]},
+     "address": "/Run-Time-Code/Foreign-Function-Interface/"}],
+   "Lean-__________________--_______________--__________________--Lean-ABI":
+   [{"id":
+     "Lean-__________________--_______________--__________________--Lean-ABI",
+     "data":
+     {"title": "Lean ABI",
+      "shortTitle": null,
+      "sectionNum": "12.4.1.",
+      "searchPriority": 50,
+      "context":
+      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
+       {"title": "运行时代码", "shortTitle": null, "number": "12"},
+       {"title": "外部函数接口", "shortTitle": null, "number": "4"},
+       {"title": "Lean ABI", "shortTitle": null, "number": "1"}]},
+     "address": "/Run-Time-Code/Foreign-Function-Interface/"}],
+   "Lean-__________________--_______________--_______________":
+   [{"id": "Lean-__________________--_______________--_______________",
+     "data":
+     {"title": "多线程执行",
+      "shortTitle": null,
+      "sectionNum": "12.3.",
+      "searchPriority": 50,
+      "context":
+      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
+       {"title": "运行时代码", "shortTitle": null, "number": "12"},
+       {"title": "多线程执行", "shortTitle": null, "number": "3"}]},
+     "address": "/Run-Time-Code/Multi-Threaded-Execution/"}],
+   "Lean-__________________--_______________--____________--________________________IR___":
+   [{"id":
+     "Lean-__________________--_______________--____________--________________________IR___",
+     "data":
+     {"title": "编译器中间表示（IR）",
+      "shortTitle": null,
+      "sectionNum": "12.2.2.",
+      "searchPriority": 50,
+      "context":
+      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
+       {"title": "运行时代码", "shortTitle": null, "number": "12"},
+       {"title": "引用计数", "shortTitle": null, "number": "2"},
+       {"title": "编译器中间表示（IR）", "shortTitle": null, "number": "2"}]},
+     "address": "/Run-Time-Code/Reference-Counting/"}],
+   "Lean-__________________--_______________--____________--_______________":
+   [{"id":
+     "Lean-__________________--_______________--____________--_______________",
+     "data":
+     {"title": "观察唯一性",
+      "shortTitle": null,
+      "sectionNum": "12.2.1.",
+      "searchPriority": 50,
+      "context":
+      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
+       {"title": "运行时代码", "shortTitle": null, "number": "12"},
+       {"title": "引用计数", "shortTitle": null, "number": "2"},
+       {"title": "观察唯一性", "shortTitle": null, "number": "1"}]},
+     "address": "/Run-Time-Code/Reference-Counting/"}],
    "Lean-__________________--____________--____________--_____________________--Lattice-Theoretic-Inductive-and-Coinductive-Predicates":
    [{"id":
      "Lean-__________________--____________--____________--_____________________--Lattice-Theoretic-Inductive-and-Coinductive-Predicates",
@@ -11735,82 +11630,6 @@ window.addEventListener('DOMContentLoaded', () => {
        {"title": "Supported Platforms", "shortTitle": null, "number": null},
        {"title": "Tier 1", "shortTitle": null, "number": "1"}]},
      "address": "/platforms/"}],
-   "Lean-__________________--Run-Time-Code--Reference-Counting--Observing-Uniqueness":
-   [{"id":
-     "Lean-__________________--Run-Time-Code--Reference-Counting--Observing-Uniqueness",
-     "data":
-     {"title": "Observing Uniqueness",
-      "shortTitle": null,
-      "sectionNum": "12.2.1.",
-      "searchPriority": 50,
-      "context":
-      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Run-Time Code", "shortTitle": null, "number": "12"},
-       {"title": "Reference Counting", "shortTitle": null, "number": "2"},
-       {"title": "Observing Uniqueness", "shortTitle": null, "number": "1"}]},
-     "address": "/Run-Time-Code/Reference-Counting/"}],
-   "Lean-__________________--Run-Time-Code--Reference-Counting--Compiler-IR":
-   [{"id":
-     "Lean-__________________--Run-Time-Code--Reference-Counting--Compiler-IR",
-     "data":
-     {"title": "Compiler IR",
-      "shortTitle": null,
-      "sectionNum": "12.2.2.",
-      "searchPriority": 50,
-      "context":
-      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Run-Time Code", "shortTitle": null, "number": "12"},
-       {"title": "Reference Counting", "shortTitle": null, "number": "2"},
-       {"title": "Compiler IR", "shortTitle": null, "number": "2"}]},
-     "address": "/Run-Time-Code/Reference-Counting/"}],
-   "Lean-__________________--Run-Time-Code--Multi-Threaded-Execution":
-   [{"id": "Lean-__________________--Run-Time-Code--Multi-Threaded-Execution",
-     "data":
-     {"title": "Multi-Threaded Execution",
-      "shortTitle": null,
-      "sectionNum": "12.3.",
-      "searchPriority": 50,
-      "context":
-      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Run-Time Code", "shortTitle": null, "number": "12"},
-       {"title": "Multi-Threaded Execution",
-        "shortTitle": null,
-        "number": "3"}]},
-     "address": "/Run-Time-Code/Multi-Threaded-Execution/"}],
-   "Lean-__________________--Run-Time-Code--Foreign-Function-Interface--____LSQ_extern_RSQ_--in-the-Interpreter":
-   [{"id":
-     "Lean-__________________--Run-Time-Code--Foreign-Function-Interface--____LSQ_extern_RSQ_--in-the-Interpreter",
-     "data":
-     {"title": "@[extern]  in the Interpreter",
-      "shortTitle": null,
-      "sectionNum": "12.4.3.",
-      "searchPriority": 50,
-      "context":
-      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Run-Time Code", "shortTitle": null, "number": "12"},
-       {"title": "Foreign Function Interface",
-        "shortTitle": null,
-        "number": "4"},
-       {"title": "@[extern]  in the Interpreter",
-        "shortTitle": null,
-        "number": "3"}]},
-     "address": "/Run-Time-Code/Foreign-Function-Interface/"}],
-   "Lean-__________________--Run-Time-Code--Foreign-Function-Interface--The-Lean-ABI":
-   [{"id":
-     "Lean-__________________--Run-Time-Code--Foreign-Function-Interface--The-Lean-ABI",
-     "data":
-     {"title": "The Lean ABI",
-      "shortTitle": null,
-      "sectionNum": "12.4.1.",
-      "searchPriority": 50,
-      "context":
-      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Run-Time Code", "shortTitle": null, "number": "12"},
-       {"title": "Foreign Function Interface",
-        "shortTitle": null,
-        "number": "4"},
-       {"title": "The Lean ABI", "shortTitle": null, "number": "1"}]},
-     "address": "/Run-Time-Code/Foreign-Function-Interface/"}],
    "Lean-__________________--Release-Notes--Lean-4___9___0-_LPAR_2024-07-01_RPAR_--Library":
    [{"id":
      "Lean-__________________--Release-Notes--Lean-4___9___0-_LPAR_2024-07-01_RPAR_--Library",
@@ -26021,7 +25840,7 @@ window.addEventListener('DOMContentLoaded', () => {
      "address": "/Error-Explanations/About___--dependsOnNoncomputable/"}],
    "transform (in Necessarily Noncomputable Function Not Appropriately Marked)":
    [{"id":
-     "transform-_LPAR_in-Necessarily-Noncomputable-Function-Not-Appropriately-Marked_RPAR_-next",
+     "transform-_LPAR_in-Necessarily-Noncomputable-Function-Not-Appropriately-Marked_RPAR_",
      "data":
      {"/Error-Explanations/About___--dependsOnNoncomputable/#transform-_LPAR_in-Necessarily-Noncomputable-Function-Not-Appropriately-Marked_RPAR_-next":
       {"display": "transform",
@@ -26041,7 +25860,7 @@ window.addEventListener('DOMContentLoaded', () => {
         "Necessarily Noncomputable Function Not Appropriately Marked"]}},
      "address": "/Error-Explanations/About___--dependsOnNoncomputable/"},
     {"id":
-     "transform-_LPAR_in-Necessarily-Noncomputable-Function-Not-Appropriately-Marked_RPAR_",
+     "transform-_LPAR_in-Necessarily-Noncomputable-Function-Not-Appropriately-Marked_RPAR_-next",
      "data":
      {"/Error-Explanations/About___--dependsOnNoncomputable/#transform-_LPAR_in-Necessarily-Noncomputable-Function-Not-Appropriately-Marked_RPAR_-next":
       {"display": "transform",
@@ -26181,7 +26000,7 @@ window.addEventListener('DOMContentLoaded', () => {
         "Auto-bound variables"]}},
      "address": "/Error-Explanations/About___--unknownIdentifier/"}],
    "thisAlsoWorks (in Auto-bound variables)":
-   [{"id": "thisAlsoWorks-_LPAR_in-Auto-bound-variables_RPAR_",
+   [{"id": "thisAlsoWorks-_LPAR_in-Auto-bound-variables_RPAR_-next",
      "data":
      {"/Error-Explanations/About___--unknownIdentifier/#thisAlsoWorks-_LPAR_in-Auto-bound-variables_RPAR_-next":
       {"display": "thisAlsoWorks",
@@ -26200,7 +26019,7 @@ window.addEventListener('DOMContentLoaded', () => {
         "Examples",
         "Auto-bound variables"]}},
      "address": "/Error-Explanations/About___--unknownIdentifier/"},
-    {"id": "thisAlsoWorks-_LPAR_in-Auto-bound-variables_RPAR_-next",
+    {"id": "thisAlsoWorks-_LPAR_in-Auto-bound-variables_RPAR_",
      "data":
      {"/Error-Explanations/About___--unknownIdentifier/#thisAlsoWorks-_LPAR_in-Auto-bound-variables_RPAR_-next":
       {"display": "thisAlsoWorks",
@@ -27097,7 +26916,7 @@ window.addEventListener('DOMContentLoaded', () => {
         "Examples",
         "Missing Namespace"]}},
      "address": "/Error-Explanations/About___--unknownIdentifier/"},
-    {"id": "red-_LPAR_in-Missing-Namespace_RPAR_-next",
+    {"id": "red-_LPAR_in-Missing-Namespace_RPAR_-next-next",
      "data":
      {"/Error-Explanations/About___--unknownIdentifier/#red-_LPAR_in-Missing-Namespace_RPAR_-next-next":
       {"display": "red",
@@ -27124,7 +26943,7 @@ window.addEventListener('DOMContentLoaded', () => {
         "Examples",
         "Missing Namespace"]}},
      "address": "/Error-Explanations/About___--unknownIdentifier/"},
-    {"id": "red-_LPAR_in-Missing-Namespace_RPAR_-next-next",
+    {"id": "red-_LPAR_in-Missing-Namespace_RPAR_-next",
      "data":
      {"/Error-Explanations/About___--unknownIdentifier/#red-_LPAR_in-Missing-Namespace_RPAR_-next-next":
       {"display": "red",
@@ -27207,68 +27026,40 @@ window.addEventListener('DOMContentLoaded', () => {
       {"display": "q",
        "context": ["Lean 语言参考手册", "grind  策略", "E-匹配", "检查模式", "前向模式生成"]}},
      "address": "/The--grind--tactic/E___matching/"}],
-   "process' (in Reference Counts in IR)":
-   [{"id": "process___-_LPAR_in-Reference-Counts-in-IR_RPAR_",
+   "process' (in IR 中的引用计数)":
+   [{"id": "process___-_LPAR_in-IR-___________________RPAR_",
      "data":
-     {"/Run-Time-Code/Reference-Counting/#process___-_LPAR_in-Reference-Counts-in-IR_RPAR_":
+     {"/Run-Time-Code/Reference-Counting/#process___-_LPAR_in-IR-___________________RPAR_":
       {"display": "process'",
        "context":
-       ["Lean 语言参考手册",
-        "Run-Time Code",
-        "Reference Counting",
-        "Compiler IR",
-        "Reference Counts in IR"]}},
+       ["Lean 语言参考手册", "运行时代码", "引用计数", "编译器中间表示（IR）", "IR 中的引用计数"]}},
      "address": "/Run-Time-Code/Reference-Counting/"}],
-   "process (in Reference Counts in IR)":
-   [{"id": "process-_LPAR_in-Reference-Counts-in-IR_RPAR_",
+   "process (in 观察唯一性)":
+   [{"id": "process-_LPAR_in-________________RPAR_",
      "data":
-     {"/Run-Time-Code/Reference-Counting/#process-_LPAR_in-Reference-Counts-in-IR_RPAR_":
+     {"/Run-Time-Code/Reference-Counting/#process-_LPAR_in-________________RPAR_-next":
       {"display": "process",
-       "context":
-       ["Lean 语言参考手册",
-        "Run-Time Code",
-        "Reference Counting",
-        "Compiler IR",
-        "Reference Counts in IR"]}},
-     "address": "/Run-Time-Code/Reference-Counting/"}],
-   "process (in Observing Uniqueness)":
-   [{"id": "process-_LPAR_in-Observing-Uniqueness_RPAR_",
-     "data":
-     {"/Run-Time-Code/Reference-Counting/#process-_LPAR_in-Observing-Uniqueness_RPAR_-next":
+       "context": ["Lean 语言参考手册", "运行时代码", "引用计数", "观察唯一性", "观察唯一性"]},
+      "/Run-Time-Code/Reference-Counting/#process-_LPAR_in-________________RPAR_":
       {"display": "process",
-       "context":
-       ["Lean 语言参考手册",
-        "Run-Time Code",
-        "Reference Counting",
-        "Observing Uniqueness",
-        "Observing Uniqueness"]},
-      "/Run-Time-Code/Reference-Counting/#process-_LPAR_in-Observing-Uniqueness_RPAR_":
-      {"display": "process",
-       "context":
-       ["Lean 语言参考手册",
-        "Run-Time Code",
-        "Reference Counting",
-        "Observing Uniqueness",
-        "Observing Uniqueness"]}},
+       "context": ["Lean 语言参考手册", "运行时代码", "引用计数", "观察唯一性", "观察唯一性"]}},
      "address": "/Run-Time-Code/Reference-Counting/"},
-    {"id": "process-_LPAR_in-Observing-Uniqueness_RPAR_-next",
+    {"id": "process-_LPAR_in-________________RPAR_-next",
      "data":
-     {"/Run-Time-Code/Reference-Counting/#process-_LPAR_in-Observing-Uniqueness_RPAR_-next":
+     {"/Run-Time-Code/Reference-Counting/#process-_LPAR_in-________________RPAR_-next":
+      {"display": "process",
+       "context": ["Lean 语言参考手册", "运行时代码", "引用计数", "观察唯一性", "观察唯一性"]},
+      "/Run-Time-Code/Reference-Counting/#process-_LPAR_in-________________RPAR_":
+      {"display": "process",
+       "context": ["Lean 语言参考手册", "运行时代码", "引用计数", "观察唯一性", "观察唯一性"]}},
+     "address": "/Run-Time-Code/Reference-Counting/"}],
+   "process (in IR 中的引用计数)":
+   [{"id": "process-_LPAR_in-IR-___________________RPAR_",
+     "data":
+     {"/Run-Time-Code/Reference-Counting/#process-_LPAR_in-IR-___________________RPAR_":
       {"display": "process",
        "context":
-       ["Lean 语言参考手册",
-        "Run-Time Code",
-        "Reference Counting",
-        "Observing Uniqueness",
-        "Observing Uniqueness"]},
-      "/Run-Time-Code/Reference-Counting/#process-_LPAR_in-Observing-Uniqueness_RPAR_":
-      {"display": "process",
-       "context":
-       ["Lean 语言参考手册",
-        "Run-Time Code",
-        "Reference Counting",
-        "Observing Uniqueness",
-        "Observing Uniqueness"]}},
+       ["Lean 语言参考手册", "运行时代码", "引用计数", "编译器中间表示（IR）", "IR 中的引用计数"]}},
      "address": "/Run-Time-Code/Reference-Counting/"}],
    "printEven (in 无结构体子类型关系)":
    [{"id": "printEven-_LPAR_in-____________________________RPAR_",
@@ -28166,6 +27957,25 @@ window.addEventListener('DOMContentLoaded', () => {
         "宇宙变量绑定",
         "宇宙多态的  map"]}},
      "address": "/The Type System/Universe/"}],
+   "main (in 观察唯一性)":
+   [{"id": "main-_LPAR_in-________________RPAR_",
+     "data":
+     {"/Run-Time-Code/Reference-Counting/#main-_LPAR_in-________________RPAR_-next":
+      {"display": "main",
+       "context": ["Lean 语言参考手册", "运行时代码", "引用计数", "观察唯一性", "观察唯一性"]},
+      "/Run-Time-Code/Reference-Counting/#main-_LPAR_in-________________RPAR_":
+      {"display": "main",
+       "context": ["Lean 语言参考手册", "运行时代码", "引用计数", "观察唯一性", "观察唯一性"]}},
+     "address": "/Run-Time-Code/Reference-Counting/"},
+    {"id": "main-_LPAR_in-________________RPAR_-next",
+     "data":
+     {"/Run-Time-Code/Reference-Counting/#main-_LPAR_in-________________RPAR_-next":
+      {"display": "main",
+       "context": ["Lean 语言参考手册", "运行时代码", "引用计数", "观察唯一性", "观察唯一性"]},
+      "/Run-Time-Code/Reference-Counting/#main-_LPAR_in-________________RPAR_":
+      {"display": "main",
+       "context": ["Lean 语言参考手册", "运行时代码", "引用计数", "观察唯一性", "观察唯一性"]}},
+     "address": "/Run-Time-Code/Reference-Counting/"}],
    "main (in Throwing and Catching Errors)":
    [{"id": "main-_LPAR_in-Throwing-and-Catching-Errors_RPAR_",
      "data":
@@ -28245,45 +28055,6 @@ window.addEventListener('DOMContentLoaded', () => {
         "Low-Level File API",
         "One File, Multiple Handles"]}},
      "address": "/IO/Files___-File-Handles___-and-Streams/"}],
-   "main (in Observing Uniqueness)":
-   [{"id": "main-_LPAR_in-Observing-Uniqueness_RPAR_",
-     "data":
-     {"/Run-Time-Code/Reference-Counting/#main-_LPAR_in-Observing-Uniqueness_RPAR_-next":
-      {"display": "main",
-       "context":
-       ["Lean 语言参考手册",
-        "Run-Time Code",
-        "Reference Counting",
-        "Observing Uniqueness",
-        "Observing Uniqueness"]},
-      "/Run-Time-Code/Reference-Counting/#main-_LPAR_in-Observing-Uniqueness_RPAR_":
-      {"display": "main",
-       "context":
-       ["Lean 语言参考手册",
-        "Run-Time Code",
-        "Reference Counting",
-        "Observing Uniqueness",
-        "Observing Uniqueness"]}},
-     "address": "/Run-Time-Code/Reference-Counting/"},
-    {"id": "main-_LPAR_in-Observing-Uniqueness_RPAR_-next",
-     "data":
-     {"/Run-Time-Code/Reference-Counting/#main-_LPAR_in-Observing-Uniqueness_RPAR_-next":
-      {"display": "main",
-       "context":
-       ["Lean 语言参考手册",
-        "Run-Time Code",
-        "Reference Counting",
-        "Observing Uniqueness",
-        "Observing Uniqueness"]},
-      "/Run-Time-Code/Reference-Counting/#main-_LPAR_in-Observing-Uniqueness_RPAR_":
-      {"display": "main",
-       "context":
-       ["Lean 语言参考手册",
-        "Run-Time Code",
-        "Reference Counting",
-        "Observing Uniqueness",
-        "Observing Uniqueness"]}},
-     "address": "/Run-Time-Code/Reference-Counting/"}],
    "main (in Monadic Collection Operations)":
    [{"id": "main-_LPAR_in-Monadic-Collection-Operations_RPAR_",
      "data":
@@ -28807,7 +28578,7 @@ window.addEventListener('DOMContentLoaded', () => {
         "Proofs are Private"]}},
      "address": "/Source Files and Modules/"}],
    "incrOrFail (in Lifting Transformed Monads)":
-   [{"id": "incrOrFail-_LPAR_in-Lifting-Transformed-Monads_RPAR_-next",
+   [{"id": "incrOrFail-_LPAR_in-Lifting-Transformed-Monads_RPAR_",
      "data":
      {"/Functors___-Monads-and--do--Notation/Lifting-Monads/#incrOrFail-_LPAR_in-Lifting-Transformed-Monads_RPAR_-next":
       {"display": "incrOrFail",
@@ -28824,7 +28595,7 @@ window.addEventListener('DOMContentLoaded', () => {
         "Lifting Monads",
         "Lifting Transformed Monads"]}},
      "address": "/Functors___-Monads-and--do--Notation/Lifting-Monads/"},
-    {"id": "incrOrFail-_LPAR_in-Lifting-Transformed-Monads_RPAR_",
+    {"id": "incrOrFail-_LPAR_in-Lifting-Transformed-Monads_RPAR_-next",
      "data":
      {"/Functors___-Monads-and--do--Notation/Lifting-Monads/#incrOrFail-_LPAR_in-Lifting-Transformed-Monads_RPAR_-next":
       {"display": "incrOrFail",
@@ -28842,7 +28613,7 @@ window.addEventListener('DOMContentLoaded', () => {
         "Lifting Transformed Monads"]}},
      "address": "/Functors___-Monads-and--do--Notation/Lifting-Monads/"}],
    "incrBy (in Lifting Transformed Monads)":
-   [{"id": "incrBy-_LPAR_in-Lifting-Transformed-Monads_RPAR_",
+   [{"id": "incrBy-_LPAR_in-Lifting-Transformed-Monads_RPAR_-next",
      "data":
      {"/Functors___-Monads-and--do--Notation/Lifting-Monads/#incrBy-_LPAR_in-Lifting-Transformed-Monads_RPAR_-next":
       {"display": "incrBy",
@@ -28859,7 +28630,7 @@ window.addEventListener('DOMContentLoaded', () => {
         "Lifting Monads",
         "Lifting Transformed Monads"]}},
      "address": "/Functors___-Monads-and--do--Notation/Lifting-Monads/"},
-    {"id": "incrBy-_LPAR_in-Lifting-Transformed-Monads_RPAR_-next",
+    {"id": "incrBy-_LPAR_in-Lifting-Transformed-Monads_RPAR_",
      "data":
      {"/Functors___-Monads-and--do--Notation/Lifting-Monads/#incrBy-_LPAR_in-Lifting-Transformed-Monads_RPAR_-next":
       {"display": "incrBy",
@@ -29394,7 +29165,7 @@ window.addEventListener('DOMContentLoaded', () => {
      "address": "/The--grind--tactic/E___matching/"}],
    "getWitness (in Extracting the Witness from an Existential Proof)":
    [{"id":
-     "getWitness-_LPAR_in-Extracting-the-Witness-from-an-Existential-Proof_RPAR_-next",
+     "getWitness-_LPAR_in-Extracting-the-Witness-from-an-Existential-Proof_RPAR_",
      "data":
      {"/Error-Explanations/About___--propRecLargeElim/#getWitness-_LPAR_in-Extracting-the-Witness-from-an-Existential-Proof_RPAR_-next":
       {"display": "getWitness",
@@ -29414,7 +29185,7 @@ window.addEventListener('DOMContentLoaded', () => {
         "Extracting the Witness from an Existential Proof"]}},
      "address": "/Error-Explanations/About___--propRecLargeElim/"},
     {"id":
-     "getWitness-_LPAR_in-Extracting-the-Witness-from-an-Existential-Proof_RPAR_",
+     "getWitness-_LPAR_in-Extracting-the-Witness-from-an-Existential-Proof_RPAR_-next",
      "data":
      {"/Error-Explanations/About___--propRecLargeElim/#getWitness-_LPAR_in-Extracting-the-Witness-from-an-Existential-Proof_RPAR_-next":
       {"display": "getWitness",
@@ -29446,7 +29217,7 @@ window.addEventListener('DOMContentLoaded', () => {
         "Dependent Pairs with Data"]}},
      "address": "/Basic-Types/Tuples/"}],
    "getThird (in Checking Array Bounds)":
-   [{"id": "getThird-_LPAR_in-Checking-Array-Bounds_RPAR_-next-next",
+   [{"id": "getThird-_LPAR_in-Checking-Array-Bounds_RPAR_-next",
      "data":
      {"/Terms/Conditionals/#getThird-_LPAR_in-Checking-Array-Bounds_RPAR_-next-next":
       {"display": "getThird",
@@ -29461,7 +29232,7 @@ window.addEventListener('DOMContentLoaded', () => {
        "context":
        ["Lean 语言参考手册", "Terms", "Conditionals", "Checking Array Bounds"]}},
      "address": "/Terms/Conditionals/"},
-    {"id": "getThird-_LPAR_in-Checking-Array-Bounds_RPAR_-next",
+    {"id": "getThird-_LPAR_in-Checking-Array-Bounds_RPAR_-next-next",
      "data":
      {"/Terms/Conditionals/#getThird-_LPAR_in-Checking-Array-Bounds_RPAR_-next-next":
       {"display": "getThird",
@@ -29632,7 +29403,7 @@ window.addEventListener('DOMContentLoaded', () => {
         "Provided Operator Names"]}},
      "address": "/Notations-and-Macros/Custom-Operators/"}],
    "getBytes' (in Exceptions and Lifting)":
-   [{"id": "getBytes___-_LPAR_in-Exceptions-and-Lifting_RPAR_-next",
+   [{"id": "getBytes___-_LPAR_in-Exceptions-and-Lifting_RPAR_",
      "data":
      {"/Functors___-Monads-and--do--Notation/Lifting-Monads/#getBytes___-_LPAR_in-Exceptions-and-Lifting_RPAR_-next":
       {"display": "getBytes'",
@@ -29653,7 +29424,7 @@ window.addEventListener('DOMContentLoaded', () => {
         "Reversible Lifting with  MonadControl",
         "Exceptions and Lifting"]}},
      "address": "/Functors___-Monads-and--do--Notation/Lifting-Monads/"},
-    {"id": "getBytes___-_LPAR_in-Exceptions-and-Lifting_RPAR_",
+    {"id": "getBytes___-_LPAR_in-Exceptions-and-Lifting_RPAR_-next",
      "data":
      {"/Functors___-Monads-and--do--Notation/Lifting-Monads/#getBytes___-_LPAR_in-Exceptions-and-Lifting_RPAR_-next":
       {"display": "getBytes'",
@@ -29847,7 +29618,8 @@ window.addEventListener('DOMContentLoaded', () => {
         "Examples",
         "Missing Type Class Instance"]}},
      "address": "/Error-Explanations/About___--synthInstanceFailed/"},
-    {"id": "forceColor-_LPAR_in-Missing-Type-Class-Instance_RPAR_",
+    {"id":
+     "forceColor-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next-next-next",
      "data":
      {"/Error-Explanations/About___--synthInstanceFailed/#forceColor-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next-next-next":
       {"display": "forceColor",
@@ -29917,8 +29689,7 @@ window.addEventListener('DOMContentLoaded', () => {
         "Examples",
         "Missing Type Class Instance"]}},
      "address": "/Error-Explanations/About___--synthInstanceFailed/"},
-    {"id":
-     "forceColor-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next-next-next",
+    {"id": "forceColor-_LPAR_in-Missing-Type-Class-Instance_RPAR_",
      "data":
      {"/Error-Explanations/About___--synthInstanceFailed/#forceColor-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next-next-next":
       {"display": "forceColor",
@@ -30503,7 +30274,7 @@ window.addEventListener('DOMContentLoaded', () => {
         "Noncomputable Dependency Can Be Made Computable"]}},
      "address": "/Error-Explanations/About___--dependsOnNoncomputable/"}],
    "emptyNats (in Implicit Argument Cannot be Inferred)":
-   [{"id": "emptyNats-_LPAR_in-Implicit-Argument-Cannot-be-Inferred_RPAR_",
+   [{"id": "emptyNats-_LPAR_in-Implicit-Argument-Cannot-be-Inferred_RPAR_-next",
      "data":
      {"/Error-Explanations/About___--inferDefTypeFailed/#emptyNats-_LPAR_in-Implicit-Argument-Cannot-be-Inferred_RPAR_-next":
       {"display": "emptyNats",
@@ -30522,7 +30293,7 @@ window.addEventListener('DOMContentLoaded', () => {
         "Examples",
         "Implicit Argument Cannot be Inferred"]}},
      "address": "/Error-Explanations/About___--inferDefTypeFailed/"},
-    {"id": "emptyNats-_LPAR_in-Implicit-Argument-Cannot-be-Inferred_RPAR_-next",
+    {"id": "emptyNats-_LPAR_in-Implicit-Argument-Cannot-be-Inferred_RPAR_",
      "data":
      {"/Error-Explanations/About___--inferDefTypeFailed/#emptyNats-_LPAR_in-Implicit-Argument-Cannot-be-Inferred_RPAR_-next":
       {"display": "emptyNats",
@@ -30945,7 +30716,7 @@ window.addEventListener('DOMContentLoaded', () => {
      "address": "/Definitions/Recursive-Definitions/"}],
    "disjoinToNat (in Unresolvable Name Inferred by Dotted-Identifier Notation)":
    [{"id":
-     "disjoinToNat-_LPAR_in-Unresolvable-Name-Inferred-by-Dotted-Identifier-Notation_RPAR_",
+     "disjoinToNat-_LPAR_in-Unresolvable-Name-Inferred-by-Dotted-Identifier-Notation_RPAR_-next",
      "data":
      {"/Error-Explanations/About___--unknownIdentifier/#disjoinToNat-_LPAR_in-Unresolvable-Name-Inferred-by-Dotted-Identifier-Notation_RPAR_-next-next":
       {"display": "disjoinToNat",
@@ -31001,7 +30772,7 @@ window.addEventListener('DOMContentLoaded', () => {
         "Unresolvable Name Inferred by Dotted-Identifier Notation"]}},
      "address": "/Error-Explanations/About___--unknownIdentifier/"},
     {"id":
-     "disjoinToNat-_LPAR_in-Unresolvable-Name-Inferred-by-Dotted-Identifier-Notation_RPAR_-next",
+     "disjoinToNat-_LPAR_in-Unresolvable-Name-Inferred-by-Dotted-Identifier-Notation_RPAR_",
      "data":
      {"/Error-Explanations/About___--unknownIdentifier/#disjoinToNat-_LPAR_in-Unresolvable-Name-Inferred-by-Dotted-Identifier-Notation_RPAR_-next-next":
       {"display": "disjoinToNat",
@@ -31028,17 +30799,13 @@ window.addEventListener('DOMContentLoaded', () => {
         "Examples",
         "Unresolvable Name Inferred by Dotted-Identifier Notation"]}},
      "address": "/Error-Explanations/About___--unknownIdentifier/"}],
-   "discardElems (in Memory Reuse in IR)":
-   [{"id": "discardElems-_LPAR_in-Memory-Reuse-in-IR_RPAR_",
+   "discardElems (in IR 中的内存复用)":
+   [{"id": "discardElems-_LPAR_in-IR-___________________RPAR_",
      "data":
-     {"/Run-Time-Code/Reference-Counting/#discardElems-_LPAR_in-Memory-Reuse-in-IR_RPAR_":
+     {"/Run-Time-Code/Reference-Counting/#discardElems-_LPAR_in-IR-___________________RPAR_":
       {"display": "discardElems",
        "context":
-       ["Lean 语言参考手册",
-        "Run-Time Code",
-        "Reference Counting",
-        "Compiler IR",
-        "Memory Reuse in IR"]}},
+       ["Lean 语言参考手册", "运行时代码", "引用计数", "编译器中间表示（IR）", "IR 中的内存复用"]}},
      "address": "/Run-Time-Code/Reference-Counting/"}],
    "describe":
    [{"id": "describe",
@@ -31710,7 +31477,7 @@ window.addEventListener('DOMContentLoaded', () => {
         "Implementing Ranges"]}},
      "address": "/Basic-Types/Ranges/"}],
    "allNats (in Converting Infinite Iterators to Lists)":
-   [{"id": "allNats-_LPAR_in-Converting-Infinite-Iterators-to-Lists_RPAR_-next",
+   [{"id": "allNats-_LPAR_in-Converting-Infinite-Iterators-to-Lists_RPAR_",
      "data":
      {"/Iterators/Consuming-Iterators/#allNats-_LPAR_in-Converting-Infinite-Iterators-to-Lists_RPAR_-next":
       {"display": "allNats",
@@ -31727,7 +31494,7 @@ window.addEventListener('DOMContentLoaded', () => {
         "Consuming Iterators",
         "Converting Infinite Iterators to Lists"]}},
      "address": "/Iterators/Consuming-Iterators/"},
-    {"id": "allNats-_LPAR_in-Converting-Infinite-Iterators-to-Lists_RPAR_",
+    {"id": "allNats-_LPAR_in-Converting-Infinite-Iterators-to-Lists_RPAR_-next",
      "data":
      {"/Iterators/Consuming-Iterators/#allNats-_LPAR_in-Converting-Infinite-Iterators-to-Lists_RPAR_-next":
       {"display": "allNats",
@@ -34633,7 +34400,7 @@ window.addEventListener('DOMContentLoaded', () => {
      "address": "/The Type System/Quotients/"}],
    "RoseTree.children (in Omitting Parameter in Argument to Higher-Order Predicate)":
    [{"id":
-     "RoseTree___children-_LPAR_in-Omitting-Parameter-in-Argument-to-Higher-Order-Predicate_RPAR_-next",
+     "RoseTree___children-_LPAR_in-Omitting-Parameter-in-Argument-to-Higher-Order-Predicate_RPAR_",
      "data":
      {"/Error-Explanations/About___--inductiveParamMissing/#RoseTree___children-_LPAR_in-Omitting-Parameter-in-Argument-to-Higher-Order-Predicate_RPAR_-next":
       {"display": "children",
@@ -34653,7 +34420,7 @@ window.addEventListener('DOMContentLoaded', () => {
         "Omitting Parameter in Argument to Higher-Order Predicate"]}},
      "address": "/Error-Explanations/About___--inductiveParamMissing/"},
     {"id":
-     "RoseTree___children-_LPAR_in-Omitting-Parameter-in-Argument-to-Higher-Order-Predicate_RPAR_",
+     "RoseTree___children-_LPAR_in-Omitting-Parameter-in-Argument-to-Higher-Order-Predicate_RPAR_-next",
      "data":
      {"/Error-Explanations/About___--inductiveParamMissing/#RoseTree___children-_LPAR_in-Omitting-Parameter-in-Argument-to-Higher-Order-Predicate_RPAR_-next":
       {"display": "children",
@@ -35258,7 +35025,7 @@ window.addEventListener('DOMContentLoaded', () => {
      "address": "/Definitions/Recursive-Definitions/"}],
    "Person.givenName (in Attempting to Define Multiple Structure Fields on the Same Line)":
    [{"id":
-     "Person___givenName-_LPAR_in-Attempting-to-Define-Multiple-Structure-Fields-on-the-Same-Line_RPAR_",
+     "Person___givenName-_LPAR_in-Attempting-to-Define-Multiple-Structure-Fields-on-the-Same-Line_RPAR_-next",
      "data":
      {"/Error-Explanations/About___--inferBinderTypeFailed/#Person___givenName-_LPAR_in-Attempting-to-Define-Multiple-Structure-Fields-on-the-Same-Line_RPAR_-next":
       {"display": "givenName",
@@ -35278,7 +35045,7 @@ window.addEventListener('DOMContentLoaded', () => {
         "Attempting to Define Multiple Structure Fields on the Same Line"]}},
      "address": "/Error-Explanations/About___--inferBinderTypeFailed/"},
     {"id":
-     "Person___givenName-_LPAR_in-Attempting-to-Define-Multiple-Structure-Fields-on-the-Same-Line_RPAR_-next",
+     "Person___givenName-_LPAR_in-Attempting-to-Define-Multiple-Structure-Fields-on-the-Same-Line_RPAR_",
      "data":
      {"/Error-Explanations/About___--inferBinderTypeFailed/#Person___givenName-_LPAR_in-Attempting-to-Define-Multiple-Structure-Fields-on-the-Same-Line_RPAR_-next":
       {"display": "givenName",
@@ -36678,7 +36445,42 @@ window.addEventListener('DOMContentLoaded', () => {
         "Leading  .  and Unfolding Definitions"]}},
      "address": "/Terms/Identifiers/"}],
    "MyColor.thistle (in Missing Type Class Instance)":
-   [{"id": "MyColor___thistle-_LPAR_in-Missing-Type-Class-Instance_RPAR_",
+   [{"id": "MyColor___thistle-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next",
+     "data":
+     {"/Error-Explanations/About___--synthInstanceFailed/#MyColor___thistle-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next-next-next":
+      {"display": "thistle",
+       "context":
+       ["Lean 语言参考手册",
+        "Error Explanations",
+        "About:  synthInstanceFailed",
+        "Examples",
+        "Missing Type Class Instance"]},
+      "/Error-Explanations/About___--synthInstanceFailed/#MyColor___thistle-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next-next":
+      {"display": "thistle",
+       "context":
+       ["Lean 语言参考手册",
+        "Error Explanations",
+        "About:  synthInstanceFailed",
+        "Examples",
+        "Missing Type Class Instance"]},
+      "/Error-Explanations/About___--synthInstanceFailed/#MyColor___thistle-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next":
+      {"display": "thistle",
+       "context":
+       ["Lean 语言参考手册",
+        "Error Explanations",
+        "About:  synthInstanceFailed",
+        "Examples",
+        "Missing Type Class Instance"]},
+      "/Error-Explanations/About___--synthInstanceFailed/#MyColor___thistle-_LPAR_in-Missing-Type-Class-Instance_RPAR_":
+      {"display": "thistle",
+       "context":
+       ["Lean 语言参考手册",
+        "Error Explanations",
+        "About:  synthInstanceFailed",
+        "Examples",
+        "Missing Type Class Instance"]}},
+     "address": "/Error-Explanations/About___--synthInstanceFailed/"},
+    {"id": "MyColor___thistle-_LPAR_in-Missing-Type-Class-Instance_RPAR_",
      "data":
      {"/Error-Explanations/About___--synthInstanceFailed/#MyColor___thistle-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next-next-next":
       {"display": "thistle",
@@ -36715,41 +36517,6 @@ window.addEventListener('DOMContentLoaded', () => {
      "address": "/Error-Explanations/About___--synthInstanceFailed/"},
     {"id":
      "MyColor___thistle-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next-next",
-     "data":
-     {"/Error-Explanations/About___--synthInstanceFailed/#MyColor___thistle-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next-next-next":
-      {"display": "thistle",
-       "context":
-       ["Lean 语言参考手册",
-        "Error Explanations",
-        "About:  synthInstanceFailed",
-        "Examples",
-        "Missing Type Class Instance"]},
-      "/Error-Explanations/About___--synthInstanceFailed/#MyColor___thistle-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next-next":
-      {"display": "thistle",
-       "context":
-       ["Lean 语言参考手册",
-        "Error Explanations",
-        "About:  synthInstanceFailed",
-        "Examples",
-        "Missing Type Class Instance"]},
-      "/Error-Explanations/About___--synthInstanceFailed/#MyColor___thistle-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next":
-      {"display": "thistle",
-       "context":
-       ["Lean 语言参考手册",
-        "Error Explanations",
-        "About:  synthInstanceFailed",
-        "Examples",
-        "Missing Type Class Instance"]},
-      "/Error-Explanations/About___--synthInstanceFailed/#MyColor___thistle-_LPAR_in-Missing-Type-Class-Instance_RPAR_":
-      {"display": "thistle",
-       "context":
-       ["Lean 语言参考手册",
-        "Error Explanations",
-        "About:  synthInstanceFailed",
-        "Examples",
-        "Missing Type Class Instance"]}},
-     "address": "/Error-Explanations/About___--synthInstanceFailed/"},
-    {"id": "MyColor___thistle-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next",
      "data":
      {"/Error-Explanations/About___--synthInstanceFailed/#MyColor___thistle-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next-next-next":
       {"display": "thistle",
@@ -36821,8 +36588,43 @@ window.addEventListener('DOMContentLoaded', () => {
         "Missing Type Class Instance"]}},
      "address": "/Error-Explanations/About___--synthInstanceFailed/"}],
    "MyColor.sienna (in Missing Type Class Instance)":
-   [{"id":
-     "MyColor___sienna-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next-next-next",
+   [{"id": "MyColor___sienna-_LPAR_in-Missing-Type-Class-Instance_RPAR_",
+     "data":
+     {"/Error-Explanations/About___--synthInstanceFailed/#MyColor___sienna-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next-next-next":
+      {"display": "sienna",
+       "context":
+       ["Lean 语言参考手册",
+        "Error Explanations",
+        "About:  synthInstanceFailed",
+        "Examples",
+        "Missing Type Class Instance"]},
+      "/Error-Explanations/About___--synthInstanceFailed/#MyColor___sienna-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next-next":
+      {"display": "sienna",
+       "context":
+       ["Lean 语言参考手册",
+        "Error Explanations",
+        "About:  synthInstanceFailed",
+        "Examples",
+        "Missing Type Class Instance"]},
+      "/Error-Explanations/About___--synthInstanceFailed/#MyColor___sienna-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next":
+      {"display": "sienna",
+       "context":
+       ["Lean 语言参考手册",
+        "Error Explanations",
+        "About:  synthInstanceFailed",
+        "Examples",
+        "Missing Type Class Instance"]},
+      "/Error-Explanations/About___--synthInstanceFailed/#MyColor___sienna-_LPAR_in-Missing-Type-Class-Instance_RPAR_":
+      {"display": "sienna",
+       "context":
+       ["Lean 语言参考手册",
+        "Error Explanations",
+        "About:  synthInstanceFailed",
+        "Examples",
+        "Missing Type Class Instance"]}},
+     "address": "/Error-Explanations/About___--synthInstanceFailed/"},
+    {"id":
+     "MyColor___sienna-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next-next",
      "data":
      {"/Error-Explanations/About___--synthInstanceFailed/#MyColor___sienna-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next-next-next":
       {"display": "sienna",
@@ -36892,43 +36694,8 @@ window.addEventListener('DOMContentLoaded', () => {
         "Examples",
         "Missing Type Class Instance"]}},
      "address": "/Error-Explanations/About___--synthInstanceFailed/"},
-    {"id": "MyColor___sienna-_LPAR_in-Missing-Type-Class-Instance_RPAR_",
-     "data":
-     {"/Error-Explanations/About___--synthInstanceFailed/#MyColor___sienna-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next-next-next":
-      {"display": "sienna",
-       "context":
-       ["Lean 语言参考手册",
-        "Error Explanations",
-        "About:  synthInstanceFailed",
-        "Examples",
-        "Missing Type Class Instance"]},
-      "/Error-Explanations/About___--synthInstanceFailed/#MyColor___sienna-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next-next":
-      {"display": "sienna",
-       "context":
-       ["Lean 语言参考手册",
-        "Error Explanations",
-        "About:  synthInstanceFailed",
-        "Examples",
-        "Missing Type Class Instance"]},
-      "/Error-Explanations/About___--synthInstanceFailed/#MyColor___sienna-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next":
-      {"display": "sienna",
-       "context":
-       ["Lean 语言参考手册",
-        "Error Explanations",
-        "About:  synthInstanceFailed",
-        "Examples",
-        "Missing Type Class Instance"]},
-      "/Error-Explanations/About___--synthInstanceFailed/#MyColor___sienna-_LPAR_in-Missing-Type-Class-Instance_RPAR_":
-      {"display": "sienna",
-       "context":
-       ["Lean 语言参考手册",
-        "Error Explanations",
-        "About:  synthInstanceFailed",
-        "Examples",
-        "Missing Type Class Instance"]}},
-     "address": "/Error-Explanations/About___--synthInstanceFailed/"},
     {"id":
-     "MyColor___sienna-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next-next",
+     "MyColor___sienna-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next-next-next",
      "data":
      {"/Error-Explanations/About___--synthInstanceFailed/#MyColor___sienna-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next-next-next":
       {"display": "sienna",
@@ -37036,6 +36803,41 @@ window.addEventListener('DOMContentLoaded', () => {
         "Examples",
         "Missing Type Class Instance"]}},
      "address": "/Error-Explanations/About___--synthInstanceFailed/"},
+    {"id": "MyColor___chartreuse-_LPAR_in-Missing-Type-Class-Instance_RPAR_",
+     "data":
+     {"/Error-Explanations/About___--synthInstanceFailed/#MyColor___chartreuse-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next-next-next":
+      {"display": "chartreuse",
+       "context":
+       ["Lean 语言参考手册",
+        "Error Explanations",
+        "About:  synthInstanceFailed",
+        "Examples",
+        "Missing Type Class Instance"]},
+      "/Error-Explanations/About___--synthInstanceFailed/#MyColor___chartreuse-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next-next":
+      {"display": "chartreuse",
+       "context":
+       ["Lean 语言参考手册",
+        "Error Explanations",
+        "About:  synthInstanceFailed",
+        "Examples",
+        "Missing Type Class Instance"]},
+      "/Error-Explanations/About___--synthInstanceFailed/#MyColor___chartreuse-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next":
+      {"display": "chartreuse",
+       "context":
+       ["Lean 语言参考手册",
+        "Error Explanations",
+        "About:  synthInstanceFailed",
+        "Examples",
+        "Missing Type Class Instance"]},
+      "/Error-Explanations/About___--synthInstanceFailed/#MyColor___chartreuse-_LPAR_in-Missing-Type-Class-Instance_RPAR_":
+      {"display": "chartreuse",
+       "context":
+       ["Lean 语言参考手册",
+        "Error Explanations",
+        "About:  synthInstanceFailed",
+        "Examples",
+        "Missing Type Class Instance"]}},
+     "address": "/Error-Explanations/About___--synthInstanceFailed/"},
     {"id":
      "MyColor___chartreuse-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next-next",
      "data":
@@ -37071,44 +36873,9 @@ window.addEventListener('DOMContentLoaded', () => {
         "About:  synthInstanceFailed",
         "Examples",
         "Missing Type Class Instance"]}},
-     "address": "/Error-Explanations/About___--synthInstanceFailed/"},
-    {"id": "MyColor___chartreuse-_LPAR_in-Missing-Type-Class-Instance_RPAR_",
-     "data":
-     {"/Error-Explanations/About___--synthInstanceFailed/#MyColor___chartreuse-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next-next-next":
-      {"display": "chartreuse",
-       "context":
-       ["Lean 语言参考手册",
-        "Error Explanations",
-        "About:  synthInstanceFailed",
-        "Examples",
-        "Missing Type Class Instance"]},
-      "/Error-Explanations/About___--synthInstanceFailed/#MyColor___chartreuse-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next-next":
-      {"display": "chartreuse",
-       "context":
-       ["Lean 语言参考手册",
-        "Error Explanations",
-        "About:  synthInstanceFailed",
-        "Examples",
-        "Missing Type Class Instance"]},
-      "/Error-Explanations/About___--synthInstanceFailed/#MyColor___chartreuse-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next":
-      {"display": "chartreuse",
-       "context":
-       ["Lean 语言参考手册",
-        "Error Explanations",
-        "About:  synthInstanceFailed",
-        "Examples",
-        "Missing Type Class Instance"]},
-      "/Error-Explanations/About___--synthInstanceFailed/#MyColor___chartreuse-_LPAR_in-Missing-Type-Class-Instance_RPAR_":
-      {"display": "chartreuse",
-       "context":
-       ["Lean 语言参考手册",
-        "Error Explanations",
-        "About:  synthInstanceFailed",
-        "Examples",
-        "Missing Type Class Instance"]}},
      "address": "/Error-Explanations/About___--synthInstanceFailed/"}],
    "MyColor (in Missing Type Class Instance)":
-   [{"id": "MyColor-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next",
+   [{"id": "MyColor-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next-next-next",
      "data":
      {"/Error-Explanations/About___--synthInstanceFailed/#MyColor-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next-next-next":
       {"display": "MyColor",
@@ -37143,42 +36910,7 @@ window.addEventListener('DOMContentLoaded', () => {
         "Examples",
         "Missing Type Class Instance"]}},
      "address": "/Error-Explanations/About___--synthInstanceFailed/"},
-    {"id": "MyColor-_LPAR_in-Missing-Type-Class-Instance_RPAR_",
-     "data":
-     {"/Error-Explanations/About___--synthInstanceFailed/#MyColor-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next-next-next":
-      {"display": "MyColor",
-       "context":
-       ["Lean 语言参考手册",
-        "Error Explanations",
-        "About:  synthInstanceFailed",
-        "Examples",
-        "Missing Type Class Instance"]},
-      "/Error-Explanations/About___--synthInstanceFailed/#MyColor-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next-next":
-      {"display": "MyColor",
-       "context":
-       ["Lean 语言参考手册",
-        "Error Explanations",
-        "About:  synthInstanceFailed",
-        "Examples",
-        "Missing Type Class Instance"]},
-      "/Error-Explanations/About___--synthInstanceFailed/#MyColor-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next":
-      {"display": "MyColor",
-       "context":
-       ["Lean 语言参考手册",
-        "Error Explanations",
-        "About:  synthInstanceFailed",
-        "Examples",
-        "Missing Type Class Instance"]},
-      "/Error-Explanations/About___--synthInstanceFailed/#MyColor-_LPAR_in-Missing-Type-Class-Instance_RPAR_":
-      {"display": "MyColor",
-       "context":
-       ["Lean 语言参考手册",
-        "Error Explanations",
-        "About:  synthInstanceFailed",
-        "Examples",
-        "Missing Type Class Instance"]}},
-     "address": "/Error-Explanations/About___--synthInstanceFailed/"},
-    {"id": "MyColor-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next-next-next",
+    {"id": "MyColor-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next",
      "data":
      {"/Error-Explanations/About___--synthInstanceFailed/#MyColor-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next-next-next":
       {"display": "MyColor",
@@ -37214,6 +36946,41 @@ window.addEventListener('DOMContentLoaded', () => {
         "Missing Type Class Instance"]}},
      "address": "/Error-Explanations/About___--synthInstanceFailed/"},
     {"id": "MyColor-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next-next",
+     "data":
+     {"/Error-Explanations/About___--synthInstanceFailed/#MyColor-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next-next-next":
+      {"display": "MyColor",
+       "context":
+       ["Lean 语言参考手册",
+        "Error Explanations",
+        "About:  synthInstanceFailed",
+        "Examples",
+        "Missing Type Class Instance"]},
+      "/Error-Explanations/About___--synthInstanceFailed/#MyColor-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next-next":
+      {"display": "MyColor",
+       "context":
+       ["Lean 语言参考手册",
+        "Error Explanations",
+        "About:  synthInstanceFailed",
+        "Examples",
+        "Missing Type Class Instance"]},
+      "/Error-Explanations/About___--synthInstanceFailed/#MyColor-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next":
+      {"display": "MyColor",
+       "context":
+       ["Lean 语言参考手册",
+        "Error Explanations",
+        "About:  synthInstanceFailed",
+        "Examples",
+        "Missing Type Class Instance"]},
+      "/Error-Explanations/About___--synthInstanceFailed/#MyColor-_LPAR_in-Missing-Type-Class-Instance_RPAR_":
+      {"display": "MyColor",
+       "context":
+       ["Lean 语言参考手册",
+        "Error Explanations",
+        "About:  synthInstanceFailed",
+        "Examples",
+        "Missing Type Class Instance"]}},
+     "address": "/Error-Explanations/About___--synthInstanceFailed/"},
+    {"id": "MyColor-_LPAR_in-Missing-Type-Class-Instance_RPAR_",
      "data":
      {"/Error-Explanations/About___--synthInstanceFailed/#MyColor-_LPAR_in-Missing-Type-Class-Instance_RPAR_-next-next-next":
       {"display": "MyColor",
@@ -37382,8 +37149,7 @@ window.addEventListener('DOMContentLoaded', () => {
         "Nested Inductive Types with  Std.HashMap"]}},
      "address": "/Basic-Types/Maps-and-Sets/"}],
    "Maze (in Nested Inductive Types with  Std.HashMap)":
-   [{"id":
-     "Maze-_LPAR_in-Nested-Inductive-Types-with--Std___HashMap_RPAR_-next",
+   [{"id": "Maze-_LPAR_in-Nested-Inductive-Types-with--Std___HashMap_RPAR_",
      "data":
      {"/Basic-Types/Maps-and-Sets/#Maze-_LPAR_in-Nested-Inductive-Types-with--Std___HashMap_RPAR_-next":
       {"display": "Maze",
@@ -37404,7 +37170,8 @@ window.addEventListener('DOMContentLoaded', () => {
         "Raw Data and Invariants",
         "Nested Inductive Types with  Std.HashMap"]}},
      "address": "/Basic-Types/Maps-and-Sets/"},
-    {"id": "Maze-_LPAR_in-Nested-Inductive-Types-with--Std___HashMap_RPAR_",
+    {"id":
+     "Maze-_LPAR_in-Nested-Inductive-Types-with--Std___HashMap_RPAR_-next",
      "data":
      {"/Basic-Types/Maps-and-Sets/#Maze-_LPAR_in-Nested-Inductive-Types-with--Std___HashMap_RPAR_-next":
       {"display": "Maze",
@@ -37677,7 +37444,7 @@ window.addEventListener('DOMContentLoaded', () => {
      "address": "/Definitions/Recursive-Definitions/"}],
    "List.All.nil (in Omitting Parameter in Argument to Higher-Order Predicate)":
    [{"id":
-     "List___All___nil-_LPAR_in-Omitting-Parameter-in-Argument-to-Higher-Order-Predicate_RPAR_-next",
+     "List___All___nil-_LPAR_in-Omitting-Parameter-in-Argument-to-Higher-Order-Predicate_RPAR_",
      "data":
      {"/Error-Explanations/About___--inductiveParamMissing/#List___All___nil-_LPAR_in-Omitting-Parameter-in-Argument-to-Higher-Order-Predicate_RPAR_-next":
       {"display": "nil",
@@ -37697,7 +37464,7 @@ window.addEventListener('DOMContentLoaded', () => {
         "Omitting Parameter in Argument to Higher-Order Predicate"]}},
      "address": "/Error-Explanations/About___--inductiveParamMissing/"},
     {"id":
-     "List___All___nil-_LPAR_in-Omitting-Parameter-in-Argument-to-Higher-Order-Predicate_RPAR_",
+     "List___All___nil-_LPAR_in-Omitting-Parameter-in-Argument-to-Higher-Order-Predicate_RPAR_-next",
      "data":
      {"/Error-Explanations/About___--inductiveParamMissing/#List___All___nil-_LPAR_in-Omitting-Parameter-in-Argument-to-Higher-Order-Predicate_RPAR_-next":
       {"display": "nil",
@@ -37718,7 +37485,7 @@ window.addEventListener('DOMContentLoaded', () => {
      "address": "/Error-Explanations/About___--inductiveParamMissing/"}],
    "List.All.cons (in Omitting Parameter in Argument to Higher-Order Predicate)":
    [{"id":
-     "List___All___cons-_LPAR_in-Omitting-Parameter-in-Argument-to-Higher-Order-Predicate_RPAR_",
+     "List___All___cons-_LPAR_in-Omitting-Parameter-in-Argument-to-Higher-Order-Predicate_RPAR_-next",
      "data":
      {"/Error-Explanations/About___--inductiveParamMissing/#List___All___cons-_LPAR_in-Omitting-Parameter-in-Argument-to-Higher-Order-Predicate_RPAR_-next":
       {"display": "cons",
@@ -37738,7 +37505,7 @@ window.addEventListener('DOMContentLoaded', () => {
         "Omitting Parameter in Argument to Higher-Order Predicate"]}},
      "address": "/Error-Explanations/About___--inductiveParamMissing/"},
     {"id":
-     "List___All___cons-_LPAR_in-Omitting-Parameter-in-Argument-to-Higher-Order-Predicate_RPAR_-next",
+     "List___All___cons-_LPAR_in-Omitting-Parameter-in-Argument-to-Higher-Order-Predicate_RPAR_",
      "data":
      {"/Error-Explanations/About___--inductiveParamMissing/#List___All___cons-_LPAR_in-Omitting-Parameter-in-Argument-to-Higher-Order-Predicate_RPAR_-next":
       {"display": "cons",
@@ -38549,34 +38316,7 @@ window.addEventListener('DOMContentLoaded', () => {
         "形式化陈述"]}},
      "address": "/The--grind--tactic/Bigger-Examples/"}],
    "IfExpr.normalize_spec":
-   [{"id": "IfExpr___normalize_spec",
-     "data":
-     {"/The--grind--tactic/Bigger-Examples/#IfExpr___normalize_spec-next-next":
-      {"display": "normalize_spec",
-       "context":
-       ["Lean 语言参考手册",
-        "grind  策略",
-        "更大的示例",
-        "if - then - else  规范化",
-        "使用  grind  的解法"]},
-      "/The--grind--tactic/Bigger-Examples/#IfExpr___normalize_spec-next":
-      {"display": "normalize_spec",
-       "context":
-       ["Lean 语言参考手册",
-        "grind  策略",
-        "更大的示例",
-        "if - then - else  规范化",
-        "使用  grind  的解法"]},
-      "/The--grind--tactic/Bigger-Examples/#IfExpr___normalize_spec":
-      {"display": "normalize_spec",
-       "context":
-       ["Lean 语言参考手册",
-        "grind  策略",
-        "更大的示例",
-        "if - then - else  规范化",
-        "使用  grind  的解法"]}},
-     "address": "/The--grind--tactic/Bigger-Examples/"},
-    {"id": "IfExpr___normalize_spec-next",
+   [{"id": "IfExpr___normalize_spec-next",
      "data":
      {"/The--grind--tactic/Bigger-Examples/#IfExpr___normalize_spec-next-next":
       {"display": "normalize_spec",
@@ -38629,9 +38369,63 @@ window.addEventListener('DOMContentLoaded', () => {
         "更大的示例",
         "if - then - else  规范化",
         "使用  grind  的解法"]}},
+     "address": "/The--grind--tactic/Bigger-Examples/"},
+    {"id": "IfExpr___normalize_spec",
+     "data":
+     {"/The--grind--tactic/Bigger-Examples/#IfExpr___normalize_spec-next-next":
+      {"display": "normalize_spec",
+       "context":
+       ["Lean 语言参考手册",
+        "grind  策略",
+        "更大的示例",
+        "if - then - else  规范化",
+        "使用  grind  的解法"]},
+      "/The--grind--tactic/Bigger-Examples/#IfExpr___normalize_spec-next":
+      {"display": "normalize_spec",
+       "context":
+       ["Lean 语言参考手册",
+        "grind  策略",
+        "更大的示例",
+        "if - then - else  规范化",
+        "使用  grind  的解法"]},
+      "/The--grind--tactic/Bigger-Examples/#IfExpr___normalize_spec":
+      {"display": "normalize_spec",
+       "context":
+       ["Lean 语言参考手册",
+        "grind  策略",
+        "更大的示例",
+        "if - then - else  规范化",
+        "使用  grind  的解法"]}},
      "address": "/The--grind--tactic/Bigger-Examples/"}],
    "IfExpr.normalize":
-   [{"id": "IfExpr___normalize-next-next",
+   [{"id": "IfExpr___normalize-next",
+     "data":
+     {"/The--grind--tactic/Bigger-Examples/#IfExpr___normalize-next-next":
+      {"display": "normalize",
+       "context":
+       ["Lean 语言参考手册",
+        "grind  策略",
+        "更大的示例",
+        "if - then - else  规范化",
+        "使用  grind  的解法"]},
+      "/The--grind--tactic/Bigger-Examples/#IfExpr___normalize-next":
+      {"display": "normalize",
+       "context":
+       ["Lean 语言参考手册",
+        "grind  策略",
+        "更大的示例",
+        "if - then - else  规范化",
+        "使用  grind  的解法"]},
+      "/The--grind--tactic/Bigger-Examples/#IfExpr___normalize":
+      {"display": "normalize",
+       "context":
+       ["Lean 语言参考手册",
+        "grind  策略",
+        "更大的示例",
+        "if - then - else  规范化",
+        "使用  grind  的解法"]}},
+     "address": "/The--grind--tactic/Bigger-Examples/"},
+    {"id": "IfExpr___normalize-next-next",
      "data":
      {"/The--grind--tactic/Bigger-Examples/#IfExpr___normalize-next-next":
       {"display": "normalize",
@@ -38659,33 +38453,6 @@ window.addEventListener('DOMContentLoaded', () => {
         "使用  grind  的解法"]}},
      "address": "/The--grind--tactic/Bigger-Examples/"},
     {"id": "IfExpr___normalize",
-     "data":
-     {"/The--grind--tactic/Bigger-Examples/#IfExpr___normalize-next-next":
-      {"display": "normalize",
-       "context":
-       ["Lean 语言参考手册",
-        "grind  策略",
-        "更大的示例",
-        "if - then - else  规范化",
-        "使用  grind  的解法"]},
-      "/The--grind--tactic/Bigger-Examples/#IfExpr___normalize-next":
-      {"display": "normalize",
-       "context":
-       ["Lean 语言参考手册",
-        "grind  策略",
-        "更大的示例",
-        "if - then - else  规范化",
-        "使用  grind  的解法"]},
-      "/The--grind--tactic/Bigger-Examples/#IfExpr___normalize":
-      {"display": "normalize",
-       "context":
-       ["Lean 语言参考手册",
-        "grind  策略",
-        "更大的示例",
-        "if - then - else  规范化",
-        "使用  grind  的解法"]}},
-     "address": "/The--grind--tactic/Bigger-Examples/"},
-    {"id": "IfExpr___normalize-next",
      "data":
      {"/The--grind--tactic/Bigger-Examples/#IfExpr___normalize-next-next":
       {"display": "normalize",
@@ -40276,7 +40043,7 @@ window.addEventListener('DOMContentLoaded', () => {
      "address": "/Basic-Types/The-Unit-Type/"}],
    "Credential.pin (in Missing Resulting Type After Constructor Parameter)":
    [{"id":
-     "Credential___pin-_LPAR_in-Missing-Resulting-Type-After-Constructor-Parameter_RPAR_",
+     "Credential___pin-_LPAR_in-Missing-Resulting-Type-After-Constructor-Parameter_RPAR_-next",
      "data":
      {"/Error-Explanations/About___--ctorResultingTypeMismatch/#Credential___pin-_LPAR_in-Missing-Resulting-Type-After-Constructor-Parameter_RPAR_-next":
       {"display": "pin",
@@ -40296,7 +40063,7 @@ window.addEventListener('DOMContentLoaded', () => {
         "Missing Resulting Type After Constructor Parameter"]}},
      "address": "/Error-Explanations/About___--ctorResultingTypeMismatch/"},
     {"id":
-     "Credential___pin-_LPAR_in-Missing-Resulting-Type-After-Constructor-Parameter_RPAR_-next",
+     "Credential___pin-_LPAR_in-Missing-Resulting-Type-After-Constructor-Parameter_RPAR_",
      "data":
      {"/Error-Explanations/About___--ctorResultingTypeMismatch/#Credential___pin-_LPAR_in-Missing-Resulting-Type-After-Constructor-Parameter_RPAR_-next":
       {"display": "pin",
@@ -40317,7 +40084,7 @@ window.addEventListener('DOMContentLoaded', () => {
      "address": "/Error-Explanations/About___--ctorResultingTypeMismatch/"}],
    "Credential.password (in Missing Resulting Type After Constructor Parameter)":
    [{"id":
-     "Credential___password-_LPAR_in-Missing-Resulting-Type-After-Constructor-Parameter_RPAR_-next",
+     "Credential___password-_LPAR_in-Missing-Resulting-Type-After-Constructor-Parameter_RPAR_",
      "data":
      {"/Error-Explanations/About___--ctorResultingTypeMismatch/#Credential___password-_LPAR_in-Missing-Resulting-Type-After-Constructor-Parameter_RPAR_-next":
       {"display": "password",
@@ -40337,7 +40104,7 @@ window.addEventListener('DOMContentLoaded', () => {
         "Missing Resulting Type After Constructor Parameter"]}},
      "address": "/Error-Explanations/About___--ctorResultingTypeMismatch/"},
     {"id":
-     "Credential___password-_LPAR_in-Missing-Resulting-Type-After-Constructor-Parameter_RPAR_",
+     "Credential___password-_LPAR_in-Missing-Resulting-Type-After-Constructor-Parameter_RPAR_-next",
      "data":
      {"/Error-Explanations/About___--ctorResultingTypeMismatch/#Credential___password-_LPAR_in-Missing-Resulting-Type-After-Constructor-Parameter_RPAR_-next":
       {"display": "password",
@@ -40503,7 +40270,34 @@ window.addEventListener('DOMContentLoaded', () => {
         "Postfix Ascription vs  show"]}},
      "address": "/Terms/Type-Ascription/"}],
    "Color.rgb (in Missing Namespace)":
-   [{"id": "Color___rgb-_LPAR_in-Missing-Namespace_RPAR_-next-next",
+   [{"id": "Color___rgb-_LPAR_in-Missing-Namespace_RPAR_-next",
+     "data":
+     {"/Error-Explanations/About___--unknownIdentifier/#Color___rgb-_LPAR_in-Missing-Namespace_RPAR_-next-next":
+      {"display": "rgb",
+       "context":
+       ["Lean 语言参考手册",
+        "Error Explanations",
+        "About:  unknownIdentifier",
+        "Examples",
+        "Missing Namespace"]},
+      "/Error-Explanations/About___--unknownIdentifier/#Color___rgb-_LPAR_in-Missing-Namespace_RPAR_-next":
+      {"display": "rgb",
+       "context":
+       ["Lean 语言参考手册",
+        "Error Explanations",
+        "About:  unknownIdentifier",
+        "Examples",
+        "Missing Namespace"]},
+      "/Error-Explanations/About___--unknownIdentifier/#Color___rgb-_LPAR_in-Missing-Namespace_RPAR_":
+      {"display": "rgb",
+       "context":
+       ["Lean 语言参考手册",
+        "Error Explanations",
+        "About:  unknownIdentifier",
+        "Examples",
+        "Missing Namespace"]}},
+     "address": "/Error-Explanations/About___--unknownIdentifier/"},
+    {"id": "Color___rgb-_LPAR_in-Missing-Namespace_RPAR_-next-next",
      "data":
      {"/Error-Explanations/About___--unknownIdentifier/#Color___rgb-_LPAR_in-Missing-Namespace_RPAR_-next-next":
       {"display": "rgb",
@@ -40556,36 +40350,36 @@ window.addEventListener('DOMContentLoaded', () => {
         "About:  unknownIdentifier",
         "Examples",
         "Missing Namespace"]}},
-     "address": "/Error-Explanations/About___--unknownIdentifier/"},
-    {"id": "Color___rgb-_LPAR_in-Missing-Namespace_RPAR_-next",
+     "address": "/Error-Explanations/About___--unknownIdentifier/"}],
+   "Color.grayscale (in Missing Namespace)":
+   [{"id": "Color___grayscale-_LPAR_in-Missing-Namespace_RPAR_",
      "data":
-     {"/Error-Explanations/About___--unknownIdentifier/#Color___rgb-_LPAR_in-Missing-Namespace_RPAR_-next-next":
-      {"display": "rgb",
+     {"/Error-Explanations/About___--unknownIdentifier/#Color___grayscale-_LPAR_in-Missing-Namespace_RPAR_-next-next":
+      {"display": "grayscale",
        "context":
        ["Lean 语言参考手册",
         "Error Explanations",
         "About:  unknownIdentifier",
         "Examples",
         "Missing Namespace"]},
-      "/Error-Explanations/About___--unknownIdentifier/#Color___rgb-_LPAR_in-Missing-Namespace_RPAR_-next":
-      {"display": "rgb",
+      "/Error-Explanations/About___--unknownIdentifier/#Color___grayscale-_LPAR_in-Missing-Namespace_RPAR_-next":
+      {"display": "grayscale",
        "context":
        ["Lean 语言参考手册",
         "Error Explanations",
         "About:  unknownIdentifier",
         "Examples",
         "Missing Namespace"]},
-      "/Error-Explanations/About___--unknownIdentifier/#Color___rgb-_LPAR_in-Missing-Namespace_RPAR_":
-      {"display": "rgb",
+      "/Error-Explanations/About___--unknownIdentifier/#Color___grayscale-_LPAR_in-Missing-Namespace_RPAR_":
+      {"display": "grayscale",
        "context":
        ["Lean 语言参考手册",
         "Error Explanations",
         "About:  unknownIdentifier",
         "Examples",
         "Missing Namespace"]}},
-     "address": "/Error-Explanations/About___--unknownIdentifier/"}],
-   "Color.grayscale (in Missing Namespace)":
-   [{"id": "Color___grayscale-_LPAR_in-Missing-Namespace_RPAR_-next",
+     "address": "/Error-Explanations/About___--unknownIdentifier/"},
+    {"id": "Color___grayscale-_LPAR_in-Missing-Namespace_RPAR_-next",
      "data":
      {"/Error-Explanations/About___--unknownIdentifier/#Color___grayscale-_LPAR_in-Missing-Namespace_RPAR_-next-next":
       {"display": "grayscale",
@@ -40613,33 +40407,6 @@ window.addEventListener('DOMContentLoaded', () => {
         "Missing Namespace"]}},
      "address": "/Error-Explanations/About___--unknownIdentifier/"},
     {"id": "Color___grayscale-_LPAR_in-Missing-Namespace_RPAR_-next-next",
-     "data":
-     {"/Error-Explanations/About___--unknownIdentifier/#Color___grayscale-_LPAR_in-Missing-Namespace_RPAR_-next-next":
-      {"display": "grayscale",
-       "context":
-       ["Lean 语言参考手册",
-        "Error Explanations",
-        "About:  unknownIdentifier",
-        "Examples",
-        "Missing Namespace"]},
-      "/Error-Explanations/About___--unknownIdentifier/#Color___grayscale-_LPAR_in-Missing-Namespace_RPAR_-next":
-      {"display": "grayscale",
-       "context":
-       ["Lean 语言参考手册",
-        "Error Explanations",
-        "About:  unknownIdentifier",
-        "Examples",
-        "Missing Namespace"]},
-      "/Error-Explanations/About___--unknownIdentifier/#Color___grayscale-_LPAR_in-Missing-Namespace_RPAR_":
-      {"display": "grayscale",
-       "context":
-       ["Lean 语言参考手册",
-        "Error Explanations",
-        "About:  unknownIdentifier",
-        "Examples",
-        "Missing Namespace"]}},
-     "address": "/Error-Explanations/About___--unknownIdentifier/"},
-    {"id": "Color___grayscale-_LPAR_in-Missing-Namespace_RPAR_",
      "data":
      {"/Error-Explanations/About___--unknownIdentifier/#Color___grayscale-_LPAR_in-Missing-Namespace_RPAR_-next-next":
       {"display": "grayscale",
@@ -40694,7 +40461,7 @@ window.addEventListener('DOMContentLoaded', () => {
         "Examples",
         "Missing Namespace"]}},
      "address": "/Error-Explanations/About___--unknownIdentifier/"},
-    {"id": "Color-_LPAR_in-Missing-Namespace_RPAR_-next",
+    {"id": "Color-_LPAR_in-Missing-Namespace_RPAR_",
      "data":
      {"/Error-Explanations/About___--unknownIdentifier/#Color-_LPAR_in-Missing-Namespace_RPAR_-next-next":
       {"display": "Color",
@@ -40721,7 +40488,7 @@ window.addEventListener('DOMContentLoaded', () => {
         "Examples",
         "Missing Namespace"]}},
      "address": "/Error-Explanations/About___--unknownIdentifier/"},
-    {"id": "Color-_LPAR_in-Missing-Namespace_RPAR_",
+    {"id": "Color-_LPAR_in-Missing-Namespace_RPAR_-next",
      "data":
      {"/Error-Explanations/About___--unknownIdentifier/#Color-_LPAR_in-Missing-Namespace_RPAR_-next-next":
       {"display": "Color",
@@ -41711,7 +41478,7 @@ window.addEventListener('DOMContentLoaded', () => {
      "address": "/Terms/Identifiers/"}],
    "A.x (in Protected Constant Name Without Namespace Prefix)":
    [{"id":
-     "A___x-_LPAR_in-Protected-Constant-Name-Without-Namespace-Prefix_RPAR_-next",
+     "A___x-_LPAR_in-Protected-Constant-Name-Without-Namespace-Prefix_RPAR_",
      "data":
      {"/Error-Explanations/About___--unknownIdentifier/#A___x-_LPAR_in-Protected-Constant-Name-Without-Namespace-Prefix_RPAR_-next-next":
       {"display": "A.x",
@@ -41767,7 +41534,7 @@ window.addEventListener('DOMContentLoaded', () => {
         "Protected Constant Name Without Namespace Prefix"]}},
      "address": "/Error-Explanations/About___--unknownIdentifier/"},
     {"id":
-     "A___x-_LPAR_in-Protected-Constant-Name-Without-Namespace-Prefix_RPAR_",
+     "A___x-_LPAR_in-Protected-Constant-Name-Without-Namespace-Prefix_RPAR_-next",
      "data":
      {"/Error-Explanations/About___--unknownIdentifier/#A___x-_LPAR_in-Protected-Constant-Name-Without-Namespace-Prefix_RPAR_-next-next":
       {"display": "A.x",
@@ -41949,7 +41716,7 @@ window.addEventListener('DOMContentLoaded', () => {
      "address": "/The--mvcgen--tactic/Predicate-Transformers/"}],
    "verification condition":
    [{"id":
-     "--tech-term-____________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "--tech-term-____________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": {"term": "验证条件"},
      "address": "/The--mvcgen--tactic/Overview/"}],
    "vc":
@@ -41958,7 +41725,7 @@ window.addEventListener('DOMContentLoaded', () => {
      "address": "/The--mvcgen--tactic/"}],
    "upward propagation":
    [{"id":
-     "--tech-term-____________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "--tech-term-____________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": {"term": "向上传播"},
      "address": "/The--grind--tactic/Constraint-Propagation/"}],
    "universe polymorphism":
@@ -41994,8 +41761,9 @@ window.addEventListener('DOMContentLoaded', () => {
      "data": {"term": "unexpanders"},
      "address": "/Notations-and-Macros/Extending-Lean___s-Output/"}],
    "unboxed":
-   [{"id": "--tech-term-Unboxed",
-     "data": {"term": "Unboxed"},
+   [{"id":
+     "--tech-term-_________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": {"term": "非装箱"},
      "address": "/Run-Time-Code/Boxing/"}],
    "type constructor":
    [{"id": "--tech-term-_______________-next-next-next-next",
@@ -42027,7 +41795,7 @@ window.addEventListener('DOMContentLoaded', () => {
      "data": {"term": "traces"},
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "total correctness interpretation":
-   [{"id": "--tech-term-_____________________-next-next-next-next",
+   [{"id": "--tech-term-_____________________-next-next-next-next-next",
      "data": {"term": "完全正确性解释"},
      "address": "/The--mvcgen--tactic/Predicate-Transformers/"}],
    "total":
@@ -42192,7 +41960,7 @@ window.addEventListener('DOMContentLoaded', () => {
      "address": "/Notations-and-Macros/Macros/"}],
    "specification lemma":
    [{"id":
-     "--tech-term-____________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "--tech-term-____________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": {"term": "规约引理"},
      "address": "/The--mvcgen--tactic/Predicate-Transformers/"}],
    "source information":
@@ -42269,7 +42037,7 @@ window.addEventListener('DOMContentLoaded', () => {
      "address": "/Terms/Numeric-Literals/"}],
    "schematic variable":
    [{"id":
-     "--tech-term-____________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "--tech-term-____________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": {"term": "模式变量"},
      "address": "/The--mvcgen--tactic/Predicate-Transformers/"}],
    "round":
@@ -42318,8 +42086,9 @@ window.addEventListener('DOMContentLoaded', () => {
      "data": {"term": "相关类型"},
      "address": "/The Type System/Inductive Types/"}],
    "reference count":
-   [{"id": "--tech-term-reference-counting",
-     "data": {"term": "reference counting"},
+   [{"id":
+     "--tech-term-____________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": {"term": "引用计数"},
      "address": "/Run-Time-Code/Reference-Counting/"}],
    "reduction":
    [{"id": "--tech-term-______-next-next-next-next-next",
@@ -42457,12 +42226,12 @@ window.addEventListener('DOMContentLoaded', () => {
      "data": {"term": "直谓性"},
      "address": "/The Type System/Universe/"}],
    "predicate transformer semantic":
-   [{"id": "--tech-term-_____________________-next-next-next",
+   [{"id": "--tech-term-_____________________-next-next-next-next",
      "data": {"term": "谓词变换器语义"},
      "address": "/The--mvcgen--tactic/Predicate-Transformers/"}],
    "precondition":
    [{"id":
-     "--tech-term-____________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "--tech-term-____________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": {"term": "前置条件"},
      "address": "/The--mvcgen--tactic/Predicate-Transformers/"}],
    "precedence":
@@ -42484,7 +42253,7 @@ window.addEventListener('DOMContentLoaded', () => {
      "address": "/The--mvcgen--tactic/Predicate-Transformers/"}],
    "postcondition":
    [{"id":
-     "--tech-term-____________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "--tech-term-____________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": {"term": "后置条件"},
      "address": "/The--mvcgen--tactic/Predicate-Transformers/"}],
    "plausible step":
@@ -42525,7 +42294,7 @@ window.addEventListener('DOMContentLoaded', () => {
      "data": {"term": "偏正确性定理"},
      "address": "/Definitions/Recursive-Definitions/"}],
    "partial correctness interpretation":
-   [{"id": "--tech-term-_____________________-next-next-next-next-next",
+   [{"id": "--tech-term-_____________________-next-next-next-next-next-next",
      "data": {"term": "部分正确性解释"},
      "address": "/The--mvcgen--tactic/Predicate-Transformers/"}],
    "parent projection":
@@ -42555,8 +42324,9 @@ window.addEventListener('DOMContentLoaded', () => {
      "data": {"term": "package"},
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "owned":
-   [{"id": "--tech-term-owned",
-     "data": {"term": "owned"},
+   [{"id":
+     "--tech-term-______-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": {"term": "拥有"},
      "address": "/Run-Time-Code/Foreign-Function-Interface/"}],
    "output parameter":
    [{"id":
@@ -42596,10 +42366,10 @@ window.addEventListener('DOMContentLoaded', () => {
      "data": {"term": ".olean 文件"},
      "address": "/Source Files and Modules/"}],
    "notation item":
-   [{"id": "--tech-term-notation-items",
+   [{"id": "--tech-term-notation-items-next",
      "data": {"term": "notation items"},
      "address": "/Notations-and-Macros/Notations/"},
-    {"id": "--tech-term-notation-items-next",
+    {"id": "--tech-term-notation-items",
      "data": {"term": "notation items"},
      "address": "/Notations-and-Macros/Notations/"}],
    "notation":
@@ -42663,7 +42433,7 @@ window.addEventListener('DOMContentLoaded', () => {
      "address": "/Definitions/Recursive-Definitions/"}],
    "multi pattern":
    [{"id":
-     "--tech-term-_________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "--tech-term-_________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": {"term": "多模式"},
      "address": "/The--grind--tactic/E___matching/"}],
    "motive":
@@ -42724,7 +42494,7 @@ window.addEventListener('DOMContentLoaded', () => {
      "address": "/The Type System/Inductive Types/"}],
    "minimal":
    [{"id":
-     "--tech-term-_________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "--tech-term-_________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": {"term": "极小的"},
      "address": "/The--grind--tactic/E___matching/"}],
    "method":
@@ -42951,8 +42721,9 @@ window.addEventListener('DOMContentLoaded', () => {
      "data": {"term": "injections"},
      "address": "/Basic-Types/Sum-Types/"}],
    "initialize":
-   [{"id": "--tech-term-initialized",
-     "data": {"term": "initialized"},
+   [{"id":
+     "--tech-term-_________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": {"term": "初始化"},
      "address": "/Run-Time-Code/Foreign-Function-Interface/"}],
    "initialization":
    [{"id": "--tech-term-_________-next-next",
@@ -42978,7 +42749,7 @@ window.addEventListener('DOMContentLoaded', () => {
      "address": "/The Type System/Inductive Types/"}],
    "indexable":
    [{"id":
-     "--tech-term-____________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "--tech-term-____________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": {"term": "可索引的"},
      "address": "/The--grind--tactic/E___matching/"}],
    "index":
@@ -43087,7 +42858,7 @@ window.addEventListener('DOMContentLoaded', () => {
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "generation":
    [{"id":
-     "--tech-term-____________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "--tech-term-____________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": {"term": "生成层级"},
      "address": "/The--grind--tactic/E___matching/"}],
    "generalized field notation":
@@ -43122,7 +42893,7 @@ window.addEventListener('DOMContentLoaded', () => {
      "address": "/The Type System/Functions/"}],
    "forward rule":
    [{"id":
-     "--tech-term-____________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "--tech-term-____________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": {"term": "前向规则"},
      "address": "/The--grind--tactic/Constraint-Propagation/"}],
    "force":
@@ -43268,7 +43039,7 @@ window.addEventListener('DOMContentLoaded', () => {
      "address": "/Notations-and-Macros/Elaborators/"}],
    "e matching instance":
    [{"id":
-     "--tech-term-______-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "--tech-term-______-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": {"term": "实例"},
      "address": "/The--grind--tactic/E___matching/"}],
    "e matching":
@@ -43285,7 +43056,7 @@ window.addEventListener('DOMContentLoaded', () => {
      "address": "/Notations-and-Macros/Extending--do--Notation/"}],
    "downward propagation":
    [{"id":
-     "--tech-term-____________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "--tech-term-____________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": {"term": "向下传播"},
      "address": "/The--grind--tactic/Constraint-Propagation/"}],
    "domain":
@@ -43464,12 +43235,12 @@ window.addEventListener('DOMContentLoaded', () => {
      "address": "/The Type System/Universe/"}],
    "coverage":
    [{"id":
-     "--tech-term-_________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "--tech-term-_________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": {"term": "覆盖度"},
      "address": "/The--grind--tactic/E___matching/"}],
    "cover":
    [{"id":
-     "--tech-term-______-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "--tech-term-______-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": {"term": "覆盖"},
      "address": "/The--grind--tactic/E___matching/"}],
    "course of values recursion":
@@ -43495,17 +43266,17 @@ window.addEventListener('DOMContentLoaded', () => {
      "address": "/The Type System/Inductive Types/"}],
    "constraint propagation":
    [{"id":
-     "--tech-term-____________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "--tech-term-____________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": {"term": "约束传播"},
      "address": "/The--grind--tactic/Constraint-Propagation/"}],
    "conjunctive":
    [{"id":
-     "--tech-term-_________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "--tech-term-_________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": {"term": "合取的"},
      "address": "/The--mvcgen--tactic/Predicate-Transformers/"}],
    "congruence closure":
    [{"id":
-     "--tech-term-____________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "--tech-term-____________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": {"term": "同余闭包"},
      "address": "/The--grind--tactic/Congruence-Closure/"}],
    "configure package":
@@ -43618,12 +43389,14 @@ window.addEventListener('DOMContentLoaded', () => {
      "data": {"term": "带括号参数"},
      "address": "/Definitions/Headers-and-Signatures/"}],
    "boxed":
-   [{"id": "--tech-term-Boxed",
-     "data": {"term": "Boxed"},
+   [{"id":
+     "--tech-term-______-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": {"term": "装箱"},
      "address": "/Run-Time-Code/Boxing/"}],
    "borrowed":
-   [{"id": "--tech-term-borrowed",
-     "data": {"term": "borrowed"},
+   [{"id":
+     "--tech-term-______-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": {"term": "借用"},
      "address": "/Run-Time-Code/Foreign-Function-Interface/"}],
    "binary directory":
    [{"id": "--tech-term-binary-directory",
@@ -43686,8 +43459,8 @@ window.addEventListener('DOMContentLoaded', () => {
      "data": {"term": "Applicative functors"},
      "address": "/Functors___-Monads-and--do--Notation/"}],
    "application binary interface":
-   [{"id": "--tech-term-Application-Binary-Interface",
-     "data": {"term": "Application Binary Interface"},
+   [{"id": "--tech-term-_____________________-next-next-next",
+     "data": {"term": "应用二进制接口"},
      "address": "/Run-Time-Code/Foreign-Function-Interface/"}],
    "antiquotation":
    [{"id": "--tech-term-antiquotations",
@@ -43993,19 +43766,19 @@ window.addEventListener('DOMContentLoaded', () => {
      "data": {"userName": "with_unfolding_none"},
      "address": "/Tactic-Proofs/Tactic-Reference/"}],
    "Lean.Parser.Tactic.withUnfoldingAll":
-   [{"id": "with_unfolding_all-next",
+   [{"id": "with_unfolding_all",
      "data": {"userName": "with_unfolding_all"},
-     "address": "/Tactic-Proofs/Tactic-Reference/"},
-    {"id": "with_unfolding_all",
-     "data": {"userName": "with_unfolding_all"},
-     "address": "/Tactic-Proofs/The-Tactic-Language/"}],
-   "Lean.Parser.Tactic.withReducibleAndInstances":
-   [{"id": "with_reducible_and_instances",
-     "data": {"userName": "with_reducible_and_instances"},
      "address": "/Tactic-Proofs/The-Tactic-Language/"},
-    {"id": "with_reducible_and_instances-next",
-     "data": {"userName": "with_reducible_and_instances"},
+    {"id": "with_unfolding_all-next",
+     "data": {"userName": "with_unfolding_all"},
      "address": "/Tactic-Proofs/Tactic-Reference/"}],
+   "Lean.Parser.Tactic.withReducibleAndInstances":
+   [{"id": "with_reducible_and_instances-next",
+     "data": {"userName": "with_reducible_and_instances"},
+     "address": "/Tactic-Proofs/Tactic-Reference/"},
+    {"id": "with_reducible_and_instances",
+     "data": {"userName": "with_reducible_and_instances"},
+     "address": "/Tactic-Proofs/The-Tactic-Language/"}],
    "Lean.Parser.Tactic.withReducible":
    [{"id": "with_reducible",
      "data": {"userName": "with_reducible"},
@@ -44741,10 +44514,10 @@ window.addEventListener('DOMContentLoaded', () => {
   "description": null,
   "contents":
   {"«term∃_,_»":
-   [{"id": "_FLQQ_term_________FLQQ_",
+   [{"id": "_FLQQ_term_________FLQQ_-next",
      "data": null,
      "address": "/Basic-Propositions/Quantifiers/"},
-    {"id": "_FLQQ_term_________FLQQ_-next",
+    {"id": "_FLQQ_term_________FLQQ_",
      "data": null,
      "address": "/Basic-Propositions/Quantifiers/"}],
    "«term‹_›»":
@@ -44759,10 +44532,10 @@ window.addEventListener('DOMContentLoaded', () => {
      "data": null,
      "address": "/Basic-Types/Tuples/"}],
    "«termΣ'_,_»":
-   [{"id": "_FLQQ_term____________FLQQ_",
+   [{"id": "_FLQQ_term____________FLQQ_-next",
      "data": null,
      "address": "/Basic-Types/Tuples/"},
-    {"id": "_FLQQ_term____________FLQQ_-next",
+    {"id": "_FLQQ_term____________FLQQ_",
      "data": null,
      "address": "/Basic-Types/Tuples/"}],
    "«term¬_»":
@@ -44897,12 +44670,12 @@ window.addEventListener('DOMContentLoaded', () => {
      "data": null,
      "address": "/Basic-Types/Booleans/"}],
    "«term[_]»":
-   [{"id": "_FLQQ_term_LSQ___RSQ__FLQQ_-next",
+   [{"id": "_FLQQ_term_LSQ___RSQ__FLQQ_",
      "data": null,
-     "address": "/Basic-Types/Linked-Lists/"},
-    {"id": "_FLQQ_term_LSQ___RSQ__FLQQ_",
+     "address": "/Terms/Numeric-Literals/"},
+    {"id": "_FLQQ_term_LSQ___RSQ__FLQQ_-next",
      "data": null,
-     "address": "/Terms/Numeric-Literals/"}],
+     "address": "/Basic-Types/Linked-Lists/"}],
    "«termExists_,_»":
    [{"id": "_FLQQ_termExists______FLQQ_-next",
      "data": null,
@@ -44911,12 +44684,12 @@ window.addEventListener('DOMContentLoaded', () => {
      "data": null,
      "address": "/Basic-Propositions/Quantifiers/"}],
    "«term#[_,]»":
-   [{"id": "_FLQQ_term____LSQ______RSQ__FLQQ_-next",
+   [{"id": "_FLQQ_term____LSQ______RSQ__FLQQ_",
      "data": null,
-     "address": "/Basic-Types/Arrays/"},
-    {"id": "_FLQQ_term____LSQ______RSQ__FLQQ_",
+     "address": "/Terms/Numeric-Literals/"},
+    {"id": "_FLQQ_term____LSQ______RSQ__FLQQ_-next",
      "data": null,
-     "address": "/Terms/Numeric-Literals/"}],
+     "address": "/Basic-Types/Arrays/"}],
    "«stx_<|>_»":
    [{"id": "_FLQQ_stx__LT_____GT___FLQQ_",
      "data": null,
@@ -45083,10 +44856,10 @@ window.addEventListener('DOMContentLoaded', () => {
      "data": null,
      "address": "/The--mvcgen--tactic/Proof-Mode/"}],
    "Std.HashMap.«term_~m_»":
-   [{"id": "Std___HashMap____FLQQ_term____m__FLQQ_-next",
+   [{"id": "Std___HashMap____FLQQ_term____m__FLQQ_",
      "data": null,
      "address": "/Basic-Types/Maps-and-Sets/"},
-    {"id": "Std___HashMap____FLQQ_term____m__FLQQ_",
+    {"id": "Std___HashMap____FLQQ_term____m__FLQQ_-next",
      "data": null,
      "address": "/Basic-Types/Maps-and-Sets/"}],
    "Std.Do.«term⌜_⌝»":
@@ -45114,10 +44887,10 @@ window.addEventListener('DOMContentLoaded', () => {
      "data": null,
      "address": "/The--mvcgen--tactic/Predicate-Transformers/"}],
    "Std.Do.«term_⇓_=>_»":
-   [{"id": "Std___Do____FLQQ_term_________GT___FLQQ_-next",
+   [{"id": "Std___Do____FLQQ_term_________GT___FLQQ_",
      "data": null,
      "address": "/The--mvcgen--tactic/Predicate-Transformers/"},
-    {"id": "Std___Do____FLQQ_term_________GT___FLQQ_",
+    {"id": "Std___Do____FLQQ_term_________GT___FLQQ_-next",
      "data": null,
      "address": "/The--mvcgen--tactic/Predicate-Transformers/"}],
    "Std.Do.«term_⇓?_=>_»":
@@ -45137,43 +44910,18 @@ window.addEventListener('DOMContentLoaded', () => {
      "data": null,
      "address": "/The--mvcgen--tactic/Predicate-Transformers/"}],
    "Std.Do.«termSpred(_)»":
-   [{"id":
-     "Std___Do____FLQQ_termSpred_LPAR___RPAR__FLQQ_-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/The--mvcgen--tactic/Predicate-Transformers/"},
-    {"id":
-     "Std___Do____FLQQ_termSpred_LPAR___RPAR__FLQQ_-next-next-next-next-next-next",
-     "data": null,
-     "address": "/The--mvcgen--tactic/Predicate-Transformers/"},
-    {"id": "Std___Do____FLQQ_termSpred_LPAR___RPAR__FLQQ_-next",
+   [{"id": "Std___Do____FLQQ_termSpred_LPAR___RPAR__FLQQ_-next-next-next-next",
      "data": null,
      "address": "/The--mvcgen--tactic/Predicate-Transformers/"},
     {"id":
      "Std___Do____FLQQ_termSpred_LPAR___RPAR__FLQQ_-next-next-next-next-next-next-next",
      "data": null,
      "address": "/The--mvcgen--tactic/Predicate-Transformers/"},
-    {"id":
-     "Std___Do____FLQQ_termSpred_LPAR___RPAR__FLQQ_-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/The--mvcgen--tactic/Predicate-Transformers/"},
-    {"id": "Std___Do____FLQQ_termSpred_LPAR___RPAR__FLQQ_",
-     "data": null,
-     "address": "/The--mvcgen--tactic/Predicate-Transformers/"},
-    {"id": "Std___Do____FLQQ_termSpred_LPAR___RPAR__FLQQ_-next-next-next-next",
-     "data": null,
-     "address": "/The--mvcgen--tactic/Predicate-Transformers/"},
     {"id": "Std___Do____FLQQ_termSpred_LPAR___RPAR__FLQQ_-next-next",
      "data": null,
      "address": "/The--mvcgen--tactic/Predicate-Transformers/"},
-    {"id": "Std___Do____FLQQ_termSpred_LPAR___RPAR__FLQQ_-next-next-next",
-     "data": null,
-     "address": "/The--mvcgen--tactic/Predicate-Transformers/"},
     {"id":
-     "Std___Do____FLQQ_termSpred_LPAR___RPAR__FLQQ_-next-next-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/The--mvcgen--tactic/Predicate-Transformers/"},
-    {"id":
-     "Std___Do____FLQQ_termSpred_LPAR___RPAR__FLQQ_-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "Std___Do____FLQQ_termSpred_LPAR___RPAR__FLQQ_-next-next-next-next-next-next",
      "data": null,
      "address": "/The--mvcgen--tactic/Predicate-Transformers/"},
     {"id":
@@ -45181,19 +44929,11 @@ window.addEventListener('DOMContentLoaded', () => {
      "data": null,
      "address": "/The--mvcgen--tactic/Predicate-Transformers/"},
     {"id":
-     "Std___Do____FLQQ_termSpred_LPAR___RPAR__FLQQ_-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/The--mvcgen--tactic/Predicate-Transformers/"},
-    {"id":
      "Std___Do____FLQQ_termSpred_LPAR___RPAR__FLQQ_-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/The--mvcgen--tactic/Predicate-Transformers/"},
     {"id":
-     "Std___Do____FLQQ_termSpred_LPAR___RPAR__FLQQ_-next-next-next-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/The--mvcgen--tactic/Predicate-Transformers/"},
-    {"id":
-     "Std___Do____FLQQ_termSpred_LPAR___RPAR__FLQQ_-next-next-next-next-next-next-next-next-next-next-next-next",
+     "Std___Do____FLQQ_termSpred_LPAR___RPAR__FLQQ_-next-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/The--mvcgen--tactic/Predicate-Transformers/"},
     {"id":
@@ -45201,7 +44941,40 @@ window.addEventListener('DOMContentLoaded', () => {
      "data": null,
      "address": "/The--mvcgen--tactic/Predicate-Transformers/"},
     {"id":
-     "Std___Do____FLQQ_termSpred_LPAR___RPAR__FLQQ_-next-next-next-next-next-next-next-next-next",
+     "Std___Do____FLQQ_termSpred_LPAR___RPAR__FLQQ_-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/The--mvcgen--tactic/Predicate-Transformers/"},
+    {"id":
+     "Std___Do____FLQQ_termSpred_LPAR___RPAR__FLQQ_-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/The--mvcgen--tactic/Predicate-Transformers/"},
+    {"id": "Std___Do____FLQQ_termSpred_LPAR___RPAR__FLQQ_-next",
+     "data": null,
+     "address": "/The--mvcgen--tactic/Predicate-Transformers/"},
+    {"id":
+     "Std___Do____FLQQ_termSpred_LPAR___RPAR__FLQQ_-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/The--mvcgen--tactic/Predicate-Transformers/"},
+    {"id":
+     "Std___Do____FLQQ_termSpred_LPAR___RPAR__FLQQ_-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/The--mvcgen--tactic/Predicate-Transformers/"},
+    {"id":
+     "Std___Do____FLQQ_termSpred_LPAR___RPAR__FLQQ_-next-next-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/The--mvcgen--tactic/Predicate-Transformers/"},
+    {"id": "Std___Do____FLQQ_termSpred_LPAR___RPAR__FLQQ_",
+     "data": null,
+     "address": "/The--mvcgen--tactic/Predicate-Transformers/"},
+    {"id":
+     "Std___Do____FLQQ_termSpred_LPAR___RPAR__FLQQ_-next-next-next-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/The--mvcgen--tactic/Predicate-Transformers/"},
+    {"id": "Std___Do____FLQQ_termSpred_LPAR___RPAR__FLQQ_-next-next-next",
+     "data": null,
+     "address": "/The--mvcgen--tactic/Predicate-Transformers/"},
+    {"id":
+     "Std___Do____FLQQ_termSpred_LPAR___RPAR__FLQQ_-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/The--mvcgen--tactic/Predicate-Transformers/"}],
    "Std.Do.triple":
@@ -45216,24 +44989,24 @@ window.addEventListener('DOMContentLoaded', () => {
    [{"id": "Manual___FreeSyntax___more-next",
      "data": null,
      "address": "/Terms/Function-Application/"},
-    {"id": "Manual___FreeSyntax___more-next-next-next",
-     "data": null,
-     "address": "/Notations-and-Macros/Macros/"},
     {"id": "Manual___FreeSyntax___more-next-next",
      "data": null,
      "address": "/Notations-and-Macros/Macros/"},
     {"id": "Manual___FreeSyntax___more",
      "data": null,
-     "address": "/Terms/Function-Application/"}],
+     "address": "/Terms/Function-Application/"},
+    {"id": "Manual___FreeSyntax___more-next-next-next",
+     "data": null,
+     "address": "/Notations-and-Macros/Macros/"}],
    "Manual.FreeSyntax.embed":
    [{"id": "Manual___FreeSyntax___embed",
      "data": null,
      "address": "/Terms/Functions/"}],
    "Manual.FreeSyntax.done":
-   [{"id": "Manual___FreeSyntax___done-next",
+   [{"id": "Manual___FreeSyntax___done-next-next",
      "data": null,
      "address": "/Build-Tools-and-Distribution/Lake/"},
-    {"id": "Manual___FreeSyntax___done-next-next",
+    {"id": "Manual___FreeSyntax___done-next",
      "data": null,
      "address": "/Build-Tools-and-Distribution/Lake/"},
     {"id": "Manual___FreeSyntax___done",
@@ -45310,15 +45083,15 @@ window.addEventListener('DOMContentLoaded', () => {
      "address": "/Notations-and-Macros/Extending-Lean___s-Output/"}],
    "Lean.Parser.«command__Cbv_simproc____(_):=_»":
    [{"id":
-     "Lean___Parser____FLQQ_command__Cbv_simproc_____LPAR___RPAR_________FLQQ_",
-     "data": null,
-     "address": "/Tactic-Proofs/Tactic-Reference/"},
-    {"id":
      "Lean___Parser____FLQQ_command__Cbv_simproc_____LPAR___RPAR_________FLQQ_-next-next",
      "data": null,
      "address": "/Tactic-Proofs/Tactic-Reference/"},
     {"id":
      "Lean___Parser____FLQQ_command__Cbv_simproc_____LPAR___RPAR_________FLQQ_-next",
+     "data": null,
+     "address": "/Tactic-Proofs/Tactic-Reference/"},
+    {"id":
+     "Lean___Parser____FLQQ_command__Cbv_simproc_____LPAR___RPAR_________FLQQ_",
      "data": null,
      "address": "/Tactic-Proofs/Tactic-Reference/"}],
    "Lean.Parser.«command_Cbv_simproc_decl_(_):=_»":
@@ -45342,21 +45115,21 @@ window.addEventListener('DOMContentLoaded', () => {
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"}],
    "Lean.Parser.Term.typeAscription":
-   [{"id": "Lean___Parser___Term___typeAscription-next",
+   [{"id": "Lean___Parser___Term___typeAscription",
      "data": null,
-     "address": "/Terms/Type-Ascription/"},
-    {"id": "Lean___Parser___Term___typeAscription",
+     "address": "/Terms/Functions/"},
+    {"id": "Lean___Parser___Term___typeAscription-next",
      "data": null,
-     "address": "/Terms/Functions/"}],
+     "address": "/Terms/Type-Ascription/"}],
    "Lean.Parser.Term.tuple":
    [{"id": "Lean___Parser___Term___tuple",
      "data": null,
      "address": "/Basic-Types/Tuples/"}],
    "Lean.Parser.Term.syntheticHole":
-   [{"id": "Lean___Parser___Term___syntheticHole-next",
+   [{"id": "Lean___Parser___Term___syntheticHole",
      "data": null,
      "address": "/Terms/Holes/"},
-    {"id": "Lean___Parser___Term___syntheticHole",
+    {"id": "Lean___Parser___Term___syntheticHole-next",
      "data": null,
      "address": "/Terms/Holes/"}],
    "Lean.Parser.Term.subst":
@@ -45381,12 +45154,12 @@ window.addEventListener('DOMContentLoaded', () => {
    [{"id": "Lean___Parser___Term___strictImplicitBinder",
      "data": null,
      "address": "/Definitions/Headers-and-Signatures/"},
-    {"id": "Lean___Parser___Term___strictImplicitBinder-next",
-     "data": null,
-     "address": "/Definitions/Headers-and-Signatures/"},
     {"id": "Lean___Parser___Term___strictImplicitBinder-next-next-next",
      "data": null,
      "address": "/Terms/Functions/"},
+    {"id": "Lean___Parser___Term___strictImplicitBinder-next",
+     "data": null,
+     "address": "/Definitions/Headers-and-Signatures/"},
     {"id": "Lean___Parser___Term___strictImplicitBinder-next-next",
      "data": null,
      "address": "/Terms/Functions/"}],
@@ -45406,10 +45179,10 @@ window.addEventListener('DOMContentLoaded', () => {
      "data": null,
      "address": "/Terms/Function-Application/"}],
    "Lean.Parser.Term.pipeProj":
-   [{"id": "Lean___Parser___Term___pipeProj",
+   [{"id": "Lean___Parser___Term___pipeProj-next",
      "data": null,
      "address": "/Terms/Function-Application/"},
-    {"id": "Lean___Parser___Term___pipeProj-next",
+    {"id": "Lean___Parser___Term___pipeProj",
      "data": null,
      "address": "/Terms/Function-Application/"}],
    "Lean.Parser.Term.paren":
@@ -45446,10 +45219,10 @@ window.addEventListener('DOMContentLoaded', () => {
    [{"id": "Lean___Parser___Term___instBinder",
      "data": null,
      "address": "/Definitions/Headers-and-Signatures/"},
-    {"id": "Lean___Parser___Term___instBinder-next-next",
+    {"id": "Lean___Parser___Term___instBinder-next",
      "data": null,
      "address": "/Terms/Functions/"},
-    {"id": "Lean___Parser___Term___instBinder-next",
+    {"id": "Lean___Parser___Term___instBinder-next-next",
      "data": null,
      "address": "/Terms/Functions/"}],
    "Lean.Parser.Term.inaccessible":
@@ -45460,10 +45233,10 @@ window.addEventListener('DOMContentLoaded', () => {
    [{"id": "Lean___Parser___Term___implicitBinder",
      "data": null,
      "address": "/Definitions/Headers-and-Signatures/"},
-    {"id": "Lean___Parser___Term___implicitBinder-next",
+    {"id": "Lean___Parser___Term___implicitBinder-next-next",
      "data": null,
      "address": "/Terms/Functions/"},
-    {"id": "Lean___Parser___Term___implicitBinder-next-next",
+    {"id": "Lean___Parser___Term___implicitBinder-next",
      "data": null,
      "address": "/Terms/Functions/"}],
    "Lean.Parser.Term.hole":
@@ -45471,35 +45244,35 @@ window.addEventListener('DOMContentLoaded', () => {
      "data": null,
      "address": "/Terms/Holes/"}],
    "Lean.Parser.Term.fun":
-   [{"id": "Lean___Parser___Term___fun-next-next-next-next-next",
-     "data": null,
-     "address": "/Terms/Pattern-Matching/"},
-    {"id": "Lean___Parser___Term___fun-next-next-next",
-     "data": null,
-     "address": "/Terms/Functions/"},
-    {"id": "Lean___Parser___Term___fun",
+   [{"id": "Lean___Parser___Term___fun-next-next-next-next",
      "data": null,
      "address": "/Terms/Functions/"},
     {"id": "Lean___Parser___Term___fun-next-next",
      "data": null,
      "address": "/Terms/Functions/"},
-    {"id": "Lean___Parser___Term___fun-next-next-next-next",
+    {"id": "Lean___Parser___Term___fun-next",
      "data": null,
      "address": "/Terms/Functions/"},
-    {"id": "Lean___Parser___Term___fun-next",
+    {"id": "Lean___Parser___Term___fun-next-next-next-next-next",
+     "data": null,
+     "address": "/Terms/Pattern-Matching/"},
+    {"id": "Lean___Parser___Term___fun",
+     "data": null,
+     "address": "/Terms/Functions/"},
+    {"id": "Lean___Parser___Term___fun-next-next-next",
      "data": null,
      "address": "/Terms/Functions/"}],
    "Lean.Parser.Term.forall":
-   [{"id": "Lean___Parser___Term___forall",
-     "data": null,
-     "address": "/Basic-Propositions/Quantifiers/"},
-    {"id": "Lean___Parser___Term___forall-next-next-next",
+   [{"id": "Lean___Parser___Term___forall-next-next-next",
      "data": null,
      "address": "/Basic-Propositions/Quantifiers/"},
     {"id": "Lean___Parser___Term___forall-next-next",
      "data": null,
      "address": "/Basic-Propositions/Quantifiers/"},
     {"id": "Lean___Parser___Term___forall-next",
+     "data": null,
+     "address": "/Basic-Propositions/Quantifiers/"},
+    {"id": "Lean___Parser___Term___forall",
      "data": null,
      "address": "/Basic-Propositions/Quantifiers/"}],
    "Lean.Parser.Term.explicitBinder":
@@ -45511,59 +45284,28 @@ window.addEventListener('DOMContentLoaded', () => {
      "address": "/Definitions/Headers-and-Signatures/"}],
    "Lean.Parser.Term.doSeqItem":
    [{"id":
-     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
-    {"id":
-     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
-    {"id": "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next",
-     "data": null,
-     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
-    {"id":
-     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
-    {"id":
-     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
-    {"id": "Lean___Parser___Term___doSeqItem-next",
-     "data": null,
-     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
-    {"id":
-     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
-    {"id":
      "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
     {"id":
-     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
-    {"id": "Lean___Parser___Term___doSeqItem-next-next-next-next",
-     "data": null,
-     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
-    {"id": "Lean___Parser___Term___doSeqItem-next-next-next",
+     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
     {"id":
      "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
-    {"id":
-     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+    {"id": "Lean___Parser___Term___doSeqItem-next",
+     "data": null,
+     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
+    {"id": "Lean___Parser___Term___doSeqItem-next-next-next-next",
+     "data": null,
+     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
+    {"id": "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
     {"id":
-     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
-    {"id":
-     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
     {"id":
@@ -45575,21 +45317,52 @@ window.addEventListener('DOMContentLoaded', () => {
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
     {"id":
+     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
+    {"id":
+     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
+    {"id": "Lean___Parser___Term___doSeqItem-next-next-next",
+     "data": null,
+     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
+    {"id":
+     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
+    {"id":
+     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
+    {"id":
      "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
+    {"id":
+     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
+    {"id":
+     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
+    {"id":
+     "Lean___Parser___Term___doSeqItem-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"}],
    "Lean.Parser.Term.doReassignArrow":
-   [{"id": "Lean___Parser___Term___doReassignArrow",
+   [{"id": "Lean___Parser___Term___doReassignArrow-next",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
-    {"id": "Lean___Parser___Term___doReassignArrow-next",
+    {"id": "Lean___Parser___Term___doReassignArrow",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"}],
    "Lean.Parser.Term.doReassign":
-   [{"id": "Lean___Parser___Term___doReassign",
+   [{"id": "Lean___Parser___Term___doReassign-next",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
-    {"id": "Lean___Parser___Term___doReassign-next",
+    {"id": "Lean___Parser___Term___doReassign",
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"}],
    "Lean.Parser.Term.do":
@@ -45597,35 +45370,35 @@ window.addEventListener('DOMContentLoaded', () => {
      "data": null,
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"}],
    "Lean.Parser.Term.depArrow":
-   [{"id": "Lean___Parser___Term___depArrow",
-     "data": null,
-     "address": "/Terms/Function-Types/"},
-    {"id": "Lean___Parser___Term___depArrow-next-next-next",
-     "data": null,
-     "address": "/Terms/Function-Types/"},
-    {"id": "Lean___Parser___Term___depArrow-next-next",
-     "data": null,
-     "address": "/Terms/Function-Types/"},
-    {"id": "Lean___Parser___Term___depArrow-next-next-next-next-next-next",
-     "data": null,
-     "address": "/Terms/Function-Types/"},
-    {"id": "Lean___Parser___Term___depArrow-next",
+   [{"id": "Lean___Parser___Term___depArrow-next",
      "data": null,
      "address": "/Terms/Function-Types/"},
     {"id": "Lean___Parser___Term___depArrow-next-next-next-next-next-next-next",
      "data": null,
      "address": "/Terms/Function-Types/"},
-    {"id": "Lean___Parser___Term___depArrow-next-next-next-next",
+    {"id": "Lean___Parser___Term___depArrow-next-next",
      "data": null,
      "address": "/Terms/Function-Types/"},
     {"id": "Lean___Parser___Term___depArrow-next-next-next-next-next",
      "data": null,
+     "address": "/Terms/Function-Types/"},
+    {"id": "Lean___Parser___Term___depArrow-next-next-next-next-next-next",
+     "data": null,
+     "address": "/Terms/Function-Types/"},
+    {"id": "Lean___Parser___Term___depArrow-next-next-next",
+     "data": null,
+     "address": "/Terms/Function-Types/"},
+    {"id": "Lean___Parser___Term___depArrow",
+     "data": null,
+     "address": "/Terms/Function-Types/"},
+    {"id": "Lean___Parser___Term___depArrow-next-next-next-next",
+     "data": null,
      "address": "/Terms/Function-Types/"}],
    "Lean.Parser.Term.byTactic":
-   [{"id": "Lean___Parser___Term___byTactic-next-next",
+   [{"id": "Lean___Parser___Term___byTactic-next",
      "data": null,
      "address": "/Tactic-Proofs/Running-Tactics/"},
-    {"id": "Lean___Parser___Term___byTactic-next",
+    {"id": "Lean___Parser___Term___byTactic-next-next",
      "data": null,
      "address": "/Tactic-Proofs/Running-Tactics/"}],
    "Lean.Parser.Term.borrowed":
@@ -45667,16 +45440,16 @@ window.addEventListener('DOMContentLoaded', () => {
      "data": null,
      "address": "/Tactic-Proofs/The-Tactic-Language/"}],
    "Lean.Parser.Tactic.configItem":
-   [{"id": "Lean___Parser___Tactic___configItem-next-next-next",
-     "data": null,
-     "address": "/Tactic-Proofs/The-Tactic-Language/"},
-    {"id": "Lean___Parser___Tactic___configItem-next-next-next-next",
-     "data": null,
-     "address": "/Tactic-Proofs/The-Tactic-Language/"},
-    {"id": "Lean___Parser___Tactic___configItem-next",
+   [{"id": "Lean___Parser___Tactic___configItem-next-next-next-next",
      "data": null,
      "address": "/Tactic-Proofs/The-Tactic-Language/"},
     {"id": "Lean___Parser___Tactic___configItem-next-next",
+     "data": null,
+     "address": "/Tactic-Proofs/The-Tactic-Language/"},
+    {"id": "Lean___Parser___Tactic___configItem-next-next-next",
+     "data": null,
+     "address": "/Tactic-Proofs/The-Tactic-Language/"},
+    {"id": "Lean___Parser___Tactic___configItem-next",
      "data": null,
      "address": "/Tactic-Proofs/The-Tactic-Language/"}],
    "Lean.Parser.Tactic.cbv":
@@ -45684,23 +45457,23 @@ window.addEventListener('DOMContentLoaded', () => {
      "data": null,
      "address": "/Tactic-Proofs/Tactic-Reference/"}],
    "Lean.Parser.Tactic.Conv.enterArg":
-   [{"id": "Lean___Parser___Tactic___Conv___enterArg-next",
+   [{"id": "Lean___Parser___Tactic___Conv___enterArg-next-next-next",
+     "data": null,
+     "address": "/Tactic-Proofs/Targeted-Rewriting-with--conv/"},
+    {"id": "Lean___Parser___Tactic___Conv___enterArg-next",
      "data": null,
      "address": "/Tactic-Proofs/Targeted-Rewriting-with--conv/"},
     {"id": "Lean___Parser___Tactic___Conv___enterArg-next-next",
      "data": null,
-     "address": "/Tactic-Proofs/Targeted-Rewriting-with--conv/"},
-    {"id": "Lean___Parser___Tactic___Conv___enterArg-next-next-next",
-     "data": null,
      "address": "/Tactic-Proofs/Targeted-Rewriting-with--conv/"}],
    "Lean.Parser.Syntax.unary":
-   [{"id": "Lean___Parser___Syntax___unary-next",
-     "data": null,
-     "address": "/Notations-and-Macros/Defining-New-Syntax/"},
-    {"id": "Lean___Parser___Syntax___unary",
+   [{"id": "Lean___Parser___Syntax___unary",
      "data": null,
      "address": "/Notations-and-Macros/Defining-New-Syntax/"},
     {"id": "Lean___Parser___Syntax___unary-next-next",
+     "data": null,
+     "address": "/Notations-and-Macros/Defining-New-Syntax/"},
+    {"id": "Lean___Parser___Syntax___unary-next",
      "data": null,
      "address": "/Notations-and-Macros/Defining-New-Syntax/"}],
    "Lean.Parser.Syntax.subPrio":
@@ -45712,20 +45485,20 @@ window.addEventListener('DOMContentLoaded', () => {
      "data": null,
      "address": "/Notations-and-Macros/Precedence/"}],
    "Lean.Parser.Syntax.sepBy1":
-   [{"id": "Lean___Parser___Syntax___sepBy1-next",
+   [{"id": "Lean___Parser___Syntax___sepBy1",
      "data": null,
      "address": "/Notations-and-Macros/Defining-New-Syntax/"},
     {"id": "Lean___Parser___Syntax___sepBy1-next-next",
      "data": null,
      "address": "/Notations-and-Macros/Defining-New-Syntax/"},
-    {"id": "Lean___Parser___Syntax___sepBy1",
+    {"id": "Lean___Parser___Syntax___sepBy1-next",
      "data": null,
      "address": "/Notations-and-Macros/Defining-New-Syntax/"}],
    "Lean.Parser.Syntax.sepBy":
-   [{"id": "Lean___Parser___Syntax___sepBy-next",
+   [{"id": "Lean___Parser___Syntax___sepBy",
      "data": null,
      "address": "/Notations-and-Macros/Defining-New-Syntax/"},
-    {"id": "Lean___Parser___Syntax___sepBy",
+    {"id": "Lean___Parser___Syntax___sepBy-next",
      "data": null,
      "address": "/Notations-and-Macros/Defining-New-Syntax/"},
     {"id": "Lean___Parser___Syntax___sepBy-next-next",
@@ -45886,13 +45659,13 @@ window.addEventListener('DOMContentLoaded', () => {
     {"id": "Lean___Parser___Command___mixfix-next",
      "data": null,
      "address": "/Notations-and-Macros/Custom-Operators/"},
-    {"id": "Lean___Parser___Command___mixfix",
+    {"id": "Lean___Parser___Command___mixfix-next-next-next",
      "data": null,
      "address": "/Notations-and-Macros/Custom-Operators/"},
     {"id": "Lean___Parser___Command___mixfix-next-next",
      "data": null,
      "address": "/Notations-and-Macros/Custom-Operators/"},
-    {"id": "Lean___Parser___Command___mixfix-next-next-next",
+    {"id": "Lean___Parser___Command___mixfix",
      "data": null,
      "address": "/Notations-and-Macros/Custom-Operators/"}],
    "Lean.Parser.Command.macro_rules":
@@ -45900,10 +45673,10 @@ window.addEventListener('DOMContentLoaded', () => {
      "data": null,
      "address": "/Notations-and-Macros/Macros/"}],
    "Lean.Parser.Command.macroArg":
-   [{"id": "Lean___Parser___Command___macroArg-next",
+   [{"id": "Lean___Parser___Command___macroArg-next-next",
      "data": null,
      "address": "/Notations-and-Macros/Macros/"},
-    {"id": "Lean___Parser___Command___macroArg-next-next",
+    {"id": "Lean___Parser___Command___macroArg-next",
      "data": null,
      "address": "/Notations-and-Macros/Macros/"}],
    "Lean.Parser.Command.macro":
@@ -46095,44 +45868,36 @@ window.addEventListener('DOMContentLoaded', () => {
      "data": null,
      "address": "/The--mvcgen--tactic/Predicate-Transformers/"}],
    "Lean.Parser.Attr.simple":
-   [{"id": "Lean___Parser___Attr___simple-next-next-next-next-next-next",
+   [{"id":
+     "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
-     "address": "/Terms/Function-Application/"},
-    {"id":
-     "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/Build-Tools-and-Distribution/Lake/"},
-    {"id":
-     "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/Build-Tools-and-Distribution/Lake/"},
+     "address": "/Notations-and-Macros/Extending-Lean___s-Output/"},
     {"id":
      "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/Notations-and-Macros/Extending-Lean___s-Output/"},
+    {"id":
+     "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/Build-Tools-and-Distribution/Lake/"},
     {"id": "Lean___Parser___Attr___simple-next-next-next-next-next-next-next",
      "data": null,
      "address": "/Terms/Pattern-Matching/"},
-    {"id":
-     "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next-next-next",
+    {"id": "Lean___Parser___Attr___simple-next-next-next-next-next-next",
      "data": null,
-     "address": "/Tactic-Proofs/Tactic-Reference/"},
-    {"id":
-     "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/Notations-and-Macros/Extending--do--Notation/"},
-    {"id":
-     "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/Notations-and-Macros/Elaborators/"},
+     "address": "/Terms/Function-Application/"},
     {"id":
      "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/Notations-and-Macros/Elaborators/"},
     {"id":
-     "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
-     "address": "/Notations-and-Macros/Extending-Lean___s-Output/"},
+     "address": "/Notations-and-Macros/Elaborators/"},
+    {"id":
+     "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/Tactic-Proofs/Tactic-Reference/"},
     {"id": "Lean___Parser___Attr___simple-next-next-next-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
@@ -46140,16 +45905,16 @@ window.addEventListener('DOMContentLoaded', () => {
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
     {"id":
-     "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next-next-next-next",
+     "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
-     "address": "/Tactic-Proofs/Tactic-Reference/"},
+     "address": "/Notations-and-Macros/Extending--do--Notation/"},
     {"id": "Lean___Parser___Attr___simple-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
     {"id":
-     "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
-     "address": "/Notations-and-Macros/Elaborators/"},
+     "address": "/Notations-and-Macros/Extending--do--Notation/"},
     {"id":
      "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next",
      "data": null,
@@ -46162,30 +45927,38 @@ window.addEventListener('DOMContentLoaded', () => {
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
     {"id":
-     "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/Notations-and-Macros/Extending--do--Notation/"},
-    {"id":
-     "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next",
+     "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/Tactic-Proofs/Tactic-Reference/"},
+    {"id":
+     "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/Tactic-Proofs/Tactic-Reference/"},
+    {"id":
+     "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/Notations-and-Macros/Elaborators/"},
     {"id": "Lean___Parser___Attr___simple-next-next-next",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"},
+    {"id":
+     "Lean___Parser___Attr___simple-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/Build-Tools-and-Distribution/Lake/"},
     {"id": "Lean___Parser___Attr___simple",
      "data": null,
      "address": "/Definitions/Recursive-Definitions/"}],
    "Lean.Parser.Attr.simp":
-   [{"id": "Lean___Parser___Attr___simp-next-next",
-     "data": null,
-     "address": "/The-Simplifier/Simp-sets/"},
-    {"id": "Lean___Parser___Attr___simp-next",
+   [{"id": "Lean___Parser___Attr___simp-next",
      "data": null,
      "address": "/The-Simplifier/Simp-sets/"},
     {"id": "Lean___Parser___Attr___simp",
      "data": null,
      "address": "/The-Simplifier/Simp-sets/"},
     {"id": "Lean___Parser___Attr___simp-next-next-next",
+     "data": null,
+     "address": "/The-Simplifier/Simp-sets/"},
+    {"id": "Lean___Parser___Attr___simp-next-next",
      "data": null,
      "address": "/The-Simplifier/Simp-sets/"}],
    "Lean.Parser.Attr.macro":
@@ -46198,7 +45971,25 @@ window.addEventListener('DOMContentLoaded', () => {
      "address": "/Type-Classes/Instance-Declarations/"}],
    "Lean.Parser.Attr.grindMod":
    [{"id":
-     "Lean___Parser___Attr___grindMod-next-next-next-next-next-next-next-next-next-next-next-next",
+     "Lean___Parser___Attr___grindMod-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/The--grind--tactic/E___matching/"},
+    {"id":
+     "Lean___Parser___Attr___grindMod-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/The--grind--tactic/E___matching/"},
+    {"id": "Lean___Parser___Attr___grindMod-next-next-next-next-next-next",
+     "data": null,
+     "address": "/The--grind--tactic/E___matching/"},
+    {"id":
+     "Lean___Parser___Attr___grindMod-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/The--grind--tactic/E___matching/"},
+    {"id": "Lean___Parser___Attr___grindMod-next",
+     "data": null,
+     "address": "/The--grind--tactic/E___matching/"},
+    {"id":
+     "Lean___Parser___Attr___grindMod-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/The--grind--tactic/E___matching/"},
     {"id":
@@ -46210,28 +46001,7 @@ window.addEventListener('DOMContentLoaded', () => {
      "data": null,
      "address": "/The--grind--tactic/E___matching/"},
     {"id":
-     "Lean___Parser___Attr___grindMod-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/The--grind--tactic/E___matching/"},
-    {"id": "Lean___Parser___Attr___grindMod-next",
-     "data": null,
-     "address": "/The--grind--tactic/E___matching/"},
-    {"id": "Lean___Parser___Attr___grindMod-next-next",
-     "data": null,
-     "address": "/The--grind--tactic/E___matching/"},
-    {"id": "Lean___Parser___Attr___grindMod-next-next-next-next",
-     "data": null,
-     "address": "/The--grind--tactic/E___matching/"},
-    {"id":
-     "Lean___Parser___Attr___grindMod-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/The--grind--tactic/E___matching/"},
-    {"id":
-     "Lean___Parser___Attr___grindMod-next-next-next-next-next-next-next-next",
-     "data": null,
-     "address": "/The--grind--tactic/E___matching/"},
-    {"id":
-     "Lean___Parser___Attr___grindMod-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "Lean___Parser___Attr___grindMod-next-next-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/The--grind--tactic/E___matching/"},
     {"id":
@@ -46239,7 +46009,7 @@ window.addEventListener('DOMContentLoaded', () => {
      "data": null,
      "address": "/The--grind--tactic/E___matching/"},
     {"id":
-     "Lean___Parser___Attr___grindMod-next-next-next-next-next-next-next-next-next-next",
+     "Lean___Parser___Attr___grindMod-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/The--grind--tactic/E___matching/"},
     {"id":
@@ -46247,30 +46017,33 @@ window.addEventListener('DOMContentLoaded', () => {
      "data": null,
      "address": "/The--grind--tactic/E___matching/"},
     {"id":
-     "Lean___Parser___Attr___grindMod-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "Lean___Parser___Attr___grindMod-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/The--grind--tactic/E___matching/"},
-    {"id":
-     "Lean___Parser___Attr___grindMod-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+    {"id": "Lean___Parser___Attr___grindMod-next-next-next-next",
      "data": null,
      "address": "/The--grind--tactic/E___matching/"},
     {"id":
      "Lean___Parser___Attr___grindMod-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/The--grind--tactic/E___matching/"},
+    {"id": "Lean___Parser___Attr___grindMod-next-next",
+     "data": null,
+     "address": "/The--grind--tactic/E___matching/"},
     {"id":
-     "Lean___Parser___Attr___grindMod-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "Lean___Parser___Attr___grindMod-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": null,
+     "address": "/The--grind--tactic/E___matching/"},
+    {"id":
+     "Lean___Parser___Attr___grindMod-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/The--grind--tactic/E___matching/"},
     {"id":
      "Lean___Parser___Attr___grindMod-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/The--grind--tactic/E___matching/"},
-    {"id": "Lean___Parser___Attr___grindMod-next-next-next-next-next-next",
-     "data": null,
-     "address": "/The--grind--tactic/E___matching/"},
     {"id":
-     "Lean___Parser___Attr___grindMod-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "Lean___Parser___Attr___grindMod-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
      "data": null,
      "address": "/The--grind--tactic/E___matching/"}],
    "Lean.Parser.Attr.grind?":
@@ -46286,15 +46059,15 @@ window.addEventListener('DOMContentLoaded', () => {
      "data": null,
      "address": "/The--grind--tactic/E___matching/"}],
    "Lean.Parser.Attr.grind":
-   [{"id": "Lean___Parser___Attr___grind",
+   [{"id": "Lean___Parser___Attr___grind-next",
+     "data": null,
+     "address": "/The--grind--tactic/Case-Analysis/"},
+    {"id": "Lean___Parser___Attr___grind",
      "data": null,
      "address": "/The--grind--tactic/Case-Analysis/"},
     {"id": "Lean___Parser___Attr___grind-next-next",
      "data": null,
-     "address": "/The--grind--tactic/E___matching/"},
-    {"id": "Lean___Parser___Attr___grind-next",
-     "data": null,
-     "address": "/The--grind--tactic/Case-Analysis/"}],
+     "address": "/The--grind--tactic/E___matching/"}],
    "Lean.Parser.Attr.extern":
    [{"id": "Lean___Parser___Attr___extern",
      "data": null,
@@ -46318,13 +46091,13 @@ window.addEventListener('DOMContentLoaded', () => {
    [{"id": "Lean___Parser___Attr___cbvSimprocAttr-next-next-next",
      "data": null,
      "address": "/Tactic-Proofs/Tactic-Reference/"},
+    {"id": "Lean___Parser___Attr___cbvSimprocAttr-next-next",
+     "data": null,
+     "address": "/Tactic-Proofs/Tactic-Reference/"},
     {"id": "Lean___Parser___Attr___cbvSimprocAttr",
      "data": null,
      "address": "/Tactic-Proofs/Tactic-Reference/"},
     {"id": "Lean___Parser___Attr___cbvSimprocAttr-next",
-     "data": null,
-     "address": "/Tactic-Proofs/Tactic-Reference/"},
-    {"id": "Lean___Parser___Attr___cbvSimprocAttr-next-next",
      "data": null,
      "address": "/Tactic-Proofs/Tactic-Reference/"}],
    "Lean.Attr.coe":
@@ -46356,13 +46129,13 @@ window.addEventListener('DOMContentLoaded', () => {
      "data": null,
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "Lake.DSL.packageCommand":
-   [{"id": "Lake___DSL___packageCommand",
+   [{"id": "Lake___DSL___packageCommand-next",
+     "data": null,
+     "address": "/Build-Tools-and-Distribution/Lake/"},
+    {"id": "Lake___DSL___packageCommand",
      "data": null,
      "address": "/Build-Tools-and-Distribution/Lake/"},
     {"id": "Lake___DSL___packageCommand-next-next",
-     "data": null,
-     "address": "/Build-Tools-and-Distribution/Lake/"},
-    {"id": "Lake___DSL___packageCommand-next",
      "data": null,
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "Lake.DSL.moduleFacetDecl":
@@ -46378,23 +46151,23 @@ window.addEventListener('DOMContentLoaded', () => {
      "data": null,
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "Lake.DSL.leanLibCommand":
-   [{"id": "Lake___DSL___leanLibCommand",
-     "data": null,
-     "address": "/Build-Tools-and-Distribution/Lake/"},
-    {"id": "Lake___DSL___leanLibCommand-next-next",
+   [{"id": "Lake___DSL___leanLibCommand-next-next",
      "data": null,
      "address": "/Build-Tools-and-Distribution/Lake/"},
     {"id": "Lake___DSL___leanLibCommand-next",
      "data": null,
+     "address": "/Build-Tools-and-Distribution/Lake/"},
+    {"id": "Lake___DSL___leanLibCommand",
+     "data": null,
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "Lake.DSL.leanExeCommand":
-   [{"id": "Lake___DSL___leanExeCommand",
+   [{"id": "Lake___DSL___leanExeCommand-next",
      "data": null,
      "address": "/Build-Tools-and-Distribution/Lake/"},
     {"id": "Lake___DSL___leanExeCommand-next-next",
      "data": null,
      "address": "/Build-Tools-and-Distribution/Lake/"},
-    {"id": "Lake___DSL___leanExeCommand-next",
+    {"id": "Lake___DSL___leanExeCommand",
      "data": null,
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "Lake.DSL.getConfig":
@@ -46421,10 +46194,10 @@ window.addEventListener('DOMContentLoaded', () => {
      "data": null,
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "Lake.DSL.cmdDo":
-   [{"id": "Lake___DSL___cmdDo-next",
+   [{"id": "Lake___DSL___cmdDo",
      "data": null,
      "address": "/Build-Tools-and-Distribution/Lake/"},
-    {"id": "Lake___DSL___cmdDo",
+    {"id": "Lake___DSL___cmdDo-next",
      "data": null,
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "Int.«term-[_+1]»":
@@ -46994,77 +46767,77 @@ window.addEventListener('DOMContentLoaded', () => {
      "data": null,
      "address": "/Basic-Propositions/Logical-Connectives/"}],
    "[anonymous]":
-   [{"id": "GetElem______mk",
+   [{"id": "Monad___mk",
+     "data": null,
+     "address": "/Functors___-Monads-and--do--Notation/"},
+    {"id": "Alternative___mk",
+     "data": null,
+     "address": "/Functors___-Monads-and--do--Notation/"},
+    {"id": "Applicative___mk",
+     "data": null,
+     "address": "/Functors___-Monads-and--do--Notation/"},
+    {"id": "GetElem______mk",
      "data": null,
      "address": "/Type-Classes/Basic-Classes/"},
-    {"id": "Lean___Grind___OrderedRing___mk",
+    {"id": "Lean___Grind___CommSemiring___mk",
      "data": null,
-     "address": "/The--grind--tactic/Linear-Arithmetic-Solver/"},
-    {"id": "Lake___LeanExeConfig___mk",
+     "address":
+     "/The--grind--tactic/Algebraic-Solver-_LPAR_Commutative-Rings___-Fields_RPAR_/"},
+    {"id": "Lake___LeanLibConfig___mk",
      "data": null,
      "address": "/Build-Tools-and-Distribution/Lake/"},
+    {"id": "LawfulBEq___mk",
+     "data": null,
+     "address": "/Type-Classes/Basic-Classes/"},
+    {"id": "IO___Process___SpawnArgs___mk",
+     "data": null,
+     "address": "/IO/Processes/"},
+    {"id": "LawfulApplicative___mk",
+     "data": null,
+     "address": "/Functors___-Monads-and--do--Notation/Laws/"},
+    {"id": "Lean___Grind___Semiring___mk",
+     "data": null,
+     "address":
+     "/The--grind--tactic/Algebraic-Solver-_LPAR_Commutative-Rings___-Fields_RPAR_/"},
+    {"id": "Lean___Grind___CommRing___mk",
+     "data": null,
+     "address":
+     "/The--grind--tactic/Algebraic-Solver-_LPAR_Commutative-Rings___-Fields_RPAR_/"},
+    {"id": "LawfulMonad___mk",
+     "data": null,
+     "address": "/Functors___-Monads-and--do--Notation/Laws/"},
+    {"id": "Lean___Order___CCPO___mk",
+     "data": null,
+     "address": "/Definitions/Recursive-Definitions/"},
     {"id": "Lean___Grind___NatModule___mk",
      "data": null,
      "address": "/The--grind--tactic/Linear-Arithmetic-Solver/"},
     {"id": "Lean___Grind___IntModule___mk",
      "data": null,
      "address": "/The--grind--tactic/Linear-Arithmetic-Solver/"},
-    {"id": "Monad___mk",
+    {"id": "Std___Do___WPMonad___mk",
      "data": null,
-     "address": "/Functors___-Monads-and--do--Notation/"},
-    {"id": "LawfulBEq___mk",
+     "address": "/The--mvcgen--tactic/Predicate-Transformers/"},
+    {"id": "Lean___Order___CompleteLattice___mk",
      "data": null,
-     "address": "/Type-Classes/Basic-Classes/"},
-    {"id": "Alternative___mk",
+     "address": "/Definitions/Recursive-Definitions/"},
+    {"id": "Lean___Grind___OrderedRing___mk",
      "data": null,
-     "address": "/Functors___-Monads-and--do--Notation/"},
-    {"id": "IO___Process___SpawnArgs___mk",
+     "address": "/The--grind--tactic/Linear-Arithmetic-Solver/"},
+    {"id": "Lake___LeanExeConfig___mk",
      "data": null,
-     "address": "/IO/Processes/"},
-    {"id": "LawfulMonad___mk",
-     "data": null,
-     "address": "/Functors___-Monads-and--do--Notation/Laws/"},
-    {"id": "Lean___Grind___Ring___mk",
-     "data": null,
-     "address":
-     "/The--grind--tactic/Algebraic-Solver-_LPAR_Commutative-Rings___-Fields_RPAR_/"},
+     "address": "/Build-Tools-and-Distribution/Lake/"},
     {"id": "Lean___Grind___Field___mk",
      "data": null,
      "address":
      "/The--grind--tactic/Algebraic-Solver-_LPAR_Commutative-Rings___-Fields_RPAR_/"},
-    {"id": "Lean___Order___CCPO___mk",
-     "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "Lean___Order___CompleteLattice___mk",
-     "data": null,
-     "address": "/Definitions/Recursive-Definitions/"},
-    {"id": "Std___Do___WPMonad___mk",
-     "data": null,
-     "address": "/The--mvcgen--tactic/Predicate-Transformers/"},
-    {"id": "Lean___Grind___CommRing___mk",
-     "data": null,
-     "address":
-     "/The--grind--tactic/Algebraic-Solver-_LPAR_Commutative-Rings___-Fields_RPAR_/"},
-    {"id": "Lean___Grind___CommSemiring___mk",
+    {"id": "Lean___Grind___Ring___mk",
      "data": null,
      "address":
      "/The--grind--tactic/Algebraic-Solver-_LPAR_Commutative-Rings___-Fields_RPAR_/"},
     {"id": "EquivBEq___mk",
      "data": null,
-     "address": "/Type-Classes/Basic-Classes/"},
-    {"id": "Lean___Grind___Semiring___mk",
-     "data": null,
-     "address":
-     "/The--grind--tactic/Algebraic-Solver-_LPAR_Commutative-Rings___-Fields_RPAR_/"},
-    {"id": "LawfulApplicative___mk",
-     "data": null,
-     "address": "/Functors___-Monads-and--do--Notation/Laws/"},
-    {"id": "Lake___LeanLibConfig___mk",
-     "data": null,
-     "address": "/Build-Tools-and-Distribution/Lake/"},
-    {"id": "Applicative___mk",
-     "data": null,
-     "address": "/Functors___-Monads-and--do--Notation/"}],
+     "address": "/Type-Classes/Basic-Classes/"}],
    "Zero.zero":
    [{"id": "Zero___mk",
      "data": null,
@@ -50872,12 +50645,12 @@ window.addEventListener('DOMContentLoaded', () => {
      "data": null,
      "address": "/Iterators/Iterator-Definitions/"}],
    "Std.IterM.mk":
-   [{"id": "Std___IterM___mk-next",
+   [{"id": "Std___IterM___mk",
      "data": null,
-     "address": "/Iterators/Iterator-Combinators/"},
-    {"id": "Std___IterM___mk",
+     "address": "/Iterators/Iterator-Definitions/"},
+    {"id": "Std___IterM___mk-next",
      "data": null,
-     "address": "/Iterators/Iterator-Definitions/"}],
+     "address": "/Iterators/Iterator-Combinators/"}],
    "Std.IterM.mapWithPostcondition":
    [{"id": "Std___IterM___mapWithPostcondition",
      "data": null,
@@ -55468,10 +55241,10 @@ window.addEventListener('DOMContentLoaded', () => {
      "data": null,
      "address": "/Notations-and-Macros/Defining-New-Syntax/"}],
    "Lean.Syntax.TSepArray.elemsAndSeps":
-   [{"id": "Lean___Syntax___TSepArray___mk",
+   [{"id": "Lean___Syntax___TSepArray___elemsAndSeps",
      "data": null,
      "address": "/Notations-and-Macros/Defining-New-Syntax/"},
-    {"id": "Lean___Syntax___TSepArray___elemsAndSeps",
+    {"id": "Lean___Syntax___TSepArray___mk",
      "data": null,
      "address": "/Notations-and-Macros/Defining-New-Syntax/"}],
    "Lean.Syntax.TSepArray":
@@ -61303,8 +61076,8 @@ window.addEventListener('DOMContentLoaded', () => {
      "data": null,
      "address": "/Basic-Types/Arrays/"}],
    "Array.toList":
-   [{"id": "Array___toList", "data": null, "address": "/Basic-Types/Arrays/"},
-    {"id": "Array___mk", "data": null, "address": "/Basic-Types/Arrays/"}],
+   [{"id": "Array___mk", "data": null, "address": "/Basic-Types/Arrays/"},
+    {"id": "Array___toList", "data": null, "address": "/Basic-Types/Arrays/"}],
    "Array.takeWhile":
    [{"id": "Array___takeWhile",
      "data": null,
@@ -62904,6 +62677,7 @@ window.addEventListener('DOMContentLoaded', () => {
    "证明是无关的": [],
    "证明中的偏函数": [],
    "计算类型": [],
+   "观察唯一性": [],
    "表面互递归类型": [],
    "自定义数据类型的预处理": [],
    "自动隐式参数与宇宙多态": [],
@@ -63132,7 +62906,6 @@ window.addEventListener('DOMContentLoaded', () => {
    "Unreachable Code": [],
    "Unnecessary Fallback Clause": [],
    "Universe Level Metavariables": [],
-   "Unit  in the ABI": [],
    "Uninferred Binder Type Due to Resulting Type Annotation": [],
    "Unexpansion and Arguments": [],
    "Typo in Resulting Type": [],
@@ -63179,7 +62952,6 @@ window.addEventListener('DOMContentLoaded', () => {
    "Requiring Packages from Paths": [],
    "Requiring Packages from Git": [],
    "Representing Syntax as Constructors": [],
-   "Reference Counts in IR": [],
    "Reference Cells as Locks": [],
    "Reducing Well-Founded Recursive Functions": [],
    "Reducing Hypotheses": [],
@@ -63225,7 +62997,6 @@ window.addEventListener('DOMContentLoaded', () => {
    "One vs. Two Sets of Macro Rules": [],
    "One File, Multiple Handles": [],
    "Omitting Parameter in Argument to Higher-Order Predicate": [],
-   "Observing Uniqueness": [],
    "Numeric Literals for Bitvectors": [],
    "Numeric Literals for  Fin": [],
    "Notations, Defined Functions, and Unexpanders": [],
@@ -63254,7 +63025,6 @@ window.addEventListener('DOMContentLoaded', () => {
    "Minimal Executable Target": [],
    "Metavariables in Proofs": [],
    "Meta Definitions": [],
-   "Memory Reuse in IR": [],
    "Matching, With and Without Generalization": [],
    "Matching with an Explicit Motive": [],
    "Match Patterns Follow Reduction": [],
@@ -63306,6 +63076,8 @@ window.addEventListener('DOMContentLoaded', () => {
    "Implementing Ranges": [],
    "Ignored Terms in Notation Expansion": [],
    "Idiom Brackets": [],
+   "IR 中的引用计数": [],
+   "IR 中的内存复用": [],
    "Hierarchical Goal Names": [],
    "Hiding Proof Terms": [],
    "Heterogeneous Equality": [],
@@ -63404,6 +63176,7 @@ window.addEventListener('DOMContentLoaded', () => {
    "Aligned Columns": [],
    "Adding Explicit Cases to an Induction Proof": [],
    "Accessible Assumption Names": [],
+   "ABI 中的  Unit": [],
    "@[grind ←=]  属性": [],
    "@[grind ext]  属性": [],
    "#print  与结构体类型": [],
@@ -64233,7 +64006,7 @@ window.addEventListener('DOMContentLoaded', () => {
       "category": null},
      "address": "/Basic-Types/Booleans/"}],
    "«term[_]» [{\"string\": \"[\", \"kind\": \"keyword\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \"]\", \"kind\": \"keyword\"}]":
-   [{"id": "_FLQQ_term_LSQ___RSQ__FLQQ_-next",
+   [{"id": "_FLQQ_term_LSQ___RSQ__FLQQ_",
      "data":
      {"kind": "«term[_]»",
       "forms":
@@ -64241,8 +64014,8 @@ window.addEventListener('DOMContentLoaded', () => {
        {"string": "…", "kind": "meta"},
        {"string": "]", "kind": "keyword"}],
       "category": null},
-     "address": "/Basic-Types/Linked-Lists/"},
-    {"id": "_FLQQ_term_LSQ___RSQ__FLQQ_",
+     "address": "/Terms/Numeric-Literals/"},
+    {"id": "_FLQQ_term_LSQ___RSQ__FLQQ_-next",
      "data":
      {"kind": "«term[_]»",
       "forms":
@@ -64250,7 +64023,7 @@ window.addEventListener('DOMContentLoaded', () => {
        {"string": "…", "kind": "meta"},
        {"string": "]", "kind": "keyword"}],
       "category": null},
-     "address": "/Terms/Numeric-Literals/"}],
+     "address": "/Basic-Types/Linked-Lists/"}],
    "«termExists_,_» [{\"string\": \"exists\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \",\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"}]":
    [{"id": "_FLQQ_termExists______FLQQ_-next",
      "data":
@@ -64285,7 +64058,7 @@ window.addEventListener('DOMContentLoaded', () => {
       "category": null},
      "address": "/Basic-Propositions/Quantifiers/"}],
    "«term#[_,]» [{\"string\": \"#[\", \"kind\": \"keyword\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \"]\", \"kind\": \"keyword\"}]":
-   [{"id": "_FLQQ_term____LSQ______RSQ__FLQQ_-next",
+   [{"id": "_FLQQ_term____LSQ______RSQ__FLQQ_",
      "data":
      {"kind": "«term#[_,]»",
       "forms":
@@ -64293,8 +64066,8 @@ window.addEventListener('DOMContentLoaded', () => {
        {"string": "…", "kind": "meta"},
        {"string": "]", "kind": "keyword"}],
       "category": null},
-     "address": "/Basic-Types/Arrays/"},
-    {"id": "_FLQQ_term____LSQ______RSQ__FLQQ_",
+     "address": "/Terms/Numeric-Literals/"},
+    {"id": "_FLQQ_term____LSQ______RSQ__FLQQ_-next",
      "data":
      {"kind": "«term#[_,]»",
       "forms":
@@ -64302,7 +64075,7 @@ window.addEventListener('DOMContentLoaded', () => {
        {"string": "…", "kind": "meta"},
        {"string": "]", "kind": "keyword"}],
       "category": null},
-     "address": "/Terms/Numeric-Literals/"}],
+     "address": "/Basic-Types/Arrays/"}],
    "«stx_<|>_» [{\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"<|>\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"}]":
    [{"id": "_FLQQ_stx__LT_____GT___FLQQ_",
      "data":
@@ -64742,7 +64515,7 @@ window.addEventListener('DOMContentLoaded', () => {
       "category": null},
      "address": "/The--mvcgen--tactic/Proof-Mode/"}],
    "Std.HashMap.«term_~m_» [{\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"~m\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"}]":
-   [{"id": "Std___HashMap____FLQQ_term____m__FLQQ_-next",
+   [{"id": "Std___HashMap____FLQQ_term____m__FLQQ_",
      "data":
      {"kind": "Std.HashMap.«term_~m_»",
       "forms":
@@ -64753,7 +64526,7 @@ window.addEventListener('DOMContentLoaded', () => {
        {"string": "…", "kind": "meta"}],
       "category": null},
      "address": "/Basic-Types/Maps-and-Sets/"},
-    {"id": "Std___HashMap____FLQQ_term____m__FLQQ_",
+    {"id": "Std___HashMap____FLQQ_term____m__FLQQ_-next",
      "data":
      {"kind": "Std.HashMap.«term_~m_»",
       "forms":
@@ -64833,7 +64606,7 @@ window.addEventListener('DOMContentLoaded', () => {
       "category": null},
      "address": "/The--mvcgen--tactic/Predicate-Transformers/"}],
    "Std.Do.«term_⇓_=>_» [{\"string\": \"⇓\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"=>\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"}]":
-   [{"id": "Std___Do____FLQQ_term_________GT___FLQQ_-next",
+   [{"id": "Std___Do____FLQQ_term_________GT___FLQQ_",
      "data":
      {"kind": "Std.Do.«term_⇓_=>_»",
       "forms":
@@ -64846,7 +64619,7 @@ window.addEventListener('DOMContentLoaded', () => {
        {"string": "…", "kind": "meta"}],
       "category": null},
      "address": "/The--mvcgen--tactic/Predicate-Transformers/"},
-    {"id": "Std___Do____FLQQ_term_________GT___FLQQ_",
+    {"id": "Std___Do____FLQQ_term_________GT___FLQQ_-next",
      "data":
      {"kind": "Std.Do.«term_⇓_=>_»",
       "forms":
@@ -65264,15 +65037,15 @@ window.addEventListener('DOMContentLoaded', () => {
    [{"id": "Manual___FreeSyntax___more-next",
      "data": {"kind": "Manual.FreeSyntax.more", "forms": [], "category": null},
      "address": "/Terms/Function-Application/"},
-    {"id": "Manual___FreeSyntax___more-next-next-next",
-     "data": {"kind": "Manual.FreeSyntax.more", "forms": [], "category": null},
-     "address": "/Notations-and-Macros/Macros/"},
     {"id": "Manual___FreeSyntax___more-next-next",
      "data": {"kind": "Manual.FreeSyntax.more", "forms": [], "category": null},
      "address": "/Notations-and-Macros/Macros/"},
     {"id": "Manual___FreeSyntax___more",
      "data": {"kind": "Manual.FreeSyntax.more", "forms": [], "category": null},
-     "address": "/Terms/Function-Application/"}],
+     "address": "/Terms/Function-Application/"},
+    {"id": "Manual___FreeSyntax___more-next-next-next",
+     "data": {"kind": "Manual.FreeSyntax.more", "forms": [], "category": null},
+     "address": "/Notations-and-Macros/Macros/"}],
    "Manual.FreeSyntax.embed [{\"string\": \"fun \", \"kind\": \"keyword\"},\n {\"string\": \"(\", \"kind\": \"keyword\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \": \", \"kind\": \"keyword\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \")\", \"kind\": \"keyword\"},\n {\"string\": \" =>\", \"kind\": \"keyword\"},\n {\"string\": \"…\", \"kind\": \"meta\"}]":
    [{"id": "Manual___FreeSyntax___embed",
      "data":
@@ -65290,10 +65063,10 @@ window.addEventListener('DOMContentLoaded', () => {
       "category": null},
      "address": "/Terms/Functions/"}],
    "Manual.FreeSyntax.done []":
-   [{"id": "Manual___FreeSyntax___done-next",
+   [{"id": "Manual___FreeSyntax___done-next-next",
      "data": {"kind": "Manual.FreeSyntax.done", "forms": [], "category": null},
      "address": "/Build-Tools-and-Distribution/Lake/"},
-    {"id": "Manual___FreeSyntax___done-next-next",
+    {"id": "Manual___FreeSyntax___done-next",
      "data": {"kind": "Manual.FreeSyntax.done", "forms": [], "category": null},
      "address": "/Build-Tools-and-Distribution/Lake/"},
     {"id": "Manual___FreeSyntax___done",
@@ -65650,7 +65423,7 @@ window.addEventListener('DOMContentLoaded', () => {
       "category": null},
      "address": "/Definitions/Recursive-Definitions/"}],
    "Lean.Parser.Term.typeAscription [{\"string\": \"(\", \"kind\": \"keyword\"},\n {\"string\": \"[anonymous]\", \"kind\": \"literalIdent\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \":\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \")\", \"kind\": \"keyword\"}]":
-   [{"id": "Lean___Parser___Term___typeAscription-next",
+   [{"id": "Lean___Parser___Term___typeAscription",
      "data":
      {"kind": "Lean.Parser.Term.typeAscription",
       "forms":
@@ -65663,8 +65436,8 @@ window.addEventListener('DOMContentLoaded', () => {
        {"string": "…", "kind": "meta"},
        {"string": ")", "kind": "keyword"}],
       "category": null},
-     "address": "/Terms/Type-Ascription/"},
-    {"id": "Lean___Parser___Term___typeAscription",
+     "address": "/Terms/Functions/"},
+    {"id": "Lean___Parser___Term___typeAscription-next",
      "data":
      {"kind": "Lean.Parser.Term.typeAscription",
       "forms":
@@ -65677,7 +65450,7 @@ window.addEventListener('DOMContentLoaded', () => {
        {"string": "…", "kind": "meta"},
        {"string": ")", "kind": "keyword"}],
       "category": null},
-     "address": "/Terms/Functions/"}],
+     "address": "/Terms/Type-Ascription/"}],
    "Lean.Parser.Term.tuple [{\"string\": \"(\", \"kind\": \"keyword\"},\n {\"string\": \"[anonymous]\", \"kind\": \"literalIdent\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \",\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \")\", \"kind\": \"keyword\"}]":
    [{"id": "Lean___Parser___Term___tuple",
      "data":
@@ -65890,7 +65663,7 @@ window.addEventListener('DOMContentLoaded', () => {
       "category": null},
      "address": "/Terms/Function-Application/"}],
    "Lean.Parser.Term.pipeProj [{\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"|>.\", \"kind\": \"keyword\"},\n {\"string\": \"…\", \"kind\": \"meta\"}]":
-   [{"id": "Lean___Parser___Term___pipeProj",
+   [{"id": "Lean___Parser___Term___pipeProj-next",
      "data":
      {"kind": "Lean.Parser.Term.pipeProj",
       "forms":
@@ -65900,7 +65673,7 @@ window.addEventListener('DOMContentLoaded', () => {
        {"string": "…", "kind": "meta"}],
       "category": null},
      "address": "/Terms/Function-Application/"},
-    {"id": "Lean___Parser___Term___pipeProj-next",
+    {"id": "Lean___Parser___Term___pipeProj",
      "data":
      {"kind": "Lean.Parser.Term.pipeProj",
       "forms":
@@ -66123,7 +65896,7 @@ window.addEventListener('DOMContentLoaded', () => {
       "category": null},
      "address": "/Terms/Holes/"}],
    "Lean.Parser.Term.fun [{\"string\": \"fun\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"=>\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"}]":
-   [{"id": "Lean___Parser___Term___fun",
+   [{"id": "Lean___Parser___Term___fun-next-next-next-next",
      "data":
      {"kind": "Lean.Parser.Term.fun",
       "forms":
@@ -66149,7 +65922,7 @@ window.addEventListener('DOMContentLoaded', () => {
        {"string": "…", "kind": "meta"}],
       "category": null},
      "address": "/Terms/Functions/"},
-    {"id": "Lean___Parser___Term___fun-next-next-next-next",
+    {"id": "Lean___Parser___Term___fun",
      "data":
      {"kind": "Lean.Parser.Term.fun",
       "forms":
@@ -66163,7 +65936,7 @@ window.addEventListener('DOMContentLoaded', () => {
       "category": null},
      "address": "/Terms/Functions/"}],
    "Lean.Parser.Term.fun [{\"string\": \"fun\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \":\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"=>\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"}]":
-   [{"id": "Lean___Parser___Term___fun-next-next-next",
+   [{"id": "Lean___Parser___Term___fun-next",
      "data":
      {"kind": "Lean.Parser.Term.fun",
       "forms":
@@ -66180,7 +65953,7 @@ window.addEventListener('DOMContentLoaded', () => {
        {"string": "…", "kind": "meta"}],
       "category": null},
      "address": "/Terms/Functions/"},
-    {"id": "Lean___Parser___Term___fun-next",
+    {"id": "Lean___Parser___Term___fun-next-next-next",
      "data":
      {"kind": "Lean.Parser.Term.fun",
       "forms":
@@ -66643,7 +66416,7 @@ window.addEventListener('DOMContentLoaded', () => {
       "category": null},
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"}],
    "Lean.Parser.Term.doReassign [{\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \"(\", \"kind\": \"meta\"},\n {\"string\": \":\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \")?\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \":=\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"}]":
-   [{"id": "Lean___Parser___Term___doReassign",
+   [{"id": "Lean___Parser___Term___doReassign-next",
      "data":
      {"kind": "Lean.Parser.Term.doReassign",
       "forms":
@@ -66659,7 +66432,7 @@ window.addEventListener('DOMContentLoaded', () => {
        {"string": "…", "kind": "meta"}],
       "category": null},
      "address": "/Functors___-Monads-and--do--Notation/Syntax/"},
-    {"id": "Lean___Parser___Term___doReassign-next",
+    {"id": "Lean___Parser___Term___doReassign",
      "data":
      {"kind": "Lean.Parser.Term.doReassign",
       "forms":
@@ -66754,7 +66527,7 @@ window.addEventListener('DOMContentLoaded', () => {
       "category": null},
      "address": "/Terms/Function-Types/"}],
    "Lean.Parser.Term.depArrow [{\"string\": \"(\", \"kind\": \"keyword\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \":\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"},\n {\"string\": \")\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"→\", \"kind\": \"keyword\"},\n {\"string\": \" \", \"kind\": \"ws\"},\n {\"string\": \"…\", \"kind\": \"meta\"}]":
-   [{"id": "Lean___Parser___Term___depArrow",
+   [{"id": "Lean___Parser___Term___depArrow-next",
      "data":
      {"kind": "Lean.Parser.Term.depArrow",
       "forms":
@@ -66771,7 +66544,7 @@ window.addEventListener('DOMContentLoaded', () => {
        {"string": "…", "kind": "meta"}],
       "category": null},
      "address": "/Terms/Function-Types/"},
-    {"id": "Lean___Parser___Term___depArrow-next",
+    {"id": "Lean___Parser___Term___depArrow",
      "data":
      {"kind": "Lean.Parser.Term.depArrow",
       "forms":
@@ -67022,13 +66795,13 @@ window.addEventListener('DOMContentLoaded', () => {
       "category": null},
      "address": "/Tactic-Proofs/Tactic-Reference/"}],
    "Lean.Parser.Tactic.Conv.enterArg [{\"string\": \"…\", \"kind\": \"meta\"}]":
-   [{"id": "Lean___Parser___Tactic___Conv___enterArg-next",
+   [{"id": "Lean___Parser___Tactic___Conv___enterArg-next-next-next",
      "data":
      {"kind": "Lean.Parser.Tactic.Conv.enterArg",
       "forms": [{"string": "…", "kind": "meta"}],
       "category": null},
      "address": "/Tactic-Proofs/Targeted-Rewriting-with--conv/"},
-    {"id": "Lean___Parser___Tactic___Conv___enterArg-next-next-next",
+    {"id": "Lean___Parser___Tactic___Conv___enterArg-next",
      "data":
      {"kind": "Lean.Parser.Tactic.Conv.enterArg",
       "forms": [{"string": "…", "kind": "meta"}],
@@ -70082,6 +69855,169 @@ if (paramName) {
 }
 </script>
     <script>
+      function openDetailsForHashTarget() {
+  // Get the current hash from the URL
+  const hash = window.location.hash;
+
+  // Exit early if no hash is present
+  if (!hash) return;
+
+  // Remove the # to get the actual ID
+  const targetId = hash.substring(1);
+
+  // Find the target element
+  const targetElement = document.getElementById(targetId);
+
+  // Exit if target element doesn't exist
+  if (!targetElement) return;
+
+  // Find the closest details element that contains the target
+  const detailsElement = targetElement.closest('details');
+
+  // If the target is inside a details element, open it
+  if (detailsElement) {
+    detailsElement.open = true;
+  }
+}
+
+function liveLinkUrlOfCodez(codez) {
+  if (window.metadata !== undefined && window.metadata.stable) {
+    return "https://live.lean-lang.org/#project=mathlib-stable&codez=" + codez;
+  }
+  if (window.metadata !== undefined && window.metadata.latest) {
+    return "https://live.lean-lang.org/#codez=" + codez;
+  }
+  return undefined;
+}
+
+function maybeShowLiveLinks() {
+  if (liveLinkUrlOfCodez('') !== undefined) {
+    const style = document.createElement('style');
+    style.textContent = `.live-link { display: initial !important; }`;
+    document.head.appendChild(style);
+  }
+}
+
+function openLiveLink(codez) {
+  const url = liveLinkUrlOfCodez(codez);
+  if (url !== undefined) {
+    window.open(url, '_blank')
+  }
+  else {
+    // This case shouldn't be possible, because maybeShowLiveLinks returns undefined,
+    // then maybeShowLiveLinks wouldn't have ever shown the links in the first place.
+    // Just in case, throw up a dialog.
+    alert("Don't know which version of live to use. Please report this at https://github.com/leanprover/reference-manual/issues");
+  }
+}
+
+function pageInit() {
+  openDetailsForHashTarget();
+  maybeShowLiveLinks();
+}
+
+// Run the function when the page loads
+document.addEventListener('DOMContentLoaded', pageInit);
+
+// Also run when the hash changes (for single-page applications)
+window.addEventListener('hashchange', pageInit);
+
+// Run immediately in case the script loads after DOMContentLoaded
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', pageInit);
+} else {
+  pageInit();
+}
+</script>
+    <script>
+      
+window.addEventListener("load", () => {
+  const innerProps = {
+    onShow(inst) { console.log(inst); },
+    onHide(inst) { console.log(inst); },
+    content(tgt) {
+      const content = document.createElement("span");
+      const state = tgt.querySelector(".hover-info").cloneNode(true);
+      state.style.display = "block";
+      content.appendChild(state);
+      /* Render docstrings - TODO server-side */
+      if ('undefined' !== typeof marked) {
+          for (const d of content.querySelectorAll("code.docstring, pre.docstring")) {
+              const str = d.innerText;
+              const html = marked.parse(str);
+              const rendered = document.createElement("div");
+              rendered.classList.add("docstring");
+              rendered.innerHTML = html;
+              d.parentNode.replaceChild(rendered, d);
+          }
+      }
+      content.style.display = "block";
+      content.className = "hl lean popup";
+      return content;
+    }
+  };
+  const outerProps = {
+    allowHtml: true,
+    theme: "lean",
+    placement: 'bottom-start',
+    maxWidth: "none",
+    delay: 100,
+    moveTransition: 'transform 0.2s ease-out',
+    onTrigger(inst, event) {
+      const ref = event.currentTarget;
+      const block = ref.closest('.hl.lean');
+      block.querySelectorAll('.active').forEach((i) => i.classList.remove('active'));
+      ref.classList.add("active");
+    },
+    onUntrigger(inst, event) {
+      const ref = event.currentTarget;
+      const block = ref.closest('.hl.lean');
+      block.querySelectorAll('.active').forEach((i) => i.classList.remove('active'));
+    }
+  };
+  tippy.createSingleton(tippy('pre.grammar.hl.lean .nonterminal.documented, pre.grammar.hl.lean .from-nonterminal.documented, pre.grammar.hl.lean .local-name.documented', innerProps), outerProps);
+});
+</script>
+    <script>
+      
+window.addEventListener('DOMContentLoaded', () => {
+  const tabLists = document.querySelectorAll('.error-example-tab-list')
+  tabLists.forEach(tabList => {
+    const tabs = tabList.querySelectorAll(':scope > [role="tab"]')
+
+    const setActiveTab = (e) => {
+      for (const tab of tabs) {
+        const controllee = document.getElementById(tab.getAttribute('aria-controls'))
+        if (tab === e.target) {
+          tab.setAttribute('aria-selected', true)
+          controllee.classList.remove('error-example-tabpanel-hidden')
+        } else {
+          tab.setAttribute('aria-selected', false)
+          controllee.classList.add('error-example-tabpanel-hidden')
+        }
+      }
+    }
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', setActiveTab)
+    })
+
+    let focusedIdx = 0
+    tabList.addEventListener('keydown', e => {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+        tabs[focusedIdx].setAttribute('tabindex', -1)
+        focusedIdx =
+          e.key === 'ArrowRight'
+          ? (focusedIdx + 1) % tabs.length
+          : (focusedIdx - 1 + tabs.length) % tabs.length
+        tabs[focusedIdx].setAttribute('tabindex', 0)
+        tabs[focusedIdx].focus()
+      }
+    })
+  })
+})
+  </script>
+    <script>
       
 window.onload = async () => {
 
@@ -70383,7 +70319,7 @@ window.addEventListener("load", () => {
             <div class="split-toc book">
               <div class="title">
                 <label for="--verso-manual-toc-----bookRoot" class="toggle-split-toc"><input type="checkbox" class="toggle-split-toc" id="--verso-manual-toc-----bookRoot" checked="checked"></label><span class="">Table of Contents</span></div>
-              <table><tr class="numbered"><td class="num">1.</td><td><a href="Introduction/#introduction">简介</a></td></tr><tr class="numbered"><td class="num">2.</td><td><a href="Elaboration and Compilation/#elaboration-and-compilation">精译与编译</a></td></tr><tr class="numbered"><td class="num">3.</td><td><a href="Interacting-with-Lean/#interaction">与 Lean 交互</a></td></tr><tr class="numbered"><td class="num">4.</td><td><a href="The Type System/#type-system">类型系统</a></td></tr><tr class="numbered"><td class="num">5.</td><td><a href="Source Files and Modules/#files">源文件与模块</a></td></tr><tr class="numbered"><td class="num">6.</td><td><a href="Namespaces and Sections/#namespaces-sections">命名空间与区段</a></td></tr><tr class="numbered"><td class="num">7.</td><td><a href="Definitions/#definitions">定义</a></td></tr><tr class="numbered"><td class="num">8.</td><td><a href="Axioms/#axioms">公理</a></td></tr><tr class="numbered"><td class="num">9.</td><td><a href="Attributes/#attributes">属性</a></td></tr><tr class="numbered"><td class="num">10.</td><td><a href="Type-Classes/#type-classes">类型类</a></td></tr><tr class="numbered"><td class="num">11.</td><td><a href="Coercions/#coercions">强制转换</a></td></tr><tr class="numbered"><td class="num">12.</td><td><a href="Run-Time-Code/#runtime">Run-Time Code</a></td></tr><tr class="numbered"><td class="num">13.</td><td><a href="Terms/#terms">Terms</a></td></tr><tr class="numbered"><td class="num">14.</td><td><a href="Tactic-Proofs/#tactics">Tactic Proofs</a></td></tr><tr class="numbered"><td class="num">15.</td><td><a href="The-Simplifier/#the-simplifier">简化器</a></td></tr><tr class="numbered"><td class="num">16.</td><td><a href="The--grind--tactic/#grind-tactic"><code>grind</code> 策略</a></td></tr><tr class="numbered"><td class="num">17.</td><td><a href="The--mvcgen--tactic/#mvcgen-tactic"><code>mvcgen</code> 策略</a></td></tr><tr class="numbered"><td class="num">18.</td><td><a href="Functors___-Monads-and--do--Notation/#monads-and-do">Functors, Monads and <code>do</code>-Notation</a></td></tr><tr class="numbered"><td class="num">19.</td><td><a href="Basic-Propositions/#basic-props">Basic Propositions</a></td></tr><tr class="numbered"><td class="num">20.</td><td><a href="Basic-Types/#basic-types">Basic Types</a></td></tr><tr class="numbered"><td class="num">21.</td><td><a href="IO/#io">IO</a></td></tr><tr class="numbered"><td class="num">22.</td><td><a href="Iterators/#iterators">Iterators</a></td></tr><tr class="numbered"><td class="num">23.</td><td><a href="Notations-and-Macros/#language-extension">Notations and Macros</a></td></tr><tr class="numbered"><td class="num">24.</td><td><a href="Build-Tools-and-Distribution/#build-tools-and-distribution">Build Tools and Distribution</a></td></tr><tr class="unnumbered"><td class="num"><td><a href="ValidatingProofs/#validating-proofs">Validating a Lean Proof</a></td></tr><tr class="unnumbered"><td class="num"><td><a href="Error-Explanations/#Lean-__________________--Error-Explanations">Error Explanations</a></td></tr><tr class="unnumbered"><td class="num"><td><a href="releases/#release-notes">Release Notes</a></td></tr><tr class="unnumbered"><td class="num"><td><a href="platforms/#platforms">Supported Platforms</a></td></tr><tr class="unnumbered"><td class="num"><td><a href="the-index/#index">索引</a></td></tr></table></div>
+              <table><tr class="numbered"><td class="num">1.</td><td><a href="Introduction/#introduction">简介</a></td></tr><tr class="numbered"><td class="num">2.</td><td><a href="Elaboration and Compilation/#elaboration-and-compilation">精译与编译</a></td></tr><tr class="numbered"><td class="num">3.</td><td><a href="Interacting-with-Lean/#interaction">与 Lean 交互</a></td></tr><tr class="numbered"><td class="num">4.</td><td><a href="The Type System/#type-system">类型系统</a></td></tr><tr class="numbered"><td class="num">5.</td><td><a href="Source Files and Modules/#files">源文件与模块</a></td></tr><tr class="numbered"><td class="num">6.</td><td><a href="Namespaces and Sections/#namespaces-sections">命名空间与区段</a></td></tr><tr class="numbered"><td class="num">7.</td><td><a href="Definitions/#definitions">定义</a></td></tr><tr class="numbered"><td class="num">8.</td><td><a href="Axioms/#axioms">公理</a></td></tr><tr class="numbered"><td class="num">9.</td><td><a href="Attributes/#attributes">属性</a></td></tr><tr class="numbered"><td class="num">10.</td><td><a href="Type-Classes/#type-classes">类型类</a></td></tr><tr class="numbered"><td class="num">11.</td><td><a href="Coercions/#coercions">强制转换</a></td></tr><tr class="numbered"><td class="num">12.</td><td><a href="Run-Time-Code/#runtime">运行时代码</a></td></tr><tr class="numbered"><td class="num">13.</td><td><a href="Terms/#terms">Terms</a></td></tr><tr class="numbered"><td class="num">14.</td><td><a href="Tactic-Proofs/#tactics">Tactic Proofs</a></td></tr><tr class="numbered"><td class="num">15.</td><td><a href="The-Simplifier/#the-simplifier">简化器</a></td></tr><tr class="numbered"><td class="num">16.</td><td><a href="The--grind--tactic/#grind-tactic"><code>grind</code> 策略</a></td></tr><tr class="numbered"><td class="num">17.</td><td><a href="The--mvcgen--tactic/#mvcgen-tactic"><code>mvcgen</code> 策略</a></td></tr><tr class="numbered"><td class="num">18.</td><td><a href="Functors___-Monads-and--do--Notation/#monads-and-do">Functors, Monads and <code>do</code>-Notation</a></td></tr><tr class="numbered"><td class="num">19.</td><td><a href="Basic-Propositions/#basic-props">Basic Propositions</a></td></tr><tr class="numbered"><td class="num">20.</td><td><a href="Basic-Types/#basic-types">Basic Types</a></td></tr><tr class="numbered"><td class="num">21.</td><td><a href="IO/#io">IO</a></td></tr><tr class="numbered"><td class="num">22.</td><td><a href="Iterators/#iterators">Iterators</a></td></tr><tr class="numbered"><td class="num">23.</td><td><a href="Notations-and-Macros/#language-extension">Notations and Macros</a></td></tr><tr class="numbered"><td class="num">24.</td><td><a href="Build-Tools-and-Distribution/#build-tools-and-distribution">Build Tools and Distribution</a></td></tr><tr class="unnumbered"><td class="num"><td><a href="ValidatingProofs/#validating-proofs">Validating a Lean Proof</a></td></tr><tr class="unnumbered"><td class="num"><td><a href="Error-Explanations/#Lean-__________________--Error-Explanations">Error Explanations</a></td></tr><tr class="unnumbered"><td class="num"><td><a href="releases/#release-notes">Release Notes</a></td></tr><tr class="unnumbered"><td class="num"><td><a href="platforms/#platforms">Supported Platforms</a></td></tr><tr class="unnumbered"><td class="num"><td><a href="the-index/#index">索引</a></td></tr></table></div>
             </div>
           </div>
         <div class="last">
