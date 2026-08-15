@@ -50,6 +50,15 @@ TARGET_PAGES = (
     "Terms/Quotation-and-Antiquotation/index.html",
     "Terms/do--Notation/index.html",
     "Terms/Proofs/index.html",
+    "Tactic-Proofs/index.html",
+    "Tactic-Proofs/Reading-Proof-States/index.html",
+    "Tactic-Proofs/Running-Tactics/index.html",
+    "Tactic-Proofs/Naming-Bound-Variables/index.html",
+    "Tactic-Proofs/The-Tactic-Language/index.html",
+    "Tactic-Proofs/Options/index.html",
+    "Tactic-Proofs/Tactic-Reference/index.html",
+    "Tactic-Proofs/Targeted-Rewriting-with--conv/index.html",
+    "Tactic-Proofs/Custom-Tactics/index.html",
 )
 
 HOVER_ATTR_RE = re.compile(r'data-verso-hover="([^"]+)"')
