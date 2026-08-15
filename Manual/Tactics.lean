@@ -9,6 +9,7 @@ import VersoManual
 import Lean.Parser.Term
 
 import Manual.Meta
+import Manual.ZhDocString.Tactics
 
 import Manual.Tactics.Reference
 import Manual.Tactics.Conv
@@ -339,9 +340,9 @@ gt : ↑i > 5
 
 
 
-{optionDocs pp.proofs}
+{zhOptionDocs pp.proofs ZhDoc.Tactics.Option.pp.proofs}
 
-{optionDocs pp.proofs.threshold}
+{zhOptionDocs pp.proofs.threshold ZhDoc.Tactics.Option.pp.proofs.threshold}
 
 
 此外，非证明项过大时也可能被隐藏。
@@ -350,11 +351,11 @@ gt : ↑i > 5
 美化打印器的最大步数可用选项 {option}`pp.maxSteps` 配置。
 打印非常大的项可能导致工具变慢，甚至栈溢出；调整这些选项的值时请务必谨慎。
 
-{optionDocs pp.deepTerms}
+{zhOptionDocs pp.deepTerms ZhDoc.Tactics.Option.pp.deepTerms}
 
-{optionDocs pp.deepTerms.threshold}
+{zhOptionDocs pp.deepTerms.threshold ZhDoc.Tactics.Option.pp.deepTerms.threshold}
 
-{optionDocs pp.maxSteps}
+{zhOptionDocs pp.maxSteps ZhDoc.Tactics.Option.pp.maxSteps}
 
 ## 元变量
 %%%
@@ -484,7 +485,7 @@ h2 : j < k
 可以使用选项 {option}`pp.mvars` 禁用元变量编号的显示。
 使用 {keywordOf Lean.guardMsgsCmd}`#guard_msgs` 这类将 Lean 输出与预期字符串匹配的功能时，这一点很有用；这类功能对于编写自定义策略测试尤为有用。
 
-{optionDocs pp.mvars}
+{zhOptionDocs pp.mvars ZhDoc.Tactics.Option.pp.mvars}
 
 ::::draft
 :::planned 68
@@ -790,7 +791,7 @@ Lean 的策略语言具有_卫生性_。{index (subterm := "in tactics")}[hygien
 将选项 {option}`tactic.hygienic` 设为 `false` 可以禁用卫生性。
 不建议这样做，因为许多策略依赖卫生系统来防止捕获，因而无需付出仔细手动选择名称的开销。
 
-{optionDocs tactic.hygienic}
+{zhOptionDocs tactic.hygienic ZhDoc.Tactics.Option.tactic.hygienic}
 
 ::::example (file := "Tactic hygiene: inaccessible assumptions") "策略卫生性：不可访问的假设"
 :::tacticExample
@@ -974,11 +975,11 @@ file := "Options"
 
 这些选项会影响策略的含义。
 
-{optionDocs tactic.customEliminators}
+{zhOptionDocs tactic.customEliminators ZhDoc.Tactics.Option.tactic.customEliminators}
 
-{optionDocs tactic.skipAssignedInstances}
+{zhOptionDocs tactic.skipAssignedInstances ZhDoc.Tactics.Option.tactic.skipAssignedInstances}
 
-{optionDocs tactic.simp.trace}
+{zhOptionDocs tactic.simp.trace ZhDoc.Tactics.Option.tactic.simp.trace}
 
 
 {include 0 Manual.Tactics.Reference}
@@ -998,7 +999,7 @@ file := "Naming-Bound-Variables"
 {name}`binderNameHint` {tech (key := "gadget")}[小工具]可用于指示：应根据其他某个项中绑定的变量来命名一个绑定变量。
 按照约定，项 {lean}`()` 用于表示名称_不应_取自原定义。
 
-{docstring binderNameHint}
+{zhdocstring binderNameHint ZhDoc.Tactics.binderNameHint}
 
 
 {include 0 Manual.Tactics.Custom}

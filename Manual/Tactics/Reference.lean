@@ -9,6 +9,7 @@ import VersoManual
 import Lean.Parser.Term
 
 import Manual.Meta
+import Manual.ZhDocString.Tactics
 import Manual.Papers
 import Manual.Tactics.Reference.Simp
 
@@ -113,7 +114,7 @@ symm
 :::tactic "calc"
 :::
 
-{docstring Trans}
+{zhdocstring Trans ZhDoc.Tactics.Trans}
 
 ## 相等关系
 %%%
@@ -326,13 +327,13 @@ file := "Rewriting"
 :::tactic Lean.Parser.Tactic.tacticRwa__
 :::
 
-{docstring Lean.Meta.Rewrite.Config +allowMissing}
+{zhdocstring Lean.Meta.Rewrite.Config ZhDoc.Tactics.Rewrite.Config}
 
-{docstring Lean.Meta.Occurrences}
+{zhdocstring Lean.Meta.Occurrences ZhDoc.Tactics.Rewrite.Occurrences}
 
-{docstring Lean.Meta.TransparencyMode +allowMissing}
+{zhdocstring Lean.Meta.TransparencyMode ZhDoc.Tactics.Rewrite.TransparencyMode}
 
-{docstring Lean.Meta.Rewrite.NewGoals +allowMissing}
+{zhdocstring Lean.Meta.Rewrite.NewGoals ZhDoc.Tactics.Rewrite.NewGoals}
 
 
 :::tactic "unfold"
@@ -1105,9 +1106,9 @@ tag := "The-Lean-Language-Reference--Tactic-Proofs--Tactic-Reference--Call-by-Va
 file := "Options"
 %%%
 
-{optionDocs cbv.maxSteps}
+{zhOptionDocs cbv.maxSteps ZhDoc.Tactics.Option.cbv.maxSteps}
 
-{optionDocs cbv.warning}
+{zhOptionDocs cbv.warning ZhDoc.Tactics.Option.cbv.warning}
 
 # 控制归约
 %%%
