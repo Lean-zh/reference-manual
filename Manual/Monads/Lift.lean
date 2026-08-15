@@ -102,7 +102,7 @@ end
       n β
     ```
 
-顾名思义，{name}`Lean.Internal.coeM` 和 {name}`Lean.Internal.liftCoeM` 属于实现细节，并非公共 API 的一部分。
+顾名思义，{name}`Lean.Internal.coeM` 和 {name}`Lean.Internal.liftCoeM` 属于实现细节，并非公共接口的一部分。
 在最终生成的项中，出现的 {name}`Lean.Internal.coeM`、{name}`Lean.Internal.liftCoeM` 和强制转换都会被展开。
 
 ::::
