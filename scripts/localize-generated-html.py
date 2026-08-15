@@ -172,9 +172,12 @@ def localize_tactic_namedocs(text: str, translations: dict[str, str]) -> str:
 
     def replace(match: re.Match[str]) -> str:
         source = normalized_visible_text(match.group(2))
-        if not re.search(r"[A-Za-z]{3}", source) or re.search(r"[\u3400-\u9fff]", source):
-            return match.group(0)
         translation = translations.get(source)
+        if translation is None and (
+            not re.search(r"[A-Za-z]{3}", source)
+            or re.search(r"[\u3400-\u9fff]", source)
+        ):
+            return match.group(0)
         if translation is None:
             missing.append(source)
             return match.group(0)
@@ -188,6 +191,13 @@ def localize_tactic_namedocs(text: str, translations: dict[str, str]) -> str:
             f"first: {missing[0][:120]!r}"
         )
     return localized
+
+
+def strip_english_inline_docstrings(text: str) -> str:
+    def replace(match: re.Match[str]) -> str:
+        return match.group(0) if re.search(r"[\u3400-\u9fff]", match.group(0)) else ""
+
+    return DOCSTRING_RE.sub(replace, text)
 
 
 def localize_generated_html(root: Path) -> tuple[int, int, int, int]:
@@ -213,6 +223,7 @@ def localize_generated_html(root: Path) -> tuple[int, int, int, int]:
         parser = NamedDocsParser()
         parser.feed(text)
         translated_hovers.update(parser.translations)
+        text = strip_english_inline_docstrings(text)
         for pattern, replacement in TITLE_REPLACEMENTS:
             text, count = pattern.subn(replacement, text)
             title_count += count
