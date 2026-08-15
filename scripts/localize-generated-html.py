@@ -188,7 +188,11 @@ def localize_tactic_namedocs(text: str, translations: dict[str, str]) -> str:
         if translation is None:
             missing.append(source)
             return match.group(0)
-        body = f"\n                  <p>{html.escape(translation)}</p>\n                  "
+        anchors = "".join(
+            f'<span id="{html.escape(anchor, quote=True)}"></span>'
+            for anchor in dict.fromkeys(re.findall(r'\bid="([^"]+)"', match.group(2)))
+        )
+        body = anchors + f"\n                  <p>{html.escape(translation)}</p>\n                  "
         return match.group(1) + body + match.group(3)
 
     localized = NAMEDOCS_TEXT_RE.sub(replace, text)
