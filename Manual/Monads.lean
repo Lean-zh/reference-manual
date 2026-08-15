@@ -68,7 +68,7 @@ section
 variable {α : Type u} {β : Type u}
 ```
 
-::::example "以定长列表作为应用函子"
+::::example "以定长列表作为应用函子" (file := "Lists with Lengths as Applicative Functors")
 
 结构 {name}`LenList` 将列表与其长度为所需值的证明配对。
 因此，它的 `zipWith` 运算无需为输入长度不同时提供后备方案。
