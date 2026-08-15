@@ -161,6 +161,8 @@ def localize_generated_html(root: Path) -> tuple[int, int, int, int]:
                 docs[hover_id] = NO_ADDITIONAL_DOCS
             continue
         translated = translated_hovers.get(hover_id)
+        if translated and not re.search(r"[\u3400-\u9fff]", translated):
+            translated = None
         replacement = ""
         if translated:
             replacement = (
