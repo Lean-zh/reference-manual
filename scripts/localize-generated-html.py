@@ -74,6 +74,9 @@ TARGET_PAGES = (
     "Notations-and-Macros/Elaborators/index.html",
     "Notations-and-Macros/Extending--do--Notation/index.html",
     "Notations-and-Macros/Extending-Lean___s-Output/index.html",
+    "Build-Tools-and-Distribution/index.html",
+    "Build-Tools-and-Distribution/Lake/index.html",
+    "Build-Tools-and-Distribution/Managing-Toolchains-with-Elan/index.html",
 )
 
 HOVER_ATTR_RE = re.compile(r'data-verso-hover="([^"]+)"')
