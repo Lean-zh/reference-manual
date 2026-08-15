@@ -258,7 +258,7 @@ def ensureUnitAt (dec : _root_.Lean.Elab.Do.DoElemCont) (ref : Syntax) :
 给定续延 `dec`、引用 `ref` 和元素结果类型 `elementType`，返回一个从 `dec` 派生且结果
 类型为 `elementType` 的续延。
 如果 `dec` 的结果类型已经是 `elementType`，则直接返回 `dec`。
-若原类型与 `elementType` 不定义相等，则记录错误，并返回一个以 `sorry` 为结果调用 `dec`
+若二者不定义相等，则记录错误，并返回一个以 `sorry` 为结果调用 `dec`
 的新续延。错误报告在 `ref` 处。
 -/
 def ensureHasTypeAt (dec : _root_.Lean.Elab.Do.DoElemCont) (ref : Syntax)
