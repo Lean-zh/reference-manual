@@ -87,8 +87,8 @@ structure FreeSyntaxConfig where
 def FreeSyntaxConfig.getLabel (config : FreeSyntaxConfig) : String :=
   config.label.getD <|
     match config.name with
-    | `attr => "attribute"
-    | _ => "syntax"
+    | `attr => "属性"
+    | _ => "语法"
 
 structure SyntaxConfig extends FreeSyntaxConfig where
   namespaces : List Name := []
@@ -1227,7 +1227,7 @@ def syntax.descr : BlockDescr where
         | .ok (titleString, _, label, _, _) => pure (titleString, label)
         | .error e =>
           reportError s!"Failed to deserialize syntax docs: {e} from {data}"
-          pure (none, "syntax")
+          pure (none, "语法")
       let xref ← HtmlT.state
       let attrs := xref.htmlId id
       let (descr, content) ←

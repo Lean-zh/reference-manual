@@ -30,7 +30,7 @@ file := "Instance-Synthesis"
 一个给定的类可能有多个可用实例；此时依次以声明的优先级和声明顺序打破平局，同一优先级下，较新的实例优先于较早的实例。
 
 该搜索过程在存在菱形时仍然高效，遇到循环时也不会无限循环。
-当到达同一目标的路径不止一条时，就会出现{deftech (key := "diamonds")}_菱形_；而{deftech (key := "cycles")}_循环_则是两个实例各自在另一个实例得到解决后便可解决的情形。
+当到达同一目标的路径不止一条时，就会出现{deftech (key := "Diamonds")}_菱形_；而{deftech (key := "cycles")}_循环_则是两个实例各自在另一个实例得到解决后便可解决的情形。
 实践中，用类型类编码数学概念时经常会出现菱形，而 Lean 的强制类型转换功能 {TODO}[链接] 会自然地产生循环，例如有限集合与有限多重集合之间的循环。
 
 可以使用 {keywordOf Lean.Parser.Command.synth}`#synth` 命令测试实例合成。
@@ -187,9 +187,9 @@ tag := "The-Lean-Language-Reference--Type-Classes--Instance-Synthesis--Candidate
 %%%
 
 实例合成在搜索中同时使用局部实例和全局实例。
-{deftech (key := "local instances")}_局部实例_是局部上下文中可用的实例；它们可以是函数的参数，也可以用 `let` 在局部定义。{TODO}[指向 `let` 文档的交叉引用]
+{deftech (key := "Local instances")}_局部实例_是局部上下文中可用的实例；它们可以是函数的参数，也可以用 `let` 在局部定义。{TODO}[指向 `let` 文档的交叉引用]
 局部实例无需特别标示；任何类型为类型类的局部变量都是实例合成的候选项。
-{deftech (key := "global instances")}_全局实例_是全局环境中可用的实例；每个全局实例都是一个应用了 {attr}`instance` 属性的已定义名称。{margin}[{keywordOf Lean.Parser.Command.declaration}`instance` 声明会自动应用 {attr}`instance` 属性。]
+{deftech (key := "Global instances")}_全局实例_是全局环境中可用的实例；每个全局实例都是一个应用了 {attr}`instance` 属性的已定义名称。{margin}[{keywordOf Lean.Parser.Command.declaration}`instance` 声明会自动应用 {attr}`instance` 属性。]
 
 ::::keepEnv
 :::example "局部实例"
@@ -392,7 +392,7 @@ Hint: Type class instance resolution failures can be inspected with the `set_opt
 :::
 ::::
 
-{deftech (key := "semi-output parameters")}_半输出参数_与输出参数相似，都无需在合成开始前已知；但与输出参数不同，选择实例时会考虑半输出参数的值。
+{deftech (key := "Semi-output parameters")}_半输出参数_与输出参数相似，都无需在合成开始前已知；但与输出参数不同，选择实例时会考虑半输出参数的值。
 
 {zhdocstring semiOutParam ZhDoc.Classes.InstanceSynth.semiOutParam}
 

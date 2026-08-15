@@ -43,7 +43,7 @@ tag := "type-classes"
 因为 Lean 不允许对类型进行情况分析，所以多态函数实现了对任何类型参数选择都统一的操作；例如，{name}`List.map` 不会仅仅因为输入列表包含的是 {name}`String` 还是 {name}`Nat` 就突然采取不同的计算方式。
 当无法以“统一”的方式实现某个操作时，特设多态操作就非常有用；最典型的用例是重载算术运算符，使它们能用于 {name}`Nat`、{name}`Int`、{name}`Float`，以及其他任何具有合理加法概念的类型。
 特设多态也可能涉及多种类型；在一个集合的给定索引处查找值时，就涉及了集合类型、索引类型以及要提取的成员元素的类型。
-{deftech (key := "type class")}[类型类]{margin}[类型类最早在 {citehere wadlerBlott89}[] 中描述。] 描述了一组重载操作（称为 {deftech (key := "method")}[方法]）以及它们所涉及的类型。
+{deftech (key := "type class")}[类型类]{margin}[类型类最早在 {citehere wadlerBlott89}[] 中描述。] 描述了一组重载操作（称为 {deftech (key := "methods")}[方法]）以及它们所涉及的类型。
 
 类型类非常灵活。
 重载可能涉及多种类型；例如在数据结构中通过索引取值的操作，可以针对特定的数据结构、索引类型、元素类型甚至断言键存在于结构中的谓词进行重载。
@@ -65,7 +65,7 @@ tag := "type-classes"
   {name}`Decidable` 类型类允许 Lean 自动找到一个命题的判定过程。
   这是 {keywordOf termIfThenElse}`if`-表达式的基础，使其可以基于任何可判定命题进行分支。
 
-虽然普通的多态定义仅仅期望使用任意参数进行实例化，但被类型类重载的运算符要被 {deftech (key := "instance")}[实例]实例化，这些实例为某组特定参数定义了重载后的操作。
+虽然普通的多态定义仅仅期望使用任意参数进行实例化，但被类型类重载的运算符要被 {deftech (key := "instances")}[实例]实例化，这些实例为某组特定参数定义了重载后的操作。
 这些 {deftech (key := "instance-implicit")}[实例隐式]参数在方括号中指定。
 在调用位置，Lean 要么从候选列表中 {deftech (key := "synthesis")}[合成]{index}[实例合成] {index (subterm := "of type class instances")}[合成]一个合适的实例，要么报告错误。
 由于实例本身也可能有实例参数，这个搜索过程可能是递归的，并产生一个将各种实例的代码组合在一起的最终复合实例值。
@@ -120,7 +120,7 @@ deriving DecidableEq
 
 : 方法而不是字段
 
-  它不会创建以结构体类型的值作为显式参数的字段投影，而是创建{tech (key := "method")}[方法]。每个方法将对应的实例作为实例隐式参数。
+  它不会创建以结构体类型的值作为显式参数的字段投影，而是创建{tech (key := "methods")}[方法]。每个方法将对应的实例作为实例隐式参数。
 
 : 实例隐式父类
 
@@ -139,7 +139,7 @@ deriving DecidableEq
 
 : 考虑输出参数与半输出参数
 
-  {name}`outParam` 和 {name}`semiOutParam` {tech (key := "gadget")}[小工具]在结构体定义中没有意义，但它们在类定义中用于控制实例搜索。
+  {name}`outParam` 和 {name}`semiOutParam` {tech (key := "gadgets")}[小工具]在结构体定义中没有意义，但它们在类定义中用于控制实例搜索。
 
 虽然在类定义中允许 {keywordOf Lean.Parser.Command.declaration}`deriving` 子句，以保持类和结构体精译过程的平行，但它们并不常用，且应被视为高级特性。
 
@@ -250,7 +250,7 @@ C2.Monoid.mk.{u} {α : Type u}
 ```
 ::::
 
-类型类的参数可以用 {deftech (key := "gadget")}[小工具]标记，小工具是恒等函数的特殊版本，会导致精译器对值的处理方式有所不同。
+类型类的参数可以用 {deftech (key := "gadgets")}[小工具]标记，小工具是恒等函数的特殊版本，会导致精译器对值的处理方式有所不同。
 小工具从不改变项的_含义_，但可能会让精译时的搜索过程对其采取不同的处理。
 小工具 {name}`outParam` 和 {name}`semiOutParam` 会影响{ref "instance-synth"}[实例合成]，因此它们在对应小节记录。
 
@@ -336,7 +336,7 @@ tag := "class-abbrev"
 与其重复写出所有名称，不如定义一个继承了所有相关类的类，而该类本身不提供任何新方法。
 但是，这个新类有一个缺点：必须显式地声明它的实例。
 
-{keywordOf Lean.Parser.Command.classAbbrev}`class abbrev` 命令允许创建 {deftech (key := "class abbreviation")}[类缩写]，其中一个名称就是许多其他类参数的简写。
+{keywordOf Lean.Parser.Command.classAbbrev}`class abbrev` 命令允许创建 {deftech (key := "class abbreviations")}[类缩写]，其中一个名称就是许多其他类参数的简写。
 在幕后，类缩写是用一个继承了其他类的类来表示的。
 其构造器还被额外声明为实例，这样新类就可以仅通过实例合成来构造了。
 

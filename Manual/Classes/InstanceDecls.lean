@@ -300,7 +300,7 @@ instance instDecidableEqStringList : DecidableEq StringList
 tag := "instance-priorities"
 %%%
 
-可以为实例分配 {deftech (key := "priority")}[优先级]。
+可以为实例分配 {deftech (key := "priorities")}[优先级]。
 在实例合成期间，更高优先级的实例会被优先考虑；有关实例合成的详情，请参阅 {ref "instance-synth"}[实例合成小节]。
 
 :::syntax prio -open (title := "实例优先级")
