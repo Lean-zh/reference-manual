@@ -40,10 +40,10 @@ Lake 是标准的 Lean 构建工具。
  * 运行测试、代码检查器及其它开发工作流
 
 Lake 是可扩展的。
-它提供了一组丰富的 API，可用于为非 Lean 编写的软件工件定义增量构建任务，以自动化管理任务并与外部工作流集成。
+它提供了一组丰富的接口，可用于为非 Lean 编写的软件工件定义增量构建任务，以自动化管理任务并与外部工作流集成。
 对于不需要这些特性的构建配置，Lake 提供了一种声明式配置语言，可以写成 TOML 或 Lean 文件。
 
-本节介绍了 Lake 的 {ref "lake-cli"}[命令行界面]、{ref "lake-config"}[配置文件] 以及 {ref "lake-api"}[内部 API]。
+本节介绍了 Lake 的 {ref "lake-cli"}[命令行界面]、{ref "lake-config"}[配置文件] 以及 {ref "lake-api"}[内部接口]。
 这三者共享了一套概念和术语。
 
 
@@ -57,7 +57,7 @@ tag := "lake-vocab"
 一个包由一个目录组成，其中包含一个 {tech (key := "package configuration")}[包配置] 文件以及源代码。
 包可以 {deftech (key := "require")}_请求_ 其他包，在这种情况下，这些包的代码（更确切地说，它们的 {tech (key := "targets")}[目标]）将变为可用状态。
 一个包的 {deftech (key := "direct dependencies")}_直接依赖_ 是它所请求的包，而 {deftech (key := "transitive dependencies")}_传递依赖_ 则是包的直接依赖及其直接依赖的传递依赖。
-包可以从 Lean 包仓库 [Reservoir](https://reservoir.lean-lang.org/){TODO}[添加章节交叉引用] 获取，或者从手动指定的位置获取。
+包可以从 Lean 包仓库 [Reservoir](https://reservoir.lean-lang.org/){TODO}[此处需添加章节交叉引用] 获取，或者从手动指定的位置获取。
 {deftech (key := "Git dependencies")}_Git 依赖_ 通过 Git 仓库 URL 及修订版本（分支、标签或哈希）指定，并在构建之前必须克隆到本地，而本地的 {deftech (key := "path dependencies")}_路径依赖_ 则通过相对于包目录的路径指定。
 
 :::paragraph
@@ -97,24 +97,24 @@ open Illuminate in
       |>.pad pad |>.frame (padding := 2) (cornerRadius := 4)
 
   let toolchain := mono "lean-toolchain"
-  let rootPkg := borderedBox "Root package" <|
+  let rootPkg := borderedBox "根包" <|
     items [
-      "Package configuration file (lakefile.lean)",
-      "Libraries",
-      "Executables",
-      "Manifest (lake-manifest.json)"
+      "包配置文件 (lakefile.lean)",
+      "库",
+      "可执行文件",
+      "清单 (lake-manifest.json)"
     ]
-  let depItems := items ["Package configuration file", "Libraries", "Executables", "Artifacts"] 8
-  let dep1 := borderedBox "Dependency 1" depItems 9 6
-  let dep2 := borderedBox "Dependency 2" depItems 9 6
+  let depItems := items ["包配置文件", "库", "可执行文件", "工件"] 8
+  let dep1 := borderedBox "依赖 1" depItems 9 6
+  let dep2 := borderedBox "依赖 2" depItems 9 6
   let dots : Diagram SVG := .text "⋯" { fontSize := 14 }
-  let packages := borderedBox "Packages" <|
+  let packages := borderedBox "包" <|
     Diagram.vsep 8 [Diagram.hsep 12 [dep1, dep2], dots] (align := .left)
-  let artifacts := borderedBox "Artifacts" <|
-    items ["Built libraries", "Built executables"]
-  let lakeDir := borderedBox "Lake Directory (.lake)" <|
+  let artifacts := borderedBox "工件" <|
+    items ["已构建的库", "已构建的可执行文件"]
+  let lakeDir := borderedBox "Lake 目录 (.lake)" <|
     Diagram.vsep 10 [packages, artifacts] (align := .left)
-  borderedBox "Workspace" <|
+  borderedBox "工作区" <|
     Diagram.vsep 10 [toolchain, rootPkg, lakeDir] (align := .left)
 
 
@@ -145,8 +145,8 @@ open Illuminate in
  * {tech (key := "Packages")}_包_ 是作为一个单元分发的 Lean 代码单元。
  * {deftech (key := "Libraries")}_库_ 是 Lean {tech (key := "module")}[模块] 的集合，在一个或多个 {deftech (key := "module roots")}_模块根_ 下按层次结构组织。
  * {deftech (key := "Executables")}_可执行文件_ 由一个定义了 `main` 的_单个_模块组成。
- * {deftech (key := "External libraries")}_外部库_ 是非 Lean 的*静态*库，它们将链接到包及其依赖的二进制文件，包括它们的共享库和可执行文件。
- * {deftech (key := "Custom targets")}_自定义目标_ 包含运行构建的任意代码，使用 Lake 的内部 API 编写。
+ * {deftech (key := "External libraries")}_外部库_ 是非 Lean 的*静态*库，它们将链接到包及依赖它的包的二进制文件，包括它们的共享库和可执行文件。
+ * {deftech (key := "Custom targets")}_自定义目标_ 包含运行构建的任意代码，使用 Lake 的内部接口编写。
 
 除了它们的 Lean 代码外，包、库和可执行文件还包含影响后续构建步骤的配置设置。
 包可以指定一组 {deftech (key := "default targets")}_默认目标_。
@@ -309,7 +309,7 @@ tag := "lake-facets"
 
 当没有显式请求分面，但指定了初始目标时，{lake}`build` 将产生初始目标的 {deftech (key := "default facet")}_默认分面_。
 每种类型的初始目标都有相应的默认分面（例如从可执行文件目标生成可执行二进制文件或构建一个包的 {tech (key := "default targets")}[默认目标]）；可以在 {tech (key := "package configuration")}[包配置] 中或通过 Lake 的 {ref "lake-cli"}[命令行界面] 显式请求其他分面。
-可以使用 Lake 的内部 API 来编写自定义分面。
+可以使用 Lake 的内部接口来编写自定义分面。
 
 
 ```lakeHelp "build"
@@ -538,7 +538,7 @@ module.transImports
 
 : `olean`
 
-  模块的 {tech (key := ".olean file")}[`.olean` 文件]。{TODO}[一旦模块系统完全落地，添加 `olean.private` 和 `olean.server` 的文档。]
+  模块的 {tech (key := ".olean file")}[`.olean` 文件]。{TODO}[模块系统完全落地后，此处需添加 `olean.private` 和 `olean.server` 的文档。]
 
 : `ilean`
 
@@ -554,7 +554,7 @@ module.transImports
 
 : `imports`
 
-  Lean 模块的直接导入，但不包含传递导入的全集。{TODO}[一旦模块系统完全落地，在此处添加 `module.importAllArts` 和 `module.importArts` 的文档。]
+  Lean 模块的直接导入，但不包含传递导入的全集。{TODO}[模块系统完全落地后，此处需添加 `module.importAllArts` 和 `module.importArts` 的文档。]
 
 : `precompileImports`
 
@@ -612,11 +612,11 @@ module.transImports
 
 : `dynlib`
 
-  共享库（例如，用于 Lean 选项 `--load-dynlib`）{TODO}[记录 Lean 命令行选项的文档，并从此处提供交叉引用]。
+  共享库（例如，用于 Lean 选项 `--load-dynlib`）{TODO}[此处需记录 Lean 命令行选项的文档，并提供交叉引用]。
 
 : `ltar`
 
-  包含模块构建工件的压缩包（通过 `leantar` 生成）。{TODO}[请同时在手册中记录 `leantar` 的文档。]
+  包含模块构建工件的压缩包（通过 `leantar` 生成）。{TODO}[此处还需在手册中补充 `leantar` 的文档。]
 
 : `linkInfoExport`
 
@@ -641,7 +641,7 @@ Lake {tech (key := "package configuration")}[包配置] 文件可包含 {deftech
 
 :::::TODO
 
-一旦能够导入足够多的 Lake 以进行精译，恢复以下内容：
+能够导入足够多的 Lake 以完成精译后，请恢复以下内容：
 
 ````
 ```lean -show
@@ -1474,7 +1474,7 @@ Lake 支持 {deftech (key := "local cache")}_本地工件缓存_，该缓存会�
 如果两个具有相同工具链的独立工作区依赖于相同的包，则它们可以共享彼此的构建产物。
 
 因为这是一项实验性功能，所以本地缓存默认处于禁用状态。
-只有当 {envVar}`LAKE_ARTIFACT_CACHE` 环境变量被设置为 `true`，或者当 {TODO}[ref] `enableArtifactCache` 字段在 {ref "lake-config"}[配置文件] 中被设置为 `true` 时才会被启用。
+只有当 {envVar}`LAKE_ARTIFACT_CACHE` 环境变量被设置为 `true`，或者当 {TODO}[交叉引用] `enableArtifactCache` 字段在 {ref "lake-config"}[配置文件] 中被设置为 `true` 时才会被启用。
 
 
 ### 远程工件缓存
@@ -1516,7 +1516,7 @@ tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Concept
 
 {include 0 Manual.BuildTools.Lake.Config}
 
-# 脚本 API 参考
+# 脚本接口参考
 %%%
 tag := "lake-api"
 %%%
@@ -1532,7 +1532,7 @@ tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Script-
 %%%
 
 提供对当前 Lake 环境信息（例如 Lean、Lake 以及其它工具的位置）访问权限的单子具备 {name Lake.MonadLakeEnv}`MonadLakeEnv` 实例。
-Lake API 中的所有单子皆是如此，包括 {name Lake.ScriptM}`ScriptM`。
+Lake 接口中的所有单子皆是如此，包括 {name Lake.ScriptM}`ScriptM`。
 
 {zhdocstring Lake.MonadLakeEnv ZhDoc.BuildTools.Lake.MonadLakeEnv}
 

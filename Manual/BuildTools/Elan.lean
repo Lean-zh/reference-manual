@@ -123,15 +123,15 @@ tag := "elan-cli"
 
 调用 Elan 时可以使用以下标志：
 
- : {elanOptDef flag}`--help` or {elanOptDef flag}`-h`
+ : {elanOptDef flag}`--help` 或 {elanOptDef flag}`-h`
 
   详细说明当前子命令。
 
- : {elanOptDef flag}`--verbose` or {elanOptDef flag}`-v`
+ : {elanOptDef flag}`--verbose` 或 {elanOptDef flag}`-v`
 
   启用详细输出。
 
- : {elanOptDef flag}`--version` or {elanOptDef flag}`-V`
+ : {elanOptDef flag}`--version` 或 {elanOptDef flag}`-V`
 
   显示 Elan 版本。
 
@@ -584,7 +584,7 @@ tag := "elan-self"
 %%%
 
 Elan 可以管理自身的安装。
-它可以自行升级、自行卸载，并帮助为许多常用 shell 配置制表符补全。
+它可以自行升级、自行卸载，并帮助为许多常用命令外壳配置制表符补全。
 
 ```elanHelp "self"
 elan-self
@@ -738,6 +738,6 @@ DISCUSSION:
 ```
 
 :::elan completions "shell"
-为 Elan 生成 shell 补全脚本，从而在多种 shell 中启用 Elan 命令的制表符补全。
+为 Elan 生成命令外壳补全脚本，从而在多种命令外壳中启用 Elan 命令的制表符补全。
 有关安装方法的说明，请参阅 `elan help completions` 的输出。
 :::

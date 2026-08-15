@@ -471,7 +471,7 @@ version of the configuration file, respectively. The default is TOML.
 :::
 
 :::TODO
-`lake init` 或 `lake new` 的示例
+此处需补充 `lake init` 或 `lake new` 的示例。
 :::
 
 # 构建与运行
@@ -808,7 +808,7 @@ ANNOTATIONS:
 
 : `--keep-public`
 
-  保留所有的 `public` 导入以保持 API 稳定性
+  保留所有的 `public` 导入以保持接口稳定性
 
 : `--add-public`
 
@@ -999,7 +999,7 @@ package or its dependencies. It merely verifies that one is specified.
 
 检查是否有正确配置的测试驱动程序
 
-如果工作区的根包具有正确配置的代码检查驱动程序，则以退出码 0 退出。
+如果工作区的根包具有正确配置的测试驱动程序，则以退出码 0 退出。
 否则报错（代码 1）。
 
 不验证配置的测试驱动程序是否真正在包或其依赖项中存在。
@@ -1539,7 +1539,7 @@ described cannot be found in the cache.
 ::::lake cache stage "mappings «staging-directory» [\"--force-overwrite\"]"
 创建 {lakeMeta}`staging-directory` 并将 {lakeMeta}`mappings` 文件复制到其中。
 在这之后，它会将映射文件中描述的所有工件从缓存复制到暂存目录。
-除非指定了 {lakeOptDef flag}`--force-overwrite`，否则已经存在于登台目录中的工件不会被覆盖。
+除非指定了 {lakeOptDef flag}`--force-overwrite`，否则已经存在于暂存目录中的工件不会被覆盖。
 如果无法在缓存中找到描述的任何工件，则报错。
 ::::
 
@@ -1563,7 +1563,7 @@ is specified.
 
 将存储在 {lakeMeta}`staging-directory` 中的映射和工件（例如，通过 {lake}`cache stage` 生成的）复制回缓存中。
 
-它读取登台目录内的 `outputs.jsonl` 处的映射文件，并将该映射写入 Lake 缓存中。然后，它将描述的工件从登台目录复制到缓存中。
+它读取暂存目录内的 `outputs.jsonl` 处的映射文件，并将该映射写入 Lake 缓存中。然后，它将描述的工件从暂存目录复制到缓存中。
 除非指定了 {lakeOpt}`--force-overwrite`，否则缓存中已经存在的映射和工件不会被覆盖。
 ::::
 
