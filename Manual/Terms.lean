@@ -359,7 +359,7 @@ fun $x:ident => $t
 ```
 
 精译时，Lean 必须能够确定函数的定义域。
-类型指派是提供这一信息的一种方式：
+类型标注是提供这一信息的一种方式：
 
 ```grammar
 fun $x:ident : term => $t
@@ -474,11 +474,11 @@ $x:ident
 ```grammar
 ($x:ident $y:ident*)
 ```
-带类型指派的标识符序列：
+带类型标注的标识符序列：
 ```grammar
 ($x:ident $y:ident* : $t)
 ```
-带或不带类型指派的隐式参数：
+带或不带类型标注的隐式参数：
 ```grammar
 {$x:ident $x:ident*}
 ```
@@ -492,7 +492,7 @@ $x:ident
 ```grammar
 [$x:ident : $t]
 ```
-或者带或不带类型指派的严格隐式参数：
+或者带或不带类型标注的严格隐式参数：
 ```grammar
 ⦃$x:ident $x:ident*⦄
 ```
@@ -950,7 +950,7 @@ end
 
 # 数值字面量
 %%%
-tag := "numeric-literals"
+tag := "The-Lean-Language-Reference--Terms--Numeric-Literals"
 file := "Numeric-Literals"
 %%%
 
@@ -1108,7 +1108,7 @@ let y := 1 :: 1 :: 1 :: 1 :: y;
 
 # 结构与构造器
 %%%
-tag := "structures-and-constructors"
+tag := "The-Lean-Language-Reference--Terms--Structures-and-Constructors"
 file := "Structures-and-Constructors"
 %%%
 
@@ -1285,7 +1285,7 @@ $h:ident : $e:term
   {ref "char-syntax"}[字符字面量]和{ref "string-syntax"}[字符串字面量]是匹配相应字符或字符串的模式。
   {ref "raw-string-literals"}[原始字符串字面量]可以用作模式，但{ref "string-interpolation"}[插值字符串]不可以。
   模式中的{ref "nat-syntax"}[自然数字面量]通过合成相应的 {name}`OfNat` 实例来解释，并将所得项归约为{tech (key := "normal form")}[范式]；该范式必须是模式。
-  类似地，{tech (key := "scientific literals")}[科学记数法字面量]通过相应的 {name}`OfScientific` 实例解释。
+  类似地，{tech (key := "scientific literals")}[科学计数字面量]通过相应的 {name}`OfScientific` 实例解释。
 
 : 结构体实例
 
@@ -1980,7 +1980,7 @@ file := "Elaborating Pattern Matching"
 
 # 空洞
 %%%
-tag := "holes"
+tag := "The-Lean-Language-Reference--Terms--Holes"
 file := "Holes"
 %%%
 
@@ -2029,7 +2029,7 @@ def the (α : Sort u) (x : α) : α := x
 
 # 类型标注
 %%%
-tag := "type-ascription"
+tag := "The-Lean-Language-Reference--Terms--Type-Ascription"
 file := "Type-Ascription"
 %%%
 
@@ -2183,7 +2183,7 @@ false
 
 # 引用与反引用
 %%%
-tag := "quotation-and-antiquotation"
+tag := "The-Lean-Language-Reference--Terms--Quotation-and-Antiquotation"
 file := "Quotation-and-Antiquotation"
 %%%
 
@@ -2191,7 +2191,7 @@ file := "Quotation-and-Antiquotation"
 
 # `do` 表示法
 %%%
-tag := "do-notation-terms"
+tag := "The-Lean-Language-Reference--Terms--do--Notation"
 file := "do--Notation"
 %%%
 
@@ -2199,7 +2199,7 @@ file := "do--Notation"
 
 # 证明
 %%%
-tag := "proof-terms"
+tag := "The-Lean-Language-Reference--Terms--Proofs"
 file := "Proofs"
 %%%
 
