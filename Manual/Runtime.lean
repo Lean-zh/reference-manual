@@ -219,11 +219,11 @@ set_option trace.compiler.ir.result true
 ```
 ```lean (name := p1)
 def process (str : String) : String × String :=
-  (str.set 0 ' ', "")
+  (String.Pos.Raw.set str 0 ' ', "")
 ```
 ```lean (name := p2)
 def process' (str : String) : String × String:=
-  (str.set 0 ' ', str)
+  (String.Pos.Raw.set str 0 ' ', str)
 ```
 
 {lean}`process` 的 IR 中不包含 `inc` 或 `dec` 指令。
@@ -236,7 +236,7 @@ def process' (str : String) : String × String:=
     def process (x_1 : obj) : obj :=
       let x_2 : tagged := 0;
       let x_3 : u32 := 32;
-      let x_4 : obj := String.set x_1 x_2 x_3;
+      let x_4 : obj := String.Pos.Raw.set x_1 x_2 x_3;
       let x_5 : obj := process._closed_0;
       let x_6 : obj := ctor_0[Prod.mk] x_4 x_5;
       ret x_6
@@ -250,7 +250,7 @@ def process' (str : String) : String × String:=
       let x_2 : tagged := 0;
       let x_3 : u32 := 32;
       inc x_1;
-      let x_4 : obj := String.set x_1 x_2 x_3;
+      let x_4 : obj := String.Pos.Raw.set x_1 x_2 x_3;
       let x_5 : obj := ctor_0[Prod.mk] x_4 x_1;
       ret x_5
 ```
