@@ -7,6 +7,7 @@ Author: David Thrane Christiansen
 import VersoManual
 
 import Manual.Meta
+import Manual.ZhDocString.Monads.Core
 
 import Lean.Parser.Command
 
@@ -38,7 +39,7 @@ variable {α β : Type u}
 有可用的提升时，Lean 会自动插入它们；提升由类型类 {name}`MonadLift` 定义。
 自动单子提升会在通用的{tech (key := "coercion")}[强制转换]机制之前尝试。
 
-{docstring MonadLift}
+{zhdocstring MonadLift Manual.ZhDocString.Monads.Core.MonadLift}
 
 单子之间的{tech (key := "lift")}[提升]具有自反性和传递性：
  * 任意单子都能运行自己的动作。
@@ -46,7 +47,7 @@ variable {α β : Type u}
 辅助类型类 {name}`MonadLiftT` 通过 {name}`MonadLift` 实例的自反传递闭包构造提升。
 用户不应定义新的 {name}`MonadLiftT` 实例；不过，当多态函数需要在用户提供的某个单子中运行多个单子的动作时，它很适合作为该函数的实例隐式参数。
 
-{docstring MonadLiftT}
+{zhdocstring MonadLiftT Manual.ZhDocString.Monads.Core.MonadLiftT}
 
 ```lean -show
 section
@@ -159,7 +160,7 @@ but is expected to have type
 
 将选项 {option}`autoLift` 设为 {lean}`false` 可以禁用自动提升。
 
-{optionDocs autoLift}
+{zhOptionDocs autoLift Manual.ZhDocString.Monads.Core.autoLift}
 
 # 反向提升
 %%%
@@ -185,22 +186,22 @@ variable {m n : Type u → Type v} {α ε : Type u}
 tag := "The-Lean-Language-Reference--Functors___-Monads-and--do--Notation--Lifting-Monads--Reversing-Lifts--Monad-Functors"
 %%%
 
-{docstring MonadFunctor}
+{zhdocstring MonadFunctor Manual.ZhDocString.Monads.Core.MonadFunctor}
 
-{docstring MonadFunctorT}
+{zhdocstring MonadFunctorT Manual.ZhDocString.Monads.Core.MonadFunctorT}
 
 ## 使用 `MonadControl` 进行可逆提升
 %%%
 tag := "The-Lean-Language-Reference--Functors___-Monads-and--do--Notation--Lifting-Monads--Reversing-Lifts--Reversible-Lifting-with--MonadControl"
 %%%
 
-{docstring MonadControl}
+{zhdocstring MonadControl Manual.ZhDocString.Monads.Core.MonadControl}
 
-{docstring MonadControlT}
+{zhdocstring MonadControlT Manual.ZhDocString.Monads.Core.MonadControlT}
 
-{docstring control}
+{zhdocstring control Manual.ZhDocString.Monads.Core.control}
 
-{docstring controlAt}
+{zhdocstring controlAt Manual.ZhDocString.Monads.Core.controlAt}
 
 
 ::::keepEnv

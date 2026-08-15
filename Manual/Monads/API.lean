@@ -7,6 +7,7 @@ Author: David Thrane Christiansen
 import VersoManual
 
 import Manual.Meta
+import Manual.ZhDocString.Monads.Core
 
 import Lean.Parser.Command
 
@@ -80,27 +81,27 @@ tag := "The-Lean-Language-Reference--Functors___-Monads-and--do--Notation--API-R
 
 当使用某个仅为副作用而返回值的动作时，函数 {name}`discard` 尤其有用。
 
-{docstring discard}
+{zhdocstring discard Manual.ZhDocString.Monads.Core.discard}
 
 # 控制流
 %%%
 tag := "The-Lean-Language-Reference--Functors___-Monads-and--do--Notation--API-Reference--Control-Flow"
 %%%
 
-{docstring guard}
+{zhdocstring guard Manual.ZhDocString.Monads.Core.guard}
 
-{docstring optional}
+{zhdocstring optional Manual.ZhDocString.Monads.Core.optional}
 
 # 提升布尔操作
 %%%
 tag := "The-Lean-Language-Reference--Functors___-Monads-and--do--Notation--API-Reference--Lifting-Boolean-Operations"
 %%%
 
-{docstring andM}
+{zhdocstring andM Manual.ZhDocString.Monads.Core.andM}
 
-{docstring orM}
+{zhdocstring orM Manual.ZhDocString.Monads.Core.orM}
 
-{docstring notM}
+{zhdocstring notM Manual.ZhDocString.Monads.Core.notM}
 
 # 克莱斯利复合
 %%%
@@ -109,9 +110,9 @@ tag := "The-Lean-Language-Reference--Functors___-Monads-and--do--Notation--API-R
 
 {deftech (key := "Kleisli composition")}_克莱斯利复合_是单子函数的复合，类似于普通函数所用的 {name}`Function.comp`。
 
-{docstring Bind.kleisliRight}
+{zhdocstring Bind.kleisliRight Manual.ZhDocString.Monads.Core.Bind.kleisliRight}
 
-{docstring Bind.kleisliLeft}
+{zhdocstring Bind.kleisliLeft Manual.ZhDocString.Monads.Core.Bind.kleisliLeft}
 
 # 重排实参的操作
 %%%
@@ -121,6 +122,6 @@ tag := "The-Lean-Language-Reference--Functors___-Monads-and--do--Notation--API-R
 有时，对函数的第二个实参进行部分应用会更方便。
 以下函数反转实参顺序，使这一做法更容易。
 
-{docstring Functor.mapRev}
+{zhdocstring Functor.mapRev Manual.ZhDocString.Monads.Core.Functor.mapRev}
 
-{docstring Bind.bindLeft}
+{zhdocstring Bind.bindLeft Manual.ZhDocString.Monads.Core.Bind.bindLeft}

@@ -7,6 +7,7 @@ Author: David Thrane Christiansen
 import VersoManual
 
 import Manual.Meta
+import Manual.ZhDocString.Monads.Core
 
 import Lean.Parser.Command
 
@@ -63,7 +64,7 @@ Lean 标准库不要求每个 {name}`Functor` 实例都提供这些性质的证�
 需要这些性质的证明时，可以使用类型为 {lean}`LawfulFunctor f` 的实例隐式参数。
 类型类 {name}`LawfulFunctor` 包含所需的证明。
 
-{docstring LawfulFunctor}
+{zhdocstring LawfulFunctor Manual.ZhDocString.Monads.Core.LawfulFunctor}
 
 ```lean -show
 end F
@@ -76,14 +77,14 @@ end F
 讨论传统应用函子定律与此处表述之间的关系
 :::
 
-{docstring LawfulApplicative}
+{zhdocstring LawfulApplicative Manual.ZhDocString.Monads.Core.LawfulApplicative}
 
 {deftech (key := "monad laws")}[单子定律]规定：{name}`pure` 后接 {name}`bind` 应等价于函数应用（即 {name}`pure` 没有任何效应）；{name}`bind` 后接用 {name}`pure` 包裹的函数应用，应等价于 {name Functor.map}`map`；并且 {name}`bind` 满足结合律。
 
 
-{docstring LawfulMonad}
+{zhdocstring LawfulMonad Manual.ZhDocString.Monads.Core.LawfulMonad}
 
 
-{docstring LawfulMonad.mk'}
+{zhdocstring LawfulMonad.mk' Manual.ZhDocString.Monads.Core.LawfulMonad.mk'}
 
 ::::

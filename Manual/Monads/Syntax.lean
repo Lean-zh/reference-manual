@@ -7,6 +7,7 @@ Author: David Thrane Christiansen
 import VersoManual
 
 import Manual.Meta
+import Manual.ZhDocString.Monads.Core
 import Manual.Papers
 
 import Lean.Parser.Command
@@ -949,14 +950,14 @@ tag := "The-Lean-Language-Reference--Functors___-Monads-and--do--Notation--Synta
 若要在没有成员关系证明的 {keywordOf Lean.Parser.Term.doFor}`for` 循环中使用，集合必须实现 {name}`ForIn` 类型类。
 额外实现 {lean}`ForIn'` 后，还可以使用带成员关系证明的 {keywordOf Lean.Parser.Term.doFor}`for` 循环。
 
-{docstring ForIn}
+{zhdocstring ForIn Manual.ZhDocString.Monads.Core.ForIn}
 
-{docstring ForIn'}
+{zhdocstring ForIn' Manual.ZhDocString.Monads.Core.ForIn'}
 
-{docstring ForInStep}
+{zhdocstring ForInStep Manual.ZhDocString.Monads.Core.ForInStep}
 
-{docstring ForInStep.value}
+{zhdocstring ForInStep.value Manual.ZhDocString.Monads.Core.ForInStep.value}
 
-{docstring ForM}
+{zhdocstring ForM Manual.ZhDocString.Monads.Core.ForM}
 
-{docstring ForM.forIn}
+{zhdocstring ForM.forIn Manual.ZhDocString.Monads.Core.ForM.forIn}

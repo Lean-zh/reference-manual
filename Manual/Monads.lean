@@ -7,6 +7,7 @@ Author: David Thrane Christiansen
 import VersoManual
 
 import Manual.Meta
+import Manual.ZhDocString.Monads.Core
 import Manual.Papers
 
 import Manual.Monads.Syntax
@@ -47,17 +48,17 @@ Lean 标准库中的类型类所表示的是用于编程的概念，而非一般
 类型类 {name}`Alternative` 描述还具有某种失败与恢复概念的应用函子。
 
 
-{docstring Functor}
+{zhdocstring Functor Manual.ZhDocString.Monads.Core.Functor}
 
-{docstring Pure}
+{zhdocstring Pure Manual.ZhDocString.Monads.Core.Pure}
 
-{docstring Seq}
+{zhdocstring Seq Manual.ZhDocString.Monads.Core.Seq}
 
-{docstring SeqLeft}
+{zhdocstring SeqLeft Manual.ZhDocString.Monads.Core.SeqLeft}
 
-{docstring SeqRight}
+{zhdocstring SeqRight Manual.ZhDocString.Monads.Core.SeqRight}
 
-{docstring Applicative}
+{zhdocstring Applicative Manual.ZhDocString.Monads.Core.Applicative}
 
 
 :::::keepEnv
@@ -142,11 +143,11 @@ end
 :::::
 
 
-{docstring Alternative}
+{zhdocstring Alternative Manual.ZhDocString.Monads.Core.Alternative}
 
-{docstring Bind}
+{zhdocstring Bind Manual.ZhDocString.Monads.Core.Bind}
 
-{docstring Monad}
+{zhdocstring Monad Manual.ZhDocString.Monads.Core.Monad}
 
 {include 0 Manual.Monads.Laws}
 
