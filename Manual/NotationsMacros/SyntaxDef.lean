@@ -7,6 +7,7 @@ Author: David Thrane Christiansen
 import VersoManual
 
 import Manual.Meta
+import Manual.ZhDocString.NotationsMacros.Syntax
 
 import Lean.Parser.Command
 
@@ -65,9 +66,9 @@ Lean 的解析器会产生一棵具体语法树，其类型为 {name}`Lean.Synta
 
 原子与标识符统称为 {deftech (key := "tokens")}_记号_。
 
-{docstring Lean.Syntax}
+{zhdocstring Lean.Syntax ZhDoc.NotationsMacros.Syntax}
 
-{docstring Lean.Syntax.Preresolved}
+{zhdocstring Lean.Syntax.Preresolved ZhDoc.NotationsMacros.Syntax.Preresolved}
 
 # 语法节点种类
 %%%
@@ -80,13 +81,13 @@ tag := "The-Lean-Language-Reference--Notations-and-Macros--Defining-New-Syntax--
 Lean 的解析器会把每个关键字原子 `KW` 包装进一个单元素节点，其种类为 `` `token.KW ``。
 语法值的种类可以通过 {name Lean.Syntax.getKind}`Syntax.getKind` 提取出来。
 
-{docstring Lean.SyntaxNodeKind}
+{zhdocstring Lean.SyntaxNodeKind ZhDoc.NotationsMacros.SyntaxNodeKind}
 
-{docstring Lean.Syntax.isOfKind}
+{zhdocstring Lean.Syntax.isOfKind ZhDoc.NotationsMacros.Syntax.isOfKind}
 
-{docstring Lean.Syntax.getKind}
+{zhdocstring Lean.Syntax.getKind ZhDoc.NotationsMacros.Syntax.getKind}
 
-{docstring Lean.Syntax.setKind}
+{zhdocstring Lean.Syntax.setKind ZhDoc.NotationsMacros.Syntax.setKind}
 
 # 记号与字面量种类
 %%%
@@ -119,36 +120,36 @@ info: Lean.Syntax.node (Lean.SourceInfo.none) `str #[Lean.Syntax.atom (Lean.Sour
 #eval noInfo <$> `(term|"ab\tc")
 ```
 
-{docstring Lean.identKind}
+{zhdocstring Lean.identKind ZhDoc.NotationsMacros.identKind}
 
-{docstring Lean.strLitKind}
+{zhdocstring Lean.strLitKind ZhDoc.NotationsMacros.strLitKind}
 
-{docstring Lean.interpolatedStrKind}
+{zhdocstring Lean.interpolatedStrKind ZhDoc.NotationsMacros.interpolatedStrKind}
 
-{docstring Lean.interpolatedStrLitKind}
+{zhdocstring Lean.interpolatedStrLitKind ZhDoc.NotationsMacros.interpolatedStrLitKind}
 
-{docstring Lean.charLitKind}
+{zhdocstring Lean.charLitKind ZhDoc.NotationsMacros.charLitKind}
 
-{docstring Lean.numLitKind}
+{zhdocstring Lean.numLitKind ZhDoc.NotationsMacros.numLitKind}
 
-{docstring Lean.scientificLitKind}
+{zhdocstring Lean.scientificLitKind ZhDoc.NotationsMacros.scientificLitKind}
 
-{docstring Lean.nameLitKind}
+{zhdocstring Lean.nameLitKind ZhDoc.NotationsMacros.nameLitKind}
 
-{docstring Lean.fieldIdxKind}
+{zhdocstring Lean.fieldIdxKind ZhDoc.NotationsMacros.fieldIdxKind}
 
 # 内部种类
 %%%
 tag := "The-Lean-Language-Reference--Notations-and-Macros--Defining-New-Syntax--Internal-Kinds"
 %%%
 
-{docstring Lean.groupKind}
+{zhdocstring Lean.groupKind ZhDoc.NotationsMacros.groupKind}
 
-{docstring Lean.nullKind}
+{zhdocstring Lean.nullKind ZhDoc.NotationsMacros.nullKind}
 
-{docstring Lean.choiceKind}
+{zhdocstring Lean.choiceKind ZhDoc.NotationsMacros.choiceKind}
 
-{docstring Lean.hygieneInfoKind}
+{zhdocstring Lean.hygieneInfoKind ZhDoc.NotationsMacros.hygieneInfoKind}
 
 # 源位置
 %%%
@@ -175,7 +176,7 @@ tag := "source-info"
   合成源位置用于在项被自动转换后依然提供准确反馈，也用于跟踪精译后表达式与其在 Lean 输出中的呈现之间的对应关系。
   合成位置可以被标记为 {deftech (key := "canonical")}_规范_；在这种情况下，一些通常会忽略合成位置的操作会把它当作非合成位置来处理。
 
-{docstring Lean.SourceInfo}
+{zhdocstring Lean.SourceInfo ZhDoc.NotationsMacros.SourceInfo}
 
 # 检查语法
 %%%
@@ -393,9 +394,9 @@ tag := "typed-syntax"
 {name Lean.TSyntax}`TSyntax` 结构包含一个类型层面的语法类别列表，以及一棵语法树。
 这个语法类别列表通常恰好只包含一个元素；在这种情况下，列表结构本身不会显示出来。
 
-{docstring Lean.TSyntax}
+{zhdocstring Lean.TSyntax ZhDoc.NotationsMacros.TSyntax}
 
-{docstring Lean.SyntaxNodeKinds}
+{zhdocstring Lean.SyntaxNodeKinds ZhDoc.NotationsMacros.SyntaxNodeKinds}
 
 {tech (key := "Quasiquotations")}[准引用] 会阻止替换那些并非来自正确语法类别的带类型语法。
 对于 Lean 的许多内建语法类别，都有一组 {tech (key := "coercions")}[强制转换]，可以把某一类语法适当地包装成另一类别的语法，例如从字符串字面量语法到项语法的强制转换。
@@ -424,19 +425,19 @@ variable {ks : SyntaxNodeKinds} {sep : String}
 这种转换会在底层数组中插入或移除分隔符元素，其耗时与元素个数成线性关系。
 :::
 
-{docstring Lean.TSyntaxArray}
+{zhdocstring Lean.TSyntaxArray ZhDoc.NotationsMacros.TSyntaxArray}
 
-{docstring Lean.TSyntaxArray.raw}
+{zhdocstring Lean.TSyntaxArray.raw ZhDoc.NotationsMacros.TSyntaxArray.raw}
 
-{docstring Lean.Syntax.TSepArray}
+{zhdocstring Lean.Syntax.TSepArray ZhDoc.NotationsMacros.Syntax.TSepArray}
 
-{docstring Lean.Syntax.TSepArray.getElems +allowMissing}
+{zhdocstring Lean.Syntax.TSepArray.getElems ZhDoc.NotationsMacros.Syntax.TSepArray.getElems}
 
-{docstring Lean.Syntax.TSepArray.elemsAndSeps}
+{zhdocstring Lean.Syntax.TSepArray.elemsAndSeps ZhDoc.NotationsMacros.Syntax.TSepArray.elemsAndSeps}
 
-{docstring Lean.Syntax.TSepArray.ofElems}
+{zhdocstring Lean.Syntax.TSepArray.ofElems ZhDoc.NotationsMacros.Syntax.TSepArray.ofElems}
 
-{docstring Lean.Syntax.TSepArray.push +allowMissing}
+{zhdocstring Lean.Syntax.TSepArray.push ZhDoc.NotationsMacros.Syntax.TSepArray.push}
 
 
 # 别名
@@ -447,72 +448,72 @@ tag := "The-Lean-Language-Reference--Notations-and-Macros--Defining-New-Syntax--
 为常用的带类型语法形式提供了若干别名。
 这些别名使代码可以在更高的抽象层次上书写。
 
-{docstring Lean.Term}
+{zhdocstring Lean.Term ZhDoc.NotationsMacros.Syntax.Term}
 
-{docstring Lean.Command}
+{zhdocstring Lean.Command ZhDoc.NotationsMacros.Syntax.Command}
 
-{docstring Lean.Syntax.Level}
+{zhdocstring Lean.Syntax.Level ZhDoc.NotationsMacros.Syntax.Level}
 
-{docstring Lean.Syntax.Tactic}
+{zhdocstring Lean.Syntax.Tactic ZhDoc.NotationsMacros.Syntax.Tactic}
 
-{docstring Lean.Prec}
+{zhdocstring Lean.Prec ZhDoc.NotationsMacros.Syntax.Prec}
 
-{docstring Lean.Prio}
+{zhdocstring Lean.Prio ZhDoc.NotationsMacros.Syntax.Prio}
 
-{docstring Lean.Ident}
+{zhdocstring Lean.Ident ZhDoc.NotationsMacros.Syntax.Ident}
 
-{docstring Lean.StrLit}
+{zhdocstring Lean.StrLit ZhDoc.NotationsMacros.Syntax.StrLit}
 
-{docstring Lean.CharLit}
+{zhdocstring Lean.CharLit ZhDoc.NotationsMacros.Syntax.CharLit}
 
-{docstring Lean.NameLit}
+{zhdocstring Lean.NameLit ZhDoc.NotationsMacros.Syntax.NameLit}
 
-{docstring Lean.NumLit}
+{zhdocstring Lean.NumLit ZhDoc.NotationsMacros.Syntax.NumLit}
 
-{docstring Lean.ScientificLit}
+{zhdocstring Lean.ScientificLit ZhDoc.NotationsMacros.Syntax.ScientificLit}
 
-{docstring Lean.HygieneInfo}
+{zhdocstring Lean.HygieneInfo ZhDoc.NotationsMacros.Syntax.HygieneInfo}
 
 # 构造语法的辅助函数
 %%%
 tag := "syntax-construction-helpers"
 %%%
 
-{docstring Lean.mkIdent +allowMissing}
+{zhdocstring Lean.mkIdent ZhDoc.NotationsMacros.mkIdent}
 
-{docstring Lean.mkIdentFrom}
+{zhdocstring Lean.mkIdentFrom ZhDoc.NotationsMacros.mkIdentFrom}
 
-{docstring Lean.mkIdentFromRef +allowMissing}
+{zhdocstring Lean.mkIdentFromRef ZhDoc.NotationsMacros.mkIdentFromRef}
 
-{docstring Lean.mkCIdent +allowMissing}
+{zhdocstring Lean.mkCIdent ZhDoc.NotationsMacros.mkCIdent}
 
-{docstring Lean.mkCIdentFrom}
+{zhdocstring Lean.mkCIdentFrom ZhDoc.NotationsMacros.mkCIdentFrom}
 
-{docstring Lean.mkCIdentFromRef +allowMissing}
+{zhdocstring Lean.mkCIdentFromRef ZhDoc.NotationsMacros.mkCIdentFromRef}
 
-{docstring Lean.Syntax.mkApp}
+{zhdocstring Lean.Syntax.mkApp ZhDoc.NotationsMacros.Syntax.mkApp}
 
-{docstring Lean.Syntax.mkCApp +allowMissing}
+{zhdocstring Lean.Syntax.mkCApp ZhDoc.NotationsMacros.Syntax.mkCApp}
 
-{docstring Lean.Syntax.mkLit +allowMissing}
+{zhdocstring Lean.Syntax.mkLit ZhDoc.NotationsMacros.Syntax.mkLit}
 
-{docstring Lean.Syntax.mkCharLit +allowMissing}
+{zhdocstring Lean.Syntax.mkCharLit ZhDoc.NotationsMacros.Syntax.mkCharLit}
 
-{docstring Lean.Syntax.mkStrLit +allowMissing}
+{zhdocstring Lean.Syntax.mkStrLit ZhDoc.NotationsMacros.Syntax.mkStrLit}
 
-{docstring Lean.Syntax.mkNumLit +allowMissing}
+{zhdocstring Lean.Syntax.mkNumLit ZhDoc.NotationsMacros.Syntax.mkNumLit}
 
-{docstring Lean.Syntax.mkNatLit +allowMissing}
+{zhdocstring Lean.Syntax.mkNatLit ZhDoc.NotationsMacros.Syntax.mkNatLit}
 
-{docstring Lean.Syntax.mkScientificLit +allowMissing}
+{zhdocstring Lean.Syntax.mkScientificLit ZhDoc.NotationsMacros.Syntax.mkScientificLit}
 
-{docstring Lean.Syntax.mkNameLit +allowMissing}
+{zhdocstring Lean.Syntax.mkNameLit ZhDoc.NotationsMacros.Syntax.mkNameLit}
 
-{docstring Lean.mkOptionalNode +allowMissing}
+{zhdocstring Lean.mkOptionalNode ZhDoc.NotationsMacros.mkOptionalNode}
 
-{docstring Lean.mkGroupNode +allowMissing}
+{zhdocstring Lean.mkGroupNode ZhDoc.NotationsMacros.mkGroupNode}
 
-{docstring Lean.mkHole +allowMissing}
+{zhdocstring Lean.mkHole ZhDoc.NotationsMacros.mkHole}
 
 ## 引用数据
 %%%
@@ -541,7 +542,7 @@ info: { raw := Lean.Syntax.node (Lean.SourceInfo.none) `num #[Lean.Syntax.atom (
 {name Lean.Quote.quote}`Quote.quote` 的结果并不保证一定能够成功精译。
 一般来说，生成的语法会包含所有显式参数的引用形式，而省略隐式参数。
 
-{docstring Lean.Quote +allowMissing}
+{zhdocstring Lean.Quote ZhDoc.NotationsMacros.Quote}
 
 定义 {name Lean.Quote}`Quote` 的实例时，应使用 {name Lean.mkCIdent}`mkCIdent` 和 {name Lean.Syntax.mkCApp}`mkCApp`，以避免生成的语法中发生变量捕获。
 :::
@@ -580,19 +581,19 @@ tag := "typed-syntax-helpers"
 这可能涉及解码字符串转义序列，或解释十六进制数字字面量。
 本节中的辅助函数会执行正确的解释。
 
-{docstring Lean.TSyntax.getId}
+{zhdocstring Lean.TSyntax.getId ZhDoc.NotationsMacros.TSyntax.getId}
 
-{docstring Lean.TSyntax.getName}
+{zhdocstring Lean.TSyntax.getName ZhDoc.NotationsMacros.TSyntax.getName}
 
-{docstring Lean.TSyntax.getNat}
+{zhdocstring Lean.TSyntax.getNat ZhDoc.NotationsMacros.TSyntax.getNat}
 
-{docstring Lean.TSyntax.getScientific}
+{zhdocstring Lean.TSyntax.getScientific ZhDoc.NotationsMacros.TSyntax.getScientific}
 
-{docstring Lean.TSyntax.getString}
+{zhdocstring Lean.TSyntax.getString ZhDoc.NotationsMacros.TSyntax.getString}
 
-{docstring Lean.TSyntax.getChar}
+{zhdocstring Lean.TSyntax.getChar ZhDoc.NotationsMacros.TSyntax.getChar}
 
-{docstring Lean.TSyntax.getHygieneInfo}
+{zhdocstring Lean.TSyntax.getHygieneInfo ZhDoc.NotationsMacros.TSyntax.getHygieneInfo}
 
 # 语法类别
 %%%
@@ -617,7 +618,7 @@ declare_syntax_cat $_ $[(behavior := $_)]?
 它控制解析器在遇到标识符时的行为，有时会让该标识符被当作一个非保留关键字处理。
 这用于避免把每个 {ref "tactics"}[策略] 的名字都变成保留关键字。
 
-{docstring Lean.Parser.LeadingIdentBehavior}
+{zhdocstring Lean.Parser.LeadingIdentBehavior ZhDoc.NotationsMacros.Parser.LeadingIdentBehavior}
 
 # 语法规则
 %%%
