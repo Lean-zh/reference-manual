@@ -1,0 +1,1 @@
+window.docContents[153].resolve({"/Definitions/#definitions":{"contents":"Lean 中以下命令属于“定义式”：\n\n* def* abbrev* example* theorem* opaque\n\n这些命令都会促使 Lean 的 精译器基于其 签名对一个项进行精译。\n除 example（其结果会被丢弃）之外，精译得到的 Lean 核心语言表达式都会保存到环境中以供后续使用。\ninstance 命令见 实例声明一节。\n\n\n\n\n\n\n\n\n\n\n\n\n\n","context":"Lean 中文参考手册","header":"7. 定义","id":"/Definitions/#definitions"}});
