@@ -3,9 +3,8 @@
 
 Verso's declaration hovers are stored in a site-wide JSON table.  To avoid
 changing untranslated chapters, translated pages are redirected to cloned
-hover entries whose English docstring body has been removed; the declaration
-signature remains available, while the translated API documentation continues
-to be rendered in the page itself.
+hover entries.  API cards contribute their translated bodies to the clones;
+incidental references retain signatures without importing English prose.
 """
 
 from __future__ import annotations
@@ -26,6 +25,12 @@ TARGET_PAGES = (
     "Type-Classes/Instance-Declarations/index.html",
     "Type-Classes/Instance-Synthesis/index.html",
     "Type-Classes/index.html",
+    "Coercions/index.html",
+    "Coercions/Coercion-Insertion/index.html",
+    "Coercions/Coercing-Between-Types/index.html",
+    "Coercions/Coercing-to-Sorts/index.html",
+    "Coercions/Coercing-to-Function-Types/index.html",
+    "Coercions/Implementation-Details/index.html",
 )
 
 HOVER_ATTR_RE = re.compile(r'data-verso-hover="([^"]+)"')

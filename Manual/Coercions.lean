@@ -7,6 +7,7 @@ import VersoManual
 
 import Manual.Meta
 import Manual.Papers
+import Manual.ZhDocString.Coercions
 
 open Verso.Genre Manual
 open Verso.Genre.Manual.InlineLean
@@ -38,7 +39,7 @@ def coeChainDiagram : Diagram SVG :=
     [level4, mono "CoeDep" |>.padBottom 3 |>.namedWithAnchors `CoeDep] (align := .bottom)
   -- "or" and CoeT below, named for anchor resolution
   let orLabel : Diagram SVG :=
-    Diagram.text "or" { fontSize := 10, italic := true } |>.pad 3 |>.namedWithAnchors `or
+    Diagram.text "或" { fontSize := 10, italic := true } |>.pad 3 |>.namedWithAnchors `or
   let coeTLabel : Diagram SVG := mono "CoeT" (name := `CoeT)
   let lineStroke : Stroke := .ofWidth 1
   Diagram.vsep 12 [withCoeDep, orLabel, coeTLabel]
@@ -311,7 +312,7 @@ def one : Decimal where
 
 :::
 
-{docstring Coe}
+{zhdocstring Coe ZhDoc.Coercions.Coe}
 
 
 
@@ -455,7 +456,7 @@ end
 # 类型间强制转换
 %%%
 file := some "Coercing-Between-Types"
-tag := "coercing-between-types"
+tag := "ordinary-coercion"
 %%%
 
 :::paragraph
@@ -638,16 +639,16 @@ instance does not provide concrete values for (semi-)out-params
 end
 ```
 
-{docstring CoeHead}
+{zhdocstring CoeHead ZhDoc.Coercions.CoeHead}
 
-{docstring CoeOut}
+{zhdocstring CoeOut ZhDoc.Coercions.CoeOut}
 
-{docstring CoeTail}
+{zhdocstring CoeTail ZhDoc.Coercions.CoeTail}
 
 存在适当的实例链或单个适用的 {name}`CoeDep` 实例时，可以合成 {name}`CoeT` 的实例。{margin}[从 {lean}`Nat` 强制转换到另一类型时，{name}`NatCast` 实例也足够。]
 如果二者都存在，则优先使用 {name}`CoeDep` 实例。
 
-{docstring CoeT}
+{zhdocstring CoeT ZhDoc.Coercions.CoeT}
 
 ```lean -show
 section
@@ -663,7 +664,7 @@ variable {α β : Sort _} {e : α} [CoeDep α e β]
 end
 ```
 
-{docstring CoeDep}
+{zhdocstring CoeDep ZhDoc.Coercions.CoeDep}
 
 :::example "依赖强制转换"
 ```lean -show
@@ -807,7 +808,7 @@ tag := "coercion-impl"
 coe
 ```
 
-{includeDocstring Lean.Attr.coe}
+{zhincludeDocstring Lean.Attr.coe ZhDoc.Coercions.Lean.Attr.coe}
 
 :::
 
@@ -903,19 +904,19 @@ tag := "nat-api-cast"
 Lean 标准库对实例的安排使得插入强制转换时，会优先选择 {name}`NatCast` 或 {name}`IntCast` 实例，而不是强制转换实例链。
 它们也可以用作 {name}`CoeOut` 实例，从而在需要时平稳回退到强制转换链。
 
-{docstring NatCast}
+{zhdocstring NatCast ZhDoc.Coercions.NatCast}
 
-{docstring Nat.cast}
+{zhdocstring Nat.cast ZhDoc.Coercions.Nat.cast}
 
-{docstring IntCast}
+{zhdocstring IntCast ZhDoc.Coercions.IntCast}
 
-{docstring Int.cast}
+{zhdocstring Int.cast ZhDoc.Coercions.Int.cast}
 
 
 # 强制转换为 Sort
 %%%
 file := "Coercing-to-Sorts"
-tag := "coercing-to-sorts"
+tag := "sort-coercion"
 %%%
 
 Lean 精译器会在某些位置期待类型，却未必能预先确定该类型的{tech (key := "universe")}[宇宙]。
@@ -931,7 +932,7 @@ Lean 精译器会在某些位置期待类型，却未必能预先确定该类型
 {lean}`CoeSort` 的实例可用于合成 {lean}`CoeOut` 实例，因此无需单独的实例来支持这种用法。
 一般而言，强制转换为类型应实现为 {name}`CoeSort`。
 
-{docstring CoeSort}
+{zhdocstring CoeSort ZhDoc.Coercions.CoeSort}
 
 
 :::syntax term (title := "显式强制转换为 Sort")
@@ -1010,7 +1011,7 @@ def y : Option Type := bool
 # 强制转换为函数类型
 %%%
 file := "Coercing-to-Function-Types"
-tag := "coercing-to-function-types"
+tag := "fun-coercion"
 %%%
 
 另一个通常无法取得预期类型的情形，是函数应用项中的函数位置。
@@ -1024,7 +1025,7 @@ tag := "coercing-to-function-types"
 与 {name}`CoeDep` 不同，实例合成期间不会考虑项本身；不过，可以用它创建依赖类型的强制转换，使函数类型由该项确定。
 
 
-{docstring CoeFun}
+{zhdocstring CoeFun ZhDoc.Coercions.CoeFun}
 
 :::syntax term (title := "显式强制转换为函数")
 ```grammar
@@ -1242,12 +1243,12 @@ Tm.lam (Tm.lam (Tm.rep (Tm.var 1) (Tm.var 0) (Tm.lam (Tm.lam (Tm.succ (Tm.var 0)
 # 实现细节
 %%%
 file := "Implementation-Details"
-tag := "implementation-details"
+tag := "coercion-impl-details"
 %%%
 
 
 只有普通强制转换插入会使用强制转换链。
-插入强制转换为 {ref "coercing-to-sorts"}[Sort] 或{ref "coercing-to-function-types"}[函数类型]时，使用普通实例合成。
+插入强制转换为 {ref "sort-coercion"}[Sort] 或{ref "fun-coercion"}[函数类型]时，使用普通实例合成。
 同样，{tech (key := "dependent coercions")}[依赖强制转换]不会链接。
 
 ## 展开强制转换
@@ -1290,10 +1291,10 @@ coeChainDiagram
 ```
 :::
 
-{docstring CoeHTCT}
+{zhdocstring CoeHTCT ZhDoc.Coercions.CoeHTCT}
 
-{docstring CoeHTC}
+{zhdocstring CoeHTC ZhDoc.Coercions.CoeHTC}
 
-{docstring CoeOTC}
+{zhdocstring CoeOTC ZhDoc.Coercions.CoeOTC}
 
-{docstring CoeTC}
+{zhdocstring CoeTC ZhDoc.Coercions.CoeTC}
