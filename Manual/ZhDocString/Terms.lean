@@ -17,8 +17,8 @@ namespace ZhDoc.Terms
 @[reducible] def optParam (α : Sort u) (default : α) : Sort u := α
 
 /--
-用于支持自动参数的辅助类型。它与 `optParam` 类似，但使用给定的 tactic 构造缺省实参。
-与 `optParam` 一样，它只影响精译过程；例如，类型类合成不会运行这里给出的 tactic。
+用于支持自动参数的辅助类型。它与 `optParam` 类似，但使用给定的策略构造缺省实参。
+与 `optParam` 一样，它只影响精译过程；例如，类型类合成不会运行这里给出的策略。
 -/
 abbrev autoParam.{u} (α : Sort u) (_tactic : Lean.Syntax) : Sort u := α
 
