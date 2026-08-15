@@ -160,7 +160,7 @@ Here is input.
 :::
 
 :::ioExample
-这个版本的程序保留了对原字符串的引用，因此调用 {name}`String.set` 时必须复制字符串。
+这个版本的程序保留了对原字符串的引用，因此调用 {name}`String.Pos.set` 时必须复制字符串。
 这一点可以从它的标准错误输出中看出。
 
 ```ioLean
@@ -211,7 +211,7 @@ shared RC String update
 
 :::example "IR 中的引用计数"
 通过编译器中间表示（IR）可以观察引用计数何时递增，这有助于诊断以下情形：本以为某个值只有一个传入引用，但它实际上却被共享。
-这里，{lean}`process` 和 {lean}`process'` 都接受一个字符串参数，使用 {name}`String.set` 修改它，并返回一对字符串。
+这里，{lean}`process` 和 {lean}`process'` 都接受一个字符串参数，使用 {name}`String.Pos.set` 修改它，并返回一对字符串。
 {lean}`process` 将常量字符串作为二元组的第二个元素返回，而 {lean}`process'` 则返回原字符串。
 
 ```lean
@@ -227,7 +227,7 @@ def process' (str : String) : String × String:=
 ```
 
 {lean}`process` 的 IR 中不包含 `inc` 或 `dec` 指令。
-如果传入的字符串 `x_1` 是唯一引用，那么将它传给 {name}`String.set` 时，它仍然是唯一引用，因此可以就地修改：
+如果传入的字符串 `x_1` 是唯一引用，那么将它传给 {name}`String.Pos.set` 时，它仍然是唯一引用，因此可以就地修改：
 ```leanOutput p1 (allowDiff := 5)
 [Compiler.IR] [result]
     def process._closed_0 : obj :=
@@ -242,7 +242,7 @@ def process' (str : String) : String × String:=
       ret x_6
 ```
 
-另一方面，{lean}`process'` 的 IR 会在调用 {name}`String.set` 之前递增该字符串的引用计数。
+另一方面，{lean}`process'` 的 IR 会在调用 {name}`String.Pos.set` 之前递增该字符串的引用计数。
 因此，无论 `x_1` 的原始引用是否唯一，修改后的字符串 `x_4` 都是一个副本：
 ```leanOutput p2
 [Compiler.IR] [result]
