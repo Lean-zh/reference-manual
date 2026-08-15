@@ -89,7 +89,7 @@ $x:ident
 若成功者不止一个，或全部失败，都会报错。
 
 ::::keepEnv
-:::example "局部名称优先"
+:::example "局部名称优先" (file := "Local Names Take Precedence")
 局部绑定优先于全局绑定：
 ```lean (name := localOverGlobal)
 def x := "global"
@@ -115,7 +115,7 @@ def x := "global"
 ::::
 
 ::::keepEnv
-:::example "当前命名空间的较长前缀优先"
+:::example "当前命名空间的较长前缀优先" (file := "Longer Prefixes of Current Namespace Take Precedence")
 命名空间 `A`、`B` 和 `C` 相互嵌套。
 `A` 和 `C` 都包含 `x` 的定义。
 ```lean (name := NS)
@@ -145,7 +145,7 @@ end C
 ::::
 
 ::::keepEnv
-:::example "较长的标识符前缀优先"
+:::example "较长的标识符前缀优先" (file := "Longer Identifier Prefixes Take Precedence")
 当标识符可能指从不同名称进行的投影时，名称最长者优先：
 ```lean
 structure A where
@@ -171,7 +171,7 @@ def y.y : A := ⟨"longer"⟩
 ::::
 
 ::::keepEnv
-:::example "当前命名空间的内容优先于已打开的命名空间"
+:::example "当前命名空间的内容优先于已打开的命名空间" (file := "Current Namespace Contents Take Precedence Over Opened Namespaces")
 当标识符既可能指当前命名空间某个前缀中定义的名称，也可能指已打开命名空间中的名称时，前者优先。
 ```lean
 namespace A
@@ -195,7 +195,7 @@ open A
 ::::
 
 
-:::example "有歧义的标识符"
+:::example "有歧义的标识符" (file := "Ambiguous Identifiers")
 在此例中，`x` 既可能指 {name}`A.x`，也可能指 {name}`B.x`，且二者都不优先。
 由于二者类型相同，因此会报错。
 ```lean (name := ambi) +error
@@ -216,7 +216,7 @@ Possible interpretations:
 :::
 
 
-:::example "通过类型消歧"
+:::example "通过类型消歧" (file := "Disambiguation via Typing")
 当原本有歧义的名称类型不同时，会利用类型消除歧义：
 ```lean (name := ambiNo)
 def C.x := "C.x"
@@ -235,6 +235,7 @@ open D
 ## 前导 `.`
 %%%
 tag := "The-Lean-Language-Reference--Terms--Identifiers--Leading--___"
+file := "Leading `.`"
 %%%
 
 当标识符以点（`.`）开头时，会使用精译器对表达式的预期类型来解析它，而不是使用当前命名空间和已打开命名空间的集合。
@@ -248,7 +249,7 @@ tag := "The-Lean-Language-Reference--Terms--Identifiers--Leading--___"
 重复此过程，直到遇到并非常量应用的内容，或常量无法继续展开为止。
 
 ::::keepEnv
-:::example "前导 `.`"
+:::example "前导 `.`" (file := "Leading `.`")
 {name List.replicate}`.replicate` 的预期类型是 `List Unit`。
 该类型的命名空间是 `List`，因此 {name List.replicate}`.replicate` 解析为 {name List.replicate}`List.replicate`。
 ```lean (name := dotRep)
@@ -259,7 +260,7 @@ tag := "The-Lean-Language-Reference--Terms--Identifiers--Leading--___"
 ```
 :::
 
-:::example "前导 `.` 与展开定义"
+:::example "前导 `.` 与展开定义" (file := "Leading `.` and Unfolding Definitions")
 {name List.replicate}`.replicate` 的预期类型是 `MyList Unit`。
 该类型的命名空间是 `MyList`，但不存在定义 `MyList.replicate`。
 展开 {lean}`MyList Unit` 得到 {lean}`List Unit`，因此 {name List.replicate}`.replicate` 解析为 {name List.replicate}`List.replicate`。
@@ -327,7 +328,7 @@ $t1:term → $t2
 
 :::
 
-:::example "多个同类型参数"
+:::example "多个同类型参数" (file := "Multiple Parameters, Same Type")
 {name}`Nat.add` 的类型可以用以下方式书写：
 
  * {lean}`Nat → Nat → Nat`
@@ -397,6 +398,7 @@ free{"fun " "(" (ident)* ": " term")" " =>" term}
 ## 隐式参数
 %%%
 tag := "implicit-functions"
+file := "Implicit Parameters"
 %%%
 
 
@@ -425,7 +427,7 @@ Lean 支持函数的隐式参数。
     大多数实例隐式参数会省略参数名称，因为作为函数参数合成的实例即使没有显式命名，也已经可以在函数体中使用。
 
 ::::keepEnv
-:::example "普通隐式参数与严格隐式参数"
+:::example "普通隐式参数与严格隐式参数" (file := "Ordinary vs Strict Implicit Parameters")
 函数 {lean}`f` 与 {lean}`g` 的区别在于，`α` 在 {lean}`f` 中是严格隐式的：
 ```lean
 def f ⦃α : Type⦄ : α → α := fun x => x
@@ -518,7 +520,7 @@ example : (⦃x : Nat⦄ → Nat) = (Nat → Nat) := rfl
 若函数的预期类型包含隐式参数，而其绑定器不包含，则所得函数最终的参数可能比代码中的绑定器所指明的更多。
 这是因为隐式参数会自动添加。
 
-:::example "来自类型的隐式参数"
+:::example "来自类型的隐式参数" (file := "Implicit Parameters from Types")
 恒等函数可以只用一个显式参数书写。
 只要其类型已知，隐式类型参数就会自动添加。
 ```lean (name := funImplAdd)
@@ -613,7 +615,7 @@ $e:term
 
 
 ::::keepEnv
-:::example "具名实参"
+:::example "具名实参" (file := "Named Arguments")
 ```lean -show
 set_option linter.unusedVariables false
 ```
@@ -725,6 +727,7 @@ fun x_1 y => sum3 x_1 y x : (x y : Nat) → Nat
 ## 广义字段表示法
 %%%
 tag := "generalized-field-notation"
+file := "Generalized Field Notation"
 %%%
 
 {ref "structure-fields"}[关于结构字段的小节]介绍了从类型为结构的项中投影字段的表示法。
@@ -749,7 +752,7 @@ $e:term.$f:ident
 具体而言，它会成为第一个不会导致类型错误的显式参数。
 除此之外，该应用会照常精译。
 
-:::example "广义字段表示法"
+:::example "广义字段表示法" (file := "Generalized Field Notation")
 类型 {lean}`Username` 是常量，因此可以用广义字段表示法，将 {name}`Username` 命名空间中的函数应用于类型为 {lean}`Username` 的项。
 ```lean
 def Username := String
@@ -813,7 +816,7 @@ pp_nodot
 :::
 
 ::::keepEnv
-:::example "关闭字段表示法"
+:::example "关闭字段表示法" (file := "Turning Off Field Notation")
 默认情况下，{lean}`Nat.half` 使用字段表示法打印。
 ```lean
 def Nat.half : Nat → Nat
@@ -841,6 +844,7 @@ Nat.half Nat.zero : Nat
 ## 管道语法
 %%%
 tag := "The-Lean-Language-Reference--Terms--Function-Application--Pipeline-Syntax"
+file := "Pipeline Syntax"
 %%%
 
 管道语法提供了函数应用的其他写法。
@@ -860,7 +864,7 @@ $e <| $e
 右管道表示法背后的直观理解是：左侧的值被送入第一个函数，其结果再送入第二个函数，以此类推。
 在左管道表示法中，右侧的值向左传递。
 
-:::example "右管道表示法"
+:::example "右管道表示法" (file := "Right pipeline notation")
 右管道可以在一个项上依次调用一系列函数。
 对读者而言，它往往更强调正在变换的数据。
 ```lean (name := rightPipe)
@@ -871,7 +875,7 @@ $e <| $e
 ```
 :::
 
-:::example "左管道表示法"
+:::example "左管道表示法" (file := "Left pipeline notation")
 左管道可以在一个项上依次调用一系列函数。
 它往往更强调函数而非数据。
 ```lean (name := lPipe)
@@ -904,7 +908,7 @@ axiom T.f : {n : Nat} → Char → T n → String
 {lean}`e |>.f arg` 是 {lean}`(e).f arg` 的另一种语法。
 
 
-:::example "管道字段"
+:::example "管道字段" (file := "Pipeline Fields")
 
 有些函数的参数顺序不便于使用管道。
 例如，{name}`Array.push` 的第一个参数是数组，而不是 {lean}`Nat`，因而会产生以下错误：
@@ -956,6 +960,7 @@ file := "Numeric-Literals"
 ## 自然数
 %%%
 tag := "nat-literals"
+file := "Natural Numbers"
 %%%
 
 ```lean -show
@@ -983,7 +988,7 @@ Lean 遇到自然数字面量 {lean}`n` 时，会通过重载方法 {lean}`OfNat
 end
 ```
 
-:::example "自定义自然数字面量"
+:::example "自定义自然数字面量" (file := "Custom Natural Number Literals")
 结构 {lean}`NatInterval` 表示一个自然数区间。
 ```lean
 structure NatInterval where
@@ -1022,6 +1027,7 @@ instance : OfNat NatInterval n where
 ## 科学计数
 %%%
 tag := "The-Lean-Language-Reference--Terms--Numeric-Literals--Scientific-Numbers"
+file := "Scientific Numbers"
 %%%
 
 科学计数字面量由一个十进制数字序列、一个可选的小数部分（句点后跟零个或多个十进制数字）和一个可选的指数部分（字母 `e` 后跟可选的 `+` 或 `-`，再跟一个或多个十进制数字）组成，各部分之间不能有空白。
@@ -1034,6 +1040,7 @@ tag := "The-Lean-Language-Reference--Terms--Numeric-Literals--Scientific-Numbers
 ## 字符串
 %%%
 tag := "The-Lean-Language-Reference--Terms--Numeric-Literals--Strings"
+file := "Strings"
 %%%
 
 字符串字面量在{ref "string-syntax"}[关于字符串的章节]中介绍。
@@ -1041,6 +1048,7 @@ tag := "The-Lean-Language-Reference--Terms--Numeric-Literals--Strings"
 ## 列表与数组
 %%%
 tag := "The-Lean-Language-Reference--Terms--Numeric-Literals--Lists-and-Arrays"
+file := "Lists and Arrays"
 %%%
 
 列表和数组字面量是在方括号内以逗号分隔的元素序列，数组的方括号前还带有井号（`#`）。
@@ -1059,7 +1067,7 @@ tag := "The-Lean-Language-Reference--Terms--Numeric-Literals--Lists-and-Arrays"
 ```
 :::
 
-:::example "长列表字面量"
+:::example "长列表字面量" (file := "Long List Literals")
 此列表包含 32 个元素。
 生成的代码是 {name}`List.cons` 的迭代应用：
 ```lean (name := almostLong)
@@ -1139,7 +1147,7 @@ else
 
 
 ::::keepEnv
-:::example "检查数组边界"
+:::example "检查数组边界" (file := "Checking Array Bounds")
 
 数组索引要求有证据表明相应索引位于数组边界内，因此 {name}`getThird` 无法精译。
 
@@ -1305,7 +1313,7 @@ $h:ident : $e:term
 ```
 :::
 
-:::example "不可访问模式"
+:::example "不可访问模式" (file := "Inaccessible Patterns")
 一个数的_奇偶性_指它是偶数还是奇数：
 ```lean
 inductive Parity : Nat → Type where
@@ -1501,6 +1509,7 @@ info: fun y =>
 ## 类型
 %%%
 tag := "The-Lean-Language-Reference--Terms--Pattern-Matching--Types"
+file := "Types"
 %%%
 
 每个判别式都必须类型正确。
@@ -1517,7 +1526,7 @@ tag := "The-Lean-Language-Reference--Terms--Pattern-Matching--Types"
 variable {α : Type u}
 ```
 
-:::example "类型精化"
+:::example "类型精化" (file := "Type Refinement")
 这个{tech (key := "indexed family")}[索引族]描述近乎平衡的树，并将深度编码在类型中。
 ```lean
 inductive BalancedTree (α : Type u) : Nat → Type u where
@@ -1611,12 +1620,13 @@ but is expected to have type
 ### 模式相等性证明
 %%%
 tag := "The-Lean-Language-Reference--Terms--Pattern-Matching--Types--Pattern-Equality-Proofs"
+file := "Pattern Equality Proofs"
 %%%
 
 当判别式具名时，{keywordOf Lean.Parser.Term.match}`match` 会生成模式与判别式相等的证明，并在{tech (key := "right-hand side")}[右侧]中把它绑定到所提供的名称。
 这有助于衔接对索引族的依赖模式匹配与要求显式命题实参的 API，也能帮助利用假设的策略成功执行。
 
-:::example "模式相等性证明"
+:::example "模式相等性证明" (file := "Pattern Equality Proofs")
 函数 {lean}`last?` 要么抛出异常，要么返回其实参的最后一个元素；它使用标准库函数 {lean}`List.getLast`。
 该函数要求提供相关列表非空的证明。
 为对 `xs` 的匹配命名，可确保作用域中存在一个断言 `xs` 等于 `_ :: _` 的假设，{tactic}`simp_all` 会用它完成目标。
@@ -1646,6 +1656,7 @@ simp_all made no progress
 ### 显式动机
 %%%
 tag := "The-Lean-Language-Reference--Terms--Pattern-Matching--Types--Explicit-Motives"
+file := "Explicit Motives"
 %%%
 
 模式匹配并不是 Lean 的内建原语。
@@ -1656,7 +1667,7 @@ tag := "The-Lean-Language-Reference--Terms--Pattern-Matching--Types--Explicit-Mo
 该动机应当是函数类型，并且至少接受与判别式数量相同的参数。
 依次将这种类型的函数应用于各判别式所得的类型，就是整个 {keywordOf Lean.Parser.Term.match}`match` 项的类型；将它应用于每个分支中的所有模式所得的类型，则是该分支{tech (key := "right-hand side")}[右侧]的类型。
 
-:::example "使用显式动机进行匹配"
+:::example "使用显式动机进行匹配" (file := "Matching with an Explicit Motive")
 显式动机可以提供周围上下文原本无法给出的类型信息。
 试图同时匹配一个数以及它确实为 {lean}`5` 的证明会产生错误，因为没有理由把这个数与该证明联系起来：
 ```lean +error (name := noMotive)
@@ -1682,6 +1693,7 @@ Invalid match expression: This pattern contains metavariables:
 ### 判别式精化
 %%%
 tag := "The-Lean-Language-Reference--Terms--Pattern-Matching--Types--Discriminant-Refinement"
+file := "Discriminant Refinement"
 %%%
 
 匹配索引族时，其索引也必须作为判别式。
@@ -1689,7 +1701,7 @@ tag := "The-Lean-Language-Reference--Terms--Pattern-Matching--Types--Discriminan
 不过，称为{deftech (key := "discriminant refinement")}[判别式精化]的过程会自动把索引添加为额外的判别式。
 
 ::::keepEnv
-:::example "判别式精化"
+:::example "判别式精化" (file := "Discriminant Refinement")
 在 {lean}`f` 的定义中，相等性证明是唯一的判别式。
 然而，相等性是索引族，只有将 `n` 作为额外的判别式时，该匹配才有效。
 ```lean
@@ -1713,6 +1725,7 @@ fun n p =>
 ### 泛化
 %%%
 tag := "match-generalization"
+file := "Generalization"
 %%%
 
 模式匹配精译器通过在预期类型中查找判别式的出现位置，自动确定动机；它在后续判别式的类型中泛化这些出现位置，以便代入相应的模式。
@@ -1720,7 +1733,7 @@ tag := "match-generalization"
 向 {keywordOf Lean.Parser.Term.match}`match` 传入 `(generalizing := false)` 标志可以关闭后一行为。
 
 :::::keepEnv
-::::example "启用与禁用泛化的匹配"
+::::example "启用与禁用泛化的匹配" (file := "Matching, With and Without Generalization")
 ```lean -show
 variable {α : Type u} (b : Bool) (ifTrue : b = true → α) (ifFalse : b = false → α)
 ```
@@ -1764,6 +1777,7 @@ def boolCases (b : Bool)
 ## 自定义模式函数
 %%%
 tag := "match_pattern-functions"
+file := "Custom Pattern Functions"
 %%%
 
 ```lean -show
@@ -1788,7 +1802,7 @@ match_pattern
 section
 variable {k : Nat}
 ```
-:::example "匹配模式遵循归约"
+:::example "匹配模式遵循归约" (file := "Match Patterns Follow Reduction")
 以下函数无法编译：
 ```lean +error (name := nonPat)
 def nonzero (n : Nat) : Bool :=
@@ -1830,6 +1844,7 @@ end
 ## 模式匹配函数
 %%%
 tag := "pattern-fun"
+file := "Pattern Matching Functions"
 %%%
 
 :::syntax term (title := "模式匹配函数")
@@ -1842,7 +1857,7 @@ fun
 :::
 
 ::::keepEnv
-:::example "模式匹配函数"
+:::example "模式匹配函数" (file := "Pattern-Matching Functions")
 {lean}`isZero` 使用模式匹配函数抽象定义，而 {lean}`isZero'` 使用模式匹配表达式定义：
 ```lean
 def isZero : Nat → Bool :=
@@ -1890,6 +1905,7 @@ fun n =>
 ## 其他模式匹配运算符
 %%%
 tag := "The-Lean-Language-Reference--Terms--Pattern-Matching--Other-Pattern-Matching-Operators"
+file := "Other Pattern Matching Operators"
 %%%
 
 除 {keywordOf Lean.Parser.Term.match}`match` 和 {keywordOf termIfLet}`if let` 外，还有一些其他运算符会执行模式匹配。
@@ -1923,7 +1939,7 @@ nomatch $e,*
 :::
 
 ::::keepEnv
-:::example "不一致的索引"
+:::example "不一致的索引" (file := "Inconsistent Indices")
 本例中没有任何构造器模式能同时匹配这两个证明：
 ```lean
 example (p1 : x = "Hello") (p2 : x = "world") : False :=
@@ -1943,7 +1959,7 @@ nofun
 :::
 
 ::::keepEnv
-:::example "不可能的函数"
+:::example "不可能的函数" (file := "Impossible Functions")
 可以使用 {keywordOf Lean.Parser.Term.nofun}`nofun`，而不必为两个相等性证明都引入实参，再在 {keywordOf Lean.Parser.Term.nomatch}`nomatch` 中使用二者。
 ```lean
 example : x = "Hello" → x = "world" → False := nofun
@@ -1955,6 +1971,7 @@ example : x = "Hello" → x = "world" → False := nofun
 %%%
 tag := "pattern-match-elaboration"
 draft := true
+file := "Elaborating Pattern Matching"
 %%%
 
 :::planned 209
@@ -1981,7 +1998,7 @@ _
 :::
 
 ::::keepEnv
-:::example "通过合一填充空洞"
+:::example "通过合一填充空洞" (file := "Filling Holes with Unification")
 函数 {lean}`the` 的用法类似于 {keywordOf Lean.Parser.Term.show}`show` 或{tech (key := "type ascription")}[类型标注]。
 ```lean
 def the (α : Sort u) (x : α) : α := x
@@ -2046,7 +2063,7 @@ show $_ by $_
 ```
 :::
 
-:::example "为证明标注命题"
+:::example "为证明标注命题" (file := "Ascribing Statements to Proofs")
 此示例无法执行策略证明，因为所需的命题未知。
 在运行前面的策略时，该命题会自动精化为策略能够证明的命题。
 然而，它们的默认分支错误地补全了该命题，导致证明失败。
@@ -2077,7 +2094,7 @@ example (n : Nat) := show 0 + n = n by
 ```
 :::
 
-:::example "为 {keywordOf Lean.Parser.Term.do}`do` 块标注类型"
+:::example "为 {keywordOf Lean.Parser.Term.do}`do` 块标注类型" (file := "Ascribing Types to {keywordOf Lean.Parser.Term.do}`do` Blocks")
 此示例缺少足够的类型信息来合成 {name}`Pure` 实例。
 ```lean (name := doBusted) +error
 example := do
@@ -2106,7 +2123,7 @@ example := show StateM String _ from do
 另一方面，{keywordOf Lean.Parser.Term.show}`show` 会精译为一个推断类型就是所标注类型的项。
 使用{tech (key := "generalized field notation")}[广义字段表示法]时可以观察到这一区别：只有使用 {keywordOf Lean.Parser.Term.show}`show`，才能保证以所标注类型解析字段。
 
-::::example "后缀标注与 `show`"
+::::example "后缀标注与 `show`" (file := "Postfix Ascription vs `show`")
 
 :::paragraph
 此定义为 {lean}`List String` 建立了一个别名：
