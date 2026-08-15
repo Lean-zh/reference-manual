@@ -39,12 +39,12 @@ file := "Functors___-Monads-and--do--Notation"
 它们的灵感来自范畴论中的函子和单子概念，但编程中使用的版本限制更多。
 Lean 标准库中的类型类所表示的是用于编程的概念，而非一般的数学定义。
 
-{deftech (key := "Functor")}[函子]的实例允许在某种多态上下文中一致地应用操作。
+{deftech (key := "Functor")}[{name}`Functor` 函子]的实例允许在某种多态上下文中一致地应用操作。
 例如，可以通过应用函数来变换列表中的每个元素，也可以安排将纯函数应用于现有 {lean}`IO` 动作的结果，从而创建新的 {lean}`IO` 动作。
-{deftech (key := "Monad")}[单子]的实例允许编码带有数据依赖的副作用；例如，用元组模拟可变状态、用和类型模拟异常，以及用 {lean}`IO` 表示真实的副作用。
-{deftech (key := "Applicative functors")}[应用函子]介于二者之间：它们与单子一样，允许把通过效应计算出的函数应用于同样通过效应计算出的实参；但不允许顺序数据依赖，即一个效应的输出成为另一个效应操作的输入。
+{deftech (key := "Monad")}[{name}`Monad` 单子]的实例允许编码带有数据依赖的副作用；例如，用元组模拟可变状态、用和类型模拟异常，以及用 {lean}`IO` 表示真实的副作用。
+{deftech (key := "Applicative functors")}[{name}`Applicative` 应用函子]介于二者之间：它们与单子一样，允许把通过效应计算出的函数应用于同样通过效应计算出的实参；但不允许顺序数据依赖，即一个效应的输出成为另一个效应操作的输入。
 
-另外几个类型类 {name}`Pure`、{name}`Bind`、{name}`SeqLeft`、{name}`SeqRight` 和 {name}`Seq` 分别抽取了 {name}`Applicative` 与 {name}`Monad` 中的单项操作，使这些操作可以重载，并用于不一定是应用函子或单子的类型。
+另外几个类型类 {name}`Pure`、{name}`Bind`、{name}`SeqLeft`、{name}`SeqRight` 和 {name}`Seq` 分别抽取了 {name}`Applicative` 与 {name}`Monad` 中的单项操作，使这些操作可以重载，并用于不一定是 {name}`Applicative` 应用函子或 {name}`Monad` 单子的类型。
 类型类 {name}`Alternative` 描述还具有某种失败与恢复概念的应用函子。
 
 

@@ -30,7 +30,7 @@ tag := "state-monads"
 底层实现可以使用元组模拟可变性，也可以使用 {name}`ST.Ref` 之类的机制确保发生修改。
 即便是使用元组的实现，由于 Lean 会在值具有唯一引用时采用修改，其运行时实际上也可能使用修改；但这要求编程风格优先使用 {name}`modify` 和 {name}`modifyGet`，而非 {name}`get` 和 {name}`set`。
 
-# 通用状态 API
+# 通用状态接口
 %%%
 tag := "The-Lean-Language-Reference--Functors___-Monads-and--do--Notation--Varieties-of-Monads--State--General-State-API"
 %%%

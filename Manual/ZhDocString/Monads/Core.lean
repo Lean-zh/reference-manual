@@ -189,7 +189,7 @@ class Bind (m : Type u → Type v) where
 与副作用的一种抽象。单子既允许副作用依次执行，也允许依赖数据的副作用：较早步骤产生的值
 可以影响较晚步骤执行的副作用。
 
-可以直接使用 `Monad` API。不过，最常见的用法是通过
+可以直接使用 `Monad` 接口。不过，最常见的用法是通过
 [`do` 记法](lean-manual://section/do-notation)访问它。
 
 大多数 `Monad` 实例会提供 `pure` 和 `bind` 的实现，并对从 `Applicative` 继承的其他方法

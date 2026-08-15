@@ -138,7 +138,7 @@ def read {ρ : Type u} {m : Type u → Type v} [Monad m] : _root_.ReaderT ρ m �
 /--
 使用 `f` 修改读取器单子的局部值。所得计算把 `f` 应用于传入的局部值，再将结果传给内部计算。
 -/
-def adapt {ρ ρ' α : Type u} {m : Type u → Type v} (f : ρ' → ρ) :
+def adapt {ρ : Type u} {m : Type u → Type v} {ρ' α : Type u} (f : ρ' → ρ) :
     _root_.ReaderT ρ m α → _root_.ReaderT ρ' m α := _root_.ReaderT.adapt f
 
 /--
@@ -158,14 +158,14 @@ def bind {ρ : Type u} {m : Type u → Type v} [Monad m] {α β : Type u}
 /--
 从错误中恢复。两个分支都会获得同一个局部值。通常通过 `<|>` 运算符使用。
 -/
-def orElse {ρ : Type u} {m : Type u → Type v} {α : Type u} [Alternative m]
+def orElse {m : Type u → Type v} {ρ α : Type u} [Alternative m]
     (x₁ : _root_.ReaderT ρ m α) (x₂ : Unit → _root_.ReaderT ρ m α) :
     _root_.ReaderT ρ m α := _root_.ReaderT.orElse x₁ x₂
 
 /--
 以可恢复的错误失败。
 -/
-def failure {ρ : Type u} {m : Type u → Type v} {α : Type u} [Alternative m] :
+def failure {m : Type u → Type v} {ρ α : Type u} [Alternative m] :
     _root_.ReaderT ρ m α := _root_.ReaderT.failure
 
 end ReaderT
@@ -272,7 +272,7 @@ class MonadState (σ : outParam (Type u)) (m : Type u → Type v) where
 /--
 获取单子当前的可变状态值。
 -/
-def get {σ : Type u} {m : Type u → Type v} [_root_.MonadState σ m] : m σ :=
+def get {σ : outParam (Type u)} {m : Type u → Type v} [_root_.MonadState σ m] : m σ :=
   _root_.MonadState.get
 
 /--
@@ -292,7 +292,7 @@ def modify {σ : Type u} {m : Type u → Type v} [_root_.MonadState σ m]
 它等价于 `do let (a, s) := f (← get); set s; pure a`。不过，使用 `modifyGet` 可能有更高性能，
 因为它不会增加状态值的新引用；额外引用可能妨碍对数据进行原地更新。
 -/
-def modifyGet {σ α : Type u} {m : Type u → Type v} [_root_.MonadState σ m]
+def modifyGet {σ : outParam (Type u)} {m : Type u → Type v} [_root_.MonadState σ m] {α : Type u}
     (f : σ → Prod α σ) : m α := _root_.MonadState.modifyGet f
 
 /--
@@ -393,14 +393,14 @@ def set {σ : Type u} {m : Type u → Type v} [Monad m] (s : σ) :
 /--
 从错误中恢复。错误恢复时会回滚状态。通常通过 `<|>` 运算符使用。
 -/
-def orElse {σ : Type u} {m : Type u → Type v} [Monad m] [Alternative m] {α : Type u}
+def orElse {σ : Type u} {m : Type u → Type v} [Alternative m] {α : Type u}
     (x₁ : _root_.StateT σ m α) (x₂ : Unit → _root_.StateT σ m α) :
     _root_.StateT σ m α := _root_.StateT.orElse x₁ x₂
 
 /--
 以可恢复的错误失败。错误恢复时会回滚状态。
 -/
-def failure {σ : Type u} {m : Type u → Type v} [Monad m] [Alternative m] {α : Type u} :
+def failure {σ : Type u} {m : Type u → Type v} [Alternative m] {α : Type u} :
     _root_.StateT σ m α := _root_.StateT.failure
 
 /--
@@ -461,14 +461,14 @@ namespace StateCpsT
 /--
 通过提供初始状态和延续，运行以延续传递风格表示的有状态计算。
 -/
-def runK {α σ : Type u} {m : Type u → Type v} (x : _root_.StateCpsT σ m α)
+def runK {α σ : Type u} {m : Type u → Type v} {β : Type u} (x : _root_.StateCpsT σ m α)
     (s : σ) (k : α → σ → m β) : m β := _root_.StateCpsT.runK x s k
 
 /--
 在底层单子 `m` 中执行一个来自增加了状态的单子的动作。给定初始状态，它返回一个值与最终状态
 组成的二元组。
 
-虽然状态在内部以延续传递风格表示，所得值与非 CPS 状态单子的结果相同。
+虽然状态在内部以延续传递风格表示，所得值与非延续传递风格状态单子的结果相同。
 -/
 def run {α σ : Type u} {m : Type u → Type v} [Monad m]
     (x : _root_.StateCpsT σ m α) (s : σ) : m (α × σ) := _root_.StateCpsT.run x s

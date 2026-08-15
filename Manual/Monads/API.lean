@@ -21,13 +21,13 @@ set_option pp.rawOnError true
 
 set_option linter.unusedVariables false
 
-#doc (Manual) "API 参考" =>
+#doc (Manual) "接口参考" =>
 %%%
 tag := "The-Lean-Language-Reference--Functors___-Monads-and--do--Notation--API-Reference"
 file := "API-Reference"
 %%%
 
-除了这里介绍的通用函数之外，按照惯例，每种集合类型的命名空间中还会定义一些函数，作为其 API 的一部分：
+除了这里介绍的通用函数之外，按照惯例，每种集合类型的命名空间中还会定义一些函数，作为其接口的一部分：
  * `mapM` 映射一个单子函数。
  * `forM` 映射一个单子函数并丢弃结果。
  * `filterM` 使用单子谓词进行筛选，返回满足该谓词的值。

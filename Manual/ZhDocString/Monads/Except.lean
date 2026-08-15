@@ -309,7 +309,7 @@ class MonadFinally (m : Type u → Type v) where
   /--
   运行一个动作，并确保之后总会运行另一个动作。
 
-  更具体地说，`tryFinally' x f` 运行 `x`，然后运行“finally”计算 `f`。如果 `x` 成功并得到某个值 `a : α`，则返回 `f (some a)`。如果 `x` 按 `m` 对失败的定义而失败，则返回 `f none`。
+  更具体地说，`tryFinally' x f` 运行 `x`，然后运行最终处理计算 `f`。如果 `x` 成功并得到某个值 `a : α`，则返回 `f (some a)`。如果 `x` 按 `m` 对失败的定义而失败，则返回 `f none`。
 
   可以认为 `tryFinally'` 的作用与命令式编程语言中的 `finally` 块相同。
   -/
@@ -419,7 +419,7 @@ def run {m : Type u → Type v} {ε α : Type u} [Monad m]
     (x : _root_.ExceptCpsT ε m α) : m (_root_.Except ε α) := _root_.ExceptCpsT.run x
 
 /--
-在异常单子中运行来自变换后单子的动作。
+把底层单子中的动作提升到变换后的异常单子中运行。
 -/
 def lift {m : Type u → Type v} {α ε : Type u} [Monad m] (x : m α) :
     _root_.ExceptCpsT ε m α := _root_.ExceptCpsT.lift x
