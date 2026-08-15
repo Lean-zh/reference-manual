@@ -17,119 +17,122 @@ open Verso.Genre.Manual.InlineLean
 
 set_option pp.rawOnError true
 
-#doc (Manual) "Run-Time Code" =>
+#doc (Manual) "运行时代码" =>
 %%%
 tag := "runtime"
+file := some "Run-Time-Code"
 %%%
 
-Compiled Lean code uses services provided by the Lean runtime.
-The runtime contains efficient, low-level primitives that bridge the gap between the Lean language and the supported platforms.
-These services include:
+编译后的 Lean 代码会使用 Lean 运行时提供的服务。
+运行时包含高效的底层原语，用于衔接 Lean 语言与其支持的平台。
+这些服务包括：
 
- : Memory management
+ : 内存管理
 
-    Lean does not require programmers to manually manage memory.
-    Space is allocated when needed to store a value, and values that can no longer be reached (and are thus irrelevant) are deallocated.
-    In particular, Lean uses {tech (key := "reference count")}[reference counting], where each allocated object maintains a count of incoming references.
-    The compiler emits calls to memory management routines that allocate memory and modify reference counts, and these routines are provided by the runtime, along with the data structures that represent Lean values in compiled code.
+    Lean 不要求程序员手动管理内存。
+    系统会在需要存储值时分配空间，并释放那些已无法访问（因而也不再有用）的值。
+    具体来说，Lean 使用{tech (key := "reference count")}[引用计数]，每个已分配对象都会维护指向它的引用数量。
+    编译器会生成对内存管理例程的调用，用以分配内存和修改引用计数；这些例程由运行时提供，编译后代码中用于表示 Lean 值的数据结构也是如此。
 
- : Multiple Threads
+ : 多线程
 
-    The {name}`Task` API provides the ability to write parallel and concurrent code.
-    The runtime is responsible for scheduling Lean tasks across operating-system threads.
+    {name}`Task` API 可用于编写并行及并发代码。
+    运行时负责在操作系统线程间调度 Lean 任务。
 
- : Primitive operators
+ : 原语运算符
 
-    Many built-in types, including {lean}`Nat`, {lean}`Array`, {lean}`String`, and fixed-width integers, have special representations for reasons of efficiency.
-    The runtime provides implementations of these types' primitive operators that take advantage of these optimized representations.
+    出于效率考虑，许多内置类型都有特殊的表示方式，包括 {lean}`Nat`、{lean}`Array`、{lean}`String` 和定宽整数。
+    运行时为这些类型实现原语运算符，以利用这些优化过的表示方式。
 
 
-There are many primitive operators.
-They are described in their respective sections under {ref "basic-types"}[Basic Types].
+原语运算符有很多。
+各运算符的说明见{ref "basic-types"}[基本类型]下相应的小节。
 
-# Boxing
+# 装箱
 %%%
 tag := "boxing"
+file := some "Boxing"
 %%%
 
 :::paragraph
-Lean values may be represented at runtime in two ways:
-* {deftech}_Boxed_ values may be pointers to heap values or require shifting and masking.
-* {deftech}_Unboxed_ values are immediately available.
+Lean 值在运行时可以用两种方式表示：
+* {deftech (key := "Boxed")}_装箱_值可能是指向堆中值的指针，也可能需要通过移位和掩码才能取得。
+* {deftech (key := "Unboxed")}_非装箱_值可以直接取得。
 :::
 
-Boxed values are either a pointer to an object, in which case the lowest-order bit is 0, or an immediate value, in which case the lowest-order bit is 1 and the value is found by shifting the representation to the right by one bit.
+装箱值要么是指向对象的指针，此时最低位为 0；要么是立即值，此时最低位为 1，将其表示右移一位即可得到该值。
 
-Types with an unboxed representation, such as {name}`UInt8` and {tech}[enum inductive] types, are represented as the corresponding C types in contexts where the compiler can be sure that the value has said type.
-In some contexts, such as generic container types like {name}`Array`, otherwise-unboxed values must be boxed prior to storage.
-In other words, {name}`Bool.not` is called with and returns unboxed `uint8_t` values because the {tech}[enum inductive] type {name}`Bool` has an unboxed representation, but the individual {name}`Bool` values in an {lean}`Array Bool` are boxed.
-A field of type {lean}`Bool` in an inductive type's constructor is represented unboxed, while {lean}`Bool`s stored in polymorphic fields that are instantiated as {lean}`Bool` are boxed.
+采用非装箱表示的类型（例如 {name}`UInt8` 和{tech (key := "enum inductive")}[枚举归纳]类型），在编译器能够确定值具有相应类型的上下文中，会表示为对应的 C 类型。
+在某些上下文中（例如 {name}`Array` 这样的泛型容器类型），原本采用非装箱表示的值必须先装箱才能存储。
+换言之，由于{tech (key := "enum inductive")}[枚举归纳]类型 {name}`Bool` 采用非装箱表示，调用 {name}`Bool.not` 时传入和返回的都是非装箱的 `uint8_t` 值；但 {lean}`Array Bool` 中的各个 {name}`Bool` 值则是装箱的。
+归纳类型构造器中类型为 {lean}`Bool` 的字段采用非装箱表示，而多态字段实例化为 {lean}`Bool` 后，其中存储的 {lean}`Bool` 则采用装箱表示。
 
 
-# Reference Counting
+# 引用计数
 %%%
 tag := "reference-counting"
+file := some "Reference-Counting"
 %%%
 
-Lean uses {deftech (key := "reference count")}_reference counting_ for memory management.
-Each allocated object maintains a count of how many other objects refer to it.
-When a new reference is added, the count is incremented, and when a reference is dropped, the count is decremented.
-When a reference count reaches zero, the object is no longer reachable and can play no part in the further execution of the program.
-It is deallocated and all of its references to other objects are dropped, which may trigger further deallocations.
+Lean 使用{deftech (key := "reference count")}_引用计数_来管理内存。
+每个已分配对象都会维护一个计数，记录有多少其他对象引用它。
+新增引用时计数递增，丢弃引用时计数递减。
+当引用计数降为零时，该对象便不再可达，也不可能再参与程序后续的执行。
+系统会释放该对象并丢弃它对其他对象的全部引用，这可能进一步触发其他对象的释放。
 
 :::paragraph
-Reference counting provides a number of benefits:
+引用计数有许多优点：
 
- : Reuse of Memory
+ : 复用内存
 
-    If an object's reference count drops to zero just as another of the same size is to be allocated, then the original object's memory can be safely reused for the new object.
-    As a result, many common data-structure traversals (such as {name}`List.map`) do not need to allocate memory when there is exactly one reference to the data structure to be traversed.
+    如果某个对象的引用计数恰在需要分配另一个同样大小的对象时降为零，就可以安全地将原对象的内存复用于新对象。
+    因此，当待遍历的数据结构恰好只有一个引用时，许多常见的数据结构遍历（例如 {name}`List.map`）都不必分配内存。
 
- : Opportunistic In-Place Updates
+ : 条件允许时原地更新
 
-    Primitive types, such as {ref "String"}[strings] and {ref "Array"}[arrays], may provide operations that copy shared data but modify unshared data in-place.
-    As long as they hold the only reference to the value being modified, many operations on these primitive types will modify it rather than copy it.
-    This can lead to substantial performance benefits.
-    Carefully-written {lean}`Array` code avoids the performance overhead of immutable data structures while maintaining the ease of reasoning provided by pure functions.
+    字符串和数组等原语类型（参见{ref "String"}[字符串]和{ref "Array"}[数组]）可以在数据共享时执行复制，而在数据未共享时原地修改。
+    只要待修改值只有这一个引用，这些原语类型上的许多操作就会直接修改值，而不是复制值。
+    这可以显著提升性能。
+    精心编写的 {lean}`Array` 代码既能避免不可变数据结构的性能开销，又能保留纯函数便于推理的特性。
 
- : Predictability
+ : 可预测性
 
-    Reference counts are decremented at predictable times.
-    As a result, reference-counted objects can be used to manage other resources, such as file handles.
-    In Lean, a {name IO.FS.Handle}`Handle` does not need to be explicitly closed because it is closed immediately when it is no longer accessible.
+    引用计数会在可预测的时刻递减。
+    因此，可以用引用计数对象管理文件句柄等其他资源。
+    在 Lean 中，{name IO.FS.Handle}`Handle` 无需显式关闭，因为它一旦不再可访问就会立即关闭。
 
- : Simpler FFI
+ : 更简单的 FFI
 
-    Objects managed with reference counting don't need to be relocated as part of reclaiming unused memory.
-    This greatly simplifies interaction with code written in other languages, such as C.
+    回收未使用的内存时，不需要移动由引用计数管理的对象。
+    这大幅简化了与 C 等其他语言所编写代码的交互。
 
 :::
 
-The traditional drawbacks of reference counting include the performance overhead due to updating reference counts along with the inability to recognize and deallocate cyclic data.
-The former drawback is minimized by an analysis based on _borrowing_ that allows many reference count updates to be elided.
-Nevertheless, multi-threaded code requires that reference count updates are synchronized between threads, which also imposes a substantial overhead.
-To reduce this overhead, Lean values are partitioned into those which are reachable from multiple threads and those which are not.
-Single-threaded reference counts can be updated much faster than multi-threaded reference counts, and many values are accessed only on a single thread.
-Together, these techniques greatly reduce the performance overhead of reference counting.
-Because the verifiable fragment of Lean cannot create cyclic data, the Lean runtime does not have a technique to detect it.
-{citet countingBeans}[] provide more details on the implementation of reference counting in Lean.
+引用计数的传统缺点包括更新引用计数带来的性能开销，以及无法识别和释放循环数据。
+前一个缺点通过基于_借用_的分析得到缓解；这种分析可以省去许多引用计数更新。
+不过，多线程代码要求线程之间同步引用计数更新，这也会带来显著的开销。
+为降低这种开销，Lean 将值划分为可从多个线程访问的值和不可从多个线程访问的值。
+单线程引用计数的更新速度可以远高于多线程引用计数，而且许多值只会在单个线程上访问。
+这些技术相结合，大幅降低了引用计数的性能开销。
+由于 Lean 的可验证片段无法创建循环数据，Lean 运行时没有检测循环数据的机制。
+关于 Lean 中引用计数的实现，{citet countingBeans}[]提供了更多细节。
 
-## Observing Uniqueness
+## 观察唯一性
 
-Ensuring that arrays and strings are uniquely referenced is key to writing fast code in Lean.
-The primitive {name}`dbgTraceIfShared` can be used to check whether a data structure is aliased.
-When called, it returns its argument unchanged, printing the provided trace message if the argument's reference count is greater than one.
+要在 Lean 中编写高效代码，确保数组和字符串只有一个引用至关重要。
+原语 {name}`dbgTraceIfShared` 可用于检查数据结构是否存在别名。
+调用它时，它会原样返回参数；如果参数的引用计数大于一，则打印所提供的跟踪消息。
 
 {docstring dbgTraceIfShared}
 
-Due to the specifics of how {keywordOf Lean.Parser.Command.eval}`#eval` is implemented, using {name}`dbgTraceIfShared` with {keywordOf Lean.Parser.Command.eval}`#eval` can be misleading.
-Instead, it should be used in code that's explicitly compiled and run.
+受 {keywordOf Lean.Parser.Command.eval}`#eval` 具体实现方式的影响，将 {name}`dbgTraceIfShared` 与 {keywordOf Lean.Parser.Command.eval}`#eval` 一同使用可能产生误导。
+应当改在明确经过编译并运行的代码中使用它。
 
-::::example "Observing Uniqueness"
+::::example "观察唯一性"
 :::ioExample
-This program reads a line of input from the user, printing it after replacing its first character with a space.
-Replacing characters in a string uses an in-place update if the string is not shared and the characters are both contained in the 7-bit ASCII subset of Unicode.
-The {name}`dbgTraceIfShared` call does nothing, indicating that the string will indeed be updated in place rather than copied.
+该程序从用户处读取一行输入，将第一个字符替换为空格后打印出来。
+如果字符串未被共享，且新旧字符都属于 Unicode 的 7 位 ASCII 子集，替换字符串中的字符时就会执行原地更新。
+{name}`dbgTraceIfShared` 调用没有任何输出，这表明字符串确实会原地更新，而不是先被复制。
 
 ```ioLean
 def process (str : String) (h : str.startPos ≠ str.endPos) : IO Unit := do
@@ -141,23 +144,23 @@ def main : IO Unit := do
     process line h
 ```
 
-When run with this input:
+使用以下输入运行时：
 ```stdin
 Here is input.
 ```
 
-the program emits:
+程序输出：
 ```stdout
  ere is input.
 ```
-with an empty standard error output:
+标准错误输出为空：
 ```stderr
 ```
 :::
 
 :::ioExample
-This version of the program retains a reference to the original string, which necessitates copying the string in the call to {name}`String.set`.
-This fact is visible in its standard error output.
+这个版本的程序保留了对原字符串的引用，因此调用 {name}`String.set` 时必须复制字符串。
+这一点可以从它的标准错误输出中看出。
 
 ```ioLean
 def process (str : String) (h : str.startPos ≠ str.endPos) : IO Unit := do
@@ -171,19 +174,19 @@ def main : IO Unit := do
   IO.println line
 ```
 
-When run with this input:
+使用以下输入运行时：
 ```stdin
 Here is input.
 ```
 
-the program emits:
+程序输出：
 ```stdout
  ere is input.
 Original input:
 Here is input.
 ```
 
-In its standard error, the message passed to {name}`dbgTraceIfShared` is visible.
+在标准错误中可以看到传给 {name}`dbgTraceIfShared` 的消息。
 ```stderr
 shared RC String update
 ```
