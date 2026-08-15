@@ -14,7 +14,7 @@ namespace ZhDoc.Terms
 声明中的绑定器 `(x : α := default)` 是 `x : optParam α default` 的语法糖；若调用处没有
 提供该参数，精译器会尝试使用 `default` 作为实参。
 -/
-@[reducible] def optParam (α : Sort u) (default : α) : Sort u := α
+@[reducible] def optParam (α : Sort u) (_default : α) : Sort u := α
 
 /--
 用于支持自动参数的辅助类型。它与 `optParam` 类似，但使用给定的策略构造缺省实参。

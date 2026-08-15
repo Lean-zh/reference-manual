@@ -7,6 +7,7 @@ Author: David Thrane Christiansen
 import VersoManual
 
 import Manual.Meta
+import Manual.ZhDocString.Terms
 
 open Verso.Genre Manual
 open Verso.Genre.Manual.InlineLean
@@ -717,9 +718,9 @@ fun x_1 y => sum3 x_1 y x : (x y : Nat) → Nat
 可选参数和自动参数并非 Lean 核心类型论的一部分。
 它们使用 {name}`optParam` 和 {name}`autoParam` {tech (key := "gadgets")}[辅助机制]进行编码。
 
-{docstring optParam}
+{zhdocstring optParam ZhDoc.Terms.optParam}
 
-{docstring autoParam}
+{zhdocstring autoParam ZhDoc.Terms.autoParam}
 
 ## 广义字段表示法
 %%%
@@ -802,7 +803,7 @@ true
 ```
 :::
 
-{optionDocs pp.fieldNotation}
+{zhOptionDocs pp.fieldNotation ZhDoc.Terms.Option.pp.fieldNotation}
 
 :::syntax attr (title := "控制字段表示法")
 {attr}`pp_nodot` 属性使 Lean 的美化打印器在打印函数时不使用字段表示法。
@@ -976,7 +977,7 @@ variable {n : Nat}
 Lean 遇到自然数字面量 {lean}`n` 时，会通过重载方法 {lean}`OfNat.ofNat n` 解释它。
 {lean}`OfNat Nat n` 的一个{tech (key := "default instance")}[默认实例]确保在没有其他类型信息时可以推断出类型 {lean}`Nat`。
 
-{docstring OfNat}
+{zhdocstring OfNat ZhDoc.Terms.OfNat}
 
 ```lean -show
 end
@@ -1026,7 +1027,7 @@ tag := "The-Lean-Language-Reference--Terms--Numeric-Literals--Scientific-Numbers
 科学计数字面量由一个十进制数字序列、一个可选的小数部分（句点后跟零个或多个十进制数字）和一个可选的指数部分（字母 `e` 后跟可选的 `+` 或 `-`，再跟一个或多个十进制数字）组成，各部分之间不能有空白。
 科学计数字面量通过 {name}`OfScientific` 类型类重载。
 
-{docstring OfScientific}
+{zhdocstring OfScientific ZhDoc.Terms.OfScientific}
 
 存在用于 {name}`Float` 和 {name}`Float32` 的 {lean}`OfScientific` 实例，但不存在单独的浮点字面量。
 
