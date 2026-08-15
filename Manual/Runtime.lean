@@ -193,25 +193,25 @@ shared RC String update
 :::
 ::::
 
-## Compiler IR
+## 编译器中间表示（IR）
 
-The compiler option {option}`trace.compiler.ir.result` can be used to inspect the compiler's intermediate representation (IR) for a function.
-In this intermediate representation, reference counting, allocation, and reuse are explicit:
- * The `isShared` operator checks whether a reference count is `1`.
- * `ctor_`$`n` allocates the $`n`th constructor of a type.
- * `proj_`$`n` retrieves the $`n`th field from a constructor value.
- * `set `$`x`﻿`[`$`n`﻿`]` mutates the $`n`th field of the constructor in $`x`.
- * `ret `$`x` returns the value in $`x`.
+编译器选项 {option}`trace.compiler.ir.result` 可用于查看函数的编译器中间表示（IR）。
+在这种中间表示中，引用计数、内存分配和复用都是显式的：
+ * `isShared` 运算符检查引用计数是否为 `1`。
+ * `ctor_`$`n` 分配某个类型的第 $`n` 个构造器。
+ * `proj_`$`n` 从构造器值中取出第 $`n` 个字段。
+ * `set `$`x`﻿`[`$`n`﻿`]` 修改 $`x` 中构造器的第 $`n` 个字段。
+ * `ret `$`x` 返回 $`x` 中的值。
 
-The specifics of reference count manipulations can depend on the results of optimization passes such as inlining.
-While the vast majority of Lean code doesn't require this kind of attention to achieve good performance, knowing how to diagnose unique reference issues can be very important when writing performance-critical code.
+引用计数操作的具体方式可能取决于内联等优化阶段的结果。
+绝大多数 Lean 代码无须关注这些细节就能获得良好性能，但在编写性能关键型代码时，掌握如何诊断唯一引用相关的问题可能非常重要。
 
 {optionDocs trace.compiler.ir.result}
 
-:::example "Reference Counts in IR"
-Compiler IR can be used to observe when reference counts are incremented, which can help diagnose situations when a value is expected to have a unique incoming reference, but is in fact shared.
-Here, {lean}`process` and {lean}`process'` each take a string as a parameter and modify it with {name}`String.set`, returning a pair of strings.
-While {lean}`process` returns a constant string as the second element of the pair, {lean}`process'` returns the original string.
+:::example "IR 中的引用计数"
+通过编译器中间表示（IR）可以观察引用计数何时递增，这有助于诊断以下情形：本以为某个值只有一个传入引用，但它实际上却被共享。
+这里，{lean}`process` 和 {lean}`process'` 都接受一个字符串参数，使用 {name}`String.set` 修改它，并返回一对字符串。
+{lean}`process` 将常量字符串作为二元组的第二个元素返回，而 {lean}`process'` 则返回原字符串。
 
 ```lean
 set_option trace.compiler.ir.result true
@@ -225,8 +225,8 @@ def process' (str : String) : String × String:=
   (str.set 0 ' ', str)
 ```
 
-The IR for {lean}`process` includes no `inc` or `dec` instructions.
-If the incoming string `x_1` is a unique reference, then it is still a unique reference when passed to {name}`String.set`, which can then use in-place modification:
+{lean}`process` 的 IR 中不包含 `inc` 或 `dec` 指令。
+如果传入的字符串 `x_1` 是唯一引用，那么将它传给 {name}`String.set` 时，它仍然是唯一引用，因此可以就地修改：
 ```leanOutput p1 (allowDiff := 5)
 [Compiler.IR] [result]
     def process._closed_0 : obj :=
@@ -241,8 +241,8 @@ If the incoming string `x_1` is a unique reference, then it is still a unique re
       ret x_6
 ```
 
-The IR for {lean}`process'`, on the other hand, increments the reference count of the string just before calling {name}`String.set`.
-Thus, the modified string `x_4` is a copy, regardless of whether the original reference to `x_1` is unique:
+另一方面，{lean}`process'` 的 IR 会在调用 {name}`String.set` 之前递增该字符串的引用计数。
+因此，无论 `x_1` 的原始引用是否唯一，修改后的字符串 `x_4` 都是一个副本：
 ```leanOutput p2
 [Compiler.IR] [result]
     def process' (x_1 : obj) : obj :=
@@ -255,9 +255,9 @@ Thus, the modified string `x_4` is a copy, regardless of whether the original re
 ```
 :::
 
-:::example "Memory Reuse in IR"
-The function {lean}`discardElems` is a simplified version of {name}`List.map` that replaces every element in a list with {lean}`()`.
-Inspecting its intermediate representation demonstrates that it will reuse the list's memory when its reference is unique.
+:::example "IR 中的内存复用"
+函数 {lean}`discardElems` 是 {name}`List.map` 的简化版本，它将列表中的每个元素替换为 {lean}`()`。
+查看其中间表示可以看出，当列表的引用唯一时，它会复用列表的内存。
 
 ```lean (name := discardElems)
 set_option trace.compiler.ir.result true
@@ -267,7 +267,7 @@ def discardElems : List α → List Unit
   | x :: xs => () :: discardElems xs
 ```
 
-This emits the following IR:
+这会生成如下 IR：
 
 ```leanOutput discardElems
 [Compiler.IR] [result]
@@ -307,32 +307,35 @@ This emits the following IR:
       ret x_3
 ```
 
-In the IR, the {name}`List.cons` case explicitly checks whether the argument value is shared (i.e. whether its reference count is greater than one).
-If the reference is unique, the reference count of the discarded list element `x_5` is decremented and the constructor value is reused.
-If it is shared, a new {name}`List.cons` is allocated in `x_11` for the result.
+在 IR 中，{name}`List.cons` 分支会显式检查参数值是否被共享（即其引用计数是否大于一）。
+如果引用唯一，则会递减被丢弃的列表元素 `x_5` 的引用计数，并复用构造器值。
+如果引用被共享，则会在 `x_11` 中为结果分配一个新的 {name}`List.cons`。
 :::
 
 
-### More Topics
+### 更多主题
 %%%
 draft := true
 %%%
 
 :::planned 208
 
- * Compact regions
+ * 紧凑区域
 
- * When should C code increment or decrement reference counts?
+ * C 代码应在何时递增或递减引用计数？
 
- * What is the meaning of the borrow annotation (`@&`)?
+ * 借用标注（`@&`）有什么含义？
 
 :::
 
-# Multi-Threaded Execution
+# 多线程执行
+%%%
+file := some "Multi-Threaded-Execution"
+%%%
 
-Lean includes primitives for parallel and concurrent programs, described using {tech}[tasks].
-The Lean runtime system includes a task manager that assigns hardware resources to tasks.
-Along with the API for defining tasks, this is described in detail in the {ref "concurrency"}[section on multi-threaded programs].
+Lean 提供了用于并行和并发程序的原语，并使用{tech (key := "tasks")}[任务]来描述它们。
+Lean 运行时系统包含一个任务管理器，负责为任务分配硬件资源。
+关于它以及用于定义任务的 API，可参阅{ref "concurrency"}[多线程程序一节]中的详细说明。
 
 # Foreign Function Interface
 %%%
