@@ -37,11 +37,11 @@ file := "Extending-Lean___s-Output"
 :::paragraph
 让 Lean 在输出中使用语法扩展，主要有两种机制：
 
-: 反展开器
+: 逆展开器
 
-  反展开器是 {tech (key := "macros")}[宏] 的逆过程。
+  逆展开器是 {tech (key := "macros")}[宏] 的逆过程。
   宏通过翻译用旧语法实现新语法，把新特性_展开_为既有特性的编码。
-  与宏一样，{deftech (key := "unexpanders")}_反展开器_ 会把 {lean}`Syntax` 翻译成 {lean}`Syntax`；与宏不同的是，它们会把这些编码变换回新的扩展形式。
+  与宏一样，{deftech (key := "unexpanders")}_逆展开器_ 会把 {lean}`Syntax` 翻译成 {lean}`Syntax`；与宏不同的是，它们会把这些编码变换回新的扩展形式。
 
 : 反精译器
 
@@ -51,48 +51,48 @@ file := "Extending-Lean___s-Output"
 
 在显示一个 {name}`Expr` 之前，系统会先对它做反精译，再做反展开。
 反精译器会跟踪其输出源自原始 {name}`Expr` 的哪个位置；这个位置信息被编码到结果语法的 {name Lean.SourceInfo}`SourceInfo` 中。
-正如宏展开会自动用与原始语法位置对应的合成源码信息来标注结果语法一样，反展开机制也会保留结果语法与底层 {name}`Expr` 的关联。
+正如宏展开会自动用与原始语法位置对应的合成源码信息来标注结果语法一样，逆展开机制也会保留结果语法与底层 {name}`Expr` 的关联。
 这种关联使 Lean 的交互功能能够在 {tech (key := "proof states")}[证明状态] 和诊断信息中显示结果语法时，提供与之相关的进一步信息。
 
-# 反展开器
+# 逆展开器
 %%%
 tag := "Unexpanders"
 %%%
 
-正如宏被注册在一张把 {tech (key := "syntax kinds")}[语法种类] 映射到宏实现的表中一样，反展开器也被注册在一张把常量名映射到反展开器实现的表中。
+正如宏被注册在一张把 {tech (key := "syntax kinds")}[语法种类] 映射到宏实现的表中一样，逆展开器也被注册在一张把常量名映射到逆展开器实现的表中。
 在 Lean 向用户显示语法之前，它会尝试按照这张表重写语法中对每个常量的应用。
 上下文中那些并非应用的位置，也会被视为带零个实参的应用。
 
 反展开按由内向外的顺序进行。
-传给反展开器的是应用的语法；其中隐式参数已被隐藏，而且实参已经先完成反展开。
-如果选项 {option}`pp.explicit` 为 {lean}`true`，或者 {option}`pp.notation` 为 {lean}`false`，那么就不会使用反展开器。
+传给逆展开器的是应用的语法；其中隐式参数已被隐藏，而且实参已经先完成反展开。
+如果选项 {option}`pp.explicit` 为 {lean}`true`，或者 {option}`pp.notation` 为 {lean}`false`，那么就不会使用逆展开器。
 
 ::::::::leanSection
 ```lean -show
 open Lean.PrettyPrinter (Unexpander UnexpandM)
 ```
 
-反展开器的类型是 {lean}`Lean.PrettyPrinter.Unexpander`，它是 `Syntax → Lean.PrettyPrinter.UnexpandM Syntax` 的缩写。
+逆展开器的类型是 {lean}`Lean.PrettyPrinter.Unexpander`，它是 `Syntax → Lean.PrettyPrinter.UnexpandM Syntax` 的缩写。
 在本节剩余部分中，名称 {lean}`Unexpander` 和 {lean}`UnexpandM` 都不再带限定名。
 {lean}`UnexpandM` 是一个单子；借助其实例 {name Lean.MonadQuotation}`MonadQuotation` 与 {lean}`MonadExcept Unit`，它支持引用与失败。
 
-反展开器要么返回已经反展开的语法，要么使用 {lean  (type := "UnexpandM Syntax")}`throw ()` 失败。
-如果反展开器成功，得到的语法还会再次反展开；如果失败，则会尝试下一个反展开器。
-如果没有任何反展开器能成功处理该语法，那么它的子节点会继续被反展开，直到所有可能的反展开机会都耗尽。
+逆展开器要么返回已经反展开的语法，要么使用 {lean  (type := "UnexpandM Syntax")}`throw ()` 失败。
+如果逆展开器成功，得到的语法还会再次反展开；如果失败，则会尝试下一个逆展开器。
+如果没有任何逆展开器能成功处理该语法，那么它的子节点会继续被反展开，直到所有可能的反展开机会都耗尽。
 
 {zhdocstring Lean.PrettyPrinter.Unexpander Manual.ZhDocString.NotationsMacros.Core.PrettyPrinter.Unexpander}
 
 {zhdocstring Lean.PrettyPrinter.UnexpandM Manual.ZhDocString.NotationsMacros.Core.PrettyPrinter.UnexpandM}
 
-通过施加 {attr}`app_unexpander` 属性，可以为某个常量注册反展开器。
-{ref "operators"}[自定义运算符]和 {ref "notations"}[记法]会自动为它们引入的语法创建反展开器。
+通过施加 {attr}`app_unexpander` 属性，可以为某个常量注册逆展开器。
+{ref "operators"}[自定义运算符]和 {ref "notations"}[记法]会自动为它们引入的语法创建逆展开器。
 
-:::syntax attr (title := "反展开器注册")
+:::syntax attr (title := "逆展开器注册")
 ```grammar
 app_unexpander $_:ident
 ```
 
-为某个常量的应用注册一个类型为 {name}`Unexpander` 的反展开器。
+为某个常量的应用注册一个类型为 {name}`Unexpander` 的逆展开器。
 :::
 
 
@@ -122,8 +122,8 @@ v : Solo
 
 ```
 这个证明状态使用 {tech (key := "structure instance")}[结构体实例] 语法来显示构造子。
-可以用反展开器覆盖这一选择。
-由于 {name}`Solo.mk` 不能应用于任何实参，因此反展开器可以完全忽略它收到的语法；这个语法总会是 {lean (type := "UnexpandM Syntax")}`` `(Solo.mk) ``。
+可以用逆展开器覆盖这一选择。
+由于 {name}`Solo.mk` 不能应用于任何实参，因此逆展开器可以完全忽略它收到的语法；这个语法总会是 {lean (type := "UnexpandM Syntax")}`` `(Solo.mk) ``。
 
 ```lean
 @[app_unexpander Solo.mk]
@@ -131,7 +131,7 @@ def unexpandSolo : Lean.PrettyPrinter.Unexpander
   | _ => `(‹›)
 ```
 
-有了这个反展开器后，证明的初始状态现在就会以正确的语法渲染出来：
+有了这个逆展开器后，证明的初始状态现在就会以正确的语法渲染出来：
 ```proofState
 ∀v, v = ‹› := by
 intro v
@@ -212,8 +212,8 @@ macro_rules
 { before := [3, 2, 1], after := [4, 5] } : ListCursor Nat
 ```
 
-反展开器可以解决这个问题。
-这个反展开器依赖于内建的列表字面量反展开器，前提是它们已经把这两个列表重写好了：
+逆展开器可以解决这个问题。
+这个逆展开器依赖于内建的列表字面量逆展开器，前提是它们已经把这两个列表重写好了：
 ```lean
 @[app_unexpander ListCursor.mk]
 def unexpandListCursor : Lean.PrettyPrinter.Unexpander
@@ -258,7 +258,7 @@ open Lean.PrettyPrinter.Delaborator (DelabM Delab)
 open Lean (Term)
 ```
 反精译器的类型是 {lean}`Lean.PrettyPrinter.Delaborator.Delab`，它是 {lean}`Lean.PrettyPrinter.Delaborator.DelabM Term` 的缩写。
-与反展开器不同，反精译器并不是按普通函数来实现的。
+与逆展开器不同，反精译器并不是按普通函数来实现的。
 这样做是为了更容易正确实现它们：单子 {name}`DelabM` 会跟踪当前正在反精译的表达式位置，从而使反精译机制能够给结果语法打上相应标注。
 
 反精译器通过 {attr}`delab` 属性注册。
@@ -284,10 +284,10 @@ open Lean.PrettyPrinter.Delaborator.SubExpr
 :::paragraph
 单子 {name}`DelabM` 是一个 {tech (key := "reader monad")}[读取器单子]，其中包含对当前 {lean}`Expr` 位置的访问能力。
 递归反精译时，不是把某个子表达式显式传给另一个函数，而是通过调整读取器单子所跟踪的位置来完成。
-在反精译器中处理子表达式时，最重要的一些函数位于命名空间 `Lean.PrettyPrinter.Delaborator.SubExp` 中：
+在反精译器中处理子表达式时，最重要的一些函数位于命名空间 `Lean.PrettyPrinter.Delaborator.SubExpr` 中：
  * {name}`getExpr` 取回当前表达式以供分析。
  * {name}`withAppFn` 把当前位置调整为应用中的函数位置。
- * {name}`withAppArg` 把当前位置调整为应用中的实参位置
+ * {name}`withAppArg` 把当前位置调整为应用中的实参位置。
  * {name}`withAppFnArgs` 把当前表达式分解为一个非应用函数及其参数，并依次聚焦到它们上面。
  * {name}`withBindingBody` 下降到函数或函数类型的主体中。
 

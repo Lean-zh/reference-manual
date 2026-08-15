@@ -277,7 +277,7 @@ tag := "The-Lean-Language-Reference--Notations-and-Macros--Extending--do--Notati
 
 {zhdocstring Lean.Elab.Do.DoElab ZhDoc.NotationsMacros.Do.DoElab}
 
-:::syntax attr (title := "`do` 元素精译器")
+:::syntax attr (title := "do 元素精译器")
 ```grammar
 doElem_elab
 ```
@@ -444,7 +444,7 @@ def inferAbsurd : ControlInfoHandler := fun _ =>
 ```
 
 精译器首先提取证明语法；如果未提供，就回退到默认值。
-然后，它会把该证明精译为 `False` 的一个证明。
+然后，它会把该证明精译为 False 的一个证明。
 如果成功，它就会用 {name Lean.Elab.Do.DoElemCont.elabAsSyntacticallyDeadCode}`DoElemCont.elabAsSyntacticallyDeadCode` 把剩余的 {keywordOf Lean.Parser.Term.do}`do` 序列标记为死代码，并把 {name}`False.elim` 作为结果项直接返回，而不是交给续延。
 {name}`False.elim` 会接收该项所期望具有的类型；这个类型通过 {name}`Lean.Elab.Do.mkMonadApp` 与结果类型共同确定。
 这里必须使用 {name Lean.Elab.Do.Context.doBlockResultType}`Do.Context.doBlockResultType`，而不是续延的结果类型，因为 {ref "do-elab-effect-lift"}[效应提升] 可能已经在局部修改了该类型。
@@ -529,7 +529,7 @@ open Lean Elab Term Do
 syntax (name := doOnce) "once " doSeq : doElem
 ```
 它的控制信息基于其主体的控制信息。
-{keywordOf doOnce}`once` 自身永远不会再向外 `break` 或 `continue`，因为它会在自己的主体内部处理 {keywordOf Lean.Parser.Term.doBreak}`break` 和 {keywordOf Lean.Parser.Term.doContinue}`continue`；因此它会把 {name ControlInfo.breaks}`breaks` 和 {name ControlInfo.continues}`continues` 设为 {lean}`false`。
+{keywordOf doOnce}`once` 自身永远不会再向外 break 或 continue，因为它会在自己的主体内部处理 {keywordOf Lean.Parser.Term.doBreak}`break` 和 {keywordOf Lean.Parser.Term.doContinue}`continue`；因此它会把 {name ControlInfo.breaks}`breaks` 和 {name ControlInfo.continues}`continues` 设为 {lean}`false`。
 {name ControlInfo.numRegularExits}`numRegularExits` 表示控制流到达 {keywordOf doOnce}`once` 之后那段代码的次数。
 主体的正常落空、{keywordOf Lean.Parser.Term.doBreak}`break` 和 {keywordOf Lean.Parser.Term.doContinue}`continue` 都会把控制流转移到循环末尾，因此控制流离开一个 {keywordOf doOnce}`once` 的次数至多为一次。
 因此，只要主体能以这些方式中的任意一种退出，{name ControlInfo.numRegularExits}`numRegularExits` 就是 {lean}`1`；否则就是 {lean}`0`，此时还会设置 {name ControlInfo.noFallthrough}`noFallthrough`。
@@ -597,7 +597,7 @@ tag := "do-elab-control-info"
 控制信息之所以与精译器分离，是因为精译器需要在真正精译之前分析子元素的_语法_，才能知道应当如何组织自己的续延。
 *自定义 {keywordOf Lean.Parser.Term.do}`do` 元素必须提供准确的控制信息。错误的控制信息可能导致错误的代码生成。*
 
-:::syntax attr (title := "`do` 元素控制信息")
+:::syntax attr (title := "do 元素控制信息")
 ```grammar
 doElem_control_info
 ```
@@ -887,7 +887,7 @@ open Lean.Parser.Term (doSeq)
 第一步是为这个操作建立语法。
 {keywordOf openMutPure}`open mut` 会把该子类型“打开”，使其中包含的数据在嵌套块中摆脱谓词约束。
 当该块结束后，用户必须证明或检查该不变式成立；如果在 {keywordOf openMutPure}`invariant` 部分放置一个 {keywordOf Lean.Parser.Term.do}`do` 块，就表示应当执行一次动态检查。
-第二个语法定义显式给出了高优先级以避免歧义，从而确保只要出现 {keywordOf Lean.Parser.Term.do}`do` 块，就会优先使用它。
+第二个语法定义显式给出了高优先权以避免歧义，从而确保只要出现 {keywordOf Lean.Parser.Term.do}`do` 块，就会优先使用它。
 ```lean
 syntax (name := openMutPure)
   "open" "mut" ident "do" doSeq "invariant" term : doElem

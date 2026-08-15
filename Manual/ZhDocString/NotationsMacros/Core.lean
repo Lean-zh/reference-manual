@@ -12,7 +12,7 @@ namespace Manual.ZhDocString.NotationsMacros.Core
 `MacroM` 单子是宏展开使用的主要单子。它含有生成卫生名称所需的信息，
 也是 `macro` 定义所在的单子。
 
-值得注意的是，这是一个（相对）纯的单子：它不提供 `IO`，也不能直接访问
+这是一个（相对）纯的单子：它不提供 `IO`，也不能直接访问
 `Environment`。因此无法在其中进行任意环境内省；只能使用 `Macro.Methods` 提供的受限查询，
 也无法使用 `IO.Ref` 或其他有副作用的操作。若需要更多能力，可以改用 `elab`，并通过
 `adaptExpander` 编写宏。
@@ -103,7 +103,7 @@ namespace PrettyPrinter
 abbrev Unexpander := _root_.Lean.PrettyPrinter.Unexpander
 
 /--
-反展开器单子，本质上是 `Syntax → Option α`。其中 `Syntax` 是 `ref`，
+逆展开器单子，本质上是 `Syntax → Option α`。其中 `Syntax` 是 `ref`，
 并且计算可以失败而不产生错误消息。
 -/
 abbrev UnexpandM := _root_.Lean.PrettyPrinter.UnexpandM

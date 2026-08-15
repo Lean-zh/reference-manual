@@ -419,7 +419,7 @@ open Lean Syntax
 variable {ks : SyntaxNodeKinds} {sep : String}
 ```
 除了 {name Lean.TSyntax}`TSyntax` 之外，还有一些类型表示语法数组，既有带分隔符的，也有不带分隔符的。
-这些对应于语法声明或反引用中的 {TODO}[xref] 重复元素。
+这些对应于语法声明或反引用中的 {TODO}[交叉引用] 重复元素。
 {lean}`TSyntaxArray ks` 是 {lean}`Array (TSyntax ks)` 的一个 {tech (key := "abbreviation")}[缩写]，而 {lean}`TSepArray ks sep` 是一个结构；这意味着可以用 {tech (key := "generalized field notation")}[广义字段记法] 将数组函数应用于 {name}`TSyntaxArray`，但不能应用于 {name}`TSepArray`。
 {lean}`TSepArray ks` 和 {lean}`TSyntaxArray ks` 之间既有 {tech (key := "coercion")}[强制转换]，也有显式转换函数。
 这种转换会在底层数组中插入或移除分隔符元素，其耗时与元素个数成线性关系。
@@ -644,7 +644,7 @@ syntax$[:$p]? $[(name := $x)]? $[(priority := $p)]? $_* : $c
 默认情况下，语法规则在任何传递导入了其定义所在模块的模块中都可供解析器使用；但也可以将其声明为 `scoped` 或 `local`，分别把可用范围限制为当前命名空间已被打开的上下文，或者当前的 {tech (key := "section scope")}[节作用域]。
 
 当某个类别的多条语法规则都能匹配当前输入时，会使用 {tech (key := "local longest-match rule")}[局部最长匹配规则] 来从中选择一条。
-与记法和运算符一样，如果最长匹配并列，就使用声明的优先级来决定采用哪个解析结果。
+与记法和运算符一样，如果最长匹配并列，就使用声明的优先权来决定采用哪个解析结果。
 如果这样仍不能消除歧义，那么所有并列结果都会被保留下来。
 精译器预计会尝试它们全部；当且仅当恰好有一个能够成功精译时，整体才算成功。
 

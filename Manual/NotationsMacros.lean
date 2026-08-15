@@ -305,7 +305,7 @@ example (cmd1 cmd2 : TSyntax `command) : MacroM (TSyntax `command) :=
 ```lean -show
 -- 无法提取解析器优先级（它们只保存在已编译 Parser 代码旁的 Pratt 表中），
 -- 因此，此优先级测试通过检查引用解析器可观察到的相对优先级来完成。
--- quote parsers.
+-- 引用解析器。
 
 /--
 info: do
@@ -930,7 +930,7 @@ tag := "macro_rules"
 $[$d:docComment]?
 $[@[$attrs,*]]?
 $_:attrKind macro_rules $[(kind := $k)]?
-  $[| `(free{(p:ident"|")?/-- Suitable syntax for {p} -/}) => $e]*
+  $[| `(free{(p:ident"|")?/-- 适合 {p} 的语法 -/}) => $e]*
 ```
 :::
 

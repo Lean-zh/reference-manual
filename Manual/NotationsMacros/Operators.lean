@@ -162,12 +162,12 @@ infix:90 " ⤴ " => Option.getD
 当定义了多个共享同一语法的运算符时，Lean 的解析器会尝试它们全部。
 如果有多个成功，就会选择消耗输入最多的那个——这被称为 {deftech (key := "local longest-match rule")}_局部最长匹配规则_。
 在某些情况下，多个运算符的解析都可能成功，并且它们覆盖的是输入中的同一范围。
-这时会使用运算符的 {tech (key := "priority")}[优先级] 来选择合适的结果。
-最后，如果多个同优先级运算符在最长匹配上并列，解析器就会保留所有结果，并由精译器逐个尝试；如果不能恰好有一个成功精译，则整体失败。
+这时会使用运算符的 {tech (key := "priority")}[优先权] 来选择合适的结果。
+最后，如果多个同优先权运算符在最长匹配上并列，解析器就会保留所有结果，并由精译器逐个尝试；如果不能恰好有一个成功精译，则整体失败。
 
 :::::keepEnv
 
-::::example "歧义运算符与优先级" (file := "Ambiguous Operators and Priorities")
+::::example "歧义运算符与优先权" (file := "Ambiguous Operators and Priorities")
 
 :::keepEnv
 将 `+` 的另一种实现定义为 {lean}`Or` 只需要一条中缀运算符声明。
@@ -203,7 +203,7 @@ Hint: Type class instance resolution failures can be inspected with the `set_opt
 :::
 
 :::keepEnv
-如果把这个中缀运算符声明为高优先级，那么在有歧义的情况下 Lean 就不会尝试内置的 {name}`HAdd.hAdd` 运算符：
+如果把这个中缀运算符声明为高优先权，那么在有歧义的情况下 Lean 就不会尝试内置的 {name}`HAdd.hAdd` 运算符：
 ```lean
 infix:65 (priority := high)  " + " => Or
 ```
