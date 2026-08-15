@@ -50,8 +50,9 @@ where
     .text s { fontSize := 10, fontFamily := "monospace" } (name := name)
 
 
-#doc (Manual) "Coercions" =>
+#doc (Manual) "强制转换" =>
 %%%
+file := some "Coercions"
 tag := "coercions"
 %%%
 
@@ -62,32 +63,32 @@ variable {c1 c2 : Name} {α : Type u}
 ```
 
 
-When the Lean elaborator is expecting one type but produces a term with a different type, it attempts to automatically insert a {deftech}_coercion_, which is a specially designated function from the term's type to the expected type.
-Coercions make it possible to use specific types to represent data while interacting with APIs that expect less-informative types.
-They also allow mathematical developments to follow the usual practice of “punning”, where the same symbol is used to stand for both an algebraic structure and its carrier set, with the precise meaning determined by context.
+当 Lean 精译器期望某种类型，却产生了另一类型的项时，它会尝试自动插入{deftech (key := "coercion")}_强制转换_。强制转换是从该项的类型到期望类型的特别指定函数。
+强制转换使得我们可以用具体类型表示数据，同时与那些期望信息较少类型的 API 交互。
+它们也让数学形式化能够沿用通常的“一符多义”惯例：同一个符号既可表示代数结构，也可表示其载体集合，确切含义由上下文决定。
 
 
 :::paragraph
-Lean's standard library and metaprogramming APIs define many coercions.
-Some examples include:
+Lean 的标准库和元编程 API 定义了许多强制转换。
+例如：
 
- * A {name}`Nat` may be used where an {name}`Int` is expected.
- * A {name}`Fin` may be used where a {name}`Nat` is expected.
- * An {lean}`α` may be used where an {lean}`Option α` is expected. The coercion wraps the value in {name}`some`.
- * An {lean}`α` may be used where a {lean}`Thunk α` is expected. The coercion wraps the term in a function to delay its evaluation.
- * When one syntax category {lean}`c1` embeds into another category {lean}`c2`, a coercion from {lean}`TSyntax c1` to {lean}`TSyntax c2` performs any necessary wrapping to construct a valid syntax tree.
+ * 可在期望 {name}`Int` 之处使用 {name}`Nat`。
+ * 可在期望 {name}`Nat` 之处使用 {name}`Fin`。
+ * 可在期望 {lean}`Option α` 之处使用 {lean}`α`。该强制转换用 {name}`some` 包装此值。
+ * 可在期望 {lean}`Thunk α` 之处使用 {lean}`α`。该强制转换将此项包装在函数中，以延迟其求值。
+ * 当语法类别 {lean}`c1` 嵌入另一类别 {lean}`c2` 时，从 {lean}`TSyntax c1` 到 {lean}`TSyntax c2` 的强制转换会执行构造有效语法树所需的包装。
 
-Coercions are found using type class {tech}[synthesis].
-The set of coercions can be extended by adding further instances of the appropriate type classes.
+强制转换通过{tech (key := "synthesis")}[类型类合成]来查找。
+可以为适当的类型类添加更多实例，从而扩展强制转换集合。
 :::
 
 ```lean -show
 end
 ```
 
-:::example "Coercions"
+:::example "强制转换"
 
-All of the following examples rely on coercions:
+以下示例全都依赖强制转换：
 
 ```lean
 example (n : Nat) : Int := n
@@ -100,7 +101,7 @@ open Lean in
 example (n : Ident) : Term := n
 ```
 
-In the case of {name}`th`, using {keywordOf Lean.Parser.Command.print}`#print` demonstrates that evaluation of the function application is delayed until the thunk's value is requested:
+对于 {name}`th`，使用 {keywordOf Lean.Parser.Command.print}`#print` 可以看到，函数应用的求值会延迟到请求该延迟计算的值时：
 ```lean (name := thunkEval)
 #print th
 ```
@@ -116,9 +117,9 @@ section
 variable {α : Type u}
 ```
 
-Coercions are not used to resolve {tech}[generalized field notation]: only the inferred type of the term is considered.
-However, a {tech}[type ascription] can be used to trigger a coercion to the type that has the desired generalized field.
-Coercions are also not used to resolve {name}`OfNat` instances: even though there is a default instance for {lean}`OfNat Nat`, a coercion from {lean}`Nat` to {lean}`α` does not allow natural number literals to be used for {lean}`α`.
+强制转换不会用于解析{tech (key := "generalized field notation")}[广义字段记法]：此时只考虑项的推断类型。
+不过，可以使用{tech (key := "type ascription")}[类型标注]触发到具有所需广义字段之类型的强制转换。
+强制转换也不会用于解析 {name}`OfNat` 实例：即使 {lean}`OfNat Nat` 有默认实例，从 {lean}`Nat` 到 {lean}`α` 的强制转换也不能让自然数字面量用于 {lean}`α`。
 
 ```lean -show
 end
@@ -146,10 +147,10 @@ example (n : Nat) := n.bdiv 2
 example (n : Nat) := (n : Int).bdiv 2
 ```
 
-:::example "Coercions and Generalized Field Notation"
+:::example "强制转换与广义字段记法"
 
-The name {lean +error}`Nat.bdiv` is not defined, but {lean}`Int.bdiv` exists.
-The coercion from {lean}`Nat` to {lean}`Int` is not considered when looking up the field `bdiv`:
+名称 {lean +error}`Nat.bdiv` 未定义，但 {lean}`Int.bdiv` 存在。
+查找字段 `bdiv` 时，不会考虑从 {lean}`Nat` 到 {lean}`Int` 的强制转换：
 
 ```lean +error (name := natBdiv)
 example (n : Nat) := n.bdiv 2
@@ -160,15 +161,15 @@ Invalid field `bdiv`: The environment does not contain `Nat.bdiv`, so it is not 
 of type `Nat`
 ```
 
-This is because coercions are only inserted when there is an expected type that differs from an inferred type, and generalized fields are resolved based on the inferred type of the term before the dot.
-Coercions can be triggered by adding a type ascription, which additionally causes the inferred type of the entire ascription term to be {lean}`Int`, allowing the function {name}`Int.bdiv` to be found.
+这是因为只有当期望类型与推断类型不同时才会插入强制转换，而广义字段是根据点号前项的推断类型解析的。
+添加类型标注可以触发强制转换；此外，它还会使整个标注项的推断类型成为 {lean}`Int`，从而找到函数 {name}`Int.bdiv`。
 ```lean
 example (n : Nat) := (n : Int).bdiv 2
 ```
 :::
 
-::::example "Coercions and `OfNat`"
-{lean}`Bin` is an inductive type that represents binary numbers.
+::::example "强制转换与 `OfNat`"
+{lean}`Bin` 是表示二进制数的归纳类型。
 ```lean
 inductive Bin where
   | done
@@ -186,7 +187,7 @@ instance : ToString Bin where
     | b => Bin.toString b
 ```
 
-Binary numbers can be converted to natural numbers by repeatedly applying {lean}`Bin.succ`:
+反复应用 {lean}`Bin.succ` 可以将二进制数转换为自然数：
 ```lean
 def Bin.succ (b : Bin) : Bin :=
   match b with
@@ -238,7 +239,7 @@ theorem Bin.ofNat_toNat_eq {n : Nat} : (Bin.ofNat n).toNat = n := by
 ```
 
 
-Even if {lean}`Bin.ofNat` is registered as a coercion, natural number literals cannot be used for {lean}`Bin`:
+即使将 {lean}`Bin.ofNat` 注册为强制转换，自然数字面量也不能用于 {lean}`Bin`：
 ```lean
 attribute [coe] Bin.ofNat
 
@@ -257,10 +258,10 @@ due to the absence of the instance above
 
 Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
 ```
-This is because coercions are inserted in response to mismatched types, but a failure to synthesize an {name}`OfNat` instance is not a type mismatch.
+这是因为强制转换会在类型不匹配时插入，但无法合成 {name}`OfNat` 实例并不是类型不匹配。
 
 
-The coercion can be used in the definition of the {lean}`OfNat Bin` instance:
+可以在 {lean}`OfNat Bin` 实例的定义中使用该强制转换：
 ```lean (name := ten)
 instance : OfNat Bin n where
   ofNat := n
@@ -272,18 +273,18 @@ instance : OfNat Bin n where
 ```
 ::::
 
-Most new coercions can be defined by declaring an instance of the {name}`Coe` {tech}[type class] and applying the {attr}`coe` attribute to the function that performs the coercion.
-To enable more control over coercions or to enable them in more contexts, Lean provides further classes that can be implemented, described in the rest of this chapter.
+大多数新的强制转换都可以这样定义：声明 {name}`Coe` {tech (key := "type class")}[类型类]的实例，并将 {attr}`coe` 属性应用于执行强制转换的函数。
+为了更精细地控制强制转换，或使其能用于更多上下文，Lean 还提供了其他可实现的类，本章其余部分将对此加以介绍。
 
-:::example "Defining Coercions: Decimal Numbers"
-Decimal numbers can be defined as arrays of digits.
+:::example "定义强制转换：十进制数"
+十进制数可以定义为数位数组。
 
 ```lean
 structure Decimal where
   digits : Array (Fin 10)
 ```
 
-Adding a coercion allows them to be used in contexts that expect {lean}`Nat`, but also contexts that expect any type that {lean}`Nat` can be coerced to.
+添加强制转换后，它们不仅可用于期望 {lean}`Nat` 的上下文，也可用于期望任何 {lean}`Nat` 可强制转换至的类型的上下文。
 
 ```lean
 @[coe]
@@ -294,7 +295,7 @@ instance : Coe Decimal Nat where
   coe := Decimal.toNat
 ```
 
-This can be demonstrated by treating a {lean}`Decimal` as an {lean}`Int` as well as a {lean}`Nat`:
+下面将 {lean}`Decimal` 同时视为 {lean}`Int` 和 {lean}`Nat`，以展示这一点：
 ```lean (name := digival)
 def twoHundredThirteen : Decimal where
   digits := #[2, 1, 3]
@@ -314,23 +315,24 @@ def one : Decimal where
 
 
 
-# Coercion Insertion
+# 强制转换插入
 %%%
+file := some "Coercion-Insertion"
 tag := "coercion-insertion"
 %%%
 
 :::paragraph
-The process of searching for a coercion from one type to another is called {deftech}_coercion insertion_.
-Coercion insertion is attempted in the following situations where an error would otherwise occur:
+从一种类型搜索到另一种类型的强制转换这一过程称为{deftech (key := "coercion insertion")}_强制转换插入_。
+在以下原本会发生错误的情形中，会尝试进行强制转换插入：
 
- * The expected type for a term is not equal to the type found for the term.
+ * 项的期望类型不等于为该项找到的类型。
 
- * A type or proposition is expected, but the term's type is not a {tech}[universe].
+ * 期望得到类型或命题，但该项的类型不是{tech (key := "universe")}[宇宙]。
 
- * A term is applied as though it were a function, but its type is not a function type.
+ * 某项像函数一样被应用，但其类型不是函数类型。
 
-Coercions are also inserted when they are explicitly requested.
-Each situation in which coercions may be inserted has a corresponding prefix operator that triggers the appropriate insertion.
+显式请求强制转换时，也会插入强制转换。
+强制转换可能插入的每种情形都有对应的前缀运算符，用来触发相应的插入。
 :::
 
 ```lean -show
@@ -338,35 +340,35 @@ section
 variable {α : Type u} {α' : Type u'} {β : Type u} [Coe α α'] [Coe α' β] (e : α)
 ```
 
-Because coercions are inserted automatically, nested {tech}[type ascriptions] provide a way to precisely control the types involved in a coercion.
-If {lean}`α` and {lean}`β` are not the same type, {lean}`((e : α) : β)` arranges for {lean}`e` to have type {lean}`α` and then inserts a coercion from {lean}`α` to {lean}`β`.
+由于强制转换会自动插入，嵌套的{tech (key := "type ascriptions")}[类型标注]提供了一种精确控制强制转换所涉及类型的方法。
+如果 {lean}`α` 与 {lean}`β` 不是同一类型，{lean}`((e : α) : β)` 会先令 {lean}`e` 具有类型 {lean}`α`，再插入从 {lean}`α` 到 {lean}`β` 的强制转换。
 
 ```lean -show
 end
 ```
 
-When a coercion is discovered, the instances used to find it are unfolded and removed from the resulting term.
-To the extent possible, calls to {name}`Coe.coe` and related functions do not occur in the final term.
-This process of unfolding makes terms more readable.
-Even more importantly, it means that coercions can control the evaluation of the coerced terms by wrapping them in functions.
+发现强制转换后，用于找到它的实例会被展开，并从结果项中移除。
+在可能的范围内，最终项中不会出现对 {name}`Coe.coe` 及相关函数的调用。
+这一展开过程使项更易读。
+更重要的是，这意味着强制转换可以将被转换的项包装在函数中，从而控制其求值。
 
-:::example "Controlling Evaluation with Coercions"
+:::example "用强制转换控制求值"
 
-The structure {name}`Later` represents a term that can be evaluated in the future, by calling the contained function.
+结构体 {name}`Later` 表示一个可在将来通过调用其所含函数来求值的项。
 
 ```lean
 structure Later (α : Type u) where
   get : Unit → α
 ```
 
-A coercion from any value to a later value is performed by creating a function that wraps it.
+从任意值到延迟值的强制转换，是通过创建函数将其包装起来实现的。
 ```lean
 instance : CoeTail α (Later α) where
   coe x := { get := fun () => x }
 ```
 
-However, if coercion insertion resulted in an application of {name}`CoeTail.coe`, then this coercion would not have the desired effect at runtime, because the coerced value would be evaluated and then saved in the function's closure.
-Because coercion implementations are unfolded, this instance is nonetheless useful.
+然而，如果强制转换插入产生的是对 {name}`CoeTail.coe` 的应用，那么该强制转换在运行时不会产生预期效果，因为被转换的值会先求值，再保存在函数的闭包中。
+不过，由于强制转换的实现会被展开，这个实例仍然有用。
 
 ```lean
 def tomorrow : Later String :=
@@ -374,7 +376,7 @@ def tomorrow : Later String :=
     (init := "")
     (fun _ _ s => s ++ "tomorrow") : String)
 ```
-Printing the resulting definition shows that the computation is inside the function's body:
+打印所得定义可以看到，计算位于函数体内：
 ```lean (name := tomorrow)
 #print tomorrow
 ```
@@ -388,11 +390,11 @@ def tomorrow : Later String :=
 section
 variable {α : Type u}
 ```
-::::example "Duplicate Evaluation in Coercions"
-Because the contents of {lean}`Coe` instances are unfolded during coercion insertion, coercions that use their argument more than once should be careful to ensure that evaluation occurs just once.
-This can be done by using a helper function that is not part of the instance, or by using {keywordOf Lean.Parser.Term.let}`let` to evaluate the coerced term and then reuse its resulting value.
+::::example "强制转换中的重复求值"
+由于 {lean}`Coe` 实例的内容会在强制转换插入期间展开，多次使用其实参的强制转换应当谨慎确保只进行一次求值。
+为此，可以使用不属于该实例的辅助函数，也可以使用 {keywordOf Lean.Parser.Term.let}`let` 对被转换的项求值，然后复用所得值。
 
-The structure {name}`Twice` requires that both fields have the same value:
+结构体 {name}`Twice` 要求两个字段具有相同的值：
 ```lean
 structure Twice (α : Type u) where
   first : α
@@ -400,8 +402,8 @@ structure Twice (α : Type u) where
   first_eq_second : first = second
 ```
 
-One way to define a coercion from {lean}`α` to {lean}`Twice α` is with a helper function {name}`twice`.
-The {attr}`coe` attribute marks it as a coercion so it can be shown correctly in proof goals and error messages.
+定义从 {lean}`α` 到 {lean}`Twice α` 的强制转换的一种方式，是使用辅助函数 {name}`twice`。
+{attr}`coe` 属性将其标记为强制转换，使其能在证明目标和错误消息中正确显示。
 ```lean
 @[coe]
 def twice (x : α) : Twice α where
@@ -411,17 +413,17 @@ def twice (x : α) : Twice α where
 
 instance : Coe α (Twice α) := ⟨twice⟩
 ```
-When the {name}`Coe` instance is unfolded, the call to {name}`twice` remains, which causes its argument to be evaluated before the body of the function is executed.
-As a result, the {keywordOf Lean.Parser.Term.dbgTrace}`dbg_trace` is included in the resulting term just once:
+展开 {name}`Coe` 实例时，对 {name}`twice` 的调用会保留下来，使其实参在执行函数体之前求值。
+因此，所得项中只包含一次 {keywordOf Lean.Parser.Term.dbgTrace}`dbg_trace`：
 ```lean (name := eval1)
 #eval ((dbg_trace "hello"; 5 : Nat) : Twice Nat)
 ```
-This is used to demonstrate the effect:
+下面用它来展示效果：
 ```leanOutput eval1
 hello
 ```
 
-Inlining the helper into the {name}`Coe` instance results in a term that duplicates the {keywordOf Lean.Parser.Term.dbgTrace}`dbg_trace`:
+将辅助函数内联到 {name}`Coe` 实例中，会得到一个重复 {keywordOf Lean.Parser.Term.dbgTrace}`dbg_trace` 的项：
 ```lean (name := eval2)
 instance : Coe α (Twice α) where
   coe x := ⟨x, x, rfl⟩
@@ -433,7 +435,7 @@ hello
 hello
 ```
 
-Introducing an intermediate name for the result of the evaluation prevents the duplication of {keywordOf Lean.Parser.Term.dbgTrace}`dbg_trace`:
+为求值结果引入一个中间名称，可以避免重复 {keywordOf Lean.Parser.Term.dbgTrace}`dbg_trace`：
 ```lean (name := eval3)
 instance : Coe α (Twice α) where
   coe x := let y := x; ⟨y, y, rfl⟩
