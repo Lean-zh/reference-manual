@@ -13,7 +13,7 @@ namespace Manual.ZhDocString.NotationsMacros.Core
 也是 `macro` 定义所在的单子。
 
 这是一个（相对）纯的单子：它不提供 `IO`，也不能直接访问
-`Environment`。因此无法在其中进行任意环境内省；只能使用 `Macro.Methods` 提供的受限查询，
+`Environment`。因此无法在其中进行任意环境内省；只能使用宏方法设施提供的受限查询，
 也无法使用 `IO.Ref` 或其他有副作用的操作。若需要更多能力，可以改用 `elab`，并通过
 `adaptExpander` 编写宏。
 -/
@@ -23,7 +23,7 @@ namespace Macro
 
 /--
 若 `stx` 是宏，`expandMacro? stx` 返回 `some stxNew`，其中 `stxNew` 是它的展开结果；
-否则返回 `none`。
+否则不返回展开结果。
 -/
 def expandMacro? (stx : Lean.Syntax) : Lean.MacroM (Option Lean.Syntax) :=
   _root_.Lean.Macro.expandMacro? stx
@@ -36,7 +36,7 @@ def trace (clsName : Lean.Name) (msg : String) : Lean.MacroM Unit :=
 宏展开期间可能抛出的异常。
 -/
 inductive Exception where
-  /-- 携带源码位置与消息的宏展开错误。 -/
+  /-- 携带以一个 `Syntax` 表示的源码范围与消息的宏展开错误。 -/
   | error : Lean.Syntax → String → Exception
   /--
   不支持该语法的异常。它被单独保留，是因为宏展开器以它进行控制流：
