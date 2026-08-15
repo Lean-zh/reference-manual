@@ -912,39 +912,40 @@ Lean 标准库对实例的安排使得插入强制转换时，会优先选择 {n
 {docstring Int.cast}
 
 
-# Coercing to Sorts
+# 强制转换为 Sort
 %%%
-tag := "sort-coercion"
+file := "Coercing-to-Sorts"
+tag := "coercing-to-sorts"
 %%%
 
-The Lean elaborator expects types in certain positions without necessarily being able to determine the type's {tech}[universe] ahead of time.
-For example, the term following the colon in a definition header might be a proposition or a type.
-The ordinary coercion mechanism is not applicable because it requires a specific expected type, and there's no way to express that the expected type could be _any_ universe in the {name}`Coe` class.
+Lean 精译器会在某些位置期待类型，却未必能预先确定该类型的{tech (key := "universe")}[宇宙]。
+例如，定义头中冒号后的项可能是命题，也可能是类型。
+普通的强制转换机制并不适用，因为它要求有具体的预期类型，而 {name}`Coe` 类无法表达预期类型可以是_任意_宇宙。
 
-When a term is elaborated in a position where a proposition or type is expected, but the inferred type of the elaborated term is not a proposition or type, Lean  attempts to recover from the error by synthesizing an instance of {name}`CoeSort`.
-If the instance is found, and the resulting type is itself a type, then it the coercion is inserted and unfolded.
+当某个位置预期命题或类型，而在该位置精译出的项的推断类型并非命题或类型时，Lean 会尝试合成 {name}`CoeSort` 实例来从错误中恢复。
+如果找到了实例，且结果类型本身是一个类型，就会插入并展开该强制转换。
 
-Not every situation in which the elaborator expects a universe requires {name}`CoeSort`.
-In some cases, a particular universe is available as an expected type.
-In these situations, ordinary coercion insertion using {name}`CoeT` is used.
-Instances of {lean}`CoeSort` can be used to synthesize instances of {lean}`CoeOut`, so no separate instance is needed to support this use case.
-In general, coercions to types should be implemented as {name}`CoeSort`.
+并非精译器期待宇宙的所有情形都需要 {name}`CoeSort`。
+在某些情况下，可以取得某个特定宇宙作为预期类型。
+此时会使用 {name}`CoeT` 进行普通的强制转换插入。
+{lean}`CoeSort` 的实例可用于合成 {lean}`CoeOut` 实例，因此无需单独的实例来支持这种用法。
+一般而言，强制转换为类型应实现为 {name}`CoeSort`。
 
 {docstring CoeSort}
 
 
-:::syntax term (title := "Explicit Coercion to Sorts")
+:::syntax term (title := "显式强制转换为 Sort")
 ```grammar
 ↥ $_:term
 ```
 
-Coercions to sorts can be explicitly triggered using the {keyword}`↥` prefix operator.
+可使用前缀运算符 {keyword}`↥` 显式触发强制转换为 Sort。
 :::
 
-::: example "Sort Coercions"
+::: example "Sort 强制转换"
 
-A monoid is a type equipped with an associative binary operation and an identity element.
-While monoid structure can be defined as a type class, it can also be defined as a structure that “bundles up” the structure with the type:
+幺半群是配备了结合二元运算和单位元的类型。
+幺半群结构可以定义为类型类，也可以定义为将结构与类型“捆绑”在一起的结构体：
 ```lean
 structure Monoid where
   Carrier : Type u
@@ -956,7 +957,7 @@ structure Monoid where
   op_id_identity : ∀ (x : Carrier), op x id = x
 ```
 
-The type {lean  (type := "Type 1")}`Monoid` does not indicate the carrier:
+类型 {lean  (type := "Type 1")}`Monoid` 并不指明载体：
 ```lean
 def StringMonoid : Monoid where
   Carrier := String
@@ -967,7 +968,7 @@ def StringMonoid : Monoid where
   op_id_identity := by intros; simp
 ```
 
-However, a {name}`CoeSort` instance can be implemented that applies the {name}`Monoid.Carrier` projection when a monoid is used in a position where Lean would expect a type:
+不过，可以实现一个 {name}`CoeSort` 实例：当幺半群出现在 Lean 期待类型的位置时，该实例应用 {name}`Monoid.Carrier` 投影：
 ```lean
 instance : CoeSort Monoid (Type u) where
   coe m := m.Carrier
@@ -976,9 +977,9 @@ example : StringMonoid := "hello"
 ```
 :::
 
-:::example "Sort Coercions as Ordinary Coercions"
-The {tech}[inductive type] {name}`NatOrBool` represents the types {name}`Nat` and {name}`Bool`.
-They can be coerced to the actual types {name}`Nat` and {name}`Bool`:
+:::example "将 Sort 强制转换用作普通强制转换"
+{tech (key := "inductive type")}[归纳类型] {name}`NatOrBool` 表示类型 {name}`Nat` 和 {name}`Bool`。
+它的值可以强制转换为实际类型 {name}`Nat` 和 {name}`Bool`：
 ```lean
 inductive NatOrBool where
   | nat | bool
@@ -994,37 +995,38 @@ instance : CoeSort NatOrBool Type where
 open NatOrBool
 ```
 
-The {name}`CoeSort` instance is used when {lean}`nat` occurs to the right of a colon:
+当 {lean}`nat` 出现在冒号右侧时，会使用 {name}`CoeSort` 实例：
 ```lean
 def x : nat := 5
 ```
 
-When an expected type is available, ordinary coercion insertion is used.
-In this case, the {name}`CoeSort` instance is used to synthesize a {lean}`CoeOut NatOrBool Type` instance, which chains with the {inst}`Coe Type (Option Type)` instance to recover from the type error.
+有预期类型时，会使用普通的强制转换插入。
+在此例中，{name}`CoeSort` 实例用于合成 {lean}`CoeOut NatOrBool Type` 实例；后者与 {inst}`Coe Type (Option Type)` 实例链接，以从类型错误中恢复。
 ```lean
 def y : Option Type := bool
 ```
 :::
 
-# Coercing to Function Types
+# 强制转换为函数类型
 %%%
-tag := "fun-coercion"
+file := "Coercing-to-Function-Types"
+tag := "coercing-to-function-types"
 %%%
 
-Another situation where an expected type is not generally available is the function position in a function application term.
-Dependent function types are common; together with {tech}[implicit] parameters, they cause information to flow from the elaboration of one argument to the elaboration of the others.
-Attempting to deduce the type required for the function from the expected type of the entire application term and individually-inferred types of arguments will often fail.
-In these situations, Lean uses the {name}`CoeFun` type class to coerce a non-function in an application position into a function.
-Like {name}`CoeSort`, {name}`CoeFun` instances do not chain with other coercions while inserting a function coercion, but they can be used as {name}`CoeOut` instances during ordinary coercion insertion.
+另一个通常无法取得预期类型的情形，是函数应用项中的函数位置。
+依赖函数类型很常见；它们与{tech (key := "implicit")}[隐式]参数一起，使信息从一个实参的精译流向其他实参的精译。
+试图根据整个应用项的预期类型以及各实参独立推断出的类型来推导函数所需的类型，往往会失败。
+在这些情形下，Lean 使用 {name}`CoeFun` 类型类，将应用位置中的非函数强制转换为函数。
+与 {name}`CoeSort` 一样，插入函数强制转换时，{name}`CoeFun` 实例不会与其他强制转换链接；但在普通的强制转换插入期间，它们可以用作 {name}`CoeOut` 实例。
 
-The second parameter to {name}`CoeFun` is an output parameter that determines the resulting function type.
-This output parameter is function that computes the function type from the term that's being coerced, rather than the function type itself.
-Unlike {name}`CoeDep`, the term itself is not taken into account during instance synthesis; it can, however, be used to create dependently typed coercions where the function type is determined by the term.
+{name}`CoeFun` 的第二个参数是一个输出参数，用于确定结果函数类型。
+这个输出参数是根据被强制转换的项计算函数类型的函数，而不是函数类型本身。
+与 {name}`CoeDep` 不同，实例合成期间不会考虑项本身；不过，可以用它创建依赖类型的强制转换，使函数类型由该项确定。
 
 
 {docstring CoeFun}
 
-:::syntax term (title := "Explicit Coercion to Functions")
+:::syntax term (title := "显式强制转换为函数")
 ```grammar
 ⇑ $_:term
 ```
@@ -1034,8 +1036,8 @@ Unlike {name}`CoeDep`, the term itself is not taken into account during instance
 section
 variable {α : Type u} {β : Type v}
 ```
-:::example "Coercing Decorated Functions to Function Types"
-The structure {lean}`NamedFun α β` pairs a function from {lean}`α` to {lean}`β` with a name.
+:::example "将带说明的函数强制转换为函数类型"
+结构体 {lean}`NamedFun α β` 将一个从 {lean}`α` 到 {lean}`β` 的函数与一个名称配成一对。
 
 ```lean
 structure NamedFun (α : Type u) (β : Type v) where
@@ -1043,7 +1045,7 @@ structure NamedFun (α : Type u) (β : Type v) where
   name : String
 ```
 
-Existing functions can be named:
+可以给已有函数命名：
 ```lean
 def succ : NamedFun Nat Nat where
   function n := n + 1
@@ -1058,7 +1060,7 @@ def append : NamedFun (List α) (List α → List α) where
   name := "append"
 ```
 
-Named functions can also be composed:
+命名函数也可以组合：
 ```lean
 def NamedFun.comp
     (f : NamedFun β γ)
@@ -1069,7 +1071,7 @@ def NamedFun.comp
 ```
 
 
-Unlike ordinary functions, named functions have a reasonable representation as a string:
+与普通函数不同，命名函数可以合理地表示为字符串：
 ```lean
 instance : ToString (NamedFun α α'') where
   toString f := s!"#<{f.name}>"
@@ -1081,7 +1083,7 @@ instance : ToString (NamedFun α α'') where
 #<asString ∘ succ>
 ```
 
-A {name}`CoeFun` instance allows them to be applied just like ordinary functions:
+{name}`CoeFun` 实例使它们可以像普通函数一样应用：
 ```lean
 instance : CoeFun (NamedFun α α'') (fun _ => α → α'') where
   coe | ⟨f, _⟩ => f
@@ -1097,9 +1099,9 @@ instance : CoeFun (NamedFun α α'') (fun _ => α → α'') where
 end
 ```
 
-:::example "Dependent Coercion to Functions"
-Sometimes, the type of the resulting function depends on the specific value that is being coerced.
-A {lean}`Writer` represents a means of appending a representation of some value to a string:
+:::example "依赖的函数强制转换"
+有时，结果函数的类型取决于被强制转换的具体值。
+{lean}`Writer` 表示将某个值的表示追加到字符串的一种方式：
 ```lean
 structure Writer where
   Writes : Type u
@@ -1114,14 +1116,14 @@ def stringWriter : Writer where
   write s out := out ++ s
 ```
 
-Because the type of the parameter expected by the inner function depend on the {lean}`Writer.Writes` field, the {name}`CoeFun` instance extracts the field:
+由于内层函数所期待的参数类型取决于 {lean}`Writer.Writes` 字段，{name}`CoeFun` 实例会提取该字段：
 ```lean
 instance :
     CoeFun Writer (·.Writes → String → String) where
   coe w := w.write
 ```
 
-With this instance, concrete {name}`Writer`s can be used as functions:
+有了这个实例，具体的 {name}`Writer` 就可以用作函数：
 ```lean (name := writeTwice)
 #eval "" |> natWriter (5 : Nat) |> stringWriter " hello"
 ```
@@ -1130,13 +1132,13 @@ With this instance, concrete {name}`Writer`s can be used as functions:
 ```
 :::
 
-:::example "Coercing to Function Types"
+:::example "强制转换为函数类型"
 
-A well-typed interpreter is an interpreter for a programming language that uses indexed families to rule out run-time type errors.
-Functions written in the interpreted language can be interpreted as Lean functions, but their underlying source code can also be inspected.
+良类型解释器是一种编程语言解释器，它使用索引族排除运行时类型错误。
+在被解释语言中编写的函数可以解释为 Lean 函数，同时也可以检查其底层源代码。
 
-The first step in the well-typed interpreter is to select the subset of Lean types that can be used.
-These types are represented by an {tech}[inductive type] of codes {name}`Ty` and a function that maps these codes to actual types.
+良类型解释器的第一步，是选出可以使用的 Lean 类型子集。
+这些类型由代码的{tech (key := "inductive type")}[归纳类型] {name}`Ty` 表示，并由一个函数将这些代码映射到实际类型。
 ```lean
 inductive Ty where
   | nat
@@ -1147,8 +1149,8 @@ abbrev Ty.interp : Ty → Type
   | .arr t t' => t.interp → t'.interp
 ```
 
-The language itself is represented by an {tech}[indexed family] over variable contexts and result types.
-Variables are represented by [de Bruijn indices](https://en.wikipedia.org/wiki/De_Bruijn_index).
+语言本身表示为一个以变量上下文和结果类型为索引的{tech (key := "indexed family")}[索引族]。
+变量使用 [de Bruijn 索引](https://en.wikipedia.org/wiki/De_Bruijn_index)表示。
 ```lean
 inductive Tm : List Ty → Ty → Type where
   | zero : Tm Γ .nat
@@ -1164,8 +1166,8 @@ deriving Repr
 ```
 
 
-Because the {name}`OfNat` instance for {name}`Fin` requires that the upper bound be non-zero, {name}`Tm.var` can be inconvenient to use with numeric literals.
-The helper {name}`Tm.v` can be used to avoid the need for type annotations in these cases.
+由于 {name}`Fin` 的 {name}`OfNat` 实例要求上界非零，因此将 {name}`Tm.var` 与数值字面量一起使用可能不方便。
+辅助函数 {name}`Tm.v` 可在这些情况下避免类型标注。
 ```lean
 def Tm.v
     (i : Fin (Γ.length + 1)) :
@@ -1173,14 +1175,14 @@ def Tm.v
   .var (Γ := t :: Γ) i
 ```
 
-A function that adds two natural numbers uses the {name Tm.rep}`rep` operation to apply the successor {name}`Tm.succ` repeatedly.
+将两个自然数相加的函数使用 {name Tm.rep}`rep` 运算重复应用后继 {name}`Tm.succ`。
 ```lean
 def plus : Tm [] (.arr .nat (.arr .nat .nat)) :=
   .lam <| .lam <| .rep (.v 1) (.v 0) (.lam (.lam (.succ (.v 0))))
 ```
 
 
-Each typing context can be interpreted as a type of run-time environments that provide a value for each variable in the context:
+每个类型上下文都可以解释为一种运行时环境类型，为上下文中的每个变量提供值：
 ```lean
 def Env : List Ty → Type
   | [] => Unit
@@ -1197,7 +1199,7 @@ def Env.get (i : Fin Γ.length) (ρ : Env Γ) : Γ[i].interp :=
   | _::_, (_, ρ'), ⟨i+1, _⟩ => ρ'.get ⟨i, by simp_all⟩
 ```
 
-Finally, the interpreter is a recursive function over the term:
+最后，解释器是关于项的递归函数：
 ```lean
 def Tm.interp (ρ : Env α'') : Tm α'' t → t.interp
   | .zero => 0
@@ -1210,14 +1212,14 @@ def Tm.interp (ρ : Env α'') : Tm α'' t → t.interp
   | .var i => ρ.get i
 ```
 
-Coercing a {name}`Tm` to a function consists of calling the interpreter.
+将 {name}`Tm` 强制转换为函数，就是调用解释器。
 
 ```lean
 instance : CoeFun (Tm [] α'') (fun _ => α''.interp) where
   coe f := f.interp .empty
 ```
 
-Because functions are represented by a first-order inductive type, their code can be inspected:
+由于函数由一阶归纳类型表示，可以检查其代码：
 ```lean (name := evalPlus)
 #eval plus
 ```
@@ -1225,7 +1227,7 @@ Because functions are represented by a first-order inductive type, their code ca
 Tm.lam (Tm.lam (Tm.rep (Tm.var 1) (Tm.var 0) (Tm.lam (Tm.lam (Tm.succ (Tm.var 0))))))
 ```
 
-At the same time, due to the coercion, they can be applied just like native Lean functions:
+与此同时，凭借强制转换，它们可以像原生 Lean 函数一样应用：
 ```lean (name := eight)
 #eval plus 3 5
 ```
@@ -1237,51 +1239,52 @@ At the same time, due to the coercion, they can be applied just like native Lean
 
 
 
-# Implementation Details
+# 实现细节
 %%%
-tag := "coercion-impl-details"
+file := "Implementation-Details"
+tag := "implementation-details"
 %%%
 
 
-Only ordinary coercion insertion uses chaining.
-Inserting coercions to a {ref "sort-coercion"}[sort] or a {ref "fun-coercion"}[function] uses ordinary instance synthesis.
-Similarly, {tech}[dependent coercions] are not chained.
+只有普通强制转换插入会使用强制转换链。
+插入强制转换为 {ref "coercing-to-sorts"}[Sort] 或{ref "coercing-to-function-types"}[函数类型]时，使用普通实例合成。
+同样，{tech (key := "dependent coercions")}[依赖强制转换]不会链接。
 
-## Unfolding Coercions
+## 展开强制转换
 %%%
 tag := "coercion-unfold-impl"
 %%%
 
-The coercion insertion mechanism unfolds applications of coercions, which allows them to control the specific shape of the resulting term.
-This is important both to ensure readable proof goals and to control evaluation of the coerced term in compiled code.
-Unfolding coercions is controlled by the {attr}`coe_decl` attribute, which is applied to each coercion method (e.g. {name}`Coe.coe`).
-This attribute should be considered part of the internals of the coercion mechanism, rather than part of the public coercion API.
+强制转换插入机制会展开强制转换的应用，从而可以控制结果项的具体形状。
+这既是为了确保可读的证明目标，也是为了控制编译后代码中被强制转换项的求值。
+强制转换的展开由 {attr}`coe_decl` 属性控制，该属性应用于每个强制转换方法（例如 {name}`Coe.coe`）。
+该属性应视为强制转换机制的内部组成部分，而不是公开强制转换 API 的一部分。
 
 
-## Coercion Chaining
+## 强制转换链
 %%%
 tag := "coercion-chain-impl"
 %%%
 
 :::paragraph
 
-Coercion chaining is implemented through a collection of auxiliary type classes.
-Users should not write instances of these classes directly, but knowledge of their structure can be useful when diagnosing the reason why a coercion was not inserted as expected.
-The specific rules governing the ordering of instances in the chain (namely, that it should match {name}`CoeHead`﻿`?`{name}`CoeOut`﻿`*`{name}`Coe`﻿`*`{name}`CoeTail`﻿`?`) are implemented by the following type classes:
+强制转换链通过一组辅助类型类实现。
+用户不应直接编写这些类的实例，但在诊断为何没有按预期插入强制转换时，了解其结构会很有用。
+控制链中实例顺序的具体规则（即应匹配 {name}`CoeHead`﻿`?`{name}`CoeOut`﻿`*`{name}`Coe`﻿`*`{name}`CoeTail`﻿`?`）由以下类型类实现：
 
- * {name}`CoeTC` is the transitive closure of {name}`Coe` instances.
+ * {name}`CoeTC` 是 {name}`Coe` 实例的传递闭包。
 
- * {name}`CoeOTC` is the middle of the chain, consisting of the transitive closure of {name}`CoeOut` instances followed by {name}`CoeTC`.
+ * {name}`CoeOTC` 是链的中部，由 {name}`CoeOut` 实例的传递闭包后接 {name}`CoeTC` 构成。
 
- * {name}`CoeHTC` is the start of the chain, consisting of at most one {name}`CoeHead` instance followed by {name}`CoeOTC`.
+ * {name}`CoeHTC` 是链的开头，由至多一个 {name}`CoeHead` 实例后接 {name}`CoeOTC` 构成。
 
- * {name}`CoeHTCT` is the whole chain, consisting of `CoeHTC` followed by at most one {name}`CoeTail` instance. Alternatively, it might be a {name}`NatCast` instance.
+ * {name}`CoeHTCT` 是完整的链，由 `CoeHTC` 后接至多一个 {name}`CoeTail` 实例构成。另一种可能是 {name}`NatCast` 实例。
 
- * {name}`CoeT` represents the entire chain: it is either a {name}`CoeHTCT` chain or a single {name}`CoeDep` instance.
+ * {name}`CoeT` 表示整个链：它或者是 {name}`CoeHTCT` 链，或者是单个 {name}`CoeDep` 实例。
 
 :::
 
-:::figure "Auxiliary Classes for Coercions" (tag := "coe-aux-classes")
+:::figure "强制转换的辅助类" (tag := "coe-aux-classes")
 ```diagram
 coeChainDiagram
 ```
