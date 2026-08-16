@@ -110,7 +110,7 @@ example (a b : Nat) : min a b ≤ max a b := by lia
 example (a b : Int) : max a b = max b a := by lia
 ```
 
-{tactic}`grind` 获得传播器，用于评估 {name}`BitVec` 对文字的操作，包括通过电子图中记录的等式 ([#14393](https://github.com/leanprover/lean4/pull/14393))：
+{tactic}`grind` 获得传播器，用于评估 {name}`BitVec` 对文字的操作，包括通过E 图中记录的等式 ([#14393](https://github.com/leanprover/lean4/pull/14393))：
 
 ```lean
 example {x : BitVec 64} (h : x = 0#64 + 42#64) :
@@ -119,12 +119,12 @@ example {x : BitVec 64} (h : x = 0#64 + 42#64) :
 
 它还收集了一批正确性修复：
 
-未标准化为 {tactic}`grind` 预期形式的 -  位向量文字可以被视为两个不同的值，在一种情况下会产生内核拒绝的证明（[#14371](https://github.com/leanprover/lean4/pull/14371) / [#14370](https://github.com/leanprover/lean4/pull/14370) / [#14379](https://github.com/leanprover/lean4/pull/14379)）；
-`0 ∣ p` 形式的 -  约束可以将搜索发送到循环 ([#14373](https://github.com/leanprover/lean4/pull/14373))；
--  如果没有 `NoNatZeroDivisors` ([#14390](https://github.com/leanprover/lean4/pull/14390))，环求解器可能会丢失环中的信息；
-现在可以检测并修复用户简化过程可能默默破坏的 - `SymM` 术语不变量 ([#14299](https://github.com/leanprover/lean4/pull/14299))。
+- 未标准化成 {tactic}`grind` 所期望形式的位向量字面量可能被视为两个不同的值；其中一种情况甚至会生成被内核拒绝的证明（[#14371](https://github.com/leanprover/lean4/pull/14371) / [#14370](https://github.com/leanprover/lean4/pull/14370) / [#14379](https://github.com/leanprover/lean4/pull/14379)）；
+- `0 ∣ p` 形式的约束可能让搜索陷入循环（[#14373](https://github.com/leanprover/lean4/pull/14373)）；
+- 在不具备 `NoNatZeroDivisors` 的环中，环求解器可能丢失信息（[#14390](https://github.com/leanprover/lean4/pull/14390)）；
+- 现在会检测并修复用户简化过程可能悄然破坏的 `SymM` 项不变量（[#14299](https://github.com/leanprover/lean4/pull/14299)）。
 
-新的 `liaSteps` 选项限制了硬线性整数算术 ([#14392](https://github.com/leanprover/lean4/pull/14392)) 的搜索。最后，仅当两个理论都已在电子图中时，才重新调整容器操作的电子匹配注释以连接两个理论，而不是一个拖入另一个。更多信息请参见 [#14177](https://github.com/leanprover/lean4/pull/14177) / [#14194](https://github.com/leanprover/lean4/pull/14194) / [#14192](https://github.com/leanprover/lean4/pull/14192) / [#14182](https://github.com/leanprover/lean4/pull/14182) / [#14178](https://github.com/leanprover/lean4/pull/14178)。
+新的 `liaSteps` 选项限制了硬线性整数算术 ([#14392](https://github.com/leanprover/lean4/pull/14392)) 的搜索。最后，仅当两个理论都已在 E 图中时，才重新调整容器操作的电子匹配注释以连接两个理论，而不是一个拖入另一个。更多信息请参见 [#14177](https://github.com/leanprover/lean4/pull/14177) / [#14194](https://github.com/leanprover/lean4/pull/14194) / [#14192](https://github.com/leanprover/lean4/pull/14192) / [#14182](https://github.com/leanprover/lean4/pull/14182) / [#14178](https://github.com/leanprover/lean4/pull/14178)。
 
 ## `Float` 不再不透明
 %%%
@@ -159,7 +159,7 @@ def describe (x : Float) : String :=
 #eval describe (-0.0)
 ```
 
-## 湖
+## Lake
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___33___0-_LPAR_2026-08-10_RPAR_--Highlights--Lake"
 %%%
@@ -300,7 +300,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___33___0-_LPAR_2026-0
 扩展 `dupNamespace` 检查器以允许用户选择通过 `linter.extra.dupNamespace.consecutiveOnly` 选项来检查命名空间组件的非连续重复使用。默认情况下，仅检查连续的。选择非连续检查与 [mathlib4#39793](https://github.com/leanprover-community/mathlib4/pull/39793) 中引入的行为相匹配。
 
 - [#14247](https://github.com/leanprover/lean4/pull/14247)
-  修复了当文档字符串附加到 `coinductive` 谓词并且启用 `doc.verso` 时出现的错误（“无法解释活页夹”）。
+  修复了当文档字符串附加到 `coinductive` 谓词并且启用 `doc.verso` 时出现的错误（“无法解释绑定器”）。
 
 - [#14234](https://github.com/leanprover/lean4/pull/14234)
   修复了自动完成功能（以及其他 InfoTree 驱动的使用者，例如交互式术语目标和悬停弹出窗口），以在光标位于术语级别 `open ... in <term>` 或 `set_option ... in <term>` 范围下时查看增强的 `openDecls` 和 `options` 。此前，两位精译器仅通过 `withTheReader` / `withOptions` 更新了运行时 `Core.Context`，但没有将相应的 `PartialContextInfo.commandCtx` 节点推送到 InfoTree 中；因此，消费者会看到外部命令的 `openDecls` / `options` ，并且，例如，即使在匹配的 `open` 下也提供完全限定的名称，或者忽略本地 `set_option pp.fullNames true` 渲染漂亮的目标。
@@ -312,7 +312,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___33___0-_LPAR_2026-0
   导致宏中的文档字符串遵循宏定义站点（而不是其使用站点）的 `doc.verso` 选项的值。之前，使用了 use-site 选项，因此无法在选项值不一致的上下文中使用宏，因为解析的格式不正确。现在，无论选项的本地设置如何，都会使用语法中的解析格式。
 
 - [#14198](https://github.com/leanprover/lean4/pull/14198)
-  修复了以下错误：在存在 `_` 参数的情况下以及在宏生成的声明中，对于不带括号的绑定程序，按名称引用参数失败。
+  修复了以下错误：在存在 `_` 参数的情况下以及在宏生成的声明中，对于不带括号的绑定器，按名称引用参数失败。
 
 - [#14191](https://github.com/leanprover/lean4/pull/14191)
   修复了 Verso 内容中有效块打开位置中的行开头的转义内容被跳过的问题，就好像它是空格一样。
@@ -343,7 +343,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___33___0-_LPAR_2026-0
 
 ````
 
-# 图书馆
+# 库
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___33___0-_LPAR_2026-08-10_RPAR_--Library"
 %%%
@@ -415,13 +415,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___33___0-_LPAR_2026-0
   添加 `List.pairwise_lt_finRange`、`List.pairwise_le_finRange` 和 `List.nodup_finRange`，说明 `List.finRange n` 严格递增、递增且无重复。这些是有关 `finRange` 的基本事实，目前仅适用于电池。
 
 - [#14177](https://github.com/leanprover/lean4/pull/14177)
-  降低 `List.count` 和 `Array.count` 电子匹配的攻击性。以前，任何对 count 的调用都会直接触发有关过滤器的理论。但是，鉴于 `count` 有自己的一组 `grind` 注释，我们认为 `count` 应该仅在电子图中已可以调用 `filter` 时才开始与 `filter` 连接。这样我们就不会不必要地从 `count` 触发 `filter` 理论。
+  降低 `List.count` 和 `Array.count` 电子匹配的攻击性。以前，任何对 count 的调用都会直接触发有关过滤器的理论。但是，鉴于 `count` 有自己的一组 `grind` 注释，我们认为 `count` 应该仅在 E 图中已可以调用 `filter` 时才开始与 `filter` 连接。这样我们就不会不必要地从 `count` 触发 `filter` 理论。
 
 - [#14194](https://github.com/leanprover/lean4/pull/14194)
   通过不再每次有机会自动转换为 `drop`/`take` ，降低了 `eraseIdx` 电子匹配的攻击性。
 
 - [#14192](https://github.com/leanprover/lean4/pull/14192)
-  降低了电子匹配注释的侵略性，以根据容器的大小来限制上述 `count` 操作的结果。现在，只有当大小和计数操作都已在电子图中时才会触发它们。与 find 的注释工作方式类似。
+  降低了电子匹配注释的侵略性，以根据容器的大小来限制上述 `count` 操作的结果。现在，只有当大小和计数操作都已在 E 图中时才会触发它们。与 find 的注释工作方式类似。
 
 - [#14190](https://github.com/leanprover/lean4/pull/14190)
   添加了 `Std.Internal.Do` 验证框架使用的两个小型独立的 `Lean.Order.CompleteLattice` 基础设施。
@@ -436,7 +436,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___33___0-_LPAR_2026-0
   实现一个 `DecidableEq Float` 实例，它检查底层位模式的相等性。
 
 - [#14178](https://github.com/leanprover/lean4/pull/14178)
-  教导grind这样一个事实：一旦`count a xs`和`a ∈ xs`出现在电子图中，使用`count a xs = 0 ↔ a ∉ xs`可能会很有趣。
+  教导grind这样一个事实：一旦`count a xs`和`a ∈ xs`出现在 E 图中，使用`count a xs = 0 ↔ a ∉ xs`可能会很有趣。
 
 - [#14116](https://github.com/leanprover/lean4/pull/14116)
 使用 `Selectable.combine` 修复了死锁，还修复了 `Selectable.one` 中递归互斥锁的一个简单问题。此 PR 修复了 #14090
@@ -579,14 +579,14 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___33___0-_LPAR_2026-0
   在 `vcgen` 策略中添加一个 `frames` 子句，该策略将状态断言（框架）附加到匹配的程序，因此有关程序的状态的事实保持不变，即使在注册规范删除它们的调用中仍然存在。
 
 - [#14146](https://github.com/leanprover/lean4/pull/14146)
-将实验性的基于 Sym 的 `mvcgen'` 策略重命名为 `vcgen`，包括其研磨模式步骤、`with` 放电子句和 `simplifying_assumptions`/`until`/`invariants` 语法。原来的 `mvcgen` 策略没有改变。
+将实验性的基于 Sym 的 `mvcgen'` 策略重命名为 `vcgen`，包括其`grind` 模式步骤、`with` 放电子句和 `simplifying_assumptions`/`until`/`invariants` 语法。原来的 `mvcgen` 策略没有改变。
 
 - [#14142](https://github.com/leanprover/lean4/pull/14142)
   通过在第一次查找时将每个匹配的规范模式内部化到 `SymM` 共享表中来加速 `mvcgen'` 规范查找，因此其实例参数变得与程序的指针相等，并且不需要在以后的每次查找时重新内部化。
 
 - [#14138](https://github.com/leanprover/lean4/pull/14138)
   修复了 `mvcegn' ... with <tac>` 的错误消息。这样做的主要动机是，当我们编写 `mvcgen' with grind` 时，用户看到的错误消息是 `unexpected identifier; expected grind`，这非常令人困惑。发生这种情况是因为我们排除了 `grind` 序列，其语法类别称为 `grind`。
-  我正在为放电者策略定义一个单独的语法类别，称为 `mvcgenWith`，如果它是一种策略，则抛出更有意义的异常。
+  我正在为消解器策略定义一个单独的语法类别，称为 `mvcgenWith`，如果它是一种策略，则抛出更有意义的异常。
 
 - [#14134](https://github.com/leanprover/lean4/pull/14134)
   当规则被缓存时，通过将每个向后规则的模式内部化到 `SymM` 共享表中一次，而不是在每次匹配时重新内部化其实例参数，来加速 `mvcgen'` 匹配。
@@ -698,7 +698,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___33___0-_LPAR_2026-0
 
 ```
 
-# 湖
+# Lake
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___33___0-_LPAR_2026-08-10_RPAR_--Lake"
 %%%
@@ -718,7 +718,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___33___0-_LPAR_2026-0
 使 Lake 在无法读取配置跟踪时重新配置，而不是使用 `error: compiled configuration is invalid; run with '-R' to reconfigure` 中止。 `importConfigFile` 已经针对陈旧、错误的工具链或部分格式错误的跟踪自动重新配置；无法解析的跟踪并不比丢失的跟踪提供更多信息，因此现在以相同的方式处理它 - 路由到相同的 `elabConfig (← acquireTrace h) …` 路径 - 自行恢复，而不需要手动 `-R`。当跟踪没有可用的 `options` 字段时，它会回退到 `cfg.lakeOpts`，与不存在跟踪时 fresh-configure 分支使用的选项值相同。
 
 - [#14284](https://github.com/leanprover/lean4/pull/14284)
-使中断的 Lake 配置可恢复。 `importConfigFile` 将编译配置跟踪写入缓冲句柄，然后调用 `IO.FS.Handle.truncate` — 它设置文件大小，但不会刷新缓冲写入，如其自己的文档字符串注释 — 在可能缓慢的配置详细说明之前。在该窗口中终止的 `lake` 进程（中断或取消的构建）在磁盘上留下跟踪作为 NUL 字节大小的占位符，没有 `.olean`，因此以后的调用会失败并显示 `error: compiled configuration is invalid; run with '-R' to reconfigure`。在截断和细化之前刷新完整的跟踪意味着中断会留下有效的跟踪，并且不会留下`.olean`，Lake 现有的最新检查已将其视为自动重新配置的触发器。
+使中断的 Lake 配置可恢复。 `importConfigFile` 将编译配置跟踪写入缓冲句柄，然后调用 `IO.FS.Handle.truncate` — 它设置文件大小，但不会刷新缓冲写入，如其自己的文档字符串注释 — 在可能缓慢的配置精译之前。在该窗口中终止的 `lake` 进程（中断或取消的构建）在磁盘上留下跟踪作为 NUL 字节大小的占位符，没有 `.olean`，因此以后的调用会失败并显示 `error: compiled configuration is invalid; run with '-R' to reconfigure`。在截断和细化之前刷新完整的跟踪意味着中断会留下有效的跟踪，并且不会留下`.olean`，Lake 现有的最新检查已将其视为自动重新配置的触发器。
 
 - [#14254](https://github.com/leanprover/lean4/pull/14254)
 添加了两个新的模块方面：`linkInfoExport`和`linkInfoNoExport`。它们提供有关如何链接模块的信息。它还为 `buildSharedLib`、`buildLeanSharedLib` 和 `buildLeanExe` 提供了 `Sync` 变体，这些变体在 `Job` 内部而不是跨它们工作。
@@ -736,7 +736,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___33___0-_LPAR_2026-0
 添加了用于检索完整的核心动态库集的接口。目前来说，这些是`libleanshared`、`libleanshared_1`和`libleanshared_2`。和`libInit_shared`。这些库在 Windows 和 Unix 上具有不同的相互依赖性，因此它们使用 `Dynlib` 进行建模，以便跟踪此信息。
 
 - [#14220](https://github.com/leanprover/lean4/pull/14220)
-添加`Dynlib.runtimeOnlyDeps`。它指定不应链接的传递依赖项，但需要在预编译时预加载以进行 `lean` 详细说明（例如，在运行时通过 `dlopen` 动态加载的库）。
+添加`Dynlib.runtimeOnlyDeps`。它指定不应链接的传递依赖项，但需要在预编译时预加载以进行 `lean` 精译（例如，在运行时通过 `dlopen` 动态加载的库）。
 
 - [#14156](https://github.com/leanprover/lean4/pull/14156)
 允许不依赖于任何动态库的模块在 `true` 之间切换 `platformIndependent` 并取消设置而无需重建。

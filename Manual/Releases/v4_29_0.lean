@@ -63,7 +63,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-0
 精译器有类型吗
 ``TSyntax `doElem → DoElemCont → DoElabM Expr``，其中 `DoElabM` 是
 本质上 `TermElabM` 和 `DoElemCont` 代表其余部分如何
-`do` 块的内容有待详细说明。请参阅文档字符串了解更多信息
+`do` 块的内容有待精译。请参阅文档字符串了解更多信息
 详细信息。
 
 *重大变更：*
@@ -134,7 +134,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-0
 仅适用于不同的 λ 绑定变量 - λ 是
 保留为 `ho[...]` 模式。在实例化时，这些
 在所有一阶之后，高阶模式通过 `isDefEq` 进行匹配
-模式变量已由电子图分配。
+模式变量已由E 图分配。
 
 *示例*
 
@@ -617,13 +617,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-0
   inductive Foo : (h : P) → (Q (by exact h)) → Prop
   ```
 
-* [#12564](https://github.com/leanprover/lean4/pull/12564) 修复 `getStuckMVar?` 以通过以下方式检测卡住的元变量
-为钻石继承创建的辅助父投影。这些
-  强制转换（例如 `AddMonoid'.toAddZero'`）未注册为常规
-  预测，因为它们根据个体构建父值
-  字段而不是提取单个字段。此前，
-  `getStuckMVar?`遇到就会放弃，防止TC
-  合成被触发。
+* [#12564](https://github.com/leanprover/lean4/pull/12564) 修复 `getStuckMVar?`，使其能透过为菱形继承创建的辅助父投影检测卡住的元变量。这些强制转换（例如 `AddMonoid'.toAddZero'`）不是提取单个字段，而是由各字段构造父值，因此不会注册为普通投影。此前 `getStuckMVar?` 遇到它们就会放弃，导致类型类合成无法触发。
 
 * [#12567](https://github.com/leanprover/lean4/pull/12567) 将 `instance_reducible` 重命名为 `implicit_reducible` 并添加
   新的
@@ -650,27 +644,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-0
   `withCanUnfoldPred` 防止 `whnf` 展开 `@[cbv_opaque]`
   定义。
 
-* [#12633](https://github.com/leanprover/lean4/pull/12633) 使 `isDefEqProj` 凹凸透明度到 `.instances` （通过
-  `withInstanceConfig`) 比较类的结构参数时
-  预测。这使得行为与 `isDefEqArgs` 一致，
-  它已经对实例隐式参数应用了相同的凹凸
-  在比较功能应用程序时。
+* [#12633](https://github.com/leanprover/lean4/pull/12633) 让 `isDefEqProj` 在比较类投影的结构体参数时，通过 `withInstanceConfig` 将透明度提升到 `.instances`。这使其行为与 `isDefEqArgs` 一致；后者在比较函数应用时，已经会对实例隐式参数进行同样的透明度提升。
 
 * [#12639](https://github.com/leanprover/lean4/pull/12639) 修复了之间的交互
   `backward.whnf.reducibleClassField` 和 `isDefEqDelta` 的
   论证比较启发式。
 
-* [#12650](https://github.com/leanprover/lean4/pull/12650) 修复了通过启用
-  `backward.whnf.reducibleClassField`
-  （https://github.com/leanprover/lean4/pull/12538 ）。
-  `ExprDefEq` 中的 `isNonTrivialRegular` 函数正在对类进行分类
-在所有透明度级别上的预测都是不平凡的，但额外的
-  `.instances` 减少 `unfoldDefault` 激发了这一点
-  分类仅适用于 `.reducible` 透明度。在较高的
-  透明度级别，不平凡的分类导致不必要的
-  `isDefEqDelta` 中级联的启发式比较尝试
-  BitVec 减少，导致 `Lean.Data.Json.Parser` 的详细说明
-  从 ~3.6G 指令翻倍到 ~7.2G。
+* [#12650](https://github.com/leanprover/lean4/pull/12650) 修复了启用 `backward.whnf.reducibleClassField`（https://github.com/leanprover/lean4/pull/12538 ）后引入的性能回归。`ExprDefEq` 中的 `isNonTrivialRegular` 曾在所有透明度级别都把类投影判定为非平凡，但促成这一分类的 `unfoldDefault` 额外 `.instances` 归约只会在 `.reducible` 透明度下发生。在更高透明度下，这种分类会让 `isDefEqDelta` 进行不必要的启发式比较，并在 BitVec 归约中层层放大，使 `Lean.Data.Json.Parser` 的精译开销从约 3.6G 条指令翻倍到约 7.2G。
 
 * [#12698](https://github.com/leanprover/lean4/pull/12698) 将 `result? : Option TraceResult` 字段添加到 `TraceData` 并
   将其填充到 `withTraceNode` 和 `withTraceNodeBefore` 中，以便
@@ -681,8 +661,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-0
   他们自己的跟踪子类 `Meta.synthInstance.apply` 而不是共享
   父 `Meta.synthInstance` 类。
 
-* [#12701](https://github.com/leanprover/lean4/pull/12701) 修复了 `@[implicit_reducible]` 分配给父级的方式上的差距
-  结构细化期间的预测。
+* [#12701](https://github.com/leanprover/lean4/pull/12701) 修复了结构精译期间为父投影分配 `@[implicit_reducible]` 时的一处遗漏。
 
 * [#12719](https://github.com/leanprover/lean4/pull/12719) 将 `levelZero`、`levelOne` 和 `Level.ofNat` 标记为
   `@[implicit_reducible]` 以便 `Level.ofNat 0 =?= Level.zero` 在以下情况下成功
@@ -723,7 +702,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-0
   修复元部分中的 `deriving` 由于辅助定义而失败的错误
   被错误地标记为 `meta` 而实例本身却没有。
 
-# 图书馆
+# 库
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-03-27_RPAR_--Library"
 %%%
@@ -768,7 +747,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-0
   * 它为列表/数组/向量添加了 `map_ofFn` 和 `ofFn_getElem` 。
 
 * [#12019](https://github.com/leanprover/lean4/pull/12019) 提供 `Nat`/`Int` 引理 `x ≤ y * z ↔ (x + z - 1) / z ≤
-  y`, `x ≤ y * z ↔ (x + y - 1) / y ≤ z` and `x / z + y / z ≤ (x + y) / z`。
+  y`、`x ≤ y * z ↔ (x + y - 1) / y ≤ z` 以及 `x / z + y / z ≤ (x + y) / z`。
 
 * [#12108](https://github.com/leanprover/lean4/pull/12108) 添加 `prefix_map_iff_of_injective` 和
   Init.Data.List.Nat.Sublist 的 `suffix_map_iff_of_injective` 引理。
@@ -781,7 +760,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-0
 * [#12162](https://github.com/leanprover/lean4/pull/12162) 添加函数 `Std.Iter.first?` 并证明规范
   引理 `Std.Iter.first?_eq_match_step` 如果迭代器是高效的。
 
-* [#12170](https://github.com/leanprover/lean4/pull/12170) 调整了List.take/drop的研磨注释，并添加了两个
+* [#12170](https://github.com/leanprover/lean4/pull/12170) 调整了List.take/drop的`grind` 注解，并添加了两个
   定理。
 
 * [#12181](https://github.com/leanprover/lean4/pull/12181) 为 `Int` 添加两个缺失的订单实例。
@@ -1158,7 +1137,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-0
   附加到不同类型的元素（例如 `Fin n` 和 `Fin m`）
   相同的理论求解器。
 
-* [#12474](https://github.com/leanprover/lean4/pull/12474) 修复了 `grind` 中 `sreifyCore?` 可能遇到的恐慌
+* [#12474](https://github.com/leanprover/lean4/pull/12474) 修复了 `grind` 中 `sreifyCore?` 可能遇到的崩溃
   嵌套期间尚未在 E 图中内化的幂子项
   传播。环形强化器（`reifyCore?`）已经具有防御能力
   `alreadyInternalized` 在创建变量之前检查，但半环
@@ -1170,7 +1149,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-0
 * [#12475](https://github.com/leanprover/lean4/pull/12475) 修复了假设包含元变量时 `grind` 失败的问题
   （例如，在 `refine` 之后）。根本原因是 `abstractMVars` 在
   `withProtectedMCtx` 仅抽象目标中的元变量，而不是
-  假设，在grind的电子图中造成了脱节。
+  假设，在grind的E 图中造成了脱节。
 
 * [#12476](https://github.com/leanprover/lean4/pull/12476) 修复了 #12245，其中 `grind` 在 `Fin n` 上工作，但在 `Fin (n
   + 1)`.
@@ -1303,7 +1282,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-0
   f y
   ```
   当前的启发式现在发现 `x` 在调用站点的范围内
-  `f` 并在 `y` 中的活页夹下使用，从而阻止拉入
+  `f` 并在 `y` 中的绑定器下使用，从而阻止拉入
   `x` 到专业化，对实例进行抽象。
 
 * [#12272](https://github.com/leanprover/lean4/pull/12272) 将 LCNF mono 到 λ pure 的转换转移到
@@ -1369,7 +1348,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-0
 
 * [#12387](https://github.com/leanprover/lean4/pull/12387) 修复了 LCNF simp 中尝试采取行动的问题
   输入错误 `cases`
-  语句并寻找分支，否则会出现恐慌。这个问题没有
+  语句并寻找分支，否则会出现崩溃。这个问题没有
   但在生产中表现为
   LCNF simp 所支持的各种其他不变量有助于掩盖它，但会开始
   成为一个问题
@@ -1490,7 +1469,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-0
   精简文件，但可能会影响严重依赖自定义的其他用例
   命令，例如 Verso。
 
-# 湖
+# Lake
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-03-27_RPAR_--Lake"
 %%%
@@ -1595,5 +1574,5 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-0
   分解的名字
 
 * [#12533](https://github.com/leanprover/lean4/pull/12533) 在运行时添加了人性化的Lean符号名称整理
-  回溯。当Lean程序出现恐慌时，堆栈跟踪现在显示可读
+  回溯。当Lean程序出现崩溃时，堆栈跟踪现在显示可读
   名称而不是损坏的 C 标识符。

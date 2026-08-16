@@ -187,16 +187,11 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___28___0-_LPAR_2026-0
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___28___0-_LPAR_2026-02-17_RPAR_--Highlights--Dependency-Management-Tools"
 %%%
 
-- [#11726](https://github.com/leanprover/lean4/pull/11726) 上游
-  Mathlib 的依赖管理命令：
-    - `#import_path Foo` 打印传递导入链
-      将 `Foo` 纳入范围
-如果声明 `Foo` 存在，则     - `assert_not_exists Foo` 出错（对于
-      依赖管理）
-如果 `Module` 是可传递的，    - `assert_not_imported Module` 会发出警告
-      进口的
-    - `#check_assertions` 验证所有未决断言
-      最终满意
+- [#11726](https://github.com/leanprover/lean4/pull/11726) 从 Mathlib 上游合入依赖管理命令：
+    - `#import_path Foo` 打印将 `Foo` 引入作用域的传递导入链
+    - 如果声明 `Foo` 存在，`assert_not_exists Foo` 就会报错（用于依赖管理）
+    - 如果 `Module` 被传递导入，`assert_not_imported Module` 就会发出警告
+    - `#check_assertions` 验证所有待处理的断言最终都得到满足
 
 - [#11921](https://github.com/leanprover/lean4/pull/11921) 添加
   `lake shake` 作为内置 Lake 命令，移动抖动
@@ -285,9 +280,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___28___0-_LPAR_2026-0
   出现在 `grind` 作为偏移量或文字，而不是作为标记的节点
   `.constr`，所以也处理这种情况。
 
-* [#11673](https://github.com/leanprover/lean4/pull/11673) 修复了公共范围内的 `by` 可能会创建一个问题
-  类型与预期不匹配的证明的辅助定理
-输入公共范围。
+* [#11673](https://github.com/leanprover/lean4/pull/11673) 修复了公共作用域内的 `by` 可能为证明创建辅助定理、但该定理的类型与公共作用域中预期类型不一致的问题。
 
 * [#11698](https://github.com/leanprover/lean4/pull/11698) 在简化判别式后使 `mvcgen` 提前返回，
   避免重写格式错误的 `match`。
@@ -300,19 +293,14 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___28___0-_LPAR_2026-0
   同余引理，由 `simp` 使用
   和一些其他组件。
 
-* [#11726](https://github.com/leanprover/lean4/pull/11726) 来自 Mathlib 的上游依赖管理命令：
+* [#11726](https://github.com/leanprover/lean4/pull/11726) 从 Mathlib 上游合入依赖管理命令：
 
-  - `#import_path Foo` 打印传递导入链
-  `Foo` 进入范围
-如果声明 `Foo` 存在，则   - `assert_not_exists Foo` 出错（对于
-  依赖管理）
-如果 `Module` 是可传递的，  - `assert_not_imported Module` 会发出警告
-  进口的
-  - `#check_assertions` 验证所有未决断言最终是否
-  满意
+  - `#import_path Foo` 打印将 `Foo` 引入作用域的传递导入链
+  - 如果声明 `Foo` 存在，`assert_not_exists Foo` 就会报错（用于依赖管理）
+  - 如果 `Module` 被传递导入，`assert_not_imported Module` 就会发出警告
+  - `#check_assertions` 验证所有待处理的断言最终都得到满足
 
-* [#11731](https://github.com/leanprover/lean4/pull/11731) 使 expr_eq_fn 中的缓存使用 mimalloc 进行小
-性能全面获胜。
+* [#11731](https://github.com/leanprover/lean4/pull/11731) 让 `expr_eq_fn` 中的缓存使用 mimalloc，在各类场景中都获得小幅性能提升。
 
 * [#11748](https://github.com/leanprover/lean4/pull/11748) 修复了某些策略不允许访问的边缘情况
   模块系统下私有证明内的私有声明
@@ -326,57 +314,37 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___28___0-_LPAR_2026-0
 
 * [#11871](https://github.com/leanprover/lean4/pull/11871) 使 `mvcgen with tac` 在 `tac` 处理任一验证条件失败时整体失败，与 `induction ... with tac` 在 `tac` 处理任一目标失败时的行为一致。可改写为 `mvcgen with try tac` 来恢复旧行为。
 
-* [#11875](https://github.com/leanprover/lean4/pull/11875) 添加目录 `Meta/DiscrTree` 并重新组织代码
-  到不同的文件中。动机：我们将为
-  检索新结构简化器的简化定理。
+* [#11875](https://github.com/leanprover/lean4/pull/11875) 添加 `Meta/DiscrTree` 目录并将代码重组到不同文件中，为新结构简化器提供检索简化定理的新函数。
 
-* [#11882](https://github.com/leanprover/lean4/pull/11882) 在 `TagDeclarationExtension.tag` 上添加一个防护来检查是否
-  声明名称是匿名的，如果是的话，请提前返回。这可以防止
-  当像 `meta` 或 `noncomputable` 这样的修饰符被使用时可能会发生恐慌
-与语法错误结合使用。
+* [#11882](https://github.com/leanprover/lean4/pull/11882) 为 `TagDeclarationExtension.tag` 添加检查：若声明名称是匿名名称，就提前返回。这避免了 `meta`、`noncomputable` 等修饰符与语法错误同时出现时可能发生的崩溃。
 
-* [#11896](https://github.com/leanprover/lean4/pull/11896) 修复了当定理具有文档字符串时发生的恐慌
-  `where` 子句中的辅助定义。
+* [#11896](https://github.com/leanprover/lean4/pull/11896) 修复了 `where` 子句中的辅助定义带有定理文档字符串时发生的崩溃。
 
-* [#11908](https://github.com/leanprover/lean4/pull/11908) 在消息测试命令中添加了两个功能：
-  如果嵌套命令产生，则新的 `#guard_panic` 命令会成功
-  一条恐慌消息（对于测试预期会出现恐慌的命令很有用），以及
-  `#guard_msgs` 的 `substring := true` 选项检查文档字符串是否
-  显示为输出的子字符串，而不需要精确匹配。
+* [#11908](https://github.com/leanprover/lean4/pull/11908) 为消息测试命令添加两项功能：新的 `#guard_panic` 命令会在嵌套命令产生崩溃消息时成功（适合测试预期会崩溃的命令）；`#guard_msgs` 的 `substring := true` 选项只检查文档字符串是否为输出的子串，而不要求完全匹配。
 
-* [#11919](https://github.com/leanprover/lean4/pull/11919) 改进了 `initialize` （或 `opaque`）失败时的错误消息
-  查找 `Inhabited` 或 `Nonempty` 实例。
+* [#11919](https://github.com/leanprover/lean4/pull/11919) 改进了 `initialize`（或 `opaque`）找不到 `Inhabited` 或 `Nonempty` 实例时的错误消息。
 
-* [#11926](https://github.com/leanprover/lean4/pull/11926) 向现有辅助函数用户添加 `unsafe` 修饰符
-  `unsafeEIO`，并且还将该函数保留为私有。
+* [#11926](https://github.com/leanprover/lean4/pull/11926) 为现有辅助函数 `unsafeEIO` 添加 `unsafe` 修饰符，并继续将该函数保持为私有。
 
-* [#11933](https://github.com/leanprover/lean4/pull/11933) 添加了用于在期间管理消息日志的实用程序函数
-  策略
-  评估，并重构现有代码以使用它们。
+* [#11933](https://github.com/leanprover/lean4/pull/11933) 添加在策略求值期间管理消息日志的辅助函数，并重构现有代码以使用这些函数。
 
-* [#11940](https://github.com/leanprover/lean4/pull/11940) 修复了尝试声明模块时的模块系统可见性问题
-  共同块内的公共感应。
+* [#11940](https://github.com/leanprover/lean4/pull/11940) 修复了尝试在互递归块中声明公共归纳类型时的模块系统可见性问题。
 
-* [#11991](https://github.com/leanprover/lean4/pull/11991) 修复 `declare_syntax_cat` 声明本地类别导致
-  import errors when used in `module` without `public section`.
+* [#11991](https://github.com/leanprover/lean4/pull/11991) 修复了 `declare_syntax_cat` 声明局部语法类别后，在没有 `public section` 的 `module` 中使用时导致导入错误的问题。
 
-* [#12026](https://github.com/leanprover/lean4/pull/12026) 修复了 `@[irreducible]` 之类的属性不会出现的问题
-  除非与 `@[exposed]` 结合使用，否则在模块系统下是允许的，
-  但如果没有后者，前者可能会有所帮助，以确保下游
-  非 `module` 也会受到影响。
+* [#12026](https://github.com/leanprover/lean4/pull/12026) 修复了模块系统中 `@[irreducible]` 等属性必须与 `@[exposed]` 一同使用才被允许的问题。即使没有后者，前者仍可能有用，因为它能确保下游的非 `module` 文件也受到影响。
 
 * [#12045](https://github.com/leanprover/lean4/pull/12045) 禁用跨包边界的 `import all` 检查。现在
   任何模块都可以 `import all` 任何其他模块。
 
-* [#12048](https://github.com/leanprover/lean4/pull/12048) 修复了 `mvcgen` 丢失 VC 导致未分配的错误
-  元变量。通过将所有发出的 VC 设为合成不透明来修复此问题。
+* [#12048](https://github.com/leanprover/lean4/pull/12048) 修复了 `mvcgen` 丢失验证条件、留下未赋值元变量的问题；现在所有生成的验证条件都设为合成不透明。
 
 * [#12122](https://github.com/leanprover/lean4/pull/12122) 在 `where` 子句中添加了对 Verso 文档字符串的支持。
 
 * [#12148](https://github.com/leanprover/lean4/pull/12148) 恢复 #12000，这引入了回归，其中 `simp`
   错误地拒绝对 perm 引理的有效重写。
 
-# 图书馆
+# 库
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___28___0-_LPAR_2026-02-17_RPAR_--Library"
 %%%
@@ -461,7 +429,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___28___0-_LPAR_2026-0
 * [#11761](https://github.com/leanprover/lean4/pull/11761) 添加了一些 `grind_pattern` `guard` 条件
   昂贵的定理。
 
-* [#11762](https://github.com/leanprover/lean4/pull/11762) 将研磨图案从 `Sublist.eq_of_length` 移动到
+* [#11762](https://github.com/leanprover/lean4/pull/11762) 将`grind` 模式从 `Sublist.eq_of_length` 移动到
   稍微更通用 `Sublist.eq_of_length_le`，并增加了磨砺
 模式保护，因此只有当我们有假设的证明时它才会激活。
 
@@ -688,18 +656,15 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___28___0-_LPAR_2026-0
   使用两阶段方法来提高性能：
 
   *阶段 1（语法匹配）*
-  - Patterns 使用 de Bruijn 索引作为表达式变量并重命名
-  宇宙变量的级别参数 (`_uvar.0`, `_uvar.1`, ...)
-  - 展开可简化定义后匹配纯粹是结构性的
-  预处理期间
-  - 宇宙级别将 `max` 和 `imax` 视为未解释的函数（无
-  交流推理）
-  - 绑定器和术语元变量被推迟到第 2 阶段
+  - 模式使用 de Bruijn 索引表示表达式变量，并以重命名后的层级参数（`_uvar.0`、`_uvar.1` 等）表示宇宙变量
+  - 在预处理阶段展开可约定义后，只进行结构匹配
+  - 宇宙层级将 `max` 和 `imax` 视为未解释函数（不进行结合交换律推理）
+  - 绑定器和项元变量延后到阶段 2 处理
 
-  *第 2 阶段（待定限制）*
-  - 处理绑定器（米勒模式）和元变量统一
+  *阶段 2（待处理约束）*
+  - 处理绑定器（Miller 模式）和元变量合一
   - 将剩余的 de Bruijn 变量转换为元变量
-必要时   -  回退到 `isDefEq`
+  - 必要时回退到 `isDefEq`
 
 * [#11814](https://github.com/leanprover/lean4/pull/11814) 实现 `instantiateRevBetaS`，类似于
   `instantiateRevS` 但 β 减少了其功能的嵌套应用程序
@@ -806,13 +771,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___28___0-_LPAR_2026-0
 * [#11881](https://github.com/leanprover/lean4/pull/11881) 修复了使用 `Lean.Grind.CommSemiring` 时，`grind` 无法从 `f * r
   ≠ 0` 证明 `f ≠ 0`，但使用 `Lean.Grind.Semiring` 时可以成功的问题。
 
-* [#11884](https://github.com/leanprover/lean4/pull/11884) 添加了对符号模拟的判别树支持
-  框架。
-  新的 `DiscrTree.lean` 模块将 `Pattern` 值转换为
-  歧视
-  树键，将证明/实例参数和模式变量视为
-  通配符
-  （`Key.star`）。动机：重写期间有效的模式检索。
+* [#11884](https://github.com/leanprover/lean4/pull/11884) 为符号模拟框架添加判别树支持。新的 `DiscrTree.lean` 模块将 `Pattern` 值转换为判别树键，并把证明参数、实例参数和模式变量视为通配符（`Key.star`），以便在重写期间高效检索模式。
 
 * [#11886](https://github.com/leanprover/lean4/pull/11886) 添加 `getMatch` 和 `getMatchWithExtra` 用于检索模式
   来自
@@ -837,7 +796,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___28___0-_LPAR_2026-0
 
 * [#11898](https://github.com/leanprover/lean4/pull/11898) 添加了对简化 `Sym.simp` 中的 λ 表达式的支持。
   对于非常大的 λ 来说，它比标准 simpl 更有效
-  具有许多活页夹的表达式。关键思想是生成一个自定义的
+  具有许多绑定器的表达式。关键思想是生成一个自定义的
   λ 类型的函数外延定理
   简化。
 
@@ -993,9 +952,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___28___0-_LPAR_2026-0
 * [#11479](https://github.com/leanprover/lean4/pull/11479) 使专门化器也能够递归地专门化于某些
   非平凡的高阶情况。
 
-* [#11729](https://github.com/leanprover/lean4/pull/11729) 在 LCNF 转换期间内化 Quot.lift 的所有参数，
-  防止某些地区出现恐慌
-  使用商的重要程序。
+* [#11729](https://github.com/leanprover/lean4/pull/11729) 在 LCNF 转换期间内化 `Quot.lift` 的所有参数，防止某些使用商类型的非平凡程序发生崩溃。
 
 * [#11874](https://github.com/leanprover/lean4/pull/11874) 通过合并锁定来提高 `getLine` 的性能
   底层 `FILE*` 的。
@@ -1091,7 +1048,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___28___0-_LPAR_2026-0
 * [#12119](https://github.com/leanprover/lean4/pull/12119) 修复了 `where` 声明的调用层次结构
   模块系统
 
-# 湖
+# Lake
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___28___0-_LPAR_2026-02-17_RPAR_--Lake"
 %%%

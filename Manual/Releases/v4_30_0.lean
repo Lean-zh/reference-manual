@@ -209,7 +209,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___30___0-_LPAR_2026-0
 - [#12771](https://github.com/leanprover/lean4/pull/12771) 将 `String.Slice.Pos.cast` 的签名更改为需要 `s.copy = t.copy` 而不是 `s = t`。如果需要，可以通过将 `proof` 替换为 `congrArg Slice.copy proof` 来轻松调整它的使用。
 - [#12435](https://github.com/leanprover/lean4/pull/12435) 更改 `Option.getElem?_inj` 的签名。
 - [#12708](https://github.com/leanprover/lean4/pull/12708) 更改 `PostCond.noThrow`、`PostCond.mayThrow`、`PostCond.entails`、`PostCond.and`、`PostCond.imp` 中隐式参数的顺序，以便 `α` 始终位于 `ps` 之前。
-- [#12603](https://github.com/leanprover/lean4/pull/12603)：具有以无类型绑定程序开头的构造函数的归纳类型可能需要重写，例如如果存在具有该名称的 `variable` 或者如果它旨在隐藏归纳类型的参数之一，则将 `(x)` 更改为 `(x : _)`。
+- [#12603](https://github.com/leanprover/lean4/pull/12603)：具有以无类型绑定器开头的构造函数的归纳类型可能需要重写，例如如果存在具有该名称的 `variable` 或者如果它旨在隐藏归纳类型的参数之一，则将 `(x)` 更改为 `(x : _)`。
 
 # 语言
 %%%
@@ -333,10 +333,10 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___30___0-_LPAR_2026-0
   改变 `linter.unusedSimpArgs` 的检查从环境中获取值的方式。这是通过使用 `Lean.Linter.Basic` 中定义的适当辅助函数来实现的。
 
 - [#11427](https://github.com/leanprover/lean4/pull/11427)
-  修改 `#eval e` 以使用范围内的节变量详细说明 `e`。虽然不可能使用自由变量评估表达式，但这可以让 `#eval` 给出比“未知标识符”更好的错误消息。
+  修改 `#eval e` 以使用范围内的节变量精译 `e`。虽然不可能使用自由变量评估表达式，但这可以让 `#eval` 给出比“未知标识符”更好的错误消息。
 
 - [#12841](https://github.com/leanprover/lean4/pull/12841)
-  更改了 `structure`/`class` 命令的详细说明，以便默认值在上下文中也具有后续字段。这允许字段默认值取决于它们之前和之后的字段。虽然继承字段在某种程度上已经是这种情况，但现在它统一适用于所有字段。此外，在详细说明字段的默认值时，将从上下文中清除依赖于该字段的所有字段，以避免默认值依赖于其自身的情况。
+  更改了 `structure`/`class` 命令的精译，以便默认值在上下文中也具有后续字段。这允许字段默认值取决于它们之前和之后的字段。虽然继承字段在某种程度上已经是这种情况，但现在它统一适用于所有字段。此外，在精译字段的默认值时，将从上下文中清除依赖于该字段的所有字段，以避免默认值依赖于其自身的情况。
 
 - [#12749](https://github.com/leanprover/lean4/pull/12749)
   将内部文档、错误消息、元编程接口和内核中的“类似结构”术语更改为“非递归结构”，以阐明 Lean 的类型理论。 *结构* 是一种没有索引的单构造函数归纳类型 - 这些可以通过 `structure` 或 `inductive` 命令创建 - 并且受原始 `Expr.proj` 投影支持。只有*非递归*结构才有 η 转换规则。 PR 描述包含已重命名的接口。
@@ -432,7 +432,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___30___0-_LPAR_2026-0
 
 ````
 
-# 图书馆
+# 库
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___30___0-_LPAR_2026-05-26_RPAR_--Library"
 %%%
@@ -668,7 +668,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___30___0-_LPAR_2026-0
 将 `@[expose]` 添加到 `Lean.Grind.abstractFn` 并且
 `Lean.Grind.simpMatchDiscrsOnly` 以便内核可以在以下情况下展开它们
 对`grind`在`module`块内生成的证明进行类型检查。其他
-类似的小工具（`nestedDecidable`、`PreMatchCond`、`alreadyNorm`）是
+类似的辅助机制（`nestedDecidable`、`PreMatchCond`、`alreadyNorm`）是
 已经暴露了；这两个只是被错过了。
 
 - [#13166](https://github.com/leanprover/lean4/pull/13166)
@@ -687,7 +687,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___30___0-_LPAR_2026-0
   `SymM.run`.
 
 - [#13048](https://github.com/leanprover/lean4/pull/13048)
-添加了两个新的 `sym_simproc` DSL 原语和辅助研磨模式
+添加了两个新的 `sym_simproc` DSL 原语和辅助`grind` 模式
   策略。
 
 - [#13046](https://github.com/leanprover/lean4/pull/13046)
@@ -747,7 +747,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___30___0-_LPAR_2026-0
 添加 `Sym.simp` 的命名定理集以及关联属性，遵循与 `Meta.simp` 的 `register_simp_attr` 相同的模式。
 
 - [#12996](https://github.com/leanprover/lean4/pull/12996)
-将每个结果 `contextDependent` 跟踪添加到 `Sym.Simp.Result` 并将简化器缓存分为持久（上下文无关）和瞬态（上下文相关，在活页夹输入时清除）。这取代了粗略的 `wellBehavedMethods` 标志。
+将每个结果 `contextDependent` 跟踪添加到 `Sym.Simp.Result` 并将简化器缓存分为持久（上下文无关）和瞬态（上下文相关，在绑定器输入时清除）。这取代了粗略的 `wellBehavedMethods` 标志。
 
 - [#12970](https://github.com/leanprover/lean4/pull/12970)
 添加进入交互式符号模拟的`sym =>`策略
@@ -860,9 +860,9 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___30___0-_LPAR_2026-0
 修复了代码生成器中处理`Array.get!Internal`的理论漏洞。
 目前，代码生成器假设 `get!Internal` 返回的值源自
 `Array` 论证。然而，这通常不会成立，因为我们也可能返回 `Inhabited`
-发生越界访问时的值（回想一下，我们在恐慌后继续执行
+发生越界访问时的值（回想一下，我们在崩溃后继续执行
 默认）。这意味着我们有时会将 `Array.get!Internal` 转换为
-`Array.get!InternalBorrowed` 当我们不被允许这样做时，因为在恐慌情况下
+`Array.get!InternalBorrowed` 当我们不被允许这样做时，因为在崩溃情况下
 `Inhabited`实例可以被返回，如果它是一个拥有的值，它就会泄漏。
 
 - [#13138](https://github.com/leanprover/lean4/pull/13138)
@@ -879,7 +879,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___30___0-_LPAR_2026-0
 
 - [#13094](https://github.com/leanprover/lean4/pull/13094)
 将核心中标记为 `extern` 的所有函数的 `Inhabited` 参数标记为借用
-（恐慌数组访问器和`panic!`本身）。这反过来又会在整个过程中产生传递效应
+（崩溃数组访问器和`panic!`本身）。这反过来又会在整个过程中产生传递效应
 代码库，并将大多数（如果不是全部）`Inhabited` 函数参数提升为借用。
 
 - [#13097](https://github.com/leanprover/lean4/pull/13097)
@@ -1044,7 +1044,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___30___0-_LPAR_2026-0
 
 ```
 
-# 湖
+# Lake
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___30___0-_LPAR_2026-05-26_RPAR_--Lake"
 %%%
@@ -1134,7 +1134,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___30___0-_LPAR_2026-0
 int() 以 10 为基数： 'nightly'` 尝试解析版本时。
 
 - [#12963](https://github.com/leanprover/lean4/pull/12963)
-修复了应用于仅标头文件且不带尾随换行符时 `lake shake` 中的恐慌
+修复了应用于仅标头文件且不带尾随换行符时 `lake shake` 中的崩溃
 
 - [#12836](https://github.com/leanprover/lean4/pull/12836)
 添加了 `lake-ci` 标签，可在 CI 中启用完整的 Lake 测试套件，

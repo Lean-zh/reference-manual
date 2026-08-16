@@ -44,10 +44,10 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___34___0-rc1-_LPAR_20
   让 `def` 契约的 `ensures` 子句可以像 `fun` 一样分情况书写，从而按结果的形状陈述后置条件：`ensures | none => False | some v => 2 * v ≤ n`。契约子句现在也会像源码中那样，在格式化输出时另起一行。
 
 - [#14686](https://github.com/leanprover/lean4/pull/14686)
-  使 `requires`、`ensures` 和 `invariant` 子句接受其绑定器上的类型归属，就像 `fun` 所做的那样： `requires s : Nat => s = 0` 现在详细说明为绑定器形式，而不是被视为术语。覆盖 `invariant` 子句的所有绑定程序的归属将被报告为错误，因为它的前两个绑定程序是循环使用的前缀和剩余后缀。
+  使 `requires`、`ensures` 和 `invariant` 子句像 `fun` 一样接受绑定器上的类型标注：`requires s : Nat => s = 0` 现在会按绑定器形式精译，而不再被视为普通项。如果一个类型标注覆盖了 `invariant` 子句的全部绑定器，则会报错，因为前两个绑定器分别表示循环已经处理的前缀和尚未处理的后缀。
 
 - [#14682](https://github.com/leanprover/lean4/pull/14682)
-让解构其绑定器的 `for` 循环携带 `invariant` 子句，因此映射上的循环可以绑定 `(k, v)` 并仍然声明其不变量。该子句无法验证的容器会在该子句出现的位置报告，并命名它缺少的 `PureForIn` 实例，而不是稍后作为没有适用规范的 `vcgen` 小工具显示。
+  允许解构绑定器的 `for` 循环携带 `invariant` 子句，因此遍历映射时可以绑定 `(k, v)` 并同时声明不变量。如果某种容器无法用该子句验证，错误会直接在子句出现的位置报告，并指出缺少哪个 `PureForIn` 实例，而不会稍后才表现为缺少适用规范的 `vcgen` 辅助机制。
 
 - [#14596](https://github.com/leanprover/lean4/pull/14596)
   使 `vcgen` 的循环不变量可用于其迭代产生其元素而不产生任何影响的每个容器。哈希映射、树映射、它们的集合、多态范围、切片和迭代器现在支持 `for … invariant`，包括元素类型为全域多态的容器，以前根本没有循环规范。通过声明其循环无效果来支持新容器，而不是为其添加循环规范。
@@ -145,7 +145,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___34___0-rc1-_LPAR_20
 
 ````
 
-# 图书馆
+# 库
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___34___0-rc1-_LPAR_2026-08-10_RPAR_--Library"
 %%%
@@ -174,8 +174,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___34___0-rc1-_LPAR_20
   将缺少的 `cbv_eval` 注释添加到 `HashMap`/`HashSet` 上的 `ofList`/`ofArray`、`get!`、`getD`、`insert` 操作中。
 
 - [#14687](https://github.com/leanprover/lean4/pull/14687)
-  修复了使用巨大切片调用它时 `String.Pos.Raw.extract` 中释放后的使用
-  限制。
+  修复了以巨大切片边界调用 `String.Pos.Raw.extract` 时发生的释放后使用问题。
 
 - [#14623](https://github.com/leanprover/lean4/pull/14623)
   概括 `MonadTail (StateT σ m)` 实例无需 `Nonempty σ` 即可工作。这意味着即使状态类型没有 `Nonempty` 实例，现在也可以使用 `StateT` 单子证明有关 `while` 的规范。
@@ -217,7 +216,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___34___0-rc1-_LPAR_20
   使 `Selectable.one` 和其他相关函数处理错误并通过在 `one` 和 `combine` 上使用 `Selector` 来简化错误。
 
 - [#14502](https://github.com/leanprover/lean4/pull/14502)
-  将 `Lean.Order.instCCPO_std` 范围限定为 `Std.Internal.Do` ，因此霍尔三重表示法（将异常后置条件默认为 `⊥` ）在 `open Std.Internal.Do` 之后进行详细说明，而无需 `open Lean.Order` 。
+  将 `Lean.Order.instCCPO_std` 范围限定为 `Std.Internal.Do` ，因此霍尔三重表示法（将异常后置条件默认为 `⊥` ）在 `open Std.Internal.Do` 之后进行精译，而无需 `open Lean.Order` 。
 
 - [#12166](https://github.com/leanprover/lean4/pull/12166)
   删除 `pairwise_iff_getElem` 对 `Init.Data.List.Nat.TakeDrop` 的依赖并实现 `nodup_iff_getElem_inj`。
@@ -230,7 +229,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___34___0-rc1-_LPAR_20
 
 - [#14481](https://github.com/leanprover/lean4/pull/14481)
   通过以下方式改进了 `Float` / `Float.Model` / `Float32` / `Float32.Model` / `UnpackedFloat` 周围的接口：
-  - 添加了声明 `Float.nan` / `Float.inf` / `Float32.nan` / `Float32.inf` 及其相应的型号 `Float.Model.nan` / `Float.Model.inf` / `Float32.Model.nan` / `Float32.Model.inf` （如果愿意的话，从电池上游）。
+  - 添加声明 `Float.nan` / `Float.inf` / `Float32.nan` / `Float32.inf` 及其相应的模型 `Float.Model.nan` / `Float.Model.inf` / `Float32.Model.nan` / `Float32.Model.inf`（从 Batteries 上游合入）。
   - 添加了缩写`Int.toFloat`和`Int.toFloat32`，类似于现有的`Nat.toFloat`和`Nat.toFloat32`。
   - `Float.Model.Format` 现在需要 `2 ≤ exponentBits` 而不仅仅是 `0 < exponentBits`；这是 `pack` 和 `unpack` 正确运行的必要条件
   - 定义 `Float.ofNat` / `Float.ofInt` / `Float32.ofNat` / `Float32.ofInt` 现已公开。
@@ -247,7 +246,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___34___0-rc1-_LPAR_20
   弃用并从 `ExceptCpsT.runK` 中删除未使用的参数 `s : ε`。
 
 - [#14294](https://github.com/leanprover/lean4/pull/14294)
-使 `String.toList` 可半简化，因为展开它会将定义相等检查器深入到其内部实现的杂草中。
+  将 `String.toList` 设为半可约，因为展开它会让定义相等性检查器深入其内部实现细节。
 
 ````
 
@@ -294,10 +293,10 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___34___0-rc1-_LPAR_20
 重新设计`@[frameproc]`过程如何释放其分割验证条件，以便框架推理扩展到其内置晶格分割的残差无法分解的运算符。分离合取`∗`的过程，用于留下任何分割规则都无法释放的`∗`，从而停止`vcgen`；一个过程现在可以根据需要释放其分离的 VC，因此分离逻辑框架以`vcgen … with finish` 结束。
 
 - [#14535](https://github.com/leanprover/lean4/pull/14535)
-修复了当列表两个括号`f`展开时，修复`vcgen [f, h, …]`报告自递归`f`内同级调用的`No spec found`，并为`f`提供规范`h`，无论`h`是命名还是拉取作者：`*`。括号内定义的展开现在排名低于同一程序的命名规范和 `*` 假设，因此在递归调用时 `vcgen` 应用该规范并停止，而不是再次将 `f` 展开到其兄弟调用没有匹配规范的分支中。回归来自#14528，它将这些展开提升到命名规范优先级。
+  修复了 `vcgen [f, h, …]` 在自递归函数 `f` 的同级调用处报告 `No spec found` 的问题。当参数列表既指定展开 `f`，又为 `f` 提供规范 `h` 时，无论 `h` 是显式命名还是由 `*` 引入，都可能出现该问题。现在，方括号中定义的展开规则优先级低于同一程序的命名规范和 `*` 假设，因此遇到递归调用时，`vcgen` 会应用该规范并停止，而不会再次展开 `f`，进入同级调用没有匹配规范的分支。该回归来自 #14528；它曾将这些展开规则提升到命名规范的优先级。
 
 - [#14530](https://github.com/leanprover/lean4/pull/14530)
-修复了当通过 `vcgen [someDef]` 提供的方程或展开规范用于深度嵌入的程序时，`vcgen` 中的恐慌，即具有裸 `Std.Internal.Do.WP` 实例而不是单子实例的程序类型。
+  修复了将 `vcgen [someDef]` 提供的方程或展开规范用于深度嵌入程序时 `vcgen` 的崩溃；这里的深度嵌入程序是指程序类型只有裸 `Std.Internal.Do.WP` 实例、而没有单子实例。
 
 - [#14528](https://github.com/leanprover/lean4/pull/14528)
 使每个 `vcgen [f]` 参数在调用站点优先级带上进入规范数据库，因此要展开的定义或作为术语提供的规范在同一程序上优先于环境 `@[spec]`。
@@ -348,7 +347,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___34___0-rc1-_LPAR_20
 拒绝作为条件重写规则的`[grind homo]`定理。条件定理被拒绝，并出现指向 E 匹配属性的错误。 `reset_grind_attrs%` 命令现在还清除 `[grind homo]` 和 `[grind homo_pred]` 扩展。
 
 - [#14451](https://github.com/leanprover/lean4/pull/14451)
-添加属性`[grind homo_pred]`。该属性用于补充`[grind homo]`的单独机制。它不是一个重写集，而是一个由头符号键控的热切事实注入器。 `[grind homo]`` 规则翻译术语，`[grind homo_pred]` 定理在术语进入电子图时生成有关术语的新事实。
+  添加属性 `[grind homo_pred]`。该属性提供一套独立机制来补充 `[grind homo]`：它不是重写集，而是按头符号索引的急切事实注入器。`[grind homo]`` 规则用于转换项，而 `[grind homo_pred]` 定理会在项进入 E 图时立即生成关于它的新事实。
 
 - [#14446](https://github.com/leanprover/lean4/pull/14446)
 添加属性`[grind homo]`。这只是第一步。我们将使用它来实现描述的方法
@@ -358,7 +357,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___34___0-rc1-_LPAR_20
 确保在尝试传播 `match` 表达式条件时，`grind` 不会超时检查定义相等性。
 
 - [#14439](https://github.com/leanprover/lean4/pull/14439)
-修复了一个 `grind` 错误，其中规范化器可以重新合成发生在通过预处理跳过的活页夹主体中的命题实例（例如 `Nonempty α`），从而生成缺少 `Grind.nestedProof` 包装器的封闭嵌套证明。然后，同余闭包将该术语视为与同一应用程序的正确包装出现的术语不同，并且 `grind` 错过了有效的矛盾。关闭#13655。
+修复了一个 `grind` 错误，其中规范化器可以重新合成发生在通过预处理跳过的绑定器主体中的命题实例（例如 `Nonempty α`），从而生成缺少 `Grind.nestedProof` 包装器的封闭嵌套证明。然后，同余闭包将该术语视为与同一应用程序的正确包装出现的术语不同，并且 `grind` 错过了有效的矛盾。关闭#13655。
 
 - [#14431](https://github.com/leanprover/lean4/pull/14431)
 修复了当相同的相等规范在一次运行中匹配两个不同的程序时，例如，`vcgen`因`Failed to apply rule`而失败。通过`vcgen [f]`注册的递归函数方程：缓存的后向规则专门用于第一个匹配的程序，不能应用于下一个匹配的程序。
@@ -373,7 +372,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___34___0-rc1-_LPAR_20
 实现对使用 `grind` 提出条件 `Sym.simp` 定理中的假设的支持。
 
 - [#14424](https://github.com/leanprover/lean4/pull/14424)
-修复了`Sym.simp`中的最大共享违规：当条件重写释放了发生在定理右侧的假设时，释放者提供的证明被拼接到结果项中，而不恢复最大共享，违反了`SymM`共享不变式（由`sym.debug`检测到）。放电者不需要返回最大共享证明。此问题由 @hargoniX 报告
+  修复了 `Sym.simp` 中违反最大共享的问题：当条件重写消解了一个出现在定理右侧的假设时，消解器提供的证明会直接拼接到结果项中，而没有恢复最大共享，从而破坏 `SymM` 的共享不变量（可由 `sym.debug` 检测）。消解器本身不必返回满足最大共享的证明。此问题由 @hargoniX 报告。
 
 - [#14416](https://github.com/leanprover/lean4/pull/14416)
 修复了 `vcgen` 和 `mvcgen` 无法拆分 `match h : e with ...` 表达式，其替代方案绑定了等式 `h : e = pattern`。修复#12275。
@@ -382,7 +381,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___34___0-rc1-_LPAR_20
 改进了对 `SymM` 匹配器/统一器中偏移的支持。例如，请参阅无法处理的新测试。
 
 - [#13587](https://github.com/leanprover/lean4/pull/13587)
-修复了内部化语法结构与其多项式表示结构不同的整数表达式时由 `lia`/`grind` 引发的内核类型不匹配问题。发生不匹配是因为 `eq_def` 证明项通过普通 `Eq.refl e` 将 `x.denote ctx = e.denote ctx` 桥接到 `Poly.denote' ctx p = 0`，但 `Poly.denote'` 折叠了子结构，例如尾随 `+ 0`（`(.num 0)` 单项式是掉落），而 `e` 保留它。然后内核拒绝了该申请，因为`x.denote`和`Poly.denote' p`之间的等式在定义上不成立。
+修复了内部化整数表达式时 `lia`/`grind` 引发的内核类型不匹配；这类表达式的语法结构与其多项式表示不同。`eq_def` 证明项原先通过普通的 `Eq.refl e`，把 `x.denote ctx = e.denote ctx` 桥接到 `Poly.denote' ctx p = 0`，但 `Poly.denote'` 会折叠尾随 `+ 0` 等子结构（删除 `(.num 0)` 单项式），而 `e` 会保留它。于是 `x.denote` 与 `Poly.denote' p` 之间的等式并非定义相等，内核会拒绝该应用。
 
 - [#14404](https://github.com/leanprover/lean4/pull/14404)
 修复了`Sym.simp`无法重写包含未分配元变量的术语，并防止匹配器在匹配非线性模式时不合理地统一此类元变量。
@@ -400,7 +399,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___34___0-rc1-_LPAR_20
 ```markdown
 
 - [#14717](https://github.com/leanprover/lean4/pull/14717)
-`String.Pos.Raw.extract` 中的模型/运行时不匹配，并为 `String.extract` 添加更快的变体 (`lean_string_utf8_extract_fast`)，假设这些位置是有效位置。
+  修复 `String.Pos.Raw.extract` 的模型与运行时不一致问题，并为 `String.extract` 添加更快的变体 `lean_string_utf8_extract_fast`；该变体假定传入的位置有效。
 
 - [#14505](https://github.com/leanprover/lean4/pull/14505)
 通过确保在必要时在每个模块的初始化程序中发生对 `lean_initialize` 的必要调用，修复了编译器问题，即 `Lean` 库的私有导入可能会导致段错误。作为后续清理，对 `lean_initialize_runtime_module` 的调用也被隐式调用，这意味着 Lean 作为 FFI 库的用户不再需要自己调用这些函数。
@@ -433,7 +432,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___34___0-rc1-_LPAR_20
 ```markdown
 
 - [#14512](https://github.com/leanprover/lean4/pull/14512)
-制作一个 `for` do 元素漂亮打印，并在 `do` 之前添加一个空格。 do 元素 `for` 解析器发出 `"do "` 且没有前导空格，因此重新格式化 `for … do` 块将范围粘合到关键字（`for x in xs do` 打印为 `for x in xsdo`）。每个同级 do 关键字（`while`、`unless`、术语级别 `for`）已发出 ` do `；这对齐了`for`。
+  让 `for` do 元素在美化打印时于 `do` 前添加空格。此前 do 元素的 `for` 解析器输出没有前导空格的 `"do "`，因此重新格式化 `for … do` 块时会把范围与关键字粘在一起（`for x in xs do` 被打印成 `for x in xsdo`）。其他同类 do 关键字（`while`、`unless` 以及项级 `for`）都已输出 ` do `；此更改使 `for` 与它们一致。
 
 - [#14367](https://github.com/leanprover/lean4/pull/14367)
 修复了 `@[simp ←]` 属性将漂亮地打印为 `@[simp← ]` 的问题，以及 `@[grind norm ←]`、`@[wf_preprocess ←]`、`@[bv_normalize ←]` 等的类似问题。另请参阅 [Zulip](https://leanprover.zulipchat.com/#narrow/channel/287929-mathlib4/topic/Whitespace.20linter.20interaction.20with.20reverse.20simp.20attributes/near/590971428) 的讨论。
@@ -452,7 +451,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___34___0-rc1-_LPAR_20
 
 ```
 
-# 湖
+# Lake
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___34___0-rc1-_LPAR_2026-08-10_RPAR_--Lake"
 %%%

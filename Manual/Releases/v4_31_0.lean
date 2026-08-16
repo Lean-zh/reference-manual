@@ -129,13 +129,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___31___0-_LPAR_2026-0
 
 此版本为库作者添加了一系列工具来管理弃用：
 
-- [#13002](https://github.com/leanprover/lean4/pull/13002) 添加了 `deprecated_module` 命令，将当前模块标记为已弃用；进口商收到建议更换的警告。 `#show_deprecated_modules` 命令列出环境中已弃用的模块。
+- [#13002](https://github.com/leanprover/lean4/pull/13002) 添加了 `deprecated_module` 命令，将当前模块标记为已弃用；导入方收到建议更换的警告。 `#show_deprecated_modules` 命令列出环境中已弃用的模块。
 
   ```
   deprecated_module "use NewModule instead" (since := "2026-03-30")
   ```
 
-- [#13108](https://github.com/leanprover/lean4/pull/13108) 添加了一个 `deprecated_syntax` 命令，该命令将语法类型标记为已弃用，并在详细说明已弃用的语法（包括通过宏扩展）时发出检查器警告。
+- [#13108](https://github.com/leanprover/lean4/pull/13108) 添加了一个 `deprecated_syntax` 命令，该命令将语法类型标记为已弃用，并在精译已弃用的语法（包括通过宏扩展）时发出检查器警告。
 - [#13195](https://github.com/leanprover/lean4/pull/13195) 允许将选项标记为已弃用，并在 `set_option` 使用时发出警告（由 `linter.deprecated.options` 控制）。
 
 一组相关的新检查器会警告冗余修饰符：`linter.redundantVisibility` 表示与默认值 ([#13132](https://github.com/leanprover/lean4/pull/13132)) 匹配的 `private`/`public`，`linter.redundantExpose` 表示无操作 `@[expose]`/`@[no_expose]` ([#13359](https://github.com/leanprover/lean4/pull/13359))，以及针对带有变量或无法识别的 `@[simp]` 定理的警告头部符号 ([#13325](https://github.com/leanprover/lean4/pull/13325))。
@@ -176,7 +176,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___31___0-_LPAR_2026-0
 - 更多 {name}`ByteArray` `push`/`set!` 引理 ([#13457](https://github.com/leanprover/lean4/pull/13457)) 和 `Vector` 附加引理推广到不同大小的向量 ([#13693](https://github.com/leanprover/lean4/pull/13693))。
 - 验证 `String.dropWhile`/`String.takeWhile` 继续字符串验证工作 ([#13155](https://github.com/leanprover/lean4/pull/13155))。
 
-许多运行时稳健性修复还将以前无声的内存耗尽故障转变为正确的错误或恐慌，而不是段错误和损坏（[#13392](https://github.com/leanprover/lean4/pull/13392)、[#13546](https://github.com/leanprover/lean4/pull/13546)、[#13547](https://github.com/leanprover/lean4/pull/13547)、[#13548](https://github.com/leanprover/lean4/pull/13548)、[#13549](https://github.com/leanprover/lean4/pull/13549)、[#13521](https://github.com/leanprover/lean4/pull/13521)）。对于安全敏感的部署，[#13401](https://github.com/leanprover/lean4/pull/13401) 添加了 `LEAN_MI_SECURE` 构建选项，可实现额外的 mimalloc 内存安全缓解。
+许多运行时稳健性修复还将以前无声的内存耗尽故障转变为正确的错误或崩溃，而不是段错误和损坏（[#13392](https://github.com/leanprover/lean4/pull/13392)、[#13546](https://github.com/leanprover/lean4/pull/13546)、[#13547](https://github.com/leanprover/lean4/pull/13547)、[#13548](https://github.com/leanprover/lean4/pull/13548)、[#13549](https://github.com/leanprover/lean4/pull/13549)、[#13521](https://github.com/leanprover/lean4/pull/13521)）。对于安全敏感的部署，[#13401](https://github.com/leanprover/lean4/pull/13401) 添加了 `LEAN_MI_SECURE` 构建选项，可实现额外的 mimalloc 内存安全缓解。
 
 ## 编辑器和用户体验改进
 %%%
@@ -307,7 +307,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___31___0-_LPAR_2026-0
   阻塞直到外部测试框架超时终止进程。
 
 - [#11313](https://github.com/leanprover/lean4/pull/11313)
-  确保 `withSetOptionIn` 不会修改信息树或错误选项值的错误，从而避免使用 `visitM` 遍历信息树的检查器中出现恐慌。
+  确保 `withSetOptionIn` 不会修改信息树或错误选项值的错误，从而避免使用 `visitM` 遍历信息树的检查器中出现崩溃。
 
 - [#13595](https://github.com/leanprover/lean4/pull/13595)
   消除本身已弃用的定义内的 `Linter.deprecated` 警告。
@@ -350,7 +350,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___31___0-_LPAR_2026-0
   修复了私有（导入的）默认实例在公共签名中意外使用而导致后续错误的问题。
 
 - [#13574](https://github.com/leanprover/lean4/pull/13574)
-  通过在详细者之间共享更多代码，确保 Verso 文档字符串和 Verso 模块文档之间元变量行为的一致性。它还改进了防止元变量泄漏时的错误消息。
+  通过在精译器之间共享更多代码，确保 Verso 文档字符串和 Verso 模块文档之间元变量行为的一致性。它还改进了防止元变量泄漏时的错误消息。
 
 - [#13528](https://github.com/leanprover/lean4/pull/13528)
   赋予 `specialize` 策略实例化通用量词的能力，而不是使用 `specialize h (y := v)` 语法的第一个量词。它还修复了 `MVarId.assertAfter` 未记录变量别名信息的问题，以及 `MVarId.replace` 和 `MVarId.replaceLocalDecl` 在计算依赖项时未考虑元变量的问题。此外，它还修复了一些未实例化的元变量错误，包括 Infoview 策略状态假设差异中的错误。
@@ -361,16 +361,8 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___31___0-_LPAR_2026-0
 - [#13569](https://github.com/leanprover/lean4/pull/13569)
   解决了 `IO.CancelToken` 上的两个审查点：
 
-  * `set` 现在*在*编写 `Bool` 之前解决了底层承诺
-    快速路径标志，因此观察 `isSet = true` 意味着任何同步
-    链式 `onSet` 回调已经运行。前一个顺序（首先标记，
-然后解决）是一个微妙的枪：代码看到 `isSet = true` 不能
-    依赖已触发的取消任务。
-  * 底层承诺及其产生的任务是保密的。的
-    先前的 `task : Task (Option Unit)` 访问器被删除；消费者应该
-    使用 `onSet` 对取消做出反应。对结构记录的评论
-    将来重新公开该任务需要重新审核订单
-    在 `set` 中，用于承诺和 `Bool` 标志之间的竞争。
+  * `set` 现在先解析底层 Promise，*然后*再写入 `Bool` 快速路径标志。因此，观察到 `isSet = true` 就意味着所有同步串联的 `onSet` 回调都已运行。此前的顺序是先写标志、再解析 Promise，这很容易埋下隐患：看到 `isSet = true` 的代码仍不能确信取消任务已经触发。
+  * 底层 Promise 及其产生的任务现在保持私有。原有的 `task : Task (Option Unit)` 访问器已删除；调用方应使用 `onSet` 响应取消。结构体上的注释还说明：如果将来重新公开该任务，就必须重新审查 `set` 中 Promise 与 `Bool` 标志之间是否存在竞态。
 
 - [#13303](https://github.com/leanprover/lean4/pull/13303)
   将 `IO.CancelToken` 从 `Init.System.IO` 移动到其自己的文件 `Init.System.CancelToken`，由 `IO.Promise Unit` 而不是 `IO.Ref Bool` 支持。这可以实现非轮询取消传播：令牌的底层承诺可以直接与 `IO.waitAny` 一起使用，并且可以注册回调以在请求取消时触发。
@@ -381,9 +373,9 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___31___0-_LPAR_2026-0
 - [#13359](https://github.com/leanprover/lean4/pull/13359)
   添加 `linter.redundantExpose` 选项（默认 `true`），当 `@[expose]` 或 `@[no_expose]` 属性无效时发出警告：
 
-`abbrev` 上的   - `@[expose]` （始终暴露）或非 Prop `instance` （始终暴露）
-  - `@[expose]` 位于 `@[expose] section` 内的 `def` 上（已由该部分公开）
-非 `module` 文件中的   - `@[expose]`/`@[no_expose]` （无模块系统）
+  - `@[expose]` 用于 `abbrev`（始终公开）或非 `Prop` 的 `instance`（始终公开）
+  - `@[expose]` 用于 `@[expose] section` 内的 `def`（已由该 section 公开）
+  - `@[expose]`/`@[no_expose]` 用于非 `module` 文件（没有模块系统）
   - `@[no_expose]` 位于默认情况下不会公开的声明上
 
 - [#13492](https://github.com/leanprover/lean4/pull/13492)
@@ -395,7 +387,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___31___0-_LPAR_2026-0
   概括了 `do` 块中的 `while` 语法，以便条件可以是任何 `doIfCond`，与 `if` 已接受的条件形式相同。因此，除了 `while cond do …` 和 `while h : cond do …` 之外，现在还支持 `while let pat := e do …` 和 `while let pat ← e do …`。之前单独的 `doWhile` 和 `doWhileH` 解析器及其附带的宏被统一为一个 `doWhile` 解析器，其宏委托给现有的 `doIf` 脱糖。
 
 - [#13523](https://github.com/leanprover/lean4/pull/13523)
-允许策略宏和详细说明者选择在失败时不自动回退到以前的宏/elab。 `throwUnsupportedSyntax` 不受影响。
+允许策略宏和精译器选择在失败时不自动回退到以前的宏/elab。 `throwUnsupportedSyntax` 不受影响。
 
 - [#13363](https://github.com/leanprover/lean4/pull/13363)
   将 `whnfMatcher` 中从 `.reducible` 到 `.instances` 的透明度凹凸替换为 `canUnfoldAtMatcher` 中的显式允许列表。以前，在减少匹配判别式时，`whnfMatcher` 将展开所有 `implicitReducible` 定义和所有 `fromClass` 投影。这使得不可能在不默默影响匹配减少行为的情况下将定义标记为 `implicit_reducible` 。
@@ -481,7 +473,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___31___0-_LPAR_2026-0
   修复了 #12846，当 do 元素的延续具有不匹配的单子结果类型时，新的 do 精译器会产生令人困惑的错误。这些错误在位置（例如，指向 `let x ← value` 的值而不是 `let` 关键字）和内容（例如，提及用户从未编写过的 `PUnit.unit` ）上都具有误导性。
 
 - [#13420](https://github.com/leanprover/lean4/pull/13420)
-  修复了在构造函数名称带有宏作用域的宏作用域内定义 `coinductive` 谓词时出现的恐慌。现有的防护仅检查宏作用域的声明名称，缺少在宏引用内生成构造函数标识符并因此携带宏作用域的情况。这导致 `removeFunctorPostfixInCtor` 在宏范围编码的 `Name.num` 组件上出现恐慌。
+  修复了在构造函数名称带有宏作用域的宏作用域内定义 `coinductive` 谓词时出现的崩溃。现有的防护仅检查宏作用域的声明名称，缺少在宏引用内生成构造函数标识符并因此携带宏作用域的情况。这导致 `removeFunctorPostfixInCtor` 在宏范围编码的 `Name.num` 组件上出现崩溃。
 
 - [#13413](https://github.com/leanprover/lean4/pull/13413)
 为 do 块添加内部 `skip` 语法，供 `if` 和 `unless` 精译器使用，以替换隐式 else 分支中的 `pure PUnit.unit` 。这为精译器提供了一个专用的语法节点来附加更好的错误消息和位置信息，而不是合成 `pure PUnit.unit` ，后者会将内部细节泄漏到面向用户的错误中。
@@ -577,7 +569,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___31___0-_LPAR_2026-0
   构造函数出现在归纳类型定义中的顺序。
 
 - [#13243](https://github.com/leanprover/lean4/pull/13243)
-  更改在模式中使用时结构实例符号的详细说明（例如 `s matches { x := 1, y := [] }`），以便结构的默认值不用于详细说明模式。其动机是默认值经常导致令人惊讶的过于特定的模式。现在它会报告“字段丢失”错误。可以使用 `{ x := 1, .. }` 省略号表示法来抑制该错误，其行为与以前相同。漂亮的打印机也经过修改以与此功能保持同步。 **重大更改：** 使用结构实例表示法的模式可能需要缺少字段或添加 `..`（视情况而定）。
+  更改在模式中使用时结构实例符号的精译（例如 `s matches { x := 1, y := [] }`），以便结构的默认值不用于精译模式。其动机是默认值经常导致令人惊讶的过于特定的模式。现在它会报告“字段丢失”错误。可以使用 `{ x := 1, .. }` 省略号表示法来抑制该错误，其行为与以前相同。漂亮的打印机也经过修改以与此功能保持同步。 **重大更改：** 使用结构实例表示法的模式可能需要缺少字段或添加 `..`（视情况而定）。
 
 - [#13195](https://github.com/leanprover/lean4/pull/13195)
   添加了对将选项标记为已弃用的支持。当通过 `set_option` 使用已弃用的选项时，会发出警告（由 `linter.deprecated.options` 控制）。
@@ -589,13 +581,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___31___0-_LPAR_2026-0
   扩展 `doLet`、`doLetElse`、`doLetArrow` 和 `doHave` 解析器以接受 `letConfig`（例如 `(eq := h)`、`+nondep`、`+usedOnly`、`+zeta`），匹配术语级别 `let`/`have` 的语法。精译器被调整以处理移位的语法索引，但尚未处理配置；这将在 stage0 更新后的后续 PR 中完成，允许使用正确的引用模式。
 
 - [#13245](https://github.com/leanprover/lean4/pull/13245)
-  扩展了点函数表示法 (`.f`) 的Lean语法，以添加对显式模式 (`@.f`)、显式宇宙 (`.f.{u,v}`) 以及两者同时 (`@.f.{u,v}`) 的支持。这还包括对涉及重载函数的错误的修复，该错误用于对函数未详细说明的声明发出错误的弃用警告。
+  扩展了点函数表示法 (`.f`) 的Lean语法，以添加对显式模式 (`@.f`)、显式宇宙 (`.f.{u,v}`) 以及两者同时 (`@.f.{u,v}`) 的支持。这还包括对涉及重载函数的错误的修复，该错误用于对函数未精译的声明发出错误的弃用警告。
 
 - [#13232](https://github.com/leanprover/lean4/pull/13232)
-  修复了编译在索引归纳类型上使用 `casesOn` 的相互递归定义时出现的恐慌（例如 `Vect`）。 `WF.Unfold` 中的 `splitMatchOrCasesOn` 函数断言 `matcherInfo.numDiscrs = 1`，但对于索引类型，casesOn 递归器具有多个判别式（索引 + 大前提）。该修复使用最后一个判别式（大前提）并让 `cases` 策略自动处理索引判别式。
+  修复了编译在索引归纳类型上使用 `casesOn` 的相互递归定义时出现的崩溃（例如 `Vect`）。 `WF.Unfold` 中的 `splitMatchOrCasesOn` 函数断言 `matcherInfo.numDiscrs = 1`，但对于索引类型，casesOn 递归器具有多个判别式（索引 + 大前提）。该修复使用最后一个判别式（大前提）并让 `cases` 策略自动处理索引判别式。
 
 - [#13002](https://github.com/leanprover/lean4/pull/13002)
-  添加 `deprecated_module` 命令，将当前模块标记为已弃用。当另一个模块导入已弃用的模块时，在详细说明期间会发出警告，建议替换导入。
+  添加 `deprecated_module` 命令，将当前模块标记为已弃用。当另一个模块导入已弃用的模块时，在精译期间会发出警告，建议替换导入。
 
 - [#13205](https://github.com/leanprover/lean4/pull/13205)
   修复 `FirstTokens.seq (.optTokens s) .unknown` 以返回 `.unknown`。这种情况会发生，例如当可选（第一个标记为 `.optTokens s`）后跟解析器类别（第一个标记为 `.unknown`）时。以前 `FirstTokens.seq` 返回 `.optTokens s`，忽略了可选值可能为空并且解析器类别可能具有任何第一个标记的事实。这里正确的行为是返回 `.unknown`，这表明第一个标记可以是任何东西。
@@ -607,14 +599,14 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___31___0-_LPAR_2026-0
   在语言服务器中。
 
 - [#13108](https://github.com/leanprover/lean4/pull/13108)
-  添加 `deprecated_syntax` 命令，将语法类型标记为已弃用。当详细说明已弃用的语法（术语、策略或命令）时，会发出检查器警告。当宏定义在其扩展中使用不推荐使用的语法时，在引用预检查期间也会发出警告。
+  添加 `deprecated_syntax` 命令，将语法类型标记为已弃用。当精译已弃用的语法（术语、策略或命令）时，会发出检查器警告。当宏定义在其扩展中使用不推荐使用的语法时，在引用预检查期间也会发出警告。
 
 - [#13219](https://github.com/leanprover/lean4/pull/13219)
   将 `hasAssignableMVar`、`hasAssignableLevelMVar` 和 `isLevelMVarAssignable` 从 `MetavarContext.lean` 移动到新的 `Lean.Meta.HasAssignableMVar` 模块，将它们从通用 `[Monad m] [MonadMCtx m]` 函数更改为 `MetaM` 函数。这使得可以在递归遍历中添加 `checkSystem` 调用，从而确保在非常昂贵的计算过程中进行取消和心跳检查。
 
 ````
 
-# 图书馆
+# 库
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___31___0-_LPAR_2026-06-13_RPAR_--Library"
 %%%
@@ -627,7 +619,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___31___0-_LPAR_2026-0
 2. 引入`grind_pattern getMsbD_eq_getLsbD => x.getMsbD i, x.getLsbD _`，这样每当我们在范围内的相同值上同时拥有`getMsbD`和`getLsbD`时，我们就会尝试将它们匹配。我们预计这个注释*通常*不会触发太多，因为大多数 `get*D` 可能可以转换为 `getElem` 并从那里开始工作。
 
 - [#13850](https://github.com/leanprover/lean4/pull/13850)
-删除了每当`c[i]`出现在电子图中时就会触发`getElem?_pos`的研磨注释。我们这样做是为了避免仅仅因为 `c[i]` 可用而对 `c[i]?` 进行推理。每当`c[i]?`在范围内时，实例化`getElem?_pos`的触发器仍然存在，以便推动磨削证明或反驳边界检查。
+删除了每当`c[i]`出现在 E 图中时就会触发`getElem?_pos`的`grind` 注解。我们这样做是为了避免仅仅因为 `c[i]` 可用而对 `c[i]?` 进行推理。每当`c[i]?`在范围内时，实例化`getElem?_pos`的触发器仍然存在，以便推动`grind` 证明或反驳边界检查。
 
 - [#13689](https://github.com/leanprover/lean4/pull/13689)
 使得 `whileM` 的展开引理可以从 `Lean.Order.MonadTail` 实例导出。公共入口点是`Init.Internal.Order.While`中的`whileM_eq_of_monadTail`；底层固定谓词`whileM.Pred`和`Init.While`中的条件`whileM_eq`引理保留在模块内部。
@@ -705,7 +697,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___31___0-_LPAR_2026-0
 基于对 core 中默认容器上的所有只读操作的系统审查。在合理的情况下，它会对缺乏注释的高阶操作应用专门注释，或者在道德上应该借用的参数上借用注释（例如，迭代容器时的容器）。
 
 - [#13200](https://github.com/leanprover/lean4/pull/13200)
-为 `List`、`Array` 和 `Vector` 添加`prod`（乘法折叠），镜像现有的 `sum` 接口。包括基本的 simpl 引理（`prod_nil`、`prod_cons`、`prod_append`、`prod_singleton`、`prod_reverse`、`prod_push`、`prod_eq_foldl`）、Nat 专用引理(`prod_pos_iff_forall_pos_nat`、`prod_eq_zero_iff_exists_zero_nat`、`prod_replicate_nat`)、Int专用引理(`prod_replicate_int`)、十字型引理(`prod_toArray`、`prod_toList`)、以及带有研磨图案的`Perm.prod_nat`。
+为 `List`、`Array` 和 `Vector` 添加`prod`（乘法折叠），镜像现有的 `sum` 接口。包括基本的 simpl 引理（`prod_nil`、`prod_cons`、`prod_append`、`prod_singleton`、`prod_reverse`、`prod_push`、`prod_eq_foldl`）、Nat 专用引理(`prod_pos_iff_forall_pos_nat`、`prod_eq_zero_iff_exists_zero_nat`、`prod_replicate_nat`)、Int专用引理(`prod_replicate_int`)、十字型引理(`prod_toArray`、`prod_toList`)、以及带有`grind` 模式的`Perm.prod_nat`。
 
 - [#13273](https://github.com/leanprover/lean4/pull/13273)
 添加了全面的公共接口，用于构建最大程度的共享
@@ -762,7 +754,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___31___0-_LPAR_2026-0
 实现可重用归约`DSimproc`（`beta`、`zeta`、`zetaAll`、`dsimpProj`、`dsimpMatch`）的集合，将它们公开，以便调用者可以将它们组合成自己的`Methods`，并且修复一些错误。
 
 - [#13824](https://github.com/leanprover/lean4/pull/13824)
-在`Sym.dsimp`中添加了简化活页夹的功能。
+在`Sym.dsimp`中添加了简化绑定器的功能。
 
 - [#13823](https://github.com/leanprover/lean4/pull/13823)
 在`SymM`中添加`dsimp`的基本基础设施。
@@ -814,7 +806,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___31___0-_LPAR_2026-0
 已申请但没有`set_option backward.defeqAttrib.useBackward true`）。
 
 - [#13635](https://github.com/leanprover/lean4/pull/13635)
-修复了 `Sym.simp` 恐慌（“意外的内核投影项
+修复了 `Sym.simp` 崩溃（“意外的内核投影项
 在简化过程中”）当匹配器 iota-reduction 时触发
 通过 struct-η 公开内核 `Expr.proj` 术语。例如，`do`
 带有 `for` 循环的块，其状态是元组，其中 `Sym.simp`
@@ -822,7 +814,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___31___0-_LPAR_2026-0
   模式匹配。
 
 - [#13624](https://github.com/leanprover/lean4/pull/13624)
-修复了可能导致恐慌的 `grind` 同余表不变违规
+修复了可能导致崩溃的 `grind` 同余表不变违规
 当`ite`分支被延迟内化时（在条件变为`True`之后）
 或`False`），并且该分支的等价类后来与另一个分支合并。
 
@@ -898,7 +890,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___31___0-_LPAR_2026-0
 修复了 `sym =>` 交互模式中的错误，其中卫星解算器（`lia`、`ring`、`linarith`）如果其自动 `intros + assertAll` 预处理步骤已关闭目标，则会抛出内部错误。此前，`evalCheck`使用了`liftAction`，丢弃了闭包结果，因此后续的`liftGoalM`调用因缺乏主要目标而失败。 `liftAction` 现在已拆分，因此调用者可以区分封闭目标和子目标情况，并在预处理已完成工作时跳过求解器主体。
 
 - [#13453](https://github.com/leanprover/lean4/pull/13453)
-修复了将 `Nat` 等式传播到载体类型不是 `Int` 的订单结构时 `grind` 中的内核错误（例如 `Rat`）。辅助`Lean.Grind.Order.of_nat_eq`引理专门用于`Int`，因此当转换目的地不同时，内核会拒绝该应用程序。
+修复了将 `Nat` 等式传播到载体类型不是 `Int` 的有序结构时 `grind` 中的内核错误（例如 `Rat`）。辅助`Lean.Grind.Order.of_nat_eq`引理专门用于`Int`，因此当转换目的地不同时，内核会拒绝该应用程序。
 
 - [#13451](https://github.com/leanprover/lean4/pull/13451)
 修复了 `Sym.introCore.finalize` 中的错误，其中原始元变量通过延迟分配无条件分配，即使没有引入绑定器也是如此。结果，`Sym.intros`将返回`.failed`，而目标元变量已经被静默分配，从而混淆了依赖于`isAssigned`的下游代码（例如`mvcgen'`中的VC过滤器）。
@@ -990,7 +982,7 @@ Lean并导致 C 编译器错误。
 反而陷入崩溃。现在，有问题的代码会抛出内存不足错误。
 
 - [#13384](https://github.com/leanprover/lean4/pull/13384)
-修复了当结构构造函数接收不可计算实例作为实例隐式参数时出现的编译器恐慌。
+修复了当结构构造函数接收不可计算实例作为实例隐式参数时出现的编译器崩溃。
 
 - [#13234](https://github.com/leanprover/lean4/pull/13234)
 修复了 Lean 未与 libuv 链接时的构建问题。
@@ -1069,7 +1061,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___31___0-_LPAR_2026-0
 
 ```
 
-# 湖
+# Lake
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___31___0-_LPAR_2026-06-13_RPAR_--Lake"
 %%%

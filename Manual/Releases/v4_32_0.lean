@@ -238,7 +238,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___32___0-_LPAR_2026-0
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___32___0-_LPAR_2026-07-13_RPAR_--Highlights--Lake___-Linter-Overhaul-and-Cache-Improvements--Module-Linters"
 %%%
 
-[#13917](https://github.com/leanprover/lean4/pull/13917) 添加了模块检查器，它在详细说明模块结束时运行一次，而不是在每个命令之后运行。模块检查器接收模块的完整顶级命令语法数组，使其适合需要整个模块视图的检查（例如强制执行模块范围的语法约定）。
+[#13917](https://github.com/leanprover/lean4/pull/13917) 添加了模块检查器，它在精译模块结束时运行一次，而不是在每个命令之后运行。模块检查器接收模块的完整顶级命令语法数组，使其适合需要整个模块视图的检查（例如强制执行模块范围的语法约定）。
 
 ### 其他湖改进
 %%%
@@ -264,7 +264,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___32___0-_LPAR_2026-0
 - [#12030](https://github.com/leanprover/lean4/pull/12030) 将 OpenSSL 链接到 Lean 的运行时，并使用 [#13988](https://github.com/leanprover/lean4/pull/13988) 使其可延迟加载。
 - [#14054](https://github.com/leanprover/lean4/pull/14054) 位于电池的 `Nat.sqrt` 上游，具有避免暴露内部结构的特征引理。
 - [#13798](https://github.com/leanprover/lean4/pull/13798) 简化了 `Std.Time` 接口：删除了 `DateTime (tz : TimeZone)`，并将之前的 `ZonedDateTime` 重命名为 `DateTime`。 *重大更改：*直接使用 `DateTime` 或 `ZonedDateTime` 的代码需要更新。
-- [#13908](https://github.com/leanprover/lean4/pull/13908) 弃用 `Lean.RBMap` 和 `Lean.RBTree`，转而使用 `Std.TreeMap` 和 `Std.TreeSet`。进口商现在通过 {keywordOf Lean.Parser.Command.deprecated_module}`deprecated_module` 收到弃用警告。
+- [#13908](https://github.com/leanprover/lean4/pull/13908) 弃用 `Lean.RBMap` 和 `Lean.RBTree`，转而使用 `Std.TreeMap` 和 `Std.TreeSet`。导入方现在通过 {keywordOf Lean.Parser.Command.deprecated_module}`deprecated_module` 收到弃用警告。
 - [#13891](https://github.com/leanprover/lean4/pull/13891) 添加了对通过 `CompactedRegion.save (allowClosures := true)` 将闭包序列化到 `.olean` 文件的选择支持。
 
 ## 重大变更
@@ -324,7 +324,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___32___0-_LPAR_2026-0
 添加内置检查器集 - 在初始化期间从核心 Lean 代码注册的检查器集，补充面向用户的 `register_linter_set` 命令 - 并使 `linter.extra` 其中之一。启用 `linter.extra` （例如，通过 `set_option linter.extra true` 或 `lake lint --extra`）现在可以通过与任何其他检查器集相同的集成员机制激活额外的检查器。
 
 - [#13917](https://github.com/leanprover/lean4/pull/13917)
-添加了模块检查器，它在详细说明模块结束时运行一次，而不是在每个命令之后运行。模块检查器接收模块的完整顶级命令语法数组，使其适合需要整个模块视图的检查（例如强制执行模块范围的语法约定）而不是每个命令检查。
+添加了模块检查器，它在精译模块结束时运行一次，而不是在每个命令之后运行。模块检查器接收模块的完整顶级命令语法数组，使其适合需要整个模块视图的检查（例如强制执行模块范围的语法约定）而不是每个命令检查。
 
 - [#13928](https://github.com/leanprover/lean4/pull/13928)
 修复了 DiscrTree 插入中的非线性问题，将 `import Mathlib` 所需的时间减少了约 10%
@@ -343,7 +343,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___32___0-_LPAR_2026-0
 
 ```
 
-# 图书馆
+# 库
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___32___0-_LPAR_2026-07-13_RPAR_--Library"
 %%%
@@ -426,7 +426,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___32___0-_LPAR_2026-0
 添加`mvcgen' until $t`，其中`$t`是一个转换样式模式（允许有孔`_`）；一旦程序匹配模式，验证条件生成就会停止，将其保留为 VC 而不是应用规范，类似于现有的 `stepLimit` 选项。
 
 - [#13925](https://github.com/leanprover/lean4/pull/13925)
-巩固了`mvcgen'`跨策略和磨练（`sym =>`）模式的语法。研磨模式`with`子句已删除（使用`<;>`代替），并且策略级别`with`现在采用与`mvcgen'`共享E图的单个研磨步骤。 `mvcgen' invariants?`（建议模式）也适用于`sym => …`块。
+巩固了`mvcgen'`跨策略和磨练（`sym =>`）模式的语法。`grind` 模式`with`子句已删除（使用`<;>`代替），并且策略级别`with`现在采用与`mvcgen'`共享E图的单个研磨步骤。 `mvcgen' invariants?`（建议模式）也适用于`sym => …`块。
 
 - [#13944](https://github.com/leanprover/lean4/pull/13944)
 将`CNF.convertLRAT'`中的`filterMap`更改为`map`，以便同义反复子句在数组中变为`none`而不是被删除。
@@ -498,7 +498,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___32___0-_LPAR_2026-0
 仅当`RC > 1`时才会触发。然而，`RC = 0`和`RC < 0`也是非线性触发器。
 
 - [#13924](https://github.com/leanprover/lean4/pull/13924)
-修复了当递归定义（有充分依据的或结构性的）由 `noncomputable section` 标记然后从可计算代码中引用时发生的代码生成器恐慌。现在，编译器会报告一个干净的错误，或者当所有内容都发生在 `noncomputable section` 中时接受第二个定义。
+修复了当递归定义（有充分依据的或结构性的）由 `noncomputable section` 标记然后从可计算代码中引用时发生的代码生成器崩溃。现在，编译器会报告一个干净的错误，或者当所有内容都发生在 `noncomputable section` 中时接受第二个定义。
 
 ```
 
@@ -514,7 +514,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___32___0-_LPAR_2026-0
 
 ```
 
-# 湖
+# Lake
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___32___0-_LPAR_2026-07-13_RPAR_--Lake"
 %%%
@@ -549,7 +549,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___32___0-_LPAR_2026-0
 修复了潜在杂散文件的存在可能影响模块是否加载到模块系统下的问题，从而导致意外行为
 
 - [#14019](https://github.com/leanprover/lean4/pull/14019)
-修复 `mkSimpleThunkType` 使用 `_` 而不是 `Name.anonymous` 作为其活页夹名称。用户名为 `Name.anonymous` 的本地声明与 `resolveLocalName` 中的每个标识符匹配，隐藏所有全局常量并使漂亮打印机将本地上下文中的每个常量渲染为不可访问（例如，`True✝`）。 `match`编译器使用`mkSimpleThunkType`创建无参数替代方案的次要前提，并且使用逐字绑定程序名称引入这些绑定程序的策略（例如，`grind`）最终导致本地上下文损坏。在调查 #13773 时发现。
+修复 `mkSimpleThunkType` 使用 `_` 而不是 `Name.anonymous` 作为绑定器名称的问题。名称为 `Name.anonymous` 的局部声明会在 `resolveLocalName` 中匹配每个标识符，从而遮蔽所有全局常量，并使美化打印器把局部上下文中的每个常量都渲染为不可访问的名称（例如 `True✝`）。`match` 编译器使用 `mkSimpleThunkType` 为无参数分支创建次要前提；按原样使用绑定器名称引入这些绑定器的策略（如 `grind`）最终会破坏局部上下文。此问题在调查 #13773 时发现。
 
 - [#13965](https://github.com/leanprover/lean4/pull/13965)
 添加了**实验性** 命令行界面标志，用于缓存 `lean` 的详细状态，用于跨调用的进程内增量：
