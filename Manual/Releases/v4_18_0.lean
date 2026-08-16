@@ -108,7 +108,7 @@ Lean v4.18 带来了多项令人振奋的新特性：
 
 * [#7255](https://github.com/leanprover/lean4/pull/7255) 修复了 `Min (Option α)` 的定义。这是一次 **破坏性变更**。现在 `none` 被视为最小元素，因此对任意 `x : Option α` 都有 `min none x = min x none = none`。在 nightly-2025-02-27 之前，我们则有 `min none (some x) = min (some x) none = some x`。该 PR 还补充了 `Option` 上 `min`、`max`、`≤` 与 `<` 之间关系的基础引理。
 
-`BitVec` 与定宽整数类型（`IntX`）的验证 API 有显著进展，同时也在持续推进 `List/Array/Vector` API 的对齐工作。关于 `Int.ediv/fdiv/tdiv` 的若干引理也得到了加强。
+BitVec 与定宽整数类型（`IntX`）的验证 API 有显著进展，同时也在持续推进 `List/Array/Vector` API 的对齐工作。关于 `Int.ediv/fdiv/tdiv` 的若干引理也得到了加强。
 
 [#6950](https://github.com/leanprover/lean4/pull/6950) 为标准库新增了[风格指南](https://github.com/leanprover/lean4/blob/master/doc/std/style.md)和[命名约定](https://github.com/leanprover/lean4/blob/master/doc/std/naming.md)。
 
@@ -135,7 +135,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___18___0-_LPAR_2025-0
 
 * [#6935](https://github.com/leanprover/lean4/pull/6935) 添加了 `expose_names` 策略；详见上方亮点部分。
 
-* [#6936](https://github.com/leanprover/lean4/pull/6936) 修复了 `#discr_tree_simp_key` 命令，因为它在 `lhs ≠ rhs` 中只显示 `lhs` 的键，但 `simp` 实际索引的是 `lhs = rhs`。
+* [#6936](https://github.com/leanprover/lean4/pull/6936) 修复了 `#discr_tree_simp_key` 命令，因为它在 `lhs ≠ rhs` 中只显示 `lhs` 的键，但 simp 实际索引的是 `lhs = rhs`。
 
 * [#6939](https://github.com/leanprover/lean4/pull/6939) 为 `inductive` 声明中构造子名称冲突以及 `mutual` 声明中名称冲突的情况添加了错误信息。
 
@@ -186,7 +186,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___18___0-_LPAR_2025-0
 
 * [#7192](https://github.com/leanprover/lean4/pull/7192) 防止 `exact?` 和 `apply?` 建议那些虽然对应正确证明、却无法精化的策略；同时也允许它们在需要时建议使用 `expose_names`。
 
-* [#7200](https://github.com/leanprover/lean4/pull/7200) 允许 `DiscrTree.Key` 的调试形式自动换行。
+* [#7200](https://github.com/leanprover/lean4/pull/7200) 允许 DiscrTree.Key 的调试形式自动换行。
 
 * [#7213](https://github.com/leanprover/lean4/pull/7213) 在运行时初始化期间调用 `SetConsoleOutputCP(CP_UTF8)`，以便在 Windows 控制台中正确显示 Unicode。这同时影响 Lean 可执行文件本身以及用户可执行文件（包括 Lake）。
 
@@ -318,7 +318,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___18___0-_LPAR_2025-0
 
 * [#7002](https://github.com/leanprover/lean4/pull/7002) 实现了线性整数算术表达式的规范化器。由于存在一些多余的 `[simp]` 属性，它尚未接入 `simp +arith`。
 
-* [#7011](https://github.com/leanprover/lean4/pull/7011) 为整数加入了 `simp +arith`。它使用 `grind` 的新线性整数算术规范化器。我们仍需实现按系数最大公约数整除的支持；该 PR 还修复了规范化器中的若干错误。
+* [#7011](https://github.com/leanprover/lean4/pull/7011) 为整数加入了 `simp +arith`。它使用 grind 的新线性整数算术规范化器。我们仍需实现按系数最大公约数整除的支持；该 PR 还修复了规范化器中的若干错误。
 
 * [#7015](https://github.com/leanprover/lean4/pull/7015) 确保 `simp +arith` 会规范化线性整数多项式中的系数。目前仍有一个待办项：收紧不等式的界。
 
@@ -590,13 +590,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___18___0-_LPAR_2025-0
 
 * [#6928](https://github.com/leanprover/lean4/pull/6928) 在 LCNF elimDeadBranches 分析中，让 extern 声明求值为 ⊤，而不是 ⊥ 的默认值。
 
-* [#6930](https://github.com/leanprover/lean4/pull/6930) 修改了特化后的 LCNF 声明的名称生成方式，不再去除宏作用域。这避免了在不同宏作用域中创建的特化之间发生名称冲突。由于常规的 `Name.append` 会检查宏作用域是否存在，因此这里需要使用 `appendCore`。
+* [#6930](https://github.com/leanprover/lean4/pull/6930) 修改了特化后的 LCNF 声明的名称生成方式，不再去除宏作用域。这避免了在不同宏作用域中创建的特化之间发生名称冲突。由于常规的 Name.append 会检查宏作用域是否存在，因此这里需要使用 appendCore。
 
 * [#6976](https://github.com/leanprover/lean4/pull/6976) 扩展了 `Task.map/bind` 等中 `sync` 标志的行为：即使必须先等待首个任务完成，也会以同步方式执行后续部分，从而大幅降低这类任务的开销。因此，该标志现在等价于 .NET 中的 `TaskContinuationOptions.ExecuteSynchronously`。
 
 * [#7037](https://github.com/leanprover/lean4/pull/7037) 将 Lean 及 Lean 可执行文件在 x86-64 Linux 上所需的最低 glibc 版本放宽到 2.26。
 
-* [#7041](https://github.com/leanprover/lean4/pull/7041) 将若干 LCNF 专用环境扩展的 `asyncMode` 从默认的 `.mainOnly` 改为 `.sync`，从而让它们即使在异步上下文中也能正常工作。
+* [#7041](https://github.com/leanprover/lean4/pull/7041) 将若干 LCNF 专用环境扩展的 asyncMode 从默认的 .mainOnly 改为 .sync，从而让它们即使在异步上下文中也能正常工作。
 
 * [#7086](https://github.com/leanprover/lean4/pull/7086) 让新代码生成器中的 arity reduction 阶段在处理无已用参数声明时与旧版本保持一致。这很重要，因为否则我们可能创建一个不带参数的顶层声明，却包含不可达代码，而这些代码会在初始化期间被无条件求值。用新代码生成器构建的 Init.Core 在初始化时确实会出现这种情况。
 
@@ -707,6 +707,6 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___18___0-_LPAR_2025-0
 
 * [#7184](https://github.com/leanprover/lean4/pull/7184) 为 macOS 添加了对 LEAN_BACKTRACE 的支持。此前这只在 glibc 下可用，但现在可以在所有类 Unix 系统上启用，因为例如 Musl 并不支持它。
 
-* [#7190](https://github.com/leanprover/lean4/pull/7190) 让 stage2 的 Leanc 构建使用 stage2 oleans，而不是 stage1 oleans。此前之所以会发生错误，是因为 Leanc 自身的 OLEAN_OUT 位于构建根目录，而不是 `lib/lean` 子目录；当构建过程把这个 OLEAN_OUT 添加到 LEAN_PATH 时，该位置找不到任何 oleans，于是搜索退回到了 stage1 安装位置。
+* [#7190](https://github.com/leanprover/lean4/pull/7190) 让 stage2 的 Leanc 构建使用 stage2 oleans，而不是 stage1 oleans。此前之所以会发生错误，是因为 Leanc 自身的 OLEAN_OUT 位于构建根目录，而不是 lib/lean 子目录；当构建过程把这个 OLEAN_OUT 添加到 LEAN_PATH 时，该位置找不到任何 oleans，于是搜索退回到了 stage1 安装位置。
 
 ````

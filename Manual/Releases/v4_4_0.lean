@@ -40,7 +40,7 @@ file := "v4.4.0"
   ```
 * [重命名请求处理器](https://github.com/leanprover/lean4/pull/2462)。
 * [import 自动补全](https://github.com/leanprover/lean4/pull/2904)。
-* [使用 `pp.beta` 在美观打印时做 beta 归约](https://github.com/leanprover/lean4/pull/2864)。
+* [使用 pp.beta 在美观打印时做 beta 归约](https://github.com/leanprover/lean4/pull/2864)。
 * [在 .olean 中嵌入并检查 git 哈希](https://github.com/leanprover/lean4/pull/2766)。
 * [为良基递归猜测字典序](https://github.com/leanprover/lean4/pull/2874)。
 * [允许在元组、列表和 tactic 中使用尾随逗号](https://github.com/leanprover/lean4/pull/2643)。

@@ -130,7 +130,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___19___0-_LPAR_2025-0
 * 异步机制方面的发展；
 * 整数除法 API 的标准化；
 * 有限类型之间的转换；
-* `BitVec` 和树映射的 API 扩展；
+* BitVec 和树映射的 API 扩展；
 * Bitwuzla 重写规则的证明；
 * 对 `List`/`Array`/`Vector` 以及 `HashMap` 和 `Int`/`Nat` 的改进。
 
@@ -152,11 +152,11 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___19___0-_LPAR_2025-0
 
 * [#5182](https://github.com/leanprover/lean4/pull/5182) 让通过良基递归定义的函数默认使用 `opaque` 的良基性证明；详见上方亮点部分。
 
-* [#5998](https://github.com/leanprover/lean4/pull/5998) 让 `omega` 始终将自身证明抽象为辅助定义。借此，`Vector.Extract` 的 olean 大小从 20MB 降至 5MB，整个 stdlib 的 olean 总大小和构建指令数都下降了 5%。
+* [#5998](https://github.com/leanprover/lean4/pull/5998) 让 `omega` 始终将自身证明抽象为辅助定义。借此，Vector.Extract 的 olean 大小从 20MB 降至 5MB，整个 stdlib 的 olean 总大小和构建指令数都下降了 5%。
 
 * [#6325](https://github.com/leanprover/lean4/pull/6325) 确保环境可以被反复加载，而不会执行任意代码。
 
-* [#7075](https://github.com/leanprover/lean4/pull/7075) 确保 `simp?` 等策略建议的名称不会被局部上下文中的辅助声明遮蔽，并确保 `let rec` 与 `where` 声明的名称在策略块中能够被正确解析。
+* [#7075](https://github.com/leanprover/lean4/pull/7075) 确保 `simp?` 等策略建议的名称不会被局部上下文中的辅助声明遮蔽，并确保 let rec 与 `where` 声明的名称在策略块中能够被正确解析。
 
 * [#7166](https://github.com/leanprover/lean4/pull/7166) 将递归函数“固定参数”的概念扩展到位于变化函数参数之后的参数；详见上方亮点部分。
 
@@ -273,9 +273,9 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___19___0-_LPAR_2025-0
 
 * [#7381](https://github.com/leanprover/lean4/pull/7381) 重构了支撑 bv_decide 的 AIG 数据结构，以便更好地跟踪电路中的取反。这次重构有两个效果：一是为 AIG 框架加入了完整的常量折叠，二是让我们能够在未来继续加入 Brummayer/Biere 论文中的更多简化，而此前在架构上这是不可能做到的。
 
-* [#7390](https://github.com/leanprover/lean4/pull/7390) 让 bv_decide 的预处理能够处理 cast。由于我们处在常量 BitVec 片段中，应当总能利用 `BitVec.cast_eq` 将它们移除。
+* [#7390](https://github.com/leanprover/lean4/pull/7390) 让 bv_decide 的预处理能够处理 cast。由于我们处在常量 BitVec 片段中，应当总能利用 BitVec.cast_eq 将它们移除。
 
-* [#7407](https://github.com/leanprover/lean4/pull/7407) 将 `-1#w * a = -a` 和 `a * -1#w = -a` 两条规则加入 `bv_normalize`，对应 Bitwuzla 中的 BV_MUL_SPECIAL_CONST。
+* [#7407](https://github.com/leanprover/lean4/pull/7407) 将 `-1#w * a = -a` 和 `a * -1#w = -a` 两条规则加入 bv_normalize，对应 Bitwuzla 中的 BV_MUL_SPECIAL_CONST。
 
 * [#7417](https://github.com/leanprover/lean4/pull/7417) 为 bv_decide 添加了对带默认分支的枚举归纳匹配的支持。
 
@@ -291,7 +291,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___19___0-_LPAR_2025-0
 
 * [#7480](https://github.com/leanprover/lean4/pull/7480) 为 Bitwuzla 规则 BV_ULT_SPECIAL_CONST、BV_SIGN_EXTEND_ELIM、TODO 添加了所需重写。
 
-* [#7486](https://github.com/leanprover/lean4/pull/7486) 将 #7481 中引入的 `BitVec.add_neg_mul` 规则加入 bv_decide 的预处理器。
+* [#7486](https://github.com/leanprover/lean4/pull/7486) 将 #7481 中引入的 BitVec.add_neg_mul 规则加入 bv_decide 的预处理器。
 
 * [#7491](https://github.com/leanprover/lean4/pull/7491) 通过改进输入校验，加速了 bv_decide 的 LRAT 检查器。
 
@@ -450,7 +450,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___19___0-_LPAR_2025-0
 
 * [#7319](https://github.com/leanprover/lean4/pull/7319) 继续对齐关于 `Int.ediv/fdiv/tdiv` 的引理，包括补充某些只在部分情形成立、因此在另一些情形“缺失”的引理说明。同时也加入了关于 `emod/fmod/tmod` 的引理。仍然还有后续工作要做。
 
-* [#7338](https://github.com/leanprover/lean4/pull/7338) 为 `Int.neg_inj` 添加了 `@[simp]`。
+* [#7338](https://github.com/leanprover/lean4/pull/7338) 为 `Int.neg_inj` 添加了 @[simp]。
 
 * [#7341](https://github.com/leanprover/lean4/pull/7341) 为哈希映射添加了一个等价关系以及若干相关引理。
 
@@ -482,7 +482,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___19___0-_LPAR_2025-0
 
 * [#7516](https://github.com/leanprover/lean4/pull/7516) 调整了 `List.modify` 和 `List.insertIdx` 的参数顺序，使其与 `Array` 保持一致。
 
-* [#7522](https://github.com/leanprover/lean4/pull/7522) 将 #7484 所需的 `Nat`、`Fin` 和 `BitVec` 理论拆分出来单独提交。
+* [#7522](https://github.com/leanprover/lean4/pull/7522) 将 #7484 所需的 `Nat`、`Fin` 和 BitVec 理论拆分出来单独提交。
 
 * [#7529](https://github.com/leanprover/lean4/pull/7529) 将 `bind_congr` 从 Mathlib 上游同步过来，并证明有序列表的最小值就是其表头，同时弱化了 `min?_eq_some_iff` 的反对称性条件。`min?_eq_some_iff` 现在不再要求 `Std.Antisymm` 实例，而只需要一个证明，说明该关系在 *列表元素上* 是反对称的。如果省略这个新前提，自动参数会尝试从 `Std.Antisymm` 推导，因此该定理的现有用法大多仍可继续工作。
 
@@ -686,7 +686,9 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___19___0-_LPAR_2025-0
       else
         extractLsb' (start - w) len xhi
 
-* [#7493](https://github.com/leanprover/lean4/pull/7493) 实现了 Bitwuzla 的重写规则 [NORM_BV_ADD_MUL](https://github.com/bitwuzla/bitwuzla/blob/e09c50818b798f990bd84bf61174553fef46d561/src/rewrite/rewrites_bv_norm.cpp#L19-L23)，并添加了相关引理以便高效重写：
+* [#7493](https://github.com/leanprover/lean4/pull/7493) implements the Bitwuzla rewrite rule
+  [NORM_BV_ADD_MUL](https://github.com/bitwuzla/bitwuzla/blob/e09c50818b798f990bd84bf61174553fef46d561/src/rewrite/rewrites_bv_norm.cpp#L19-L23),
+  and the associated lemmas to allow for expedient rewriting:
 
   ```lean
   theorem neg_add_mul_eq_mul_not {x y : BitVec w} : - (x + x * y) = x * ~~~ y
@@ -816,7 +818,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___19___0-_LPAR_2025-0
 
 * [#7543](https://github.com/leanprover/lean4/pull/7543) 将动态目标、外部库、Lean 库和 Lean 可执行文件的配置声明统一为单一数据类型，并存放在包内部的统一映射中。
 
-  **破坏性变更：** 用户现在不能再定义多个名称相同但种类不同的目标（例如同时定义一个名为 `foo` 的 Lean 可执行文件和一个名为 `foo` 的 Lean 库）。这应当不会影响大多数用户，因为 Lake DSL 原本就不鼓励这样做。
+  **破坏性变更：** 用户现在不能再定义多个名称相同但种类不同的目标（例如同时定义一个名为 foo 的 Lean 可执行文件和一个名为 `foo` 的 Lean 库）。这应当不会影响大多数用户，因为 Lake DSL 原本就不鼓励这样做。
 
 * [#7576](https://github.com/leanprover/lean4/pull/7576) 修改了 Lake：在 Windows 上构建可执行文件和库（静态库与共享库）时，会生成并使用响应文件。这是为了避免可能超过 Windows 命令行长度限制。
 

@@ -25,7 +25,7 @@ file := "v4.15.0"
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___15___0-_LPAR_2025-01-04_RPAR_--Language"
 %%%
 
-- [#4595](https://github.com/leanprover/lean4/pull/4595) 实现了 `Simp.Config.implicitDefEqsProofs`。当其为 `true`（默认即为 `true`）时，`simp` **不会** 为与 `rfl` 定理关联的重写规则构造证明项。用户通过给定理加上 `@[simp]` 属性来提供重写规则。如果定理的证明只是 `rfl`（自反性），并且 `implicitDefEqProofs := true`，那么 `simp` **不会** 构造一个应用该注解定理的证明项。
+- [#4595](https://github.com/leanprover/lean4/pull/4595) 实现了 `Simp.Config.implicitDefEqsProofs`。当其为 `true`（默认即为 `true`）时，`simp` **不会** 为与 `rfl` 定理关联的重写规则构造证明项。用户通过给定理加上 @[simp] 属性来提供重写规则。如果定理的证明只是 `rfl`（自反性），并且 `implicitDefEqProofs := true`，那么 `simp` **不会** 构造一个应用该注解定理的证明项。
 
 - [#5429](https://github.com/leanprover/lean4/pull/5429) 避免负向环境查找。
 
@@ -39,27 +39,27 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___15___0-_LPAR_2025-0
 
 - [#5934](https://github.com/leanprover/lean4/pull/5934) 让 `all_goals` 在失败时会 admit 目标。
 
-- [#5942](https://github.com/leanprover/lean4/pull/5942) 在 `bv_decide` 中引入合成原子记号。
+- [#5942](https://github.com/leanprover/lean4/pull/5942) 在 bv_decide 中引入合成原子记号。
 
 - [#5945](https://github.com/leanprover/lean4/pull/5945) 新增定义 `Message.kind`，用于返回消息的顶层标签。它会以新字段 `kind` 序列化到 `SerialMessaege` 中，以便外部消费者（例如 Lake）可以通过 `lean --json` 识别消息类型。
 
 - [#5968](https://github.com/leanprover/lean4/pull/5968) 修复了 `arg` conv 策略在报错时错误报告参数个数的问题。
 
-- [#5979](https://github.com/leanprover/lean4/pull/5979) 在 `bv_decide` 中加入 `BitVec.twoPow`。
+- [#5979](https://github.com/leanprover/lean4/pull/5979) 在 bv_decide 中加入 BitVec.twoPow。
 
 - [#5991](https://github.com/leanprover/lean4/pull/5991) 简化了 `omega` 的实现。
 
-- [#5992](https://github.com/leanprover/lean4/pull/5992) 修复 `bv_decide` normalizer 的样式问题。
+- [#5992](https://github.com/leanprover/lean4/pull/5992) 修复 bv_decide normalizer 的样式问题。
 
 - [#5999](https://github.com/leanprover/lean4/pull/5999) 为 `decide`/`decide!`/`native_decide` 新增配置选项，并将这些策略重构为同一后端的前端。新增 `+revert` 选项，可清理局部上下文并回退目标所依赖的所有局部变量，以及间接的命题性假设。它还让 `native_decide` 在失败时于精化阶段报错，同时不牺牲性能（判定过程仍只执行一次）。现在 `native_decide` 还支持宇宙多态。
 
-- [#6010](https://github.com/leanprover/lean4/pull/6010) 将 `bv_decide` 的配置方式从大量 `set_option` 改为类似 `simp` 或 `omega` 的 elaborated 配置。值得注意的例外是 `sat.solver`，它仍然是 `set_option`，以便用户能为整个项目或文件全局配置自定义 SAT 求解器。此外，还通过新配置引入了为 simp 预处理设置 `maxSteps` 的能力。
+- [#6010](https://github.com/leanprover/lean4/pull/6010) 将 bv_decide 的配置方式从大量 `set_option` 改为类似 `simp` 或 `omega` 的 elaborated 配置。值得注意的例外是 `sat.solver`，它仍然是 `set_option`，以便用户能为整个项目或文件全局配置自定义 SAT 求解器。此外，还通过新配置引入了为 simp 预处理设置 `maxSteps` 的能力。
 
 - [#6012](https://github.com/leanprover/lean4/pull/6012) 改进了对新语法词元的校验。此前校验代码存在不一致：有些原子记号只有在带有前导空格作为漂亮打印器提示时才会被接受。另外，带内部空白的原子记号现在不再允许。
 
 - [#6016](https://github.com/leanprover/lean4/pull/6016) 移除了 `decide!` 策略，改用 `decide +kernel`（破坏性变更）。
 
-- [#6019](https://github.com/leanprover/lean4/pull/6019) 从 `MkBinding.mkBinding` 中移除了 `@[specilize]`，因为这个函数无法被特化（它的参数里没有函数）。结果是，本可特化的函数 `Nat.foldRevM.loop` 也不再被特化，从而导致生成的代码性能更差。
+- [#6019](https://github.com/leanprover/lean4/pull/6019) 从 `MkBinding.mkBinding` 中移除了 @[specilize]，因为这个函数无法被特化（它的参数里没有函数）。结果是，本可特化的函数 `Nat.foldRevM.loop` 也不再被特化，从而导致生成的代码性能更差。
 
 - [#6022](https://github.com/leanprover/lean4/pull/6022) 让 `change` 策略和 conv 策略使用相同的精化策略。它对目标和局部假设都一致生效。现在 `change` 可以为元变量赋值，例如：
 ```lean
@@ -77,7 +77,7 @@ example (p : Nat × Nat) : p = p := by
 ```
 因此，这是一项破坏性变更；你可能需要调整表达式，显式写出额外的隐式参数。
 
-- [#6029](https://github.com/leanprover/lean4/pull/6029) 为 `bv_normalize`（由 `bv_decide` 使用）新增一条规范化规则：在适当条件下把 `x / 2^k` 转换为 `x >>> k`。这使我们能够把用于 bitblasting 的昂贵除法电路化简为成本低得多的移位电路。具体来说，它允许进行如下规范化：
+- [#6029](https://github.com/leanprover/lean4/pull/6029) 为 `bv_normalize`（由 bv_decide 使用）新增一条规范化规则：在适当条件下把 `x / 2^k` 转换为 `x >>> k`。这使我们能够把用于 bitblasting 的昂贵除法电路化简为成本低得多的移位电路。具体来说，它允许进行如下规范化：
 
 - [#6030](https://github.com/leanprover/lean4/pull/6030) 修复了 #5020 之后的 `simp only [· ∈ ·]`。
 
@@ -93,11 +93,11 @@ example (p : Nat × Nat) : p = p := by
 
 - [#6053](https://github.com/leanprover/lean4/pull/6053) 修复了 `whnf` 和 `isDefEq` 的缓存基础设施，确保缓存会考虑所有相关配置标志。同时也清理了 `WHNF.lean` 模块，并改进了 `whnf` 的配置。
 
-- [#6061](https://github.com/leanprover/lean4/pull/6061) 新增一个 `simp_arith` 基准测试。
+- [#6061](https://github.com/leanprover/lean4/pull/6061) 新增一个 simp_arith 基准测试。
 
-- [#6062](https://github.com/leanprover/lean4/pull/6062) 优化 `Nat.Linear.Expr.toPoly`。
+- [#6062](https://github.com/leanprover/lean4/pull/6062) 优化 Nat.Linear.Expr.toPoly。
 
-- [#6064](https://github.com/leanprover/lean4/pull/6064) 优化 `Nat.Linear.Poly.norm`。
+- [#6064](https://github.com/leanprover/lean4/pull/6064) 优化 Nat.Linear.Poly.norm。
 
 - [#6068](https://github.com/leanprover/lean4/pull/6068) 在需要处理许多变量时，改进了 `simp_arith` 的渐进性能。
 
@@ -105,7 +105,7 @@ example (p : Nat × Nat) : p = p := by
 
 - [#6082](https://github.com/leanprover/lean4/pull/6082) 改变了规范化器处理 `forall` 和 `lambda` 的方式，用临时 fvar 替换 bvar。它修复了 @hrmacbeth 在 [zulip](https://leanprover.zulipchat.com/#narrow/channel/270676-lean4/topic/Quantifiers.20in.20CanonM/near/482483448) 上报告的一个问题。
 
-- [#6093](https://github.com/leanprover/lean4/pull/6093) 在 ArgsPacker 中使用 `mkFreshUserName`。
+- [#6093](https://github.com/leanprover/lean4/pull/6093) 在 ArgsPacker 中使用 mkFreshUserName。
 
 - [#6096](https://github.com/leanprover/lean4/pull/6096) 改进了结构体上的 `#print` 命令，使其显示全部字段，以及这些字段继承自哪些父级，同时隐藏哪些父级以子对象表示等内部细节。如果有需要，这些信息仍保留在构造子中。私有常量的漂亮打印器也得到改进；它现在会像处理其他名称一样处理来自当前模块的私有名称，而来自其他模块的私有名称会被做卫生化处理。
 
@@ -113,7 +113,7 @@ example (p : Nat × Nat) : p = p := by
 
 - [#6105](https://github.com/leanprover/lean4/pull/6105) 修复了由元变量上下文中的循环赋值导致的栈溢出。该循环是由结构体实例精化器无意引入的。
 
-- [#6108](https://github.com/leanprover/lean4/pull/6108) 在 `apply?` 结果中关闭 `pp.mvars`。
+- [#6108](https://github.com/leanprover/lean4/pull/6108) 在 apply? 结果中关闭 pp.mvars。
 
 - [#6109](https://github.com/leanprover/lean4/pull/6109) 修复了 `injection` 策略中的一个问题。该策略可能会执行多个子策略；如果其中任何一个失败，我们就必须回溯部分赋值。这个问题曾在问题 #6066 中导致报错：“`mvarId` is already assigned”。该问题仍未完全解决，因为其中示例里的匹配表达式方程生成器仍然会失败。
 
@@ -144,7 +144,7 @@ structure PosFun where
   pos : ∀ n, 0 < f n
 ```
 
-- [#6168](https://github.com/leanprover/lean4/pull/6168) 扩展了 rewrite 策略中 “动机 is not 类型 correct” 的报错信息，解释其含义；同时还会漂亮打印出类型不正确的动机，并报告相应的类型错误。
+- [#6168](https://github.com/leanprover/lean4/pull/6168) 扩展了 rewrite 策略中“动机类型不正确”的报错信息，解释其含义；同时还会漂亮打印出类型不正确的动机，并报告相应的类型错误。
 
 - [#6170](https://github.com/leanprover/lean4/pull/6170) 新增核心元编程函数，用于在精化中 fork 出后台任务，并使其结果对报告系统和语言服务器可见。
 
@@ -167,7 +167,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___15___0-_LPAR_2025-0
 
 - [#4904](https://github.com/leanprover/lean4/pull/4904) 为 Lean 4 Std 引入日期与时间功能。
 
-- [#5616](https://github.com/leanprover/lean4/pull/5616) 是对 https://github.com/leanprover/lean4/pull/5609 的后续补充，添加了在分母为零时刻画 `smtUDiv` 和 `smtSDiv` 行为的引理。
+- [#5616](https://github.com/leanprover/lean4/pull/5616) 承接 https://github.com/leanprover/lean4/pull/5609, 添加了添加了在分母为零时刻画 `smtUDiv` 和 `smtSDiv` 行为的引理。
 
 - [#5866](https://github.com/leanprover/lean4/pull/5866) 验证了 `Std.HashMap` 上的 `keys` 函数。
 
@@ -179,51 +179,51 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___15___0-_LPAR_2025-0
 
 - [#5937](https://github.com/leanprover/lean4/pull/5937) 将关于 Fin.foldX 的引理上游化。
 
-- [#5938](https://github.com/leanprover/lean4/pull/5938) 将 `List.ofFn` 上游化，并将其与 `Array.ofFn` 关联起来。
+- [#5938](https://github.com/leanprover/lean4/pull/5938) 将 List.ofFn 上游化，并将其与 Array.ofFn 关联起来。
 
-- [#5941](https://github.com/leanprover/lean4/pull/5941) 加入 `List.mapFinIdx` 及其引理，并与 `Array` 版本关联起来。
+- [#5941](https://github.com/leanprover/lean4/pull/5941) 加入 List.mapFinIdx 及其引理，并与 Array 版本关联起来。
 
 - [#5949](https://github.com/leanprover/lean4/pull/5949) 合并 `decide_True` 与 `decide_true_eq_true`。
 
-- [#5950](https://github.com/leanprover/lean4/pull/5950) 将 `Array.takeWhile` 与 `List.takeWhile` 关联起来。
+- [#5950](https://github.com/leanprover/lean4/pull/5950) 将 Array.takeWhile 与 List.takeWhile 关联起来。
 
-- [#5951](https://github.com/leanprover/lean4/pull/5951) 移除 `BitVec.ofFin_sub` 与 `sub_ofFin` 上的 `@[simp]`。
+- [#5951](https://github.com/leanprover/lean4/pull/5951) 移除 BitVec.ofFin_sub 与 sub_ofFin 上的 `@[simp]`。
 
-- [#5952](https://github.com/leanprover/lean4/pull/5952) 将 `Array.eraseIdx` 与 `List.eraseIdx` 关联起来。
+- [#5952](https://github.com/leanprover/lean4/pull/5952) 将 Array.eraseIdx 与 List.eraseIdx 关联起来。
 
 - [#5961](https://github.com/leanprover/lean4/pull/5961) 定义 ISize 及其基础操作。
 
-- [#5969](https://github.com/leanprover/lean4/pull/5969) 将 `List.insertIdx` 从 Batteries 上游化、将相关引理从 Mathlib 上游化，并修订这些引理。
+- [#5969](https://github.com/leanprover/lean4/pull/5969) 将 List.insertIdx 从 Batteries 上游化、将相关引理从 Mathlib 上游化，并修订这些引理。
 
-- [#5970](https://github.com/leanprover/lean4/pull/5970) 弃用 `Array.split`，改用等价的 `Array.partition`。
+- [#5970](https://github.com/leanprover/lean4/pull/5970) 弃用 Array.split，改用等价的 Array.partition。
 
-- [#5971](https://github.com/leanprover/lean4/pull/5971) 将 `Array.isPrefixOf` 与 `List.isPrefixOf` 关联起来。
+- [#5971](https://github.com/leanprover/lean4/pull/5971) 将 Array.isPrefixOf 与 List.isPrefixOf 关联起来。
 
-- [#5972](https://github.com/leanprover/lean4/pull/5972) 将 `Array.zipWith`/`zip`/`unzip` 与 `List` 版本关联起来。
+- [#5972](https://github.com/leanprover/lean4/pull/5972) 将 Array.zipWith/zip/unzip 与 List 版本关联起来。
 
-- [#5974](https://github.com/leanprover/lean4/pull/5974) 再添加一个 `List.find?_eq_some` 引理。
+- [#5974](https://github.com/leanprover/lean4/pull/5974) 再添加一个 List.find?_eq_some 引理。
 
 - [#5981](https://github.com/leanprover/lean4/pull/5981) 将默认的 SizeOf 实例命名为 `instSizeOfDefault`。
 
-- [#5982](https://github.com/leanprover/lean4/pull/5982) 添加关于 `List.ofFn` 的一些小引理。
+- [#5982](https://github.com/leanprover/lean4/pull/5982) 添加关于 List.ofFn 的一些小引理。
 
-- [#5984](https://github.com/leanprover/lean4/pull/5984) 为 `List` 添加引理，描述 {`foldl`, `foldr`, `foldlM`, `foldlrM`} 与 {`filter`, `filterMap`} 之间的相互作用。
+- [#5984](https://github.com/leanprover/lean4/pull/5984) 为 List 添加引理，描述 {`foldl`, `foldr`, `foldlM`, `foldlrM`} 与 {`filter`, `filterMap`} 之间的相互作用。
 
-- [#5985](https://github.com/leanprover/lean4/pull/5985) 将 `Array` 上的 `findSomeM?`、`findM?`、`findSome?` 和 `find?` 与 `List` 上的对应操作关联起来，并为 `Array` 的 `findSomeRevM?`、`findRevM?`、`findSomeRev?`、`findRev?` 提供 simp 引理（用 `reverse` 和常规正向查找操作来表述）。
+- [#5985](https://github.com/leanprover/lean4/pull/5985) 将 `Array` 上的 `findSomeM?`、`findM?`、`findSome?` 和 `find?` 与 List 上的对应操作关联起来，并为 `Array` 的 `findSomeRevM?`、`findRevM?`、`findSomeRev?`、`findRev?` 提供 simp 引理（用 `reverse` 和常规正向查找操作来表述）。
 
-- [#5987](https://github.com/leanprover/lean4/pull/5987) 在 `bv_decide` 中加入 `BitVec.getMsbD`。
+- [#5987](https://github.com/leanprover/lean4/pull/5987) 在 `bv_decide` 中加入 BitVec.getMsbD。
 
-- [#5988](https://github.com/leanprover/lean4/pull/5988) 修改 `Array.set` 的签名，使其接受 `Nat` 和一个由策略提供的边界证明，而不是 `Fin`。
+- [#5988](https://github.com/leanprover/lean4/pull/5988) 修改 `Array.set` 的签名，使其接受 Nat 和一个由策略提供的边界证明，而不是 `Fin`。
 
-- [#5995](https://github.com/leanprover/lean4/pull/5995) 在 `bv_decide` 中加入 `BitVec.sshiftRight'`。
+- [#5995](https://github.com/leanprover/lean4/pull/5995) 在 `bv_decide` 中加入 BitVec.sshiftRight'。
 
-- [#6007](https://github.com/leanprover/lean4/pull/6007) 修复 `List.modifyTailIdx` 的命名。
+- [#6007](https://github.com/leanprover/lean4/pull/6007) 修复 List.modifyTailIdx 的命名。
 
-- [#6008](https://github.com/leanprover/lean4/pull/6008) 为单子 transformer 的 ext 引理补上缺失的 `@[ext]` 属性。
+- [#6008](https://github.com/leanprover/lean4/pull/6008) 为单子 transformer 的 ext 引理补上缺失的 @[ext] 属性。
 
-- [#6023](https://github.com/leanprover/lean4/pull/6023) 添加 `List.forIn_eq_foldlM` 的多个变体。
+- [#6023](https://github.com/leanprover/lean4/pull/6023) 添加 List.forIn_eq_foldlM 的多个变体。
 
-- [#6025](https://github.com/leanprover/lean4/pull/6025) 弃用重复的 `Fin.size_pos`。
+- [#6025](https://github.com/leanprover/lean4/pull/6025) 弃用重复的 Fin.size_pos。
 
 - [#6032](https://github.com/leanprover/lean4/pull/6032) 修改 `Array.get` 的签名，使其接受 `Nat` 与一个证明，而不是 `Fin`，以与其余（规划中的）Array API 保持一致。请注意，由于引导构建问题，我们无法把 `get_elem_tactic` 作为该证明的 autoparameter 提供。鉴于用户大多会使用 `GetElem` 提供的 `xs[i]` 记法，这应该不是问题。
 
@@ -233,9 +233,9 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___15___0-_LPAR_2025-0
 
 - [#6052](https://github.com/leanprover/lean4/pull/6052) 新增 `Array.pmap`，以及一个基于零拷贝 `Array.attachWith` 的 `@[csimp]` 引理。
 
-- [#6055](https://github.com/leanprover/lean4/pull/6055) 延续 `List` 上已有的引理，为 `Array` 上的 `for` 循环添加引理。
+- [#6055](https://github.com/leanprover/lean4/pull/6055) 延续 `List` 上已有的引理，为 `Array` 上的 for 循环添加引理。
 
-- [#6056](https://github.com/leanprover/lean4/pull/6056) 将一些 `NameMap` 函数上游化。
+- [#6056](https://github.com/leanprover/lean4/pull/6056) 将一些 NameMap 函数上游化。
 
 - [#6060](https://github.com/leanprover/lean4/pull/6060) 实现了从 `Bool` 到所有 `UIntX` 与 `IntX` 类型的转换函数。
 
@@ -273,13 +273,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___15___0-_LPAR_2025-0
 
 - [#6149](https://github.com/leanprover/lean4/pull/6149) 通过补上 `getMsbD` 的实现，完善了 `ofNatLt`、`allOnes` 和 `not` 的逐元素访问器。
 
-- [#6151](https://github.com/leanprover/lean4/pull/6151) 补全了 `BitVec` 按位运算的 `toInt` 接口。
+- [#6151](https://github.com/leanprover/lean4/pull/6151) 补全了 `BitVec` 按位运算的 toInt 接口。
 
 - [#6154](https://github.com/leanprover/lean4/pull/6154) 实现 `BitVec.toInt_abs`。
 
-- [#6155](https://github.com/leanprover/lean4/pull/6155) 为 `BitVec.signExtend` 添加 `toNat` 定理。
+- [#6155](https://github.com/leanprover/lean4/pull/6155) 为 `BitVec.signExtend.` 添加 `toNat` 定理。
 
-- [#6157](https://github.com/leanprover/lean4/pull/6157) 为 `BitVec.signExtend` 添加 `toInt` 定理。
+- [#6157](https://github.com/leanprover/lean4/pull/6157) 为 BitVec.signExtend 添加 `toInt` 定理。
 
 - [#6160](https://github.com/leanprover/lean4/pull/6160) 添加定理 `mod_eq_sub`，把定理 `sub_mul_eq_mod_of_lt_of_le` 取消私有，并在 `rotate*` 章节中调整其位置，以便在其他证明中使用。
 
@@ -311,7 +311,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___15___0-_LPAR_2025-0
 
 - [#6207](https://github.com/leanprover/lean4/pull/6207) 确保 `Fin.foldl` 和 `Fin.foldr` 是 semireducible。没有这一点，定义相等式 `example (f : Fin 3 → ℕ) : List.ofFn f = [f 0, f 1, f 2] := rfl` 会失败。
 
-- [#6208](https://github.com/leanprover/lean4/pull/6208) 修复 `Vector.indexOf?`。
+- [#6208](https://github.com/leanprover/lean4/pull/6208) 修复 Vector.indexOf?。
 
 - [#6217](https://github.com/leanprover/lean4/pull/6217) 为 `List` 的 `==` 操作添加 `simp` 引理。
 
@@ -345,7 +345,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___15___0-_LPAR_2025-0
 - [#6087](https://github.com/leanprover/lean4/pull/6087) 修复了旧代码生成器中 `Nat.ble` 和 `Nat.blt` 函数的常量折叠问题，该问题会导致错误编译。
 
 - [#6143](https://github.com/leanprover/lean4/pull/6143) 使 Lean 在 sanitizer 环境下表现得更合理，参见
-https://github.com/google/sanitizers/issues/1688。就我所知，
+https://github.com/google/sanitizers/issues/1688. 就我所知，
 https://github.com/google/sanitizers/wiki/AddressSanitizerUseAfterReturn#algorithm
 会用堆分配替换局部变量，因此获取局部变量地址不再适合作为单调的栈使用量度量方式。
 
@@ -400,7 +400,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___15___0-_LPAR_2025-0
 
 - [#5835](https://github.com/leanprover/lean4/pull/5835) 为结构体实例记法的字段添加自动补全。具体来说，现在在结构体实例记法的空白处用 `Ctrl+Space` 查询补全时，会出现完整字段列表。对自定义语法，也可以通过把字段列表解析器包在 `structInstFields` 解析器中来启用空白处结构补全。
 
-- [#5837](https://github.com/leanprover/lean4/pull/5837) 修复了一个老的自动补全问题：当 `x.` 无法被精化为 dot 补全时，它此前会给出毫无意义的补全项。
+- [#5837](https://github.com/leanprover/lean4/pull/5837) 修复了一个老的自动补全问题：当 `x.` 无法被精化为 dot 补全时，它此前会对 `x.` 给出毫无意义的补全项。
 
 - [#5996](https://github.com/leanprover/lean4/pull/5996) 避免补全过程中出现最大 heartbeat 错误。
 

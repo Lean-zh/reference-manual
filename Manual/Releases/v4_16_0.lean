@@ -24,16 +24,16 @@ file := "v4.16.0"
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___16___0-_LPAR_2025-02-03_RPAR_--Highlights"
 %%%
 
-### 各不相同的 `sorry`
+### 各不相同的 sorry
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___16___0-_LPAR_2025-02-03_RPAR_--Highlights--Unique-sorrys"
 %%%
 
-[#5757](https://github.com/leanprover/lean4/pull/5757) 通过确保每个 `sorry` 在定义上都不等同于其他 `sorry`，让人为定义体中用 `sorry` 占位的定义构造“伪造”定理变得更困难。例如，下面的代码现在会失败：
+[#5757](https://github.com/leanprover/lean4/pull/5757) 通过确保每个 sorry 在定义上都不等同于其他 sorry，让人为定义体中用 sorry 占位的定义构造“伪造”定理变得更困难。例如，下面的代码现在会失败：
 ```lean
 example : (sorry : Nat) = sorry := rfl -- fails
 ```
-不过，下面的例子仍然会成功，因为这里的 `sorry` 是同一个不确定的 `Nat`：
+不过，下面的例子仍然会成功，因为这里的 sorry 是同一个不确定的 `Nat`：
 ```lean
 def f (n : Nat) : Nat := sorry
 example : f 0 = f 1 := rfl -- succeeds
@@ -43,7 +43,7 @@ example : f 0 = f 1 := rfl -- succeeds
 def f : (n : Nat) → Nat := sorry
 example : f 0 = f 1 := rfl -- fails
 ```
-现在，大多数合成 `sorry` 的来源（回顾一下：即由精化器产生的 `sorry`）都会是唯一的；唯一的例外是精化错误，因为让这类 `sorry` 也唯一化往往会造成令人困惑的连锁报错。不过，总体而言，这些 `sorry` 现在都会带标签。这样一来，在 Infoview 中对 `sorry` 使用“转到定义”就会跳到它的来源。选项 `set_option pp.sorrySource true` 会让漂亮打印器在 `sorry` 上显示源位置。
+现在，大多数合成 sorry 的来源（回顾一下：即由精化器产生的 sorry）都会是唯一的；唯一的例外是精化错误，因为让这类 `sorry` 也唯一化往往会造成令人困惑的连锁报错。不过，总体而言，这些 `sorry` 现在都会带标签。这样一来，在 Infoview 中对 `sorry` 使用“转到定义”就会跳到它的来源。选项 `set_option pp.sorrySource true` 会让漂亮打印器在 `sorry` 上显示源位置。
 
 ### 数字字面量中的分隔符
 %%%
@@ -75,7 +75,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___16___0-_LPAR_2025-0
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___16___0-_LPAR_2025-02-03_RPAR_--Highlights--Library-updates"
 %%%
 
-Lean 4 库进行了大量更新，改进了算术推理、增强了数据结构 API，并优化了库的组织方式。重点变化包括：更好地支持按位运算、移位与转换；扩充了 `Array`、`Vector` 和 `List` 的引理；并改进了顺序相关定义。一些模块为提高清晰度而重新组织，内部细化也进一步提升了一致性与正确性。
+Lean 4 库进行了大量更新，改进了算术推理、增强了数据结构 API，并优化了库的组织方式。重点变化包括：更好地支持按位运算、移位与转换；扩充了 Array、Vector 和 List 的引理；并改进了顺序相关定义。一些模块为提高清晰度而重新组织，内部细化也进一步提升了一致性与正确性。
 
 ### 破坏性变更
 %%%
@@ -109,9 +109,9 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___16___0-_LPAR_2025-0
 
 * [#6278](https://github.com/leanprover/lean4/pull/6278) 允许向 `norm_cast` 传递 simp 配置选项。
 
-* [#6286](https://github.com/leanprover/lean4/pull/6286) 确保 `bv_decide` 在其反射过程里尽可能使用定义相等性。此前它会构造显式的同余证明交给内核检查。这样一来，传给内核的证明项会更小，从而加快大型反射证明的检查速度。
+* [#6286](https://github.com/leanprover/lean4/pull/6286) 确保 bv_decide 在其反射过程里尽可能使用定义相等性。此前它会构造显式的同余证明交给内核检查。这样一来，传给内核的证明项会更小，从而加快大型反射证明的检查速度。
 
-* [#6288](https://github.com/leanprover/lean4/pull/6288) 在 `bv_decide` 的反射证明中使用 Lean.RArray，从而在变量很多的问题上提升速度。
+* [#6288](https://github.com/leanprover/lean4/pull/6288) 在 bv_decide 的反射证明中使用 Lean.RArray，从而在变量很多的问题上提升速度。
 
 * [#6295](https://github.com/leanprover/lean4/pull/6295) 为 `Init.Data.Fin.Basic` 中剩余的所有操作配置 simproc。
 
@@ -143,7 +143,7 @@ tactic 'cases' failed, major premise type is not an inductive type
 
 * [#6398](https://github.com/leanprover/lean4/pull/6398) 确保 `Meta.check` 会检查投影。
 
-* [#6412](https://github.com/leanprover/lean4/pull/6412) 为化简器和 `grind` 策略使用的同余定理添加保留名。这样做是为了防止同一个同余定理被反复生成。
+* [#6412](https://github.com/leanprover/lean4/pull/6412) 为化简器和 grind 策略使用的同余定理添加保留名。这样做是为了防止同一个同余定理被反复生成。
 
 * [#6413](https://github.com/leanprover/lean4/pull/6413) 为仍在开发中的 `grind` 策略引入以下特性：
   - `Expr` 内化。
@@ -218,7 +218,7 @@ tactic 'cases' failed, major premise type is not an inductive type
 
 * [#6475](https://github.com/leanprover/lean4/pull/6475) 为仍在开发中的 `grind` 策略新增激活相关定理的支持。若某个定理的模式中出现的符号也出现在 `grind` 目标中，则称这个定理与该 `grind` 目标相关。
 
-* [#6478](https://github.com/leanprover/lean4/pull/6478) 在仍在开发中的 `grind` 策略中，激活 e匹配定理时会内化嵌套的 ground 模式。
+* [#6478](https://github.com/leanprover/lean4/pull/6478) 在仍在开发中的 `grind` 策略中，激活 E-匹配定理时会内化嵌套的 ground 模式。
 
 * [#6481](https://github.com/leanprover/lean4/pull/6481) 为仍在开发中的 `grind` 策略实现了 E-匹配。我们仍需完成并内化新实例。
 
@@ -273,7 +273,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___16___0-_LPAR_2025-0
 
 * [#6244](https://github.com/leanprover/lean4/pull/6244) 修改 `HashMap.toList` 的实现，使其顺序与 `HashMap.toArray` 一致。
 
-* [#6272](https://github.com/leanprover/lean4/pull/6272) 引入 `Array` 排列的基础理论，并证明 `Array.swap_perm`。
+* [#6272](https://github.com/leanprover/lean4/pull/6272) 引入 Array 排列的基础理论，并证明 `Array.swap_perm`。
 
 * [#6282](https://github.com/leanprover/lean4/pull/6282) 将 `IO.Channel` 与 `IO.Mutex` 从 `Init` 移到 `Std.Sync`，并将它们重命名为 `Std.Channel` 与 `Std.Mutex`。
 
@@ -281,13 +281,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___16___0-_LPAR_2025-0
 
 * [#6315](https://github.com/leanprover/lean4/pull/6315) 为 `Fin.cast` 与 `BitVec.cast` 添加 `protected`，以避免与 `_root_.cast` 混淆。无论如何，这些函数大多都应通过 dot-记法使用。
 
-* [#6316](https://github.com/leanprover/lean4/pull/6316) 新增引理，将针对 `Option` 的 `for` 循环简化为 `Option.pelim`，从而与将 `List` 上的 `for` 循环简化为 `List.fold` 的引理保持一致。
+* [#6316](https://github.com/leanprover/lean4/pull/6316) 新增引理，将针对 `Option` 的 for 循环简化为 `Option.pelim`，从而与将 List 上的 for 循环简化为 `List.fold` 的引理保持一致。
 
 * [#6317](https://github.com/leanprover/lean4/pull/6317) 补全了 BitVec.ofBool 的基础 API。
 
 * [#6318](https://github.com/leanprover/lean4/pull/6318) 通过为 `Array.find?` 提供独立于 `Array.findM?` 的实现，推广了它的宇宙层级。
 
-* [#6324](https://github.com/leanprover/lean4/pull/6324) 为基础 `Vector` 操作新增 `GetElem` 引理。
+* [#6324](https://github.com/leanprover/lean4/pull/6324) 为基础 Vector 操作新增 `GetElem` 引理。
 
 * [#6333](https://github.com/leanprover/lean4/pull/6333) 将 panic 函数泛化到 `Sort u` 类型，而非 `Type u`。这能更好支持宇宙多态类型，并避免令人困惑的错误。
 
@@ -303,7 +303,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___16___0-_LPAR_2025-0
 
 * [#6365](https://github.com/leanprover/lean4/pull/6365) 扩展了 `Array.set` 和 `Array.setIfInBounds` 的引理，以对齐现有的 `List.set` 引理。
 
-* [#6367](https://github.com/leanprover/lean4/pull/6367) 让 `Vector` 关于成员关系与索引的引理与 `List` 和 `Array` 保持一致。
+* [#6367](https://github.com/leanprover/lean4/pull/6367) 让 Vector 关于成员关系与索引的引理与 List 和 Array 保持一致。
 
 * [#6369](https://github.com/leanprover/lean4/pull/6369) 新增关于 `Vector.set`、`anyM`、`any`、`allM` 与 `all` 的引理。
 

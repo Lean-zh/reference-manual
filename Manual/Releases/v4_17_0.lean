@@ -40,7 +40,7 @@ Lean v4.17 带来了一系列新特性、性能改进和问题修复。用户可
 
 * `docgen` 的文档能力得到改进，现在可以为 dot 记法（[#6703](https://github.com/leanprover/lean4/pull/6703)）、被 强制转换的函数（[#6729](https://github.com/leanprover/lean4/pull/6729)）以及 词元（[#6730](https://github.com/leanprover/lean4/pull/6730)）建立链接。
 
-* 库方面有大量开发，尤其包括扩展 `BitVec` 的验证 API、统一 `List` / `Array` / `Vector` 的 API，并新增描述 `UInt` 行为的引理。
+* 库方面有大量开发，尤其包括扩展 `BitVec` 的验证 API、统一 List / `Array` / `Vector` 的 API，并新增描述 `UInt` 行为的引理。
 
 * [#6597](https://github.com/leanprover/lean4/pull/6597) 修复了信息视图中嵌套跟踪节点的缩进问题。
 
@@ -165,17 +165,17 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___17___0-_LPAR_2025-0
 
 * [#6505](https://github.com/leanprover/lean4/pull/6505) 实现了基础异步框架，以及基于 libuv 的异步定时器运行机制。
 
-* [#6516](https://github.com/leanprover/lean4/pull/6516) 增强了 `grind` 策略中使用的 `cases` 策略，并确保它可以应用于任意表达式。
+* [#6516](https://github.com/leanprover/lean4/pull/6516) 增强了 grind 策略中使用的 `cases` 策略，并确保它可以应用于任意表达式。
 
 * [#6521](https://github.com/leanprover/lean4/pull/6521) 增加了把相关 `match` 方程作为 E-匹配定理激活的支持。它会使用 `match` 方程的左侧作为模式。
 
-* [#6528](https://github.com/leanprover/lean4/pull/6528) 为仍在开发中的 `grind` 策略补上了一条缺失的传播规则。
+* [#6528](https://github.com/leanprover/lean4/pull/6528) 为仍在开发中的 grind 策略补上了一条缺失的传播规则。
 
-* [#6529](https://github.com/leanprover/lean4/pull/6529) 为仍在开发中的 `grind` 策略增加了对 `let` 声明的支持。
+* [#6529](https://github.com/leanprover/lean4/pull/6529) 为仍在开发中的 grind 策略增加了对 `let` 声明的支持。
 
-* [#6530](https://github.com/leanprover/lean4/pull/6530) 修复了仍在开发中的 `grind` 策略中非确定性的失败问题。
+* [#6530](https://github.com/leanprover/lean4/pull/6530) 修复了仍在开发中的 grind 策略中非确定性的失败问题。
 
-* [#6531](https://github.com/leanprover/lean4/pull/6531) 修复了 `grind` 对 `let_fun` 的支持。
+* [#6531](https://github.com/leanprover/lean4/pull/6531) 修复了 grind 对 `let_fun` 的支持。
 
 * [#6533](https://github.com/leanprover/lean4/pull/6533) 为 E-匹配的偏移模式增加支持。例如，我们希望能用模式 `f (#0 + 1)` 去 E-匹配项 `f (a + 2)`。
 
@@ -232,7 +232,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___17___0-_LPAR_2025-0
 
 * [#6595](https://github.com/leanprover/lean4/pull/6595) 改进了用于证明不等式偏移模块各步骤正确性的定理。它们未来如何使用，可见新增测试中的示例。
 
-* [#6600](https://github.com/leanprover/lean4/pull/6600) 移除了 `Environment` 上用于编译声明的函数，并将所有调用方迁移到 `CoreM` 上的函数。这是支持新代码生成器所必需的，因为它的实现使用了 `CoreM`。
+* [#6600](https://github.com/leanprover/lean4/pull/6600) 移除了 Environment 上用于编译声明的函数，并将所有调用方迁移到 CoreM 上的函数。这是支持新代码生成器所必需的，因为它的实现使用了 CoreM。
 
 * [#6602](https://github.com/leanprover/lean4/pull/6602) 允许点标识符记法解析到当前定义，或者同一互递归代码块中的其他定义。现有使用点标识符记法的代码，如果标识符与定义同名，可能需要添加 `nonrec`。
 
@@ -266,7 +266,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___17___0-_LPAR_2025-0
 
 * [#6636](https://github.com/leanprover/lean4/pull/6636) 在 `grind` 策略中实现了偏移约束的模型构造。
 
-* [#6639](https://github.com/leanprover/lean4/pull/6639) 将 `bv_normalize` 的 simp set 放入 simp_nf，并把 `bv_normalize` 的实现拆分到多个文件中，为后续变更做准备。
+* [#6639](https://github.com/leanprover/lean4/pull/6639) 将 bv_normalize 的 simp set 放入 simp_nf，并把 bv_normalize 的实现拆分到多个文件中，为后续变更做准备。
 
 * [#6641](https://github.com/leanprover/lean4/pull/6641) 把 Bitwuzla 预处理过程中的若干优化技巧实现到 `bv_decide` 中对应的 Lean 版本里。请注意，这些改动主要面向大型证明状态，例如 SMT-Lib 中常见的那类场景。
 
@@ -337,7 +337,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___17___0-_LPAR_2025-0
 
 * [#6717](https://github.com/leanprover/lean4/pull/6717) 引入了一项新特性，允许用户指定 `grind` 策略应对哪些归纳数据类型进行分情况拆分。配置项 `splitIndPred` 现在默认设为 `false`。属性 `[grind cases]` 用于标记那些可在搜索期间由 `grind` 进行分情况拆分的归纳数据类型和谓词；另外，`[grind cases eager]` 可用于标记那些既能在预处理阶段、也能在搜索期间进行分情况拆分的数据类型和谓词。
 
-* [#6718](https://github.com/leanprover/lean4/pull/6718) 添加了消去乘法负号所需的 BitVec 引理，并把支持接入 `bv_normalize`，以便在规范化后的二补码形式中利用这些结果。
+* [#6718](https://github.com/leanprover/lean4/pull/6718) 添加了消去乘法负号所需的 BitVec 引理，并把支持接入 bv_normalize，以便在规范化后的二补码形式中利用这些结果。
 
 * [#6719](https://github.com/leanprover/lean4/pull/6719) 修复了 `match` 表达式等式定理生成器中的一个问题。可参见新增测试中的例子。
 
@@ -390,7 +390,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___17___0-_LPAR_2025-0
 
 * [#6740](https://github.com/leanprover/lean4/pull/6740) 扩展了 `bv_decide` 的结构体推理支持，使其也能推理受支持结构体之间的相等性。
 
-* [#6745](https://github.com/leanprover/lean4/pull/6745) 支持用 `extractLsb'` 重写 `ushiftRight`。这是 #6743 的配套 PR；#6743 增加了关于 `shiftLeft` 的类似引理。
+* [#6745](https://github.com/leanprover/lean4/pull/6745) 支持用 `extractLsb'` 重写 ushiftRight。这是 #6743 的配套 PR；#6743 增加了关于 `shiftLeft` 的类似引理。
 
 * [#6746](https://github.com/leanprover/lean4/pull/6746) 确保 `grind` 能正确处理函数定义的条件方程定理。这里复用了为 `match` 表达式方程构建的同一套基础设施。回顾一下：在这两种场景下，只要存在重叠模式，这些定理都会是条件性的。
 
@@ -445,7 +445,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___17___0-_LPAR_2025-0
 
 * [#6785](https://github.com/leanprover/lean4/pull/6785) 为 `grind?` 策略增加了基础设施。它还增加了新修饰符 `usr`，使用户能够写出 `grind only [use thmName]`，从而指示 `grind` 仅使用定理 `thmName`，但使用由 `grind_pattern` 命令指定的模式。
 
-* [#6788](https://github.com/leanprover/lean4/pull/6788) 让 `bv_normalize` 认识到 `!(x < x)` 和 `!(x < 0)`。
+* [#6788](https://github.com/leanprover/lean4/pull/6788) 让 bv_normalize 认识到 `!(x < x)` 和 `!(x < 0)`。
 
 * [#6790](https://github.com/leanprover/lean4/pull/6790) 修复了在需要分情况拆分时，由 `partial_fixpoint` 生成等式定理的问题。修复 #6786。
 
@@ -463,7 +463,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___17___0-_LPAR_2025-0
 
 * [#6839](https://github.com/leanprover/lean4/pull/6839) 确保 `grind` 可以把构造子和公理用于基于 E-匹配的启发式实例化。它还允许对诸如 `theorem evenz : Even 0` 这样的定理使用不带模式变量的模式。
 
-* [#6851](https://github.com/leanprover/lean4/pull/6851) 让 `bv_normalize` 把以 `BitVec` 常量表示的移位重写为以 `Nat` 常量表示的移位。这是增强 `bv_normalize` 对常量移位化简支持这一更大工作的组成部分。
+* [#6851](https://github.com/leanprover/lean4/pull/6851) 让 bv_normalize 把以 `BitVec` 常量表示的移位重写为以 `Nat` 常量表示的移位。这是增强 bv_normalize 对常量移位化简支持这一更大工作的组成部分。
 
 * [#6852](https://github.com/leanprover/lean4/pull/6852) 允许环境扩展选择不会阻塞截至当前整个环境的访问模式，这是实现并行证明精化所必需的前提。
 
@@ -528,7 +528,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___17___0-_LPAR_2025-0
 
 * [#6494](https://github.com/leanprover/lean4/pull/6494) 证明了关于函数 `Int.bdiv` 和 `Int.bmod` 的基础定理。
 
-* [#6507](https://github.com/leanprover/lean4/pull/6507) 为 `Int.emod_add_emod`（`(a % n + b) % n = (a + b) % n`）和 `Int.add_emod_emod`（`(a + b % n) % n = (a + b) % n`）添加了对应的减法版本。它们像加法版本一样被标记为 `@[simp]`。
+* [#6507](https://github.com/leanprover/lean4/pull/6507) 为 `Int.emod_add_emod`（`(a % n + b) % n = (a + b) % n`）和 `Int.add_emod_emod`（`(a + b % n) % n = (a + b) % n`）添加了对应的减法版本。它们像加法版本一样被标记为 @[simp]。
 
 * [#6524](https://github.com/leanprover/lean4/pull/6524) 将 Batteries 中剩余的一些 `List.Perm` 引理上游化。
 
@@ -538,11 +538,11 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___17___0-_LPAR_2025-0
 
 * [#6573](https://github.com/leanprover/lean4/pull/6573) 用更底层、更高效的实现替换了现有的 `(D)HashMap.alter` 和 `(D)HashMap.modify`，并特别给出了它们会产生良构哈希映射（`WF` 类型类）的证明。
 
-* [#6586](https://github.com/leanprover/lean4/pull/6586) 继续对齐 `List`/`Array`/`Vector` 的引理，完成了关于 `map` 的引理。
+* [#6586](https://github.com/leanprover/lean4/pull/6586) 继续对齐 `List/Array/Vector` 的引理，完成了关于 `map` 的引理。
 
 * [#6587](https://github.com/leanprover/lean4/pull/6587) 为 `Std.Time` 中定义的 `Offset` 类型上的 `LE` 与 `LT` 实例增加了可判定实例。
 
-* [#6589](https://github.com/leanprover/lean4/pull/6589) 继续对齐 `List`/`Array` 的引理，完成了 `filter` 和 `filterMap` 相关部分。
+* [#6589](https://github.com/leanprover/lean4/pull/6589) 继续对齐 `List/Array` 的引理，完成了 `filter` 和 `filterMap` 相关部分。
 
 * [#6591](https://github.com/leanprover/lean4/pull/6591) 为 `UInt32` 添加了小于与小于等于关系，与其他 `UIntN` 类型保持一致。
 
@@ -550,7 +550,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___17___0-_LPAR_2025-0
 
 * [#6617](https://github.com/leanprover/lean4/pull/6617) 完成了 `List`/`Array`/`Vector` 上 `append` 引理的对齐。
 
-* [#6620](https://github.com/leanprover/lean4/pull/6620) 添加了关于 `HashMap.alter` 和 `.modify` 的引理。这些引理描述了 alter 和 modify 与 HashMap 读取方法之间的交互。新增内容影响到 HashMap、DHashMap 以及它们各自的 raw 版本；此外，也定义了 alter 和 modify 的 raw 版本。
+* [#6620](https://github.com/leanprover/lean4/pull/6620) 添加了关于 HashMap.alter 和 .modify 的引理。这些引理描述了 alter 和 modify 与 HashMap 读取方法之间的交互。新增内容影响到 HashMap、DHashMap 以及它们各自的 raw 版本；此外，也定义了 alter 和 modify 的 raw 版本。
 
 * [#6625](https://github.com/leanprover/lean4/pull/6625) 添加了描述 `UIntX.toBitVec` 在 `UIntX` 运算上行为的引理。
 
@@ -568,11 +568,11 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___17___0-_LPAR_2025-0
 
 * [#6674](https://github.com/leanprover/lean4/pull/6674) 添加定理 `BitVec.[getMsbD_mul, getElem_udiv, getLsbD_udiv, getMsbD_udiv]`。
 
-* [#6695](https://github.com/leanprover/lean4/pull/6695) 对齐了 `List`/`Array`/`Vector.reverse` 的引理。
+* [#6695](https://github.com/leanprover/lean4/pull/6695) 对齐了 `List/Array/Vector.reverse` 的引理。
 
-* [#6697](https://github.com/leanprover/lean4/pull/6697) 将 `List/Array.mapFinIdx` 的参数从 `(f : Fin as.size → α → β)` 改为 `(f : (i : Nat) → α → (h : i < as.size) → β)`，以与 `List`/`Array` 其他地方的 API 设计保持一致。
+* [#6697](https://github.com/leanprover/lean4/pull/6697) 将 `List/Array.mapFinIdx` 的参数从 `(f : Fin as.size → α → β)` 改为 `(f : (i : Nat) → α → (h : i < as.size) → β)`，以与 `List/Array` 其他地方的 API 设计保持一致。
 
-* [#6701](https://github.com/leanprover/lean4/pull/6701) 完成了 `List`/`Array`/`Vector` 上 `mapIdx` 与 `mapFinIdx` 的对齐。
+* [#6701](https://github.com/leanprover/lean4/pull/6701) 完成了 `List/Array/Vector` 上 `mapIdx` 与 `mapFinIdx` 的对齐。
 
 * [#6707](https://github.com/leanprover/lean4/pull/6707) 完成了 `List` / `Array` / `Vector` 上关于 `foldl`、`foldr` 及其单子式版本的引理对齐。
 
@@ -580,11 +580,11 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___17___0-_LPAR_2025-0
 
 * [#6712](https://github.com/leanprover/lean4/pull/6712) 对齐了 `List`/`Array`/`Vector` 上关于 `countP` 和 `count` 的定理。
 
-* [#6723](https://github.com/leanprover/lean4/pull/6723) 完成了 `{List/Array/Vector}.{attach,attachWith,pmap}` 引理的对齐。我还不得不补齐 `List` API 中的若干空缺。
+* [#6723](https://github.com/leanprover/lean4/pull/6723) 完成了 {List/Array/Vector}.{attach,attachWith,pmap} 引理的对齐。我还不得不补齐 `List` API 中的若干空缺。
 
 * [#6728](https://github.com/leanprover/lean4/pull/6728) 移除了定理 `Nat.mul_one`，以简化 `BitVec.getMsbD_rotateLeft_of_lt` 证明中的一次重写。
 
-* [#6742](https://github.com/leanprover/lean4/pull/6742) 添加了若干引理，用来说明任意项乘以 `twoPow`，以及 `twoPow` 与另一个 `twoPow` 相乘时会发生什么。
+* [#6742](https://github.com/leanprover/lean4/pull/6742) 添加了若干引理，用来说明任意项乘以 twoPow，以及 `twoPow` 与另一个 `twoPow` 相乘时会发生什么。
 
 * [#6743](https://github.com/leanprover/lean4/pull/6743) 增加了若干重写规则，通过提取比特并连接零来规范化左移。如果移位量大于位宽，那么结果位向量就是零。
 
@@ -606,7 +606,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___17___0-_LPAR_2025-0
 
 * [#6828](https://github.com/leanprover/lean4/pull/6828) 为 BitVec 添加了加法/减法的单射性引理，并为 `bv_normalize` 的范式加入了带额外对称性的专门形式。
 
-* [#6831](https://github.com/leanprover/lean4/pull/6831) 完成了 `List`/`Array`/`Vector` 上关于 `isEqv` 和 `==` 的引理对齐。
+* [#6831](https://github.com/leanprover/lean4/pull/6831) 完成了 `List/Array/Vector` 上关于 `isEqv` 和 `==` 的引理对齐。
 
 * [#6833](https://github.com/leanprover/lean4/pull/6833) 统一了 `List`/`Array`/`Vector` 上 `find` 系列函数的签名。验证引理将在后续 PR 中补上。
 
@@ -626,17 +626,17 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___17___0-_LPAR_2025-0
 
 * [#6863](https://github.com/leanprover/lean4/pull/6863) 通过允许在匹配模式中使用 `x * y`，修复了 nightly-2024-02-25 引入到 mathlib 中的回归。目前 mathlib 中已有 11 处明确标记了这一匹配模式的缺失。
 
-* [#6864](https://github.com/leanprover/lean4/pull/6864) 添加了把 List 和 Array 上的 `findIdx?/findFinIdx?/idxOf?/findIdxOf?/eraseP/erase` 操作关联起来的引理。这是对齐 `find...` 与 `erase...` 验证引理的前置工作。
+* [#6864](https://github.com/leanprover/lean4/pull/6864) 添加了把 List 和 Array 上的 findIdx?/findFinIdx?/idxOf?/findIdxOf?/eraseP/erase 操作关联起来的引理。这是对齐 `find...` 与 `erase...` 验证引理的前置工作。
 
-* [#6868](https://github.com/leanprover/lean4/pull/6868) 完成了 `List`/`Array`/`Vector` 上关于 `eraseP/erase/eraseIdx` 操作的引理对齐。
+* [#6868](https://github.com/leanprover/lean4/pull/6868) 完成了 `List/Array/Vector` 上关于 `eraseP/erase/eraseIdx` 操作的引理对齐。
 
 * [#6872](https://github.com/leanprover/lean4/pull/6872) 添加了关于 xor 的单射性，以及 and/or/xor 何时等于 allOnes 或 zero 的引理。随后我将这些新引理的支持接入了 `bv_normalize`。
 
 * [#6875](https://github.com/leanprover/lean4/pull/6875) 添加了一个关联 `msb` 与 `getMsbD` 的引理，以及三个关于 `getElem` 和 `shiftConcat` 的引理。这些引理在 [Batteries#1078](https://github.com/leanprover-community/batteries/pull/1078) 中被需要，而将其上游化的请求是在该 PR 的 review 中提出的。
 
-* [#6878](https://github.com/leanprover/lean4/pull/6878) 完成了 `List`/`Array`/`Vector` 上关于 `range`、`range'` 和 `zipIdx` 的引理对齐。
+* [#6878](https://github.com/leanprover/lean4/pull/6878) 完成了 `List/Array/Vector` 上关于 `range`、`range'` 和 `zipIdx` 的引理对齐。
 
-* [#6883](https://github.com/leanprover/lean4/pull/6883) 完成了 `List`/`Array`/`Vector` 上单子式函数引理的对齐。除其他变更外，我们还把 simp 范式从 `List.forM` 改为 `ForM.forM`，并修正了 `List.flatMapM` 的定义；它此前返回结果的顺序是错误的。关于单子式函数的验证引理仍有不少空缺；这个 PR 只是让这些引理在 `List`/`Array`/`Vector` 之间保持统一。
+* [#6883](https://github.com/leanprover/lean4/pull/6883) 完成了 `List/Array/Vector` 上单子式函数引理的对齐。除其他变更外，我们还把 simp 范式从 `List.forM` 改为 `ForM.forM`，并修正了 `List.flatMapM` 的定义；它此前返回结果的顺序是错误的。关于单子式函数的验证引理仍有不少空缺；这个 PR 只是让这些引理在 `List/Array/Vector` 之间保持统一。
 
 * [#6890](https://github.com/leanprover/lean4/pull/6890) 让 `bv_normalize` 学会把等式一侧的减法替换为另一侧的加法。这个重写消除了规范化形式中的某个 not + addition 组合，从而让求解器更容易处理。
 
@@ -655,11 +655,11 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___17___0-_LPAR_2025-0
 
 * [#6664](https://github.com/leanprover/lean4/pull/6664) 修改了 toMono pass，使其不再过滤掉类型类实例，因为后续编译实际上可能需要它们。
 
-* [#6665](https://github.com/leanprover/lean4/pull/6665) 向 Prelude 添加了新的 `lcAny` 常量，供 LCNF 使用，用来表示那些在编译期间擦除了对其他项依赖的类型。这与现有的 `lcErased` 常量并列存在；后者表示无关的类型。
+* [#6665](https://github.com/leanprover/lean4/pull/6665) 向 Prelude 添加了新的 lcAny 常量，供 LCNF 使用，用来表示那些在编译期间擦除了对其他项依赖的类型。这与现有的 lcErased 常量并列存在；后者表示无关的类型。
 
-* [#6678](https://github.com/leanprover/lean4/pull/6678) 修改 `LCNF.toMonoType`，使其采用更细致的类型擦除方案，区分无关/已擦除信息（由 lcErased 表示）和已擦除的类型依赖（由 lcAny 表示）。这对应于旧代码生成器中的 irrelevant/object 区分。
+* [#6678](https://github.com/leanprover/lean4/pull/6678) 修改 LCNF.toMonoType，使其采用更细致的类型擦除方案，区分无关/已擦除信息（由 lcErased 表示）和已擦除的类型依赖（由 lcAny 表示）。这对应于旧代码生成器中的 irrelevant/object 区分。
 
-* [#6680](https://github.com/leanprover/lean4/pull/6680) 让新代码生成器像旧代码生成器一样，跳过为带有 `implemented_by` 声明的 decl 生成代码。
+* [#6680](https://github.com/leanprover/lean4/pull/6680) 让新代码生成器像旧代码生成器一样，跳过为带有 implemented_by 声明的 decl 生成代码。
 
 * [#6757](https://github.com/leanprover/lean4/pull/6757) 在 toLCNF 中增加了应用 crimp 定理的支持。
 
