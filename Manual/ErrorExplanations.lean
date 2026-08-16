@@ -26,7 +26,7 @@ open Verso.Doc Elab
 open Verso.Genre Manual
 
 
-/- Renders the suffix of an error explanation, allowing line breaks before capital letters. -/
+/- 渲染错误说明名称的后缀，并允许在大写字母前换行。 -/
 inline_extension Inline.errorExplanationShortName (errorName : Name) where
   data := toJson (getBreakableSuffix errorName)
   traverse := fun _ _ _ => pure none
@@ -35,15 +35,14 @@ inline_extension Inline.errorExplanationShortName (errorName : Name) where
   toHtml := some fun _go _id info _content =>
     open Verso.Output Html in do
     let .ok (some errorName) := fromJson? (α := Option String) info
-      | reportError "Invalid data for explanation name element"
+      | reportError "错误说明名称元素的数据无效"
         pure .empty
     let html := {{ <code class="error-explanation-short-name">{{errorName}}</code> }}
     return html
 
 
 /--
-Renders a table-of-contents like summary of the error explanations defined by the current Lean
-implementation.
+将当前 Lean 实现定义的错误说明渲染为类似目录的摘要。
 -/
 @[block_command]
 def error_explanation_table : BlockCommandOf Unit
@@ -53,10 +52,10 @@ def error_explanation_table : BlockCommandOf Unit
     let header := true
     let name := "error-explanation-table"
     let alignment : Option TableConfig.Alignment := none
-    let headers ← #["Name", "Summary", "Severity", "Since"]
+    let headers ← #["名称", "摘要", "严重性", "版本"]
       |>.mapM fun s => ``(Verso.Doc.Block.para #[Inline.text $(quote s)])
     let vals ← entries.flatMapM fun (name, explan) => do
-      let sev := quote <| if explan.metadata.severity == .warning then "Warning" else "Error"
+      let sev := quote <| if explan.metadata.severity == .warning then "警告" else "错误"
       let sev ← ``(Inline.text $sev)
       let nameLink ←
         ``(Inline.other (Inline.ref $(quote name.toString) $(quote errorExplanationDomain) Option.none)
@@ -68,15 +67,16 @@ def error_explanation_table : BlockCommandOf Unit
     let blocks := (headers ++ vals).map fun c => Syntax.TSepArray.mk #[c]
     ``(Block.other (Block.table $(quote columns) $(quote header) $(quote name) $(quote alignment)) #[Block.ul #[$[Verso.Doc.ListItem.mk #[$blocks,*]],*]])
 
-#doc (Manual) "Error Explanations" =>
+#doc (Manual) "错误说明" =>
 %%%
 number := false
 htmlToc := false
+tag := "Lean-__________________--Error-Explanations"
+file := "Error-Explanations"
 %%%
 
-This section provides explanations of errors and warnings that may be generated
-by Lean when processing a source file. All error names listed below have the
-`lean` package prefix.
+本节说明 Lean 处理源文件时可能生成的错误和警告。下面列出的所有错误名称都带有
+`lean` 包前缀。
 
 {error_explanation_table}
 

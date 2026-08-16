@@ -7,6 +7,7 @@ Author: David Thrane Christiansen
 import VersoManual
 
 import Manual.Meta
+import Manual.ZhDocString.Ch19Ch20.G9
 
 import Manual.BasicTypes.Array.Subarray
 import Manual.BasicTypes.Array.FFI
@@ -18,86 +19,90 @@ open Verso.Genre.Manual.InlineLean
 
 set_option pp.rawOnError true
 
-#doc (Manual) "Characters" =>
+#doc (Manual) "字符" =>
 %%%
 tag := "Char"
+file := "Characters"
 %%%
 
-Characters are represented by the type {name}`Char`, which may be any Unicode [scalar value](http://www.unicode.org/glossary/#unicode_scalar_value).
-While {ref "String"}[strings] are UTF-8-encoded arrays of bytes, characters are represented by full 32-bit values.
-Lean provides special {ref "char-syntax"}[syntax] for character literals.
+字符由 {name}`Char` 类型表示，它可以是任何 Unicode [标量值](http://www.unicode.org/glossary/#unicode_scalar_value)。
+{ref "String"}[字符串]是 UTF-8 编码的字节数组，而字符则由完整的 32 位值表示。
+Lean 为字符字面量提供了特殊的{ref "char-syntax"}[语法]。
 
-# Logical Model
+# 逻辑模型
 %%%
 tag := "char-model"
 %%%
 
-From the perspective of Lean's logic, characters consist of a 32-bit unsigned integer paired with a proof that it is a valid Unicode scalar value.
+从 Lean 的逻辑角度来看，字符由一个 32 位无符号整数和一个证明它是有效 Unicode 标量值的证明组成。
 
-{docstring Char}
+{zhdocstring Char Manual.ZhDocString.Ch19Ch20.G9.c142}
 
-# Run-Time Representation
+# 运行时表示
 %%%
 tag := "char-runtime"
 %%%
 
-As a {ref "inductive-types-trivial-wrappers"}[trivial wrapper], characters are represented identically to {lean}`UInt32`.
-In particular, characters are represented as 32-bit immediate values in monomorphic contexts.
-In other words, a field of a constructor or structure of type {lean}`Char` does not require indirection to access.
-In polymorphic contexts, characters are {tech}[boxed].
+作为一个{ref "inductive-types-trivial-wrappers"}[平凡包装器]，字符的表示方式与 {lean}`UInt32` 完全相同。
+特别地，在单态语境中，字符被表示为 32 位立即数。
+换句话说，类型为 {lean}`Char` 的构造子或结构体的字段不需要间接引用即可访问。
+在多态语境中，字符是{tech (key := "boxed")}[装箱]的。
 
 
-# Syntax
+# 语法
 %%%
 tag := "char-syntax"
 %%%
 
-Character literals consist of a single character or an escape sequence enclosed in single quotes (`'`, Unicode `'APOSTROPHE' (U+0027)`).
-Between these single quotes, the character literal may contain character other that `'`, including newlines, which are included literally (with the caveat that all newlines in a Lean source file are interpreted as `'\n'`, regardless of file encoding and platform).
-Special characters may be escaped with a backslash, so `'\''` is a character literal that contains a single quote.
-The following forms of escape sequences are accepted:
+字符字面量由包含在单引号（`'`，Unicode `'APOSTROPHE' (U+0027)`）内的单个字符或转义序列组成。
+在这些单引号之间，字符字面量可以包含除 `'` 之外的字符，包括换行符，这些字符将被字面量地包含进来（无论文件编码和平台如何，Lean 源文件中的所有换行符都会被解释为 `'\n'`）。
+特殊字符可以使用反斜杠进行转义，因此 `'\''` 是一个包含单引号的字符字面量。
+接受以下形式的转义序列：
 
 : `\r`, `\n`, `\t`, `\\`, `\"`, `\'`
 
-  These escape sequences have the usual meaning, mapping to `CR`, `LF`, tab, backslash, double quote, and single quote, respectively.
+  这些转义序列具有通常的含义，分别映射到 `CR`、`LF`、制表符、反斜杠、双引号和单引号。
 
 : `\xNN`
 
-  When `NN` is a sequence of two hexadecimal digits, this escape denotes the character whose Unicode code point is indicated by the two-digit hexadecimal code.
+  当 `NN` 是两个十六进制数字的序列时，此转义序列表示其 Unicode 代码点由该两位十六进制代码指定的字符。
 
 : `\uNNNN`
 
-  When `NN` is a sequence of two hexadecimal digits, this escape denotes the character whose Unicode code point is indicated by the four-digit hexadecimal code.
+  当 `NN` 是四个十六进制数字的序列时，此转义序列表示其 Unicode 代码点由该四位十六进制代码指定的字符。
 
 
-# API Reference
+# API 参考
 %%%
 tag := "char-api"
 %%%
 
-## Conversions
+## 转换
 
-{docstring Char.ofNat}
+%%%
+tag := "Lean-__________________--Basic-Types--Characters--API-Reference--Conversions"
+%%%
+{zhdocstring Char.ofNat Manual.ZhDocString.Ch19Ch20.G9.c143}
 
-{docstring Char.toNat}
+{zhdocstring Char.toNat Manual.ZhDocString.Ch19Ch20.G9.c144}
 
-{docstring Char.isValidCharNat}
+{zhdocstring Char.isValidCharNat Manual.ZhDocString.Ch19Ch20.G9.c145}
 
-{docstring Char.ofUInt8}
+{zhdocstring Char.ofUInt8 Manual.ZhDocString.Ch19Ch20.G9.c146}
 
-{docstring Char.toUInt8}
+{zhdocstring Char.toUInt8 Manual.ZhDocString.Ch19Ch20.G9.c147}
 
 
-There are two ways to convert a character to a string.
-{name}`Char.toString` converts a character to a singleton string that consists of only that character, while {name}`Char.quote` converts the character to a string representation of the corresponding character literal.
+有两种方法可以将字符转换为字符串。
+{name}`Char.toString` 将字符转换为仅包含该字符的单字符字符串，而 {name}`Char.quote` 将字符转换为相应字符字面量的字符串表示。
 
-{docstring Char.toString}
+{zhdocstring Char.toString Manual.ZhDocString.Ch19Ch20.G9.c148}
 
-{docstring Char.quote}
+{zhdocstring Char.quote Manual.ZhDocString.Ch19Ch20.G9.c149}
 
-:::example "From Characters to Strings"
+:::example "从字符到字符串"
 
-{name}`Char.toString` produces a string that contains only the character in question:
+{name}`Char.toString` 生成一个仅包含该字符的字符串：
 
 ```lean (name := e)
 #eval 'e'.toString
@@ -120,7 +125,7 @@ There are two ways to convert a character to a string.
 "\""
 ```
 
-{name}`Char.quote` produces a string that contains a character literal, suitably escaped:
+{name}`Char.quote` 生成一个包含经过适当转义的字符字面量的字符串：
 ```lean (name := eq)
 #eval 'e'.quote
 ```
@@ -148,35 +153,44 @@ There are two ways to convert a character to a string.
 
 
 
-## Character Classes
+## 字符类
 %%%
 tag := "char-api-classes"
 %%%
 
-{docstring Char.isAlpha}
+{zhdocstring Char.isAlpha Manual.ZhDocString.Ch19Ch20.G9.c150}
 
-{docstring Char.isAlphanum}
+{zhdocstring Char.isAlphanum Manual.ZhDocString.Ch19Ch20.G9.c151}
 
-{docstring Char.isDigit}
+{zhdocstring Char.isDigit Manual.ZhDocString.Ch19Ch20.G9.c152}
 
-{docstring Char.isLower}
+{zhdocstring Char.isLower Manual.ZhDocString.Ch19Ch20.G9.c153}
 
-{docstring Char.isUpper}
+{zhdocstring Char.isUpper Manual.ZhDocString.Ch19Ch20.G9.c154}
 
-{docstring Char.isWhitespace}
+{zhdocstring Char.isWhitespace Manual.ZhDocString.Ch19Ch20.G9.c155}
 
-## Case Conversion
+## 大小写转换
 
-{docstring Char.toUpper}
+%%%
+tag := "Lean-__________________--Basic-Types--Characters--API-Reference--Case-Conversion"
+%%%
+{zhdocstring Char.toUpper Manual.ZhDocString.Ch19Ch20.G9.c156}
 
-{docstring Char.toLower}
+{zhdocstring Char.toLower Manual.ZhDocString.Ch19Ch20.G9.c157}
 
-## Comparisons
+## 比较
 
-{docstring Char.le}
+%%%
+tag := "Lean-__________________--Basic-Types--Characters--API-Reference--Comparisons"
+%%%
+{zhdocstring Char.le Manual.ZhDocString.Ch19Ch20.G9.c158}
 
-{docstring Char.lt}
+{zhdocstring Char.lt Manual.ZhDocString.Ch19Ch20.G9.c159}
 
 ## Unicode
 
-{docstring Char.utf8Size}
+%%%
+tag := "Lean-__________________--Basic-Types--Characters--API-Reference--Unicode"
+%%%
+{zhdocstring Char.utf8Size Manual.ZhDocString.Ch19Ch20.G9.c160}

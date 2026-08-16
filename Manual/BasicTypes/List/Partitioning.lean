@@ -7,6 +7,7 @@ Author: David Thrane Christiansen
 import VersoManual
 
 import Manual.Meta
+import Manual.ZhDocString.Ch19Ch20.G9
 
 open Manual.FFIDocType
 
@@ -15,34 +16,37 @@ open Verso.Genre.Manual.InlineLean
 
 set_option pp.rawOnError true
 
-#doc (Manual) "Partitioning" =>
+#doc (Manual) "分割" =>
+%%%
+tag := "Lean-__________________--Basic-Types--Linked-Lists--API-Reference--Filtering--Partitioning"
+%%%
 
-{docstring List.take}
+{zhdocstring List.take Manual.ZhDocString.Ch19Ch20.G9.c161}
 
-{docstring List.takeTR}
+{zhdocstring List.takeTR Manual.ZhDocString.Ch19Ch20.G9.c162}
 
-{docstring List.takeWhile}
+{zhdocstring List.takeWhile Manual.ZhDocString.Ch19Ch20.G9.c163}
 
-{docstring List.takeWhileTR}
+{zhdocstring List.takeWhileTR Manual.ZhDocString.Ch19Ch20.G9.c164}
 
-{docstring List.drop}
+{zhdocstring List.drop Manual.ZhDocString.Ch19Ch20.G9.c165}
 
-{docstring List.dropWhile}
+{zhdocstring List.dropWhile Manual.ZhDocString.Ch19Ch20.G9.c166}
 
-{docstring List.dropLast}
+{zhdocstring List.dropLast Manual.ZhDocString.Ch19Ch20.G9.c167}
 
-{docstring List.dropLastTR}
+{zhdocstring List.dropLastTR Manual.ZhDocString.Ch19Ch20.G9.c168}
 
-{docstring List.splitAt}
+{zhdocstring List.splitAt Manual.ZhDocString.Ch19Ch20.G9.c169}
 
-{docstring List.span}
+{zhdocstring List.span Manual.ZhDocString.Ch19Ch20.G9.c170}
 
-{docstring List.splitBy}
+{zhdocstring List.splitBy Manual.ZhDocString.Ch19Ch20.G9.c171}
 
-{docstring List.partition}
+{zhdocstring List.partition Manual.ZhDocString.Ch19Ch20.G9.c172}
 
-{docstring List.partitionM}
+{zhdocstring List.partitionM Manual.ZhDocString.Ch19Ch20.G9.c173}
 
-{docstring List.partitionMap}
+{zhdocstring List.partitionMap Manual.ZhDocString.Ch19Ch20.G9.c174}
 
-{docstring List.groupByKey}
+{zhdocstring List.groupByKey Manual.ZhDocString.Ch19Ch20.G9.c175}

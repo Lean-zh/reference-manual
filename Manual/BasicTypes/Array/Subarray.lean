@@ -7,6 +7,7 @@ Author: David Thrane Christiansen
 import VersoManual
 
 import Manual.Meta
+import Manual.ZhDocString.Ch19Ch20.G9
 
 open Manual.FFIDocType
 
@@ -15,7 +16,7 @@ open Verso.Genre.Manual.InlineLean
 
 set_option pp.rawOnError true
 
-#doc (Manual) "Subarrays" =>
+#doc (Manual) "子数组" =>
 %%%
 tag := "subarray"
 %%%
@@ -25,68 +26,83 @@ tag := "subarray"
 variable {α : Type u}
 ```
 
-The type {lean}`Subarray α` is an abbreviations for {lean}`Std.Slice α`.
-This means that, in addition to the operators in this section, {tech}[generalized field notation] can be used to call functions in the {namespace}`Std.Slice` namespace, such as {name}`Std.Slice.foldl`.
+类型 {lean}`Subarray α` 是 {lean}`Std.Slice α` 的缩写。
+这意味着，除了本节中的运算符外，还可以使用{tech (key := "generalized field notation")}[泛化字段记号]来调用 {namespace}`Std.Slice` 命名空间中的函数，例如 {name}`Std.Slice.foldl`。
 :::
 
-{docstring Subarray}
+{zhdocstring Subarray Manual.ZhDocString.Ch19Ch20.G9.c094}
 
-{docstring Subarray.empty}
+{zhdocstring Subarray.empty Manual.ZhDocString.Ch19Ch20.G9.c095}
 
-# Array Data
+# 数组数据
 
-{docstring Subarray.array}
+%%%
+tag := "Lean-__________________--Basic-Types--Arrays--Subarrays--Array-Data"
+%%%
+{zhdocstring Subarray.array Manual.ZhDocString.Ch19Ch20.G9.c096}
 
-{docstring Subarray.start}
+{zhdocstring Subarray.start Manual.ZhDocString.Ch19Ch20.G9.c097}
 
-{docstring Subarray.stop}
+{zhdocstring Subarray.stop Manual.ZhDocString.Ch19Ch20.G9.c098}
 
-{docstring Subarray.start_le_stop}
+{zhdocstring Subarray.start_le_stop Manual.ZhDocString.Ch19Ch20.G9.c099}
 
-{docstring Subarray.stop_le_array_size}
+{zhdocstring Subarray.stop_le_array_size Manual.ZhDocString.Ch19Ch20.G9.c100}
 
-# Resizing
+# 调整大小
 
-{docstring Subarray.drop}
+%%%
+tag := "Lean-__________________--Basic-Types--Arrays--Subarrays--Resizing"
+%%%
+{zhdocstring Subarray.drop Manual.ZhDocString.Ch19Ch20.G9.c101}
 
-{docstring Subarray.take}
+{zhdocstring Subarray.take Manual.ZhDocString.Ch19Ch20.G9.c102}
 
-{docstring Subarray.popFront}
+{zhdocstring Subarray.popFront Manual.ZhDocString.Ch19Ch20.G9.c103}
 
-{docstring Subarray.split}
+{zhdocstring Subarray.split Manual.ZhDocString.Ch19Ch20.G9.c104}
 
-# Lookups
+# 查找
 
-{docstring Subarray.get}
+%%%
+tag := "Lean-__________________--Basic-Types--Arrays--Subarrays--Lookups"
+%%%
+{zhdocstring Subarray.get Manual.ZhDocString.Ch19Ch20.G9.c105}
 
-{docstring Subarray.get!}
+{zhdocstring Subarray.get! Manual.ZhDocString.Ch19Ch20.G9.c106}
 
-{docstring Subarray.getD}
+{zhdocstring Subarray.getD Manual.ZhDocString.Ch19Ch20.G9.c107}
 
-# Iteration
+# 迭代
 
-{docstring Subarray.foldr}
+%%%
+tag := "Lean-__________________--Basic-Types--Arrays--Subarrays--Iteration"
+%%%
+{zhdocstring Subarray.foldr Manual.ZhDocString.Ch19Ch20.G9.c108}
 
-{docstring Subarray.foldrM}
+{zhdocstring Subarray.foldrM Manual.ZhDocString.Ch19Ch20.G9.c109}
 
-{docstring Subarray.forM}
+{zhdocstring Subarray.forM Manual.ZhDocString.Ch19Ch20.G9.c110}
 
-{docstring Subarray.forRevM}
+{zhdocstring Subarray.forRevM Manual.ZhDocString.Ch19Ch20.G9.c111}
 
-{docstring Subarray.forIn}
+{zhdocstring Subarray.forIn Manual.ZhDocString.Ch19Ch20.G9.c112}
 
-# Element Predicates
+# 元素谓词
 
-{docstring Subarray.findRev?}
+%%%
+tag := "Lean-__________________--Basic-Types--Arrays--Subarrays--Element-Predicates"
+%%%
+{zhdocstring Subarray.findRev? Manual.ZhDocString.Ch19Ch20.G9.c113}
 
-{docstring Subarray.findRevM?}
+{zhdocstring Subarray.findRevM? Manual.ZhDocString.Ch19Ch20.G9.c114}
 
-{docstring Subarray.findSomeRevM?}
+{zhdocstring Subarray.findSomeRevM? Manual.ZhDocString.Ch19Ch20.G9.c115}
 
-{docstring Subarray.all}
+{zhdocstring Subarray.all Manual.ZhDocString.Ch19Ch20.G9.c116}
 
-{docstring Subarray.allM}
+{zhdocstring Subarray.allM Manual.ZhDocString.Ch19Ch20.G9.c117}
 
-{docstring Subarray.any}
+{zhdocstring Subarray.any Manual.ZhDocString.Ch19Ch20.G9.c118}
 
-{docstring Subarray.anyM}
+{zhdocstring Subarray.anyM Manual.ZhDocString.Ch19Ch20.G9.c119}

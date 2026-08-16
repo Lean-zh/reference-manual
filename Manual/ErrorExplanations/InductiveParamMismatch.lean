@@ -9,28 +9,29 @@ import Manual.Meta.ErrorExplanation
 open Lean
 open Verso.Genre Manual InlineLean
 
-#doc (Manual) "About: `inductiveParamMismatch`" =>
+#doc (Manual) "关于：`inductiveParamMismatch`" =>
 %%%
 shortTitle := "inductiveParamMismatch"
+tag := "Lean-__________________--Error-Explanations--About___--inductiveParamMismatch"
+file := "About___--inductiveParamMismatch"
 %%%
 
 {errorExplanationHeader lean.inductiveParamMismatch}
 
-This error occurs when a parameter of an inductive type is not uniform in an inductive
-declaration. The parameters of an inductive type (i.e., those that appear before the colon following
-the {keyword}`inductive` keyword) must be identical in all occurrences of the type being defined in
-its constructors' types. If a parameter of an inductive type must vary between constructors, make
-the parameter an index by moving it to the right of the colon. See the manual section on
-{ref "inductive-types"}[Inductive Types] for additional details.
+当归纳类型的参数在归纳声明中不统一时，会产生此错误。归纳类型的参数（即出现在
+{keyword}`inductive` 关键字后冒号之前的参数）必须在其构造器类型中该类型的所有出现处都相同。
+如果归纳类型的某个参数必须随构造器变化，请将它移到冒号右侧，使其成为索引。更多信息请参阅
+{ref "inductive-types"}[归纳类型]。
 
-Note that auto-implicit inlay hints always appear left of the colon in an inductive declaration
-(i.e., as parameters), even when they are actually indices. This means that double-clicking on an
-inlay hint to insert such parameters may result in this error. If it does, change the inserted
-parameters to indices.
+注意，自动隐式内嵌提示在归纳声明中总是出现在冒号左侧（即作为参数），即使它们实际是索引。
+因此，双击内嵌提示插入这类参数可能导致此错误。若发生这种情况，请将插入的参数改为索引。
 
-# Examples
+# 示例
 
-:::errorExample "Vector Length Index as a Parameter"
+%%%
+tag := "Lean-__________________--Error-Explanations--About___--inductiveParamMismatch--Examples"
+%%%
+:::errorExample "作为参数的向量长度索引"
 ```broken
 inductive Vec (α : Type) (n : Nat) : Type where
   | nil  : Vec α 0
@@ -52,10 +53,7 @@ inductive Vec (α : Type) : Nat → Type where
   | cons : α → Vec α n → Vec α (n + 1)
 ```
 
-The length argument `n` of the `Vec` type constructor is declared as a parameter, but other values
-for this argument appear in the `nil` and `cons` constructors (namely, `0` and `n + 1`). An error
-therefore appears at the first occurrence of such an argument. To correct this, `n` cannot be a
-parameter of the inductive declaration and must instead be an index, as in the corrected example. On
-the other hand, `α` remains unchanged throughout all occurrences of `Vec` in the declaration and so
-is a valid parameter.
+`n` 是 `Vec` 类型构造器的长度参数，它被声明为参数，但 `nil` 和 `cons` 构造器中出现了该参数的其他值
+（即 `0` 和 `n + 1`）。因此，错误出现在此类参数的首次出现处。要修正它，`n` 不能是归纳声明的参数，
+而必须像修正示例中那样成为索引。另一方面，`α` 在声明中所有 `Vec` 的出现处都保持不变，因此是有效参数。
 :::

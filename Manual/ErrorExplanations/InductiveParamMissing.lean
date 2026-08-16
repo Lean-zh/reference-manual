@@ -10,26 +10,27 @@ import Manual.Meta.ErrorExplanation
 open Lean
 open Verso.Genre Manual InlineLean
 
-#doc (Manual) "About: `inductiveParamMissing`" =>
+#doc (Manual) "关于：`inductiveParamMissing`" =>
 %%%
 shortTitle := "inductiveParamMissing"
+tag := "Lean-__________________--Error-Explanations--About___--inductiveParamMissing"
+file := "About___--inductiveParamMissing"
 %%%
 
 {errorExplanationHeader lean.inductiveParamMissing}
 
-This error occurs when an inductive type constructor is partially applied in the type of one of its
-constructors such that one or more parameters of the type are omitted. The elaborator requires that
-all parameters of an inductive type be specified everywhere that type is referenced in its
-definition, including in the types of its constructors.
+当归纳类型构造器在其某个构造器的类型中被部分应用、因而省略了一个或多个参数时，会产生此错误。
+精译器要求在定义中引用归纳类型的所有位置（包括其构造器的类型）都指定该归纳类型的全部参数。
 
-If it is necessary to allow the type constructor to be partially applied, without specifying a given
-type parameter, that parameter must be converted to an index. See the manual section on
-{ref "inductive-types"}[Inductive Types] for further explanation of the difference between indices
-and parameters.
+如果需要允许类型构造器在不指定某个类型参数的情况下被部分应用，就必须将该参数转换为索引。
+关于索引和参数差异的进一步解释，请参阅{ref "inductive-types"}[归纳类型]章节。
 
-# Examples
+# 示例
 
-:::errorExample "Omitting Parameter in Argument to Higher-Order Predicate"
+%%%
+tag := "Lean-__________________--Error-Explanations--About___--inductiveParamMissing--Examples"
+%%%
+:::errorExample "高阶谓词参数中省略参数"
 ```broken
 inductive List.All {α : Type u} (P : α → Prop) : List α → Prop
   | nil : All P []
@@ -67,8 +68,6 @@ inductive RoseTree.All (P : α → Prop) : RoseTree α → Prop
   | intro : P t.val → List.All (All P) t.children → All P t
 ```
 
-Because the `RoseTree.All` type constructor must be partially applied in the argument to `List.All`,
-the unspecified argument (`t`) must not be a parameter of the `RoseTree.All` predicate. Making it an
-index to the right of the colon in the header of `RoseTree.All` allows this partial application to
-succeed.
+由于 `RoseTree.All` 类型构造器必须在 `List.All` 的参数中部分应用，未指定的参数（`t`）不能是
+`RoseTree.All` 谓词的参数。将它设为 `RoseTree.All` 头部冒号右侧的索引，就允许这种部分应用成功。
 :::

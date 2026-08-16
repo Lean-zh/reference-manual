@@ -7,6 +7,7 @@ Author: David Thrane Christiansen
 import VersoManual
 
 import Manual.Meta
+import Manual.ZhDocString.Ch19Ch20.G3
 
 
 import Std.Data.TreeSet
@@ -17,151 +18,175 @@ open Verso.Genre.Manual.InlineLean
 
 set_option pp.rawOnError true
 
-#doc (Manual) "Tree-Based Sets" =>
+#doc (Manual) "基于树的集合" =>
 %%%
 tag := "TreeSet"
 %%%
 
-{docstring Std.TreeSet +hideStructureConstructor +hideFields}
+{zhdocstring Std.TreeSet Manual.ZhDocString.Ch19Ch20.G3.c137 +hideStructureConstructor +hideFields}
 
-# Creation
+# 创建
 
-{docstring Std.TreeSet.empty}
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Tree-Based-Sets--Creation"
+%%%
+{zhdocstring Std.TreeSet.empty Manual.ZhDocString.Ch19Ch20.G3.c138}
 
-# Properties
+# 性质
 
-{docstring Std.TreeSet.isEmpty}
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Tree-Based-Sets--Properties"
+%%%
+{zhdocstring Std.TreeSet.isEmpty Manual.ZhDocString.Ch19Ch20.G3.c139}
 
-{docstring Std.TreeSet.size}
+{zhdocstring Std.TreeSet.size Manual.ZhDocString.Ch19Ch20.G3.c140}
 
-# Queries
+# 查询
 
-{docstring Std.TreeSet.contains}
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Tree-Based-Sets--Queries"
+%%%
+{zhdocstring Std.TreeSet.contains Manual.ZhDocString.Ch19Ch20.G3.c141}
 
-{docstring Std.TreeSet.get}
+{zhdocstring Std.TreeSet.get Manual.ZhDocString.Ch19Ch20.G3.c142}
 
-{docstring Std.TreeSet.get!}
+{zhdocstring Std.TreeSet.get! Manual.ZhDocString.Ch19Ch20.G3.c143}
 
-{docstring Std.TreeSet.get?}
+{zhdocstring Std.TreeSet.get? Manual.ZhDocString.Ch19Ch20.G3.c144}
 
-{docstring Std.TreeSet.getD}
+{zhdocstring Std.TreeSet.getD Manual.ZhDocString.Ch19Ch20.G3.c145}
 
-## Ordering-Based Queries
+## 基于顺序的查询
 
-{docstring Std.TreeSet.atIdx}
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Tree-Based-Sets--Queries--Ordering-Based-Queries"
+%%%
+{zhdocstring Std.TreeSet.atIdx Manual.ZhDocString.Ch19Ch20.G3.c146}
 
-{docstring Std.TreeSet.atIdx!}
+{zhdocstring Std.TreeSet.atIdx! Manual.ZhDocString.Ch19Ch20.G3.c147}
 
-{docstring Std.TreeSet.atIdx?}
+{zhdocstring Std.TreeSet.atIdx? Manual.ZhDocString.Ch19Ch20.G3.c148}
 
-{docstring Std.TreeSet.atIdxD}
+{zhdocstring Std.TreeSet.atIdxD Manual.ZhDocString.Ch19Ch20.G3.c149}
 
-{docstring Std.TreeSet.getGE}
+{zhdocstring Std.TreeSet.getGE Manual.ZhDocString.Ch19Ch20.G3.c150}
 
-{docstring Std.TreeSet.getGE!}
+{zhdocstring Std.TreeSet.getGE! Manual.ZhDocString.Ch19Ch20.G3.c151}
 
-{docstring Std.TreeSet.getGE?}
+{zhdocstring Std.TreeSet.getGE? Manual.ZhDocString.Ch19Ch20.G3.c152}
 
-{docstring Std.TreeSet.getGED}
+{zhdocstring Std.TreeSet.getGED Manual.ZhDocString.Ch19Ch20.G3.c153}
 
-{docstring Std.TreeSet.getGT}
+{zhdocstring Std.TreeSet.getGT Manual.ZhDocString.Ch19Ch20.G3.c154}
 
-{docstring Std.TreeSet.getGT!}
+{zhdocstring Std.TreeSet.getGT! Manual.ZhDocString.Ch19Ch20.G3.c155}
 
-{docstring Std.TreeSet.getGT?}
+{zhdocstring Std.TreeSet.getGT? Manual.ZhDocString.Ch19Ch20.G3.c156}
 
-{docstring Std.TreeSet.getGTD}
+{zhdocstring Std.TreeSet.getGTD Manual.ZhDocString.Ch19Ch20.G3.c157}
 
-{docstring Std.TreeSet.getLE}
+{zhdocstring Std.TreeSet.getLE Manual.ZhDocString.Ch19Ch20.G3.c158}
 
-{docstring Std.TreeSet.getLE!}
+{zhdocstring Std.TreeSet.getLE! Manual.ZhDocString.Ch19Ch20.G3.c159}
 
-{docstring Std.TreeSet.getLE?}
+{zhdocstring Std.TreeSet.getLE? Manual.ZhDocString.Ch19Ch20.G3.c160}
 
-{docstring Std.TreeSet.getLED}
+{zhdocstring Std.TreeSet.getLED Manual.ZhDocString.Ch19Ch20.G3.c161}
 
-{docstring Std.TreeSet.getLT}
+{zhdocstring Std.TreeSet.getLT Manual.ZhDocString.Ch19Ch20.G3.c162}
 
-{docstring Std.TreeSet.getLT!}
+{zhdocstring Std.TreeSet.getLT! Manual.ZhDocString.Ch19Ch20.G3.c163}
 
-{docstring Std.TreeSet.getLT?}
+{zhdocstring Std.TreeSet.getLT? Manual.ZhDocString.Ch19Ch20.G3.c164}
 
-{docstring Std.TreeSet.getLTD}
+{zhdocstring Std.TreeSet.getLTD Manual.ZhDocString.Ch19Ch20.G3.c165}
 
 
-{docstring Std.TreeSet.min}
+{zhdocstring Std.TreeSet.min Manual.ZhDocString.Ch19Ch20.G3.c166}
 
-{docstring Std.TreeSet.min!}
+{zhdocstring Std.TreeSet.min! Manual.ZhDocString.Ch19Ch20.G3.c167}
 
-{docstring Std.TreeSet.min?}
+{zhdocstring Std.TreeSet.min? Manual.ZhDocString.Ch19Ch20.G3.c168}
 
-{docstring Std.TreeSet.minD}
+{zhdocstring Std.TreeSet.minD Manual.ZhDocString.Ch19Ch20.G3.c169}
 
-{docstring Std.TreeSet.max}
+{zhdocstring Std.TreeSet.max Manual.ZhDocString.Ch19Ch20.G3.c170}
 
-{docstring Std.TreeSet.max!}
+{zhdocstring Std.TreeSet.max! Manual.ZhDocString.Ch19Ch20.G3.c171}
 
-{docstring Std.TreeSet.max?}
+{zhdocstring Std.TreeSet.max? Manual.ZhDocString.Ch19Ch20.G3.c172}
 
-{docstring Std.TreeSet.maxD}
+{zhdocstring Std.TreeSet.maxD Manual.ZhDocString.Ch19Ch20.G3.c173}
 
-# Modification
+# 修改
 
 
-{docstring Std.TreeSet.insert}
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Tree-Based-Sets--Modification"
+%%%
+{zhdocstring Std.TreeSet.insert Manual.ZhDocString.Ch19Ch20.G3.c174}
 
-{docstring Std.TreeSet.insertMany}
+{zhdocstring Std.TreeSet.insertMany Manual.ZhDocString.Ch19Ch20.G3.c175}
 
-{docstring Std.TreeSet.containsThenInsert}
+{zhdocstring Std.TreeSet.containsThenInsert Manual.ZhDocString.Ch19Ch20.G3.c176}
 
-{docstring Std.TreeSet.erase}
+{zhdocstring Std.TreeSet.erase Manual.ZhDocString.Ch19Ch20.G3.c177}
 
-{docstring Std.TreeSet.eraseMany}
+{zhdocstring Std.TreeSet.eraseMany Manual.ZhDocString.Ch19Ch20.G3.c178}
 
-{docstring Std.TreeSet.filter}
+{zhdocstring Std.TreeSet.filter Manual.ZhDocString.Ch19Ch20.G3.c179}
 
-{docstring Std.TreeSet.merge}
+{zhdocstring Std.TreeSet.merge Manual.ZhDocString.Ch19Ch20.G3.c180}
 
-{docstring Std.TreeSet.partition}
+{zhdocstring Std.TreeSet.partition Manual.ZhDocString.Ch19Ch20.G3.c181}
 
 
-# Iteration
+# 迭代
 
-{docstring Std.TreeSet.iter}
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Tree-Based-Sets--Iteration"
+%%%
+{zhdocstring Std.TreeSet.iter Manual.ZhDocString.Ch19Ch20.G3.c182}
 
-{docstring Std.TreeSet.all}
+{zhdocstring Std.TreeSet.all Manual.ZhDocString.Ch19Ch20.G3.c183}
 
-{docstring Std.TreeSet.any}
+{zhdocstring Std.TreeSet.any Manual.ZhDocString.Ch19Ch20.G3.c184}
 
-{docstring Std.TreeSet.foldl}
+{zhdocstring Std.TreeSet.foldl Manual.ZhDocString.Ch19Ch20.G3.c185}
 
-{docstring Std.TreeSet.foldlM}
+{zhdocstring Std.TreeSet.foldlM Manual.ZhDocString.Ch19Ch20.G3.c186}
 
-{docstring Std.TreeSet.foldr}
+{zhdocstring Std.TreeSet.foldr Manual.ZhDocString.Ch19Ch20.G3.c187}
 
-{docstring Std.TreeSet.foldrM}
+{zhdocstring Std.TreeSet.foldrM Manual.ZhDocString.Ch19Ch20.G3.c188}
 
-{docstring Std.TreeSet.forIn}
+{zhdocstring Std.TreeSet.forIn Manual.ZhDocString.Ch19Ch20.G3.c189}
 
-{docstring Std.TreeSet.forM}
+{zhdocstring Std.TreeSet.forM Manual.ZhDocString.Ch19Ch20.G3.c190}
 
 
-# Conversion
+# 转换
 
-{docstring Std.TreeSet.toList}
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Tree-Based-Sets--Conversion"
+%%%
+{zhdocstring Std.TreeSet.toList Manual.ZhDocString.Ch19Ch20.G3.c191}
 
-{docstring Std.TreeSet.ofList}
+{zhdocstring Std.TreeSet.ofList Manual.ZhDocString.Ch19Ch20.G3.c192}
 
-{docstring Std.TreeSet.toArray}
+{zhdocstring Std.TreeSet.toArray Manual.ZhDocString.Ch19Ch20.G3.c193}
 
-{docstring Std.TreeSet.ofArray}
+{zhdocstring Std.TreeSet.ofArray Manual.ZhDocString.Ch19Ch20.G3.c194}
 
-## Unbundled Variants
+## 分离式变体
 
-Unbundled sets separate well-formedness proofs from data.
-This is primarily useful when defining {ref "raw-data"}[nested inductive types].
-To use these variants, import the module `Std.TreeSet.Raw`.
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Tree-Based-Sets--Conversion--Unbundled-Variants"
+%%%
+分离式集合会将良构性证明与数据本身分开。
+这主要在定义 {ref "raw-data"}[嵌套归纳类型] 时有用。
+要使用这些变体，请导入模块 `Std.TreeSet.Raw`。
 
-{docstring Std.TreeSet.Raw}
+{zhdocstring Std.TreeSet.Raw Manual.ZhDocString.Ch19Ch20.G3.c195}
 
-{docstring Std.TreeSet.Raw.WF}
+{zhdocstring Std.TreeSet.Raw.WF Manual.ZhDocString.Ch19Ch20.G3.c196}

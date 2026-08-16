@@ -7,71 +7,73 @@ Author: David Thrane Christiansen
 import VersoManual
 
 import Manual.Meta
+import Manual.ZhDocString.Ch19Ch20.G2
 
 open Verso.Genre Manual
 open Verso.Genre.Manual.InlineLean
 
 set_option pp.rawOnError true
 
-#doc (Manual) "Lazy Computations" =>
+#doc (Manual) "惰性计算" =>
 %%%
 tag := "Thunk"
+file := "Lazy-Computations"
 %%%
 
-A {deftech}_thunk_ delays the computation of a value.
-In particular, the {name}`Thunk` type is used to delay the computation of a value in compiled code until it is explicitly requested—this request is called {deftech (key := "force")}_forcing_ the thunk.
-The computed value is saved, so subsequent requests do not result in recomputation.
-Computing values at most once, when explicitly requested, is called {deftech}_lazy evaluation_.{index}[call-by-need]
-This caching is invisible to Lean's logic, in which {name}`Thunk` is equivalent to a function from {name}`Unit`.
+{deftech (key := "thunk")}_惰性计算_会延迟某个值的计算。
+具体来说，{name}`Thunk` 类型用于在编译后的代码中把某个值的计算延迟到显式请求它时才进行——这种请求称为对惰性计算进行 {deftech (key := "force")}_强制求值_。
+计算出的值会被保存下来，因此后续请求不会重复计算。
+仅在显式请求时、并且至多只计算一次，称为 {deftech (key := "lazy evaluation")}_惰性求值_。{index}[call-by-need]
+这种缓存机制对 Lean 的逻辑不可见；在逻辑中，{name}`Thunk` 等价于一个从 {name}`Unit` 出发的函数。
 
 
-# Logical Model
+# 逻辑模型
 %%%
 tag := "Thunk-model"
 %%%
 
-Thunks are modeled as a single-field structure that contains a function from {lean}`Unit`.
-The structure's field is private, so the function itself cannot be directly accessed.
-Instead, {name}`Thunk.get` should be used.
-From the perspective of the logic, they are equivalent; {name}`Thunk.get` exists to be overridden in the compiler by the platform primitive that implements lazy evaluation.
+惰性计算的逻辑模型是一个单字段结构体，其中包含一个从 {lean}`Unit` 出发的函数。
+该结构体的字段是私有的，因此不能直接访问这个函数本身。
+取而代之，应使用 {name}`Thunk.get`。
+从逻辑的角度看，它们是等价的；之所以提供 {name}`Thunk.get`，是为了让编译器能够用实现惰性求值的平台原语来覆盖它。
 
-{docstring Thunk}
+{zhdocstring Thunk Manual.ZhDocString.Ch19Ch20.G2.c198}
 
-# Runtime Representation
+# 运行时表示
 %%%
 tag := "Thunk-runtime"
 %%%
 
-:::figure "Memory layout of thunks" (tag := "thunkffi")
+:::figure "惰性计算的内存布局" (tag := "thunkffi")
 ```diagram
 open Illuminate in
 open Manual.Diagram in
 layoutDiagram [
-  ("m_header", .header, txt "Lean object header"),
-  ("m_value", .object, twoLine "Saved value" "lean_object *"),
-  ("m_closure", .object, twoLine "Closure" "lean_object *")
+  ("m_header", .header, txt "Lean 对象头"),
+  ("m_value", .object, twoLine "保存的值" "lean_object *"),
+  ("m_closure", .object, twoLine "闭包" "lean_object *")
 ]
 ```
 :::
 
-Thunks are one of the primitive object types supported by the Lean runtime.
-The object header contains a specific tag that indicates that an object is a thunk.
+惰性计算是 Lean 运行时支持的原语对象类型之一。
+对象头中包含一个特定的标记，用于表明该对象是惰性计算。
 
 :::paragraph
-Thunks have two fields:
- * `m_value` is a pointer to a saved value, which is a null pointer if the value has not yet been computed.
- * `m_closure` is a closure which is to be called when the value should be computed.
+惰性计算有两个字段：
+ * `m_value` 是指向已保存值的指针；如果该值尚未计算出来，它就是空指针。
+ * `m_closure` 是一个闭包，应在需要计算该值时调用。
 
-The runtime system maintains the invariant that either the closure or the saved value is a null pointer.
-If both are null pointers, then the thunk is being forced on another thread.
+运行时系统维持如下不变量：闭包和已保存值中必有一个是空指针。
+如果两者都是空指针，则说明该惰性计算正在另一个线程上被强制求值。
 :::
 
-When a thunk is {tech (key := "force")}[forced], the runtime system first checks whether the saved value has already been computed, returning it if so.
-Otherwise, it attempts to acquire a lock on the closure by atomically swapping it with a null pointer.
-If the lock is acquired, it is invoked to compute the value; the computed value is stored in the saved value field and the reference to the closure is dropped.
-If not, then another thread is already computing the value; the system waits until it is computed.
+当惰性计算被 {tech (key := "force")}[强制求值] 时，运行时系统会先检查保存的值是否已经算出；若已算出，就直接返回它。
+否则，它会尝试通过原子地将闭包与空指针交换来获取该闭包上的锁。
+如果成功获取锁，就调用闭包来计算该值；算出的值会存入保存值字段，并丢弃对该闭包的引用。
+如果没有获取到锁，则说明另一个线程已经在计算该值；系统会等待其完成。
 
-# Coercions
+# 强制转换
 %%%
 tag := "Thunk-coercions"
 %%%
@@ -80,14 +82,14 @@ tag := "Thunk-coercions"
 ```lean -show
 variable {α : Type u} {e : α}
 ```
-There is a coercion from any type {lean}`α` to {lean}`Thunk α` that converts a term {lean}`e` into {lean}`Thunk.mk fun () => e`.
-Because the elaborator {ref "coercion-insertion"}[unfolds coercions], evaluation of the original term {lean}`e` is delayed; the coercion is not equivalent to {name}`Thunk.pure`.
+存在从任意类型 {lean}`α` 到 {lean}`Thunk α` 的强制转换，它会把项 {lean}`e` 转换成 {lean}`Thunk.mk fun () => e`。
+由于精译器会 {ref "coercion-insertion"}[展开强制转换]，原始项 {lean}`e` 的求值会被延迟；这种强制转换并不等价于 {name}`Thunk.pure`。
 :::
 
-:::example "Lazy Lists"
+:::example "惰性列表"
 
-Lazy lists are lists that may contain thunks.
-The {name LazyList.delayed}`delayed` constructor causes part of the list to be computed on demand.
+惰性列表是可能包含惰性计算的列表。
+构造子 {name LazyList.delayed}`delayed` 会使列表的一部分按需计算。
 ```lean
 inductive LazyList (α : Type u) where
   | nil
@@ -96,7 +98,7 @@ inductive LazyList (α : Type u) where
 deriving Inhabited
 ```
 
-Lazy lists can be converted to ordinary lists by forcing all the embedded thunks.
+通过强制求值其中嵌入的所有惰性计算，可以把惰性列表转换为普通列表。
 ```lean
 def LazyList.toList : LazyList α → List α
   | .nil => []
@@ -104,8 +106,8 @@ def LazyList.toList : LazyList α → List α
   | .delayed xs => xs.get.toList
 ```
 
-Many operations on lazy lists can be implemented without forcing the embedded thunks, instead building up further thunks.
-The body of {name LazyList.delayed}`delayed` does not need to be an explicit call to {name}`Thunk.mk` because of the coercion.
+惰性列表上的许多操作都可以在不强制求值所嵌入惰性计算的前提下实现，而是继续构造新的惰性计算。
+由于存在强制转换，{name LazyList.delayed}`delayed` 的主体不需要显式调用 {name}`Thunk.mk`。
 ```lean
 def LazyList.take : Nat → LazyList α → LazyList α
   | 0, _ => .nil
@@ -125,21 +127,21 @@ def LazyList.append (xs ys : LazyList α) : LazyList α :=
     | .delayed xs' => append xs'.get ys
 ```
 
-Laziness is ordinarily invisible to Lean programs: there is no way to check whether a thunk has been forced.
-However, {keywordOf Lean.Parser.Term.dbgTrace}`dbg_trace` can be used to gain insight into thunk evaluation.
+惰性通常对 Lean 程序是不可见的：没有办法检查某个惰性计算是否已经被强制求值。
+不过，可以使用 {keywordOf Lean.Parser.Term.dbgTrace}`dbg_trace` 来观察惰性计算的求值过程。
 ```lean
 def observe (tag : String) (i : Fin n) : Nat :=
   dbg_trace "{tag}: {i.val}"
   i.val
 ```
 
-The lazy lists {lean}`xs` and {lean}`ys` emit traces when evaluated.
+惰性列表 {lean}`xs` 与 {lean}`ys` 在求值时会输出跟踪信息。
 ```lean
 def xs := LazyList.ofFn (n := 3) (observe "xs")
 def ys := LazyList.ofFn (n := 3) (observe "ys")
 ```
 
-Converting {lean}`xs` to an ordinary list forces all of the embedded thunks:
+把 {lean}`xs` 转换为普通列表会强制求值其中嵌入的所有惰性计算：
 ```lean (name := lazy1)
 #eval xs.toList
 ```
@@ -152,7 +154,7 @@ xs: 2
 [0, 1, 2]
 ```
 
-Likewise, converting {lean}`xs.append ys` to an ordinary list forces the embedded thunks:
+同样地，把 {lean}`xs.append ys` 转换为普通列表也会强制求值其中嵌入的惰性计算：
 ```lean (name := lazy2)
 #eval xs.append ys |>.toList
 ```
@@ -168,7 +170,7 @@ ys: 2
 [0, 1, 2, 0, 1, 2]
 ```
 
-Appending {lean}`xs` to itself before forcing the thunks results in a single set of traces, because each thunk's code is evaluated just once:
+在强制求值之前把 {lean}`xs` 追加到自身，只会产生一组跟踪信息，因为每个惰性计算的代码只会被求值一次：
 ```lean (name := lazy3)
 #eval xs.append xs |>.toList
 ```
@@ -181,7 +183,7 @@ xs: 2
 [0, 1, 2, 0, 1, 2]
 ```
 
-Finally, taking a prefix of {lean}`xs.append ys` results in only some of the thunks in {lean}`ys` being evaluated:
+最后，对 {lean}`xs.append ys` 取前缀时，只会求值 {lean}`ys` 中的一部分惰性计算：
 ```lean (name := lazy4)
 #eval xs.append ys |>.take 4 |>.toList
 ```
@@ -197,15 +199,15 @@ ys: 0
 :::
 
 
-# API Reference
+# 接口参考
 %%%
 tag := "Thunk-api"
 %%%
 
-{docstring Thunk.get}
+{zhdocstring Thunk.get Manual.ZhDocString.Ch19Ch20.G2.c199}
 
-{docstring Thunk.map}
+{zhdocstring Thunk.map Manual.ZhDocString.Ch19Ch20.G2.c200}
 
-{docstring Thunk.pure}
+{zhdocstring Thunk.pure Manual.ZhDocString.Ch19Ch20.G2.c201}
 
-{docstring Thunk.bind}
+{zhdocstring Thunk.bind Manual.ZhDocString.Ch19Ch20.G2.c202}

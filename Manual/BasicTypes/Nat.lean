@@ -7,42 +7,48 @@ Author: David Thrane Christiansen
 import VersoManual
 
 import Manual.Meta
+import Manual.ZhDocString.Ch19Ch20.G5
 
 open Manual.FFIDocType
 
 open Verso.Genre Manual
 open Verso.Genre.Manual.InlineLean
 
-#doc (Manual) "Natural Numbers" =>
+#doc (Manual) "自然数" =>
 %%%
 tag := "Nat"
+file := "Natural-Numbers"
 %%%
 
-The {deftech}[natural numbers] are nonnegative integers.
-Logically, they are the numbers 0, 1, 2, 3, …, generated from the constructors {lean}`Nat.zero` and {lean}`Nat.succ`.
-Lean imposes no upper bound on the representation of natural numbers other than physical constraints imposed by the available memory of the computer.
+{deftech (key := "natural numbers")}[自然数]是非负整数。
+逻辑上，它们是数字 0、1、2、3 等，由构造子 {lean}`Nat.zero` 和 {lean}`Nat.succ` 生成。
+除了计算机可用内存强加的物理限制外，Lean 对自然数的表示没有施加上限。
 
-Because the natural numbers are fundamental to both mathematical reasoning and programming, they are specially supported by Lean's implementation. The logical model of the natural numbers is as an {tech}[inductive type], and arithmetic operations are specified using this model. In Lean's kernel, the interpreter, and compiled code, closed natural numbers are represented as efficient arbitrary-precision integers. Sufficiently small numbers are values that don't require indirection through a pointer. Arithmetic operations are implemented by primitives that take advantage of the efficient representations.
+由于自然数是数学推理和编程的基础，因此它们在 Lean 的实现中得到特殊支持。
+自然数的逻辑模型是一个{tech (key := "inductive type")}[归纳类型]，算术运算则使用该模型来规定。
+在 Lean 的内核、解释器和编译代码中，封闭的自然数被表示为高效的任意精度整数。
+足够小的数字是那些不需要通过指针间接寻址的值。
+算术运算由利用高效表示的原语实现。
 
-# Logical Model
+# 逻辑模型
 %%%
 tag := "nat-model"
 %%%
 
 
-{docstring Nat}
+{zhdocstring Nat Manual.ZhDocString.Ch19Ch20.G5.c001}
 
 ::::leanSection
 ```lean -show
 variable (i : Nat)
 ```
-:::example "Proofs by Induction"
-The natural numbers are an {tech}[inductive type], so the {tactic}`induction` tactic can be used to prove universally-quantified statements.
-A proof by induction requires a base case and an induction step.
-The base case is a proof that the statement is true for `0`.
-The induction step is a proof that the truth of the statement for some arbitrary number {lean}`i` implies its truth for {lean}`i + 1`.
+:::example "归纳法证明"
+自然数是一个{tech (key := "inductive type")}[归纳类型]，所以 {tactic}`induction` 策略可用于证明全称量化的陈述。
+归纳法证明需要一个基本情况和一个归纳步骤。
+基本情况是证明陈述对于 `0` 为真。
+归纳步骤是证明陈述对某个任意数字 {lean}`i` 为真蕴含了它对 {lean}`i + 1` 为真。
 
-This proof uses the lemma `Nat.succ_lt_succ` in its induction step.
+该证明在其归纳步骤中使用了引理 `Nat.succ_lt_succ`。
 ```lean
 example (n : Nat) : n < n + 1 := by
   induction n with
@@ -56,13 +62,13 @@ example (n : Nat) : n < n + 1 := by
 :::
 ::::
 
-## Peano Axioms
+## 皮亚诺公理
 %%%
 tag := "peano-axioms"
 %%%
 
-The Peano axioms are a consequence of this definition.
-The induction principle generated for {lean}`Nat` is the one demanded by the axiom of induction:
+皮亚诺公理是此定义的推论。
+为 {lean}`Nat` 生成的归纳原理是归纳公理所要求的：
 ```signature
 Nat.rec.{u} {motive : Nat → Sort u}
   (zero : motive zero)
@@ -70,8 +76,8 @@ Nat.rec.{u} {motive : Nat → Sort u}
   (t : Nat) :
   motive t
 ```
-This induction principle also implements primitive recursion.
-The injectivity of {lean}`Nat.succ` and the disjointness of {lean}`Nat.succ` and `Nat.zero` are consequences of the induction principle, using a construction typically called “no confusion”:
+这种归纳原理还实现了原语递归。
+{lean}`Nat.succ` 的单射性以及 {lean}`Nat.succ` 和 `Nat.zero` 的不相交性是归纳原理的推论，使用通常称为“无混淆”的构造：
 ```lean
 def NoConfusion : Nat → Nat → Prop
   | 0, 0 => True
@@ -93,273 +99,273 @@ theorem succ_not_zero : ¬n + 1 = 0 :=
   noConfusion (n + 1) 0
 ```
 
-# Run-Time Representation
+# 运行时表示
 %%%
 tag := "nat-runtime"
 %%%
 
-The representation suggested by the declaration of `Nat` would be horrendously inefficient, as it's essentially a linked list.
-The length of the list would be the number.
-With this representation, addition would take time linear in the size of one of the addends, and numbers would take at least as many machine words as their magnitude in memory.
-Thus, natural numbers have special support in both the kernel and the compiler that avoids this overhead.
+由 `Nat` 声明所暗示的表示效率会极其低下，因为它本质上是一个链表。
+链表的长度就是数字。
+使用这种表示，加法所花费的时间将与其中一个加数的大小成线性关系，而且数字在内存中占据的机器字数至少与其大小一样多。
+因此，自然数在内核和编译器中都具有特殊的专门支持，以避免这种开销。
 
-In the kernel, there are special `Nat` literal values that use a widely-trusted, efficient arbitrary-precision integer library (usually [GMP](https://gmplib.org/)).
-Basic functions such as addition are overridden by primitives that use this representation.
-Because they are part of the kernel, if these primitives did not correspond to their definitions as Lean functions, it could undermine soundness.
+在内核中，有特殊的 `Nat` 字面量值使用了广受信赖、高效的任意精度整数库（通常是 [GMP](https://gmplib.org/)）。
+像加法这样的基本函数被使用这种表示的原语所覆盖。
+因为它们是内核的一部分，如果这些原语不符合它们作为 Lean 函数的定义，可能会破坏健全性。
 
-In compiled code, sufficiently-small natural numbers are represented without pointer indirections: the lowest-order bit in an object pointer is used to indicate that the value is not, in fact, a pointer, and the remaining bits are used to store the number.
-31 bits are available on 32-bits architectures for pointer-free {lean}`Nat`s, while 63 bits are available on 64-bit architectures.
-In other words, natural numbers smaller than $`2^{31} = 2,147,483,648` or $`2^{63} = 9,223,372,036,854,775,808` do not require allocations.
-If an natural number is too large for this representation, it is instead allocated as an ordinary Lean object that consists of an object header and an arbitrary-precision integer value.
+在编译代码中，足够小的自然数可以在不使用指针间接寻址的情况下表示：对象指针中的最低位用于指示该值实际上不是指针，其余的位用于存储数字。
+对于无指针的 {lean}`Nat`，32位架构上有 31 位可用，而 64 位架构上有 63 位可用。
+换句话说，小于 $`2^{31} = 2,147,483,648` 或 $`2^{63} = 9,223,372,036,854,775,808` 的自然数不需要分配。
+如果一个自然数对于这种表示来说太大，它会作为普通的 Lean 对象进行分配，该对象由对象头和任意精度整数值组成。
 
-## Performance Notes
+## 性能说明
 %%%
 tag := "nat-performance"
 %%%
 
 
-Using Lean's built-in arithmetic operators, rather than redefining them, is essential.
-The logical model of {lean}`Nat` is essentially a linked list, so addition would take time linear in the size of one argument.
-Still worse, multiplication takes quadratic time in this model.
-While defining arithmetic from scratch can be a useful learning exercise, these redefined operations will not be nearly as fast.
+使用 Lean 内置的算术运算符，而不是重新定义它们，是至关重要的。
+{lean}`Nat` 的逻辑模型本质上是链表，所以加法的时间与其中一个参数的大小成线性关系。
+更糟糕的是，在这种模型中乘法需要二次方时间。
+虽然从头开始定义算术可能是一个有用的学习练习，但这些重新定义的运算速度远不及内置的那么快。
 
-# Syntax
+# 语法
 %%%
 tag := "nat-syntax"
 %%%
 
 
-Natural number literals are overridden using the {lean}`OfNat` type class, which is described in the {ref "nat-literals"}[section on literal syntax].
+自然数字面量通过 {lean}`OfNat` 类型类实现重载，这在{ref "nat-literals"}[关于字面量语法的章节]中有所描述。
 
 
-# API Reference
+# API 参考
 %%%
 tag := "nat-api"
 %%%
 
 
-## Arithmetic
+## 算术
 %%%
 tag := "nat-api-arithmetic"
 %%%
 
-{docstring Nat.pred}
+{zhdocstring Nat.pred Manual.ZhDocString.Ch19Ch20.G5.c002}
 
-{docstring Nat.add}
+{zhdocstring Nat.add Manual.ZhDocString.Ch19Ch20.G5.c003}
 
-{docstring Nat.sub}
+{zhdocstring Nat.sub Manual.ZhDocString.Ch19Ch20.G5.c004}
 
-{docstring Nat.mul}
+{zhdocstring Nat.mul Manual.ZhDocString.Ch19Ch20.G5.c005}
 
-{docstring Nat.div}
+{zhdocstring Nat.div Manual.ZhDocString.Ch19Ch20.G5.c006}
 
-{docstring Nat.mod}
+{zhdocstring Nat.mod Manual.ZhDocString.Ch19Ch20.G5.c007}
 
-{docstring Nat.modCore}
+{zhdocstring Nat.modCore Manual.ZhDocString.Ch19Ch20.G5.c008}
 
-{docstring Nat.pow}
+{zhdocstring Nat.pow Manual.ZhDocString.Ch19Ch20.G5.c009}
 
-{docstring Nat.log2}
+{zhdocstring Nat.log2 Manual.ZhDocString.Ch19Ch20.G5.c010}
 
-### Bitwise Operations
+### 按位运算
 %%%
 tag := "nat-api-bitwise"
 %%%
 
-{docstring Nat.shiftLeft}
+{zhdocstring Nat.shiftLeft Manual.ZhDocString.Ch19Ch20.G5.c011}
 
-{docstring Nat.shiftRight}
+{zhdocstring Nat.shiftRight Manual.ZhDocString.Ch19Ch20.G5.c012}
 
-{docstring Nat.xor}
+{zhdocstring Nat.xor Manual.ZhDocString.Ch19Ch20.G5.c013}
 
-{docstring Nat.lor}
+{zhdocstring Nat.lor Manual.ZhDocString.Ch19Ch20.G5.c014}
 
-{docstring Nat.land}
+{zhdocstring Nat.land Manual.ZhDocString.Ch19Ch20.G5.c015}
 
-{docstring Nat.bitwise}
+{zhdocstring Nat.bitwise Manual.ZhDocString.Ch19Ch20.G5.c016}
 
-{docstring Nat.testBit}
+{zhdocstring Nat.testBit Manual.ZhDocString.Ch19Ch20.G5.c017}
 
-## Minimum and Maximum
+## 最小值和最大值
 %%%
 tag := "nat-api-minmax"
 %%%
 
 
-{docstring Nat.min}
+{zhdocstring Nat.min Manual.ZhDocString.Ch19Ch20.G5.c018}
 
-{docstring Nat.max}
+{zhdocstring Nat.max Manual.ZhDocString.Ch19Ch20.G5.c019}
 
-## GCD and LCM
+## 最大公约数和最小公倍数
 %%%
 tag := "nat-api-gcd-lcm"
 %%%
 
 
-{docstring Nat.gcd}
+{zhdocstring Nat.gcd Manual.ZhDocString.Ch19Ch20.G5.c020}
 
-{docstring Nat.lcm}
+{zhdocstring Nat.lcm Manual.ZhDocString.Ch19Ch20.G5.c021}
 
-## Powers of Two
+## 2 的幂
 %%%
 tag := "nat-api-pow2"
 %%%
 
 
-{docstring Nat.isPowerOfTwo}
+{zhdocstring Nat.isPowerOfTwo Manual.ZhDocString.Ch19Ch20.G5.c022}
 
-{docstring Nat.nextPowerOfTwo}
+{zhdocstring Nat.nextPowerOfTwo Manual.ZhDocString.Ch19Ch20.G5.c023}
 
-## Comparisons
+## 比较
 %%%
 tag := "nat-api-comparison"
 %%%
 
 
-### Boolean Comparisons
+### 布尔比较
 %%%
 tag := "nat-api-comparison-bool"
 %%%
 
 
-{docstring Nat.beq}
+{zhdocstring Nat.beq Manual.ZhDocString.Ch19Ch20.G5.c024}
 
-{docstring Nat.ble}
+{zhdocstring Nat.ble Manual.ZhDocString.Ch19Ch20.G5.c025}
 
-{docstring Nat.blt}
+{zhdocstring Nat.blt Manual.ZhDocString.Ch19Ch20.G5.c026}
 
-### Decidable Equality
+### 可判定相等
 %%%
 tag := "nat-api-deceq"
 %%%
 
-{docstring Nat.decEq}
+{zhdocstring Nat.decEq Manual.ZhDocString.Ch19Ch20.G5.c027}
 
-{docstring Nat.decLe}
+{zhdocstring Nat.decLe Manual.ZhDocString.Ch19Ch20.G5.c028}
 
-{docstring Nat.decLt}
+{zhdocstring Nat.decLt Manual.ZhDocString.Ch19Ch20.G5.c029}
 
-### Predicates
+### 谓词
 %%%
 tag := "nat-api-predicates"
 %%%
 
-{docstring Nat.le}
+{zhdocstring Nat.le Manual.ZhDocString.Ch19Ch20.G5.c030}
 
-{docstring Nat.lt}
+{zhdocstring Nat.lt Manual.ZhDocString.Ch19Ch20.G5.c031}
 
-## Iteration
+## 迭代
 %%%
 tag := "nat-api-iteration"
 %%%
 
-Many iteration operators come in two versions: a structurally recursive version and a tail-recursive version.
-The structurally recursive version is typically easier to use in contexts where definitional equality is important, as it will compute when only some prefix of a natural number is known.
+许多迭代运算符有两个版本：结构递归版本和尾递归版本。
+结构递归版本通常在定义等价重要的上下文中更容易使用，因为当只知道自然数的某些前缀时它就可以进行计算。
 
-{docstring Nat.repeat}
+{zhdocstring Nat.repeat Manual.ZhDocString.Ch19Ch20.G5.c032}
 
-{docstring Nat.repeatTR}
+{zhdocstring Nat.repeatTR Manual.ZhDocString.Ch19Ch20.G5.c033}
 
-{docstring Nat.fold}
+{zhdocstring Nat.fold Manual.ZhDocString.Ch19Ch20.G5.c034}
 
-{docstring Nat.foldTR}
+{zhdocstring Nat.foldTR Manual.ZhDocString.Ch19Ch20.G5.c035}
 
-{docstring Nat.foldM}
+{zhdocstring Nat.foldM Manual.ZhDocString.Ch19Ch20.G5.c036}
 
-{docstring Nat.foldRev}
+{zhdocstring Nat.foldRev Manual.ZhDocString.Ch19Ch20.G5.c037}
 
-{docstring Nat.foldRevM}
+{zhdocstring Nat.foldRevM Manual.ZhDocString.Ch19Ch20.G5.c038}
 
-{docstring Nat.forM}
+{zhdocstring Nat.forM Manual.ZhDocString.Ch19Ch20.G5.c039}
 
-{docstring Nat.forRevM}
+{zhdocstring Nat.forRevM Manual.ZhDocString.Ch19Ch20.G5.c040}
 
-{docstring Nat.all}
+{zhdocstring Nat.all Manual.ZhDocString.Ch19Ch20.G5.c041}
 
-{docstring Nat.allTR}
+{zhdocstring Nat.allTR Manual.ZhDocString.Ch19Ch20.G5.c042}
 
-{docstring Nat.any}
+{zhdocstring Nat.any Manual.ZhDocString.Ch19Ch20.G5.c043}
 
-{docstring Nat.anyTR}
+{zhdocstring Nat.anyTR Manual.ZhDocString.Ch19Ch20.G5.c044}
 
-{docstring Nat.allM}
+{zhdocstring Nat.allM Manual.ZhDocString.Ch19Ch20.G5.c045}
 
-{docstring Nat.anyM}
+{zhdocstring Nat.anyM Manual.ZhDocString.Ch19Ch20.G5.c046}
 
-## Conversion
+## 转换
 %%%
 tag := "nat-api-conversion"
 %%%
 
-{docstring Nat.toUInt8}
+{zhdocstring Nat.toUInt8 Manual.ZhDocString.Ch19Ch20.G5.c047}
 
-{docstring Nat.toUInt16}
+{zhdocstring Nat.toUInt16 Manual.ZhDocString.Ch19Ch20.G5.c048}
 
-{docstring Nat.toUInt32}
+{zhdocstring Nat.toUInt32 Manual.ZhDocString.Ch19Ch20.G5.c049}
 
-{docstring Nat.toUInt64}
+{zhdocstring Nat.toUInt64 Manual.ZhDocString.Ch19Ch20.G5.c050}
 
-{docstring Nat.toUSize}
+{zhdocstring Nat.toUSize Manual.ZhDocString.Ch19Ch20.G5.c051}
 
-{docstring Nat.toInt8}
+{zhdocstring Nat.toInt8 Manual.ZhDocString.Ch19Ch20.G5.c052}
 
-{docstring Nat.toInt16}
+{zhdocstring Nat.toInt16 Manual.ZhDocString.Ch19Ch20.G5.c053}
 
-{docstring Nat.toInt32}
+{zhdocstring Nat.toInt32 Manual.ZhDocString.Ch19Ch20.G5.c054}
 
-{docstring Nat.toInt64}
+{zhdocstring Nat.toInt64 Manual.ZhDocString.Ch19Ch20.G5.c055}
 
-{docstring Nat.toISize}
+{zhdocstring Nat.toISize Manual.ZhDocString.Ch19Ch20.G5.c056}
 
-{docstring Nat.toFloat}
+{zhdocstring Nat.toFloat Manual.ZhDocString.Ch19Ch20.G5.c057}
 
-{docstring Nat.toFloat32}
+{zhdocstring Nat.toFloat32 Manual.ZhDocString.Ch19Ch20.G5.c058}
 
-{docstring Nat.isValidChar}
+{zhdocstring Nat.isValidChar Manual.ZhDocString.Ch19Ch20.G5.c059}
 
-{docstring Nat.repr}
+{zhdocstring Nat.repr Manual.ZhDocString.Ch19Ch20.G5.c060}
 
-{docstring Nat.toDigits}
+{zhdocstring Nat.toDigits Manual.ZhDocString.Ch19Ch20.G5.c061}
 
-{docstring Nat.digitChar}
+{zhdocstring Nat.digitChar Manual.ZhDocString.Ch19Ch20.G5.c062}
 
-{docstring Nat.toSubscriptString}
+{zhdocstring Nat.toSubscriptString Manual.ZhDocString.Ch19Ch20.G5.c063}
 
-{docstring Nat.toSuperscriptString}
+{zhdocstring Nat.toSuperscriptString Manual.ZhDocString.Ch19Ch20.G5.c064}
 
-{docstring Nat.toSuperDigits}
+{zhdocstring Nat.toSuperDigits Manual.ZhDocString.Ch19Ch20.G5.c065}
 
-{docstring Nat.toSubDigits}
+{zhdocstring Nat.toSubDigits Manual.ZhDocString.Ch19Ch20.G5.c066}
 
-{docstring Nat.subDigitChar}
+{zhdocstring Nat.subDigitChar Manual.ZhDocString.Ch19Ch20.G5.c067}
 
-{docstring Nat.superDigitChar}
+{zhdocstring Nat.superDigitChar Manual.ZhDocString.Ch19Ch20.G5.c068}
 
-## Elimination
+## 消除
 %%%
 tag := "nat-api-elim"
 %%%
 
 
-The recursion principle that is automatically generated for {lean}`Nat` results in proof goals that are phrased in terms of {lean}`Nat.zero` and {lean}`Nat.succ`.
-This is not particularly user-friendly, so an alternative logically-equivalent recursion principle is provided that results in goals that are phrased in terms of {lean}`0` and `n + 1`.
-{tech}[Custom eliminators] for the {tactic}`induction` and {tactic}`cases` tactics can be supplied using the {attr}`induction_eliminator` and {attr}`cases_eliminator` attributes.
+为 {lean}`Nat` 自动生成的递归原理会导致以 {lean}`Nat.zero` 和 {lean}`Nat.succ` 的形式来表达证明目标。
+这并不是特别友好，因此提供了一个逻辑上等价的替代递归原理，其结果是目标以 {lean}`0` 和 `n + 1` 的形式表达。
+{tech (key := "Custom eliminators")}[自定义消除器]可提供给 {tactic}`induction` 和 {tactic}`cases` 策略，方法是使用 {attr}`induction_eliminator` 和 {attr}`cases_eliminator` 属性。
 
-{docstring Nat.recAux}
+{zhdocstring Nat.recAux Manual.ZhDocString.Ch19Ch20.G5.c069}
 
-{docstring Nat.casesAuxOn}
+{zhdocstring Nat.casesAuxOn Manual.ZhDocString.Ch19Ch20.G5.c070}
 
-### Alternative Induction Principles
+### 替代归纳原理
 %%%
 tag := "nat-api-induction"
 %%%
 
-{docstring Nat.strongRecOn}
+{zhdocstring Nat.strongRecOn Manual.ZhDocString.Ch19Ch20.G5.c071}
 
-{docstring Nat.caseStrongRecOn}
+{zhdocstring Nat.caseStrongRecOn Manual.ZhDocString.Ch19Ch20.G5.c072}
 
-{docstring Nat.div.inductionOn}
+{zhdocstring Nat.div.inductionOn Manual.ZhDocString.Ch19Ch20.G5.c073}
 
-{docstring Nat.div2Induction}
+{zhdocstring Nat.div2Induction Manual.ZhDocString.Ch19Ch20.G5.c074}
 
-{docstring Nat.mod.inductionOn}
+{zhdocstring Nat.mod.inductionOn Manual.ZhDocString.Ch19Ch20.G5.c075}

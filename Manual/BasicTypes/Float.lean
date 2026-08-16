@@ -7,6 +7,7 @@ Author: David Thrane Christiansen
 import VersoManual
 
 import Manual.Meta
+import Manual.ZhDocString.Ch19Ch20.G2
 
 import Manual.BasicTypes.Array.Subarray
 import Manual.BasicTypes.Array.FFI
@@ -18,153 +19,163 @@ open Verso.Genre.Manual.InlineLean
 
 set_option pp.rawOnError true
 
-#doc (Manual) "Floating-Point Numbers" =>
+#doc (Manual) "浮点数" =>
 %%%
 tag := "Float"
+file := "Floating-Point-Numbers"
 %%%
 
-Floating-point numbers are a an approximation of the real numbers that are efficiently implemented in computer hardware.
-Computations that use floating-point numbers are very efficient; however, the nature of the way that they approximate the real numbers is complex, with many corner cases.
-The IEEE 754 standard, which defines the floating-point format that is used on modern computers, allows hardware designers and programming language implementations to make certain choices, and real systems differ in these small details.
-Any given combination of hardware, operating system, C compiler, library versions, and even compilation flags can result in different behavior.
-For example, there are many distinct bit representations of `NaN`, the indicator that a result is undefined, and some platforms differ with respect to _which_ `NaN` is returned from adding two `NaN`s.
+浮点数是对实数的一种近似，并且能在计算机硬件中高效实现。
+使用浮点数的计算通常非常高效；不过，它们逼近实数的方式本身很复杂，存在许多边界情况。
+IEEE 754 标准定义了现代计算机使用的浮点格式，它允许硬件设计者和编程语言实现做出某些选择，而真实系统在这些细节上并不完全相同。
+硬件、操作系统、C 编译器、库版本乃至编译选项的任意组合，都可能导致不同的行为。
+例如，表示结果未定义的 `NaN` 就有许多不同的位表示，而且有些平台在“两个 `NaN` 相加时究竟返回哪个 `NaN`”这一点上并不一致。
 
-To enable reasoning about floating-point numbers, Lean exposes a logical model of {name}`Float` that is used in proofs.
-In particular, {name}`Float` and {name}`Float32` are implemented as wrappers around the logical model.
-In compiled code, this logical model is replaced by efficient native code.
-Differences between platforms are resolved by choosing specific representations (for example, all `NaN` values are replaced by a single canonical `NaN` when any operation requests a bit representation) and by modeling only the subset of floating-point operations that are implemented identically on all supported platforms.
-Other operations, such as trigonometric functions, are represented as opaque functions in Lean's logic.
+为了能够对浮点数进行推理，Lean 暴露出了一个用于证明的 {name}`Float` 逻辑模型。
+具体来说，{name}`Float` 与 {name}`Float32` 都是围绕该逻辑模型实现的包装器。
+在编译后的代码中，这个逻辑模型会被高效的原生代码取代。
+平台之间的差异通过两种方式解决：一是选择特定表示（例如，只要某个运算请求位表示，所有 `NaN` 值都会被替换为单一的规范 `NaN`），二是只为所有受支持平台上实现完全一致的那一部分浮点运算建立模型。
+其他运算（例如三角函数）则在 Lean 的逻辑中表示为不透明函数。
 
-The logical model is extensively empirically tested against the floating-point operations on all supported platforms.
-As long as FFI code does not modify the floating-point environment, Lean's runtime floating-point primitives match the model's specification.
+该逻辑模型已在所有受支持平台上与浮点运算进行了广泛的经验性测试。
+只要 FFI 代码不修改浮点环境，Lean 运行时的浮点原语就符合该模型的规约。
 
-{docstring Float}
+{zhdocstring Float Manual.ZhDocString.Ch19Ch20.G2.c001}
 
-{docstring Float32}
+{zhdocstring Float32 Manual.ZhDocString.Ch19Ch20.G2.c002}
 
-# Logical Model
+# 逻辑模型
 
-Lean provides two floating-point types: {name}`Float` represents 64-bit floating-point values, while {name}`Float32` represents 32-bit floating-point values.
-The precision of {name}`Float` does not vary based on the platform that Lean is running on.
+%%%
+tag := "Lean-__________________--Basic-Types--Floating-Point-Numbers--Logical-Model"
+%%%
+Lean 提供两种浮点类型：{name}`Float` 表示 64 位浮点值，而 {name}`Float32` 表示 32 位浮点值。
+{name}`Float` 的精度不会随着 Lean 所运行的平台而变化。
 
-## Model Details
+## 模型细节
 
-The logical models of {lean}`Float` and {lean}`Float32` consist of unsigned integers with validity predicates.
-Each defined operation first interprets the integer into a {lean}`Float.Model.UnpackedFloat`, which is a higher-level model that is not specific to a bit width.
-Then, the defined operation is implemented in terms of {name Float.Model.UnpackedFloat}`UnpackedFloat`, and the result is re-packed.
-These definitions constitute a _logical specification_ designed for reasoning.
-Although they can be executed, they will run significantly slower than native code.
-Not all operations are defined; some are instead opaque functions whose behavior cannot be reasoned about in Lean's logic.
+%%%
+tag := "Lean-__________________--Basic-Types--Floating-Point-Numbers--Logical-Model--Model-Details"
+%%%
+{lean}`Float` 与 {lean}`Float32` 的逻辑模型由带有有效性谓词的无符号整数组成。
+每个已定义的运算都会先把该整数解释为 {lean}`Float.Model.UnpackedFloat`，这是一个不依赖具体位宽的更高层模型。
+然后，用 {name Float.Model.UnpackedFloat}`UnpackedFloat` 来实现该运算，并将结果重新打包。
+这些定义构成了一个用于推理的_逻辑规约_。
+尽管它们可以执行，但运行速度会明显慢于原生代码。
+并非所有运算都有定义；有些运算则被表示为不透明函数，其行为无法在 Lean 的逻辑中进行推理。
 
-This model is not intended to serve as the basis for a more extensive floating-point library.
-It exists only to support the reasoning tools available in Lean and is not suitable for larger-scale development.
-Do not use this model as the basis of a more extensive floating-point library.
-Instead, implement a suitable model, prove the equivalence of the its operations to this model, and then transfer lemmas using the equivalence.
+该模型并不打算作为更大型浮点数库的基础。
+它仅用于支持 Lean 中可用的推理工具，并不适合更大规模的开发。
+不要把这个模型当作更大型浮点数库的基础。
+正确做法是实现一个合适的模型，证明其运算与该模型上的运算等价，然后借助这种等价转移引理。
 
-{docstring Float.Model}
+{zhdocstring Float.Model Manual.ZhDocString.Ch19Ch20.G2.c003}
 
-{docstring Float32.Model}
+{zhdocstring Float32.Model Manual.ZhDocString.Ch19Ch20.G2.c004}
 
-{docstring Float.Model.pack}
+{zhdocstring Float.Model.pack Manual.ZhDocString.Ch19Ch20.G2.c005}
 
-{docstring Float32.Model.pack}
+{zhdocstring Float32.Model.pack Manual.ZhDocString.Ch19Ch20.G2.c006}
 
-{docstring Float.Model.unpack}
+{zhdocstring Float.Model.unpack Manual.ZhDocString.Ch19Ch20.G2.c007}
 
-{docstring Float32.Model.unpack}
+{zhdocstring Float32.Model.unpack Manual.ZhDocString.Ch19Ch20.G2.c008}
 
-{docstring Float.Model.UnpackedFloat}
+{zhdocstring Float.Model.UnpackedFloat Manual.ZhDocString.Ch19Ch20.G2.c009}
 
-## Model Operations
+## 模型运算
 
-The following operations are specified for floating-point values.
-Other operators are represented by opaque functions and do not reduce in the kernel.
+%%%
+tag := "Lean-__________________--Basic-Types--Floating-Point-Numbers--Logical-Model--Model-Operations"
+%%%
+下列运算为浮点值提供了规约。
+其他运算符则表示为不透明函数，不能在内核中规约。
 
-{docstring Float.Model.UnpackedFloat.add}
+{zhdocstring Float.Model.UnpackedFloat.add Manual.ZhDocString.Ch19Ch20.G2.c010}
 
-{docstring Float.Model.UnpackedFloat.sub}
+{zhdocstring Float.Model.UnpackedFloat.sub Manual.ZhDocString.Ch19Ch20.G2.c011}
 
-{docstring Float.Model.UnpackedFloat.mul}
+{zhdocstring Float.Model.UnpackedFloat.mul Manual.ZhDocString.Ch19Ch20.G2.c012}
 
-{docstring Float.Model.UnpackedFloat.div}
+{zhdocstring Float.Model.UnpackedFloat.div Manual.ZhDocString.Ch19Ch20.G2.c013}
 
-{docstring Float.Model.UnpackedFloat.sqrt}
+{zhdocstring Float.Model.UnpackedFloat.sqrt Manual.ZhDocString.Ch19Ch20.G2.c014}
 
-{docstring Float.Model.UnpackedFloat.neg}
+{zhdocstring Float.Model.UnpackedFloat.neg Manual.ZhDocString.Ch19Ch20.G2.c015}
 
-{docstring Float.Model.UnpackedFloat.abs}
+{zhdocstring Float.Model.UnpackedFloat.abs Manual.ZhDocString.Ch19Ch20.G2.c016}
 
-{docstring Float.Model.UnpackedFloat.isNaN}
+{zhdocstring Float.Model.UnpackedFloat.isNaN Manual.ZhDocString.Ch19Ch20.G2.c017}
 
-{docstring Float.Model.UnpackedFloat.isInf}
+{zhdocstring Float.Model.UnpackedFloat.isInf Manual.ZhDocString.Ch19Ch20.G2.c018}
 
-{docstring Float.Model.UnpackedFloat.isFinite}
+{zhdocstring Float.Model.UnpackedFloat.isFinite Manual.ZhDocString.Ch19Ch20.G2.c019}
 
-{docstring Float.Model.UnpackedFloat.compare}
+{zhdocstring Float.Model.UnpackedFloat.compare Manual.ZhDocString.Ch19Ch20.G2.c020}
 
-{docstring Float.Model.UnpackedFloat.beq}
+{zhdocstring Float.Model.UnpackedFloat.beq Manual.ZhDocString.Ch19Ch20.G2.c021}
 
-{docstring Float.Model.UnpackedFloat.lt}
+{zhdocstring Float.Model.UnpackedFloat.lt Manual.ZhDocString.Ch19Ch20.G2.c022}
 
-{docstring Float.Model.UnpackedFloat.le}
+{zhdocstring Float.Model.UnpackedFloat.le Manual.ZhDocString.Ch19Ch20.G2.c023}
 
-{docstring Float.Model.UnpackedFloat.ofNat}
+{zhdocstring Float.Model.UnpackedFloat.ofNat Manual.ZhDocString.Ch19Ch20.G2.c024}
 
-{docstring Float.Model.UnpackedFloat.ofInt}
+{zhdocstring Float.Model.UnpackedFloat.ofInt Manual.ZhDocString.Ch19Ch20.G2.c025}
 
-{docstring Float.Model.UnpackedFloat.ofScientific}
+{zhdocstring Float.Model.UnpackedFloat.ofScientific Manual.ZhDocString.Ch19Ch20.G2.c026}
 
-{docstring Float.Model.UnpackedFloat.toInt8}
+{zhdocstring Float.Model.UnpackedFloat.toInt8 Manual.ZhDocString.Ch19Ch20.G2.c027}
 
-{docstring Float.Model.UnpackedFloat.ofInt8}
+{zhdocstring Float.Model.UnpackedFloat.ofInt8 Manual.ZhDocString.Ch19Ch20.G2.c028}
 
-{docstring Float.Model.UnpackedFloat.toInt16}
+{zhdocstring Float.Model.UnpackedFloat.toInt16 Manual.ZhDocString.Ch19Ch20.G2.c029}
 
-{docstring Float.Model.UnpackedFloat.ofInt16}
+{zhdocstring Float.Model.UnpackedFloat.ofInt16 Manual.ZhDocString.Ch19Ch20.G2.c030}
 
-{docstring Float.Model.UnpackedFloat.toInt32}
+{zhdocstring Float.Model.UnpackedFloat.toInt32 Manual.ZhDocString.Ch19Ch20.G2.c031}
 
-{docstring Float.Model.UnpackedFloat.ofInt32}
+{zhdocstring Float.Model.UnpackedFloat.ofInt32 Manual.ZhDocString.Ch19Ch20.G2.c032}
 
-{docstring Float.Model.UnpackedFloat.toInt64}
+{zhdocstring Float.Model.UnpackedFloat.toInt64 Manual.ZhDocString.Ch19Ch20.G2.c033}
 
-{docstring Float.Model.UnpackedFloat.ofInt64}
+{zhdocstring Float.Model.UnpackedFloat.ofInt64 Manual.ZhDocString.Ch19Ch20.G2.c034}
 
-{docstring Float.Model.UnpackedFloat.toISize}
+{zhdocstring Float.Model.UnpackedFloat.toISize Manual.ZhDocString.Ch19Ch20.G2.c035}
 
-{docstring Float.Model.UnpackedFloat.ofISize}
+{zhdocstring Float.Model.UnpackedFloat.ofISize Manual.ZhDocString.Ch19Ch20.G2.c036}
 
-{docstring Float.Model.UnpackedFloat.toUInt8}
+{zhdocstring Float.Model.UnpackedFloat.toUInt8 Manual.ZhDocString.Ch19Ch20.G2.c037}
 
-{docstring Float.Model.UnpackedFloat.ofUInt8}
+{zhdocstring Float.Model.UnpackedFloat.ofUInt8 Manual.ZhDocString.Ch19Ch20.G2.c038}
 
-{docstring Float.Model.UnpackedFloat.toUInt16}
+{zhdocstring Float.Model.UnpackedFloat.toUInt16 Manual.ZhDocString.Ch19Ch20.G2.c039}
 
-{docstring Float.Model.UnpackedFloat.ofUInt16}
+{zhdocstring Float.Model.UnpackedFloat.ofUInt16 Manual.ZhDocString.Ch19Ch20.G2.c040}
 
-{docstring Float.Model.UnpackedFloat.toUInt32}
+{zhdocstring Float.Model.UnpackedFloat.toUInt32 Manual.ZhDocString.Ch19Ch20.G2.c041}
 
-{docstring Float.Model.UnpackedFloat.ofUInt32}
+{zhdocstring Float.Model.UnpackedFloat.ofUInt32 Manual.ZhDocString.Ch19Ch20.G2.c042}
 
-{docstring Float.Model.UnpackedFloat.toUInt64}
+{zhdocstring Float.Model.UnpackedFloat.toUInt64 Manual.ZhDocString.Ch19Ch20.G2.c043}
 
-{docstring Float.Model.UnpackedFloat.ofUInt64}
+{zhdocstring Float.Model.UnpackedFloat.ofUInt64 Manual.ZhDocString.Ch19Ch20.G2.c044}
 
-{docstring Float.Model.UnpackedFloat.toUSize}
+{zhdocstring Float.Model.UnpackedFloat.toUSize Manual.ZhDocString.Ch19Ch20.G2.c045}
 
-{docstring Float.Model.UnpackedFloat.ofUSize}
+{zhdocstring Float.Model.UnpackedFloat.ofUSize Manual.ZhDocString.Ch19Ch20.G2.c046}
 
-:::example "Kernel Reasoning"
-The Lean kernel can compare expressions of type {lean}`Float` for syntactic equality, so {lean  (type := "Float")}`0.0` is definitionally equal to itself.
+:::example "内核推理"
+Lean 内核可以按句法相等比较类型为 {lean}`Float` 的表达式，因此 {lean  (type := "Float")}`0.0` 与其自身定义等价。
 ```lean
 example : (0.0 : Float) = (0.0 : Float) := by rfl
 ```
 
-Additionally, terms that require reduction to become syntactically equal can be checked by the kernel when they use only operations that are modeled in Lean's logic:
+此外，如果若干项需要经过规约后才能在句法上相等，那么只要它们只使用了在 Lean 逻辑中建模的运算，内核也可以检查它们：
 ```lean
 example : (0.0 : Float) = (0.0 + 0.0 : Float) := by rfl
 ```
-The kernel cannot reduce terms that use operations that are not directly modeled, such as trigonometric functions:
+内核无法规约使用了未被直接建模运算的项，例如三角函数：
 ```lean (name := sin0) +error
 example : (0.0 : Float).sin = (0.0 : Float) := by rfl
 ```
@@ -178,15 +189,15 @@ is not definitionally equal to the right-hand side
 ```
 
 
-However, the {tactic}`native_decide` tactic can invoke the underlying platform's floating-point primitives that are used by Lean for run-time programs:
+不过，{tactic}`native_decide` 策略可以调用 Lean 在运行时程序中使用的底层平台浮点原语：
 ```lean
 theorem Float.sin_zero_eq_zero :
     ((0.0 : Float).sin == (0.0 : Float)) = true := by
   native_decide
 ```
-This tactic executes a decision procedure as compiled native code.
-This requires trusting the Lean compiler, interpreter and the low-level implementations of built-in operators in addition to the kernel.
-To make this dependency precisely clear, the tactic creates the axiom {name}`Float.sin_zero_eq_zero._native.native_decide.ax_1`:
+该策略会把判定过程作为编译后的原生代码执行。
+这意味着，除内核外，还必须信任 Lean 编译器、解释器以及内建运算符的底层实现。
+为了精确地说明这一依赖，该策略会生成公理 {name}`Float.sin_zero_eq_zero._native.native_decide.ax_1`：
 ```lean (name := ofRed)
 #print axioms Float.sin_zero_eq_zero
 ```
@@ -198,17 +209,17 @@ To make this dependency precisely clear, the tactic creates the axiom {name}`Flo
 ```
 :::
 
-:::example "Floating-Point Equality Is Not Reflexive"
-Floating-point operations may produce `NaN` values that indicate an undefined result.
-These values are not comparable with each other; in particular, all comparisons involving `NaN` will return `false`, including equality.
+:::example "浮点相等并非自反"
+浮点运算可能产生表示结果未定义的 `NaN` 值。
+这些值彼此不可比较；特别地，凡是涉及 `NaN` 的比较都会返回 `false`，包括相等比较。
 ```lean
 #eval ((0.0 : Float) / 0.0) == ((0.0 : Float) / 0.0)
 ```
 :::
 
-:::example "Floating-Point Equality Is Not a Congruence"
-Applying a function to two equal floating-point numbers may not result in equal numbers.
-In particular, positive and negative zero are distinct values that are equated by floating-point equality, but division by positive or negative zero yields positive or negative infinite values.
+:::example "浮点相等不是同余关系"
+把同一个函数应用到两个相等的浮点数上，结果未必仍然相等。
+特别地，正零与负零是不同的值，但浮点相等会把它们判为相等；然而用正零或负零作除数时，却会分别得到正无穷或负无穷。
 ```lean (name := divZeroPosNeg)
 def neg0 : Float := -0.0
 
@@ -222,26 +233,29 @@ def pos0 : Float := 0.0
 :::
 
 
-# Syntax
+# 语法
 
-Lean does not have dedicated floating-point literals.
-Instead, floating-point literals are resolved via the appropriate instances of the {name}`OfScientific` and {name}`Neg` type classes.
+%%%
+tag := "Lean-__________________--Basic-Types--Floating-Point-Numbers--Syntax"
+%%%
+Lean 没有专门的浮点数字面量。
+相反，浮点数字面量是通过 {name}`OfScientific` 与 {name}`Neg` 类型类的相应实例来解析的。
 
-:::example "Floating-Point Literals"
+:::example "浮点数字面量"
 
-The term
+项
 ```leanTerm
 (-2.523 : Float)
 ```
-is syntactic sugar for
+是下列写法的语法糖：
 ```leanTerm
 (Neg.neg (OfScientific.ofScientific 22523 true 4) : Float)
 ```
-and the term
+而项
 ```leanTerm
 (413.52 : Float32)
 ```
-is syntactic sugar for
+是下列写法的语法糖：
 ```leanTerm
 (OfScientific.ofScientific 41352 true 2 : Float32)
 ```
@@ -252,275 +266,317 @@ example : (413.52 : Float32) = (OfScientific.ofScientific 41352 true 2 : Float32
 ```
 :::
 
-# API Reference
+# 接口参考
 %%%
 tag := "Float-api"
 %%%
 
-## Properties
+## 性质
 
-Floating-point numbers fall into one of three categories:
+%%%
+tag := "Lean-__________________--Basic-Types--Floating-Point-Numbers--API-Reference--Properties"
+%%%
+浮点数属于以下三类之一：
 
- * Finite numbers are ordinary floating-point values.
+ * 有限数是普通的浮点值。
 
- * Infinities, which may be positive or negative, result from division by zero.
+ * 无穷大可能是正的也可能是负的，它们来源于除以零。
 
- * `NaN`s, which are not numbers, result from other undefined operations, such as the square root of a negative number.
+ * `NaN` 不是数，它来源于其他未定义运算，例如对负数取平方根。
 
-{docstring Float.isInf}
+{zhdocstring Float.isInf Manual.ZhDocString.Ch19Ch20.G2.c047}
 
-{docstring Float32.isInf}
+{zhdocstring Float32.isInf Manual.ZhDocString.Ch19Ch20.G2.c048}
 
-{docstring Float.isNaN}
+{zhdocstring Float.isNaN Manual.ZhDocString.Ch19Ch20.G2.c049}
 
-{docstring Float32.isNaN}
+{zhdocstring Float32.isNaN Manual.ZhDocString.Ch19Ch20.G2.c050}
 
-{docstring Float.isFinite}
+{zhdocstring Float.isFinite Manual.ZhDocString.Ch19Ch20.G2.c051}
 
-{docstring Float32.isFinite}
+{zhdocstring Float32.isFinite Manual.ZhDocString.Ch19Ch20.G2.c052}
 
 
-## Conversions
+## 转换
 
-{docstring Float.toBits}
+%%%
+tag := "Lean-__________________--Basic-Types--Floating-Point-Numbers--API-Reference--Conversions"
+%%%
+{zhdocstring Float.toBits Manual.ZhDocString.Ch19Ch20.G2.c053}
 
-{docstring Float32.toBits}
+{zhdocstring Float32.toBits Manual.ZhDocString.Ch19Ch20.G2.c054}
 
-{docstring Float.ofBits}
+{zhdocstring Float.ofBits Manual.ZhDocString.Ch19Ch20.G2.c055}
 
-{docstring Float32.ofBits}
+{zhdocstring Float32.ofBits Manual.ZhDocString.Ch19Ch20.G2.c056}
 
-{docstring Float.toFloat32}
+{zhdocstring Float.toFloat32 Manual.ZhDocString.Ch19Ch20.G2.c057}
 
-{docstring Float32.toFloat}
+{zhdocstring Float32.toFloat Manual.ZhDocString.Ch19Ch20.G2.c058}
 
-{docstring Float.toString}
+{zhdocstring Float.toString Manual.ZhDocString.Ch19Ch20.G2.c059}
 
-{docstring Float32.toString}
+{zhdocstring Float32.toString Manual.ZhDocString.Ch19Ch20.G2.c060}
 
-{docstring Float.toUInt8}
+{zhdocstring Float.toUInt8 Manual.ZhDocString.Ch19Ch20.G2.c061}
 
-{docstring Float.toInt8}
+{zhdocstring Float.toInt8 Manual.ZhDocString.Ch19Ch20.G2.c062}
 
-{docstring Float32.toUInt8}
+{zhdocstring Float32.toUInt8 Manual.ZhDocString.Ch19Ch20.G2.c063}
 
-{docstring Float32.toInt8}
+{zhdocstring Float32.toInt8 Manual.ZhDocString.Ch19Ch20.G2.c064}
 
-{docstring Float.toUInt16}
+{zhdocstring Float.toUInt16 Manual.ZhDocString.Ch19Ch20.G2.c065}
 
-{docstring Float.toInt16}
+{zhdocstring Float.toInt16 Manual.ZhDocString.Ch19Ch20.G2.c066}
 
-{docstring Float32.toUInt16}
+{zhdocstring Float32.toUInt16 Manual.ZhDocString.Ch19Ch20.G2.c067}
 
-{docstring Float32.toInt16}
+{zhdocstring Float32.toInt16 Manual.ZhDocString.Ch19Ch20.G2.c068}
 
-{docstring Float.toUInt32}
+{zhdocstring Float.toUInt32 Manual.ZhDocString.Ch19Ch20.G2.c069}
 
-{docstring Float32.toUInt32}
+{zhdocstring Float32.toUInt32 Manual.ZhDocString.Ch19Ch20.G2.c070}
 
-{docstring Float.toInt32}
+{zhdocstring Float.toInt32 Manual.ZhDocString.Ch19Ch20.G2.c071}
 
-{docstring Float32.toInt32}
+{zhdocstring Float32.toInt32 Manual.ZhDocString.Ch19Ch20.G2.c072}
 
-{docstring Float.toUInt64}
+{zhdocstring Float.toUInt64 Manual.ZhDocString.Ch19Ch20.G2.c073}
 
-{docstring Float.toInt64}
+{zhdocstring Float.toInt64 Manual.ZhDocString.Ch19Ch20.G2.c074}
 
-{docstring Float32.toUInt64}
+{zhdocstring Float32.toUInt64 Manual.ZhDocString.Ch19Ch20.G2.c075}
 
-{docstring Float32.toInt64}
+{zhdocstring Float32.toInt64 Manual.ZhDocString.Ch19Ch20.G2.c076}
 
-{docstring Float.toUSize}
+{zhdocstring Float.toUSize Manual.ZhDocString.Ch19Ch20.G2.c077}
 
-{docstring Float32.toUSize}
+{zhdocstring Float32.toUSize Manual.ZhDocString.Ch19Ch20.G2.c078}
 
-{docstring Float.toISize}
+{zhdocstring Float.toISize Manual.ZhDocString.Ch19Ch20.G2.c079}
 
-{docstring Float32.toISize}
+{zhdocstring Float32.toISize Manual.ZhDocString.Ch19Ch20.G2.c080}
 
-{docstring Float.ofInt}
+{zhdocstring Float.ofInt Manual.ZhDocString.Ch19Ch20.G2.c081}
 
-{docstring Float32.ofInt}
+{zhdocstring Float32.ofInt Manual.ZhDocString.Ch19Ch20.G2.c082}
 
-{docstring Float.ofNat}
+{zhdocstring Float.ofNat Manual.ZhDocString.Ch19Ch20.G2.c083}
 
-{docstring Float32.ofNat}
+{zhdocstring Float32.ofNat Manual.ZhDocString.Ch19Ch20.G2.c084}
 
-{docstring Float.frExp}
+{zhdocstring Float.frExp Manual.ZhDocString.Ch19Ch20.G2.c085}
 
-{docstring Float32.frExp}
+{zhdocstring Float32.frExp Manual.ZhDocString.Ch19Ch20.G2.c086}
 
-## Comparisons
+## 比较
 
-{docstring Float.beq}
+%%%
+tag := "Lean-__________________--Basic-Types--Floating-Point-Numbers--API-Reference--Comparisons"
+%%%
+{zhdocstring Float.beq Manual.ZhDocString.Ch19Ch20.G2.c087}
 
-{docstring Float32.beq}
+{zhdocstring Float32.beq Manual.ZhDocString.Ch19Ch20.G2.c088}
 
-### Inequalities
+### 不等关系
 
-The decision procedures for inequalities are opaque constants in the logic.
-They can only be used via the {name}`Lean.ofReduceBool` axiom, e.g. via the {tactic}`native_decide` tactic.
+%%%
+tag := "Lean-__________________--Basic-Types--Floating-Point-Numbers--API-Reference--Comparisons--Inequalities"
+%%%
+不等关系的判定过程在逻辑中是不透明常量。
+它们只能借助 {name}`Lean.ofReduceBool` 公理来使用，例如通过 {tactic}`native_decide` 策略。
 
-{docstring Float.le}
+{zhdocstring Float.le Manual.ZhDocString.Ch19Ch20.G2.c089}
 
-{docstring Float32.le}
+{zhdocstring Float32.le Manual.ZhDocString.Ch19Ch20.G2.c090}
 
-{docstring Float.lt}
+{zhdocstring Float.lt Manual.ZhDocString.Ch19Ch20.G2.c091}
 
-{docstring Float32.lt}
+{zhdocstring Float32.lt Manual.ZhDocString.Ch19Ch20.G2.c092}
 
-{docstring Float.decLe}
+{zhdocstring Float.decLe Manual.ZhDocString.Ch19Ch20.G2.c093}
 
-{docstring Float32.decLe}
+{zhdocstring Float32.decLe Manual.ZhDocString.Ch19Ch20.G2.c094}
 
-{docstring Float.decLt}
+{zhdocstring Float.decLt Manual.ZhDocString.Ch19Ch20.G2.c095}
 
-{docstring Float32.decLt}
+{zhdocstring Float32.decLt Manual.ZhDocString.Ch19Ch20.G2.c096}
 
-## Arithmetic
+## 算术
 
-Arithmetic operations on floating-point values are typically invoked via the {inst}`Add Float`, {inst}`Sub Float`, {inst}`Mul Float`, {inst}`Div Float`, and {inst}`HomogeneousPow Float` instances, along with the corresponding {name}`Float32` instances.
+%%%
+tag := "Lean-__________________--Basic-Types--Floating-Point-Numbers--API-Reference--Arithmetic"
+%%%
+浮点值上的算术运算通常通过 {inst}`Add Float`、{inst}`Sub Float`、{inst}`Mul Float`、{inst}`Div Float` 和 {inst}`HomogeneousPow Float` 实例来调用，{name}`Float32` 也有对应实例。
 
-{docstring Float.add}
+{zhdocstring Float.add Manual.ZhDocString.Ch19Ch20.G2.c097}
 
-{docstring Float32.add}
+{zhdocstring Float32.add Manual.ZhDocString.Ch19Ch20.G2.c098}
 
-{docstring Float.sub}
+{zhdocstring Float.sub Manual.ZhDocString.Ch19Ch20.G2.c099}
 
-{docstring Float32.sub}
+{zhdocstring Float32.sub Manual.ZhDocString.Ch19Ch20.G2.c100}
 
-{docstring Float.mul}
+{zhdocstring Float.mul Manual.ZhDocString.Ch19Ch20.G2.c101}
 
-{docstring Float32.mul}
+{zhdocstring Float32.mul Manual.ZhDocString.Ch19Ch20.G2.c102}
 
-{docstring Float.div}
+{zhdocstring Float.div Manual.ZhDocString.Ch19Ch20.G2.c103}
 
-{docstring Float32.div}
+{zhdocstring Float32.div Manual.ZhDocString.Ch19Ch20.G2.c104}
 
-{docstring Float.pow}
+{zhdocstring Float.pow Manual.ZhDocString.Ch19Ch20.G2.c105}
 
-{docstring Float32.pow}
+{zhdocstring Float32.pow Manual.ZhDocString.Ch19Ch20.G2.c106}
 
-{docstring Float.exp}
+{zhdocstring Float.exp Manual.ZhDocString.Ch19Ch20.G2.c107}
 
-{docstring Float32.exp}
+{zhdocstring Float32.exp Manual.ZhDocString.Ch19Ch20.G2.c108}
 
-{docstring Float.exp2}
+{zhdocstring Float.exp2 Manual.ZhDocString.Ch19Ch20.G2.c109}
 
-{docstring Float32.exp2}
+{zhdocstring Float32.exp2 Manual.ZhDocString.Ch19Ch20.G2.c110}
 
-### Roots
+### 根
 
-Computing the square root of a negative number yields `NaN`.
+%%%
+tag := "Lean-__________________--Basic-Types--Floating-Point-Numbers--API-Reference--Arithmetic--Roots"
+%%%
+对负数计算平方根会得到 `NaN`。
 
-{docstring Float.sqrt}
+{zhdocstring Float.sqrt Manual.ZhDocString.Ch19Ch20.G2.c111}
 
-{docstring Float32.sqrt}
+{zhdocstring Float32.sqrt Manual.ZhDocString.Ch19Ch20.G2.c112}
 
-{docstring Float.cbrt}
+{zhdocstring Float.cbrt Manual.ZhDocString.Ch19Ch20.G2.c113}
 
-{docstring Float32.cbrt}
+{zhdocstring Float32.cbrt Manual.ZhDocString.Ch19Ch20.G2.c114}
 
-## Logarithms
+## 对数
 
-{docstring Float.log}
+%%%
+tag := "Lean-__________________--Basic-Types--Floating-Point-Numbers--API-Reference--Logarithms"
+%%%
+{zhdocstring Float.log Manual.ZhDocString.Ch19Ch20.G2.c115}
 
-{docstring Float32.log}
+{zhdocstring Float32.log Manual.ZhDocString.Ch19Ch20.G2.c116}
 
-{docstring Float.log10}
+{zhdocstring Float.log10 Manual.ZhDocString.Ch19Ch20.G2.c117}
 
-{docstring Float32.log10}
+{zhdocstring Float32.log10 Manual.ZhDocString.Ch19Ch20.G2.c118}
 
-{docstring Float.log2}
+{zhdocstring Float.log2 Manual.ZhDocString.Ch19Ch20.G2.c119}
 
-{docstring Float32.log2}
+{zhdocstring Float32.log2 Manual.ZhDocString.Ch19Ch20.G2.c120}
 
-## Scaling
+## 缩放
 
-{docstring Float.scaleB}
+%%%
+tag := "Lean-__________________--Basic-Types--Floating-Point-Numbers--API-Reference--Scaling"
+%%%
+{zhdocstring Float.scaleB Manual.ZhDocString.Ch19Ch20.G2.c121}
 
-{docstring Float32.scaleB}
+{zhdocstring Float32.scaleB Manual.ZhDocString.Ch19Ch20.G2.c122}
 
-## Rounding
+## 取整
 
-{docstring Float.round}
+%%%
+tag := "Lean-__________________--Basic-Types--Floating-Point-Numbers--API-Reference--Rounding"
+%%%
+{zhdocstring Float.round Manual.ZhDocString.Ch19Ch20.G2.c123}
 
-{docstring Float32.round}
+{zhdocstring Float32.round Manual.ZhDocString.Ch19Ch20.G2.c124}
 
-{docstring Float.floor}
+{zhdocstring Float.floor Manual.ZhDocString.Ch19Ch20.G2.c125}
 
-{docstring Float32.floor}
+{zhdocstring Float32.floor Manual.ZhDocString.Ch19Ch20.G2.c126}
 
-{docstring Float.ceil}
+{zhdocstring Float.ceil Manual.ZhDocString.Ch19Ch20.G2.c127}
 
-{docstring Float32.ceil}
+{zhdocstring Float32.ceil Manual.ZhDocString.Ch19Ch20.G2.c128}
 
-## Trigonometry
+## 三角函数
 
-### Sine
+%%%
+tag := "Lean-__________________--Basic-Types--Floating-Point-Numbers--API-Reference--Trigonometry"
+%%%
+### 正弦
 
-{docstring Float.sin}
+%%%
+tag := "Lean-__________________--Basic-Types--Floating-Point-Numbers--API-Reference--Trigonometry--Sine"
+%%%
+{zhdocstring Float.sin Manual.ZhDocString.Ch19Ch20.G2.c129}
 
-{docstring Float32.sin}
+{zhdocstring Float32.sin Manual.ZhDocString.Ch19Ch20.G2.c130}
 
-{docstring Float.sinh}
+{zhdocstring Float.sinh Manual.ZhDocString.Ch19Ch20.G2.c131}
 
-{docstring Float32.sinh}
+{zhdocstring Float32.sinh Manual.ZhDocString.Ch19Ch20.G2.c132}
 
-{docstring Float.asin}
+{zhdocstring Float.asin Manual.ZhDocString.Ch19Ch20.G2.c133}
 
-{docstring Float32.asin}
+{zhdocstring Float32.asin Manual.ZhDocString.Ch19Ch20.G2.c134}
 
-{docstring Float.asinh}
+{zhdocstring Float.asinh Manual.ZhDocString.Ch19Ch20.G2.c135}
 
-{docstring Float32.asinh}
+{zhdocstring Float32.asinh Manual.ZhDocString.Ch19Ch20.G2.c136}
 
-### Cosine
+### 余弦
 
-{docstring Float.cos}
+%%%
+tag := "Lean-__________________--Basic-Types--Floating-Point-Numbers--API-Reference--Trigonometry--Cosine"
+%%%
+{zhdocstring Float.cos Manual.ZhDocString.Ch19Ch20.G2.c137}
 
-{docstring Float32.cos}
+{zhdocstring Float32.cos Manual.ZhDocString.Ch19Ch20.G2.c138}
 
-{docstring Float.cosh}
+{zhdocstring Float.cosh Manual.ZhDocString.Ch19Ch20.G2.c139}
 
-{docstring Float32.cosh}
+{zhdocstring Float32.cosh Manual.ZhDocString.Ch19Ch20.G2.c140}
 
-{docstring Float.acos}
+{zhdocstring Float.acos Manual.ZhDocString.Ch19Ch20.G2.c141}
 
-{docstring Float32.acos}
+{zhdocstring Float32.acos Manual.ZhDocString.Ch19Ch20.G2.c142}
 
-{docstring Float.acosh}
+{zhdocstring Float.acosh Manual.ZhDocString.Ch19Ch20.G2.c143}
 
-{docstring Float32.acosh}
+{zhdocstring Float32.acosh Manual.ZhDocString.Ch19Ch20.G2.c144}
 
-### Tangent
+### 正切
 
-{docstring Float.tan}
+%%%
+tag := "Lean-__________________--Basic-Types--Floating-Point-Numbers--API-Reference--Trigonometry--Tangent"
+%%%
+{zhdocstring Float.tan Manual.ZhDocString.Ch19Ch20.G2.c145}
 
-{docstring Float32.tan}
+{zhdocstring Float32.tan Manual.ZhDocString.Ch19Ch20.G2.c146}
 
-{docstring Float.tanh}
+{zhdocstring Float.tanh Manual.ZhDocString.Ch19Ch20.G2.c147}
 
-{docstring Float32.tanh}
+{zhdocstring Float32.tanh Manual.ZhDocString.Ch19Ch20.G2.c148}
 
-{docstring Float.atan}
+{zhdocstring Float.atan Manual.ZhDocString.Ch19Ch20.G2.c149}
 
-{docstring Float32.atan}
+{zhdocstring Float32.atan Manual.ZhDocString.Ch19Ch20.G2.c150}
 
-{docstring Float.atanh}
+{zhdocstring Float.atanh Manual.ZhDocString.Ch19Ch20.G2.c151}
 
-{docstring Float32.atanh}
+{zhdocstring Float32.atanh Manual.ZhDocString.Ch19Ch20.G2.c152}
 
-{docstring Float.atan2}
+{zhdocstring Float.atan2 Manual.ZhDocString.Ch19Ch20.G2.c153}
 
-{docstring Float32.atan2}
+{zhdocstring Float32.atan2 Manual.ZhDocString.Ch19Ch20.G2.c154}
 
-## Negation and Absolute Value
+## 取负与绝对值
 
-{docstring Float.abs}
+%%%
+tag := "Lean-__________________--Basic-Types--Floating-Point-Numbers--API-Reference--Negation-and-Absolute-Value"
+%%%
+{zhdocstring Float.abs Manual.ZhDocString.Ch19Ch20.G2.c155}
 
-{docstring Float32.abs}
+{zhdocstring Float32.abs Manual.ZhDocString.Ch19Ch20.G2.c156}
 
-{docstring Float.neg}
+{zhdocstring Float.neg Manual.ZhDocString.Ch19Ch20.G2.c157}
 
-{docstring Float32.neg}
+{zhdocstring Float32.neg Manual.ZhDocString.Ch19Ch20.G2.c158}

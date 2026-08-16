@@ -7,6 +7,7 @@ Author: David Thrane Christiansen
 import VersoManual
 
 import Manual.Meta
+import Manual.ZhDocString.Ch19Ch20.G9
 open Manual.FFIDocType
 
 open Verso.Genre Manual
@@ -15,27 +16,33 @@ open Verso.Genre.Manual.InlineLean
 set_option pp.rawOnError true
 
 
-#doc (Manual) "Logical Model" =>
+#doc (Manual) "逻辑模型" =>
+%%%
+tag := "Lean-__________________--Basic-Types--Strings--Logical-Model"
+%%%
 
-{docstring String}
+{zhdocstring String Manual.ZhDocString.Ch19Ch20.G9.c204}
 
 :::paragraph
-The logical model of strings in Lean is a structure that contains two fields:
+Lean 中字符串的逻辑模型是一个包含两个字段的结构体：
 
- * {name}`String.toByteArray` is a {name}`ByteArray`, which contains the UTF-8 encoding of the string.
+ * {name}`String.toByteArray` 是一个 {name}`ByteArray`，包含了该字符串的 UTF-8 编码。
 
- * {name}`String.isValidUTF8` is a proof that the bytes are in fact a valid UTF-8 encoding of a string.
+ * {name}`String.isValidUTF8` 是一个证明，证明这些字节实际上是字符串的有效 UTF-8 编码。
 
-This model allows operations on byte arrays to be used to specify and prove properties about string operations at a low level while still building on the theory of byte arrays.
-At the same time, it is close enough to the real run-time representation to avoid impedance mismatches between the logical model and the operations that make sense in the run-time representation.
+此模型允许使用针对字节数组的操作在低级别上指定并证明关于字符串操作的属性，同时仍能建立在字节数组理论之上。
+同时，它足够接近真实的运行时表示，从而避免了逻辑模型与运行时表示中有意义的操作之间的阻抗失配。
 :::
 
-# Backwards Compatibility
+# 向后兼容性
 
-In prior versions of Lean, the logical model of strings was a structure that contained a list of characters.
-This model is still useful.
-It is still accessible using {name}`String.ofList`, which converts a list of characters into a {name}`String`, and {name}`String.toList`, which converts a {name}`String` into a list of characters.
+%%%
+tag := "Lean-__________________--Basic-Types--Strings--Logical-Model--Backwards-Compatibility"
+%%%
+在 Lean 的早期版本中，字符串的逻辑模型是包含字符列表的结构体。
+该模型仍然有用。
+它仍然可以使用 {name}`String.ofList`（将字符列表转换为 {name}`String`）以及 {name}`String.toList`（将 {name}`String` 转换为字符列表）来访问。
 
-{docstring String.ofList}
+{zhdocstring String.ofList Manual.ZhDocString.Ch19Ch20.G9.c205}
 
-{docstring String.toList}
+{zhdocstring String.toList Manual.ZhDocString.Ch19Ch20.G9.c206}

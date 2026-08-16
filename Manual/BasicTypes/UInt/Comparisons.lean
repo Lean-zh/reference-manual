@@ -7,6 +7,7 @@ Author: David Thrane Christiansen
 import VersoManual
 
 import Manual.Meta
+import Manual.ZhDocString.Ch19Ch20.G9
 
 open Manual.FFIDocType
 
@@ -15,17 +16,17 @@ open Verso.Genre.Manual.InlineLean
 
 set_option verso.docstring.allowMissing true
 
-#doc (Manual) "Comparisons" =>
+#doc (Manual) "比较" =>
 %%%
 tag := "fixed-int-comparisons"
 %%%
 
 
-The operators in this section are rarely invoked by name.
-Typically, comparisons operations on fixed-width integers should use the decidability of the corresponding relations, which consist of the equality type {name}`Eq` and those implemented in instances of {name}`LE` and {name}`LT`.
+本节中的运算符很少通过名称调用。
+通常，定宽整数上的比较操作应该使用相应关系的可判定性，这些关系由相等类型 {name}`Eq` 以及在 {name}`LE` 和 {name}`LT` 实例中实现的关系组成。
 
 ```lean -show
--- Check that all those instances really exist
+-- 检查所有这些实例是否确实存在
 open Lean Elab Command in
 #eval show CommandElabM Unit from do
   let types := [`ISize, `Int8, `Int16, `Int32, `Int64, `USize, `UInt8, `UInt16, `UInt32, `UInt64]
@@ -35,7 +36,7 @@ open Lean Elab Command in
 ```
 
 ```lean -show
--- Check that all those instances really exist
+-- 检查所有这些实例是否确实存在
 open Lean Elab Command in
 #eval show CommandElabM Unit from do
   let types := [`ISize, `Int8, `Int16, `Int32, `Int64, `USize, `UInt8, `UInt16, `UInt32, `UInt64]
@@ -46,102 +47,102 @@ open Lean Elab Command in
 ```
 
 
-{docstring USize.le}
+{zhdocstring USize.le Manual.ZhDocString.Ch19Ch20.G9.c001}
 
-{docstring ISize.le}
+{zhdocstring ISize.le Manual.ZhDocString.Ch19Ch20.G9.c002}
 
-{docstring UInt8.le}
+{zhdocstring UInt8.le Manual.ZhDocString.Ch19Ch20.G9.c003}
 
-{docstring Int8.le}
+{zhdocstring Int8.le Manual.ZhDocString.Ch19Ch20.G9.c004}
 
-{docstring UInt16.le}
+{zhdocstring UInt16.le Manual.ZhDocString.Ch19Ch20.G9.c005}
 
-{docstring Int16.le}
+{zhdocstring Int16.le Manual.ZhDocString.Ch19Ch20.G9.c006}
 
-{docstring UInt32.le}
+{zhdocstring UInt32.le Manual.ZhDocString.Ch19Ch20.G9.c007}
 
-{docstring Int32.le}
+{zhdocstring Int32.le Manual.ZhDocString.Ch19Ch20.G9.c008}
 
-{docstring UInt64.le}
+{zhdocstring UInt64.le Manual.ZhDocString.Ch19Ch20.G9.c009}
 
-{docstring Int64.le}
+{zhdocstring Int64.le Manual.ZhDocString.Ch19Ch20.G9.c010}
 
-{docstring USize.lt}
+{zhdocstring USize.lt Manual.ZhDocString.Ch19Ch20.G9.c011}
 
-{docstring ISize.lt}
+{zhdocstring ISize.lt Manual.ZhDocString.Ch19Ch20.G9.c012}
 
-{docstring UInt8.lt}
+{zhdocstring UInt8.lt Manual.ZhDocString.Ch19Ch20.G9.c013}
 
-{docstring Int8.lt}
+{zhdocstring Int8.lt Manual.ZhDocString.Ch19Ch20.G9.c014}
 
-{docstring UInt16.lt}
+{zhdocstring UInt16.lt Manual.ZhDocString.Ch19Ch20.G9.c015}
 
-{docstring Int16.lt}
+{zhdocstring Int16.lt Manual.ZhDocString.Ch19Ch20.G9.c016}
 
-{docstring UInt32.lt}
+{zhdocstring UInt32.lt Manual.ZhDocString.Ch19Ch20.G9.c017}
 
-{docstring Int32.lt}
+{zhdocstring Int32.lt Manual.ZhDocString.Ch19Ch20.G9.c018}
 
-{docstring UInt64.lt}
+{zhdocstring UInt64.lt Manual.ZhDocString.Ch19Ch20.G9.c019}
 
-{docstring Int64.lt}
+{zhdocstring Int64.lt Manual.ZhDocString.Ch19Ch20.G9.c020}
 
-{docstring USize.decEq}
+{zhdocstring USize.decEq Manual.ZhDocString.Ch19Ch20.G9.c021}
 
-{docstring ISize.decEq}
+{zhdocstring ISize.decEq Manual.ZhDocString.Ch19Ch20.G9.c022}
 
-{docstring UInt8.decEq}
+{zhdocstring UInt8.decEq Manual.ZhDocString.Ch19Ch20.G9.c023}
 
-{docstring Int8.decEq}
+{zhdocstring Int8.decEq Manual.ZhDocString.Ch19Ch20.G9.c024}
 
-{docstring UInt16.decEq}
+{zhdocstring UInt16.decEq Manual.ZhDocString.Ch19Ch20.G9.c025}
 
-{docstring Int16.decEq}
+{zhdocstring Int16.decEq Manual.ZhDocString.Ch19Ch20.G9.c026}
 
-{docstring UInt32.decEq}
+{zhdocstring UInt32.decEq Manual.ZhDocString.Ch19Ch20.G9.c027}
 
-{docstring Int32.decEq}
+{zhdocstring Int32.decEq Manual.ZhDocString.Ch19Ch20.G9.c028}
 
-{docstring UInt64.decEq}
+{zhdocstring UInt64.decEq Manual.ZhDocString.Ch19Ch20.G9.c029}
 
-{docstring Int64.decEq}
+{zhdocstring Int64.decEq Manual.ZhDocString.Ch19Ch20.G9.c030}
 
-{docstring USize.decLe}
+{zhdocstring USize.decLe Manual.ZhDocString.Ch19Ch20.G9.c031}
 
-{docstring ISize.decLe}
+{zhdocstring ISize.decLe Manual.ZhDocString.Ch19Ch20.G9.c032}
 
-{docstring UInt8.decLe}
+{zhdocstring UInt8.decLe Manual.ZhDocString.Ch19Ch20.G9.c033}
 
-{docstring Int8.decLe}
+{zhdocstring Int8.decLe Manual.ZhDocString.Ch19Ch20.G9.c034}
 
-{docstring UInt16.decLe}
+{zhdocstring UInt16.decLe Manual.ZhDocString.Ch19Ch20.G9.c035}
 
-{docstring Int16.decLe}
+{zhdocstring Int16.decLe Manual.ZhDocString.Ch19Ch20.G9.c036}
 
-{docstring UInt32.decLe}
+{zhdocstring UInt32.decLe Manual.ZhDocString.Ch19Ch20.G9.c037}
 
-{docstring Int32.decLe}
+{zhdocstring Int32.decLe Manual.ZhDocString.Ch19Ch20.G9.c038}
 
-{docstring UInt64.decLe}
+{zhdocstring UInt64.decLe Manual.ZhDocString.Ch19Ch20.G9.c039}
 
-{docstring Int64.decLe}
+{zhdocstring Int64.decLe Manual.ZhDocString.Ch19Ch20.G9.c040}
 
-{docstring USize.decLt}
+{zhdocstring USize.decLt Manual.ZhDocString.Ch19Ch20.G9.c041}
 
-{docstring ISize.decLt}
+{zhdocstring ISize.decLt Manual.ZhDocString.Ch19Ch20.G9.c042}
 
-{docstring UInt8.decLt}
+{zhdocstring UInt8.decLt Manual.ZhDocString.Ch19Ch20.G9.c043}
 
-{docstring Int8.decLt}
+{zhdocstring Int8.decLt Manual.ZhDocString.Ch19Ch20.G9.c044}
 
-{docstring UInt16.decLt}
+{zhdocstring UInt16.decLt Manual.ZhDocString.Ch19Ch20.G9.c045}
 
-{docstring Int16.decLt}
+{zhdocstring Int16.decLt Manual.ZhDocString.Ch19Ch20.G9.c046}
 
-{docstring UInt32.decLt}
+{zhdocstring UInt32.decLt Manual.ZhDocString.Ch19Ch20.G9.c047}
 
-{docstring Int32.decLt}
+{zhdocstring Int32.decLt Manual.ZhDocString.Ch19Ch20.G9.c048}
 
-{docstring UInt64.decLt}
+{zhdocstring UInt64.decLt Manual.ZhDocString.Ch19Ch20.G9.c049}
 
-{docstring Int64.decLt}
+{zhdocstring Int64.decLt Manual.ZhDocString.Ch19Ch20.G9.c050}

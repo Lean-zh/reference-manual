@@ -29,7 +29,7 @@ typedef struct {
     lean_object * m_data[];
 } lean_array_object;
 ```
-The representation of arrays in C. See {ref "array-runtime"}[the description of run-time {name}`Array`s] for more details.
+数组在 C 中的表示。更多细节请参阅{ref "array-runtime"}[运行时 {name}`Array` 的说明]。
 :::
 
 :::ffi "lean_is_array"
@@ -37,18 +37,18 @@ The representation of arrays in C. See {ref "array-runtime"}[the description of 
 bool lean_is_array(lean_object * o)
 ```
 
-Returns `true` if `o` is an array, or `false` otherwise.
+返回 `true` 表示 `o` 是数组；否则返回 `false`。
 :::
 
 :::ffi "lean_to_array"
 ```
 lean_array_object * lean_to_array(lean_object * o)
 ```
-Performs a runtime check that `o` is indeed an array. If `o` is not an array, an assertion fails.
+执行运行时检查，确认 `o` 确实是数组。如果 `o` 不是数组，断言将失败。
 :::
 
 ::::draft
 :::planned 158
- * Complete C API for {lean}`Array`
+ * 完善 {lean}`Array` 的 C API
 :::
 ::::

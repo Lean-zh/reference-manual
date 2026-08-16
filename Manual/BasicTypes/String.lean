@@ -7,6 +7,7 @@ Author: David Thrane Christiansen
 import VersoManual
 
 import Manual.Meta
+import Manual.ZhDocString.Ch19Ch20.G4
 
 import Manual.BasicTypes.String.Logical
 import Manual.BasicTypes.String.Literals
@@ -23,35 +24,36 @@ set_option pp.rawOnError true
 set_option maxHeartbeats 250000
 
 
-#doc (Manual) "Strings" =>
+#doc (Manual) "字符串" =>
 %%%
 tag := "String"
+file := "Strings"
 %%%
 
 
-Strings represent Unicode text.
-Strings are specially supported by Lean:
- * They have a _logical model_ that specifies their behavior in terms of {name}`ByteArray`s that contain UTF-8 scalar values.
- * In compiled code, they have a run-time representation that additionally includes a cached length, measured as the number of scalar values.
-   The Lean runtime provides optimized implementations of string operations.
- * There is {ref "string-syntax"}[string literal syntax] for writing strings.
+字符串表示 Unicode 文本。
+Lean 对字符串有特殊支持：
+ * 它们具有_逻辑模型_，该模型通过包含 UTF-8 标量值的 {name}`ByteArray` 来指定其行为。
+ * 在编译后的代码中，它们有一个运行时表示，该表示额外包含了一个缓存的长度，以标量值的数量来衡量。
+   Lean 运行时提供了字符串操作的优化实现。
+ * 存在用于编写字符串的{ref "string-syntax"}[字符串字面量语法]。
 
-UTF-8 is a variable-width encoding.
-A character may be encoded as a one, two, three, or four byte code unit.
-The fact that strings are UTF-8-encoded byte arrays is visible in the API:
- * There is no operation to project a particular character out of the string, as this would be a performance trap. {ref "string-iterators"}[Use an iterator] in a loop instead of a {name}`Nat`.
- * Strings are indexed by {name}`String.Pos`, which internally records _byte counts_ rather than _character counts_, and thus takes constant time.
-   {name}`String.Pos` includes a proof that the byte count in fact points at the beginning of a UTF-8 code unit.
-   Aside from `0`, these should not be constructed directly, but rather updated using {name}`String.next` and {name}`String.prev`.
+UTF-8 是一种可变宽度编码。
+一个字符可以编码为一个、两个、三个或四个字节的代码单元。
+字符串是 UTF-8 编码的字节数组这一事实在 API 中是可见的：
+ * 没有从字符串中提取特定字符的操作，因为这可能是一个性能陷阱。在循环中应{ref "string-iterators"}[使用迭代器]而不是 {name}`Nat`。
+ * 字符串由 {name}`String.Pos` 索引，其在内部记录的是_字节数_而不是_字符数_，因此需要常量时间。
+   {name}`String.Pos` 包含一个证明，证明字节计数实际上指向一个 UTF-8 代码单元的起始位置。
+   除了 `0` 之外，这些不应该直接构造，而应该使用 {name}`String.next` 和 {name}`String.prev` 来更新。
 
 {include 0 Manual.BasicTypes.String.Logical}
 
-# Run-Time Representation
+# 运行时表示
 %%%
 tag := "string-runtime"
 %%%
 
-:::figure "Memory layout of strings" (tag := "stringffi")
+:::figure "字符串的内存布局" (tag := "stringffi")
 ```diagram
 open Illuminate in
 open Manual.Diagram in
@@ -68,397 +70,433 @@ layoutDiagram [
 ```
 :::
 
-Strings are represented as {tech}[dynamic arrays] of bytes, encoded in UTF-8.
-After the object header, a string contains:
+字符串被表示为 UTF-8 编码的字节{tech (key := "dynamic arrays")}[动态数组]。
+在对象头部之后，一个字符串包含：
 
-: byte count
+: 字节数
 
-  The number of bytes that currently contain valid string data
+  当前包含有效字符串数据的字节数。
 
-: capacity
+: capacity（容量）
 
-  The number of bytes presently allocated for the string
+  目前为该字符串分配的字节数。
 
-: length
+: length（长度）
 
-  The length of the encoded string, which may be shorter than the byte count due to UTF-8 multi-byte characters
+  编码后字符串的长度，由于 UTF-8 的多字节字符，它可能短于字节数。
 
-: data
+: data（数据）
 
-  The actual character data in the string, null-terminated
+  字符串中实际的字符数据，以 null 结尾。
 
-Many string functions in the Lean runtime check whether they have exclusive access to their argument by consulting the reference count in the object header.
-If they do, and the string's capacity is sufficient, then the existing string can be mutated rather than allocating fresh memory.
-Otherwise, a new string must be allocated.
+Lean 运行时中的许多字符串函数会通过查询对象头部中的引用计数，检查它们是否独占其参数。
+如果是这样，并且字符串的容量足够，那么现有的字符串就可以被修改，而不是分配新的内存。
+否则，必须分配一个新的字符串。
 
 
-## Performance Notes
+## 性能说明
 %%%
 tag := "string-performance"
 %%%
 
-Despite the fact that they appear to be an ordinary constructor and projection, {name}`String.ofByteArray` and {name}`String.toByteArray` take *time linear in the length of the string*.
-This is because byte arrays and strings do not have an identical representation, so the contents of the byte array must be copied to a new object.
+尽管它们看起来像是普通的构造子和投影，但 {name}`String.ofByteArray` 和 {name}`String.toByteArray` 需要的*时间与字符串的长度成正比*。
+这是因为字节数组和字符串没有相同的表示，因此必须将字节数组的内容复制到一个新对象中。
 
 
 {include 0 Manual.BasicTypes.String.Literals}
 
-# API Reference
+# API 参考
 %%%
 tag := "string-api"
 %%%
 
 
-## Constructing
+## 构造
 %%%
 tag := "string-api-build"
 %%%
 
 
-{docstring String.singleton}
+{zhdocstring String.singleton Manual.ZhDocString.Ch19Ch20.G4.c084}
 
-{docstring String.append}
+{zhdocstring String.append Manual.ZhDocString.Ch19Ch20.G4.c085}
 
-{docstring String.join}
+{zhdocstring String.join Manual.ZhDocString.Ch19Ch20.G4.c086}
 
-{docstring String.intercalate}
+{zhdocstring String.intercalate Manual.ZhDocString.Ch19Ch20.G4.c087}
 
-## Conversions
+## 转换
 %%%
 tag := "string-api-convert"
 %%%
 
 
-{docstring String.toList}
+{zhdocstring String.toList Manual.ZhDocString.Ch19Ch20.G4.c088}
 
-{docstring String.isNat}
+{zhdocstring String.isNat Manual.ZhDocString.Ch19Ch20.G4.c089}
 
-{docstring String.toNat?}
+{zhdocstring String.toNat? Manual.ZhDocString.Ch19Ch20.G4.c090}
 
-{docstring String.toNat!}
+{zhdocstring String.toNat! Manual.ZhDocString.Ch19Ch20.G4.c091}
 
-{docstring String.isInt}
+{zhdocstring String.isInt Manual.ZhDocString.Ch19Ch20.G4.c092}
 
-{docstring String.toInt?}
+{zhdocstring String.toInt? Manual.ZhDocString.Ch19Ch20.G4.c093}
 
-{docstring String.toInt!}
+{zhdocstring String.toInt! Manual.ZhDocString.Ch19Ch20.G4.c094}
 
-{docstring String.toFormat}
+{zhdocstring String.toFormat Manual.ZhDocString.Ch19Ch20.G4.c095}
 
-## Properties
+## 属性
 %%%
 tag := "string-api-props"
 %%%
 
-{docstring String.isEmpty}
+{zhdocstring String.isEmpty Manual.ZhDocString.Ch19Ch20.G4.c096}
 
-{docstring String.length}
+{zhdocstring String.length Manual.ZhDocString.Ch19Ch20.G4.c097}
 
-## Positions
+## 位置
 %%%
 tag := "string-api-valid-pos"
 %%%
 
-{docstring String.Pos}
+{zhdocstring String.Pos Manual.ZhDocString.Ch19Ch20.G4.c098}
 
-### In Strings
+### 字符串内
 
-{docstring String.startPos}
+%%%
+tag := "Lean-__________________--Basic-Types--Strings--API-Reference--Positions--In-Strings"
+%%%
+{zhdocstring String.startPos Manual.ZhDocString.Ch19Ch20.G4.c099}
 
-{docstring String.endPos}
+{zhdocstring String.endPos Manual.ZhDocString.Ch19Ch20.G4.c100}
 
-{docstring String.pos}
+{zhdocstring String.pos Manual.ZhDocString.Ch19Ch20.G4.c101}
 
-{docstring String.pos?}
+{zhdocstring String.pos? Manual.ZhDocString.Ch19Ch20.G4.c102}
 
-{docstring String.pos!}
+{zhdocstring String.pos! Manual.ZhDocString.Ch19Ch20.G4.c103}
 
-{docstring String.extract}
+{zhdocstring String.extract Manual.ZhDocString.Ch19Ch20.G4.c104}
 
-### Lookups
+### 查找
 
-{docstring String.Pos.get}
+%%%
+tag := "Lean-__________________--Basic-Types--Strings--API-Reference--Positions--Lookups"
+%%%
+{zhdocstring String.Pos.get Manual.ZhDocString.Ch19Ch20.G4.c105}
 
-{docstring String.Pos.get!}
+{zhdocstring String.Pos.get! Manual.ZhDocString.Ch19Ch20.G4.c106}
 
-{docstring String.Pos.get?}
+{zhdocstring String.Pos.get? Manual.ZhDocString.Ch19Ch20.G4.c107}
 
-{docstring String.Pos.set}
+{zhdocstring String.Pos.set Manual.ZhDocString.Ch19Ch20.G4.c108}
 
-### Modifications
+### 修改
 
-{docstring String.Pos.modify}
+%%%
+tag := "Lean-__________________--Basic-Types--Strings--API-Reference--Positions--Modifications"
+%%%
+{zhdocstring String.Pos.modify Manual.ZhDocString.Ch19Ch20.G4.c109}
 
-{docstring String.Pos.byte}
+{zhdocstring String.Pos.byte Manual.ZhDocString.Ch19Ch20.G4.c110}
 
-### Adjustment
+### 调整
 
-{docstring String.Pos.prev}
+%%%
+tag := "Lean-__________________--Basic-Types--Strings--API-Reference--Positions--Adjustment"
+%%%
+{zhdocstring String.Pos.prev Manual.ZhDocString.Ch19Ch20.G4.c111}
 
-{docstring String.Pos.prev!}
+{zhdocstring String.Pos.prev! Manual.ZhDocString.Ch19Ch20.G4.c112}
 
-{docstring String.Pos.prev?}
+{zhdocstring String.Pos.prev? Manual.ZhDocString.Ch19Ch20.G4.c113}
 
-{docstring String.Pos.next}
+{zhdocstring String.Pos.next Manual.ZhDocString.Ch19Ch20.G4.c114}
 
-{docstring String.Pos.next!}
+{zhdocstring String.Pos.next! Manual.ZhDocString.Ch19Ch20.G4.c115}
 
-{docstring String.Pos.next?}
+{zhdocstring String.Pos.next? Manual.ZhDocString.Ch19Ch20.G4.c116}
 
-### Other Strings
+### 其他字符串
 
-{docstring String.Pos.cast}
+%%%
+tag := "Lean-__________________--Basic-Types--Strings--API-Reference--Positions--Other-Strings"
+%%%
+{zhdocstring String.Pos.cast Manual.ZhDocString.Ch19Ch20.G4.c117}
 
-{docstring String.Pos.ofCopy}
+{zhdocstring String.Pos.ofCopy Manual.ZhDocString.Ch19Ch20.G4.c118}
 
-{docstring String.Pos.toSetOfLE}
+{zhdocstring String.Pos.toSetOfLE Manual.ZhDocString.Ch19Ch20.G4.c119}
 
-{docstring String.Pos.toModifyOfLE}
+{zhdocstring String.Pos.toModifyOfLE Manual.ZhDocString.Ch19Ch20.G4.c120}
 
-{docstring String.Pos.toSlice}
+{zhdocstring String.Pos.toSlice Manual.ZhDocString.Ch19Ch20.G4.c121}
 
-## Raw Positions
+## 原始位置
 %%%
 tag := "string-api-pos"
 %%%
 
-{docstring String.Pos.Raw}
+{zhdocstring String.Pos.Raw Manual.ZhDocString.Ch19Ch20.G4.c122}
 
-### Byte Position
+### 字节位置
 
-{docstring String.Pos.Raw.offsetOfPos}
+%%%
+tag := "Lean-__________________--Basic-Types--Strings--API-Reference--Raw-Positions--Byte-Position"
+%%%
+{zhdocstring String.Pos.Raw.offsetOfPos Manual.ZhDocString.Ch19Ch20.G4.c123}
 
-### Validity
+### 有效性
 
-{docstring String.Pos.Raw.isValid}
+%%%
+tag := "Lean-__________________--Basic-Types--Strings--API-Reference--Raw-Positions--Validity"
+%%%
+{zhdocstring String.Pos.Raw.isValid Manual.ZhDocString.Ch19Ch20.G4.c124}
 
-{docstring String.Pos.Raw.isValidForSlice}
+{zhdocstring String.Pos.Raw.isValidForSlice Manual.ZhDocString.Ch19Ch20.G4.c125}
 
-### Boundaries
+### 边界
 
-{docstring String.rawEndPos}
+%%%
+tag := "Lean-__________________--Basic-Types--Strings--API-Reference--Raw-Positions--Boundaries"
+%%%
+{zhdocstring String.rawEndPos Manual.ZhDocString.Ch19Ch20.G4.c126}
 
-{docstring String.Pos.Raw.atEnd}
+{zhdocstring String.Pos.Raw.atEnd Manual.ZhDocString.Ch19Ch20.G4.c127}
 
-### Comparisons
+### 比较
 
-{docstring String.Pos.Raw.min}
+%%%
+tag := "Lean-__________________--Basic-Types--Strings--API-Reference--Raw-Positions--Comparisons"
+%%%
+{zhdocstring String.Pos.Raw.min Manual.ZhDocString.Ch19Ch20.G4.c128}
 
-{docstring String.Pos.Raw.byteDistance}
+{zhdocstring String.Pos.Raw.byteDistance Manual.ZhDocString.Ch19Ch20.G4.c129}
 
-{docstring String.Pos.Raw.substrEq}
+{zhdocstring String.Pos.Raw.substrEq Manual.ZhDocString.Ch19Ch20.G4.c130}
 
-### Adjustment
+### 调整
 
-{docstring String.Pos.Raw.prev}
+%%%
+tag := "Lean-__________________--Basic-Types--Strings--API-Reference--Raw-Positions--Adjustment"
+%%%
+{zhdocstring String.Pos.Raw.prev Manual.ZhDocString.Ch19Ch20.G4.c131}
 
-{docstring String.Pos.Raw.next}
+{zhdocstring String.Pos.Raw.next Manual.ZhDocString.Ch19Ch20.G4.c132}
 
-{docstring String.Pos.Raw.next'}
+{zhdocstring String.Pos.Raw.next' Manual.ZhDocString.Ch19Ch20.G4.c133}
 
-{docstring String.Pos.Raw.nextUntil}
+{zhdocstring String.Pos.Raw.nextUntil Manual.ZhDocString.Ch19Ch20.G4.c134}
 
-{docstring String.Pos.Raw.nextWhile}
+{zhdocstring String.Pos.Raw.nextWhile Manual.ZhDocString.Ch19Ch20.G4.c135}
 
-{docstring String.Pos.Raw.inc}
+{zhdocstring String.Pos.Raw.inc Manual.ZhDocString.Ch19Ch20.G4.c136}
 
-{docstring String.Pos.Raw.increaseBy}
+{zhdocstring String.Pos.Raw.increaseBy Manual.ZhDocString.Ch19Ch20.G4.c137}
 
-{docstring String.Pos.Raw.offsetBy}
+{zhdocstring String.Pos.Raw.offsetBy Manual.ZhDocString.Ch19Ch20.G4.c138}
 
-{docstring String.Pos.Raw.dec}
+{zhdocstring String.Pos.Raw.dec Manual.ZhDocString.Ch19Ch20.G4.c139}
 
-{docstring String.Pos.Raw.decreaseBy}
+{zhdocstring String.Pos.Raw.decreaseBy Manual.ZhDocString.Ch19Ch20.G4.c140}
 
-{docstring String.Pos.Raw.unoffsetBy}
+{zhdocstring String.Pos.Raw.unoffsetBy Manual.ZhDocString.Ch19Ch20.G4.c141}
 
-### String Lookups
+### 字符串查找
 
-{docstring String.Pos.Raw.extract}
+%%%
+tag := "Lean-__________________--Basic-Types--Strings--API-Reference--Raw-Positions--String-Lookups"
+%%%
+{zhdocstring String.Pos.Raw.extract Manual.ZhDocString.Ch19Ch20.G4.c142}
 
-{docstring String.Pos.Raw.get}
+{zhdocstring String.Pos.Raw.get Manual.ZhDocString.Ch19Ch20.G4.c143}
 
-{docstring String.Pos.Raw.get!}
+{zhdocstring String.Pos.Raw.get! Manual.ZhDocString.Ch19Ch20.G4.c144}
 
-{docstring String.Pos.Raw.get'}
+{zhdocstring String.Pos.Raw.get' Manual.ZhDocString.Ch19Ch20.G4.c145}
 
-{docstring String.Pos.Raw.get?}
+{zhdocstring String.Pos.Raw.get? Manual.ZhDocString.Ch19Ch20.G4.c146}
 
-### String Modifications
+### 字符串修改
 
-{docstring String.Pos.Raw.set}
+%%%
+tag := "Lean-__________________--Basic-Types--Strings--API-Reference--Raw-Positions--String-Modifications"
+%%%
+{zhdocstring String.Pos.Raw.set Manual.ZhDocString.Ch19Ch20.G4.c147}
 
-{docstring String.Pos.Raw.modify}
+{zhdocstring String.Pos.Raw.modify Manual.ZhDocString.Ch19Ch20.G4.c148}
 
-## Lookups and Modifications
+## 查找与修改
 %%%
 tag := "string-api-lookup"
 %%%
 
-Operations that select a sub-region of a string (for example, a prefix or suffix of it) return a {ref "string-api-slice"}[slice] into the original string rather than allocating a new string.
-Use {name}`String.Slice.copy` to convert the slice into a new string.
+选择字符串子区域（例如它的前缀或后缀）的操作会返回原字符串的一个{ref "string-api-slice"}[切片]，而不是分配一个新字符串。
+使用 {name}`String.Slice.copy` 将切片转换为新字符串。
 
-{docstring String.take}
+{zhdocstring String.take Manual.ZhDocString.Ch19Ch20.G4.c149}
 
-{docstring String.takeWhile}
+{zhdocstring String.takeWhile Manual.ZhDocString.Ch19Ch20.G4.c150}
 
-{docstring String.takeEnd}
+{zhdocstring String.takeEnd Manual.ZhDocString.Ch19Ch20.G4.c151}
 
-{docstring String.takeEndWhile}
+{zhdocstring String.takeEndWhile Manual.ZhDocString.Ch19Ch20.G4.c152}
 
-{docstring String.drop}
+{zhdocstring String.drop Manual.ZhDocString.Ch19Ch20.G4.c153}
 
-{docstring String.dropWhile}
+{zhdocstring String.dropWhile Manual.ZhDocString.Ch19Ch20.G4.c154}
 
-{docstring String.dropEnd}
+{zhdocstring String.dropEnd Manual.ZhDocString.Ch19Ch20.G4.c155}
 
-{docstring String.dropEndWhile}
+{zhdocstring String.dropEndWhile Manual.ZhDocString.Ch19Ch20.G4.c156}
 
-{docstring String.dropPrefix?}
+{zhdocstring String.dropPrefix? Manual.ZhDocString.Ch19Ch20.G4.c157}
 
-{docstring String.dropPrefix}
+{zhdocstring String.dropPrefix Manual.ZhDocString.Ch19Ch20.G4.c158}
 
-{docstring String.dropSuffix?}
+{zhdocstring String.dropSuffix? Manual.ZhDocString.Ch19Ch20.G4.c159}
 
-{docstring String.dropSuffix}
+{zhdocstring String.dropSuffix Manual.ZhDocString.Ch19Ch20.G4.c160}
 
-{docstring String.trimAscii}
+{zhdocstring String.trimAscii Manual.ZhDocString.Ch19Ch20.G4.c161}
 
-{docstring String.trimAsciiStart}
+{zhdocstring String.trimAsciiStart Manual.ZhDocString.Ch19Ch20.G4.c162}
 
-{docstring String.trimAsciiEnd}
+{zhdocstring String.trimAsciiEnd Manual.ZhDocString.Ch19Ch20.G4.c163}
 
-{docstring String.removeLeadingSpaces}
+{zhdocstring String.removeLeadingSpaces Manual.ZhDocString.Ch19Ch20.G4.c164}
 
-{docstring String.front}
+{zhdocstring String.front Manual.ZhDocString.Ch19Ch20.G4.c165}
 
-{docstring String.back}
+{zhdocstring String.back Manual.ZhDocString.Ch19Ch20.G4.c166}
 
-{docstring String.find}
+{zhdocstring String.find Manual.ZhDocString.Ch19Ch20.G4.c167}
 
-{docstring String.revFind?}
+{zhdocstring String.revFind? Manual.ZhDocString.Ch19Ch20.G4.c168}
 
-{docstring String.contains}
+{zhdocstring String.contains Manual.ZhDocString.Ch19Ch20.G4.c169}
 
-{docstring String.replace}
+{zhdocstring String.replace Manual.ZhDocString.Ch19Ch20.G4.c170}
 
-{docstring String.find}
+{zhdocstring String.find Manual.ZhDocString.Ch19Ch20.G4.c171}
 
-## Folds and Aggregation
+## 折叠与聚合
 %%%
 tag := "string-api-fold"
 %%%
 
-{docstring String.map}
+{zhdocstring String.map Manual.ZhDocString.Ch19Ch20.G4.c172}
 
-{docstring String.foldl}
+{zhdocstring String.foldl Manual.ZhDocString.Ch19Ch20.G4.c173}
 
-{docstring String.foldr}
+{zhdocstring String.foldr Manual.ZhDocString.Ch19Ch20.G4.c174}
 
-{docstring String.all}
+{zhdocstring String.all Manual.ZhDocString.Ch19Ch20.G4.c175}
 
-{docstring String.any}
+{zhdocstring String.any Manual.ZhDocString.Ch19Ch20.G4.c176}
 
-## Comparisons
+## 比较
 %%%
 tag := "string-api-compare"
 %%%
 
-The {inst}`LT String` instance is defined by the lexicographic ordering on strings based on the {inst}`LT Char` instance.
-Logically, this is modeled by the lexicographic ordering on the lists that model strings, so `List.Lex` defines the order.
-It is decidable, and the decision procedure is overridden at runtime with efficient code that takes advantage of the run-time representation of strings.
+{inst}`LT String` 实例是由基于 {inst}`LT Char` 实例的字符串字典序定义的。
+在逻辑上，这是由对建模字符串的列表进行字典序排列来建模的，因此 `List.Lex` 定义了此顺序。
+它是可判定的；在运行时，该判定过程会被利用字符串运行时表示的高效代码替代。
 
-{docstring String.le}
+{zhdocstring String.le Manual.ZhDocString.Ch19Ch20.G4.c177}
 
-{docstring String.firstDiffPos}
+{zhdocstring String.firstDiffPos Manual.ZhDocString.Ch19Ch20.G4.c178}
 
-{docstring String.isPrefixOf}
+{zhdocstring String.isPrefixOf Manual.ZhDocString.Ch19Ch20.G4.c179}
 
-{docstring String.startsWith}
+{zhdocstring String.startsWith Manual.ZhDocString.Ch19Ch20.G4.c180}
 
-{docstring String.endsWith}
+{zhdocstring String.endsWith Manual.ZhDocString.Ch19Ch20.G4.c181}
 
-{docstring String.decEq}
+{zhdocstring String.decEq Manual.ZhDocString.Ch19Ch20.G4.c182}
 
-{docstring String.hash}
+{zhdocstring String.hash Manual.ZhDocString.Ch19Ch20.G4.c183}
 
-## Manipulation
+## 操作
 %%%
 tag := "string-api-modify"
 %%%
 
-{docstring String.splitToList}
+{zhdocstring String.splitToList Manual.ZhDocString.Ch19Ch20.G4.c184}
 
-{docstring String.splitOn}
+{zhdocstring String.splitOn Manual.ZhDocString.Ch19Ch20.G4.c185}
 
-{docstring String.push}
+{zhdocstring String.push Manual.ZhDocString.Ch19Ch20.G4.c186}
 
-{docstring String.pushn}
+{zhdocstring String.pushn Manual.ZhDocString.Ch19Ch20.G4.c187}
 
-{docstring String.capitalize}
+{zhdocstring String.capitalize Manual.ZhDocString.Ch19Ch20.G4.c188}
 
-{docstring String.decapitalize}
+{zhdocstring String.decapitalize Manual.ZhDocString.Ch19Ch20.G4.c189}
 
-{docstring String.toUpper}
+{zhdocstring String.toUpper Manual.ZhDocString.Ch19Ch20.G4.c190}
 
-{docstring String.toLower}
+{zhdocstring String.toLower Manual.ZhDocString.Ch19Ch20.G4.c191}
 
-## Legacy Iterators
+## 遗留迭代器
 %%%
 tag := "string-iterators"
 %%%
 
-For backwards compatibility, Lean includes legacy string iterators.
-Fundamentally, a {name}`String.Legacy.Iterator` is a pair of a string and a valid position in the string.
-Iterators provide functions for getting the current character ({name String.Legacy.Iterator.curr}`curr`), replacing the current character ({name String.Legacy.Iterator.setCurr}`setCurr`), checking whether the iterator can move to the left or the right ({name String.Legacy.Iterator.hasPrev}`hasPrev` and {name String.Legacy.Iterator.hasNext}`hasNext`, respectively), and moving the iterator ({name String.Legacy.Iterator.prev}`prev` and {name String.Legacy.Iterator.next}`next`, respectively).
-Clients are responsible for checking whether they've reached the beginning or end of the string; otherwise, the iterator ensures that its position always points at a character.
-However, {name}`String.Legacy.Iterator` does not include proofs of these well-formedness conditions, which can make it more difficult to use in verified code.
+为了向后兼容，Lean 包含遗留的字符串迭代器。
+从根本上说，一个 {name}`String.Legacy.Iterator` 是一个字符串和该字符串中有效位置的有序对。
+迭代器提供了获取当前字符（{name String.Legacy.Iterator.curr}`curr`）、替换当前字符（{name String.Legacy.Iterator.setCurr}`setCurr`）、检查迭代器是否可以向左或向右移动（分别为 {name String.Legacy.Iterator.hasPrev}`hasPrev` 和 {name String.Legacy.Iterator.hasNext}`hasNext`），以及移动迭代器（分别为 {name String.Legacy.Iterator.prev}`prev` 和 {name String.Legacy.Iterator.next}`next`）的函数。
+调用者有责任检查它们是否已经到达字符串的开头或结尾；否则，迭代器确保其位置始终指向一个字符。
+然而，{name}`String.Legacy.Iterator` 不包含这些良构性条件的证明，这可能使其在经验证的代码中更难使用。
 
-{docstring String.Legacy.Iterator}
+{zhdocstring String.Legacy.Iterator Manual.ZhDocString.Ch19Ch20.G4.c192}
 
-{docstring String.Legacy.iter}
+{zhdocstring String.Legacy.iter Manual.ZhDocString.Ch19Ch20.G4.c193}
 
-{docstring String.Legacy.mkIterator}
+{zhdocstring String.Legacy.mkIterator Manual.ZhDocString.Ch19Ch20.G4.c194}
 
-{docstring String.Legacy.Iterator.curr}
+{zhdocstring String.Legacy.Iterator.curr Manual.ZhDocString.Ch19Ch20.G4.c195}
 
-{docstring String.Legacy.Iterator.curr'}
+{zhdocstring String.Legacy.Iterator.curr' Manual.ZhDocString.Ch19Ch20.G4.c196}
 
-{docstring String.Legacy.Iterator.hasNext}
+{zhdocstring String.Legacy.Iterator.hasNext Manual.ZhDocString.Ch19Ch20.G4.c197}
 
-{docstring String.Legacy.Iterator.next}
+{zhdocstring String.Legacy.Iterator.next Manual.ZhDocString.Ch19Ch20.G4.c198}
 
-{docstring String.Legacy.Iterator.next'}
+{zhdocstring String.Legacy.Iterator.next' Manual.ZhDocString.Ch19Ch20.G4.c199}
 
-{docstring String.Legacy.Iterator.forward}
+{zhdocstring String.Legacy.Iterator.forward Manual.ZhDocString.Ch19Ch20.G4.c200}
 
-{docstring String.Legacy.Iterator.nextn}
+{zhdocstring String.Legacy.Iterator.nextn Manual.ZhDocString.Ch19Ch20.G4.c201}
 
-{docstring String.Legacy.Iterator.hasPrev}
+{zhdocstring String.Legacy.Iterator.hasPrev Manual.ZhDocString.Ch19Ch20.G4.c202}
 
-{docstring String.Legacy.Iterator.prev}
+{zhdocstring String.Legacy.Iterator.prev Manual.ZhDocString.Ch19Ch20.G4.c203}
 
-{docstring String.Legacy.Iterator.prevn}
+{zhdocstring String.Legacy.Iterator.prevn Manual.ZhDocString.Ch19Ch20.G4.c204}
 
-{docstring String.Legacy.Iterator.atEnd}
+{zhdocstring String.Legacy.Iterator.atEnd Manual.ZhDocString.Ch19Ch20.G4.c205}
 
-{docstring String.Legacy.Iterator.toEnd}
+{zhdocstring String.Legacy.Iterator.toEnd Manual.ZhDocString.Ch19Ch20.G4.c206}
 
-{docstring String.Legacy.Iterator.setCurr}
+{zhdocstring String.Legacy.Iterator.setCurr Manual.ZhDocString.Ch19Ch20.G4.c207}
 
-{docstring String.Legacy.Iterator.find}
+{zhdocstring String.Legacy.Iterator.find Manual.ZhDocString.Ch19Ch20.G4.c208}
 
-{docstring String.Legacy.Iterator.foldUntil}
+{zhdocstring String.Legacy.Iterator.foldUntil Manual.ZhDocString.Ch19Ch20.G4.c209}
 
-{docstring String.Legacy.Iterator.extract}
+{zhdocstring String.Legacy.Iterator.extract Manual.ZhDocString.Ch19Ch20.G4.c210}
 
-{docstring String.Legacy.Iterator.remainingToString}
+{zhdocstring String.Legacy.Iterator.remainingToString Manual.ZhDocString.Ch19Ch20.G4.c211}
 
-{docstring String.Legacy.Iterator.remainingBytes}
+{zhdocstring String.Legacy.Iterator.remainingBytes Manual.ZhDocString.Ch19Ch20.G4.c212}
 
-{docstring String.Legacy.Iterator.pos}
+{zhdocstring String.Legacy.Iterator.pos Manual.ZhDocString.Ch19Ch20.G4.c213}
 
-{docstring String.Legacy.Iterator.toString}
+{zhdocstring String.Legacy.Iterator.toString Manual.ZhDocString.Ch19Ch20.G4.c214}
 
 {include 2 Manual.BasicTypes.String.Slice}
 
@@ -468,36 +506,36 @@ However, {name}`String.Legacy.Iterator` does not include proofs of these well-fo
 
 
 
-## Metaprogramming
+## 元编程
 %%%
 tag := "string-api-meta"
 %%%
 
-{docstring String.toName}
+{zhdocstring String.toName Manual.ZhDocString.Ch19Ch20.G4.c215}
 
-{docstring String.quote}
+{zhdocstring String.quote Manual.ZhDocString.Ch19Ch20.G4.c216}
 
 
-## Encodings
+## 编码
 %%%
 tag := "string-api-encoding"
 %%%
 
-{docstring String.getUTF8Byte}
+{zhdocstring String.getUTF8Byte Manual.ZhDocString.Ch19Ch20.G4.c217}
 
-{docstring String.utf8ByteSize}
+{zhdocstring String.utf8ByteSize Manual.ZhDocString.Ch19Ch20.G4.c218}
 
-{docstring String.utf8EncodeChar}
+{zhdocstring String.utf8EncodeChar Manual.ZhDocString.Ch19Ch20.G4.c219}
 
-{docstring String.fromUTF8}
+{zhdocstring String.fromUTF8 Manual.ZhDocString.Ch19Ch20.G4.c220}
 
-{docstring String.fromUTF8?}
+{zhdocstring String.fromUTF8? Manual.ZhDocString.Ch19Ch20.G4.c221}
 
-{docstring String.fromUTF8!}
+{zhdocstring String.fromUTF8! Manual.ZhDocString.Ch19Ch20.G4.c222}
 
-{docstring String.toUTF8}
+{zhdocstring String.toUTF8 Manual.ZhDocString.Ch19Ch20.G4.c223}
 
-{docstring String.crlfToLf}
+{zhdocstring String.crlfToLf Manual.ZhDocString.Ch19Ch20.G4.c224}
 
 
 {include 0 Manual.BasicTypes.String.FFI}

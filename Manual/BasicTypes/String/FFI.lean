@@ -15,7 +15,7 @@ open Verso.Genre.Manual.InlineLean
 set_option pp.rawOnError true
 
 
-#doc (Manual) "FFI" =>
+#doc (Manual) "外部函数接口（FFI）" =>
 %%%
 tag := "string-ffi"
 %%%
@@ -25,15 +25,15 @@ tag := "string-ffi"
 ```
 typedef struct {
     lean_object m_header;
-    /* byte length including '\0' terminator */
+    /* 字节长度，包含 '\0' 终止符 */
     size_t      m_size;
     size_t      m_capacity;
-    /* UTF8 length */
+    /* UTF8 长度 */
     size_t      m_length;
     char        m_data[0];
 } lean_string_object;
 ```
-The representation of strings in C. See {ref "string-runtime"}[the description of run-time {name}`String`s] for more details.
+这是字符串在 C 中的表示。更多细节参见 {ref "string-runtime"}[运行时 {name}`String` 的说明]。
 :::
 
 :::ffi "lean_is_string"
@@ -41,18 +41,18 @@ The representation of strings in C. See {ref "string-runtime"}[the description o
 bool lean_is_string(lean_object * o)
 ```
 
-Returns `true` if `o` is a string, or `false` otherwise.
+返回值为 `true` 当且仅当 `o` 是字符串；否则返回 `false`。
 :::
 
 :::ffi "lean_to_string"
 ```
 lean_string_object * lean_to_string(lean_object * o)
 ```
-Performs a runtime check that `o` is indeed a string. If `o` is not a string, an assertion fails.
+在运行时检查 `o` 是否确为字符串。若 `o` 不是字符串，则断言失败。
 :::
 
 ::::draft
 :::planned 158
- * Complete C API for {lean}`String`
+ * 完成 {lean}`String` 的完整 C API
 :::
 ::::

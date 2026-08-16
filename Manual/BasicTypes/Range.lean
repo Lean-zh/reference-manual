@@ -7,6 +7,7 @@ Author: David Thrane Christiansen
 import VersoManual
 
 import Manual.Meta
+import Manual.ZhDocString.Ch19Ch20.G8
 import Manual.Interaction.FormatRepr
 
 open Lean.MessageSeverity
@@ -17,27 +18,28 @@ open Verso.Genre.Manual.InlineLean
 set_option pp.rawOnError true
 set_option format.width 60
 
-#doc (Manual) "Ranges" =>
+#doc (Manual) "范围" =>
 %%%
 tag := "ranges"
+file := "Ranges"
 %%%
 
-A {deftech}_range_ represents a series of consecutive elements of some type, from a lower bound to an upper bound.
-The bounds may be open, in which case the bound value is not part of the range, or closed, in which case the bound value is part of the range.
-Either bound may be omitted, in which case the range extends infinitely in the corresponding direction.
+{deftech (key := "range")}_范围_表示某种类型的连续元素序列，从下界到上界。
+边界可以是开的，在这种情况下，边界值不属于该范围，也可以是闭的，在这种情况下，边界值属于该范围。
+任一边界都可以被省略，在这种情况下，范围在相应的方向上无限延伸。
 
-Ranges have dedicated syntax that consists of a starting point, {keyword}`...`, and an ending point.
-The starting point may be either `*`, which denotes a range that continues infinitely downwards, or a term, which denotes a range with a specific starting value.
-By default, ranges are left-closed: they contain their starting points.
-A trailing `<` indicates that the range is left-open and does not contain its starting point.
-The ending point may be `*`, in which case the range continues infinitely upwards, or a term, which denotes a range with a specific ending value.
-By default, ranges are right-open: they do not contain their ending points.
-The ending point may be prefixed with `<` to indicate that it is right-open; this is the default and does not change the meaning, but may be easier to read.
-It may also be prefixed with `=` to indicate that the range is right-closed and contains its ending point.
+范围具有专用语法，包括一个起点、{keyword}`...` 和一个终点。
+起点可以是 `*`，表示向下无限延伸的范围，也可以是一个项，表示具有特定起始值的范围。
+默认情况下，范围是左闭的：它们包含其起点。
+尾部的 `<` 表示该范围是左开的并且不包含其起点。
+终点可以是 `*`，在这种情况下范围向上无限延伸，也可以是一个项，表示具有特定结束值的范围。
+默认情况下，范围是右开的：它们不包含其终点。
+终点可以前缀 `<` 以表示它是右开的；这是默认行为，不会改变含义，但可能更容易阅读。
+它也可以前缀 `=` 以表示该范围是右闭的并且包含其终点。
 
 
-:::example "Ranges of Natural Numbers"
-The range that contains the numbers {lean}`3` through {lean}`6` can be written in a variety of ways:
+:::example "自然数范围"
+包含数字 {lean}`3` 到 {lean}`6` 的范围可以用多种方式编写：
 ```lean (name := rng1)
 #eval (3...7).toList
 ```
@@ -58,13 +60,13 @@ The range that contains the numbers {lean}`3` through {lean}`6` can be written i
 ```
 :::
 
-:::example "Finite and Infinite Ranges"
-This range cannot be converted to a list, because it is infinite:
+:::example "有限范围和无限范围"
+该范围不能转换为列表，因为它是无限的：
 ```lean (name := rng4) +error
 #eval (3...*).toList
 ```
-Finiteness of a left-closed, right-unbounded range is indicated by the presence of an instance of {name}`Std.Rxi.IsAlwaysFinite`, which does not exist for {name}`Nat`.
-{name}`Std.Rco` is the type of these ranges, and the name {name}`Std.Rxi.IsAlwaysFinite` indicates that it determines finiteness for all right-unbounded ranges.
+左闭右无界范围的有限性通过 {name}`Std.Rxi.IsAlwaysFinite` 实例的存在来指示，而 {name}`Nat` 不存在该实例。
+{name}`Std.Rco` 是这些范围的类型，而名称 {name}`Std.Rxi.IsAlwaysFinite` 表明它决定了所有右无界范围的有限性。
 ```leanOutput rng4
 failed to synthesize instance of type class
   Std.Rxi.IsAlwaysFinite Nat
@@ -72,7 +74,7 @@ failed to synthesize instance of type class
 Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
 ```
 
-Attempting to enumerate the negative integers leads to a similar error, this time because there is no way to determine the least element:
+尝试枚举负整数会导致类似的错误，这次是因为无法确定最小元素：
 ```lean (name := intrange) +error
 #eval (*...(0 : Int)).toList
 ```
@@ -83,8 +85,8 @@ failed to synthesize instance of type class
 Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
 ```
 
-Unbounded ranges in finite types indicate that the range extends to the greatest element of the type.
-Because {name}`UInt8` has 256 elements, this range contains 253 elements:
+有限类型中的无界范围表示该范围延伸到该类型的最大元素。
+因为 {name}`UInt8` 有 256 个元素，所以此范围包含 253 个元素：
 ```lean (name := uintrange)
 #eval ((3 : UInt8)...*).toArray.size
 ```
@@ -96,213 +98,222 @@ Because {name}`UInt8` has 256 elements, this range contains 253 elements:
 
 
 
-:::syntax term (title := "Range Syntax")
+:::syntax term (title := "范围语法")
 
-This range is left-closed, right-open, and indicates {name}`Std.Rco`:
+该范围是左闭右开的，并指示 {name}`Std.Rco`：
 ```grammar
 $a...$b
 ```
 
-This range is left-closed, right-open, and indicates {name}`Std.Rco`:
+该范围是左闭右开的，并指示 {name}`Std.Rco`：
 ```grammar
 $a...<$b
 ```
 
-This range is left-closed, right-closed, and indicates {name}`Std.Rcc`:
+该范围是左闭右闭的，并指示 {name}`Std.Rcc`：
 ```grammar
 $a...=$b
 ```
 
-This range is left-closed, right-infinite, and indicates {name}`Std.Rci`:
+该范围是左闭右无限的，并指示 {name}`Std.Rci`：
 ```grammar
 $a...*
 ```
 
-This range is left-open, right-open, and indicates {name}`Std.Roo`:
+该范围是左开右开的，并指示 {name}`Std.Roo`：
 ```grammar
 $a<...$b
 ```
 
-This range is left-open, right-open, and indicates {name}`Std.Roo`:
+该范围是左开右开的，并指示 {name}`Std.Roo`：
 ```grammar
 $a<...<$b
 ```
 
-This range is left-open, right-closed, and indicates {name}`Std.Roc`:
+该范围是左开右闭的，并指示 {name}`Std.Roc`：
 ```grammar
 $a<...=$b
 ```
-This range is left-open, right-infinite, and indicates {name}`Std.Roi`:
+该范围是左开右无限的，并指示 {name}`Std.Roi`：
 ```grammar
 $a<...*
 ```
-This range is left-infinite, right-open, and indicates {name}`Std.Rio`:
+该范围是左无限右开的，并指示 {name}`Std.Rio`：
 ```grammar
 *...$b
 ```
 
-This range is left-infinite, right-open, and indicates {name}`Std.Ric`:
+此范围左侧无界、右侧开放，表示 {name}`Std.Ric`：
 ```grammar
 *...<$b
 ```
 
-This range is left-infinite, right-closed, and indicates {name}`Std.Ric`:
+该范围是左无限右闭的，并指示 {name}`Std.Ric`：
 ```grammar
 *...=$b
 ```
 
-This range is infinite on both sides, and indicates {name}`Std.Rii`:
+该范围两端都是无限的，并指示 {name}`Std.Rii`：
 ```grammar
 *...*
 ```
 :::
 
-# Range Types
+# 范围类型
 
-{docstring Std.Rco +allowMissing}
+%%%
+tag := "Lean-__________________--Basic-Types--Ranges--Range-Types"
+%%%
+{zhdocstring Std.Rco Manual.ZhDocString.Ch19Ch20.G8.c169 +allowMissing}
 
-{docstring Std.Rco.iter}
+{zhdocstring Std.Rco.iter Manual.ZhDocString.Ch19Ch20.G8.c170}
 
-{docstring Std.Rco.toArray}
+{zhdocstring Std.Rco.toArray Manual.ZhDocString.Ch19Ch20.G8.c171}
 
-{docstring Std.Rco.toList}
+{zhdocstring Std.Rco.toList Manual.ZhDocString.Ch19Ch20.G8.c172}
 
-{docstring Std.Rco.size}
+{zhdocstring Std.Rco.size Manual.ZhDocString.Ch19Ch20.G8.c173}
 
-{docstring Std.Rco.isEmpty}
+{zhdocstring Std.Rco.isEmpty Manual.ZhDocString.Ch19Ch20.G8.c174}
 
-{docstring Std.Rcc +allowMissing}
+{zhdocstring Std.Rcc Manual.ZhDocString.Ch19Ch20.G8.c175 +allowMissing}
 
-{docstring Std.Rcc.iter}
+{zhdocstring Std.Rcc.iter Manual.ZhDocString.Ch19Ch20.G8.c176}
 
-{docstring Std.Rcc.toArray}
+{zhdocstring Std.Rcc.toArray Manual.ZhDocString.Ch19Ch20.G8.c177}
 
-{docstring Std.Rcc.toList}
+{zhdocstring Std.Rcc.toList Manual.ZhDocString.Ch19Ch20.G8.c178}
 
-{docstring Std.Rcc.size}
+{zhdocstring Std.Rcc.size Manual.ZhDocString.Ch19Ch20.G8.c179}
 
-{docstring Std.Rcc.isEmpty}
+{zhdocstring Std.Rcc.isEmpty Manual.ZhDocString.Ch19Ch20.G8.c180}
 
-{docstring Std.Rci +allowMissing}
+{zhdocstring Std.Rci Manual.ZhDocString.Ch19Ch20.G8.c181 +allowMissing}
 
-{docstring Std.Rci.iter}
+{zhdocstring Std.Rci.iter Manual.ZhDocString.Ch19Ch20.G8.c182}
 
-{docstring Std.Rci.toArray}
+{zhdocstring Std.Rci.toArray Manual.ZhDocString.Ch19Ch20.G8.c183}
 
-{docstring Std.Rci.toList}
+{zhdocstring Std.Rci.toList Manual.ZhDocString.Ch19Ch20.G8.c184}
 
-{docstring Std.Rci.size}
+{zhdocstring Std.Rci.size Manual.ZhDocString.Ch19Ch20.G8.c185}
 
-{docstring Std.Rci.isEmpty}
+{zhdocstring Std.Rci.isEmpty Manual.ZhDocString.Ch19Ch20.G8.c186}
 
-{docstring Std.Roo +allowMissing}
+{zhdocstring Std.Roo Manual.ZhDocString.Ch19Ch20.G8.c187 +allowMissing}
 
-{docstring Std.Roo.iter}
+{zhdocstring Std.Roo.iter Manual.ZhDocString.Ch19Ch20.G8.c188}
 
-{docstring Std.Roo.toArray}
+{zhdocstring Std.Roo.toArray Manual.ZhDocString.Ch19Ch20.G8.c189}
 
-{docstring Std.Roo.toList}
+{zhdocstring Std.Roo.toList Manual.ZhDocString.Ch19Ch20.G8.c190}
 
-{docstring Std.Roo.size}
+{zhdocstring Std.Roo.size Manual.ZhDocString.Ch19Ch20.G8.c191}
 
-{docstring Std.Roo.isEmpty}
+{zhdocstring Std.Roo.isEmpty Manual.ZhDocString.Ch19Ch20.G8.c192}
 
-{docstring Std.Roc +allowMissing}
+{zhdocstring Std.Roc Manual.ZhDocString.Ch19Ch20.G8.c193 +allowMissing}
 
-{docstring Std.Roc.iter}
+{zhdocstring Std.Roc.iter Manual.ZhDocString.Ch19Ch20.G8.c194}
 
-{docstring Std.Roc.toArray}
+{zhdocstring Std.Roc.toArray Manual.ZhDocString.Ch19Ch20.G8.c195}
 
-{docstring Std.Roc.toList}
+{zhdocstring Std.Roc.toList Manual.ZhDocString.Ch19Ch20.G8.c196}
 
-{docstring Std.Roc.size}
+{zhdocstring Std.Roc.size Manual.ZhDocString.Ch19Ch20.G8.c197}
 
-{docstring Std.Roc.isEmpty}
+{zhdocstring Std.Roc.isEmpty Manual.ZhDocString.Ch19Ch20.G8.c198}
 
-{docstring Std.Roi +allowMissing}
+{zhdocstring Std.Roi Manual.ZhDocString.Ch19Ch20.G8.c199 +allowMissing}
 
-{docstring Std.Roi.iter}
+{zhdocstring Std.Roi.iter Manual.ZhDocString.Ch19Ch20.G8.c200}
 
-{docstring Std.Roi.toArray}
+{zhdocstring Std.Roi.toArray Manual.ZhDocString.Ch19Ch20.G8.c201}
 
-{docstring Std.Roi.toList}
+{zhdocstring Std.Roi.toList Manual.ZhDocString.Ch19Ch20.G8.c202}
 
-{docstring Std.Roi.size}
+{zhdocstring Std.Roi.size Manual.ZhDocString.Ch19Ch20.G8.c203}
 
-{docstring Std.Roi.isEmpty}
+{zhdocstring Std.Roi.isEmpty Manual.ZhDocString.Ch19Ch20.G8.c204}
 
-{docstring Std.Rio +allowMissing}
+{zhdocstring Std.Rio Manual.ZhDocString.Ch19Ch20.G8.c205 +allowMissing}
 
-{docstring Std.Rio.iter}
+{zhdocstring Std.Rio.iter Manual.ZhDocString.Ch19Ch20.G8.c206}
 
-{docstring Std.Rio.toArray}
+{zhdocstring Std.Rio.toArray Manual.ZhDocString.Ch19Ch20.G8.c207}
 
-{docstring Std.Rio.toList}
+{zhdocstring Std.Rio.toList Manual.ZhDocString.Ch19Ch20.G8.c208}
 
-{docstring Std.Rio.size}
+{zhdocstring Std.Rio.size Manual.ZhDocString.Ch19Ch20.G8.c209}
 
-{docstring Std.Rio.isEmpty}
+{zhdocstring Std.Rio.isEmpty Manual.ZhDocString.Ch19Ch20.G8.c210}
 
-{docstring Std.Ric +allowMissing}
+{zhdocstring Std.Ric Manual.ZhDocString.Ch19Ch20.G8.c211 +allowMissing}
 
-{docstring Std.Ric.iter}
+{zhdocstring Std.Ric.iter Manual.ZhDocString.Ch19Ch20.G8.c212}
 
-{docstring Std.Ric.toArray}
+{zhdocstring Std.Ric.toArray Manual.ZhDocString.Ch19Ch20.G8.c213}
 
-{docstring Std.Ric.toList}
+{zhdocstring Std.Ric.toList Manual.ZhDocString.Ch19Ch20.G8.c214}
 
-{docstring Std.Ric.size}
+{zhdocstring Std.Ric.size Manual.ZhDocString.Ch19Ch20.G8.c215}
 
-{docstring Std.Ric.isEmpty}
+{zhdocstring Std.Ric.isEmpty Manual.ZhDocString.Ch19Ch20.G8.c216}
 
-{docstring Std.Rii}
+{zhdocstring Std.Rii Manual.ZhDocString.Ch19Ch20.G8.c217}
 
-{docstring Std.Rii.iter}
+{zhdocstring Std.Rii.iter Manual.ZhDocString.Ch19Ch20.G8.c218}
 
-{docstring Std.Rii.toArray}
+{zhdocstring Std.Rii.toArray Manual.ZhDocString.Ch19Ch20.G8.c219}
 
-{docstring Std.Rii.toList}
+{zhdocstring Std.Rii.toList Manual.ZhDocString.Ch19Ch20.G8.c220}
 
-{docstring Std.Rii.size}
+{zhdocstring Std.Rii.size Manual.ZhDocString.Ch19Ch20.G8.c221}
 
-{docstring Std.Rii.isEmpty}
+{zhdocstring Std.Rii.isEmpty Manual.ZhDocString.Ch19Ch20.G8.c222}
 
-# Range-Related Type Classes
+# 范围相关类型类
 
-{docstring Std.PRange.UpwardEnumerable}
+%%%
+tag := "Lean-__________________--Basic-Types--Ranges--Range-Related-Type-Classes"
+%%%
+{zhdocstring Std.PRange.UpwardEnumerable Manual.ZhDocString.Ch19Ch20.G8.c223}
 
-{docstring Std.PRange.UpwardEnumerable.LE}
+{zhdocstring Std.PRange.UpwardEnumerable.LE Manual.ZhDocString.Ch19Ch20.G8.c224}
 
-{docstring Std.PRange.UpwardEnumerable.LT}
+{zhdocstring Std.PRange.UpwardEnumerable.LT Manual.ZhDocString.Ch19Ch20.G8.c225}
 
-{docstring Std.PRange.LawfulUpwardEnumerable}
+{zhdocstring Std.PRange.LawfulUpwardEnumerable Manual.ZhDocString.Ch19Ch20.G8.c226}
 
-{docstring Std.PRange.Least?}
+{zhdocstring Std.PRange.Least? Manual.ZhDocString.Ch19Ch20.G8.c227}
 
-{docstring Std.PRange.InfinitelyUpwardEnumerable +allowMissing}
+{zhdocstring Std.PRange.InfinitelyUpwardEnumerable Manual.ZhDocString.Ch19Ch20.G8.c228 +allowMissing}
 
-{docstring Std.PRange.LinearlyUpwardEnumerable +allowMissing}
+{zhdocstring Std.PRange.LinearlyUpwardEnumerable Manual.ZhDocString.Ch19Ch20.G8.c229 +allowMissing}
 
-{docstring Std.Rxi.IsAlwaysFinite +allowMissing}
+{zhdocstring Std.Rxi.IsAlwaysFinite Manual.ZhDocString.Ch19Ch20.G8.c230 +allowMissing}
 
-{docstring Std.Rxi.HasSize}
+{zhdocstring Std.Rxi.HasSize Manual.ZhDocString.Ch19Ch20.G8.c231}
 
-{docstring Std.Rxc.IsAlwaysFinite +allowMissing}
+{zhdocstring Std.Rxc.IsAlwaysFinite Manual.ZhDocString.Ch19Ch20.G8.c232 +allowMissing}
 
-{docstring Std.Rxc.HasSize}
+{zhdocstring Std.Rxc.HasSize Manual.ZhDocString.Ch19Ch20.G8.c233}
 
-# Implementing Ranges
+# 实现范围
 
-The built-in range types may be used with any type, but their usefulness depends on the presence of certain type class instances.
-Generally speaking, ranges are either checked for membership, enumerated or iterated over.
-To check whether an value is contained in a range, {name}`DecidableLT` and {name}`DecidableLE` instances are used to compare the value to the range's respective open and closed endpoints.
-To get an iterator for a range, instances of {name}`Std.PRange.UpwardEnumerable` and {name}`Std.PRange.LawfulUpwardEnumerable` are all that's needed.
-To iterate directly over it in a {keywordOf Lean.Parser.Term.doFor}`for` loop, {name}`Std.PRange.LawfulUpwardEnumerableLE` and {name}`Std.PRange.LawfulUpwardEnumerableLT` are required as well.
-To enumerate a range (e.g. by calling {name Std.Rco.toList}`toList`), it must be proven finite.
-This is done by supplying instances of {name}`Std.Rxi.IsAlwaysFinite`, {name}`Std.Rxc.IsAlwaysFinite`, or {name}`Std.Rxo.IsAlwaysFinite`.
+%%%
+tag := "Lean-__________________--Basic-Types--Ranges--Implementing-Ranges"
+%%%
+内置范围类型可以与任何类型一起使用，但它们的实用性取决于某些类型类实例的存在。
+一般来说，范围要么被检查成员资格，要么被枚举或迭代。
+为了检查一个值是否包含在范围内，使用 {name}`DecidableLT` 和 {name}`DecidableLE` 实例来将该值与范围各自的开、闭端点进行比较。
+要获取范围的迭代器，只需要 {name}`Std.PRange.UpwardEnumerable` 和 {name}`Std.PRange.LawfulUpwardEnumerable` 的实例。
+为了在 {keywordOf Lean.Parser.Term.doFor}`for` 循环中直接对其进行迭代，还需要 {name}`Std.PRange.LawfulUpwardEnumerableLE` 和 {name}`Std.PRange.LawfulUpwardEnumerableLT`。
+为了枚举一个范围（例如，通过调用 {name Std.Rco.toList}`toList`），必须证明它是有限的。
+这是通过提供 {name}`Std.Rxi.IsAlwaysFinite`、{name}`Std.Rxc.IsAlwaysFinite` 或 {name}`Std.Rxo.IsAlwaysFinite` 的实例来完成的。
 
-::::example "Implementing Ranges" (open := true)
-The enumeration type {name}`Day` represents the days of the week:
+::::example "实现范围" (open := true)
+枚举类型 {name}`Day` 表示一周中的每一天：
 ```lean
 inductive Day where
   | mo | tu | we | th | fr | sa | su
@@ -314,8 +325,8 @@ deriving Repr
 import Std.Data.Iterators
 ```
 
-While it's already possible to use this type in ranges, they're not particularly useful.
-There's no membership instance:
+虽然在范围中使用这种类型已经是可能的，但它们并不是特别有用。
+没有成员资格实例：
 ```lean +error (name := noMem)
 #eval Day.we ∈ (Day.mo...=Day.fr)
 ```
@@ -325,7 +336,7 @@ failed to synthesize instance of type class
 
 Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
 ```
-Ranges can't be iterated over:
+范围不能被迭代：
 ```lean +error (name := noIter)
 #eval show IO Unit from
   for d in Day.mo...=Day.fr do
@@ -337,7 +348,7 @@ failed to synthesize instance of type class
 
 Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
 ```
-Nor can they be enumerated, even though the type is finite:
+也不能枚举它们，即使该类型是有限的：
 ```lean +error (name := noEnum)
 #eval (Day.sa...*).toList
 ```
@@ -350,8 +361,8 @@ Hint: Type class instance resolution failures can be inspected with the `set_opt
 :::
 
 :::paragraph
-Membership tests require {name}`DecidableLT` and {name}`DecidableLE` instances.
-An easy way to get these is to number each day, and compare the numbers:
+成员资格测试需要 {name}`DecidableLT` 和 {name}`DecidableLE` 实例。
+获取它们的简单方法是为每一天编号，然后比较数字：
 ```lean
 def Day.toNat : Day → Nat
   | mo => 0
@@ -377,7 +388,7 @@ instance : DecidableLE Day :=
 :::
 
 :::paragraph
-With these instances available, membership tests work as expected:
+有了这些实例，成员资格测试将如预期般工作：
 ```lean
 def Day.isWeekday (d : Day) : Bool := d ∈ Day.mo...Day.sa
 ```
@@ -396,9 +407,9 @@ false
 :::
 
 :::paragraph
-Iteration and enumeration are both variants on repeatedly applying a successor function until either the upper bound of the range or the largest element of the type is reached.
-This successor function is {name}`Std.PRange.UpwardEnumerable.succ?`.
-It's also convenient to have a definition of the function in {name}`Day`'s namespace for use with generalized field notation:
+迭代和枚举都是重复应用后继函数的变体，直到达到范围的上界或该类型的最大元素。
+该后继函数是 {name}`Std.PRange.UpwardEnumerable.succ?`。
+在 {name}`Day` 的命名空间中定义该函数以与广义字段表示法一起使用也很方便：
 ```lean
 def Day.succ? : Day → Option Day
   | mo => some tu
@@ -414,13 +425,13 @@ instance : Std.PRange.UpwardEnumerable Day where
 ```
 :::
 
-Iteration also requires a proof that the implementation of {name Std.PRange.UpwardEnumerable.succ?}`succ?` is sensible.
-Its properties are expressed in terms of {name}`Std.PRange.UpwardEnumerable.succMany?`, which iterates the application of {name Std.PRange.UpwardEnumerable.succ?}`succ?` a certain number of times and has a default implementation in terms of {name}`Nat.repeat` and {name Std.PRange.UpwardEnumerable.succ?}`succ?`.
-In particular, an instance of {name Std.PRange.LawfulUpwardEnumerable}`LawfulUpwardEnumerable` requires proofs that {name}`Std.PRange.UpwardEnumerable.succMany?` corresponds to the default implementation along with a proof that repeatedly applying the successor never yields the same element again.
+迭代还需要证明 {name Std.PRange.UpwardEnumerable.succ?}`succ?` 的实现是合理的。
+其属性根据 {name}`Std.PRange.UpwardEnumerable.succMany?` 来表达，它迭代应用 {name Std.PRange.UpwardEnumerable.succ?}`succ?` 若干次，并基于 {name}`Nat.repeat` 和 {name Std.PRange.UpwardEnumerable.succ?}`succ?` 具有默认实现。
+特别地，{name Std.PRange.LawfulUpwardEnumerable}`LawfulUpwardEnumerable` 实例需要证明 {name}`Std.PRange.UpwardEnumerable.succMany?` 与默认实现相对应，同时证明重复应用后继函数永远不会再次产生相同的元素。
 
 :::paragraph
-The first step is to write two helper lemmas for the two proofs about {name Std.PRange.UpwardEnumerable.succMany?}`succMany?`.
-While they could be written inline in the instance declaration, it's convenient for them to have the {attrs}`@[simp]` attribute.
+第一步是为关于 {name Std.PRange.UpwardEnumerable.succMany?}`succMany?` 的两个证明编写两个辅助引理。
+虽然它们可以内联在实例声明中编写，但为了方便起见，可以让它们具有 {attrs}`@[simp]` 属性。
 ```lean
 @[simp]
 theorem Day.succMany?_zero (d : Day) :
@@ -434,8 +445,8 @@ theorem Day.succMany?_add_one (n : Nat) (d : Day) :
   simp [Std.PRange.succMany?, Nat.repeat, Std.PRange.succ?]
 ```
 
-Proving that there are no cycles in successor uses a convenient helper lemma that calculates the number of successor steps between any two days.
-It is marked {attrs}`@[grind →]` because when assumptions that match its premises are present, it adds a great deal of new information:
+证明后继函数中没有循环，需要使用一个方便的辅助引理，该引理可以计算任意两天之间的后继步数。
+它被标记为 {attrs}`@[grind →]`，因为当存在与其前提相匹配的假设时，它会添加大量的新信息：
 ```lean
 @[grind →]
 theorem Day.succMany?_steps {d d' : Day} {steps} :
@@ -456,7 +467,7 @@ theorem Day.succMany?_steps {d d' : Day} {steps} :
       rw [h'] at h
       cases d'' <;> contradiction
 ```
-With that helper, the proof is quite short:
+有了这个辅助引理，证明就非常简短了：
 ```lean
 instance : Std.PRange.LawfulUpwardEnumerable Day where
   ne_of_lt d1 d2 h := by grind [Std.PRange.UpwardEnumerable.LT]
@@ -466,7 +477,7 @@ instance : Std.PRange.LawfulUpwardEnumerable Day where
 :::
 
 :::paragraph
-Proving the three kinds of enumerable ranges to be finite makes it possible to enumerate ranges of days:
+证明三种可枚举范围是有限的，使得枚举天数范围成为可能：
 ```lean
 instance : Std.Rxo.IsAlwaysFinite Day where
   finite init hi :=
@@ -486,7 +497,7 @@ def allWeekdays : List Day := (Day.mo...Day.sa).toList
 ```leanOutput allWeekdays
 [Day.mo, Day.tu, Day.we, Day.th, Day.fr]
 ```
-Adding a {name}`Std.PRange.Least?` instance allows enumeration of left-unbounded ranges:
+添加 {name}`Std.PRange.Least?` 实例允许枚举左无界范围：
 ```lean (name := allWeekdays')
 instance : Std.PRange.Least? Day where
   least? := some .mo
@@ -497,7 +508,7 @@ def allWeekdays' : List Day := (*...Day.sa).toList
 ```leanOutput allWeekdays'
 [Day.mo, Day.tu, Day.we, Day.th, Day.fr]
 ```
-It's also possible to create an iterator that can be enumerated, but it can't yet be used with {keywordOf Lean.Parser.Term.doFor}`for`:
+也可以创建一个可以枚举的迭代器，但它还不能与 {keywordOf Lean.Parser.Term.doFor}`for` 一起使用：
 ```lean (name := iterEnum)
 #eval (Day.we...Day.fr).iter.toList
 ```
@@ -519,8 +530,8 @@ Hint: Type class instance resolution failures can be inspected with the `set_opt
 :::
 
 :::paragraph
-The last step to enable iteration, thus making ranges of days fully-featured, is to prove that the less-than and less-than-or-equal-to relations on {name}`Day` correspond to the notions of inequality that are derived from iterating the successor function.
-This is captured in the classes {name}`Std.PRange.LawfulUpwardEnumerableLT` and {name}`Std.PRange.LawfulUpwardEnumerableLE`, which require that the two notions are logically equivalent:
+启用迭代，从而使天的范围功能完备的最后一步是证明在 {name}`Day` 上的小于和小于等于关系对应于由迭代后继函数导出的不等式概念。
+这被捕获在类 {name}`Std.PRange.LawfulUpwardEnumerableLT` 和 {name}`Std.PRange.LawfulUpwardEnumerableLE` 中，它们要求这两个概念在逻辑上是等价的：
 ```lean
 instance : Std.PRange.LawfulUpwardEnumerableLT Day where
   lt_iff d1 d2 := by
@@ -555,7 +566,7 @@ instance : Std.PRange.LawfulUpwardEnumerableLE Day where
 :::
 
 :::paragraph
-It is now possible to iterate over ranges of days:
+现在就可以在天的范围上进行迭代了：
 ```lean (name := done)
 #eval show IO Unit from do
   for x in (Day.mo...Day.th).iter do
@@ -570,12 +581,15 @@ It's Day.we
 
 ::::
 
-# Ranges and Slices
+# 范围与切片
 
-Range syntax can be used with data structures that support slicing to select a slice of the structure.
+%%%
+tag := "Lean-__________________--Basic-Types--Ranges--Ranges-and-Slices"
+%%%
+范围语法可与支持切片的数据结构结合使用，以选择结构的一个切片。
 
-:::example "Slicing Lists"
-Lists may be sliced with any of the interval types:
+:::example "列表切片"
+列表可以使用任何区间类型进行切片：
 ```lean
 def groceries :=
   ["apples", "bananas", "coffee", "dates", "endive", "fennel"]
@@ -633,8 +647,8 @@ def groceries :=
 
 :::
 
-:::example "Custom Slices"
-A {name}`Triple` contains three values of the same type:
+:::example "自定义切片"
+{name}`Triple` 包含三个相同类型的值：
 ```lean
 structure Triple (α : Type u) where
   fst : α
@@ -642,14 +656,14 @@ structure Triple (α : Type u) where
   thd : α
 deriving Repr
 ```
-Positions in a triple may be any of the fields, or just after {name Triple.thd}`thd`:
+在三元组中的位置可以是任何字段，或就在 {name Triple.thd}`thd` 之后：
 ```lean
 inductive TriplePos where
   | fst | snd | thd | done
 deriving Repr
 ```
-A slice of a triple consists of a triple, a starting position, and a stopping position.
-The starting position is inclusive, and the stopping position exclusive:
+三元组的切片由三元组、起始位置和停止位置组成。
+起始位置包含在范围内，停止位置不包含在范围内：
 ```lean
 structure TripleSlice (α : Type u) where
   triple : Triple α
@@ -657,8 +671,8 @@ structure TripleSlice (α : Type u) where
   stop : TriplePos
 deriving Repr
 ```
-Ranges of {name}`TriplePos` can be used to select a slice from a triple by implementing instances of each supported range type's {name Std.Rco.Sliceable}`Sliceable` class.
-For example, {name}`Std.Rco.Sliceable` allows left-closed, right-open ranges to be used to slice {name}`Triple`s:
+{name}`TriplePos` 的范围可用于从三元组中选择切片，方法是为每种受支持的范围类型实现 {name Std.Rco.Sliceable}`Sliceable` 类的实例。
+例如，{name}`Std.Rco.Sliceable` 允许左闭右开范围被用来对 {name}`Triple` 进行切片：
 ```lean
 instance : Std.Rco.Sliceable (Triple α) TriplePos (TripleSlice α) where
   mkSlice triple range :=
@@ -673,7 +687,7 @@ open TriplePos in
 ```leanOutput slice
 { triple := { fst := 'a', snd := 'b', thd := 'c' }, start := TriplePos.snd, stop := TriplePos.thd }
 ```
-Infinite ranges have only a lower bound:
+无限范围只有下界：
 ```lean (name := slice2)
 instance : Std.Rci.Sliceable (Triple α) TriplePos (TripleSlice α) where
   mkSlice triple range :=
@@ -688,20 +702,20 @@ open TriplePos in
 
 :::
 
-{docstring Std.Rco.Sliceable +allowMissing}
+{zhdocstring Std.Rco.Sliceable Manual.ZhDocString.Ch19Ch20.G8.c234 +allowMissing}
 
-{docstring Std.Rcc.Sliceable +allowMissing}
+{zhdocstring Std.Rcc.Sliceable Manual.ZhDocString.Ch19Ch20.G8.c235 +allowMissing}
 
-{docstring Std.Rci.Sliceable +allowMissing}
+{zhdocstring Std.Rci.Sliceable Manual.ZhDocString.Ch19Ch20.G8.c236 +allowMissing}
 
-{docstring Std.Roo.Sliceable +allowMissing}
+{zhdocstring Std.Roo.Sliceable Manual.ZhDocString.Ch19Ch20.G8.c237 +allowMissing}
 
-{docstring Std.Roc.Sliceable +allowMissing}
+{zhdocstring Std.Roc.Sliceable Manual.ZhDocString.Ch19Ch20.G8.c238 +allowMissing}
 
-{docstring Std.Roi.Sliceable +allowMissing}
+{zhdocstring Std.Roi.Sliceable Manual.ZhDocString.Ch19Ch20.G8.c239 +allowMissing}
 
-{docstring Std.Rio.Sliceable +allowMissing}
+{zhdocstring Std.Rio.Sliceable Manual.ZhDocString.Ch19Ch20.G8.c240 +allowMissing}
 
-{docstring Std.Ric.Sliceable +allowMissing}
+{zhdocstring Std.Ric.Sliceable Manual.ZhDocString.Ch19Ch20.G8.c241 +allowMissing}
 
-{docstring Std.Rii.Sliceable +allowMissing}
+{zhdocstring Std.Rii.Sliceable Manual.ZhDocString.Ch19Ch20.G8.c242 +allowMissing}

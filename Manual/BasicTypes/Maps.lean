@@ -7,6 +7,7 @@ Author: David Thrane Christiansen
 import VersoManual
 
 import Manual.Meta
+import Manual.ZhDocString.Ch19Ch20.G1
 
 import Manual.BasicTypes.Maps.TreeSet
 import Manual.BasicTypes.Maps.TreeMap
@@ -34,39 +35,40 @@ set_option pp.rawOnError true
 
 set_option maxHeartbeats 1000000
 
-#doc (Manual) "Maps and Sets" =>
+#doc (Manual) "映射与集合" =>
 %%%
 tag := "maps"
+file := "Maps-and-Sets"
 %%%
 
-A {deftech}_map_ is a data structure that associates keys with values.
-They are also referred to as {deftech}_dictionaries_, {deftech}_associative arrays_, or simply as hash tables.
+{deftech (key := "map")}_映射_是一种将键关联到值的数据结构。
+它们也常被称为 {deftech (key := "dictionaries")}_字典_、{deftech (key := "associative arrays")}_关联数组_，或直接称为哈希表。
 
 
 ::::paragraph
-In Lean, maps may have the following properties:
+在 Lean 中，映射可能具有下列性质：
 
-: Representation
+: 表示
 
-  The in-memory representation of a map may be either a tree or a hash table.
-  Tree-based representations are better when the {ref "reference-counting"}[reference] to the data structure is shared, because hash tables are based on {ref "Array"}[arrays].
-  Arrays are copied in full on modification when the reference is not unique, while only the path from the root of the tree to the modified nodes must be copied on modification of a tree.
-  Hash tables, on the other hand, can be more efficient when references are not shared, because non-shared arrays can be modified in constant time.
-  Furthermore, tree-based maps store data in order and thus support ordered traversals of the data.
+  映射在内存中的表示可以是树，也可以是哈希表。
+  当数据结构的 {ref "reference-counting"}[引用] 被共享时，基于树的表示更合适，因为哈希表建立在 {ref "Array"}[数组] 之上。
+  当引用不是唯一时，修改数组需要整体复制；而修改树时，只需复制从树根到被修改节点的路径。
+  相比之下，当引用不共享时，哈希表可能更高效，因为未共享的数组可以在常数时间内原地修改。
+  此外，基于树的映射会按顺序存储数据，因此支持按序遍历。
 
-: Extensionality
+: 外延性
 
-  Maps can be viewed as partial functions from keys to values.
-  {deftech}_Extensional maps_{index (subterm := "extensional")}[map] are maps for which propositional equality matches this interpretation.
-  This can be convenient for reasoning, but it also rules out some useful operations that would be able to distinguish between them.
-  In general, extensional maps should be used only when needed for verification.
+  映射可以看作从键到值的偏函数。
+  {deftech (key := "Extensional maps")}_外延映射_{index (subterm := "extensional")}[map] 指的是命题相等恰好符合这一解释的映射。
+  这会让推理更加方便，但也会排除一些原本能够区分它们的有用操作。
+  一般来说，只有在验证需要时才应使用外延映射。
 
-: Dependent or Not
+: 是否依值
 
-  A {deftech}_dependent map_{index (subterm := "dependent")}[map] is one in which the type of each value is determined by its corresponding key, rather than being constant.
-  Dependent maps have more expressive power, but are also more difficult to use.
-  They impose more requirements on their users.
-  For example, many operations on {name Std.DHashMap}`DHashMap` require {name}`LawfulBEq` instances rather than {name}`BEq`.
+  {deftech (key := "dependent map")}_依值映射_{index (subterm := "dependent")}[map] 指的是其中每个值的类型由其对应的键决定，而不是保持常量的映射。
+  依值映射具有更强的表达能力，但也更难使用。
+  它们会对使用者提出更多要求。
+  例如，{name Std.DHashMap}`DHashMap` 上的许多操作需要 {name}`LawfulBEq` 实例，而不是仅仅需要 {name}`BEq`。
 
 ::::
 
@@ -79,117 +81,123 @@ open Std
 
 :::table +header
 *
-  - Map
-  - Representation
-  - Extensional?
-  - Dependent?
+  - 映射
+  - 表示
+  - 外延？
+  - 依值？
 
 *
   - {name}`TreeMap`
-  - Tree
-  - No
-  - No
+  - 树
+  - 否
+  - 否
 
 *
   - {name}`DTreeMap`
-  - Tree
-  - No
-  - Yes
+  - 树
+  - 否
+  - 是
 
 *
   - {name}`HashMap`
-  - Hash Table
-  - No
-  - No
+  - 哈希表
+  - 否
+  - 否
 
 *
   - {name}`DHashMap`
-  - Hash Table
-  - No
-  - Yes
+  - 哈希表
+  - 否
+  - 是
 
 *
   - {name}`ExtHashMap`
-  - Hash Table
-  - Yes
-  - No
+  - 哈希表
+  - 是
+  - 否
 
 *
   - {name}`ExtDHashMap`
-  - Hash Table
-  - Yes
-  - Yes
+  - 哈希表
+  - 是
+  - 是
 
 :::
 
 :::::
 
-A map can always be used as a set by setting its type of values to {name}`Unit`.
-The following set types are provided:
- * {name}`Std.HashSet` is a set based on hash tables. Its performance characteristics are like those of {name}`Std.HashMap`: it is based on arrays and can be efficiently updated, but only when not shared.
- * {name}`Std.TreeSet` is a set based on balanced trees. Its performance characteristics are like those of {name}`Std.TreeMap`.
- * {name}`Std.ExtHashSet` is an extensional hash set type that matches the mathematical notion of finite sets: two sets are equal if they contain the same elements.
+只要把值类型设为 {name}`Unit`，映射就总能被当作集合使用。
+提供了下列集合类型：
+ * {name}`Std.HashSet` 是基于哈希表的集合。它的性能特征与 {name}`Std.HashMap` 类似：底层基于数组，因此在不共享时可以高效更新。
+ * {name}`Std.TreeSet` 是基于平衡树的集合。它的性能特征与 {name}`Std.TreeMap` 类似。
+ * {name}`Std.ExtHashSet` 是一种外延哈希集合类型，符合数学上有限集合的概念：若两个集合包含相同元素，则它们相等。
 
 
-# Library Design
+# 库设计
 
-All the basic operations on maps and sets are fully verified.
-They are proven correct with respect to simpler models implemented with lists.
-At the same time, maps and sets have predictable performance.
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Library-Design"
+%%%
+映射与集合上的所有基本操作都经过了完整验证。
+相对于使用列表实现的更简单模型，它们都已被证明是正确的。
+与此同时，映射与集合也具有可预测的性能。
 
-Some types include additional operations that are not yet fully verified.
-These operations are useful, and not all programs need full verification.
-Examples include {name Std.HashMap.partition}`HashMap.partition` and {name Std.TreeMap.filterMap}`TreeMap.filterMap`.
+某些类型还包含了一些尚未完全验证的附加操作。
+这些操作依然很有用，而且并非所有程序都需要完全验证。
+例如 {name Std.HashMap.partition}`HashMap.partition` 与 {name Std.TreeMap.filterMap}`TreeMap.filterMap`。
 
-## Fused Operations
+## 融合操作
 
-It is common to modify a table based on its pre-existing contents.
-To avoid having to traverse a data structure twice, many query/modification pairs are provided in “fused” variants that perform a query while modifying a map or set.
-In some cases, the result of the query affects the modification.
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Library-Design--Fused-Operations"
+%%%
+根据表中原有内容来修改表是很常见的。
+为了避免对同一数据结构遍历两次，许多“查询/修改”操作对都提供了“融合”变体，可以在修改映射或集合的同时完成查询。
+在某些情况下，查询结果还会影响修改行为。
 
-For example, {name}`Std.HashMap` provides {name Std.HashMap.containsThenInsert}`containsThenInsert`, which inserts a key-value pair into a map while signalling whether it was previously found, and {name Std.HashMap.containsThenInsertIfNew}`containsThenInsertIfNew`, which inserts the new mapping only if it was not previously present.
-The {name Std.HashMap.alter}`alter` function modifies the value for a given key without having to search for the key multiple times; the alternation is performed by a function in which missing values are represented by {name}`none`.
+例如，{name}`Std.HashMap` 提供 {name Std.HashMap.containsThenInsert}`containsThenInsert`：它在向映射插入键值对的同时，告知该键此前是否已存在；还提供 {name Std.HashMap.containsThenInsertIfNew}`containsThenInsertIfNew`：只有在该映射此前不存在该键时，才插入新的映射关系。
+函数 {name Std.HashMap.alter}`alter` 可以在不重复搜索同一个键的情况下修改该键对应的值；修改方式由一个函数给出，其中缺失值用 {name}`none` 表示。
 
-## Raw Data and Invariants
+## 原始数据与不变量
 %%%
 tag := "raw-data"
 %%%
 
-Both hash-based and tree-based maps rely on certain internal well-formedness invariants, such as that trees are balanced and ordered.
-In Lean's standard library, these data structures are represented as a pair of the underlying data with a proof that it is well formed.
-This fact is mostly an internal implementation detail; however, it is relevant to users in one situation: this representation prevents them from being used in {tech}[nested inductive types].
+基于哈希的映射与基于树的映射都依赖某些内部良构性不变量，例如树必须保持平衡且有序。
+在 Lean 标准库中，这些数据结构表示为“底层数据”与“其良构性证明”的一对值。
+这一点大多只是内部实现细节；不过，在一种情况下它与用户相关：这种表示方式会阻止它们被用在 {tech (key := "nested inductive types")}[嵌套归纳类型] 中。
 
-To enable their use in nested inductive types, the standard library provides “{deftech}[raw]” variants of each container along with separate “unbundled” versions of their invariants.
-These use the following naming convention:
- * `T.Raw` is the version of type `T` without its invariants. For example, {name}`Std.HashMap.Raw` is a version of {name}`Std.HashMap` without the embedded proofs.
- * `T.Raw.WF` is the corresponding well-formedness predicate. For example, {name}`Std.HashMap.Raw.WF` asserts that a {name}`Std.HashMap.Raw` is well-formed.
- * Each operation on `T`, called `T.f`, has a corresponding operation on `T.Raw` called `T.Raw.f`. For example, {name}`Std.HashMap.Raw.insert` is the version of {name}`Std.HashMap.insert` to be used with raw hash maps.
- * Each operation `T.Raw.f` has an associated well-formedness lemma `T.Raw.WF.f`. For example, {name}`Std.HashMap.Raw.WF.insert` asserts that inserting a new key-value pair into a well-formed raw hash map results in a well-formed raw hash map.
+为了让它们能够用于嵌套归纳类型，标准库为每个容器都提供了“{deftech (key := "raw")}[原始]”变体，以及将其不变量分离出来的“分离式”版本。
+它们遵循如下命名约定：
+ * `T.Raw` 是类型 `T` 去掉不变量后的版本。例如，{name}`Std.HashMap.Raw` 就是不带内嵌证明的 {name}`Std.HashMap` 版本。
+ * `T.Raw.WF` 是对应的良构性谓词。例如，{name}`Std.HashMap.Raw.WF` 断言某个 {name}`Std.HashMap.Raw` 是良构的。
+ * `T` 上的每个操作 `T.f`，在 `T.Raw` 上都有对应操作 `T.Raw.f`。例如，{name}`Std.HashMap.Raw.insert` 是配合原始哈希映射使用的 {name}`Std.HashMap.insert` 版本。
+ * 每个操作 `T.Raw.f` 都有相应的良构性引理 `T.Raw.WF.f`。例如，{name}`Std.HashMap.Raw.WF.insert` 断言：向一个良构的原始哈希映射插入新的键值对后，结果仍然是良构的原始哈希映射。
 
-Because the vast majority of use cases do not require them, not all lemmas about raw types are imported by default with the data structures.
-It is usually necessary to import `Std.Data.T.RawLemmas` (where `T` is the data structure in question).
+由于绝大多数用例并不需要这些引理，与原始类型有关的引理并不会默认随数据结构一起全部导入。
+通常需要额外导入 `Std.Data.T.RawLemmas`（其中 `T` 是相应的数据结构）。
 
-A nested inductive type that occurs inside a map or set should be defined in three stages:
+当映射或集合内部出现嵌套归纳类型时，应分三个阶段来定义：
 
- 1. First, define a raw version of the nested inductive type that uses the raw version of the map or set type. Define any necessary operations.
- 2. Next, define an inductive predicate that asserts that all maps or sets in the raw nested type are well formed. Show that the operations on the raw type preserve well-formedness.
- 3. Construct an appropriate interface to the nested inductive type by defining an API that proves well-formedness properties as needed, hiding them from users.
+ 1. 先定义该嵌套归纳类型的原始版本，使其使用映射或集合类型的原始版本，并定义所有必要操作。
+ 2. 接着定义一个归纳谓词，断言原始嵌套类型中的所有映射或集合都是良构的，并证明原始类型上的操作保持良构性。
+ 3. 最后为该嵌套归纳类型构造合适的接口：定义一个 API，在需要时证明良构性性质，并把这些证明细节对用户隐藏起来。
 
-:::example "Nested Inductive Types with `Std.HashMap`"
+:::example "使用 `Std.HashMap` 的嵌套归纳类型"
 
 ```imports -show
 import Std
 ```
 
-This example requires that `Std.Data.HashMap.RawLemmas` is imported.
-To keep the code shorter, the `Std` namespace is opened:
+此示例要求导入 `Std.Data.HashMap.RawLemmas`。
+为了让代码更短，这里打开 `Std` 命名空间：
 ```lean
 open Std
 ```
 
-The map of an adventure game may consist of a series of rooms, connected by passages.
-Each room has a description, and each passage faces in a particular direction.
-This can be represented as a recursive structure.
+一个冒险游戏的地图可以由一系列通过通道连接起来的房间组成。
+每个房间都有描述，每条通道也都朝向某个特定方向。
+这可以表示为一个递归结构。
 
 ```lean +error (name:=badNesting) -keep
 structure Maze where
@@ -197,7 +205,7 @@ structure Maze where
   passages : HashMap String Maze
 ```
 
-This definition is rejected:
+这个定义会被拒绝：
 
 ```leanOutput badNesting
 (kernel) application type mismatch
@@ -208,8 +216,8 @@ but function has type
   (DHashMap.Raw String fun x => Maze) → Prop
 ```
 
-Making this work requires separating the well-formedness predicates from the structure.
-The first step is to redefine the type without embedded hash map invariants:
+要让它工作，必须把良构性谓词从结构本身中分离出来。
+第一步是重新定义该类型，使其不再内嵌哈希映射的不变量：
 
 ```lean
 structure RawMaze where
@@ -217,14 +225,14 @@ structure RawMaze where
   passages : Std.HashMap.Raw String RawMaze
 ```
 
-The most basic raw maze has no passages:
+最基本的原始迷宫没有任何通道：
 ```lean
 def RawMaze.base (description : String) : RawMaze where
   description := description
   passages := ∅
 ```
 
-A passage to a further maze can be added to a raw maze using {name}`RawMaze.insert`:
+可以用 {name}`RawMaze.insert` 向原始迷宫中加入一条通往下一个迷宫的通道：
 ```lean
 def RawMaze.insert (maze : RawMaze)
     (direction : String) (next : RawMaze) : RawMaze :=
@@ -233,8 +241,8 @@ def RawMaze.insert (maze : RawMaze)
   }
 ```
 
-The second step is to define a well-formedness predicate for {name}`RawMaze` that ensures that each included hash map is well-formed.
-If the {name RawMaze.passages}`passages` field itself is well-formed, and all raw mazes included in it are well-formed, then a raw maze is well-formed.
+第二步是为 {name}`RawMaze` 定义一个良构性谓词，确保其中包含的每个哈希映射都是良构的。
+如果 {name RawMaze.passages}`passages` 字段本身是良构的，并且其中包含的所有原始迷宫也都是良构的，那么这个原始迷宫就是良构的。
 
 ```lean
 inductive RawMaze.WF : RawMaze → Prop
@@ -244,7 +252,7 @@ inductive RawMaze.WF : RawMaze → Prop
     WF { description, passages := passages }
 ```
 
-Base mazes are well-formed, and inserting a passage to a well-formed maze into some other well-formed maze produces a well-formed maze:
+基础迷宫是良构的；而向某个其他良构迷宫中插入一条通往良构迷宫的通道，得到的仍是良构迷宫：
 ```lean
 theorem RawMaze.base_wf (description : String) :
     RawMaze.WF (.base description) := by
@@ -264,15 +272,15 @@ def RawMaze.insert_wf (maze : RawMaze) :
   . simp_all [HashMap.Raw.WF.insert]
 ```
 
-Finally, a more friendly interface can be defined that frees users from worrying about well-formedness.
-A {name}`Maze` bundles up a {name}`RawMaze` with a proof that it is well-formed:
+最后，可以定义一个更友好的接口，使用户不必关心良构性问题。
+{name}`Maze` 会把一个 {name}`RawMaze` 与其良构性证明打包在一起：
 ```lean
 structure Maze where
   raw : RawMaze
   wf : raw.WF
 ```
 
-The {name Maze.base}`base` and {name Maze.insert}`insert` operators take care of the well-formedness proof obligations:
+运算 {name Maze.base}`base` 和 {name Maze.insert}`insert` 会自动处理良构性的证明义务：
 ```lean
 def Maze.base (description : String) : Maze where
   raw := .base description
@@ -284,7 +292,7 @@ def Maze.insert (maze : Maze)
   wf := RawMaze.insert_wf maze.raw maze.wf next.wf
 ```
 
-Users of the {name}`Maze` API may either check the description of the current maze or attempt to go in a direction to a new maze:
+{name}`Maze` API 的使用者既可以查看当前迷宫的描述，也可以尝试沿某个方向走向新的迷宫：
 ```lean
 def Maze.description (maze : Maze) : String :=
   maze.raw.description
@@ -301,14 +309,17 @@ def Maze.go? (maze : Maze) (dir : String) : Option Maze :=
 ```
 :::
 
-## Suitable Operators for Uniqueness
+## 保持唯一引用的合适运算
 
-Care should be taken when working with data structures to ensure that as many references are unique as possible, which enables Lean to use destructive mutation behind the scenes while maintaining a pure functional interface.
-The map and set library provides operators that can be used to maintain uniqueness of references.
-In particular, when possible, operations such as {name Std.HashMap.alter}`alter` or {name Std.HashMap.modify}`modify` should be preferred over explicitly retrieving a value, modifying it, and reinserting it.
-These operations avoid creating a second reference to the value during modification.
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Library-Design--Suitable-Operators-for-Uniqueness"
+%%%
+在使用数据结构时，应尽量确保尽可能多的引用保持唯一；这能让 Lean 在维持纯函数接口的同时，在幕后使用破坏性更新。
+映射与集合库提供了一些可用于保持引用唯一性的运算。
+特别是，在可能的情况下，应优先使用 {name Std.HashMap.alter}`alter` 或 {name Std.HashMap.modify}`modify` 之类的操作，而不是显式取出某个值、修改它、再将其重新插入。
+这些操作可以避免在修改过程中产生该值的第二个引用。
 
-:::example "Modifying Values in Maps"
+:::example "修改映射中的值"
 
 ```imports -show
 import Std
@@ -318,8 +329,8 @@ import Std
 open Std
 ```
 
-The function {name}`addAlias` is used to track aliases of a string in some data set.
-One way to add an alias is to first look up the existing aliases, defaulting to the empty array, then insert the new alias, and finally save the resulting array in the map:
+函数 {name}`addAlias` 用于在某个数据集中跟踪一个字符串的别名。
+添加别名的一种方式是先查找已有别名（默认为空数组），再插入新别名，最后把得到的数组保存回映射中：
 
 ```lean
 def addAlias (aliases : HashMap String (Array String))
@@ -329,9 +340,9 @@ def addAlias (aliases : HashMap String (Array String))
   aliases.insert key (prior.push value)
 ```
 
-This implementation has poor performance characteristics.
-Because the map retains a reference to the prior values, the array must be copied rather than mutated.
-A better implementation explicitly erases the prior value from the map before modifying it:
+这种实现的性能特征较差。
+由于映射保留了对旧值的引用，因此数组必须被复制，而不能原地修改。
+更好的实现是在修改之前显式地把旧值从映射中删除：
 
 ```lean
 def addAlias' (aliases : HashMap String (Array String))
@@ -342,8 +353,8 @@ def addAlias' (aliases : HashMap String (Array String))
   aliases.insert key (prior.push value)
 ```
 
-Using {name}`HashMap.alter` is even better.
-It removes the need to explicitly delete and re-insert the value:
+使用 {name}`HashMap.alter` 会更好。
+它免去了显式删除并重新插入该值的需要：
 
 ```lean
 def addAlias'' (aliases : HashMap String (Array String))
@@ -357,31 +368,37 @@ def addAlias'' (aliases : HashMap String (Array String))
 
 
 
-# Hash Maps
+# 哈希映射
 %%%
 tag := "HashMap"
 %%%
 
-The declarations in this section should be imported using `import Std.HashMap`.
+本节中的声明应通过 `import Std.HashMap` 导入。
 
-{docstring Std.HashMap +hideFields +hideStructureConstructor}
+{zhdocstring Std.HashMap Manual.ZhDocString.Ch19Ch20.G1.c001 +hideFields +hideStructureConstructor}
 
 
-## Creation
+## 创建
 
-{docstring Std.HashMap.emptyWithCapacity}
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Hash-Maps--Creation"
+%%%
+{zhdocstring Std.HashMap.emptyWithCapacity Manual.ZhDocString.Ch19Ch20.G1.c002}
 
-## Properties
+## 性质
 
-{docstring Std.HashMap.size}
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Hash-Maps--Properties"
+%%%
+{zhdocstring Std.HashMap.size Manual.ZhDocString.Ch19Ch20.G1.c003}
 
-{docstring Std.HashMap.isEmpty}
+{zhdocstring Std.HashMap.isEmpty Manual.ZhDocString.Ch19Ch20.G1.c004}
 
-{docstring Std.HashMap.Equiv}
+{zhdocstring Std.HashMap.Equiv Manual.ZhDocString.Ch19Ch20.G1.c005}
 
-:::syntax term (title := "Equivalence") (namespace := Std.HashMap)
+:::syntax term (title := "等价") (namespace := Std.HashMap)
 
-The relation {name Std.HashMap.Equiv}`HashMap.Equiv` can also be written with an infix operator, which is scoped to its namespace:
+关系 {name Std.HashMap.Equiv}`HashMap.Equiv` 也可以写成一个中缀运算符，该运算符的作用域限定在其命名空间内：
 
 ```grammar
 $_ ~m $_
@@ -389,128 +406,149 @@ $_ ~m $_
 
 :::
 
-## Queries
+## 查询
 
-{docstring Std.HashMap.contains}
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Hash-Maps--Queries"
+%%%
+{zhdocstring Std.HashMap.contains Manual.ZhDocString.Ch19Ch20.G1.c006}
 
-{docstring Std.HashMap.get}
+{zhdocstring Std.HashMap.get Manual.ZhDocString.Ch19Ch20.G1.c007}
 
-{docstring Std.HashMap.get!}
+{zhdocstring Std.HashMap.get! Manual.ZhDocString.Ch19Ch20.G1.c008}
 
-{docstring Std.HashMap.get?}
+{zhdocstring Std.HashMap.get? Manual.ZhDocString.Ch19Ch20.G1.c009}
 
-{docstring Std.HashMap.getD}
+{zhdocstring Std.HashMap.getD Manual.ZhDocString.Ch19Ch20.G1.c010}
 
-{docstring Std.HashMap.getKey}
+{zhdocstring Std.HashMap.getKey Manual.ZhDocString.Ch19Ch20.G1.c011}
 
-{docstring Std.HashMap.getKey!}
+{zhdocstring Std.HashMap.getKey! Manual.ZhDocString.Ch19Ch20.G1.c012}
 
-{docstring Std.HashMap.getKey?}
+{zhdocstring Std.HashMap.getKey? Manual.ZhDocString.Ch19Ch20.G1.c013}
 
-{docstring Std.HashMap.getKeyD}
+{zhdocstring Std.HashMap.getKeyD Manual.ZhDocString.Ch19Ch20.G1.c014}
 
-{docstring Std.HashMap.keys}
+{zhdocstring Std.HashMap.keys Manual.ZhDocString.Ch19Ch20.G1.c015}
 
-{docstring Std.HashMap.keysArray}
+{zhdocstring Std.HashMap.keysArray Manual.ZhDocString.Ch19Ch20.G1.c016}
 
-{docstring Std.HashMap.values}
+{zhdocstring Std.HashMap.values Manual.ZhDocString.Ch19Ch20.G1.c017}
 
-{docstring Std.HashMap.valuesArray}
+{zhdocstring Std.HashMap.valuesArray Manual.ZhDocString.Ch19Ch20.G1.c018}
 
-## Modification
+## 修改
 
-{docstring Std.HashMap.alter}
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Hash-Maps--Modification"
+%%%
+{zhdocstring Std.HashMap.alter Manual.ZhDocString.Ch19Ch20.G1.c019}
 
-{docstring Std.HashMap.modify}
+{zhdocstring Std.HashMap.modify Manual.ZhDocString.Ch19Ch20.G1.c020}
 
-{docstring Std.HashMap.containsThenInsert}
+{zhdocstring Std.HashMap.containsThenInsert Manual.ZhDocString.Ch19Ch20.G1.c021}
 
-{docstring Std.HashMap.containsThenInsertIfNew}
+{zhdocstring Std.HashMap.containsThenInsertIfNew Manual.ZhDocString.Ch19Ch20.G1.c022}
 
-{docstring Std.HashMap.erase}
+{zhdocstring Std.HashMap.erase Manual.ZhDocString.Ch19Ch20.G1.c023}
 
-{docstring Std.HashMap.filter}
+{zhdocstring Std.HashMap.filter Manual.ZhDocString.Ch19Ch20.G1.c024}
 
-{docstring Std.HashMap.filterMap}
+{zhdocstring Std.HashMap.filterMap Manual.ZhDocString.Ch19Ch20.G1.c025}
 
-{docstring Std.HashMap.insert}
+{zhdocstring Std.HashMap.insert Manual.ZhDocString.Ch19Ch20.G1.c026}
 
-{docstring Std.HashMap.insertIfNew}
+{zhdocstring Std.HashMap.insertIfNew Manual.ZhDocString.Ch19Ch20.G1.c027}
 
-{docstring Std.HashMap.getThenInsertIfNew?}
+{zhdocstring Std.HashMap.getThenInsertIfNew? Manual.ZhDocString.Ch19Ch20.G1.c028}
 
-{docstring Std.HashMap.insertMany}
+{zhdocstring Std.HashMap.insertMany Manual.ZhDocString.Ch19Ch20.G1.c029}
 
-{docstring Std.HashMap.insertManyIfNewUnit}
+{zhdocstring Std.HashMap.insertManyIfNewUnit Manual.ZhDocString.Ch19Ch20.G1.c030}
 
-{docstring Std.HashMap.partition}
+{zhdocstring Std.HashMap.partition Manual.ZhDocString.Ch19Ch20.G1.c031}
 
-{docstring Std.HashMap.union}
+{zhdocstring Std.HashMap.union Manual.ZhDocString.Ch19Ch20.G1.c032}
 
-## Iteration
+## 迭代
 
-{docstring Std.HashMap.iter}
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Hash-Maps--Iteration"
+%%%
+{zhdocstring Std.HashMap.iter Manual.ZhDocString.Ch19Ch20.G1.c033}
 
-{docstring Std.HashMap.keysIter}
+{zhdocstring Std.HashMap.keysIter Manual.ZhDocString.Ch19Ch20.G1.c034}
 
-{docstring Std.HashMap.valuesIter}
+{zhdocstring Std.HashMap.valuesIter Manual.ZhDocString.Ch19Ch20.G1.c035}
 
-{docstring Std.HashMap.map}
+{zhdocstring Std.HashMap.map Manual.ZhDocString.Ch19Ch20.G1.c036}
 
-{docstring Std.HashMap.fold}
+{zhdocstring Std.HashMap.fold Manual.ZhDocString.Ch19Ch20.G1.c037}
 
-{docstring Std.HashMap.foldM}
+{zhdocstring Std.HashMap.foldM Manual.ZhDocString.Ch19Ch20.G1.c038}
 
-{docstring Std.HashMap.forIn}
+{zhdocstring Std.HashMap.forIn Manual.ZhDocString.Ch19Ch20.G1.c039}
 
-{docstring Std.HashMap.forM}
+{zhdocstring Std.HashMap.forM Manual.ZhDocString.Ch19Ch20.G1.c040}
 
-## Conversion
+## 转换
 
-{docstring Std.HashMap.ofList}
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Hash-Maps--Conversion"
+%%%
+{zhdocstring Std.HashMap.ofList Manual.ZhDocString.Ch19Ch20.G1.c041}
 
-{docstring Std.HashMap.toArray}
+{zhdocstring Std.HashMap.toArray Manual.ZhDocString.Ch19Ch20.G1.c042}
 
-{docstring Std.HashMap.toList}
+{zhdocstring Std.HashMap.toList Manual.ZhDocString.Ch19Ch20.G1.c043}
 
-{docstring Std.HashMap.unitOfArray}
+{zhdocstring Std.HashMap.unitOfArray Manual.ZhDocString.Ch19Ch20.G1.c044}
 
-{docstring Std.HashMap.unitOfList}
+{zhdocstring Std.HashMap.unitOfList Manual.ZhDocString.Ch19Ch20.G1.c045}
 
-## Unbundled Variants
+## 分离式变体
 
-Unbundled maps separate well-formedness proofs from data.
-This is primarily useful when defining {ref "raw-data"}[nested inductive types].
-To use these variants, import the modules `Std.HashMap.Raw` and `Std.HashMap.RawLemmas`.
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Hash-Maps--Unbundled-Variants"
+%%%
+分离式映射会将良构性证明与数据本身分开。
+这主要在定义 {ref "raw-data"}[嵌套归纳类型] 时有用。
+要使用这些变体，请导入模块 `Std.HashMap.Raw` 与 `Std.HashMap.RawLemmas`。
 
-{docstring Std.HashMap.Raw}
+{zhdocstring Std.HashMap.Raw Manual.ZhDocString.Ch19Ch20.G1.c046}
 
-{docstring Std.HashMap.Raw.WF}
+{zhdocstring Std.HashMap.Raw.WF Manual.ZhDocString.Ch19Ch20.G1.c047}
 
-# Dependent Hash Maps
+# 依值哈希映射
 %%%
 tag := "DHashMap"
 %%%
 
-The declarations in this section should be imported using `import Std.DHashMap`.
+本节中的声明应通过 `import Std.DHashMap` 导入。
 
-{docstring Std.DHashMap +hideFields +hideStructureConstructor}
+{zhdocstring Std.DHashMap Manual.ZhDocString.Ch19Ch20.G1.c048 +hideFields +hideStructureConstructor}
 
-## Creation
+## 创建
 
-{docstring Std.DHashMap.emptyWithCapacity}
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Dependent-Hash-Maps--Creation"
+%%%
+{zhdocstring Std.DHashMap.emptyWithCapacity Manual.ZhDocString.Ch19Ch20.G1.c049}
 
-## Properties
+## 性质
 
-{docstring Std.DHashMap.size}
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Dependent-Hash-Maps--Properties"
+%%%
+{zhdocstring Std.DHashMap.size Manual.ZhDocString.Ch19Ch20.G1.c050}
 
-{docstring Std.DHashMap.isEmpty}
+{zhdocstring Std.DHashMap.isEmpty Manual.ZhDocString.Ch19Ch20.G1.c051}
 
-{docstring Std.DHashMap.Equiv}
+{zhdocstring Std.DHashMap.Equiv Manual.ZhDocString.Ch19Ch20.G1.c052}
 
-:::syntax term (title := "Equivalence") (namespace := Std.DHashMap)
+:::syntax term (title := "等价") (namespace := Std.DHashMap)
 
-The relation {name Std.DHashMap.Equiv}`DHashMap.Equiv` can also be written with an infix operator, which is scoped to its namespace:
+关系 {name Std.DHashMap.Equiv}`DHashMap.Equiv` 也可以写成一个中缀运算符，该运算符的作用域限定在其命名空间内：
 
 ```grammar
 $_ ~m $_
@@ -518,272 +556,329 @@ $_ ~m $_
 
 :::
 
-## Queries
+## 查询
 
-{docstring Std.DHashMap.contains}
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Dependent-Hash-Maps--Queries"
+%%%
+{zhdocstring Std.DHashMap.contains Manual.ZhDocString.Ch19Ch20.G1.c053}
 
-{docstring Std.DHashMap.get}
+{zhdocstring Std.DHashMap.get Manual.ZhDocString.Ch19Ch20.G1.c054}
 
-{docstring Std.DHashMap.get!}
+{zhdocstring Std.DHashMap.get! Manual.ZhDocString.Ch19Ch20.G1.c055}
 
-{docstring Std.DHashMap.get?}
+{zhdocstring Std.DHashMap.get? Manual.ZhDocString.Ch19Ch20.G1.c056}
 
-{docstring Std.DHashMap.getD}
+{zhdocstring Std.DHashMap.getD Manual.ZhDocString.Ch19Ch20.G1.c057}
 
-{docstring Std.DHashMap.getKey}
+{zhdocstring Std.DHashMap.getKey Manual.ZhDocString.Ch19Ch20.G1.c058}
 
-{docstring Std.DHashMap.getKey!}
+{zhdocstring Std.DHashMap.getKey! Manual.ZhDocString.Ch19Ch20.G1.c059}
 
-{docstring Std.DHashMap.getKey?}
+{zhdocstring Std.DHashMap.getKey? Manual.ZhDocString.Ch19Ch20.G1.c060}
 
-{docstring Std.DHashMap.getKeyD}
+{zhdocstring Std.DHashMap.getKeyD Manual.ZhDocString.Ch19Ch20.G1.c061}
 
-{docstring Std.DHashMap.keys}
+{zhdocstring Std.DHashMap.keys Manual.ZhDocString.Ch19Ch20.G1.c062}
 
-{docstring Std.DHashMap.keysArray}
+{zhdocstring Std.DHashMap.keysArray Manual.ZhDocString.Ch19Ch20.G1.c063}
 
-{docstring Std.DHashMap.values}
+{zhdocstring Std.DHashMap.values Manual.ZhDocString.Ch19Ch20.G1.c064}
 
 
-{docstring Std.DHashMap.valuesArray}
+{zhdocstring Std.DHashMap.valuesArray Manual.ZhDocString.Ch19Ch20.G1.c065}
 
-## Modification
+## 修改
 
-{docstring Std.DHashMap.alter}
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Dependent-Hash-Maps--Modification"
+%%%
+{zhdocstring Std.DHashMap.alter Manual.ZhDocString.Ch19Ch20.G1.c066}
 
-{docstring Std.DHashMap.modify}
+{zhdocstring Std.DHashMap.modify Manual.ZhDocString.Ch19Ch20.G1.c067}
 
-{docstring Std.DHashMap.containsThenInsert}
+{zhdocstring Std.DHashMap.containsThenInsert Manual.ZhDocString.Ch19Ch20.G1.c068}
 
-{docstring Std.DHashMap.containsThenInsertIfNew}
+{zhdocstring Std.DHashMap.containsThenInsertIfNew Manual.ZhDocString.Ch19Ch20.G1.c069}
 
-{docstring Std.DHashMap.erase}
+{zhdocstring Std.DHashMap.erase Manual.ZhDocString.Ch19Ch20.G1.c070}
 
-{docstring Std.DHashMap.filter}
+{zhdocstring Std.DHashMap.filter Manual.ZhDocString.Ch19Ch20.G1.c071}
 
-{docstring Std.DHashMap.filterMap}
+{zhdocstring Std.DHashMap.filterMap Manual.ZhDocString.Ch19Ch20.G1.c072}
 
-{docstring Std.DHashMap.insert}
+{zhdocstring Std.DHashMap.insert Manual.ZhDocString.Ch19Ch20.G1.c073}
 
-{docstring Std.DHashMap.insertIfNew}
+{zhdocstring Std.DHashMap.insertIfNew Manual.ZhDocString.Ch19Ch20.G1.c074}
 
-{docstring Std.DHashMap.getThenInsertIfNew?}
+{zhdocstring Std.DHashMap.getThenInsertIfNew? Manual.ZhDocString.Ch19Ch20.G1.c075}
 
-{docstring Std.DHashMap.insertMany}
+{zhdocstring Std.DHashMap.insertMany Manual.ZhDocString.Ch19Ch20.G1.c076}
 
-{docstring Std.DHashMap.partition}
+{zhdocstring Std.DHashMap.partition Manual.ZhDocString.Ch19Ch20.G1.c077}
 
-{docstring Std.DHashMap.union}
+{zhdocstring Std.DHashMap.union Manual.ZhDocString.Ch19Ch20.G1.c078}
 
-## Iteration
+## 迭代
 
-{docstring Std.DHashMap.iter}
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Dependent-Hash-Maps--Iteration"
+%%%
+{zhdocstring Std.DHashMap.iter Manual.ZhDocString.Ch19Ch20.G1.c079}
 
-{docstring Std.DHashMap.keysIter}
+{zhdocstring Std.DHashMap.keysIter Manual.ZhDocString.Ch19Ch20.G1.c080}
 
-{docstring Std.DHashMap.valuesIter}
+{zhdocstring Std.DHashMap.valuesIter Manual.ZhDocString.Ch19Ch20.G1.c081}
 
-{docstring Std.DHashMap.map}
+{zhdocstring Std.DHashMap.map Manual.ZhDocString.Ch19Ch20.G1.c082}
 
-{docstring Std.DHashMap.fold}
+{zhdocstring Std.DHashMap.fold Manual.ZhDocString.Ch19Ch20.G1.c083}
 
-{docstring Std.DHashMap.foldM}
+{zhdocstring Std.DHashMap.foldM Manual.ZhDocString.Ch19Ch20.G1.c084}
 
-{docstring Std.DHashMap.forIn}
+{zhdocstring Std.DHashMap.forIn Manual.ZhDocString.Ch19Ch20.G1.c085}
 
-{docstring Std.DHashMap.forM}
+{zhdocstring Std.DHashMap.forM Manual.ZhDocString.Ch19Ch20.G1.c086}
 
-## Conversion
+## 转换
 
-{docstring Std.DHashMap.ofList}
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Dependent-Hash-Maps--Conversion"
+%%%
+{zhdocstring Std.DHashMap.ofList Manual.ZhDocString.Ch19Ch20.G1.c087}
 
-{docstring Std.DHashMap.toArray}
+{zhdocstring Std.DHashMap.toArray Manual.ZhDocString.Ch19Ch20.G1.c088}
 
-{docstring Std.DHashMap.toList}
+{zhdocstring Std.DHashMap.toList Manual.ZhDocString.Ch19Ch20.G1.c089}
 
-## Unbundled Variants
+## 分离式变体
 
-Unbundled maps separate well-formedness proofs from data.
-This is primarily useful when defining {ref "raw-data"}[nested inductive types].
-To use these variants, import the modules `Std.DHashMap.Raw` and `Std.DHashMap.RawLemmas`.
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Dependent-Hash-Maps--Unbundled-Variants"
+%%%
+分离式映射会将良构性证明与数据本身分开。
+这主要在定义 {ref "raw-data"}[嵌套归纳类型] 时有用。
+要使用这些变体，请导入模块 `Std.DHashMap.Raw` 与 `Std.DHashMap.RawLemmas`。
 
-{docstring Std.DHashMap.Raw}
+{zhdocstring Std.DHashMap.Raw Manual.ZhDocString.Ch19Ch20.G1.c090}
 
-{docstring Std.DHashMap.Raw.WF}
+{zhdocstring Std.DHashMap.Raw.WF Manual.ZhDocString.Ch19Ch20.G1.c091}
 
-# Extensional Hash Maps
+# 外延哈希映射
 %%%
 tag := "ExtHashMap"
 %%%
 
-The declarations in this section should be imported using `import Std.ExtHashMap`.
+本节中的声明应通过 `import Std.ExtHashMap` 导入。
 
-{docstring Std.ExtHashMap +hideFields +hideStructureConstructor}
+{zhdocstring Std.ExtHashMap Manual.ZhDocString.Ch19Ch20.G1.c092 +hideFields +hideStructureConstructor}
 
-## Creation
+## 创建
 
-{docstring Std.ExtHashMap.emptyWithCapacity}
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Extensional-Hash-Maps--Creation"
+%%%
+{zhdocstring Std.ExtHashMap.emptyWithCapacity Manual.ZhDocString.Ch19Ch20.G1.c093}
 
-## Properties
+## 性质
 
-{docstring Std.ExtHashMap.size}
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Extensional-Hash-Maps--Properties"
+%%%
+{zhdocstring Std.ExtHashMap.size Manual.ZhDocString.Ch19Ch20.G1.c094}
 
-{docstring Std.ExtHashMap.isEmpty}
+{zhdocstring Std.ExtHashMap.isEmpty Manual.ZhDocString.Ch19Ch20.G1.c095}
 
-## Queries
+## 查询
 
-{docstring Std.ExtHashMap.contains}
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Extensional-Hash-Maps--Queries"
+%%%
+{zhdocstring Std.ExtHashMap.contains Manual.ZhDocString.Ch19Ch20.G1.c096}
 
-{docstring Std.ExtHashMap.get}
+{zhdocstring Std.ExtHashMap.get Manual.ZhDocString.Ch19Ch20.G1.c097}
 
-{docstring Std.ExtHashMap.get!}
+{zhdocstring Std.ExtHashMap.get! Manual.ZhDocString.Ch19Ch20.G1.c098}
 
-{docstring Std.ExtHashMap.get?}
+{zhdocstring Std.ExtHashMap.get? Manual.ZhDocString.Ch19Ch20.G1.c099}
 
-{docstring Std.ExtHashMap.getD}
+{zhdocstring Std.ExtHashMap.getD Manual.ZhDocString.Ch19Ch20.G1.c100}
 
-{docstring Std.ExtHashMap.getKey}
+{zhdocstring Std.ExtHashMap.getKey Manual.ZhDocString.Ch19Ch20.G1.c101}
 
-{docstring Std.ExtHashMap.getKey!}
+{zhdocstring Std.ExtHashMap.getKey! Manual.ZhDocString.Ch19Ch20.G1.c102}
 
-{docstring Std.ExtHashMap.getKey?}
+{zhdocstring Std.ExtHashMap.getKey? Manual.ZhDocString.Ch19Ch20.G1.c103}
 
-{docstring Std.ExtHashMap.getKeyD}
+{zhdocstring Std.ExtHashMap.getKeyD Manual.ZhDocString.Ch19Ch20.G1.c104}
 
-## Modification
+## 修改
 
-{docstring Std.ExtHashMap.alter}
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Extensional-Hash-Maps--Modification"
+%%%
+{zhdocstring Std.ExtHashMap.alter Manual.ZhDocString.Ch19Ch20.G1.c105}
 
-{docstring Std.ExtHashMap.modify}
+{zhdocstring Std.ExtHashMap.modify Manual.ZhDocString.Ch19Ch20.G1.c106}
 
-{docstring Std.ExtHashMap.containsThenInsert}
+{zhdocstring Std.ExtHashMap.containsThenInsert Manual.ZhDocString.Ch19Ch20.G1.c107}
 
-{docstring Std.ExtHashMap.containsThenInsertIfNew}
+{zhdocstring Std.ExtHashMap.containsThenInsertIfNew Manual.ZhDocString.Ch19Ch20.G1.c108}
 
-{docstring Std.ExtHashMap.erase}
+{zhdocstring Std.ExtHashMap.erase Manual.ZhDocString.Ch19Ch20.G1.c109}
 
-{docstring Std.ExtHashMap.filter}
+{zhdocstring Std.ExtHashMap.filter Manual.ZhDocString.Ch19Ch20.G1.c110}
 
-{docstring Std.ExtHashMap.filterMap}
+{zhdocstring Std.ExtHashMap.filterMap Manual.ZhDocString.Ch19Ch20.G1.c111}
 
-{docstring Std.ExtHashMap.insert}
+{zhdocstring Std.ExtHashMap.insert Manual.ZhDocString.Ch19Ch20.G1.c112}
 
-{docstring Std.ExtHashMap.insertIfNew}
+{zhdocstring Std.ExtHashMap.insertIfNew Manual.ZhDocString.Ch19Ch20.G1.c113}
 
-{docstring Std.ExtHashMap.getThenInsertIfNew?}
+{zhdocstring Std.ExtHashMap.getThenInsertIfNew? Manual.ZhDocString.Ch19Ch20.G1.c114}
 
-{docstring Std.ExtHashMap.insertMany}
+{zhdocstring Std.ExtHashMap.insertMany Manual.ZhDocString.Ch19Ch20.G1.c115}
 
-{docstring Std.ExtHashMap.insertManyIfNewUnit}
+{zhdocstring Std.ExtHashMap.insertManyIfNewUnit Manual.ZhDocString.Ch19Ch20.G1.c116}
 
-## Iteration
+## 迭代
 
-{docstring Std.ExtHashMap.map}
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Extensional-Hash-Maps--Iteration"
+%%%
+{zhdocstring Std.ExtHashMap.map Manual.ZhDocString.Ch19Ch20.G1.c117}
 
-## Conversion
+## 转换
 
-{docstring Std.ExtHashMap.ofList}
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Extensional-Hash-Maps--Conversion"
+%%%
+{zhdocstring Std.ExtHashMap.ofList Manual.ZhDocString.Ch19Ch20.G1.c118}
 
-{docstring Std.ExtHashMap.unitOfArray}
+{zhdocstring Std.ExtHashMap.unitOfArray Manual.ZhDocString.Ch19Ch20.G1.c119}
 
-{docstring Std.ExtHashMap.unitOfList}
+{zhdocstring Std.ExtHashMap.unitOfList Manual.ZhDocString.Ch19Ch20.G1.c120}
 
-# Extensional Dependent Hash Maps
+# 外延依值哈希映射
 %%%
 tag := "ExtDHashMap"
 %%%
 
-The declarations in this section should be imported using `import Std.ExtDHashMap`.
+本节中的声明应通过 `import Std.ExtDHashMap` 导入。
 
-{docstring Std.ExtDHashMap +hideFields +hideStructureConstructor}
+{zhdocstring Std.ExtDHashMap Manual.ZhDocString.Ch19Ch20.G1.c121 +hideFields +hideStructureConstructor}
 
-## Creation
+## 创建
 
-{docstring Std.ExtDHashMap.emptyWithCapacity}
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Extensional-Dependent-Hash-Maps--Creation"
+%%%
+{zhdocstring Std.ExtDHashMap.emptyWithCapacity Manual.ZhDocString.Ch19Ch20.G1.c122}
 
-## Properties
+## 性质
 
-{docstring Std.ExtDHashMap.size}
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Extensional-Dependent-Hash-Maps--Properties"
+%%%
+{zhdocstring Std.ExtDHashMap.size Manual.ZhDocString.Ch19Ch20.G1.c123}
 
-{docstring Std.ExtDHashMap.isEmpty}
-
-
-## Queries
-
-{docstring Std.ExtDHashMap.contains}
-
-{docstring Std.ExtDHashMap.get}
-
-{docstring Std.ExtDHashMap.get!}
-
-{docstring Std.ExtDHashMap.get?}
-
-{docstring Std.ExtDHashMap.getD}
-
-{docstring Std.ExtDHashMap.getKey}
-
-{docstring Std.ExtDHashMap.getKey!}
-
-{docstring Std.ExtDHashMap.getKey?}
-
-{docstring Std.ExtDHashMap.getKeyD}
-
-## Modification
-
-{docstring Std.ExtDHashMap.alter}
-
-{docstring Std.ExtDHashMap.modify}
-
-{docstring Std.ExtDHashMap.containsThenInsert}
-
-{docstring Std.ExtDHashMap.containsThenInsertIfNew}
-
-{docstring Std.ExtDHashMap.erase}
-
-{docstring Std.ExtDHashMap.filter}
-
-{docstring Std.ExtDHashMap.filterMap}
-
-{docstring Std.ExtDHashMap.insert}
-
-{docstring Std.ExtDHashMap.insertIfNew}
-
-{docstring Std.ExtDHashMap.getThenInsertIfNew?}
-
-{docstring Std.ExtDHashMap.insertMany}
+{zhdocstring Std.ExtDHashMap.isEmpty Manual.ZhDocString.Ch19Ch20.G1.c124}
 
 
-## Iteration
+## 查询
 
-{docstring Std.ExtDHashMap.map}
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Extensional-Dependent-Hash-Maps--Queries"
+%%%
+{zhdocstring Std.ExtDHashMap.contains Manual.ZhDocString.Ch19Ch20.G1.c125}
 
-## Conversion
+{zhdocstring Std.ExtDHashMap.get Manual.ZhDocString.Ch19Ch20.G1.c126}
 
-{docstring Std.ExtDHashMap.ofList}
+{zhdocstring Std.ExtDHashMap.get! Manual.ZhDocString.Ch19Ch20.G1.c127}
+
+{zhdocstring Std.ExtDHashMap.get? Manual.ZhDocString.Ch19Ch20.G1.c128}
+
+{zhdocstring Std.ExtDHashMap.getD Manual.ZhDocString.Ch19Ch20.G1.c129}
+
+{zhdocstring Std.ExtDHashMap.getKey Manual.ZhDocString.Ch19Ch20.G1.c130}
+
+{zhdocstring Std.ExtDHashMap.getKey! Manual.ZhDocString.Ch19Ch20.G1.c131}
+
+{zhdocstring Std.ExtDHashMap.getKey? Manual.ZhDocString.Ch19Ch20.G1.c132}
+
+{zhdocstring Std.ExtDHashMap.getKeyD Manual.ZhDocString.Ch19Ch20.G1.c133}
+
+## 修改
+
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Extensional-Dependent-Hash-Maps--Modification"
+%%%
+{zhdocstring Std.ExtDHashMap.alter Manual.ZhDocString.Ch19Ch20.G1.c134}
+
+{zhdocstring Std.ExtDHashMap.modify Manual.ZhDocString.Ch19Ch20.G1.c135}
+
+{zhdocstring Std.ExtDHashMap.containsThenInsert Manual.ZhDocString.Ch19Ch20.G1.c136}
+
+{zhdocstring Std.ExtDHashMap.containsThenInsertIfNew Manual.ZhDocString.Ch19Ch20.G1.c137}
+
+{zhdocstring Std.ExtDHashMap.erase Manual.ZhDocString.Ch19Ch20.G1.c138}
+
+{zhdocstring Std.ExtDHashMap.filter Manual.ZhDocString.Ch19Ch20.G1.c139}
+
+{zhdocstring Std.ExtDHashMap.filterMap Manual.ZhDocString.Ch19Ch20.G1.c140}
+
+{zhdocstring Std.ExtDHashMap.insert Manual.ZhDocString.Ch19Ch20.G1.c141}
+
+{zhdocstring Std.ExtDHashMap.insertIfNew Manual.ZhDocString.Ch19Ch20.G1.c142}
+
+{zhdocstring Std.ExtDHashMap.getThenInsertIfNew? Manual.ZhDocString.Ch19Ch20.G1.c143}
+
+{zhdocstring Std.ExtDHashMap.insertMany Manual.ZhDocString.Ch19Ch20.G1.c144}
 
 
-# Hash Sets
+## 迭代
+
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Extensional-Dependent-Hash-Maps--Iteration"
+%%%
+{zhdocstring Std.ExtDHashMap.map Manual.ZhDocString.Ch19Ch20.G1.c145}
+
+## 转换
+
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Extensional-Dependent-Hash-Maps--Conversion"
+%%%
+{zhdocstring Std.ExtDHashMap.ofList Manual.ZhDocString.Ch19Ch20.G1.c146}
+
+
+# 哈希集合
 %%%
 tag := "HashSet"
 %%%
 
-{docstring Std.HashSet}
+{zhdocstring Std.HashSet Manual.ZhDocString.Ch19Ch20.G1.c147}
 
-## Creation
+## 创建
 
-{docstring Std.HashSet.emptyWithCapacity}
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Hash-Sets--Creation"
+%%%
+{zhdocstring Std.HashSet.emptyWithCapacity Manual.ZhDocString.Ch19Ch20.G1.c148}
 
-## Properties
+## 性质
 
-{docstring Std.HashSet.isEmpty}
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Hash-Sets--Properties"
+%%%
+{zhdocstring Std.HashSet.isEmpty Manual.ZhDocString.Ch19Ch20.G1.c149}
 
-{docstring Std.HashSet.size}
+{zhdocstring Std.HashSet.size Manual.ZhDocString.Ch19Ch20.G1.c150}
 
-{docstring Std.HashSet.Equiv}
+{zhdocstring Std.HashSet.Equiv Manual.ZhDocString.Ch19Ch20.G1.c151}
 
-:::syntax term (title := "Equivalence") (namespace := Std.HashMap)
+:::syntax term (title := "等价") (namespace := Std.HashMap)
 
-The relation {name Std.HashSet.Equiv}`HashSet.Equiv` can also be written with an infix operator, which is scoped to its namespace:
+关系 {name Std.HashSet.Equiv}`HashSet.Equiv` 也可以写成一个中缀运算符，该运算符的作用域限定在其命名空间内：
 
 ```grammar
 $_ ~m $_
@@ -792,232 +887,283 @@ $_ ~m $_
 :::
 
 
-## Queries
+## 查询
 
 
-{docstring Std.HashSet.contains}
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Hash-Sets--Queries"
+%%%
+{zhdocstring Std.HashSet.contains Manual.ZhDocString.Ch19Ch20.G1.c152}
 
-{docstring Std.HashSet.get}
+{zhdocstring Std.HashSet.get Manual.ZhDocString.Ch19Ch20.G1.c153}
 
-{docstring Std.HashSet.get!}
+{zhdocstring Std.HashSet.get! Manual.ZhDocString.Ch19Ch20.G1.c154}
 
-{docstring Std.HashSet.get?}
+{zhdocstring Std.HashSet.get? Manual.ZhDocString.Ch19Ch20.G1.c155}
 
-{docstring Std.HashSet.getD}
-
-
-## Modification
-
-{docstring Std.HashSet.insert}
-
-{docstring Std.HashSet.insertMany}
-
-{docstring Std.HashSet.erase}
-
-{docstring Std.HashSet.filter}
-
-{docstring Std.HashSet.containsThenInsert}
-
-{docstring Std.HashSet.partition}
-
-{docstring Std.HashSet.union}
-
-## Iteration
-
-{docstring Std.HashSet.iter}
-
-{docstring Std.HashSet.all}
-
-{docstring Std.HashSet.any}
-
-{docstring Std.HashSet.fold}
-
-{docstring Std.HashSet.foldM}
-
-{docstring Std.HashSet.forIn}
-
-{docstring Std.HashSet.forM}
-
-## Conversion
-
-{docstring Std.HashSet.ofList}
-
-{docstring Std.HashSet.toList}
-
-{docstring Std.HashSet.ofArray}
-
-{docstring Std.HashSet.toArray}
-
-## Unbundled Variants
-
-Unbundled maps separate well-formedness proofs from data.
-This is primarily useful when defining {ref "raw-data"}[nested inductive types].
-To use these variants, import the modules `Std.HashSet.Raw` and `Std.HashSet.RawLemmas`.
-
-{docstring Std.HashSet.Raw}
-
-{docstring Std.HashSet.Raw.WF}
+{zhdocstring Std.HashSet.getD Manual.ZhDocString.Ch19Ch20.G1.c156}
 
 
-# Extensional Hash Sets
+## 修改
+
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Hash-Sets--Modification"
+%%%
+{zhdocstring Std.HashSet.insert Manual.ZhDocString.Ch19Ch20.G1.c157}
+
+{zhdocstring Std.HashSet.insertMany Manual.ZhDocString.Ch19Ch20.G1.c158}
+
+{zhdocstring Std.HashSet.erase Manual.ZhDocString.Ch19Ch20.G1.c159}
+
+{zhdocstring Std.HashSet.filter Manual.ZhDocString.Ch19Ch20.G1.c160}
+
+{zhdocstring Std.HashSet.containsThenInsert Manual.ZhDocString.Ch19Ch20.G1.c161}
+
+{zhdocstring Std.HashSet.partition Manual.ZhDocString.Ch19Ch20.G1.c162}
+
+{zhdocstring Std.HashSet.union Manual.ZhDocString.Ch19Ch20.G1.c163}
+
+## 迭代
+
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Hash-Sets--Iteration"
+%%%
+{zhdocstring Std.HashSet.iter Manual.ZhDocString.Ch19Ch20.G1.c164}
+
+{zhdocstring Std.HashSet.all Manual.ZhDocString.Ch19Ch20.G1.c165}
+
+{zhdocstring Std.HashSet.any Manual.ZhDocString.Ch19Ch20.G1.c166}
+
+{zhdocstring Std.HashSet.fold Manual.ZhDocString.Ch19Ch20.G1.c167}
+
+{zhdocstring Std.HashSet.foldM Manual.ZhDocString.Ch19Ch20.G1.c168}
+
+{zhdocstring Std.HashSet.forIn Manual.ZhDocString.Ch19Ch20.G1.c169}
+
+{zhdocstring Std.HashSet.forM Manual.ZhDocString.Ch19Ch20.G1.c170}
+
+## 转换
+
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Hash-Sets--Conversion"
+%%%
+{zhdocstring Std.HashSet.ofList Manual.ZhDocString.Ch19Ch20.G1.c171}
+
+{zhdocstring Std.HashSet.toList Manual.ZhDocString.Ch19Ch20.G1.c172}
+
+{zhdocstring Std.HashSet.ofArray Manual.ZhDocString.Ch19Ch20.G1.c173}
+
+{zhdocstring Std.HashSet.toArray Manual.ZhDocString.Ch19Ch20.G1.c174}
+
+## 分离式变体
+
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Hash-Sets--Unbundled-Variants"
+%%%
+分离式集合会将良构性证明与数据本身分开。
+这主要在定义 {ref "raw-data"}[嵌套归纳类型] 时有用。
+要使用这些变体，请导入模块 `Std.HashSet.Raw` 与 `Std.HashSet.RawLemmas`。
+
+{zhdocstring Std.HashSet.Raw Manual.ZhDocString.Ch19Ch20.G1.c175}
+
+{zhdocstring Std.HashSet.Raw.WF Manual.ZhDocString.Ch19Ch20.G1.c176}
+
+
+# 外延哈希集合
 %%%
 tag := "ExtHashSet"
 %%%
 
-{docstring Std.ExtHashSet}
+{zhdocstring Std.ExtHashSet Manual.ZhDocString.Ch19Ch20.G1.c177}
 
-## Creation
+## 创建
 
-{docstring Std.ExtHashSet.emptyWithCapacity}
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Extensional-Hash-Sets--Creation"
+%%%
+{zhdocstring Std.ExtHashSet.emptyWithCapacity Manual.ZhDocString.Ch19Ch20.G1.c178}
 
-## Properties
+## 性质
 
-{docstring Std.ExtHashSet.isEmpty}
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Extensional-Hash-Sets--Properties"
+%%%
+{zhdocstring Std.ExtHashSet.isEmpty Manual.ZhDocString.Ch19Ch20.G1.c179}
 
-{docstring Std.ExtHashSet.size}
-
-
-## Queries
-
-{docstring Std.ExtHashSet.contains}
-
-{docstring Std.ExtHashSet.get}
-
-{docstring Std.ExtHashSet.get!}
-
-{docstring Std.ExtHashSet.get?}
-
-{docstring Std.ExtHashSet.getD}
+{zhdocstring Std.ExtHashSet.size Manual.ZhDocString.Ch19Ch20.G1.c180}
 
 
-## Modification
+## 查询
 
-{docstring Std.ExtHashSet.insert}
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Extensional-Hash-Sets--Queries"
+%%%
+{zhdocstring Std.ExtHashSet.contains Manual.ZhDocString.Ch19Ch20.G1.c181}
 
-{docstring Std.ExtHashSet.insertMany}
+{zhdocstring Std.ExtHashSet.get Manual.ZhDocString.Ch19Ch20.G1.c182}
 
-{docstring Std.ExtHashSet.erase}
+{zhdocstring Std.ExtHashSet.get! Manual.ZhDocString.Ch19Ch20.G1.c183}
 
-{docstring Std.ExtHashSet.filter}
+{zhdocstring Std.ExtHashSet.get? Manual.ZhDocString.Ch19Ch20.G1.c184}
 
-{docstring Std.ExtHashSet.containsThenInsert}
+{zhdocstring Std.ExtHashSet.getD Manual.ZhDocString.Ch19Ch20.G1.c185}
 
-## Conversion
 
-{docstring Std.ExtHashSet.ofList}
+## 修改
 
-{docstring Std.ExtHashSet.ofArray}
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Extensional-Hash-Sets--Modification"
+%%%
+{zhdocstring Std.ExtHashSet.insert Manual.ZhDocString.Ch19Ch20.G1.c186}
+
+{zhdocstring Std.ExtHashSet.insertMany Manual.ZhDocString.Ch19Ch20.G1.c187}
+
+{zhdocstring Std.ExtHashSet.erase Manual.ZhDocString.Ch19Ch20.G1.c188}
+
+{zhdocstring Std.ExtHashSet.filter Manual.ZhDocString.Ch19Ch20.G1.c189}
+
+{zhdocstring Std.ExtHashSet.containsThenInsert Manual.ZhDocString.Ch19Ch20.G1.c190}
+
+## 转换
+
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Extensional-Hash-Sets--Conversion"
+%%%
+{zhdocstring Std.ExtHashSet.ofList Manual.ZhDocString.Ch19Ch20.G1.c191}
+
+{zhdocstring Std.ExtHashSet.ofArray Manual.ZhDocString.Ch19Ch20.G1.c192}
 
 {include 1 Manual.BasicTypes.Maps.TreeMap}
 
 
-# Dependent Tree-Based Maps
+# 依值树映射
 %%%
 tag := "DTreeMap"
 %%%
 
-The declarations in this section should be imported using `import Std.DTreeMap`.
+本节中的声明应通过 `import Std.DTreeMap` 导入。
 
-{docstring Std.DTreeMap +hideFields +hideStructureConstructor}
+{zhdocstring Std.DTreeMap Manual.ZhDocString.Ch19Ch20.G1.c193 +hideFields +hideStructureConstructor}
 
-## Creation
+## 创建
 
-{docstring Std.DTreeMap.empty}
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Dependent-Tree-Based-Maps--Creation"
+%%%
+{zhdocstring Std.DTreeMap.empty Manual.ZhDocString.Ch19Ch20.G1.c194}
 
-## Properties
+## 性质
 
-{docstring Std.DTreeMap.size}
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Dependent-Tree-Based-Maps--Properties"
+%%%
+{zhdocstring Std.DTreeMap.size Manual.ZhDocString.Ch19Ch20.G1.c195}
 
-{docstring Std.DTreeMap.isEmpty}
+{zhdocstring Std.DTreeMap.isEmpty Manual.ZhDocString.Ch19Ch20.G1.c196}
 
-## Queries
+## 查询
 
-{docstring Std.DTreeMap.contains}
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Dependent-Tree-Based-Maps--Queries"
+%%%
+{zhdocstring Std.DTreeMap.contains Manual.ZhDocString.Ch19Ch20.G1.c197}
 
-{docstring Std.DTreeMap.get}
+{zhdocstring Std.DTreeMap.get Manual.ZhDocString.Ch19Ch20.G1.c198}
 
-{docstring Std.DTreeMap.get!}
+{zhdocstring Std.DTreeMap.get! Manual.ZhDocString.Ch19Ch20.G1.c199}
 
-{docstring Std.DTreeMap.get?}
+{zhdocstring Std.DTreeMap.get? Manual.ZhDocString.Ch19Ch20.G1.c200}
 
-{docstring Std.DTreeMap.getD}
+{zhdocstring Std.DTreeMap.getD Manual.ZhDocString.Ch19Ch20.G1.c201}
 
-{docstring Std.DTreeMap.getKey}
+{zhdocstring Std.DTreeMap.getKey Manual.ZhDocString.Ch19Ch20.G1.c202}
 
-{docstring Std.DTreeMap.getKey!}
+{zhdocstring Std.DTreeMap.getKey! Manual.ZhDocString.Ch19Ch20.G1.c203}
 
-{docstring Std.DTreeMap.getKey?}
+{zhdocstring Std.DTreeMap.getKey? Manual.ZhDocString.Ch19Ch20.G1.c204}
 
-{docstring Std.DTreeMap.getKeyD}
+{zhdocstring Std.DTreeMap.getKeyD Manual.ZhDocString.Ch19Ch20.G1.c205}
 
-{docstring Std.DTreeMap.keys}
+{zhdocstring Std.DTreeMap.keys Manual.ZhDocString.Ch19Ch20.G1.c206}
 
-{docstring Std.DTreeMap.keysArray}
+{zhdocstring Std.DTreeMap.keysArray Manual.ZhDocString.Ch19Ch20.G1.c207}
 
-{docstring Std.DTreeMap.values}
+{zhdocstring Std.DTreeMap.values Manual.ZhDocString.Ch19Ch20.G1.c208}
 
-{docstring Std.DTreeMap.valuesArray}
+{zhdocstring Std.DTreeMap.valuesArray Manual.ZhDocString.Ch19Ch20.G1.c209}
 
-## Modification
+## 修改
 
-{docstring Std.DTreeMap.alter}
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Dependent-Tree-Based-Maps--Modification"
+%%%
+{zhdocstring Std.DTreeMap.alter Manual.ZhDocString.Ch19Ch20.G1.c210}
 
-{docstring Std.DTreeMap.modify}
+{zhdocstring Std.DTreeMap.modify Manual.ZhDocString.Ch19Ch20.G1.c211}
 
-{docstring Std.DTreeMap.containsThenInsert}
+{zhdocstring Std.DTreeMap.containsThenInsert Manual.ZhDocString.Ch19Ch20.G1.c212}
 
-{docstring Std.DTreeMap.containsThenInsertIfNew}
+{zhdocstring Std.DTreeMap.containsThenInsertIfNew Manual.ZhDocString.Ch19Ch20.G1.c213}
 
-{docstring Std.DTreeMap.erase}
+{zhdocstring Std.DTreeMap.erase Manual.ZhDocString.Ch19Ch20.G1.c214}
 
-{docstring Std.DTreeMap.filter}
+{zhdocstring Std.DTreeMap.filter Manual.ZhDocString.Ch19Ch20.G1.c215}
 
-{docstring Std.DTreeMap.filterMap}
+{zhdocstring Std.DTreeMap.filterMap Manual.ZhDocString.Ch19Ch20.G1.c216}
 
-{docstring Std.DTreeMap.insert}
+{zhdocstring Std.DTreeMap.insert Manual.ZhDocString.Ch19Ch20.G1.c217}
 
-{docstring Std.DTreeMap.insertIfNew}
+{zhdocstring Std.DTreeMap.insertIfNew Manual.ZhDocString.Ch19Ch20.G1.c218}
 
-{docstring Std.DTreeMap.getThenInsertIfNew?}
+{zhdocstring Std.DTreeMap.getThenInsertIfNew? Manual.ZhDocString.Ch19Ch20.G1.c219}
 
-{docstring Std.DTreeMap.insertMany}
+{zhdocstring Std.DTreeMap.insertMany Manual.ZhDocString.Ch19Ch20.G1.c220}
 
-{docstring Std.DTreeMap.partition}
+{zhdocstring Std.DTreeMap.partition Manual.ZhDocString.Ch19Ch20.G1.c221}
 
-## Iteration
+## 迭代
 
-{docstring Std.DTreeMap.iter}
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Dependent-Tree-Based-Maps--Iteration"
+%%%
+{zhdocstring Std.DTreeMap.iter Manual.ZhDocString.Ch19Ch20.G1.c222}
 
-{docstring Std.DTreeMap.keysIter}
+{zhdocstring Std.DTreeMap.keysIter Manual.ZhDocString.Ch19Ch20.G1.c223}
 
-{docstring Std.DTreeMap.valuesIter}
+{zhdocstring Std.DTreeMap.valuesIter Manual.ZhDocString.Ch19Ch20.G1.c224}
 
-{docstring Std.DTreeMap.map}
+{zhdocstring Std.DTreeMap.map Manual.ZhDocString.Ch19Ch20.G1.c225}
 
-{docstring Std.DTreeMap.foldl}
+{zhdocstring Std.DTreeMap.foldl Manual.ZhDocString.Ch19Ch20.G1.c226}
 
-{docstring Std.DTreeMap.foldlM}
+{zhdocstring Std.DTreeMap.foldlM Manual.ZhDocString.Ch19Ch20.G1.c227}
 
-{docstring Std.DTreeMap.forIn}
+{zhdocstring Std.DTreeMap.forIn Manual.ZhDocString.Ch19Ch20.G1.c228}
 
-{docstring Std.DTreeMap.forM}
+{zhdocstring Std.DTreeMap.forM Manual.ZhDocString.Ch19Ch20.G1.c229}
 
-## Conversion
+## 转换
 
-{docstring Std.DTreeMap.ofList}
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Dependent-Tree-Based-Maps--Conversion"
+%%%
+{zhdocstring Std.DTreeMap.ofList Manual.ZhDocString.Ch19Ch20.G1.c230}
 
-{docstring Std.DTreeMap.toArray}
+{zhdocstring Std.DTreeMap.toArray Manual.ZhDocString.Ch19Ch20.G1.c231}
 
-{docstring Std.DTreeMap.toList}
+{zhdocstring Std.DTreeMap.toList Manual.ZhDocString.Ch19Ch20.G1.c232}
 
-## Unbundled Variants
+## 分离式变体
 
-Unbundled maps separate well-formedness proofs from data.
-This is primarily useful when defining {ref "raw-data"}[nested inductive types].
-To use these variants, import the module `Std.DTreeMap.Raw`.
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Dependent-Tree-Based-Maps--Unbundled-Variants"
+%%%
+分离式映射会将良构性证明与数据本身分开。
+这主要在定义 {ref "raw-data"}[嵌套归纳类型] 时有用。
+要使用这些变体，请导入模块 `Std.DTreeMap.Raw`。
 
-{docstring Std.DTreeMap.Raw}
+{zhdocstring Std.DTreeMap.Raw Manual.ZhDocString.Ch19Ch20.G1.c233}
 
-{docstring Std.DTreeMap.Raw.WF}
+{zhdocstring Std.DTreeMap.Raw.WF Manual.ZhDocString.Ch19Ch20.G1.c234}
 
 {include 1 Manual.BasicTypes.Maps.TreeSet}

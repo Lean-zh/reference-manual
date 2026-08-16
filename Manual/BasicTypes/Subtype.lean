@@ -7,6 +7,7 @@ Author: David Thrane Christiansen
 import VersoManual
 
 import Manual.Meta
+import Manual.ZhDocString.Ch19Ch20.G9
 
 import Manual.BasicTypes.Array.Subarray
 import Manual.BasicTypes.Array.FFI
@@ -19,52 +20,53 @@ open Verso.Genre.Manual.InlineLean
 set_option pp.rawOnError true
 
 
-#doc (Manual) "Subtypes" =>
+#doc (Manual) "子类型" =>
 %%%
 tag := "Subtype"
+file := "Subtypes"
 %%%
 
-The structure {name}`Subtype` represents the elements of a type that satisfy some predicate.
-They are used pervasively both in mathematics and in programming; in mathematics, they are used similarly to subsets, while in programming, they allow information that is known about a value to be represented in a way that is visible to Lean's logic.
+结构体 {name}`Subtype` 表示某个类型中满足某个谓词的元素。
+它在数学与编程中都被广泛使用；在数学中，它的用法类似于子集；在编程中，它允许将关于某个值的已知信息表示为 Lean 逻辑可见的形式。
 
-Syntactically, an element of a {name}`Subtype` resembles a tuple of the base type's element and the proof that it satisfies the proposition.
-They differ from dependent pair types ({name}`Sigma`) in that the second element is a proof of a proposition rather than data, and from existential quantification in that the entire {name}`Subtype` is a type rather than a proposition.
-Even though they are pairs syntactically, {name}`Subtype` should really be thought of as elements of the base type with associated proof obligations.
+从语法上看，{name}`Subtype` 的一个元素类似于由底层类型中的值及其满足该命题的证明所组成的元组。
+它与依值有序对类型（{name}`Sigma`）的区别在于第二个元素是命题的证明而非数据；它与存在量化的区别在于整个 {name}`Subtype` 是一个类型而不是命题。
+尽管它在语法上是一个有序对，{name}`Subtype` 实际上更应被看作“带有关联证明义务的底层类型元素”。
 
-Subtypes are {ref "inductive-types-trivial-wrappers"}[trivial wrappers].
-They are thus represented identically to the base type in compiled code.
+子类型是 {ref "inductive-types-trivial-wrappers"}[平凡包装器]。
+因此，在编译后的代码中，它们与底层类型具有完全相同的表示。
 
 
-{docstring Subtype}
+{zhdocstring Subtype Manual.ZhDocString.Ch19Ch20.G9.c207}
 
 ::::leanSection
 ```lean -show
 variable {α : Type u} {p : Prop}
 ```
-:::syntax term (title := "Subtypes")
+:::syntax term (title := "子类型")
 ```grammar
 { $x : $t:term // $t:term }
 ```
 
-{lean}`{ x : α // p }` is a notation for {lean}`Subtype fun (x : α) => p`.
+{lean}`{ x : α // p }` 是 {lean}`Subtype fun (x : α) => p` 的记法。
 
-The type ascription may be omitted:
+类型标注也可以省略：
 
 ```grammar
 { $x:ident // $t:term }
 ```
 
-{lean}`{ x // p }` is a notation for {lean}`Subtype fun (x : _) => p`.
+{lean}`{ x // p }` 是 {lean}`Subtype fun (x : _) => p` 的记法。
 :::
 ::::
 
-Due to {tech}[proof irrelevance] and {tech (key := "η-equivalence")}[η-equality], two elements of a subtype are definitionally equal when the elements of the base type are definitionally equal.
-In a proof, the {tactic}`ext` tactic can be used to transform a goal of equality of elements of a subtype into equality of their values.
+由于 {tech (key := "proof irrelevance")}[证明无关性] 和 {tech (key := "η-equivalence")}[η-等价]，当底层类型中的元素定义等价时，子类型中的两个元素也定义等价。
+在证明中，可以使用 {tactic}`ext` 策略将“两个子类型元素相等”的目标化为“它们的值相等”的目标。
 
-:::example "Definitional Equality of Subtypes"
+:::example "子类型的定义等价"
 
-The non-empty strings {lean}`s1` and {lean}`s2` are definitionally equal despite the fact that their embedded proof terms are different.
-No case splitting is needed in order to prove that they are equal.
+尽管内嵌的证明项不同，非空字符串 {lean}`s1` 和 {lean}`s2` 仍然定义等价。
+因此，要证明它们相等，不需要做任何分类讨论。
 
 ```lean
 def NonEmptyString := { x : String // x ≠ "" }
@@ -82,11 +84,11 @@ theorem s1_eq_s2 : s1 = s2 := by rfl
 ```
 :::
 
-:::example "Extensional Equality of Subtypes"
+:::example "子类型的外延相等"
 
-The non-empty strings {lean}`s1` and {lean}`s2` are definitionally equal.
-Ignoring that fact, the equality of the embedded strings can be used to prove that they are equal.
-The {tactic}`ext` tactic transforms a goal that consists of equality of non-empty strings into a goal that consists of equality of the strings.
+非空字符串 {lean}`s1` 与 {lean}`s2` 本身就是定义等价的。
+即便不利用这一事实，也可以通过它们内部字符串的相等来证明二者相等。
+{tactic}`ext` 策略会把“非空字符串相等”的目标转化为“底层字符串相等”的目标。
 
 ```lean
 abbrev NonEmptyString := { x : String // x ≠ "" }
@@ -107,13 +109,13 @@ theorem s1_eq_s2 : s1 = s2 := by
 ```
 :::
 
-There is a coercion from a subtype to its base type.
-This allows subtypes to be used in positions where the base type is expected, essentially erasing the proof that the value satisfies the predicate.
+存在从子类型到底层类型的强制转换。
+这使得子类型可以用在期望底层类型的地方，本质上等于擦除了“该值满足谓词”的证明。
 
-:::example "Subtype Coercions"
+:::example "子类型强制转换"
 
-Elements of subtypes can be coerced to their base type.
-Here, {name}`nine` is coerced from a subtype of `Nat` that contains multiples of {lean  (type := "Nat")}`3` to {lean}`Nat`.
+子类型中的元素可以强制转换为其底层类型。
+这里，{name}`nine` 从 `Nat` 中包含 {lean  (type := "Nat")}`3` 的倍数的子类型，被强制转换成了 {lean}`Nat`。
 
 ```lean (name := subtype_coe)
 abbrev DivBy3 := { x : Nat // x % 3 = 0 }

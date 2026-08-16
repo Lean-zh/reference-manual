@@ -8,7 +8,7 @@ import VersoManual
 
 open Verso.Genre Manual
 
-#doc (Manual) "Supported Platforms" =>
+#doc (Manual) "支持的平台" =>
 %%%
 tag := "platforms"
 file := "platforms"
@@ -18,29 +18,35 @@ htmlSplit := .never
 
 
 
-# Tier 1
+# 第一层级
 
+%%%
+tag := "Lean-__________________--Supported-Platforms--Tier-1"
+%%%
 :::paragraph
-Tier 1 platforms are those for which Lean is built and tested by our CI infrastructure.
-Binary releases of Lean are available for these platforms via {ref "elan"}[`elan`].
-The Tier 1 platforms are:
+第一层级平台是 Lean 由 CI 基础设施构建并测试的平台。
+这些平台的 Lean 二进制发行版可通过 {ref "elan"}[`elan`] 获取。
+第一层级平台包括：
 
-* `x86-64` Linux with glibc 2.26+
-* `aarch64` Linux with glibc 2.27+
-* `aarch64` (Apple Silicon) macOS 10.15+
-* `x86-64` Windows 11 (any version), Windows 10 (version 1903 or higher), Windows Server 2022, Windows Server 2025
+* 使用 glibc 2.26+ 的 `x86-64` Linux
+* 使用 glibc 2.27+ 的 `aarch64` Linux
+* `aarch64`（Apple 芯片）macOS 10.15+
+* `x86-64` Windows 11（任意版本）、Windows 10（版本 1903 或更高）、Windows Server 2022、Windows Server 2025
 :::
 
-# Tier 2
+# 第二层级
 
-Tier 2 platforms are those for which Lean is cross-compiled but not tested by our CI.
-Binary releases are available for these platforms.
+%%%
+tag := "Lean-__________________--Supported-Platforms--Tier-2"
+%%%
+第二层级平台是 Lean 为其交叉编译但未由 CI 测试的平台。
+这些平台也提供二进制发行版。
 
-Releases may be silently broken due to the lack of automated testing.
-Issue reports and fixes are welcome.
+由于缺少自动化测试，发行版可能在不显眼的情况下损坏。
+欢迎报告问题并提交修复。
 
 :::paragraph
-The Tier 2 platforms are:
+第二层级平台包括：
 * `x86-64` macOS 10.15+
 * Emscripten WebAssembly
 :::

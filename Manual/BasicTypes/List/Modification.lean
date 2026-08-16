@@ -7,6 +7,7 @@ Author: David Thrane Christiansen
 import VersoManual
 
 import Manual.Meta
+import Manual.ZhDocString.Ch19Ch20.G3
 
 open Manual.FFIDocType
 
@@ -15,72 +16,78 @@ open Verso.Genre.Manual.InlineLean
 
 set_option pp.rawOnError true
 
-#doc (Manual) "Modification" =>
+#doc (Manual) "修改" =>
+%%%
+tag := "Lean-__________________--Basic-Types--Linked-Lists--API-Reference--Modification"
+%%%
 
-{docstring List.set}
+{zhdocstring List.set Manual.ZhDocString.Ch19Ch20.G3.c197}
 
-{docstring List.setTR}
+{zhdocstring List.setTR Manual.ZhDocString.Ch19Ch20.G3.c198}
 
-{docstring List.modify}
+{zhdocstring List.modify Manual.ZhDocString.Ch19Ch20.G3.c199}
 
-{docstring List.modifyTR}
+{zhdocstring List.modifyTR Manual.ZhDocString.Ch19Ch20.G3.c200}
 
-{docstring List.modifyHead}
+{zhdocstring List.modifyHead Manual.ZhDocString.Ch19Ch20.G3.c201}
 
-{docstring List.modifyTailIdx}
+{zhdocstring List.modifyTailIdx Manual.ZhDocString.Ch19Ch20.G3.c202}
 
-{docstring List.erase}
+{zhdocstring List.erase Manual.ZhDocString.Ch19Ch20.G3.c203}
 
-{docstring List.eraseTR}
+{zhdocstring List.eraseTR Manual.ZhDocString.Ch19Ch20.G3.c204}
 
-{docstring List.eraseDups}
+{zhdocstring List.eraseDups Manual.ZhDocString.Ch19Ch20.G3.c205}
 
-{docstring List.eraseIdx}
+{zhdocstring List.eraseIdx Manual.ZhDocString.Ch19Ch20.G3.c206}
 
-{docstring List.eraseIdxTR}
+{zhdocstring List.eraseIdxTR Manual.ZhDocString.Ch19Ch20.G3.c207}
 
-{docstring List.eraseP}
+{zhdocstring List.eraseP Manual.ZhDocString.Ch19Ch20.G3.c208}
 
-{docstring List.erasePTR}
+{zhdocstring List.erasePTR Manual.ZhDocString.Ch19Ch20.G3.c209}
 
-{docstring List.eraseReps}
+{zhdocstring List.eraseReps Manual.ZhDocString.Ch19Ch20.G3.c210}
 
-{docstring List.extract}
+{zhdocstring List.extract Manual.ZhDocString.Ch19Ch20.G3.c211}
 
-{docstring List.removeAll}
+{zhdocstring List.removeAll Manual.ZhDocString.Ch19Ch20.G3.c212}
 
-{docstring List.replace}
+{zhdocstring List.replace Manual.ZhDocString.Ch19Ch20.G3.c213}
 
-{docstring List.replaceTR}
+{zhdocstring List.replaceTR Manual.ZhDocString.Ch19Ch20.G3.c214}
 
-{docstring List.reverse}
+{zhdocstring List.reverse Manual.ZhDocString.Ch19Ch20.G3.c215}
 
-{docstring List.flatten}
+{zhdocstring List.flatten Manual.ZhDocString.Ch19Ch20.G3.c216}
 
-{docstring List.flattenTR}
+{zhdocstring List.flattenTR Manual.ZhDocString.Ch19Ch20.G3.c217}
 
-{docstring List.rotateLeft}
+{zhdocstring List.rotateLeft Manual.ZhDocString.Ch19Ch20.G3.c218}
 
-{docstring List.rotateRight}
+{zhdocstring List.rotateRight Manual.ZhDocString.Ch19Ch20.G3.c219}
 
-{docstring List.leftpad}
+{zhdocstring List.leftpad Manual.ZhDocString.Ch19Ch20.G3.c220}
 
-{docstring List.leftpadTR}
+{zhdocstring List.leftpadTR Manual.ZhDocString.Ch19Ch20.G3.c221}
 
-{docstring List.rightpad}
+{zhdocstring List.rightpad Manual.ZhDocString.Ch19Ch20.G3.c222}
 
-# Insertion
+# 插入
+%%%
+tag := "Lean-__________________--Basic-Types--Linked-Lists--API-Reference--Modification--Insertion"
+%%%
 
-{docstring List.insert}
+{zhdocstring List.insert Manual.ZhDocString.Ch19Ch20.G3.c223}
 
-{docstring List.insertIdx}
+{zhdocstring List.insertIdx Manual.ZhDocString.Ch19Ch20.G3.c224}
 
-{docstring List.insertIdxTR}
+{zhdocstring List.insertIdxTR Manual.ZhDocString.Ch19Ch20.G3.c225}
 
-{docstring List.intersperse}
+{zhdocstring List.intersperse Manual.ZhDocString.Ch19Ch20.G3.c226}
 
-{docstring List.intersperseTR}
+{zhdocstring List.intersperseTR Manual.ZhDocString.Ch19Ch20.G3.c227}
 
-{docstring List.intercalate}
+{zhdocstring List.intercalate Manual.ZhDocString.Ch19Ch20.G3.c228}
 
-{docstring List.intercalateTR}
+{zhdocstring List.intercalateTR Manual.ZhDocString.Ch19Ch20.G3.c229}

@@ -9,26 +9,28 @@ import Manual.Meta.ErrorExplanation
 open Lean
 open Verso.Genre Manual InlineLean
 
-#doc (Manual) "About: `invalidDottedIdent`" =>
+#doc (Manual) "关于：`invalidDottedIdent`" =>
 %%%
 shortTitle := "invalidDottedIdent"
+tag := "Lean-__________________--Error-Explanations--About___--invalidDottedIdent"
+file := "About___--invalidDottedIdent"
 %%%
 
 {errorExplanationHeader lean.invalidDottedIdent}
 
-This error indicates that dotted identifier notation was used in an invalid or unsupported context.
-Dotted identifier notation allows an identifier's namespace to be omitted, provided that it can be
-inferred by Lean based on type information. Details about this notation can be found in the manual
-section on {ref "identifiers-and-resolution"}[identifiers].
+此错误表示在无效或不受支持的上下文中使用了点标识符记法。
+点标识符记法允许省略标识符的命名空间，前提是 Lean 能根据类型信息推断它。关于该记法的详情请参阅
+{ref "identifiers-and-resolution"}[标识符]章节。
 
-This notation can only be used in a term whose type Lean is able to infer. If there is insufficient
-type information for Lean to do so, this error will be raised. The inferred type must not be a type
-universe (e.g., {lean}`Prop` or {lean}`Type`), as dotted-identifier notation is not supported on
-these types.
+该记法只能用于 Lean 能够推断其类型的项。如果类型信息不足，就会产生此错误。推断出的类型不能是类型
+宇宙（例如 {lean}`Prop` 或 {lean}`Type`），因为这些类型不支持点标识符记法。
 
-# Examples
+# 示例
 
-:::errorExample "Insufficient Type Information"
+%%%
+tag := "Lean-__________________--Error-Explanations--About___--invalidDottedIdent--Examples"
+%%%
+:::errorExample "类型信息不足"
 ```broken
 def reverseDuplicate (xs : List α) :=
   .reverse (xs ++ xs)
@@ -59,18 +61,16 @@ def reverseDuplicate (xs : List α) : List α :=
 variable (α : Type) (xs : List α)
 ```
 
-Because the return type of `reverseDuplicate` is not specified, the expected type of `.reverse`
-cannot be determined. Lean will not use the type of the argument {lean}`xs ++ xs` to infer the
-omitted namespace. Adding the return type {lean}`List α` allows Lean to infer the type of `.reverse`
-and thus the appropriate namespace ({name}`List`) in which to resolve this identifier.
+由于未指定 `reverseDuplicate` 的返回类型，无法确定 `.reverse` 的期望类型。Lean 不会使用参数
+{lean}`xs ++ xs` 的类型推断省略的命名空间。添加返回类型 {lean}`List α` 后，Lean 就能推断 `.reverse`
+的类型，进而推断解析该标识符所需的命名空间（{name}`List`）。
 
-Note that this means that changing the return type of `reverseDuplicate` changes how `.reverse`
-resolves: if the return type is `T`, then Lean will (attempt to) resolve `.reverse` to a function
-`T.reverse` whose return type is `T`—even if `T.reverse` does not take an argument of type
-`List α`.
+注意，这意味着改变 `reverseDuplicate` 的返回类型会改变 `.reverse` 的解析方式：如果返回类型是 `T`，
+Lean 会尝试将 `.reverse` 解析为函数 `T.reverse`，其返回类型是 `T`——即使 `T.reverse` 不接受类型为
+`List α` 的参数。
 :::
 
-:::errorExample "Dotted Identifier Where Type Universe Expected"
+:::errorExample "应为类型宇宙处使用点标识符"
 
 ```broken
 example (n : Nat) :=
@@ -93,10 +93,8 @@ example (n : Nat) :=
 variable (n : Nat)
 ```
 
-The proposition {lean}`n > 42` has type {lean}`Prop`, which, being a type universe, does not support
-dotted-identifier notation. As this example demonstrates, attempting to use this notation in such a
-context is almost always an error. The intent in this example was for `.true` and `.false` to be
-Booleans, not propositions; however, {keywordOf Lean.Parser.Term.match}`match` expressions do not
-automatically perform this coercion for decidable propositions. Explicitly adding {name}`decide`
-makes the discriminant a {name}`Bool` and allows the dotted-identifier resolution to succeed.
+命题 {lean}`n > 42` 的类型是 {lean}`Prop`；由于它是类型宇宙，不支持点标识符记法。如本例所示，在这种
+上下文中使用该记法几乎总是错误。此例原本想让 `.true` 和 `.false` 表示布尔值，而非命题；不过，
+{keywordOf Lean.Parser.Term.match}`match` 表达式不会自动对可判定命题执行这种强制转换。显式添加
+{name}`decide` 会使判别式成为 {name}`Bool`，从而使点标识符解析成功。
 :::

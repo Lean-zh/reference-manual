@@ -7,6 +7,7 @@ Author: David Thrane Christiansen
 import VersoManual
 
 import Manual.Meta
+import Manual.ZhDocString.Ch19Ch20.G3
 
 import Manual.BasicTypes.Array.Subarray
 import Manual.BasicTypes.Array.FFI
@@ -21,96 +22,100 @@ set_option maxHeartbeats 500000
 
 example := Char
 
-#doc (Manual) "Arrays" =>
+#doc (Manual) "数组" =>
 %%%
 tag := "Array"
+file := "Arrays"
 %%%
 
-The {lean}`Array` type represents sequences of elements, addressable by their position in the sequence.
-Arrays are specially supported by Lean:
- * They have a _logical model_ that specifies their behavior in terms of lists of elements, which specifies the meaning of each operation on arrays.
- * They have an optimized run-time representation in compiled code as {tech}[dynamic arrays], and the Lean runtime specially optimizes array operations.
- * There is {ref "array-syntax"}[array literal syntax] for writing arrays.
+{lean}`Array` 类型表示元素序列，可以通过其在序列中的位置进行访问。
+Lean 对数组提供了专门支持：
+ * 它有一个_逻辑模型_，用元素列表来规定其行为，从而给出各个数组操作的含义。
+ * 它在编译后的代码中有一种经过优化的运行时表示，即 {tech (key := "dynamic arrays")}[动态数组]，Lean 运行时还会专门优化数组操作。
+ * 可以使用 {ref "array-syntax"}[数组字面量语法] 来书写数组。
 
-Arrays can be vastly more efficient than lists or other sequences in compiled code.
-In part, this is because they offer good locality: because all the elements of the sequence are next to each other in memory, the processor's caches can be used efficiently.
-Even more importantly, if there is only a single reference to an array, operations that might otherwise copy or allocate a data structure can be implemented via mutation.
-Lean code that uses an array in such a way that there's only ever one unique reference (that is, uses it {deftech}_linearly_) avoids the performance overhead of persistent data structures while still being as convenient to write, read, and prove things about as ordinary pure functional programs.
+在编译后的代码中，数组可以比列表或其他序列高效得多。
+这部分是因为它具有良好的局部性：序列中的所有元素都在内存中彼此相邻，因此处理器缓存可以被高效利用。
+更重要的是，如果一个数组只有唯一引用，那么原本需要复制或分配数据结构的操作就可以通过原地修改来实现。
+当 Lean 代码以始终只有唯一引用的方式使用数组时（也就是 {deftech (key := "linearly")}_线性地_ 使用它），便能避免持久化数据结构的性能开销，同时依旧像普通纯函数式程序一样易于编写、阅读与证明性质。
 
-# Logical Model
+# 逻辑模型
 
-{docstring Array}
+%%%
+tag := "Lean-__________________--Basic-Types--Arrays--Logical-Model"
+%%%
+{zhdocstring Array Manual.ZhDocString.Ch19Ch20.G3.c001}
 
-The logical model of arrays is a structure that contains a single field, which is a list of elements.
-This is convenient when specifying and proving properties of array-processing functions at a low level.
+数组的逻辑模型是一个只有单个字段的结构体，该字段是元素列表。
+这使得在较低层次上规定和证明数组处理函数的性质时更加方便。
 
-# Run-Time Representation
+# 运行时表示
 %%%
 tag := "array-runtime"
 %%%
 
-Lean's arrays are {deftech}_dynamic arrays_, which are blocks of continuous memory with a defined capacity, not all of which is typically in use.
-As long as the number of elements in the array is less than the capacity, new items can be added to the end without reallocating or moving the data.
-Adding items to an array that has no extra space results in a reallocation that doubles the capacity.
-The amortized overhead scales linearly with the size of the array.
-The values in the array are represented as described in the {ref "inductive-types-ffi"}[section on the foreign function interface].
+Lean 的数组是 {deftech (key := "dynamic arrays")}_动态数组_：它们是一段具有既定容量的连续内存块，通常其中不会全部被占用。
+只要数组中的元素个数小于容量，就可以在末尾追加新元素，而无需重新分配或移动数据。
+向没有剩余空间的数组中添加元素时，会触发一次将容量翻倍的重新分配。
+其摊还开销与数组大小呈线性关系。
+数组中的值按 {ref "inductive-types-ffi"}[外部函数接口一节]所述的方式表示。
 
-:::figure "Memory layout of arrays" (tag := "arrayffi")
+:::figure "数组的内存布局" (tag := "arrayffi")
 ```diagram
 open Illuminate in
 open Manual.Diagram in
 layoutDiagram [
-  ("m_header", .header, txt "Lean object header"),
-  ("m_size", .size_t, twoLine "Byte count" "size_t"),
-  ("m_capacity", .size_t, twoLine "Allocated space" "size_t"),
+  ("m_header", .header, txt "Lean 对象头"),
+  ("m_size", .size_t, twoLine "字节数" "size_t"),
+  ("m_capacity", .size_t, twoLine "已分配空间" "size_t"),
   ("m_data", .data none, some <| .styledText (base := fieldLabelStyle) <|
-    "Array data" ++ "\n" ++ "Array of " ++ family "monospace" "lean_object *")
+    "数组数据" ++ "\n" ++ family "monospace" "lean_object *" ++ " 数组")
 ]
 ```
 :::
 
-After the object header, an array contains:
+在对象头之后，数组包含：
 
-: size
+: 大小
 
-  The number of objects currently stored in the array
+  当前存储在数组中的对象个数
 
-: capacity
+: 容量
 
-  The number of objects that fit in the memory allocated for the array
+  为数组分配的内存中可容纳的对象个数
 
-: data
+: 数据
 
-  The values in the array
+  数组中的值
 
-Many array functions in the Lean runtime check whether they have exclusive access to their argument by consulting the reference count in the object header.
-If they do, and the array's capacity is sufficient, then the existing array can be mutated rather than allocating fresh memory.
-Otherwise, a new array must be allocated.
+Lean 运行时中的许多数组函数都会通过查看对象头中的引用计数，来检查自己是否独占其参数。
+如果是，并且数组容量足够，那么就可以直接修改现有数组，而无需分配新的内存。
+否则，就必须分配一个新数组。
 
-## Performance Notes
+## 性能说明
 %%%
 tag := "array-performance"
 %%%
 
 
-Despite the fact that they appear to be an ordinary constructor and projection, {name}`Array.mk` and {name}`Array.toList` take *time linear in the size of the array* in compiled code.
-This is because converting between linked lists and packed arrays must necessarily visit each element.
+尽管 {name}`Array.mk` 和 {name}`Array.toList` 看起来只是普通的构造子与投影，但在编译后的代码中，它们都需要 *与数组大小成线性关系的时间*。
+这是因为在链表与紧凑数组之间转换时，必然需要访问每一个元素。
 
-Mutable arrays can be used to write very efficient code.
-However, they are a poor persistent data structure.
-Updating a shared array rules out mutation, and requires time linear in the size of the array.
-When using arrays in performance-critical code, it's important to ensure that they are used {tech}[linearly].
+可变数组可用于编写非常高效的代码。
+不过，它们并不是好的持久化数据结构。
+更新共享数组时无法使用原地修改，并且需要耗费与数组大小成线性关系的时间。
+在性能关键的代码中使用数组时，务必确保它们是 {tech (key := "linearly")}[线性地] 使用的。
 
-# Syntax
+# 语法
 %%%
 tag := "array-syntax"
 %%%
 
-Array literals allow arrays to be written directly in code.
-They may be used in expression or pattern contexts.
+数组字面量允许直接在代码中书写数组。
+它们既可用于表达式上下文，也可用于模式上下文。
 
-:::syntax term (title := "Array Literals")
-Array literals begin with `#[` and contain a comma-separated sequence of terms, terminating with `]`.
+:::syntax term (title := "数组字面量")
+数组字面量以 `#[` 开始，包含一串以逗号分隔的项，并以 `]` 结束。
 
 ```grammar
 #[$t,*]
@@ -118,8 +123,8 @@ Array literals begin with `#[` and contain a comma-separated sequence of terms, 
 :::
 
 ::::keepEnv
-:::example "Array Literals"
-Array literals may be used as expressions or as patterns.
+:::example "数组字面量"
+数组字面量既可以用作表达式，也可以用作模式。
 
 ```lean
 def oneTwoThree : Array Nat := #[1, 2, 3]
@@ -132,29 +137,29 @@ def oneTwoThree : Array Nat := #[1, 2, 3]
 :::
 ::::
 
-Additionally, {ref "subarray"}[sub-arrays] may be extracted using the following syntax:
-:::syntax term (title := "Sub-Arrays")
-A start index followed by a colon constructs a sub-array that contains the values from the start index onwards (inclusive):
+此外，还可以用下列语法提取 {ref "subarray"}[子数组]：
+:::syntax term (title := "子数组")
+起始下标后跟一个冒号，会构造出一个子数组，包含从起始下标开始（含该位置）直到末尾的值：
 ```grammar
 $t[$t:term :]
 ```
 
-Providing start and end indices  constructs a sub-array that contains the values from the start index (inclusive) to the end index (exclusive):
+同时提供起始与结束下标时，会构造出一个子数组，包含从起始下标（含）到结束下标（不含）的值：
 ```grammar
 $t[$t:term : $_:term]
 ```
 :::
 
 ::::keepEnv
-:::example "Sub-Array Syntax"
+:::example "子数组语法"
 
-The array {lean}`ten` contains the first ten natural numbers.
+数组 {lean}`ten` 包含前十个自然数。
 ```lean
 def ten : Array Nat :=
   .range 10
 ```
 
-A sub-array that represents the second half of {lean}`ten` can be constructed using the sub-array syntax:
+可以使用子数组语法构造一个表示 {lean}`ten` 后半部分的子数组：
 ```lean (name := subarr1)
 #eval ten[5:]
 ```
@@ -162,7 +167,7 @@ A sub-array that represents the second half of {lean}`ten` can be constructed us
 #[5, 6, 7, 8, 9].toSubarray
 ```
 
-Similarly, sub-array that contains two through five can be constructed by providing a stopping point:
+类似地，通过给出结束位置，可以构造出包含 2 到 5 的子数组：
 ```lean (name := subarr2)
 #eval ten[2:6]
 ```
@@ -170,7 +175,7 @@ Similarly, sub-array that contains two through five can be constructed by provid
 #[2, 3, 4, 5].toSubarray
 ```
 
-Because sub-arrays merely store the start and end indices of interest in the underlying array, the array itself can be recovered:
+由于子数组仅存储其在底层数组中所关注的起止下标，因此可以恢复出该数组本身：
 ```lean (name := subarr3)
 #eval ten[2:6].array == ten
 ```
@@ -180,313 +185,355 @@ true
 :::
 ::::
 
-# API Reference
+# 接口参考
 %%%
 tag := "array-api"
 %%%
 
-## Constructing Arrays
+## 构造数组
 
-{docstring Array.empty}
+%%%
+tag := "Lean-__________________--Basic-Types--Arrays--API-Reference--Constructing-Arrays"
+%%%
+{zhdocstring Array.empty Manual.ZhDocString.Ch19Ch20.G3.c002}
 
-{docstring Array.emptyWithCapacity}
+{zhdocstring Array.emptyWithCapacity Manual.ZhDocString.Ch19Ch20.G3.c003}
 
-{docstring Array.singleton}
+{zhdocstring Array.singleton Manual.ZhDocString.Ch19Ch20.G3.c004}
 
-{docstring Array.range}
+{zhdocstring Array.range Manual.ZhDocString.Ch19Ch20.G3.c005}
 
-{docstring Array.range'}
+{zhdocstring Array.range' Manual.ZhDocString.Ch19Ch20.G3.c006}
 
-{docstring Array.finRange}
+{zhdocstring Array.finRange Manual.ZhDocString.Ch19Ch20.G3.c007}
 
-{docstring Array.ofFn}
+{zhdocstring Array.ofFn Manual.ZhDocString.Ch19Ch20.G3.c008}
 
-{docstring Array.replicate}
+{zhdocstring Array.replicate Manual.ZhDocString.Ch19Ch20.G3.c009}
 
-{docstring Array.append}
+{zhdocstring Array.append Manual.ZhDocString.Ch19Ch20.G3.c010}
 
-{docstring Array.appendList}
+{zhdocstring Array.appendList Manual.ZhDocString.Ch19Ch20.G3.c011}
 
-{docstring Array.leftpad}
+{zhdocstring Array.leftpad Manual.ZhDocString.Ch19Ch20.G3.c012}
 
-{docstring Array.rightpad}
+{zhdocstring Array.rightpad Manual.ZhDocString.Ch19Ch20.G3.c013}
 
-## Size
+## 大小
 
-{docstring Array.size}
+%%%
+tag := "Lean-__________________--Basic-Types--Arrays--API-Reference--Size"
+%%%
+{zhdocstring Array.size Manual.ZhDocString.Ch19Ch20.G3.c014}
 
-{docstring Array.usize}
+{zhdocstring Array.usize Manual.ZhDocString.Ch19Ch20.G3.c015}
 
-{docstring Array.isEmpty}
+{zhdocstring Array.isEmpty Manual.ZhDocString.Ch19Ch20.G3.c016}
 
-## Lookups
+## 查找
 
-{docstring Array.extract}
+%%%
+tag := "Lean-__________________--Basic-Types--Arrays--API-Reference--Lookups"
+%%%
+{zhdocstring Array.extract Manual.ZhDocString.Ch19Ch20.G3.c017}
 
-{docstring Array.getD}
+{zhdocstring Array.getD Manual.ZhDocString.Ch19Ch20.G3.c018}
 
-{docstring Array.uget}
+{zhdocstring Array.uget Manual.ZhDocString.Ch19Ch20.G3.c019}
 
-{docstring Array.back}
+{zhdocstring Array.back Manual.ZhDocString.Ch19Ch20.G3.c020}
 
-{docstring Array.back?}
+{zhdocstring Array.back? Manual.ZhDocString.Ch19Ch20.G3.c021}
 
-{docstring Array.back!}
+{zhdocstring Array.back! Manual.ZhDocString.Ch19Ch20.G3.c022}
 
-{docstring Array.getMax?}
+{zhdocstring Array.getMax? Manual.ZhDocString.Ch19Ch20.G3.c023}
 
-## Queries
+## 查询
 
-{docstring Array.count}
+%%%
+tag := "Lean-__________________--Basic-Types--Arrays--API-Reference--Queries"
+%%%
+{zhdocstring Array.count Manual.ZhDocString.Ch19Ch20.G3.c024}
 
-{docstring Array.countP}
+{zhdocstring Array.countP Manual.ZhDocString.Ch19Ch20.G3.c025}
 
-{docstring Array.idxOf}
+{zhdocstring Array.idxOf Manual.ZhDocString.Ch19Ch20.G3.c026}
 
-{docstring Array.idxOf?}
+{zhdocstring Array.idxOf? Manual.ZhDocString.Ch19Ch20.G3.c027}
 
-{docstring Array.finIdxOf?}
+{zhdocstring Array.finIdxOf? Manual.ZhDocString.Ch19Ch20.G3.c028}
 
-## Conversions
+## 转换
 
-{docstring Array.toList}
+%%%
+tag := "Lean-__________________--Basic-Types--Arrays--API-Reference--Conversions"
+%%%
+{zhdocstring Array.toList Manual.ZhDocString.Ch19Ch20.G3.c029}
 
-{docstring Array.toListRev}
+{zhdocstring Array.toListRev Manual.ZhDocString.Ch19Ch20.G3.c030}
 
-{docstring Array.toListAppend}
+{zhdocstring Array.toListAppend Manual.ZhDocString.Ch19Ch20.G3.c031}
 
-{docstring Array.toVector}
+{zhdocstring Array.toVector Manual.ZhDocString.Ch19Ch20.G3.c032}
 
-{docstring Array.toSubarray}
+{zhdocstring Array.toSubarray Manual.ZhDocString.Ch19Ch20.G3.c033}
 
-{docstring Array.ofSubarray}
+{zhdocstring Array.ofSubarray Manual.ZhDocString.Ch19Ch20.G3.c034}
 
 
-## Modification
+## 修改
 
-{docstring Array.push}
+%%%
+tag := "Lean-__________________--Basic-Types--Arrays--API-Reference--Modification"
+%%%
+{zhdocstring Array.push Manual.ZhDocString.Ch19Ch20.G3.c035}
 
-{docstring Array.pop}
+{zhdocstring Array.pop Manual.ZhDocString.Ch19Ch20.G3.c036}
 
-{docstring Array.popWhile}
+{zhdocstring Array.popWhile Manual.ZhDocString.Ch19Ch20.G3.c037}
 
-{docstring Array.erase}
+{zhdocstring Array.erase Manual.ZhDocString.Ch19Ch20.G3.c038}
 
-{docstring Array.eraseP}
+{zhdocstring Array.eraseP Manual.ZhDocString.Ch19Ch20.G3.c039}
 
-{docstring Array.eraseIdx}
+{zhdocstring Array.eraseIdx Manual.ZhDocString.Ch19Ch20.G3.c040}
 
-{docstring Array.eraseIdx!}
+{zhdocstring Array.eraseIdx! Manual.ZhDocString.Ch19Ch20.G3.c041}
 
-{docstring Array.eraseIdxIfInBounds}
+{zhdocstring Array.eraseIdxIfInBounds Manual.ZhDocString.Ch19Ch20.G3.c042}
 
-{docstring Array.eraseReps}
+{zhdocstring Array.eraseReps Manual.ZhDocString.Ch19Ch20.G3.c043}
 
-{docstring Array.swap}
+{zhdocstring Array.swap Manual.ZhDocString.Ch19Ch20.G3.c044}
 
-{docstring Array.swapIfInBounds}
+{zhdocstring Array.swapIfInBounds Manual.ZhDocString.Ch19Ch20.G3.c045}
 
-{docstring Array.swapAt}
+{zhdocstring Array.swapAt Manual.ZhDocString.Ch19Ch20.G3.c046}
 
-{docstring Array.swapAt!}
+{zhdocstring Array.swapAt! Manual.ZhDocString.Ch19Ch20.G3.c047}
 
-{docstring Array.replace}
+{zhdocstring Array.replace Manual.ZhDocString.Ch19Ch20.G3.c048}
 
-{docstring Array.set}
+{zhdocstring Array.set Manual.ZhDocString.Ch19Ch20.G3.c049}
 
-{docstring Array.set!}
+{zhdocstring Array.set! Manual.ZhDocString.Ch19Ch20.G3.c050}
 
-{docstring Array.setIfInBounds}
+{zhdocstring Array.setIfInBounds Manual.ZhDocString.Ch19Ch20.G3.c051}
 
-{docstring Array.uset}
+{zhdocstring Array.uset Manual.ZhDocString.Ch19Ch20.G3.c052}
 
-{docstring Array.modify}
+{zhdocstring Array.modify Manual.ZhDocString.Ch19Ch20.G3.c053}
 
-{docstring Array.modifyM}
+{zhdocstring Array.modifyM Manual.ZhDocString.Ch19Ch20.G3.c054}
 
-{docstring Array.modifyOp}
+{zhdocstring Array.modifyOp Manual.ZhDocString.Ch19Ch20.G3.c055}
 
-{docstring Array.insertIdx}
+{zhdocstring Array.insertIdx Manual.ZhDocString.Ch19Ch20.G3.c056}
 
-{docstring Array.insertIdx!}
+{zhdocstring Array.insertIdx! Manual.ZhDocString.Ch19Ch20.G3.c057}
 
-{docstring Array.insertIdxIfInBounds}
+{zhdocstring Array.insertIdxIfInBounds Manual.ZhDocString.Ch19Ch20.G3.c058}
 
-{docstring Array.reverse}
+{zhdocstring Array.reverse Manual.ZhDocString.Ch19Ch20.G3.c059}
 
-{docstring Array.take}
+{zhdocstring Array.take Manual.ZhDocString.Ch19Ch20.G3.c060}
 
-{docstring Array.takeWhile}
+{zhdocstring Array.takeWhile Manual.ZhDocString.Ch19Ch20.G3.c061}
 
-{docstring Array.drop}
+{zhdocstring Array.drop Manual.ZhDocString.Ch19Ch20.G3.c062}
 
-{docstring Array.shrink}
+{zhdocstring Array.shrink Manual.ZhDocString.Ch19Ch20.G3.c063}
 
-{docstring Array.flatten}
+{zhdocstring Array.flatten Manual.ZhDocString.Ch19Ch20.G3.c064}
 
-{docstring Array.getEvenElems}
+{zhdocstring Array.getEvenElems Manual.ZhDocString.Ch19Ch20.G3.c065}
 
-## Sorted Arrays
+## 有序数组
 
-{docstring Array.qsort}
+%%%
+tag := "Lean-__________________--Basic-Types--Arrays--API-Reference--Sorted-Arrays"
+%%%
+{zhdocstring Array.qsort Manual.ZhDocString.Ch19Ch20.G3.c066}
 
-{docstring Array.qsortOrd}
+{zhdocstring Array.qsortOrd Manual.ZhDocString.Ch19Ch20.G3.c067}
 
-{docstring Array.insertionSort}
+{zhdocstring Array.insertionSort Manual.ZhDocString.Ch19Ch20.G3.c068}
 
-{docstring Array.binInsert}
+{zhdocstring Array.binInsert Manual.ZhDocString.Ch19Ch20.G3.c069}
 
-{docstring Array.binInsertM}
+{zhdocstring Array.binInsertM Manual.ZhDocString.Ch19Ch20.G3.c070}
 
-{docstring Array.binSearch}
+{zhdocstring Array.binSearch Manual.ZhDocString.Ch19Ch20.G3.c071}
 
-{docstring Array.binSearchContains}
+{zhdocstring Array.binSearchContains Manual.ZhDocString.Ch19Ch20.G3.c072}
 
 
 
-## Iteration
+## 迭代
 
-{docstring Array.iter}
+%%%
+tag := "Lean-__________________--Basic-Types--Arrays--API-Reference--Iteration"
+%%%
+{zhdocstring Array.iter Manual.ZhDocString.Ch19Ch20.G3.c073}
 
-{docstring Array.iterFromIdx}
+{zhdocstring Array.iterFromIdx Manual.ZhDocString.Ch19Ch20.G3.c074}
 
-{docstring Array.iterM}
+{zhdocstring Array.iterM Manual.ZhDocString.Ch19Ch20.G3.c075}
 
-{docstring Array.iterFromIdxM}
+{zhdocstring Array.iterFromIdxM Manual.ZhDocString.Ch19Ch20.G3.c076}
 
-{docstring Array.foldr}
+{zhdocstring Array.foldr Manual.ZhDocString.Ch19Ch20.G3.c077}
 
-{docstring Array.foldrM}
+{zhdocstring Array.foldrM Manual.ZhDocString.Ch19Ch20.G3.c078}
 
-{docstring Array.foldl}
+{zhdocstring Array.foldl Manual.ZhDocString.Ch19Ch20.G3.c079}
 
-{docstring Array.foldlM}
+{zhdocstring Array.foldlM Manual.ZhDocString.Ch19Ch20.G3.c080}
 
-{docstring Array.forM}
+{zhdocstring Array.forM Manual.ZhDocString.Ch19Ch20.G3.c081}
 
-{docstring Array.forRevM}
+{zhdocstring Array.forRevM Manual.ZhDocString.Ch19Ch20.G3.c082}
 
-{docstring Array.firstM}
+{zhdocstring Array.firstM Manual.ZhDocString.Ch19Ch20.G3.c083}
 
-{docstring Array.sum}
+{zhdocstring Array.sum Manual.ZhDocString.Ch19Ch20.G3.c084}
 
-## Transformation
+## 变换
 
-{docstring Array.map}
+%%%
+tag := "Lean-__________________--Basic-Types--Arrays--API-Reference--Transformation"
+%%%
+{zhdocstring Array.map Manual.ZhDocString.Ch19Ch20.G3.c085}
 
-{docstring Array.mapMono}
+{zhdocstring Array.mapMono Manual.ZhDocString.Ch19Ch20.G3.c086}
 
-{docstring Array.mapM}
+{zhdocstring Array.mapM Manual.ZhDocString.Ch19Ch20.G3.c087}
 
-{docstring Array.mapM'}
+{zhdocstring Array.mapM' Manual.ZhDocString.Ch19Ch20.G3.c088}
 
-{docstring Array.mapMonoM}
+{zhdocstring Array.mapMonoM Manual.ZhDocString.Ch19Ch20.G3.c089}
 
-{docstring Array.mapIdx}
+{zhdocstring Array.mapIdx Manual.ZhDocString.Ch19Ch20.G3.c090}
 
-{docstring Array.mapIdxM}
+{zhdocstring Array.mapIdxM Manual.ZhDocString.Ch19Ch20.G3.c091}
 
-{docstring Array.mapFinIdx}
+{zhdocstring Array.mapFinIdx Manual.ZhDocString.Ch19Ch20.G3.c092}
 
-{docstring Array.mapFinIdxM}
+{zhdocstring Array.mapFinIdxM Manual.ZhDocString.Ch19Ch20.G3.c093}
 
-{docstring Array.flatMap}
+{zhdocstring Array.flatMap Manual.ZhDocString.Ch19Ch20.G3.c094}
 
-{docstring Array.flatMapM}
+{zhdocstring Array.flatMapM Manual.ZhDocString.Ch19Ch20.G3.c095}
 
-{docstring Array.zip}
+{zhdocstring Array.zip Manual.ZhDocString.Ch19Ch20.G3.c096}
 
-{docstring Array.zipWith}
+{zhdocstring Array.zipWith Manual.ZhDocString.Ch19Ch20.G3.c097}
 
-{docstring Array.zipWithAll}
+{zhdocstring Array.zipWithAll Manual.ZhDocString.Ch19Ch20.G3.c098}
 
-{docstring Array.zipIdx}
+{zhdocstring Array.zipIdx Manual.ZhDocString.Ch19Ch20.G3.c099}
 
-{docstring Array.unzip}
+{zhdocstring Array.unzip Manual.ZhDocString.Ch19Ch20.G3.c100}
 
 
-## Filtering
+## 过滤
 
-{docstring Array.filter}
+%%%
+tag := "Lean-__________________--Basic-Types--Arrays--API-Reference--Filtering"
+%%%
+{zhdocstring Array.filter Manual.ZhDocString.Ch19Ch20.G3.c101}
 
-{docstring Array.filterM}
+{zhdocstring Array.filterM Manual.ZhDocString.Ch19Ch20.G3.c102}
 
-{docstring Array.filterRevM}
+{zhdocstring Array.filterRevM Manual.ZhDocString.Ch19Ch20.G3.c103}
 
-{docstring Array.filterMap}
+{zhdocstring Array.filterMap Manual.ZhDocString.Ch19Ch20.G3.c104}
 
-{docstring Array.filterMapM}
+{zhdocstring Array.filterMapM Manual.ZhDocString.Ch19Ch20.G3.c105}
 
-{docstring Array.filterSepElems}
+{zhdocstring Array.filterSepElems Manual.ZhDocString.Ch19Ch20.G3.c106}
 
-{docstring Array.filterSepElemsM}
+{zhdocstring Array.filterSepElemsM Manual.ZhDocString.Ch19Ch20.G3.c107}
 
-## Partitioning
+## 分割
 
-{docstring Array.partition}
+%%%
+tag := "Lean-__________________--Basic-Types--Arrays--API-Reference--Partitioning"
+%%%
+{zhdocstring Array.partition Manual.ZhDocString.Ch19Ch20.G3.c108}
 
-{docstring Array.groupByKey}
+{zhdocstring Array.groupByKey Manual.ZhDocString.Ch19Ch20.G3.c109}
 
 
-## Element Predicates
+## 元素判定
 
-{docstring Array.contains}
+%%%
+tag := "Lean-__________________--Basic-Types--Arrays--API-Reference--Element-Predicates"
+%%%
+{zhdocstring Array.contains Manual.ZhDocString.Ch19Ch20.G3.c110}
 
-{docstring Array.elem}
+{zhdocstring Array.elem Manual.ZhDocString.Ch19Ch20.G3.c111}
 
-{docstring Array.find?}
+{zhdocstring Array.find? Manual.ZhDocString.Ch19Ch20.G3.c112}
 
-{docstring Array.findRev?}
+{zhdocstring Array.findRev? Manual.ZhDocString.Ch19Ch20.G3.c113}
 
-{docstring Array.findIdx}
+{zhdocstring Array.findIdx Manual.ZhDocString.Ch19Ch20.G3.c114}
 
-{docstring Array.findIdx?}
+{zhdocstring Array.findIdx? Manual.ZhDocString.Ch19Ch20.G3.c115}
 
-{docstring Array.findIdxM?}
+{zhdocstring Array.findIdxM? Manual.ZhDocString.Ch19Ch20.G3.c116}
 
-{docstring Array.findFinIdx?}
+{zhdocstring Array.findFinIdx? Manual.ZhDocString.Ch19Ch20.G3.c117}
 
-{docstring Array.findM?}
+{zhdocstring Array.findM? Manual.ZhDocString.Ch19Ch20.G3.c118}
 
-{docstring Array.findRevM?}
+{zhdocstring Array.findRevM? Manual.ZhDocString.Ch19Ch20.G3.c119}
 
-{docstring Array.findSome?}
+{zhdocstring Array.findSome? Manual.ZhDocString.Ch19Ch20.G3.c120}
 
-{docstring Array.findSome!}
+{zhdocstring Array.findSome! Manual.ZhDocString.Ch19Ch20.G3.c121}
 
-{docstring Array.findSomeM?}
+{zhdocstring Array.findSomeM? Manual.ZhDocString.Ch19Ch20.G3.c122}
 
-{docstring Array.findSomeRev?}
+{zhdocstring Array.findSomeRev? Manual.ZhDocString.Ch19Ch20.G3.c123}
 
-{docstring Array.findSomeRevM?}
+{zhdocstring Array.findSomeRevM? Manual.ZhDocString.Ch19Ch20.G3.c124}
 
-{docstring Array.all}
+{zhdocstring Array.all Manual.ZhDocString.Ch19Ch20.G3.c125}
 
-{docstring Array.allM}
+{zhdocstring Array.allM Manual.ZhDocString.Ch19Ch20.G3.c126}
 
-{docstring Array.any}
+{zhdocstring Array.any Manual.ZhDocString.Ch19Ch20.G3.c127}
 
-{docstring Array.anyM}
+{zhdocstring Array.anyM Manual.ZhDocString.Ch19Ch20.G3.c128}
 
-{docstring Array.allDiff}
+{zhdocstring Array.allDiff Manual.ZhDocString.Ch19Ch20.G3.c129}
 
-{docstring Array.isEqv}
+{zhdocstring Array.isEqv Manual.ZhDocString.Ch19Ch20.G3.c130}
 
-## Comparisons
+## 比较
 
-{docstring Array.isPrefixOf}
+%%%
+tag := "Lean-__________________--Basic-Types--Arrays--API-Reference--Comparisons"
+%%%
+{zhdocstring Array.isPrefixOf Manual.ZhDocString.Ch19Ch20.G3.c131}
 
-{docstring Array.lex}
+{zhdocstring Array.lex Manual.ZhDocString.Ch19Ch20.G3.c132}
 
-## Termination Helpers
+## 终止辅助
 
-{docstring Array.attach}
+%%%
+tag := "Lean-__________________--Basic-Types--Arrays--API-Reference--Termination-Helpers"
+%%%
+{zhdocstring Array.attach Manual.ZhDocString.Ch19Ch20.G3.c133}
 
-{docstring Array.attachWith}
+{zhdocstring Array.attachWith Manual.ZhDocString.Ch19Ch20.G3.c134}
 
-{docstring Array.unattach}
+{zhdocstring Array.unattach Manual.ZhDocString.Ch19Ch20.G3.c135}
 
-{docstring Array.pmap}
+{zhdocstring Array.pmap Manual.ZhDocString.Ch19Ch20.G3.c136}
 
 {include 1 Manual.BasicTypes.Array.Subarray}
 

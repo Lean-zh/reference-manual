@@ -5,6 +5,7 @@ Author: David Thrane Christiansen
 -/
 
 import VersoManual
+import Manual.ZhDocString.Ch19Ch20.G7
 
 import Manual.Meta
 import Manual.BasicTypes.UInt.Comparisons
@@ -15,72 +16,85 @@ open Manual.FFIDocType
 open Verso.Genre Manual
 open Verso.Genre.Manual.InlineLean
 
-#doc (Manual) "Fixed-Precision Integers" =>
+#doc (Manual) "定精度整数" =>
 %%%
 tag := "fixed-ints"
+file := "Fixed-Precision-Integers"
 %%%
 
-Lean's standard library includes the usual assortment of fixed-width integer types.
-From the perspective of formalization and proofs, these types are wrappers around bitvectors of the appropriate size; the wrappers ensure that the correct implementations of e.g. arithmetic operations are applied.
-In compiled code, they are represented efficiently: the compiler has special support for them, as it does for other fundamental types.
+Lean 的标准库包含通常的各种固定宽度整数类型。
+从形式化和证明的角度来看，这些类型是适当大小的位向量的包装器；这些包装器确保应用正确的算术操作等实现。
+在编译后的代码中，它们的表示非常高效：编译器对它们有特殊的支持，就像对其他基础类型一样。
 
-# Logical Model
+# 逻辑模型
 
-Fixed-width integers may be unsigned or signed.
-Furthermore, they are available in five sizes: 8, 16, 32, and 64 bits, along with the current architecture's word size.
-In their logical models, the unsigned integers are structures that wrap a {name}`BitVec` of the appropriate width.
-Signed integers wrap the corresponding unsigned integers, and use a twos-complement representation.
+%%%
+tag := "Lean-__________________--Basic-Types--Fixed-Precision-Integers--Logical-Model"
+%%%
+固定宽度整数可以是无符号的或有符号的。
+此外，它们有五种大小：8 位、16 位、32 位和 64 位，以及当前架构的字长。
+在它们的逻辑模型中，无符号整数是包装了适当宽度的 {name}`BitVec` 的结构体。
+有符号整数包装了相应的无符号整数，并使用二进制补码表示。
 
-## Unsigned
+## 无符号
 
-{docstring USize}
+%%%
+tag := "Lean-__________________--Basic-Types--Fixed-Precision-Integers--Logical-Model--Unsigned"
+%%%
+{zhdocstring USize Manual.ZhDocString.Ch19Ch20.G7.c001}
 
-{docstring UInt8}
+{zhdocstring UInt8 Manual.ZhDocString.Ch19Ch20.G7.c002}
 
-{docstring UInt16}
+{zhdocstring UInt16 Manual.ZhDocString.Ch19Ch20.G7.c003}
 
-{docstring UInt32}
+{zhdocstring UInt32 Manual.ZhDocString.Ch19Ch20.G7.c004}
 
-{docstring UInt64}
+{zhdocstring UInt64 Manual.ZhDocString.Ch19Ch20.G7.c005}
 
-## Signed
+## 有符号
 
-{docstring ISize}
+%%%
+tag := "Lean-__________________--Basic-Types--Fixed-Precision-Integers--Logical-Model--Signed"
+%%%
+{zhdocstring ISize Manual.ZhDocString.Ch19Ch20.G7.c006}
 
-{docstring Int8}
+{zhdocstring Int8 Manual.ZhDocString.Ch19Ch20.G7.c007}
 
-{docstring Int16}
+{zhdocstring Int16 Manual.ZhDocString.Ch19Ch20.G7.c008}
 
-{docstring Int32}
+{zhdocstring Int32 Manual.ZhDocString.Ch19Ch20.G7.c009}
 
-{docstring Int64}
+{zhdocstring Int64 Manual.ZhDocString.Ch19Ch20.G7.c010}
 
-# Run-Time Representation
+# 运行时表示
 %%%
 tag := "fixed-int-runtime"
 %%%
 
-In compiled code in contexts that require {tech}[boxed] representations, fixed-width integer types that fit in one less bit than the platform's pointer size are always represented without additional allocations or indirections.
-This always includes {lean}`Int8`, {lean}`UInt8`, {lean}`Int16`, and {lean}`UInt16`.
-On 64-bit architectures, {lean}`Int32` and {lean}`UInt32` are also represented without pointers.
-On 32-bit architectures, {lean}`Int32` and {lean}`UInt32` require a pointer to an object on the heap.
-{lean}`ISize`, {lean}`USize`, {lean}`Int64` and {lean}`UInt64` may require pointers on all architectures.
+在编译后的代码中，即使上下文要求采用{tech (key := "boxed")}[装箱]表示，只要某种固定宽度整数类型能装入比平台指针少一位的空间，就始终无需额外分配或间接寻址。
+这始终包含 {lean}`Int8`、{lean}`UInt8`、{lean}`Int16` 和 {lean}`UInt16`。
+在 64 位架构上，{lean}`Int32` 和 {lean}`UInt32` 也可以在没有指针的情况下表示。
+在 32 位架构上，{lean}`Int32` 和 {lean}`UInt32` 需要一个指向堆上对象的指针。
+{lean}`ISize`、{lean}`USize`、{lean}`Int64` 和 {lean}`UInt64` 在所有架构上都可能需要指针。
 
-Even though some fixed-with integer types require boxing in general, the compiler is able to represent them without boxing or pointer indirections in code paths that use only a specific fixed-width type rather than being polymorphic, potentially after a specialization pass.
-This applies in most practical situations where these types are used: their values are represented using the corresponding unsigned fixed-width C type when a constructor parameter, function parameter, function return value, or intermediate result is known to be a fixed-width integer type.
-The Lean run-time system includes primitives for storing fixed-width integers in constructors of {tech}[inductive types], and the primitive operations are defined on the corresponding C types, so boxing tends to happen at the “edges” of integer calculations rather than for each intermediate result.
-In contexts where other types might occur, such as the contents of polymorphic containers like {name}`Array`, these types are boxed, even if an array is statically known to contain only a single fixed-width integer type.{margin}[The monomorphic array type {lean}`ByteArray` avoids boxing for arrays of {lean}`UInt8`.]
-Lean does not specialize the representation of inductive types or arrays.
-Inspecting a function's type in Lean is not sufficient to determine how fixed-width integer values will be represented, because boxed values are not eagerly unboxed—a function that projects an {name}`Int64` from an array returns a boxed integer value.
+尽管通常情况下一些固定宽度整数类型需要装箱，但编译器能够在仅使用特定固定宽度类型而不是多态的代码路径中，（可能在特化阶段之后）在没有装箱或指针间接寻址的情况下表示它们。
+这适用于使用这些类型的大多数实际情况：当已知构造子参数、函数参数、函数返回值或中间结果是固定宽度整数类型时，它们的值将使用相应的无符号固定宽度 C 类型来表示。
+Lean 运行时系统包含了在{tech (key := "inductive types")}[归纳类型]的构造子中存储固定宽度整数的原语，并且基本操作是在相应的 C 类型上定义的，因此装箱往往发生在整数计算的“边缘”，而不是针对每个中间结果。
+在可能出现其他类型的上下文中，例如像 {name}`Array` 这样的多态容器的内容，这些类型会被装箱，即使静态地知道一个数组只包含单一的固定宽度整数类型。{margin}[单态数组类型 {lean}`ByteArray` 避免了对 {lean}`UInt8` 数组的装箱。]
+Lean 不特化归纳类型或数组的表示。
+在 Lean 中检查函数的类型不足以确定固定宽度整数值将如何表示，因为装箱的值不会被急切地取消装箱——例如一个从数组中投影出 {name}`Int64` 的函数返回的是一个装箱的整数值。
 
-# Syntax
+# 语法
 
-All the fixed-width integer types have {name}`OfNat` instances, which allow numerals to be used as literals, both in expression and in pattern contexts.
-The signed types additionally have {lean}`Neg` instances, allowing negation to be applied.
+%%%
+tag := "Lean-__________________--Basic-Types--Fixed-Precision-Integers--Syntax"
+%%%
+所有的固定宽度整数类型都有 {name}`OfNat` 实例，这允许在表达式和模式上下文中将数字用作字面量。
+有符号类型另外还有 {lean}`Neg` 实例，允许应用求负操作。
 
-:::example "Fixed-Width Literals"
-Lean allows both decimal and hexadecimal literals to be used for types with {name}`OfNat` instances.
-In this example, literal notation is used to define masks.
+:::example "固定宽度字面量"
+对于具有 {name}`OfNat` 实例的类型，Lean 允许使用十进制和十六进制字面量。
+在此示例中，字面量表示法用于定义掩码。
 
 ```lean
 structure Permissions where
@@ -99,7 +113,7 @@ def Permissions.decode (i : UInt8) : Permissions :=
 ```
 
 ```lean -show
--- Check the above
+-- 检查以上内容
 theorem Permissions.decode_encode (p : Permissions) : p = .decode (p.encode) := by
   let ⟨r, w, x⟩ := p
   cases r <;> cases w <;> cases x <;>
@@ -107,11 +121,11 @@ theorem Permissions.decode_encode (p : Permissions) : p = .decode (p.encode) := 
 ```
 :::
 
-Literals that overflow their types' precision are interpreted modulus the precision.
-Signed types, are interpreted according to the underlying twos-complement representation.
+溢出其类型精度的字面量将被解释为对精度取模。
+对于有符号类型，则按底层的二进制补码表示来解释。
 
-:::example "Overflowing Fixed-Width Literals"
-The following statements are all true:
+:::example "溢出固定宽度字面量"
+以下声明均为真：
 ```lean
 example : (255 : UInt8) = 255 := by rfl
 example : (256 : UInt8) = 0   := by rfl
@@ -123,376 +137,412 @@ example : (0xff : Int8) = -1   := by rfl
 ```
 :::
 
-# API Reference
+# API 参考
 
-## Sizes
+%%%
+tag := "Lean-__________________--Basic-Types--Fixed-Precision-Integers--API-Reference"
+%%%
+## 大小
 
-Each fixed-width integer has a _size_, which is the number of distinct values that can be represented by the type.
-This is not equivalent to C's `sizeof` operator, which instead determines how many bytes the type occupies.
+%%%
+tag := "Lean-__________________--Basic-Types--Fixed-Precision-Integers--API-Reference--Sizes"
+%%%
+每个固定宽度整数都有一个_大小_，这是该类型可以表示的不同值的数量。
+这不等同于 C 语言的 `sizeof` 运算符，后者是用来确定该类型占用多少字节的。
 
-{docstring USize.size}
+{zhdocstring USize.size Manual.ZhDocString.Ch19Ch20.G7.c011}
 
-{docstring ISize.size}
+{zhdocstring ISize.size Manual.ZhDocString.Ch19Ch20.G7.c012}
 
-{docstring UInt8.size}
+{zhdocstring UInt8.size Manual.ZhDocString.Ch19Ch20.G7.c013}
 
-{docstring Int8.size}
+{zhdocstring Int8.size Manual.ZhDocString.Ch19Ch20.G7.c014}
 
-{docstring UInt16.size}
+{zhdocstring UInt16.size Manual.ZhDocString.Ch19Ch20.G7.c015}
 
-{docstring Int16.size}
+{zhdocstring Int16.size Manual.ZhDocString.Ch19Ch20.G7.c016}
 
-{docstring UInt32.size}
+{zhdocstring UInt32.size Manual.ZhDocString.Ch19Ch20.G7.c017}
 
-{docstring Int32.size}
+{zhdocstring Int32.size Manual.ZhDocString.Ch19Ch20.G7.c018}
 
-{docstring UInt64.size}
+{zhdocstring UInt64.size Manual.ZhDocString.Ch19Ch20.G7.c019}
 
-{docstring Int64.size}
+{zhdocstring Int64.size Manual.ZhDocString.Ch19Ch20.G7.c020}
 
-## Ranges
+## 范围
 
-{docstring ISize.minValue}
+%%%
+tag := "Lean-__________________--Basic-Types--Fixed-Precision-Integers--API-Reference--Ranges"
+%%%
+{zhdocstring ISize.minValue Manual.ZhDocString.Ch19Ch20.G7.c021}
 
-{docstring ISize.maxValue}
+{zhdocstring ISize.maxValue Manual.ZhDocString.Ch19Ch20.G7.c022}
 
-{docstring Int8.minValue}
+{zhdocstring Int8.minValue Manual.ZhDocString.Ch19Ch20.G7.c023}
 
-{docstring Int8.maxValue}
+{zhdocstring Int8.maxValue Manual.ZhDocString.Ch19Ch20.G7.c024}
 
-{docstring Int16.minValue}
+{zhdocstring Int16.minValue Manual.ZhDocString.Ch19Ch20.G7.c025}
 
-{docstring Int16.maxValue}
+{zhdocstring Int16.maxValue Manual.ZhDocString.Ch19Ch20.G7.c026}
 
-{docstring Int32.minValue}
+{zhdocstring Int32.minValue Manual.ZhDocString.Ch19Ch20.G7.c027}
 
-{docstring Int32.maxValue}
+{zhdocstring Int32.maxValue Manual.ZhDocString.Ch19Ch20.G7.c028}
 
-{docstring Int64.minValue}
+{zhdocstring Int64.minValue Manual.ZhDocString.Ch19Ch20.G7.c029}
 
-{docstring Int64.maxValue}
+{zhdocstring Int64.maxValue Manual.ZhDocString.Ch19Ch20.G7.c030}
 
-## Conversions
+## 转换
 
-### To and From `Int`
+%%%
+tag := "Lean-__________________--Basic-Types--Fixed-Precision-Integers--API-Reference--Conversions"
+%%%
+### 到/从 `Int` 转换
 
-{docstring ISize.toInt}
+%%%
+tag := "Lean-__________________--Basic-Types--Fixed-Precision-Integers--API-Reference--Conversions--To-and-From--Int"
+%%%
+{zhdocstring ISize.toInt Manual.ZhDocString.Ch19Ch20.G7.c031}
 
-{docstring Int8.toInt}
+{zhdocstring Int8.toInt Manual.ZhDocString.Ch19Ch20.G7.c032}
 
-{docstring Int16.toInt}
+{zhdocstring Int16.toInt Manual.ZhDocString.Ch19Ch20.G7.c033}
 
-{docstring Int32.toInt}
+{zhdocstring Int32.toInt Manual.ZhDocString.Ch19Ch20.G7.c034}
 
-{docstring Int64.toInt}
+{zhdocstring Int64.toInt Manual.ZhDocString.Ch19Ch20.G7.c035}
 
 
-{docstring ISize.ofInt}
+{zhdocstring ISize.ofInt Manual.ZhDocString.Ch19Ch20.G7.c036}
 
-{docstring Int8.ofInt}
+{zhdocstring Int8.ofInt Manual.ZhDocString.Ch19Ch20.G7.c037}
 
-{docstring Int16.ofInt}
+{zhdocstring Int16.ofInt Manual.ZhDocString.Ch19Ch20.G7.c038}
 
-{docstring Int32.ofInt}
+{zhdocstring Int32.ofInt Manual.ZhDocString.Ch19Ch20.G7.c039}
 
-{docstring Int64.ofInt}
+{zhdocstring Int64.ofInt Manual.ZhDocString.Ch19Ch20.G7.c040}
 
 
-{docstring ISize.ofIntClamp}
+{zhdocstring ISize.ofIntClamp Manual.ZhDocString.Ch19Ch20.G7.c041}
 
-{docstring Int8.ofIntClamp}
+{zhdocstring Int8.ofIntClamp Manual.ZhDocString.Ch19Ch20.G7.c042}
 
-{docstring Int16.ofIntClamp}
+{zhdocstring Int16.ofIntClamp Manual.ZhDocString.Ch19Ch20.G7.c043}
 
-{docstring Int32.ofIntClamp}
+{zhdocstring Int32.ofIntClamp Manual.ZhDocString.Ch19Ch20.G7.c044}
 
-{docstring Int64.ofIntClamp}
+{zhdocstring Int64.ofIntClamp Manual.ZhDocString.Ch19Ch20.G7.c045}
 
 
-{docstring ISize.ofIntLE}
+{zhdocstring ISize.ofIntLE Manual.ZhDocString.Ch19Ch20.G7.c046}
 
-{docstring Int8.ofIntLE}
+{zhdocstring Int8.ofIntLE Manual.ZhDocString.Ch19Ch20.G7.c047}
 
-{docstring Int16.ofIntLE}
+{zhdocstring Int16.ofIntLE Manual.ZhDocString.Ch19Ch20.G7.c048}
 
-{docstring Int32.ofIntLE}
+{zhdocstring Int32.ofIntLE Manual.ZhDocString.Ch19Ch20.G7.c049}
 
-{docstring Int64.ofIntLE}
+{zhdocstring Int64.ofIntLE Manual.ZhDocString.Ch19Ch20.G7.c050}
 
 
-### To and From `Nat`
+### 到/从 `Nat` 转换
 
-{docstring USize.ofNat}
+%%%
+tag := "Lean-__________________--Basic-Types--Fixed-Precision-Integers--API-Reference--Conversions--To-and-From--Nat"
+%%%
+{zhdocstring USize.ofNat Manual.ZhDocString.Ch19Ch20.G7.c051}
 
-{docstring ISize.ofNat}
+{zhdocstring ISize.ofNat Manual.ZhDocString.Ch19Ch20.G7.c052}
 
-{docstring UInt8.ofNat}
+{zhdocstring UInt8.ofNat Manual.ZhDocString.Ch19Ch20.G7.c053}
 
-{docstring Int8.ofNat}
+{zhdocstring Int8.ofNat Manual.ZhDocString.Ch19Ch20.G7.c054}
 
-{docstring UInt16.ofNat}
+{zhdocstring UInt16.ofNat Manual.ZhDocString.Ch19Ch20.G7.c055}
 
-{docstring Int16.ofNat}
+{zhdocstring Int16.ofNat Manual.ZhDocString.Ch19Ch20.G7.c056}
 
-{docstring UInt32.ofNat}
+{zhdocstring UInt32.ofNat Manual.ZhDocString.Ch19Ch20.G7.c057}
 
-{docstring Int32.ofNat}
+{zhdocstring Int32.ofNat Manual.ZhDocString.Ch19Ch20.G7.c058}
 
-{docstring UInt64.ofNat}
+{zhdocstring UInt64.ofNat Manual.ZhDocString.Ch19Ch20.G7.c059}
 
-{docstring Int64.ofNat}
+{zhdocstring Int64.ofNat Manual.ZhDocString.Ch19Ch20.G7.c060}
 
-{docstring USize.ofNat32}
+{zhdocstring USize.ofNat32 Manual.ZhDocString.Ch19Ch20.G7.c061}
 
-{docstring USize.ofNatLT}
+{zhdocstring USize.ofNatLT Manual.ZhDocString.Ch19Ch20.G7.c062}
 
-{docstring UInt8.ofNatLT}
+{zhdocstring UInt8.ofNatLT Manual.ZhDocString.Ch19Ch20.G7.c063}
 
-{docstring UInt16.ofNatLT}
+{zhdocstring UInt16.ofNatLT Manual.ZhDocString.Ch19Ch20.G7.c064}
 
-{docstring UInt32.ofNatLT}
+{zhdocstring UInt32.ofNatLT Manual.ZhDocString.Ch19Ch20.G7.c065}
 
-{docstring UInt64.ofNatLT}
+{zhdocstring UInt64.ofNatLT Manual.ZhDocString.Ch19Ch20.G7.c066}
 
-{docstring USize.ofNatClamp}
+{zhdocstring USize.ofNatClamp Manual.ZhDocString.Ch19Ch20.G7.c067}
 
-{docstring UInt8.ofNatClamp}
+{zhdocstring UInt8.ofNatClamp Manual.ZhDocString.Ch19Ch20.G7.c068}
 
-{docstring UInt16.ofNatClamp}
+{zhdocstring UInt16.ofNatClamp Manual.ZhDocString.Ch19Ch20.G7.c069}
 
-{docstring UInt32.ofNatClamp}
+{zhdocstring UInt32.ofNatClamp Manual.ZhDocString.Ch19Ch20.G7.c070}
 
-{docstring UInt64.ofNatClamp}
+{zhdocstring UInt64.ofNatClamp Manual.ZhDocString.Ch19Ch20.G7.c071}
 
-{docstring USize.toNat}
+{zhdocstring USize.toNat Manual.ZhDocString.Ch19Ch20.G7.c072}
 
-{docstring ISize.toNatClampNeg}
+{zhdocstring ISize.toNatClampNeg Manual.ZhDocString.Ch19Ch20.G7.c073}
 
-{docstring UInt8.toNat}
+{zhdocstring UInt8.toNat Manual.ZhDocString.Ch19Ch20.G7.c074}
 
-{docstring Int8.toNatClampNeg}
+{zhdocstring Int8.toNatClampNeg Manual.ZhDocString.Ch19Ch20.G7.c075}
 
-{docstring UInt16.toNat}
+{zhdocstring UInt16.toNat Manual.ZhDocString.Ch19Ch20.G7.c076}
 
-{docstring Int16.toNatClampNeg}
+{zhdocstring Int16.toNatClampNeg Manual.ZhDocString.Ch19Ch20.G7.c077}
 
-{docstring UInt32.toNat}
+{zhdocstring UInt32.toNat Manual.ZhDocString.Ch19Ch20.G7.c078}
 
-{docstring Int32.toNatClampNeg}
+{zhdocstring Int32.toNatClampNeg Manual.ZhDocString.Ch19Ch20.G7.c079}
 
-{docstring UInt64.toNat}
+{zhdocstring UInt64.toNat Manual.ZhDocString.Ch19Ch20.G7.c080}
 
-{docstring Int64.toNatClampNeg}
+{zhdocstring Int64.toNatClampNeg Manual.ZhDocString.Ch19Ch20.G7.c081}
 
 
-### To Other Fixed-Width Integers
+### 到其他固定宽度整数转换
 
-{docstring USize.toUInt8}
+%%%
+tag := "Lean-__________________--Basic-Types--Fixed-Precision-Integers--API-Reference--Conversions--To-Other-Fixed-Width-Integers"
+%%%
+{zhdocstring USize.toUInt8 Manual.ZhDocString.Ch19Ch20.G7.c082}
 
-{docstring USize.toUInt16}
+{zhdocstring USize.toUInt16 Manual.ZhDocString.Ch19Ch20.G7.c083}
 
-{docstring USize.toUInt32}
+{zhdocstring USize.toUInt32 Manual.ZhDocString.Ch19Ch20.G7.c084}
 
-{docstring USize.toUInt64}
+{zhdocstring USize.toUInt64 Manual.ZhDocString.Ch19Ch20.G7.c085}
 
-{docstring USize.toISize}
+{zhdocstring USize.toISize Manual.ZhDocString.Ch19Ch20.G7.c086}
 
 
-{docstring UInt8.toInt8}
+{zhdocstring UInt8.toInt8 Manual.ZhDocString.Ch19Ch20.G7.c087}
 
-{docstring UInt8.toUInt16}
+{zhdocstring UInt8.toUInt16 Manual.ZhDocString.Ch19Ch20.G7.c088}
 
-{docstring UInt8.toUInt32}
+{zhdocstring UInt8.toUInt32 Manual.ZhDocString.Ch19Ch20.G7.c089}
 
-{docstring UInt8.toUInt64}
+{zhdocstring UInt8.toUInt64 Manual.ZhDocString.Ch19Ch20.G7.c090}
 
-{docstring UInt8.toUSize}
+{zhdocstring UInt8.toUSize Manual.ZhDocString.Ch19Ch20.G7.c091}
 
 
-{docstring UInt16.toUInt8}
+{zhdocstring UInt16.toUInt8 Manual.ZhDocString.Ch19Ch20.G7.c092}
 
-{docstring UInt16.toInt16}
+{zhdocstring UInt16.toInt16 Manual.ZhDocString.Ch19Ch20.G7.c093}
 
-{docstring UInt16.toUInt32}
+{zhdocstring UInt16.toUInt32 Manual.ZhDocString.Ch19Ch20.G7.c094}
 
-{docstring UInt16.toUInt64}
+{zhdocstring UInt16.toUInt64 Manual.ZhDocString.Ch19Ch20.G7.c095}
 
-{docstring UInt16.toUSize}
+{zhdocstring UInt16.toUSize Manual.ZhDocString.Ch19Ch20.G7.c096}
 
 
-{docstring UInt32.toUInt8}
+{zhdocstring UInt32.toUInt8 Manual.ZhDocString.Ch19Ch20.G7.c097}
 
-{docstring UInt32.toUInt16}
+{zhdocstring UInt32.toUInt16 Manual.ZhDocString.Ch19Ch20.G7.c098}
 
-{docstring UInt32.toInt32}
+{zhdocstring UInt32.toInt32 Manual.ZhDocString.Ch19Ch20.G7.c099}
 
-{docstring UInt32.toUInt64}
+{zhdocstring UInt32.toUInt64 Manual.ZhDocString.Ch19Ch20.G7.c100}
 
-{docstring UInt32.toUSize}
+{zhdocstring UInt32.toUSize Manual.ZhDocString.Ch19Ch20.G7.c101}
 
 
-{docstring UInt64.toUInt8}
+{zhdocstring UInt64.toUInt8 Manual.ZhDocString.Ch19Ch20.G7.c102}
 
-{docstring UInt64.toUInt16}
+{zhdocstring UInt64.toUInt16 Manual.ZhDocString.Ch19Ch20.G7.c103}
 
-{docstring UInt64.toUInt32}
+{zhdocstring UInt64.toUInt32 Manual.ZhDocString.Ch19Ch20.G7.c104}
 
-{docstring UInt64.toInt64}
+{zhdocstring UInt64.toInt64 Manual.ZhDocString.Ch19Ch20.G7.c105}
 
-{docstring UInt64.toUSize}
+{zhdocstring UInt64.toUSize Manual.ZhDocString.Ch19Ch20.G7.c106}
 
 
-{docstring ISize.toInt8}
+{zhdocstring ISize.toInt8 Manual.ZhDocString.Ch19Ch20.G7.c107}
 
-{docstring ISize.toInt16}
+{zhdocstring ISize.toInt16 Manual.ZhDocString.Ch19Ch20.G7.c108}
 
-{docstring ISize.toInt32}
+{zhdocstring ISize.toInt32 Manual.ZhDocString.Ch19Ch20.G7.c109}
 
-{docstring ISize.toInt64}
+{zhdocstring ISize.toInt64 Manual.ZhDocString.Ch19Ch20.G7.c110}
 
 
-{docstring Int8.toInt16}
+{zhdocstring Int8.toInt16 Manual.ZhDocString.Ch19Ch20.G7.c111}
 
-{docstring Int8.toInt32}
+{zhdocstring Int8.toInt32 Manual.ZhDocString.Ch19Ch20.G7.c112}
 
-{docstring Int8.toInt64}
+{zhdocstring Int8.toInt64 Manual.ZhDocString.Ch19Ch20.G7.c113}
 
-{docstring Int8.toISize}
+{zhdocstring Int8.toISize Manual.ZhDocString.Ch19Ch20.G7.c114}
 
 
-{docstring Int16.toInt8}
+{zhdocstring Int16.toInt8 Manual.ZhDocString.Ch19Ch20.G7.c115}
 
-{docstring Int16.toInt32}
+{zhdocstring Int16.toInt32 Manual.ZhDocString.Ch19Ch20.G7.c116}
 
-{docstring Int16.toInt64}
+{zhdocstring Int16.toInt64 Manual.ZhDocString.Ch19Ch20.G7.c117}
 
-{docstring Int16.toISize}
+{zhdocstring Int16.toISize Manual.ZhDocString.Ch19Ch20.G7.c118}
 
 
-{docstring Int32.toInt8}
+{zhdocstring Int32.toInt8 Manual.ZhDocString.Ch19Ch20.G7.c119}
 
-{docstring Int32.toInt16}
+{zhdocstring Int32.toInt16 Manual.ZhDocString.Ch19Ch20.G7.c120}
 
-{docstring Int32.toInt64}
+{zhdocstring Int32.toInt64 Manual.ZhDocString.Ch19Ch20.G7.c121}
 
-{docstring Int32.toISize}
+{zhdocstring Int32.toISize Manual.ZhDocString.Ch19Ch20.G7.c122}
 
 
-{docstring Int64.toInt8}
+{zhdocstring Int64.toInt8 Manual.ZhDocString.Ch19Ch20.G7.c123}
 
-{docstring Int64.toInt16}
+{zhdocstring Int64.toInt16 Manual.ZhDocString.Ch19Ch20.G7.c124}
 
-{docstring Int64.toInt32}
+{zhdocstring Int64.toInt32 Manual.ZhDocString.Ch19Ch20.G7.c125}
 
-{docstring Int64.toISize}
+{zhdocstring Int64.toISize Manual.ZhDocString.Ch19Ch20.G7.c126}
 
 
 
-### To Floating-Point Numbers
+### 到浮点数转换
 
-{docstring ISize.toFloat}
+%%%
+tag := "Lean-__________________--Basic-Types--Fixed-Precision-Integers--API-Reference--Conversions--To-Floating-Point-Numbers"
+%%%
+{zhdocstring ISize.toFloat Manual.ZhDocString.Ch19Ch20.G7.c127}
 
-{docstring ISize.toFloat32}
+{zhdocstring ISize.toFloat32 Manual.ZhDocString.Ch19Ch20.G7.c128}
 
-{docstring Int8.toFloat}
+{zhdocstring Int8.toFloat Manual.ZhDocString.Ch19Ch20.G7.c129}
 
-{docstring Int8.toFloat32}
+{zhdocstring Int8.toFloat32 Manual.ZhDocString.Ch19Ch20.G7.c130}
 
-{docstring Int16.toFloat}
+{zhdocstring Int16.toFloat Manual.ZhDocString.Ch19Ch20.G7.c131}
 
-{docstring Int16.toFloat32}
+{zhdocstring Int16.toFloat32 Manual.ZhDocString.Ch19Ch20.G7.c132}
 
-{docstring Int32.toFloat}
+{zhdocstring Int32.toFloat Manual.ZhDocString.Ch19Ch20.G7.c133}
 
-{docstring Int32.toFloat32}
+{zhdocstring Int32.toFloat32 Manual.ZhDocString.Ch19Ch20.G7.c134}
 
-{docstring Int64.toFloat}
+{zhdocstring Int64.toFloat Manual.ZhDocString.Ch19Ch20.G7.c135}
 
-{docstring Int64.toFloat32}
+{zhdocstring Int64.toFloat32 Manual.ZhDocString.Ch19Ch20.G7.c136}
 
-{docstring USize.toFloat}
+{zhdocstring USize.toFloat Manual.ZhDocString.Ch19Ch20.G7.c137}
 
-{docstring USize.toFloat32}
+{zhdocstring USize.toFloat32 Manual.ZhDocString.Ch19Ch20.G7.c138}
 
-{docstring UInt8.toFloat}
+{zhdocstring UInt8.toFloat Manual.ZhDocString.Ch19Ch20.G7.c139}
 
-{docstring UInt8.toFloat32}
+{zhdocstring UInt8.toFloat32 Manual.ZhDocString.Ch19Ch20.G7.c140}
 
-{docstring UInt16.toFloat}
+{zhdocstring UInt16.toFloat Manual.ZhDocString.Ch19Ch20.G7.c141}
 
-{docstring UInt16.toFloat32}
+{zhdocstring UInt16.toFloat32 Manual.ZhDocString.Ch19Ch20.G7.c142}
 
-{docstring UInt32.toFloat}
+{zhdocstring UInt32.toFloat Manual.ZhDocString.Ch19Ch20.G7.c143}
 
-{docstring UInt32.toFloat32}
+{zhdocstring UInt32.toFloat32 Manual.ZhDocString.Ch19Ch20.G7.c144}
 
-{docstring UInt64.toFloat}
+{zhdocstring UInt64.toFloat Manual.ZhDocString.Ch19Ch20.G7.c145}
 
-{docstring UInt64.toFloat32}
+{zhdocstring UInt64.toFloat32 Manual.ZhDocString.Ch19Ch20.G7.c146}
 
-### To and From Bitvectors
+### 到/从位向量转换
 
-{docstring ISize.toBitVec}
+%%%
+tag := "Lean-__________________--Basic-Types--Fixed-Precision-Integers--API-Reference--Conversions--To-and-From-Bitvectors"
+%%%
+{zhdocstring ISize.toBitVec Manual.ZhDocString.Ch19Ch20.G7.c147}
 
-{docstring ISize.ofBitVec}
+{zhdocstring ISize.ofBitVec Manual.ZhDocString.Ch19Ch20.G7.c148}
 
-{docstring Int8.toBitVec}
+{zhdocstring Int8.toBitVec Manual.ZhDocString.Ch19Ch20.G7.c149}
 
-{docstring Int8.ofBitVec}
+{zhdocstring Int8.ofBitVec Manual.ZhDocString.Ch19Ch20.G7.c150}
 
-{docstring Int16.toBitVec}
+{zhdocstring Int16.toBitVec Manual.ZhDocString.Ch19Ch20.G7.c151}
 
-{docstring Int16.ofBitVec}
+{zhdocstring Int16.ofBitVec Manual.ZhDocString.Ch19Ch20.G7.c152}
 
-{docstring Int32.toBitVec}
+{zhdocstring Int32.toBitVec Manual.ZhDocString.Ch19Ch20.G7.c153}
 
-{docstring Int32.ofBitVec}
+{zhdocstring Int32.ofBitVec Manual.ZhDocString.Ch19Ch20.G7.c154}
 
-{docstring Int64.toBitVec}
+{zhdocstring Int64.toBitVec Manual.ZhDocString.Ch19Ch20.G7.c155}
 
-{docstring Int64.ofBitVec}
+{zhdocstring Int64.ofBitVec Manual.ZhDocString.Ch19Ch20.G7.c156}
 
-### To and From Finite Numbers
+### 到/从有限数转换
 
-{docstring USize.toFin}
+%%%
+tag := "Lean-__________________--Basic-Types--Fixed-Precision-Integers--API-Reference--Conversions--To-and-From-Finite-Numbers"
+%%%
+{zhdocstring USize.toFin Manual.ZhDocString.Ch19Ch20.G7.c157}
 
-{docstring UInt8.toFin}
+{zhdocstring UInt8.toFin Manual.ZhDocString.Ch19Ch20.G7.c158}
 
-{docstring UInt16.toFin}
+{zhdocstring UInt16.toFin Manual.ZhDocString.Ch19Ch20.G7.c159}
 
-{docstring UInt32.toFin}
+{zhdocstring UInt32.toFin Manual.ZhDocString.Ch19Ch20.G7.c160}
 
-{docstring UInt64.toFin}
+{zhdocstring UInt64.toFin Manual.ZhDocString.Ch19Ch20.G7.c161}
 
-{docstring USize.ofFin}
+{zhdocstring USize.ofFin Manual.ZhDocString.Ch19Ch20.G7.c162}
 
-{docstring UInt8.ofFin}
+{zhdocstring UInt8.ofFin Manual.ZhDocString.Ch19Ch20.G7.c163}
 
-{docstring UInt16.ofFin}
+{zhdocstring UInt16.ofFin Manual.ZhDocString.Ch19Ch20.G7.c164}
 
-{docstring UInt32.ofFin}
+{zhdocstring UInt32.ofFin Manual.ZhDocString.Ch19Ch20.G7.c165}
 
-{docstring UInt64.ofFin}
+{zhdocstring UInt64.ofFin Manual.ZhDocString.Ch19Ch20.G7.c166}
 
-{docstring USize.repr}
+{zhdocstring USize.repr Manual.ZhDocString.Ch19Ch20.G7.c167}
 
-### To Characters
+### 到字符转换
 
-The {name}`Char` type is a wrapper around {name}`UInt32` that requires a proof that the wrapped integer represents a Unicode code point.
-This predicate is part of the {name}`UInt32` API.
+%%%
+tag := "Lean-__________________--Basic-Types--Fixed-Precision-Integers--API-Reference--Conversions--To-Characters"
+%%%
+{name}`Char` 类型是对 {name}`UInt32` 的包装器，它需要一个证明，证明所包装的整数表示一个 Unicode 代码点。
+该谓词是 {name}`UInt32` API 的一部分。
 
-{docstring UInt32.isValidChar}
+{zhdocstring UInt32.isValidChar Manual.ZhDocString.Ch19Ch20.G7.c168}
 
 {include 2 Manual.BasicTypes.UInt.Comparisons}
 
 {include 2 Manual.BasicTypes.UInt.Arith}
 
-## Bitwise Operations
+## 按位操作
 
-Typically, bitwise operations on fixed-width integers should be accessed using Lean's overloaded operators, particularly their instances of {name}`ShiftLeft`, {name}`ShiftRight`, {name}`AndOp`, {name}`OrOp`, and {name}`XorOp`.
+%%%
+tag := "Lean-__________________--Basic-Types--Fixed-Precision-Integers--API-Reference--Bitwise-Operations"
+%%%
+通常，对固定宽度整数的按位操作应该使用 Lean 的重载运算符来访问，特别是它们对 {name}`ShiftLeft`、{name}`ShiftRight`、{name}`AndOp`、{name}`OrOp` 和 {name}`XorOp` 的实例。
 
 ```lean -show
--- Check that all those instances really exist
+-- 检查所有这些实例是否确实存在
 open Lean Elab Command in
 #eval show CommandElabM Unit from do
   let types := [`ISize, `Int8, `Int16, `Int32, `Int64, `USize, `UInt8, `UInt16, `UInt32, `UInt64]
@@ -502,123 +552,123 @@ open Lean Elab Command in
       elabCommand <| ← `(example : $(mkIdent c):ident $(mkIdent t) := inferInstance)
 ```
 
-{docstring USize.land}
+{zhdocstring USize.land Manual.ZhDocString.Ch19Ch20.G7.c169}
 
-{docstring ISize.land}
+{zhdocstring ISize.land Manual.ZhDocString.Ch19Ch20.G7.c170}
 
-{docstring UInt8.land}
+{zhdocstring UInt8.land Manual.ZhDocString.Ch19Ch20.G7.c171}
 
-{docstring Int8.land}
+{zhdocstring Int8.land Manual.ZhDocString.Ch19Ch20.G7.c172}
 
-{docstring UInt16.land}
+{zhdocstring UInt16.land Manual.ZhDocString.Ch19Ch20.G7.c173}
 
-{docstring Int16.land}
+{zhdocstring Int16.land Manual.ZhDocString.Ch19Ch20.G7.c174}
 
-{docstring UInt32.land}
+{zhdocstring UInt32.land Manual.ZhDocString.Ch19Ch20.G7.c175}
 
-{docstring Int32.land}
+{zhdocstring Int32.land Manual.ZhDocString.Ch19Ch20.G7.c176}
 
-{docstring UInt64.land}
+{zhdocstring UInt64.land Manual.ZhDocString.Ch19Ch20.G7.c177}
 
-{docstring Int64.land}
+{zhdocstring Int64.land Manual.ZhDocString.Ch19Ch20.G7.c178}
 
-{docstring USize.lor}
+{zhdocstring USize.lor Manual.ZhDocString.Ch19Ch20.G7.c179}
 
-{docstring ISize.lor}
+{zhdocstring ISize.lor Manual.ZhDocString.Ch19Ch20.G7.c180}
 
-{docstring UInt8.lor}
+{zhdocstring UInt8.lor Manual.ZhDocString.Ch19Ch20.G7.c181}
 
-{docstring Int8.lor}
+{zhdocstring Int8.lor Manual.ZhDocString.Ch19Ch20.G7.c182}
 
-{docstring UInt16.lor}
+{zhdocstring UInt16.lor Manual.ZhDocString.Ch19Ch20.G7.c183}
 
-{docstring Int16.lor}
+{zhdocstring Int16.lor Manual.ZhDocString.Ch19Ch20.G7.c184}
 
-{docstring UInt32.lor}
+{zhdocstring UInt32.lor Manual.ZhDocString.Ch19Ch20.G7.c185}
 
-{docstring Int32.lor}
+{zhdocstring Int32.lor Manual.ZhDocString.Ch19Ch20.G7.c186}
 
-{docstring UInt64.lor}
+{zhdocstring UInt64.lor Manual.ZhDocString.Ch19Ch20.G7.c187}
 
-{docstring Int64.lor}
+{zhdocstring Int64.lor Manual.ZhDocString.Ch19Ch20.G7.c188}
 
-{docstring USize.xor}
+{zhdocstring USize.xor Manual.ZhDocString.Ch19Ch20.G7.c189}
 
-{docstring ISize.xor}
+{zhdocstring ISize.xor Manual.ZhDocString.Ch19Ch20.G7.c190}
 
-{docstring UInt8.xor}
+{zhdocstring UInt8.xor Manual.ZhDocString.Ch19Ch20.G7.c191}
 
-{docstring Int8.xor}
+{zhdocstring Int8.xor Manual.ZhDocString.Ch19Ch20.G7.c192}
 
-{docstring UInt16.xor}
+{zhdocstring UInt16.xor Manual.ZhDocString.Ch19Ch20.G7.c193}
 
-{docstring Int16.xor}
+{zhdocstring Int16.xor Manual.ZhDocString.Ch19Ch20.G7.c194}
 
-{docstring UInt32.xor}
+{zhdocstring UInt32.xor Manual.ZhDocString.Ch19Ch20.G7.c195}
 
-{docstring Int32.xor}
+{zhdocstring Int32.xor Manual.ZhDocString.Ch19Ch20.G7.c196}
 
-{docstring UInt64.xor}
+{zhdocstring UInt64.xor Manual.ZhDocString.Ch19Ch20.G7.c197}
 
-{docstring Int64.xor}
+{zhdocstring Int64.xor Manual.ZhDocString.Ch19Ch20.G7.c198}
 
-{docstring USize.complement}
+{zhdocstring USize.complement Manual.ZhDocString.Ch19Ch20.G7.c199}
 
-{docstring ISize.complement}
+{zhdocstring ISize.complement Manual.ZhDocString.Ch19Ch20.G7.c200}
 
-{docstring UInt8.complement}
+{zhdocstring UInt8.complement Manual.ZhDocString.Ch19Ch20.G7.c201}
 
-{docstring Int8.complement}
+{zhdocstring Int8.complement Manual.ZhDocString.Ch19Ch20.G7.c202}
 
-{docstring UInt16.complement}
+{zhdocstring UInt16.complement Manual.ZhDocString.Ch19Ch20.G7.c203}
 
-{docstring Int16.complement}
+{zhdocstring Int16.complement Manual.ZhDocString.Ch19Ch20.G7.c204}
 
-{docstring UInt32.complement}
+{zhdocstring UInt32.complement Manual.ZhDocString.Ch19Ch20.G7.c205}
 
-{docstring Int32.complement}
+{zhdocstring Int32.complement Manual.ZhDocString.Ch19Ch20.G7.c206}
 
-{docstring UInt64.complement}
+{zhdocstring UInt64.complement Manual.ZhDocString.Ch19Ch20.G7.c207}
 
-{docstring Int64.complement}
+{zhdocstring Int64.complement Manual.ZhDocString.Ch19Ch20.G7.c208}
 
-{docstring USize.shiftLeft}
+{zhdocstring USize.shiftLeft Manual.ZhDocString.Ch19Ch20.G7.c209}
 
-{docstring ISize.shiftLeft}
+{zhdocstring ISize.shiftLeft Manual.ZhDocString.Ch19Ch20.G7.c210}
 
-{docstring UInt8.shiftLeft}
+{zhdocstring UInt8.shiftLeft Manual.ZhDocString.Ch19Ch20.G7.c211}
 
-{docstring Int8.shiftLeft}
+{zhdocstring Int8.shiftLeft Manual.ZhDocString.Ch19Ch20.G7.c212}
 
-{docstring UInt16.shiftLeft}
+{zhdocstring UInt16.shiftLeft Manual.ZhDocString.Ch19Ch20.G7.c213}
 
-{docstring Int16.shiftLeft}
+{zhdocstring Int16.shiftLeft Manual.ZhDocString.Ch19Ch20.G7.c214}
 
-{docstring UInt32.shiftLeft}
+{zhdocstring UInt32.shiftLeft Manual.ZhDocString.Ch19Ch20.G7.c215}
 
-{docstring Int32.shiftLeft}
+{zhdocstring Int32.shiftLeft Manual.ZhDocString.Ch19Ch20.G7.c216}
 
-{docstring UInt64.shiftLeft}
+{zhdocstring UInt64.shiftLeft Manual.ZhDocString.Ch19Ch20.G7.c217}
 
-{docstring Int64.shiftLeft}
+{zhdocstring Int64.shiftLeft Manual.ZhDocString.Ch19Ch20.G7.c218}
 
-{docstring USize.shiftRight}
+{zhdocstring USize.shiftRight Manual.ZhDocString.Ch19Ch20.G7.c219}
 
-{docstring ISize.shiftRight}
+{zhdocstring ISize.shiftRight Manual.ZhDocString.Ch19Ch20.G7.c220}
 
-{docstring UInt8.shiftRight}
+{zhdocstring UInt8.shiftRight Manual.ZhDocString.Ch19Ch20.G7.c221}
 
-{docstring Int8.shiftRight}
+{zhdocstring Int8.shiftRight Manual.ZhDocString.Ch19Ch20.G7.c222}
 
-{docstring UInt16.shiftRight}
+{zhdocstring UInt16.shiftRight Manual.ZhDocString.Ch19Ch20.G7.c223}
 
-{docstring Int16.shiftRight}
+{zhdocstring Int16.shiftRight Manual.ZhDocString.Ch19Ch20.G7.c224}
 
-{docstring UInt32.shiftRight}
+{zhdocstring UInt32.shiftRight Manual.ZhDocString.Ch19Ch20.G7.c225}
 
-{docstring Int32.shiftRight}
+{zhdocstring Int32.shiftRight Manual.ZhDocString.Ch19Ch20.G7.c226}
 
-{docstring UInt64.shiftRight}
+{zhdocstring UInt64.shiftRight Manual.ZhDocString.Ch19Ch20.G7.c227}
 
 
-{docstring Int64.shiftRight}
+{zhdocstring Int64.shiftRight Manual.ZhDocString.Ch19Ch20.G7.c228}

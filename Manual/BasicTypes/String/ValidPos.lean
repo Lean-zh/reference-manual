@@ -14,7 +14,7 @@ open Verso.Genre.Manual.InlineLean
 
 set_option pp.rawOnError true
 
-#doc (Manual) "Positions" =>
+#doc (Manual) "位置" =>
 %%%
 tag := "string-api-valid-pos"
 %%%
@@ -22,7 +22,7 @@ tag := "string-api-valid-pos"
 
 {docstring String.ValidPos}
 
-# In Strings
+# 字符串内
 
 {docstring String.startValidPos}
 
@@ -34,7 +34,7 @@ tag := "string-api-valid-pos"
 
 {docstring String.pos!}
 
-# Lookups
+# 查找
 
 {docstring String.ValidPos.get}
 
@@ -46,13 +46,13 @@ tag := "string-api-valid-pos"
 
 {docstring String.ValidPos.extract +allowMissing}
 
-# Modifications
+# 修改
 
 {docstring String.ValidPos.modify}
 
 {docstring String.ValidPos.byte}
 
-# Adjustment
+# 调整
 
 {docstring String.ValidPos.prev}
 
@@ -66,7 +66,7 @@ tag := "string-api-valid-pos"
 
 {docstring String.ValidPos.next?}
 
-# Other Strings
+# 其他字符串
 
 {docstring String.ValidPos.cast}
 

@@ -9,37 +9,35 @@ import Manual.Meta.ErrorExplanation
 open Lean
 open Verso.Genre Manual InlineLean
 
-#doc (Manual) "About: `inferDefTypeFailed`" =>
+#doc (Manual) "关于：`inferDefTypeFailed`" =>
 %%%
 shortTitle := "inferDefTypeFailed"
+tag := "Lean-__________________--Error-Explanations--About___--inferDefTypeFailed"
+file := "About___--inferDefTypeFailed"
 %%%
 
 {errorExplanationHeader lean.inferDefTypeFailed}
 
-This error occurs when the type of a definition is not fully specified and Lean is unable to infer
-its type from the available information. If the definition has parameters, this error refers only to
-the resulting type after the colon (the error
+当定义的类型未完全指定且 Lean 无法从可用信息推断其类型时，会产生此错误。如果定义有参数，此错误仅指
+冒号后的结果类型（错误
 {ref "lean.inferBinderTypeFailed" (domain := Manual.errorExplanation)}[`lean.inferBinderTypeFailed`]
-indicates that a parameter type could not be inferred).
+表示无法推断参数类型）。
 
-To resolve this error, provide additional type information in the definition. This can be done
-straightforwardly by providing an explicit resulting type after the colon in the definition
-header. Alternatively, if an explicit resulting type is not provided, adding further type
-information to the definition's body—such as by specifying implicit type arguments or giving
-explicit types to `let` binders—may allow Lean to infer the type of the definition. Look for type
-inference or implicit argument synthesis errors that arise alongside this one to identify
-ambiguities that may be contributing to this error.
+要解决此错误，请在定义中提供额外类型信息。最直接的方式是在定义头部冒号后提供显式结果类型。
+或者，如果未提供显式结果类型，可以向定义体添加更多类型信息（例如指定隐式类型参数，或为 `let`
+绑定项提供显式类型），从而让 Lean 推断定义类型。请查找与此错误同时出现的类型推断或隐式参数实例合成
+错误，以确定可能造成此错误的歧义。
 
-Note that when an explicit resulting type is provided—even if that type contains holes—Lean will not
-use information from the definition body to help infer the type of the definition or its parameters.
-Thus, adding an explicit resulting type may also necessitate adding type annotations to parameters
-whose types were previously inferable. Additionally, it is always necessary to provide an explicit
-type in a `theorem` declaration: the `theorem` syntax requires a type annotation, and the elaborator
-will never attempt to use the theorem body to infer the proposition being proved.
+注意，当提供显式结果类型时，即使该类型包含空洞，Lean 也不会使用定义体的信息来推断定义或其参数的类型。
+因此，添加显式结果类型也可能要求为原本可推断类型的参数添加类型注解。此外，`theorem` 声明始终必须提供
+显式类型：`theorem` 语法要求类型注解，精译器绝不会尝试使用定理体推断所证明的命题。
 
-# Examples
+# 示例
 
-:::errorExample "Implicit Argument Cannot be Inferred"
+%%%
+tag := "Lean-__________________--Error-Explanations--About___--inferDefTypeFailed--Examples"
+%%%
+:::errorExample "无法推断隐式参数"
 ```broken
 def emptyNats :=
   []
@@ -56,14 +54,12 @@ def emptyNats :=
   List.nil (α := Nat)
 ```
 
-Here, Lean is unable to infer the value of the parameter `α` of the `List` type constructor, which
-in turn prevents it from inferring the type of the definition. Two fixes are possible: specifying
-the expected type of the definition allows Lean to infer the appropriate implicit argument to the
-`List.nil` constructor; alternatively, making this implicit argument explicit in the function body
-provides sufficient information for Lean to infer the definition's type.
+这里 Lean 无法推断参数 `α` 在 `List` 类型构造器中的值，进而无法推断定义类型。可以有两种修复方式：
+指定定义的期望类型，让 Lean 推断 `List.nil` 构造器的适当隐式参数；或者在函数体中显式写出该隐式参数，
+为 Lean 推断定义类型提供足够信息。
 :::
 
-:::errorExample "Definition Type Uninferrable Due to Unknown Parameter Type"
+:::errorExample "因未知参数类型而无法推断定义类型"
 ```broken
 def identity x :=
   x
@@ -76,10 +72,8 @@ def identity (x : α) :=
   x
 ```
 
-In this example, the type of `identity` is determined by the type of `x`, which cannot be inferred.
-Both the indicated error and
+在此例中，`identity` 的类型由无法推断的 `x` 类型决定。因此，所示错误和
 {ref "lean.inferBinderTypeFailed" (domain := Manual.errorExplanation)}[`lean.inferBinderTypeFailed`]
-therefore appear (see that explanation for additional discussion of this example). Resolving the
-latter—by explicitly specifying the type of `x`—provides Lean with sufficient information to infer
-the definition type.
+都会出现（该例的更多讨论见该说明）。解决后一个错误（显式指定 `x` 的类型）即可为 Lean 推断定义类型
+提供足够信息。
 :::

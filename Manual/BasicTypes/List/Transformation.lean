@@ -7,6 +7,7 @@ Author: David Thrane Christiansen
 import VersoManual
 
 import Manual.Meta
+import Manual.ZhDocString.Ch19Ch20.G9
 
 open Manual.FFIDocType
 
@@ -15,48 +16,51 @@ open Verso.Genre.Manual.InlineLean
 
 set_option pp.rawOnError true
 
-#doc (Manual) "Transformation" =>
+#doc (Manual) "转换" =>
+%%%
+tag := "Lean-__________________--Basic-Types--Linked-Lists--API-Reference--Transformation"
+%%%
 
-{docstring List.map}
+{zhdocstring List.map Manual.ZhDocString.Ch19Ch20.G9.c120}
 
-{docstring List.mapTR}
+{zhdocstring List.mapTR Manual.ZhDocString.Ch19Ch20.G9.c121}
 
-{docstring List.mapM}
+{zhdocstring List.mapM Manual.ZhDocString.Ch19Ch20.G9.c122}
 
-{docstring List.mapM'}
+{zhdocstring List.mapM' Manual.ZhDocString.Ch19Ch20.G9.c123}
 
-{docstring List.mapA}
+{zhdocstring List.mapA Manual.ZhDocString.Ch19Ch20.G9.c124}
 
-{docstring List.mapFinIdx}
+{zhdocstring List.mapFinIdx Manual.ZhDocString.Ch19Ch20.G9.c125}
 
-{docstring List.mapFinIdxM}
+{zhdocstring List.mapFinIdxM Manual.ZhDocString.Ch19Ch20.G9.c126}
 
-{docstring List.mapIdx}
+{zhdocstring List.mapIdx Manual.ZhDocString.Ch19Ch20.G9.c127}
 
-{docstring List.mapIdxM}
+{zhdocstring List.mapIdxM Manual.ZhDocString.Ch19Ch20.G9.c128}
 
-{docstring List.mapMono}
+{zhdocstring List.mapMono Manual.ZhDocString.Ch19Ch20.G9.c129}
 
-{docstring List.mapMonoM}
+{zhdocstring List.mapMonoM Manual.ZhDocString.Ch19Ch20.G9.c130}
 
-{docstring List.flatMap}
+{zhdocstring List.flatMap Manual.ZhDocString.Ch19Ch20.G9.c131}
 
-{docstring List.flatMapTR}
+{zhdocstring List.flatMapTR Manual.ZhDocString.Ch19Ch20.G9.c132}
 
-{docstring List.flatMapM}
+{zhdocstring List.flatMapM Manual.ZhDocString.Ch19Ch20.G9.c133}
 
-{docstring List.zip}
+{zhdocstring List.zip Manual.ZhDocString.Ch19Ch20.G9.c134}
 
-{docstring List.zipIdx}
+{zhdocstring List.zipIdx Manual.ZhDocString.Ch19Ch20.G9.c135}
 
-{docstring List.zipIdxTR}
+{zhdocstring List.zipIdxTR Manual.ZhDocString.Ch19Ch20.G9.c136}
 
-{docstring List.zipWith}
+{zhdocstring List.zipWith Manual.ZhDocString.Ch19Ch20.G9.c137}
 
-{docstring List.zipWithTR}
+{zhdocstring List.zipWithTR Manual.ZhDocString.Ch19Ch20.G9.c138}
 
-{docstring List.zipWithAll}
+{zhdocstring List.zipWithAll Manual.ZhDocString.Ch19Ch20.G9.c139}
 
-{docstring List.unzip}
+{zhdocstring List.unzip Manual.ZhDocString.Ch19Ch20.G9.c140}
 
-{docstring List.unzipTR}
+{zhdocstring List.unzipTR Manual.ZhDocString.Ch19Ch20.G9.c141}

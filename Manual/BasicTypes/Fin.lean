@@ -7,15 +7,17 @@ Author: David Thrane Christiansen
 import VersoManual
 
 import Manual.Meta
+import Manual.ZhDocString.Ch19Ch20.G5
 
 open Manual.FFIDocType
 
 open Verso.Genre Manual
 open Verso.Genre.Manual.InlineLean
 
-#doc (Manual) "Finite Natural Numbers" =>
+#doc (Manual) "有限自然数" =>
 %%%
 tag := "Fin"
+file := "Finite-Natural-Numbers"
 %%%
 
 ```lean -show
@@ -23,29 +25,35 @@ section
 variable (n : Nat)
 ```
 
-For any {tech}[natural number] {lean}`n`, the {lean}`Fin n` is a type that contains all the natural numbers that are strictly less than {lean}`n`.
-In other words, {lean}`Fin n` has exactly {lean}`n` elements.
-It can be used to represent the valid indices into a list or array, or it can serve as a canonical {lean}`n`-element type.
+对于任何{tech (key := "natural number")}[自然数] {lean}`n`，{lean}`Fin n` 是一种包含所有严格小于 {lean}`n` 的自然数的类型。
+换句话说，{lean}`Fin n` 恰好有 {lean}`n` 个元素。
+它可用于表示列表或数组的有效索引，或者可用作规范的 {lean}`n` 元素类型。
 
-{docstring Fin}
+{zhdocstring Fin Manual.ZhDocString.Ch19Ch20.G5.c109}
 
-{lean}`Fin` is closely related to {name}`UInt8`, {name}`UInt16`, {name}`UInt32`, {name}`UInt64`, and {name}`USize`, which also represent finite non-negative integral types.
-However, these types are backed by bitvectors rather than by natural numbers, and they have fixed bounds.
-{lean}`Fin` is comparatively more flexible, but also less convenient for low-level reasoning.
-In particular, using bitvectors rather than proofs that a number is less than some power of two avoids needing to take care to avoid evaluating the concrete bound.
+{lean}`Fin` 与 {name}`UInt8`、{name}`UInt16`、{name}`UInt32`、{name}`UInt64` 和 {name}`USize` 密切相关，它们也表示有限的非负整数类型。
+然而，这些类型是由位向量而不是由自然数支持的，并且它们具有固定的边界。
+{lean}`Fin` 相对更灵活，但在进行底层推理时不够方便。
+特别是，使用位向量而不是证明某个数小于 2 的某个幂，可以避免必须小心翼翼地防止对具体边界求值的问题。
 
-# Run-Time Characteristics
+# 运行时特征
 
-Because {lean}`Fin n` is a structure in which only a single field is not a proof, it is a {ref "inductive-types-trivial-wrappers"}[trivial wrapper].
-This means that it is represented identically to the underlying natural number in compiled code.
+%%%
+tag := "Lean-__________________--Basic-Types--Finite-Natural-Numbers--Run-Time-Characteristics"
+%%%
+因为 {lean}`Fin n` 是一种只有一个字段不是证明的结构体，所以它是一个{ref "inductive-types-trivial-wrappers"}[平凡包装器]。
+这意味着它在编译代码中的表示与底层的自然数相同。
 
-# Coercions and Literals
+# 强制转换和字面量
 
-There is a {tech}[coercion] from {lean}`Fin n` to {lean}`Nat` that discards the proof that the number is less than the bound.
-In particular, this coercion is precisely the projection {name}`Fin.val`.
-One consequence of this is that uses of {name}`Fin.val` are displayed as coercions rather than explicit projections in proof states.
-:::example "Coercing from {name}`Fin` to {name}`Nat`"
-A {lean}`Fin n` can be used where a {lean}`Nat` is expected:
+%%%
+tag := "Lean-__________________--Basic-Types--Finite-Natural-Numbers--Coercions-and-Literals"
+%%%
+从 {lean}`Fin n` 到 {lean}`Nat` 有一个{tech (key := "coercion")}[强制转换]，它会丢弃该数字小于边界的证明。
+具体来说，这个强制转换正是投影 {name}`Fin.val`。
+这带来的一个后果是，{name}`Fin.val` 的使用在证明状态中会显示为强制转换，而不是显式的投影。
+:::example "从 {name}`Fin` 强制转换到 {name}`Nat`"
+{lean}`Fin n` 可以用在预期 {lean}`Nat` 的地方：
 ```lean (name := oneFinCoe)
 #eval let one : Fin 3 := ⟨1, by omega⟩; (one : Nat)
 ```
@@ -53,7 +61,7 @@ A {lean}`Fin n` can be used where a {lean}`Nat` is expected:
 1
 ```
 
-Uses of {name}`Fin.val` show up as coercions in proof states:
+{name}`Fin.val` 的使用在证明状态中显示为强制转换：
 ```proofState
 ∀(n : Nat) (i : Fin n), i < n := by
   intro n i
@@ -66,18 +74,18 @@ i : Fin n
 ```
 :::
 
-Natural number literals may be used for {lean}`Fin` types, implemented as usual via an {name}`OfNat` instance.
-The {name}`OfNat` instance for {lean}`Fin n` requires that the upper bound {lean}`n` is not zero, but does not check that the literal is less than {lean}`n`.
-If the literal is larger than the type can represent, the remainder when dividing it by {lean}`n` is used.
+自然数字面量可用于 {lean}`Fin` 类型，通常通过 {name}`OfNat` 实例实现。
+{name}`OfNat` 为 {lean}`Fin n` 提供的实例要求上限 {lean}`n` 不为零，但不检查字面量是否小于 {lean}`n`。
+如果字面量大于该类型所能表示的范围，则使用将其除以 {lean}`n` 的余数。
 
-:::example "Numeric Literals for {name}`Fin`"
+:::example "{name}`Fin` 的数字字面量"
 
-If {lean}`n > 0`, then natural number literals can be used for {lean}`Fin n`:
+如果 {lean}`n > 0`，则自然数字面量可用于 {lean}`Fin n`：
 ```lean
 example : Fin 5 := 3
 example : Fin 20 := 19
 ```
-When the literal is greater than or equal to {lean}`n`, the remainder when dividing by {lean}`n` is used:
+当字面量大于或等于 {lean}`n` 时，则使用除以 {lean}`n` 时的余数：
 ```lean (name := fivethree)
 #eval (5 : Fin 3)
 ```
@@ -91,7 +99,7 @@ When the literal is greater than or equal to {lean}`n`, the remainder when divid
 [0, 1, 2, 0, 1, 2, 0]
 ```
 
-If Lean can't synthesize an instance of {lean}`NeZero n`, then there is no {lean}`OfNat (Fin n)` instance:
+如果 Lean 无法综合 {lean}`NeZero n` 的实例，那么就没有 {lean}`OfNat (Fin n)` 实例：
 ```lean +error (name := fin0)
 example : Fin 0 := 0
 ```
@@ -120,104 +128,125 @@ Hint: Type class instance resolution failures can be inspected with the `set_opt
 
 :::
 
-# API Reference
+# API 参考
 
-## Construction
+%%%
+tag := "Lean-__________________--Basic-Types--Finite-Natural-Numbers--API-Reference"
+%%%
+## 构造
 
-{docstring Fin.last}
+%%%
+tag := "Lean-__________________--Basic-Types--Finite-Natural-Numbers--API-Reference--Construction"
+%%%
+{zhdocstring Fin.last Manual.ZhDocString.Ch19Ch20.G5.c110}
 
-{docstring Fin.succ}
+{zhdocstring Fin.succ Manual.ZhDocString.Ch19Ch20.G5.c111}
 
-{docstring Fin.pred}
+{zhdocstring Fin.pred Manual.ZhDocString.Ch19Ch20.G5.c112}
 
-## Arithmetic
+## 算术
 
-Typically, arithmetic operations on {name}`Fin` should be accessed using Lean's overloaded arithmetic notation, particularly via the instances {inst}`Add (Fin n)`, {inst}`Sub (Fin n)`, {inst}`Mul (Fin n)`, {inst}`Div (Fin n)`,  and {inst}`Mod (Fin n)`.
-Heterogeneous operators such as {lean}`Fin.natAdd` do not have corresponding heterogeneous instances (e.g. {name}`HAdd`) to avoid confusing type inference behavior.
+%%%
+tag := "Lean-__________________--Basic-Types--Finite-Natural-Numbers--API-Reference--Arithmetic"
+%%%
+通常，对 {name}`Fin` 的算术运算应该使用 Lean 的重载算术符号来访问，特别是通过实例 {inst}`Add (Fin n)`、{inst}`Sub (Fin n)`、{inst}`Mul (Fin n)`、{inst}`Div (Fin n)` 和 {inst}`Mod (Fin n)`。
+异质运算符（例如 {lean}`Fin.natAdd`）没有对应的异质实例（例如 {name}`HAdd`），以避免产生令人困惑的类型推断行为。
 
-{docstring Fin.add}
+{zhdocstring Fin.add Manual.ZhDocString.Ch19Ch20.G5.c113}
 
-{docstring Fin.natAdd}
+{zhdocstring Fin.natAdd Manual.ZhDocString.Ch19Ch20.G5.c114}
 
-{docstring Fin.addNat}
+{zhdocstring Fin.addNat Manual.ZhDocString.Ch19Ch20.G5.c115}
 
-{docstring Fin.mul}
+{zhdocstring Fin.mul Manual.ZhDocString.Ch19Ch20.G5.c116}
 
-{docstring Fin.sub}
+{zhdocstring Fin.sub Manual.ZhDocString.Ch19Ch20.G5.c117}
 
-{docstring Fin.subNat}
+{zhdocstring Fin.subNat Manual.ZhDocString.Ch19Ch20.G5.c118}
 
-{docstring Fin.div}
+{zhdocstring Fin.div Manual.ZhDocString.Ch19Ch20.G5.c119}
 
-{docstring Fin.mod}
+{zhdocstring Fin.mod Manual.ZhDocString.Ch19Ch20.G5.c120}
 
-{docstring Fin.modn}
+{zhdocstring Fin.modn Manual.ZhDocString.Ch19Ch20.G5.c121}
 
-{docstring Fin.log2}
+{zhdocstring Fin.log2 Manual.ZhDocString.Ch19Ch20.G5.c122}
 
-## Bitwise Operations
+## 按位运算
 
-Typically, bitwise operations on {name}`Fin` should be accessed using Lean's overloaded bitwise operators, particularly via the instances {inst}`ShiftLeft (Fin n)`, {inst}`ShiftRight (Fin n)`, {inst}`AndOp (Fin n)`, {inst}`OrOp (Fin n)`, {inst}`Xor (Fin n)`
+%%%
+tag := "Lean-__________________--Basic-Types--Finite-Natural-Numbers--API-Reference--Bitwise-Operations"
+%%%
+通常，对 {name}`Fin` 的按位运算应该使用 Lean 的重载按位运算符来访问，特别是通过实例 {inst}`ShiftLeft (Fin n)`、{inst}`ShiftRight (Fin n)`、{inst}`AndOp (Fin n)`、{inst}`OrOp (Fin n)`、{inst}`Xor (Fin n)`
 
-{docstring Fin.shiftLeft}
+{zhdocstring Fin.shiftLeft Manual.ZhDocString.Ch19Ch20.G5.c123}
 
-{docstring Fin.shiftRight}
+{zhdocstring Fin.shiftRight Manual.ZhDocString.Ch19Ch20.G5.c124}
 
-{docstring Fin.land}
+{zhdocstring Fin.land Manual.ZhDocString.Ch19Ch20.G5.c125}
 
-{docstring Fin.lor}
+{zhdocstring Fin.lor Manual.ZhDocString.Ch19Ch20.G5.c126}
 
-{docstring Fin.xor}
+{zhdocstring Fin.xor Manual.ZhDocString.Ch19Ch20.G5.c127}
 
 
-## Conversions
+## 转换
 
-{docstring Fin.toNat}
+%%%
+tag := "Lean-__________________--Basic-Types--Finite-Natural-Numbers--API-Reference--Conversions"
+%%%
+{zhdocstring Fin.toNat Manual.ZhDocString.Ch19Ch20.G5.c128}
 
-{docstring Fin.ofNat}
+{zhdocstring Fin.ofNat Manual.ZhDocString.Ch19Ch20.G5.c129}
 
-{docstring Fin.cast}
+{zhdocstring Fin.cast Manual.ZhDocString.Ch19Ch20.G5.c130}
 
-{docstring Fin.castLT}
+{zhdocstring Fin.castLT Manual.ZhDocString.Ch19Ch20.G5.c131}
 
-{docstring Fin.castLE}
+{zhdocstring Fin.castLE Manual.ZhDocString.Ch19Ch20.G5.c132}
 
-{docstring Fin.castAdd}
+{zhdocstring Fin.castAdd Manual.ZhDocString.Ch19Ch20.G5.c133}
 
-{docstring Fin.castSucc}
+{zhdocstring Fin.castSucc Manual.ZhDocString.Ch19Ch20.G5.c134}
 
-{docstring Fin.rev}
+{zhdocstring Fin.rev Manual.ZhDocString.Ch19Ch20.G5.c135}
 
-{docstring Fin.elim0}
+{zhdocstring Fin.elim0 Manual.ZhDocString.Ch19Ch20.G5.c136}
 
-## Iteration
+## 迭代
 
-{docstring Fin.foldr}
+%%%
+tag := "Lean-__________________--Basic-Types--Finite-Natural-Numbers--API-Reference--Iteration"
+%%%
+{zhdocstring Fin.foldr Manual.ZhDocString.Ch19Ch20.G5.c137}
 
-{docstring Fin.foldrM}
+{zhdocstring Fin.foldrM Manual.ZhDocString.Ch19Ch20.G5.c138}
 
-{docstring Fin.foldl}
+{zhdocstring Fin.foldl Manual.ZhDocString.Ch19Ch20.G5.c139}
 
-{docstring Fin.foldlM}
+{zhdocstring Fin.foldlM Manual.ZhDocString.Ch19Ch20.G5.c140}
 
-{docstring Fin.hIterate}
+{zhdocstring Fin.hIterate Manual.ZhDocString.Ch19Ch20.G5.c141}
 
-{docstring Fin.hIterateFrom}
+{zhdocstring Fin.hIterateFrom Manual.ZhDocString.Ch19Ch20.G5.c142}
 
-## Reasoning
+## 推理
 
-{docstring Fin.induction}
+%%%
+tag := "Lean-__________________--Basic-Types--Finite-Natural-Numbers--API-Reference--Reasoning"
+%%%
+{zhdocstring Fin.induction Manual.ZhDocString.Ch19Ch20.G5.c143}
 
-{docstring Fin.inductionOn}
+{zhdocstring Fin.inductionOn Manual.ZhDocString.Ch19Ch20.G5.c144}
 
-{docstring Fin.reverseInduction}
+{zhdocstring Fin.reverseInduction Manual.ZhDocString.Ch19Ch20.G5.c145}
 
-{docstring Fin.cases}
+{zhdocstring Fin.cases Manual.ZhDocString.Ch19Ch20.G5.c146}
 
-{docstring Fin.lastCases}
+{zhdocstring Fin.lastCases Manual.ZhDocString.Ch19Ch20.G5.c147}
 
-{docstring Fin.addCases}
+{zhdocstring Fin.addCases Manual.ZhDocString.Ch19Ch20.G5.c148}
 
-{docstring Fin.succRec}
+{zhdocstring Fin.succRec Manual.ZhDocString.Ch19Ch20.G5.c149}
 
-{docstring Fin.succRecOn}
+{zhdocstring Fin.succRecOn Manual.ZhDocString.Ch19Ch20.G5.c150}

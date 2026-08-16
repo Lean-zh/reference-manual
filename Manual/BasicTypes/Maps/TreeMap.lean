@@ -7,6 +7,7 @@ Author: David Thrane Christiansen
 import VersoManual
 
 import Manual.Meta
+import Manual.ZhDocString.Ch19Ch20.G6
 
 
 import Std.Data.TreeMap
@@ -20,249 +21,273 @@ set_option pp.rawOnError true
 set_option maxHeartbeats 250000
 
 
-#doc (Manual) "Tree-Based Maps" =>
+#doc (Manual) "基于树的映射" =>
 %%%
 tag := "TreeMap"
 %%%
 
 
-The declarations in this section should be imported using `import Std.TreeMap`.
+本节中的声明应通过 `import Std.TreeMap` 导入。
 
-{docstring Std.TreeMap +hideFields +hideStructureConstructor}
+{zhdocstring Std.TreeMap Manual.ZhDocString.Ch19Ch20.G6.c001 +hideFields +hideStructureConstructor}
 
-# Creation
+# 创建
 
-{docstring Std.TreeMap.empty}
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Tree-Based-Maps--Creation"
+%%%
+{zhdocstring Std.TreeMap.empty Manual.ZhDocString.Ch19Ch20.G6.c002}
 
-# Properties
+# 性质
 
-{docstring Std.TreeMap.size}
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Tree-Based-Maps--Properties"
+%%%
+{zhdocstring Std.TreeMap.size Manual.ZhDocString.Ch19Ch20.G6.c003}
 
-{docstring Std.TreeMap.isEmpty}
+{zhdocstring Std.TreeMap.isEmpty Manual.ZhDocString.Ch19Ch20.G6.c004}
 
 
-# Queries
+# 查询
 
-{docstring Std.TreeMap.contains}
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Tree-Based-Maps--Queries"
+%%%
+{zhdocstring Std.TreeMap.contains Manual.ZhDocString.Ch19Ch20.G6.c005}
 
-{docstring Std.TreeMap.get}
+{zhdocstring Std.TreeMap.get Manual.ZhDocString.Ch19Ch20.G6.c006}
 
-{docstring Std.TreeMap.get!}
+{zhdocstring Std.TreeMap.get! Manual.ZhDocString.Ch19Ch20.G6.c007}
 
-{docstring Std.TreeMap.get?}
+{zhdocstring Std.TreeMap.get? Manual.ZhDocString.Ch19Ch20.G6.c008}
 
-{docstring Std.TreeMap.getD}
+{zhdocstring Std.TreeMap.getD Manual.ZhDocString.Ch19Ch20.G6.c009}
 
-{docstring Std.TreeMap.getKey}
+{zhdocstring Std.TreeMap.getKey Manual.ZhDocString.Ch19Ch20.G6.c010}
 
-{docstring Std.TreeMap.getKey!}
+{zhdocstring Std.TreeMap.getKey! Manual.ZhDocString.Ch19Ch20.G6.c011}
 
-{docstring Std.TreeMap.getKey?}
+{zhdocstring Std.TreeMap.getKey? Manual.ZhDocString.Ch19Ch20.G6.c012}
 
-{docstring Std.TreeMap.getKeyD}
+{zhdocstring Std.TreeMap.getKeyD Manual.ZhDocString.Ch19Ch20.G6.c013}
 
-{docstring Std.TreeMap.keys}
+{zhdocstring Std.TreeMap.keys Manual.ZhDocString.Ch19Ch20.G6.c014}
 
-{docstring Std.TreeMap.keysArray}
+{zhdocstring Std.TreeMap.keysArray Manual.ZhDocString.Ch19Ch20.G6.c015}
 
-{docstring Std.TreeMap.values}
+{zhdocstring Std.TreeMap.values Manual.ZhDocString.Ch19Ch20.G6.c016}
 
-{docstring Std.TreeMap.valuesArray}
+{zhdocstring Std.TreeMap.valuesArray Manual.ZhDocString.Ch19Ch20.G6.c017}
 
-## Ordering-Based Queries
+## 基于顺序的查询
 
-{docstring Std.TreeMap.entryAtIdx}
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Tree-Based-Maps--Queries--Ordering-Based-Queries"
+%%%
+{zhdocstring Std.TreeMap.entryAtIdx Manual.ZhDocString.Ch19Ch20.G6.c018}
 
-{docstring Std.TreeMap.entryAtIdx!}
+{zhdocstring Std.TreeMap.entryAtIdx! Manual.ZhDocString.Ch19Ch20.G6.c019}
 
-{docstring Std.TreeMap.entryAtIdx?}
+{zhdocstring Std.TreeMap.entryAtIdx? Manual.ZhDocString.Ch19Ch20.G6.c020}
 
-{docstring Std.TreeMap.entryAtIdxD}
+{zhdocstring Std.TreeMap.entryAtIdxD Manual.ZhDocString.Ch19Ch20.G6.c021}
 
-{docstring Std.TreeMap.getEntryGE}
+{zhdocstring Std.TreeMap.getEntryGE Manual.ZhDocString.Ch19Ch20.G6.c022}
 
-{docstring Std.TreeMap.getEntryGE!}
+{zhdocstring Std.TreeMap.getEntryGE! Manual.ZhDocString.Ch19Ch20.G6.c023}
 
-{docstring Std.TreeMap.getEntryGE?}
+{zhdocstring Std.TreeMap.getEntryGE? Manual.ZhDocString.Ch19Ch20.G6.c024}
 
-{docstring Std.TreeMap.getEntryGED}
+{zhdocstring Std.TreeMap.getEntryGED Manual.ZhDocString.Ch19Ch20.G6.c025}
 
-{docstring Std.TreeMap.getEntryGT}
+{zhdocstring Std.TreeMap.getEntryGT Manual.ZhDocString.Ch19Ch20.G6.c026}
 
-{docstring Std.TreeMap.getEntryGT!}
+{zhdocstring Std.TreeMap.getEntryGT! Manual.ZhDocString.Ch19Ch20.G6.c027}
 
-{docstring Std.TreeMap.getEntryGT?}
+{zhdocstring Std.TreeMap.getEntryGT? Manual.ZhDocString.Ch19Ch20.G6.c028}
 
-{docstring Std.TreeMap.getEntryGTD}
+{zhdocstring Std.TreeMap.getEntryGTD Manual.ZhDocString.Ch19Ch20.G6.c029}
 
-{docstring Std.TreeMap.getEntryLE}
+{zhdocstring Std.TreeMap.getEntryLE Manual.ZhDocString.Ch19Ch20.G6.c030}
 
-{docstring Std.TreeMap.getEntryLE!}
+{zhdocstring Std.TreeMap.getEntryLE! Manual.ZhDocString.Ch19Ch20.G6.c031}
 
-{docstring Std.TreeMap.getEntryLE?}
+{zhdocstring Std.TreeMap.getEntryLE? Manual.ZhDocString.Ch19Ch20.G6.c032}
 
-{docstring Std.TreeMap.getEntryLED}
+{zhdocstring Std.TreeMap.getEntryLED Manual.ZhDocString.Ch19Ch20.G6.c033}
 
-{docstring Std.TreeMap.getEntryLT}
+{zhdocstring Std.TreeMap.getEntryLT Manual.ZhDocString.Ch19Ch20.G6.c034}
 
-{docstring Std.TreeMap.getEntryLT!}
+{zhdocstring Std.TreeMap.getEntryLT! Manual.ZhDocString.Ch19Ch20.G6.c035}
 
-{docstring Std.TreeMap.getEntryLT?}
+{zhdocstring Std.TreeMap.getEntryLT? Manual.ZhDocString.Ch19Ch20.G6.c036}
 
-{docstring Std.TreeMap.getEntryLTD}
+{zhdocstring Std.TreeMap.getEntryLTD Manual.ZhDocString.Ch19Ch20.G6.c037}
 
-{docstring Std.TreeMap.getKeyGE}
+{zhdocstring Std.TreeMap.getKeyGE Manual.ZhDocString.Ch19Ch20.G6.c038}
 
-{docstring Std.TreeMap.getKeyGE!}
+{zhdocstring Std.TreeMap.getKeyGE! Manual.ZhDocString.Ch19Ch20.G6.c039}
 
-{docstring Std.TreeMap.getKeyGE?}
+{zhdocstring Std.TreeMap.getKeyGE? Manual.ZhDocString.Ch19Ch20.G6.c040}
 
-{docstring Std.TreeMap.getKeyGED}
+{zhdocstring Std.TreeMap.getKeyGED Manual.ZhDocString.Ch19Ch20.G6.c041}
 
-{docstring Std.TreeMap.getKeyGT}
+{zhdocstring Std.TreeMap.getKeyGT Manual.ZhDocString.Ch19Ch20.G6.c042}
 
-{docstring Std.TreeMap.getKeyGT!}
+{zhdocstring Std.TreeMap.getKeyGT! Manual.ZhDocString.Ch19Ch20.G6.c043}
 
-{docstring Std.TreeMap.getKeyGT?}
+{zhdocstring Std.TreeMap.getKeyGT? Manual.ZhDocString.Ch19Ch20.G6.c044}
 
-{docstring Std.TreeMap.getKeyGTD}
+{zhdocstring Std.TreeMap.getKeyGTD Manual.ZhDocString.Ch19Ch20.G6.c045}
 
-{docstring Std.TreeMap.getKeyLE}
+{zhdocstring Std.TreeMap.getKeyLE Manual.ZhDocString.Ch19Ch20.G6.c046}
 
-{docstring Std.TreeMap.getKeyLE!}
+{zhdocstring Std.TreeMap.getKeyLE! Manual.ZhDocString.Ch19Ch20.G6.c047}
 
-{docstring Std.TreeMap.getKeyLE?}
+{zhdocstring Std.TreeMap.getKeyLE? Manual.ZhDocString.Ch19Ch20.G6.c048}
 
-{docstring Std.TreeMap.getKeyLED}
+{zhdocstring Std.TreeMap.getKeyLED Manual.ZhDocString.Ch19Ch20.G6.c049}
 
-{docstring Std.TreeMap.getKeyLT}
+{zhdocstring Std.TreeMap.getKeyLT Manual.ZhDocString.Ch19Ch20.G6.c050}
 
-{docstring Std.TreeMap.getKeyLT!}
+{zhdocstring Std.TreeMap.getKeyLT! Manual.ZhDocString.Ch19Ch20.G6.c051}
 
-{docstring Std.TreeMap.getKeyLT?}
+{zhdocstring Std.TreeMap.getKeyLT? Manual.ZhDocString.Ch19Ch20.G6.c052}
 
-{docstring Std.TreeMap.getKeyLTD}
+{zhdocstring Std.TreeMap.getKeyLTD Manual.ZhDocString.Ch19Ch20.G6.c053}
 
-{docstring Std.TreeMap.keyAtIdx}
+{zhdocstring Std.TreeMap.keyAtIdx Manual.ZhDocString.Ch19Ch20.G6.c054}
 
-{docstring Std.TreeMap.keyAtIdx!}
+{zhdocstring Std.TreeMap.keyAtIdx! Manual.ZhDocString.Ch19Ch20.G6.c055}
 
-{docstring Std.TreeMap.keyAtIdx?}
+{zhdocstring Std.TreeMap.keyAtIdx? Manual.ZhDocString.Ch19Ch20.G6.c056}
 
-{docstring Std.TreeMap.keyAtIdxD}
+{zhdocstring Std.TreeMap.keyAtIdxD Manual.ZhDocString.Ch19Ch20.G6.c057}
 
-{docstring Std.TreeMap.minEntry}
+{zhdocstring Std.TreeMap.minEntry Manual.ZhDocString.Ch19Ch20.G6.c058}
 
-{docstring Std.TreeMap.minEntry!}
+{zhdocstring Std.TreeMap.minEntry! Manual.ZhDocString.Ch19Ch20.G6.c059}
 
-{docstring Std.TreeMap.minEntry?}
+{zhdocstring Std.TreeMap.minEntry? Manual.ZhDocString.Ch19Ch20.G6.c060}
 
-{docstring Std.TreeMap.minEntryD}
+{zhdocstring Std.TreeMap.minEntryD Manual.ZhDocString.Ch19Ch20.G6.c061}
 
-{docstring Std.TreeMap.minKey}
+{zhdocstring Std.TreeMap.minKey Manual.ZhDocString.Ch19Ch20.G6.c062}
 
-{docstring Std.TreeMap.minKey!}
+{zhdocstring Std.TreeMap.minKey! Manual.ZhDocString.Ch19Ch20.G6.c063}
 
-{docstring Std.TreeMap.minKey?}
+{zhdocstring Std.TreeMap.minKey? Manual.ZhDocString.Ch19Ch20.G6.c064}
 
-{docstring Std.TreeMap.minKeyD}
+{zhdocstring Std.TreeMap.minKeyD Manual.ZhDocString.Ch19Ch20.G6.c065}
 
-{docstring Std.TreeMap.maxEntry}
+{zhdocstring Std.TreeMap.maxEntry Manual.ZhDocString.Ch19Ch20.G6.c066}
 
-{docstring Std.TreeMap.maxEntry!}
+{zhdocstring Std.TreeMap.maxEntry! Manual.ZhDocString.Ch19Ch20.G6.c067}
 
-{docstring Std.TreeMap.maxEntry?}
+{zhdocstring Std.TreeMap.maxEntry? Manual.ZhDocString.Ch19Ch20.G6.c068}
 
-{docstring Std.TreeMap.maxEntryD}
+{zhdocstring Std.TreeMap.maxEntryD Manual.ZhDocString.Ch19Ch20.G6.c069}
 
-{docstring Std.TreeMap.maxKey}
+{zhdocstring Std.TreeMap.maxKey Manual.ZhDocString.Ch19Ch20.G6.c070}
 
-{docstring Std.TreeMap.maxKey!}
+{zhdocstring Std.TreeMap.maxKey! Manual.ZhDocString.Ch19Ch20.G6.c071}
 
-{docstring Std.TreeMap.maxKey?}
+{zhdocstring Std.TreeMap.maxKey? Manual.ZhDocString.Ch19Ch20.G6.c072}
 
-{docstring Std.TreeMap.maxKeyD}
+{zhdocstring Std.TreeMap.maxKeyD Manual.ZhDocString.Ch19Ch20.G6.c073}
 
 
-# Modification
+# 修改
 
-{docstring Std.TreeMap.alter}
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Tree-Based-Maps--Modification"
+%%%
+{zhdocstring Std.TreeMap.alter Manual.ZhDocString.Ch19Ch20.G6.c074}
 
-{docstring Std.TreeMap.modify}
+{zhdocstring Std.TreeMap.modify Manual.ZhDocString.Ch19Ch20.G6.c075}
 
-{docstring Std.TreeMap.containsThenInsert}
+{zhdocstring Std.TreeMap.containsThenInsert Manual.ZhDocString.Ch19Ch20.G6.c076}
 
-{docstring Std.TreeMap.containsThenInsertIfNew}
+{zhdocstring Std.TreeMap.containsThenInsertIfNew Manual.ZhDocString.Ch19Ch20.G6.c077}
 
-{docstring Std.TreeMap.erase}
+{zhdocstring Std.TreeMap.erase Manual.ZhDocString.Ch19Ch20.G6.c078}
 
-{docstring Std.TreeMap.eraseMany}
+{zhdocstring Std.TreeMap.eraseMany Manual.ZhDocString.Ch19Ch20.G6.c079}
 
-{docstring Std.TreeMap.filter}
+{zhdocstring Std.TreeMap.filter Manual.ZhDocString.Ch19Ch20.G6.c080}
 
-{docstring Std.TreeMap.filterMap}
+{zhdocstring Std.TreeMap.filterMap Manual.ZhDocString.Ch19Ch20.G6.c081}
 
-{docstring Std.TreeMap.insert}
+{zhdocstring Std.TreeMap.insert Manual.ZhDocString.Ch19Ch20.G6.c082}
 
-{docstring Std.TreeMap.insertIfNew}
+{zhdocstring Std.TreeMap.insertIfNew Manual.ZhDocString.Ch19Ch20.G6.c083}
 
-{docstring Std.TreeMap.getThenInsertIfNew?}
+{zhdocstring Std.TreeMap.getThenInsertIfNew? Manual.ZhDocString.Ch19Ch20.G6.c084}
 
-{docstring Std.TreeMap.insertMany}
+{zhdocstring Std.TreeMap.insertMany Manual.ZhDocString.Ch19Ch20.G6.c085}
 
-{docstring Std.TreeMap.insertManyIfNewUnit}
+{zhdocstring Std.TreeMap.insertManyIfNewUnit Manual.ZhDocString.Ch19Ch20.G6.c086}
 
-{docstring Std.TreeMap.mergeWith}
+{zhdocstring Std.TreeMap.mergeWith Manual.ZhDocString.Ch19Ch20.G6.c087}
 
-{docstring Std.TreeMap.partition}
+{zhdocstring Std.TreeMap.partition Manual.ZhDocString.Ch19Ch20.G6.c088}
 
 
-# Iteration
+# 迭代
 
-{docstring Std.TreeMap.iter}
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Tree-Based-Maps--Iteration"
+%%%
+{zhdocstring Std.TreeMap.iter Manual.ZhDocString.Ch19Ch20.G6.c089}
 
-{docstring Std.TreeMap.keysIter}
+{zhdocstring Std.TreeMap.keysIter Manual.ZhDocString.Ch19Ch20.G6.c090}
 
-{docstring Std.TreeMap.valuesIter}
+{zhdocstring Std.TreeMap.valuesIter Manual.ZhDocString.Ch19Ch20.G6.c091}
 
-{docstring Std.TreeMap.map}
+{zhdocstring Std.TreeMap.map Manual.ZhDocString.Ch19Ch20.G6.c092}
 
-{docstring Std.TreeMap.all}
+{zhdocstring Std.TreeMap.all Manual.ZhDocString.Ch19Ch20.G6.c093}
 
-{docstring Std.TreeMap.any}
+{zhdocstring Std.TreeMap.any Manual.ZhDocString.Ch19Ch20.G6.c094}
 
-{docstring Std.TreeMap.foldl}
+{zhdocstring Std.TreeMap.foldl Manual.ZhDocString.Ch19Ch20.G6.c095}
 
-{docstring Std.TreeMap.foldlM}
+{zhdocstring Std.TreeMap.foldlM Manual.ZhDocString.Ch19Ch20.G6.c096}
 
-{docstring Std.TreeMap.foldr}
+{zhdocstring Std.TreeMap.foldr Manual.ZhDocString.Ch19Ch20.G6.c097}
 
-{docstring Std.TreeMap.foldrM}
+{zhdocstring Std.TreeMap.foldrM Manual.ZhDocString.Ch19Ch20.G6.c098}
 
-{docstring Std.TreeMap.forIn}
+{zhdocstring Std.TreeMap.forIn Manual.ZhDocString.Ch19Ch20.G6.c099}
 
-{docstring Std.TreeMap.forM}
+{zhdocstring Std.TreeMap.forM Manual.ZhDocString.Ch19Ch20.G6.c100}
 
-# Conversion
+# 转换
 
-{docstring Std.TreeMap.ofList}
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Tree-Based-Maps--Conversion"
+%%%
+{zhdocstring Std.TreeMap.ofList Manual.ZhDocString.Ch19Ch20.G6.c101}
 
-{docstring Std.TreeMap.toList}
+{zhdocstring Std.TreeMap.toList Manual.ZhDocString.Ch19Ch20.G6.c102}
 
-{docstring Std.TreeMap.ofArray}
+{zhdocstring Std.TreeMap.ofArray Manual.ZhDocString.Ch19Ch20.G6.c103}
 
-{docstring Std.TreeMap.toArray}
+{zhdocstring Std.TreeMap.toArray Manual.ZhDocString.Ch19Ch20.G6.c104}
 
-{docstring Std.TreeMap.unitOfArray}
+{zhdocstring Std.TreeMap.unitOfArray Manual.ZhDocString.Ch19Ch20.G6.c105}
 
-{docstring Std.TreeMap.unitOfList}
+{zhdocstring Std.TreeMap.unitOfList Manual.ZhDocString.Ch19Ch20.G6.c106}
 
-## Unbundled Variants
+## 分离式变体
 
-Unbundled maps separate well-formedness proofs from data.
-This is primarily useful when defining {ref "raw-data"}[nested inductive types].
-To use these variants, import the module `Std.TreeMap.Raw`.
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Tree-Based-Maps--Conversion--Unbundled-Variants"
+%%%
+分离式映射会将良构性证明与数据本身分开。
+这主要在定义 {ref "raw-data"}[嵌套归纳类型] 时有用。
+要使用这些变体，请导入模块 `Std.TreeMap.Raw`。
 
-{docstring Std.TreeMap.Raw}
+{zhdocstring Std.TreeMap.Raw Manual.ZhDocString.Ch19Ch20.G6.c107}
 
-{docstring Std.TreeMap.Raw.WF}
+{zhdocstring Std.TreeMap.Raw.WF Manual.ZhDocString.Ch19Ch20.G6.c108}
