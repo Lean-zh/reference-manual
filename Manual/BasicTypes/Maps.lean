@@ -7,6 +7,7 @@ Author: David Thrane Christiansen
 import VersoManual
 
 import Manual.Meta
+import Manual.ZhDocString.Ch19Ch20.G1
 
 import Manual.BasicTypes.Maps.TreeSet
 import Manual.BasicTypes.Maps.TreeMap
@@ -373,7 +374,7 @@ tag := "HashMap"
 
 本节中的声明应通过 `import Std.HashMap` 导入。
 
-{docstring Std.HashMap +hideFields +hideStructureConstructor}
+{zhdocstring Std.HashMap Manual.ZhDocString.Ch19Ch20.G1.c001 +hideFields +hideStructureConstructor}
 
 
 ## 创建
@@ -381,18 +382,18 @@ tag := "HashMap"
 %%%
 tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Hash-Maps--Creation"
 %%%
-{docstring Std.HashMap.emptyWithCapacity}
+{zhdocstring Std.HashMap.emptyWithCapacity Manual.ZhDocString.Ch19Ch20.G1.c002}
 
 ## 性质
 
 %%%
 tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Hash-Maps--Properties"
 %%%
-{docstring Std.HashMap.size}
+{zhdocstring Std.HashMap.size Manual.ZhDocString.Ch19Ch20.G1.c003}
 
-{docstring Std.HashMap.isEmpty}
+{zhdocstring Std.HashMap.isEmpty Manual.ZhDocString.Ch19Ch20.G1.c004}
 
-{docstring Std.HashMap.Equiv}
+{zhdocstring Std.HashMap.Equiv Manual.ZhDocString.Ch19Ch20.G1.c005}
 
 :::syntax term (title := "等价") (namespace := Std.HashMap)
 
@@ -409,100 +410,100 @@ $_ ~m $_
 %%%
 tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Hash-Maps--Queries"
 %%%
-{docstring Std.HashMap.contains}
+{zhdocstring Std.HashMap.contains Manual.ZhDocString.Ch19Ch20.G1.c006}
 
-{docstring Std.HashMap.get}
+{zhdocstring Std.HashMap.get Manual.ZhDocString.Ch19Ch20.G1.c007}
 
-{docstring Std.HashMap.get!}
+{zhdocstring Std.HashMap.get! Manual.ZhDocString.Ch19Ch20.G1.c008}
 
-{docstring Std.HashMap.get?}
+{zhdocstring Std.HashMap.get? Manual.ZhDocString.Ch19Ch20.G1.c009}
 
-{docstring Std.HashMap.getD}
+{zhdocstring Std.HashMap.getD Manual.ZhDocString.Ch19Ch20.G1.c010}
 
-{docstring Std.HashMap.getKey}
+{zhdocstring Std.HashMap.getKey Manual.ZhDocString.Ch19Ch20.G1.c011}
 
-{docstring Std.HashMap.getKey!}
+{zhdocstring Std.HashMap.getKey! Manual.ZhDocString.Ch19Ch20.G1.c012}
 
-{docstring Std.HashMap.getKey?}
+{zhdocstring Std.HashMap.getKey? Manual.ZhDocString.Ch19Ch20.G1.c013}
 
-{docstring Std.HashMap.getKeyD}
+{zhdocstring Std.HashMap.getKeyD Manual.ZhDocString.Ch19Ch20.G1.c014}
 
-{docstring Std.HashMap.keys}
+{zhdocstring Std.HashMap.keys Manual.ZhDocString.Ch19Ch20.G1.c015}
 
-{docstring Std.HashMap.keysArray}
+{zhdocstring Std.HashMap.keysArray Manual.ZhDocString.Ch19Ch20.G1.c016}
 
-{docstring Std.HashMap.values}
+{zhdocstring Std.HashMap.values Manual.ZhDocString.Ch19Ch20.G1.c017}
 
-{docstring Std.HashMap.valuesArray}
+{zhdocstring Std.HashMap.valuesArray Manual.ZhDocString.Ch19Ch20.G1.c018}
 
 ## 修改
 
 %%%
 tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Hash-Maps--Modification"
 %%%
-{docstring Std.HashMap.alter}
+{zhdocstring Std.HashMap.alter Manual.ZhDocString.Ch19Ch20.G1.c019}
 
-{docstring Std.HashMap.modify}
+{zhdocstring Std.HashMap.modify Manual.ZhDocString.Ch19Ch20.G1.c020}
 
-{docstring Std.HashMap.containsThenInsert}
+{zhdocstring Std.HashMap.containsThenInsert Manual.ZhDocString.Ch19Ch20.G1.c021}
 
-{docstring Std.HashMap.containsThenInsertIfNew}
+{zhdocstring Std.HashMap.containsThenInsertIfNew Manual.ZhDocString.Ch19Ch20.G1.c022}
 
-{docstring Std.HashMap.erase}
+{zhdocstring Std.HashMap.erase Manual.ZhDocString.Ch19Ch20.G1.c023}
 
-{docstring Std.HashMap.filter}
+{zhdocstring Std.HashMap.filter Manual.ZhDocString.Ch19Ch20.G1.c024}
 
-{docstring Std.HashMap.filterMap}
+{zhdocstring Std.HashMap.filterMap Manual.ZhDocString.Ch19Ch20.G1.c025}
 
-{docstring Std.HashMap.insert}
+{zhdocstring Std.HashMap.insert Manual.ZhDocString.Ch19Ch20.G1.c026}
 
-{docstring Std.HashMap.insertIfNew}
+{zhdocstring Std.HashMap.insertIfNew Manual.ZhDocString.Ch19Ch20.G1.c027}
 
-{docstring Std.HashMap.getThenInsertIfNew?}
+{zhdocstring Std.HashMap.getThenInsertIfNew? Manual.ZhDocString.Ch19Ch20.G1.c028}
 
-{docstring Std.HashMap.insertMany}
+{zhdocstring Std.HashMap.insertMany Manual.ZhDocString.Ch19Ch20.G1.c029}
 
-{docstring Std.HashMap.insertManyIfNewUnit}
+{zhdocstring Std.HashMap.insertManyIfNewUnit Manual.ZhDocString.Ch19Ch20.G1.c030}
 
-{docstring Std.HashMap.partition}
+{zhdocstring Std.HashMap.partition Manual.ZhDocString.Ch19Ch20.G1.c031}
 
-{docstring Std.HashMap.union}
+{zhdocstring Std.HashMap.union Manual.ZhDocString.Ch19Ch20.G1.c032}
 
 ## 迭代
 
 %%%
 tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Hash-Maps--Iteration"
 %%%
-{docstring Std.HashMap.iter}
+{zhdocstring Std.HashMap.iter Manual.ZhDocString.Ch19Ch20.G1.c033}
 
-{docstring Std.HashMap.keysIter}
+{zhdocstring Std.HashMap.keysIter Manual.ZhDocString.Ch19Ch20.G1.c034}
 
-{docstring Std.HashMap.valuesIter}
+{zhdocstring Std.HashMap.valuesIter Manual.ZhDocString.Ch19Ch20.G1.c035}
 
-{docstring Std.HashMap.map}
+{zhdocstring Std.HashMap.map Manual.ZhDocString.Ch19Ch20.G1.c036}
 
-{docstring Std.HashMap.fold}
+{zhdocstring Std.HashMap.fold Manual.ZhDocString.Ch19Ch20.G1.c037}
 
-{docstring Std.HashMap.foldM}
+{zhdocstring Std.HashMap.foldM Manual.ZhDocString.Ch19Ch20.G1.c038}
 
-{docstring Std.HashMap.forIn}
+{zhdocstring Std.HashMap.forIn Manual.ZhDocString.Ch19Ch20.G1.c039}
 
-{docstring Std.HashMap.forM}
+{zhdocstring Std.HashMap.forM Manual.ZhDocString.Ch19Ch20.G1.c040}
 
 ## 转换
 
 %%%
 tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Hash-Maps--Conversion"
 %%%
-{docstring Std.HashMap.ofList}
+{zhdocstring Std.HashMap.ofList Manual.ZhDocString.Ch19Ch20.G1.c041}
 
-{docstring Std.HashMap.toArray}
+{zhdocstring Std.HashMap.toArray Manual.ZhDocString.Ch19Ch20.G1.c042}
 
-{docstring Std.HashMap.toList}
+{zhdocstring Std.HashMap.toList Manual.ZhDocString.Ch19Ch20.G1.c043}
 
-{docstring Std.HashMap.unitOfArray}
+{zhdocstring Std.HashMap.unitOfArray Manual.ZhDocString.Ch19Ch20.G1.c044}
 
-{docstring Std.HashMap.unitOfList}
+{zhdocstring Std.HashMap.unitOfList Manual.ZhDocString.Ch19Ch20.G1.c045}
 
 ## 分离式变体
 
@@ -513,9 +514,9 @@ tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Hash-Maps--Unbundle
 这主要在定义 {ref "raw-data"}[嵌套归纳类型] 时有用。
 要使用这些变体，请导入模块 `Std.HashMap.Raw` 与 `Std.HashMap.RawLemmas`。
 
-{docstring Std.HashMap.Raw}
+{zhdocstring Std.HashMap.Raw Manual.ZhDocString.Ch19Ch20.G1.c046}
 
-{docstring Std.HashMap.Raw.WF}
+{zhdocstring Std.HashMap.Raw.WF Manual.ZhDocString.Ch19Ch20.G1.c047}
 
 # 依值哈希映射
 %%%
@@ -524,25 +525,25 @@ tag := "DHashMap"
 
 本节中的声明应通过 `import Std.DHashMap` 导入。
 
-{docstring Std.DHashMap +hideFields +hideStructureConstructor}
+{zhdocstring Std.DHashMap Manual.ZhDocString.Ch19Ch20.G1.c048 +hideFields +hideStructureConstructor}
 
 ## 创建
 
 %%%
 tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Dependent-Hash-Maps--Creation"
 %%%
-{docstring Std.DHashMap.emptyWithCapacity}
+{zhdocstring Std.DHashMap.emptyWithCapacity Manual.ZhDocString.Ch19Ch20.G1.c049}
 
 ## 性质
 
 %%%
 tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Dependent-Hash-Maps--Properties"
 %%%
-{docstring Std.DHashMap.size}
+{zhdocstring Std.DHashMap.size Manual.ZhDocString.Ch19Ch20.G1.c050}
 
-{docstring Std.DHashMap.isEmpty}
+{zhdocstring Std.DHashMap.isEmpty Manual.ZhDocString.Ch19Ch20.G1.c051}
 
-{docstring Std.DHashMap.Equiv}
+{zhdocstring Std.DHashMap.Equiv Manual.ZhDocString.Ch19Ch20.G1.c052}
 
 :::syntax term (title := "等价") (namespace := Std.DHashMap)
 
@@ -559,95 +560,95 @@ $_ ~m $_
 %%%
 tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Dependent-Hash-Maps--Queries"
 %%%
-{docstring Std.DHashMap.contains}
+{zhdocstring Std.DHashMap.contains Manual.ZhDocString.Ch19Ch20.G1.c053}
 
-{docstring Std.DHashMap.get}
+{zhdocstring Std.DHashMap.get Manual.ZhDocString.Ch19Ch20.G1.c054}
 
-{docstring Std.DHashMap.get!}
+{zhdocstring Std.DHashMap.get! Manual.ZhDocString.Ch19Ch20.G1.c055}
 
-{docstring Std.DHashMap.get?}
+{zhdocstring Std.DHashMap.get? Manual.ZhDocString.Ch19Ch20.G1.c056}
 
-{docstring Std.DHashMap.getD}
+{zhdocstring Std.DHashMap.getD Manual.ZhDocString.Ch19Ch20.G1.c057}
 
-{docstring Std.DHashMap.getKey}
+{zhdocstring Std.DHashMap.getKey Manual.ZhDocString.Ch19Ch20.G1.c058}
 
-{docstring Std.DHashMap.getKey!}
+{zhdocstring Std.DHashMap.getKey! Manual.ZhDocString.Ch19Ch20.G1.c059}
 
-{docstring Std.DHashMap.getKey?}
+{zhdocstring Std.DHashMap.getKey? Manual.ZhDocString.Ch19Ch20.G1.c060}
 
-{docstring Std.DHashMap.getKeyD}
+{zhdocstring Std.DHashMap.getKeyD Manual.ZhDocString.Ch19Ch20.G1.c061}
 
-{docstring Std.DHashMap.keys}
+{zhdocstring Std.DHashMap.keys Manual.ZhDocString.Ch19Ch20.G1.c062}
 
-{docstring Std.DHashMap.keysArray}
+{zhdocstring Std.DHashMap.keysArray Manual.ZhDocString.Ch19Ch20.G1.c063}
 
-{docstring Std.DHashMap.values}
+{zhdocstring Std.DHashMap.values Manual.ZhDocString.Ch19Ch20.G1.c064}
 
 
-{docstring Std.DHashMap.valuesArray}
+{zhdocstring Std.DHashMap.valuesArray Manual.ZhDocString.Ch19Ch20.G1.c065}
 
 ## 修改
 
 %%%
 tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Dependent-Hash-Maps--Modification"
 %%%
-{docstring Std.DHashMap.alter}
+{zhdocstring Std.DHashMap.alter Manual.ZhDocString.Ch19Ch20.G1.c066}
 
-{docstring Std.DHashMap.modify}
+{zhdocstring Std.DHashMap.modify Manual.ZhDocString.Ch19Ch20.G1.c067}
 
-{docstring Std.DHashMap.containsThenInsert}
+{zhdocstring Std.DHashMap.containsThenInsert Manual.ZhDocString.Ch19Ch20.G1.c068}
 
-{docstring Std.DHashMap.containsThenInsertIfNew}
+{zhdocstring Std.DHashMap.containsThenInsertIfNew Manual.ZhDocString.Ch19Ch20.G1.c069}
 
-{docstring Std.DHashMap.erase}
+{zhdocstring Std.DHashMap.erase Manual.ZhDocString.Ch19Ch20.G1.c070}
 
-{docstring Std.DHashMap.filter}
+{zhdocstring Std.DHashMap.filter Manual.ZhDocString.Ch19Ch20.G1.c071}
 
-{docstring Std.DHashMap.filterMap}
+{zhdocstring Std.DHashMap.filterMap Manual.ZhDocString.Ch19Ch20.G1.c072}
 
-{docstring Std.DHashMap.insert}
+{zhdocstring Std.DHashMap.insert Manual.ZhDocString.Ch19Ch20.G1.c073}
 
-{docstring Std.DHashMap.insertIfNew}
+{zhdocstring Std.DHashMap.insertIfNew Manual.ZhDocString.Ch19Ch20.G1.c074}
 
-{docstring Std.DHashMap.getThenInsertIfNew?}
+{zhdocstring Std.DHashMap.getThenInsertIfNew? Manual.ZhDocString.Ch19Ch20.G1.c075}
 
-{docstring Std.DHashMap.insertMany}
+{zhdocstring Std.DHashMap.insertMany Manual.ZhDocString.Ch19Ch20.G1.c076}
 
-{docstring Std.DHashMap.partition}
+{zhdocstring Std.DHashMap.partition Manual.ZhDocString.Ch19Ch20.G1.c077}
 
-{docstring Std.DHashMap.union}
+{zhdocstring Std.DHashMap.union Manual.ZhDocString.Ch19Ch20.G1.c078}
 
 ## 迭代
 
 %%%
 tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Dependent-Hash-Maps--Iteration"
 %%%
-{docstring Std.DHashMap.iter}
+{zhdocstring Std.DHashMap.iter Manual.ZhDocString.Ch19Ch20.G1.c079}
 
-{docstring Std.DHashMap.keysIter}
+{zhdocstring Std.DHashMap.keysIter Manual.ZhDocString.Ch19Ch20.G1.c080}
 
-{docstring Std.DHashMap.valuesIter}
+{zhdocstring Std.DHashMap.valuesIter Manual.ZhDocString.Ch19Ch20.G1.c081}
 
-{docstring Std.DHashMap.map}
+{zhdocstring Std.DHashMap.map Manual.ZhDocString.Ch19Ch20.G1.c082}
 
-{docstring Std.DHashMap.fold}
+{zhdocstring Std.DHashMap.fold Manual.ZhDocString.Ch19Ch20.G1.c083}
 
-{docstring Std.DHashMap.foldM}
+{zhdocstring Std.DHashMap.foldM Manual.ZhDocString.Ch19Ch20.G1.c084}
 
-{docstring Std.DHashMap.forIn}
+{zhdocstring Std.DHashMap.forIn Manual.ZhDocString.Ch19Ch20.G1.c085}
 
-{docstring Std.DHashMap.forM}
+{zhdocstring Std.DHashMap.forM Manual.ZhDocString.Ch19Ch20.G1.c086}
 
 ## 转换
 
 %%%
 tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Dependent-Hash-Maps--Conversion"
 %%%
-{docstring Std.DHashMap.ofList}
+{zhdocstring Std.DHashMap.ofList Manual.ZhDocString.Ch19Ch20.G1.c087}
 
-{docstring Std.DHashMap.toArray}
+{zhdocstring Std.DHashMap.toArray Manual.ZhDocString.Ch19Ch20.G1.c088}
 
-{docstring Std.DHashMap.toList}
+{zhdocstring Std.DHashMap.toList Manual.ZhDocString.Ch19Ch20.G1.c089}
 
 ## 分离式变体
 
@@ -658,9 +659,9 @@ tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Dependent-Hash-Maps
 这主要在定义 {ref "raw-data"}[嵌套归纳类型] 时有用。
 要使用这些变体，请导入模块 `Std.DHashMap.Raw` 与 `Std.DHashMap.RawLemmas`。
 
-{docstring Std.DHashMap.Raw}
+{zhdocstring Std.DHashMap.Raw Manual.ZhDocString.Ch19Ch20.G1.c090}
 
-{docstring Std.DHashMap.Raw.WF}
+{zhdocstring Std.DHashMap.Raw.WF Manual.ZhDocString.Ch19Ch20.G1.c091}
 
 # 外延哈希映射
 %%%
@@ -669,93 +670,93 @@ tag := "ExtHashMap"
 
 本节中的声明应通过 `import Std.ExtHashMap` 导入。
 
-{docstring Std.ExtHashMap +hideFields +hideStructureConstructor}
+{zhdocstring Std.ExtHashMap Manual.ZhDocString.Ch19Ch20.G1.c092 +hideFields +hideStructureConstructor}
 
 ## 创建
 
 %%%
 tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Extensional-Hash-Maps--Creation"
 %%%
-{docstring Std.ExtHashMap.emptyWithCapacity}
+{zhdocstring Std.ExtHashMap.emptyWithCapacity Manual.ZhDocString.Ch19Ch20.G1.c093}
 
 ## 性质
 
 %%%
 tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Extensional-Hash-Maps--Properties"
 %%%
-{docstring Std.ExtHashMap.size}
+{zhdocstring Std.ExtHashMap.size Manual.ZhDocString.Ch19Ch20.G1.c094}
 
-{docstring Std.ExtHashMap.isEmpty}
+{zhdocstring Std.ExtHashMap.isEmpty Manual.ZhDocString.Ch19Ch20.G1.c095}
 
 ## 查询
 
 %%%
 tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Extensional-Hash-Maps--Queries"
 %%%
-{docstring Std.ExtHashMap.contains}
+{zhdocstring Std.ExtHashMap.contains Manual.ZhDocString.Ch19Ch20.G1.c096}
 
-{docstring Std.ExtHashMap.get}
+{zhdocstring Std.ExtHashMap.get Manual.ZhDocString.Ch19Ch20.G1.c097}
 
-{docstring Std.ExtHashMap.get!}
+{zhdocstring Std.ExtHashMap.get! Manual.ZhDocString.Ch19Ch20.G1.c098}
 
-{docstring Std.ExtHashMap.get?}
+{zhdocstring Std.ExtHashMap.get? Manual.ZhDocString.Ch19Ch20.G1.c099}
 
-{docstring Std.ExtHashMap.getD}
+{zhdocstring Std.ExtHashMap.getD Manual.ZhDocString.Ch19Ch20.G1.c100}
 
-{docstring Std.ExtHashMap.getKey}
+{zhdocstring Std.ExtHashMap.getKey Manual.ZhDocString.Ch19Ch20.G1.c101}
 
-{docstring Std.ExtHashMap.getKey!}
+{zhdocstring Std.ExtHashMap.getKey! Manual.ZhDocString.Ch19Ch20.G1.c102}
 
-{docstring Std.ExtHashMap.getKey?}
+{zhdocstring Std.ExtHashMap.getKey? Manual.ZhDocString.Ch19Ch20.G1.c103}
 
-{docstring Std.ExtHashMap.getKeyD}
+{zhdocstring Std.ExtHashMap.getKeyD Manual.ZhDocString.Ch19Ch20.G1.c104}
 
 ## 修改
 
 %%%
 tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Extensional-Hash-Maps--Modification"
 %%%
-{docstring Std.ExtHashMap.alter}
+{zhdocstring Std.ExtHashMap.alter Manual.ZhDocString.Ch19Ch20.G1.c105}
 
-{docstring Std.ExtHashMap.modify}
+{zhdocstring Std.ExtHashMap.modify Manual.ZhDocString.Ch19Ch20.G1.c106}
 
-{docstring Std.ExtHashMap.containsThenInsert}
+{zhdocstring Std.ExtHashMap.containsThenInsert Manual.ZhDocString.Ch19Ch20.G1.c107}
 
-{docstring Std.ExtHashMap.containsThenInsertIfNew}
+{zhdocstring Std.ExtHashMap.containsThenInsertIfNew Manual.ZhDocString.Ch19Ch20.G1.c108}
 
-{docstring Std.ExtHashMap.erase}
+{zhdocstring Std.ExtHashMap.erase Manual.ZhDocString.Ch19Ch20.G1.c109}
 
-{docstring Std.ExtHashMap.filter}
+{zhdocstring Std.ExtHashMap.filter Manual.ZhDocString.Ch19Ch20.G1.c110}
 
-{docstring Std.ExtHashMap.filterMap}
+{zhdocstring Std.ExtHashMap.filterMap Manual.ZhDocString.Ch19Ch20.G1.c111}
 
-{docstring Std.ExtHashMap.insert}
+{zhdocstring Std.ExtHashMap.insert Manual.ZhDocString.Ch19Ch20.G1.c112}
 
-{docstring Std.ExtHashMap.insertIfNew}
+{zhdocstring Std.ExtHashMap.insertIfNew Manual.ZhDocString.Ch19Ch20.G1.c113}
 
-{docstring Std.ExtHashMap.getThenInsertIfNew?}
+{zhdocstring Std.ExtHashMap.getThenInsertIfNew? Manual.ZhDocString.Ch19Ch20.G1.c114}
 
-{docstring Std.ExtHashMap.insertMany}
+{zhdocstring Std.ExtHashMap.insertMany Manual.ZhDocString.Ch19Ch20.G1.c115}
 
-{docstring Std.ExtHashMap.insertManyIfNewUnit}
+{zhdocstring Std.ExtHashMap.insertManyIfNewUnit Manual.ZhDocString.Ch19Ch20.G1.c116}
 
 ## 迭代
 
 %%%
 tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Extensional-Hash-Maps--Iteration"
 %%%
-{docstring Std.ExtHashMap.map}
+{zhdocstring Std.ExtHashMap.map Manual.ZhDocString.Ch19Ch20.G1.c117}
 
 ## 转换
 
 %%%
 tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Extensional-Hash-Maps--Conversion"
 %%%
-{docstring Std.ExtHashMap.ofList}
+{zhdocstring Std.ExtHashMap.ofList Manual.ZhDocString.Ch19Ch20.G1.c118}
 
-{docstring Std.ExtHashMap.unitOfArray}
+{zhdocstring Std.ExtHashMap.unitOfArray Manual.ZhDocString.Ch19Ch20.G1.c119}
 
-{docstring Std.ExtHashMap.unitOfList}
+{zhdocstring Std.ExtHashMap.unitOfList Manual.ZhDocString.Ch19Ch20.G1.c120}
 
 # 外延依值哈希映射
 %%%
@@ -764,23 +765,23 @@ tag := "ExtDHashMap"
 
 本节中的声明应通过 `import Std.ExtDHashMap` 导入。
 
-{docstring Std.ExtDHashMap +hideFields +hideStructureConstructor}
+{zhdocstring Std.ExtDHashMap Manual.ZhDocString.Ch19Ch20.G1.c121 +hideFields +hideStructureConstructor}
 
 ## 创建
 
 %%%
 tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Extensional-Dependent-Hash-Maps--Creation"
 %%%
-{docstring Std.ExtDHashMap.emptyWithCapacity}
+{zhdocstring Std.ExtDHashMap.emptyWithCapacity Manual.ZhDocString.Ch19Ch20.G1.c122}
 
 ## 性质
 
 %%%
 tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Extensional-Dependent-Hash-Maps--Properties"
 %%%
-{docstring Std.ExtDHashMap.size}
+{zhdocstring Std.ExtDHashMap.size Manual.ZhDocString.Ch19Ch20.G1.c123}
 
-{docstring Std.ExtDHashMap.isEmpty}
+{zhdocstring Std.ExtDHashMap.isEmpty Manual.ZhDocString.Ch19Ch20.G1.c124}
 
 
 ## 查询
@@ -788,50 +789,50 @@ tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Extensional-Depende
 %%%
 tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Extensional-Dependent-Hash-Maps--Queries"
 %%%
-{docstring Std.ExtDHashMap.contains}
+{zhdocstring Std.ExtDHashMap.contains Manual.ZhDocString.Ch19Ch20.G1.c125}
 
-{docstring Std.ExtDHashMap.get}
+{zhdocstring Std.ExtDHashMap.get Manual.ZhDocString.Ch19Ch20.G1.c126}
 
-{docstring Std.ExtDHashMap.get!}
+{zhdocstring Std.ExtDHashMap.get! Manual.ZhDocString.Ch19Ch20.G1.c127}
 
-{docstring Std.ExtDHashMap.get?}
+{zhdocstring Std.ExtDHashMap.get? Manual.ZhDocString.Ch19Ch20.G1.c128}
 
-{docstring Std.ExtDHashMap.getD}
+{zhdocstring Std.ExtDHashMap.getD Manual.ZhDocString.Ch19Ch20.G1.c129}
 
-{docstring Std.ExtDHashMap.getKey}
+{zhdocstring Std.ExtDHashMap.getKey Manual.ZhDocString.Ch19Ch20.G1.c130}
 
-{docstring Std.ExtDHashMap.getKey!}
+{zhdocstring Std.ExtDHashMap.getKey! Manual.ZhDocString.Ch19Ch20.G1.c131}
 
-{docstring Std.ExtDHashMap.getKey?}
+{zhdocstring Std.ExtDHashMap.getKey? Manual.ZhDocString.Ch19Ch20.G1.c132}
 
-{docstring Std.ExtDHashMap.getKeyD}
+{zhdocstring Std.ExtDHashMap.getKeyD Manual.ZhDocString.Ch19Ch20.G1.c133}
 
 ## 修改
 
 %%%
 tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Extensional-Dependent-Hash-Maps--Modification"
 %%%
-{docstring Std.ExtDHashMap.alter}
+{zhdocstring Std.ExtDHashMap.alter Manual.ZhDocString.Ch19Ch20.G1.c134}
 
-{docstring Std.ExtDHashMap.modify}
+{zhdocstring Std.ExtDHashMap.modify Manual.ZhDocString.Ch19Ch20.G1.c135}
 
-{docstring Std.ExtDHashMap.containsThenInsert}
+{zhdocstring Std.ExtDHashMap.containsThenInsert Manual.ZhDocString.Ch19Ch20.G1.c136}
 
-{docstring Std.ExtDHashMap.containsThenInsertIfNew}
+{zhdocstring Std.ExtDHashMap.containsThenInsertIfNew Manual.ZhDocString.Ch19Ch20.G1.c137}
 
-{docstring Std.ExtDHashMap.erase}
+{zhdocstring Std.ExtDHashMap.erase Manual.ZhDocString.Ch19Ch20.G1.c138}
 
-{docstring Std.ExtDHashMap.filter}
+{zhdocstring Std.ExtDHashMap.filter Manual.ZhDocString.Ch19Ch20.G1.c139}
 
-{docstring Std.ExtDHashMap.filterMap}
+{zhdocstring Std.ExtDHashMap.filterMap Manual.ZhDocString.Ch19Ch20.G1.c140}
 
-{docstring Std.ExtDHashMap.insert}
+{zhdocstring Std.ExtDHashMap.insert Manual.ZhDocString.Ch19Ch20.G1.c141}
 
-{docstring Std.ExtDHashMap.insertIfNew}
+{zhdocstring Std.ExtDHashMap.insertIfNew Manual.ZhDocString.Ch19Ch20.G1.c142}
 
-{docstring Std.ExtDHashMap.getThenInsertIfNew?}
+{zhdocstring Std.ExtDHashMap.getThenInsertIfNew? Manual.ZhDocString.Ch19Ch20.G1.c143}
 
-{docstring Std.ExtDHashMap.insertMany}
+{zhdocstring Std.ExtDHashMap.insertMany Manual.ZhDocString.Ch19Ch20.G1.c144}
 
 
 ## 迭代
@@ -839,14 +840,14 @@ tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Extensional-Depende
 %%%
 tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Extensional-Dependent-Hash-Maps--Iteration"
 %%%
-{docstring Std.ExtDHashMap.map}
+{zhdocstring Std.ExtDHashMap.map Manual.ZhDocString.Ch19Ch20.G1.c145}
 
 ## 转换
 
 %%%
 tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Extensional-Dependent-Hash-Maps--Conversion"
 %%%
-{docstring Std.ExtDHashMap.ofList}
+{zhdocstring Std.ExtDHashMap.ofList Manual.ZhDocString.Ch19Ch20.G1.c146}
 
 
 # 哈希集合
@@ -854,25 +855,25 @@ tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Extensional-Depende
 tag := "HashSet"
 %%%
 
-{docstring Std.HashSet}
+{zhdocstring Std.HashSet Manual.ZhDocString.Ch19Ch20.G1.c147}
 
 ## 创建
 
 %%%
 tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Hash-Sets--Creation"
 %%%
-{docstring Std.HashSet.emptyWithCapacity}
+{zhdocstring Std.HashSet.emptyWithCapacity Manual.ZhDocString.Ch19Ch20.G1.c148}
 
 ## 性质
 
 %%%
 tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Hash-Sets--Properties"
 %%%
-{docstring Std.HashSet.isEmpty}
+{zhdocstring Std.HashSet.isEmpty Manual.ZhDocString.Ch19Ch20.G1.c149}
 
-{docstring Std.HashSet.size}
+{zhdocstring Std.HashSet.size Manual.ZhDocString.Ch19Ch20.G1.c150}
 
-{docstring Std.HashSet.Equiv}
+{zhdocstring Std.HashSet.Equiv Manual.ZhDocString.Ch19Ch20.G1.c151}
 
 :::syntax term (title := "等价") (namespace := Std.HashMap)
 
@@ -891,15 +892,15 @@ $_ ~m $_
 %%%
 tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Hash-Sets--Queries"
 %%%
-{docstring Std.HashSet.contains}
+{zhdocstring Std.HashSet.contains Manual.ZhDocString.Ch19Ch20.G1.c152}
 
-{docstring Std.HashSet.get}
+{zhdocstring Std.HashSet.get Manual.ZhDocString.Ch19Ch20.G1.c153}
 
-{docstring Std.HashSet.get!}
+{zhdocstring Std.HashSet.get! Manual.ZhDocString.Ch19Ch20.G1.c154}
 
-{docstring Std.HashSet.get?}
+{zhdocstring Std.HashSet.get? Manual.ZhDocString.Ch19Ch20.G1.c155}
 
-{docstring Std.HashSet.getD}
+{zhdocstring Std.HashSet.getD Manual.ZhDocString.Ch19Ch20.G1.c156}
 
 
 ## 修改
@@ -907,51 +908,51 @@ tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Hash-Sets--Queries"
 %%%
 tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Hash-Sets--Modification"
 %%%
-{docstring Std.HashSet.insert}
+{zhdocstring Std.HashSet.insert Manual.ZhDocString.Ch19Ch20.G1.c157}
 
-{docstring Std.HashSet.insertMany}
+{zhdocstring Std.HashSet.insertMany Manual.ZhDocString.Ch19Ch20.G1.c158}
 
-{docstring Std.HashSet.erase}
+{zhdocstring Std.HashSet.erase Manual.ZhDocString.Ch19Ch20.G1.c159}
 
-{docstring Std.HashSet.filter}
+{zhdocstring Std.HashSet.filter Manual.ZhDocString.Ch19Ch20.G1.c160}
 
-{docstring Std.HashSet.containsThenInsert}
+{zhdocstring Std.HashSet.containsThenInsert Manual.ZhDocString.Ch19Ch20.G1.c161}
 
-{docstring Std.HashSet.partition}
+{zhdocstring Std.HashSet.partition Manual.ZhDocString.Ch19Ch20.G1.c162}
 
-{docstring Std.HashSet.union}
+{zhdocstring Std.HashSet.union Manual.ZhDocString.Ch19Ch20.G1.c163}
 
 ## 迭代
 
 %%%
 tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Hash-Sets--Iteration"
 %%%
-{docstring Std.HashSet.iter}
+{zhdocstring Std.HashSet.iter Manual.ZhDocString.Ch19Ch20.G1.c164}
 
-{docstring Std.HashSet.all}
+{zhdocstring Std.HashSet.all Manual.ZhDocString.Ch19Ch20.G1.c165}
 
-{docstring Std.HashSet.any}
+{zhdocstring Std.HashSet.any Manual.ZhDocString.Ch19Ch20.G1.c166}
 
-{docstring Std.HashSet.fold}
+{zhdocstring Std.HashSet.fold Manual.ZhDocString.Ch19Ch20.G1.c167}
 
-{docstring Std.HashSet.foldM}
+{zhdocstring Std.HashSet.foldM Manual.ZhDocString.Ch19Ch20.G1.c168}
 
-{docstring Std.HashSet.forIn}
+{zhdocstring Std.HashSet.forIn Manual.ZhDocString.Ch19Ch20.G1.c169}
 
-{docstring Std.HashSet.forM}
+{zhdocstring Std.HashSet.forM Manual.ZhDocString.Ch19Ch20.G1.c170}
 
 ## 转换
 
 %%%
 tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Hash-Sets--Conversion"
 %%%
-{docstring Std.HashSet.ofList}
+{zhdocstring Std.HashSet.ofList Manual.ZhDocString.Ch19Ch20.G1.c171}
 
-{docstring Std.HashSet.toList}
+{zhdocstring Std.HashSet.toList Manual.ZhDocString.Ch19Ch20.G1.c172}
 
-{docstring Std.HashSet.ofArray}
+{zhdocstring Std.HashSet.ofArray Manual.ZhDocString.Ch19Ch20.G1.c173}
 
-{docstring Std.HashSet.toArray}
+{zhdocstring Std.HashSet.toArray Manual.ZhDocString.Ch19Ch20.G1.c174}
 
 ## 分离式变体
 
@@ -962,9 +963,9 @@ tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Hash-Sets--Unbundle
 这主要在定义 {ref "raw-data"}[嵌套归纳类型] 时有用。
 要使用这些变体，请导入模块 `Std.HashSet.Raw` 与 `Std.HashSet.RawLemmas`。
 
-{docstring Std.HashSet.Raw}
+{zhdocstring Std.HashSet.Raw Manual.ZhDocString.Ch19Ch20.G1.c175}
 
-{docstring Std.HashSet.Raw.WF}
+{zhdocstring Std.HashSet.Raw.WF Manual.ZhDocString.Ch19Ch20.G1.c176}
 
 
 # 外延哈希集合
@@ -972,23 +973,23 @@ tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Hash-Sets--Unbundle
 tag := "ExtHashSet"
 %%%
 
-{docstring Std.ExtHashSet}
+{zhdocstring Std.ExtHashSet Manual.ZhDocString.Ch19Ch20.G1.c177}
 
 ## 创建
 
 %%%
 tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Extensional-Hash-Sets--Creation"
 %%%
-{docstring Std.ExtHashSet.emptyWithCapacity}
+{zhdocstring Std.ExtHashSet.emptyWithCapacity Manual.ZhDocString.Ch19Ch20.G1.c178}
 
 ## 性质
 
 %%%
 tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Extensional-Hash-Sets--Properties"
 %%%
-{docstring Std.ExtHashSet.isEmpty}
+{zhdocstring Std.ExtHashSet.isEmpty Manual.ZhDocString.Ch19Ch20.G1.c179}
 
-{docstring Std.ExtHashSet.size}
+{zhdocstring Std.ExtHashSet.size Manual.ZhDocString.Ch19Ch20.G1.c180}
 
 
 ## 查询
@@ -996,15 +997,15 @@ tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Extensional-Hash-Se
 %%%
 tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Extensional-Hash-Sets--Queries"
 %%%
-{docstring Std.ExtHashSet.contains}
+{zhdocstring Std.ExtHashSet.contains Manual.ZhDocString.Ch19Ch20.G1.c181}
 
-{docstring Std.ExtHashSet.get}
+{zhdocstring Std.ExtHashSet.get Manual.ZhDocString.Ch19Ch20.G1.c182}
 
-{docstring Std.ExtHashSet.get!}
+{zhdocstring Std.ExtHashSet.get! Manual.ZhDocString.Ch19Ch20.G1.c183}
 
-{docstring Std.ExtHashSet.get?}
+{zhdocstring Std.ExtHashSet.get? Manual.ZhDocString.Ch19Ch20.G1.c184}
 
-{docstring Std.ExtHashSet.getD}
+{zhdocstring Std.ExtHashSet.getD Manual.ZhDocString.Ch19Ch20.G1.c185}
 
 
 ## 修改
@@ -1012,24 +1013,24 @@ tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Extensional-Hash-Se
 %%%
 tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Extensional-Hash-Sets--Modification"
 %%%
-{docstring Std.ExtHashSet.insert}
+{zhdocstring Std.ExtHashSet.insert Manual.ZhDocString.Ch19Ch20.G1.c186}
 
-{docstring Std.ExtHashSet.insertMany}
+{zhdocstring Std.ExtHashSet.insertMany Manual.ZhDocString.Ch19Ch20.G1.c187}
 
-{docstring Std.ExtHashSet.erase}
+{zhdocstring Std.ExtHashSet.erase Manual.ZhDocString.Ch19Ch20.G1.c188}
 
-{docstring Std.ExtHashSet.filter}
+{zhdocstring Std.ExtHashSet.filter Manual.ZhDocString.Ch19Ch20.G1.c189}
 
-{docstring Std.ExtHashSet.containsThenInsert}
+{zhdocstring Std.ExtHashSet.containsThenInsert Manual.ZhDocString.Ch19Ch20.G1.c190}
 
 ## 转换
 
 %%%
 tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Extensional-Hash-Sets--Conversion"
 %%%
-{docstring Std.ExtHashSet.ofList}
+{zhdocstring Std.ExtHashSet.ofList Manual.ZhDocString.Ch19Ch20.G1.c191}
 
-{docstring Std.ExtHashSet.ofArray}
+{zhdocstring Std.ExtHashSet.ofArray Manual.ZhDocString.Ch19Ch20.G1.c192}
 
 {include 1 Manual.BasicTypes.Maps.TreeMap}
 
@@ -1041,115 +1042,115 @@ tag := "DTreeMap"
 
 本节中的声明应通过 `import Std.DTreeMap` 导入。
 
-{docstring Std.DTreeMap +hideFields +hideStructureConstructor}
+{zhdocstring Std.DTreeMap Manual.ZhDocString.Ch19Ch20.G1.c193 +hideFields +hideStructureConstructor}
 
 ## 创建
 
 %%%
 tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Dependent-Tree-Based-Maps--Creation"
 %%%
-{docstring Std.DTreeMap.empty}
+{zhdocstring Std.DTreeMap.empty Manual.ZhDocString.Ch19Ch20.G1.c194}
 
 ## 性质
 
 %%%
 tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Dependent-Tree-Based-Maps--Properties"
 %%%
-{docstring Std.DTreeMap.size}
+{zhdocstring Std.DTreeMap.size Manual.ZhDocString.Ch19Ch20.G1.c195}
 
-{docstring Std.DTreeMap.isEmpty}
+{zhdocstring Std.DTreeMap.isEmpty Manual.ZhDocString.Ch19Ch20.G1.c196}
 
 ## 查询
 
 %%%
 tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Dependent-Tree-Based-Maps--Queries"
 %%%
-{docstring Std.DTreeMap.contains}
+{zhdocstring Std.DTreeMap.contains Manual.ZhDocString.Ch19Ch20.G1.c197}
 
-{docstring Std.DTreeMap.get}
+{zhdocstring Std.DTreeMap.get Manual.ZhDocString.Ch19Ch20.G1.c198}
 
-{docstring Std.DTreeMap.get!}
+{zhdocstring Std.DTreeMap.get! Manual.ZhDocString.Ch19Ch20.G1.c199}
 
-{docstring Std.DTreeMap.get?}
+{zhdocstring Std.DTreeMap.get? Manual.ZhDocString.Ch19Ch20.G1.c200}
 
-{docstring Std.DTreeMap.getD}
+{zhdocstring Std.DTreeMap.getD Manual.ZhDocString.Ch19Ch20.G1.c201}
 
-{docstring Std.DTreeMap.getKey}
+{zhdocstring Std.DTreeMap.getKey Manual.ZhDocString.Ch19Ch20.G1.c202}
 
-{docstring Std.DTreeMap.getKey!}
+{zhdocstring Std.DTreeMap.getKey! Manual.ZhDocString.Ch19Ch20.G1.c203}
 
-{docstring Std.DTreeMap.getKey?}
+{zhdocstring Std.DTreeMap.getKey? Manual.ZhDocString.Ch19Ch20.G1.c204}
 
-{docstring Std.DTreeMap.getKeyD}
+{zhdocstring Std.DTreeMap.getKeyD Manual.ZhDocString.Ch19Ch20.G1.c205}
 
-{docstring Std.DTreeMap.keys}
+{zhdocstring Std.DTreeMap.keys Manual.ZhDocString.Ch19Ch20.G1.c206}
 
-{docstring Std.DTreeMap.keysArray}
+{zhdocstring Std.DTreeMap.keysArray Manual.ZhDocString.Ch19Ch20.G1.c207}
 
-{docstring Std.DTreeMap.values}
+{zhdocstring Std.DTreeMap.values Manual.ZhDocString.Ch19Ch20.G1.c208}
 
-{docstring Std.DTreeMap.valuesArray}
+{zhdocstring Std.DTreeMap.valuesArray Manual.ZhDocString.Ch19Ch20.G1.c209}
 
 ## 修改
 
 %%%
 tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Dependent-Tree-Based-Maps--Modification"
 %%%
-{docstring Std.DTreeMap.alter}
+{zhdocstring Std.DTreeMap.alter Manual.ZhDocString.Ch19Ch20.G1.c210}
 
-{docstring Std.DTreeMap.modify}
+{zhdocstring Std.DTreeMap.modify Manual.ZhDocString.Ch19Ch20.G1.c211}
 
-{docstring Std.DTreeMap.containsThenInsert}
+{zhdocstring Std.DTreeMap.containsThenInsert Manual.ZhDocString.Ch19Ch20.G1.c212}
 
-{docstring Std.DTreeMap.containsThenInsertIfNew}
+{zhdocstring Std.DTreeMap.containsThenInsertIfNew Manual.ZhDocString.Ch19Ch20.G1.c213}
 
-{docstring Std.DTreeMap.erase}
+{zhdocstring Std.DTreeMap.erase Manual.ZhDocString.Ch19Ch20.G1.c214}
 
-{docstring Std.DTreeMap.filter}
+{zhdocstring Std.DTreeMap.filter Manual.ZhDocString.Ch19Ch20.G1.c215}
 
-{docstring Std.DTreeMap.filterMap}
+{zhdocstring Std.DTreeMap.filterMap Manual.ZhDocString.Ch19Ch20.G1.c216}
 
-{docstring Std.DTreeMap.insert}
+{zhdocstring Std.DTreeMap.insert Manual.ZhDocString.Ch19Ch20.G1.c217}
 
-{docstring Std.DTreeMap.insertIfNew}
+{zhdocstring Std.DTreeMap.insertIfNew Manual.ZhDocString.Ch19Ch20.G1.c218}
 
-{docstring Std.DTreeMap.getThenInsertIfNew?}
+{zhdocstring Std.DTreeMap.getThenInsertIfNew? Manual.ZhDocString.Ch19Ch20.G1.c219}
 
-{docstring Std.DTreeMap.insertMany}
+{zhdocstring Std.DTreeMap.insertMany Manual.ZhDocString.Ch19Ch20.G1.c220}
 
-{docstring Std.DTreeMap.partition}
+{zhdocstring Std.DTreeMap.partition Manual.ZhDocString.Ch19Ch20.G1.c221}
 
 ## 迭代
 
 %%%
 tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Dependent-Tree-Based-Maps--Iteration"
 %%%
-{docstring Std.DTreeMap.iter}
+{zhdocstring Std.DTreeMap.iter Manual.ZhDocString.Ch19Ch20.G1.c222}
 
-{docstring Std.DTreeMap.keysIter}
+{zhdocstring Std.DTreeMap.keysIter Manual.ZhDocString.Ch19Ch20.G1.c223}
 
-{docstring Std.DTreeMap.valuesIter}
+{zhdocstring Std.DTreeMap.valuesIter Manual.ZhDocString.Ch19Ch20.G1.c224}
 
-{docstring Std.DTreeMap.map}
+{zhdocstring Std.DTreeMap.map Manual.ZhDocString.Ch19Ch20.G1.c225}
 
-{docstring Std.DTreeMap.foldl}
+{zhdocstring Std.DTreeMap.foldl Manual.ZhDocString.Ch19Ch20.G1.c226}
 
-{docstring Std.DTreeMap.foldlM}
+{zhdocstring Std.DTreeMap.foldlM Manual.ZhDocString.Ch19Ch20.G1.c227}
 
-{docstring Std.DTreeMap.forIn}
+{zhdocstring Std.DTreeMap.forIn Manual.ZhDocString.Ch19Ch20.G1.c228}
 
-{docstring Std.DTreeMap.forM}
+{zhdocstring Std.DTreeMap.forM Manual.ZhDocString.Ch19Ch20.G1.c229}
 
 ## 转换
 
 %%%
 tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Dependent-Tree-Based-Maps--Conversion"
 %%%
-{docstring Std.DTreeMap.ofList}
+{zhdocstring Std.DTreeMap.ofList Manual.ZhDocString.Ch19Ch20.G1.c230}
 
-{docstring Std.DTreeMap.toArray}
+{zhdocstring Std.DTreeMap.toArray Manual.ZhDocString.Ch19Ch20.G1.c231}
 
-{docstring Std.DTreeMap.toList}
+{zhdocstring Std.DTreeMap.toList Manual.ZhDocString.Ch19Ch20.G1.c232}
 
 ## 分离式变体
 
@@ -1160,8 +1161,8 @@ tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Dependent-Tree-Base
 这主要在定义 {ref "raw-data"}[嵌套归纳类型] 时有用。
 要使用这些变体，请导入模块 `Std.DTreeMap.Raw`。
 
-{docstring Std.DTreeMap.Raw}
+{zhdocstring Std.DTreeMap.Raw Manual.ZhDocString.Ch19Ch20.G1.c233}
 
-{docstring Std.DTreeMap.Raw.WF}
+{zhdocstring Std.DTreeMap.Raw.WF Manual.ZhDocString.Ch19Ch20.G1.c234}
 
 {include 1 Manual.BasicTypes.Maps.TreeSet}
