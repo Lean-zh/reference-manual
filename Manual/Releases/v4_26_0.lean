@@ -185,7 +185,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___26___0-_LPAR_2025-1
 
 * [#11072](https://github.com/leanprover/lean4/pull/11072) 添加了“稀疏 `casesOn`”构造。它们与 `.casesOn` 类似，但只为部分构造子提供分支，并带有一个兜底分支（提供 `t.ctorIdx ≠ 42` 假设）。编译器原生支持这些构造，现在也（由于它们的相似性）原生支持逐构造子的消去原理。
 
-* [#11094](https://github.com/leanprover/lean4/pull/11094) 将 `workspaceSymbol` 基准测试改成 `module`，从而降低它们对标准库新增私有符号的敏感度。
+* [#11094](https://github.com/leanprover/lean4/pull/11094) 将 workspaceSymbol 基准测试改成 `module`，从而降低它们对标准库新增私有符号的敏感度。
 
 * [#11095](https://github.com/leanprover/lean4/pull/11095) 开始使用 `hasIndepIndices`。该函数自提交 54f6517ca36b237b40e02aac62ea36dbd4179758 以来一直未被使用，但看起来本就应该用到它。
 
