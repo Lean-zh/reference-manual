@@ -5,6 +5,7 @@ Author: David Thrane Christiansen
 -/
 
 import VersoManual
+import Manual.ZhDocString.Ch19Ch20.G7
 
 import Manual.Meta
 import Manual.BasicTypes.UInt.Comparisons
@@ -39,30 +40,30 @@ tag := "Lean-__________________--Basic-Types--Fixed-Precision-Integers--Logical-
 %%%
 tag := "Lean-__________________--Basic-Types--Fixed-Precision-Integers--Logical-Model--Unsigned"
 %%%
-{docstring USize}
+{zhdocstring USize Manual.ZhDocString.Ch19Ch20.G7.c001}
 
-{docstring UInt8}
+{zhdocstring UInt8 Manual.ZhDocString.Ch19Ch20.G7.c002}
 
-{docstring UInt16}
+{zhdocstring UInt16 Manual.ZhDocString.Ch19Ch20.G7.c003}
 
-{docstring UInt32}
+{zhdocstring UInt32 Manual.ZhDocString.Ch19Ch20.G7.c004}
 
-{docstring UInt64}
+{zhdocstring UInt64 Manual.ZhDocString.Ch19Ch20.G7.c005}
 
 ## 有符号
 
 %%%
 tag := "Lean-__________________--Basic-Types--Fixed-Precision-Integers--Logical-Model--Signed"
 %%%
-{docstring ISize}
+{zhdocstring ISize Manual.ZhDocString.Ch19Ch20.G7.c006}
 
-{docstring Int8}
+{zhdocstring Int8 Manual.ZhDocString.Ch19Ch20.G7.c007}
 
-{docstring Int16}
+{zhdocstring Int16 Manual.ZhDocString.Ch19Ch20.G7.c008}
 
-{docstring Int32}
+{zhdocstring Int32 Manual.ZhDocString.Ch19Ch20.G7.c009}
 
-{docstring Int64}
+{zhdocstring Int64 Manual.ZhDocString.Ch19Ch20.G7.c010}
 
 # 运行时表示
 %%%
@@ -148,50 +149,50 @@ tag := "Lean-__________________--Basic-Types--Fixed-Precision-Integers--API-Refe
 每个固定宽度整数都有一个_大小_，这是该类型可以表示的不同值的数量。
 这不等同于 C 语言的 `sizeof` 运算符，后者是用来确定该类型占用多少字节的。
 
-{docstring USize.size}
+{zhdocstring USize.size Manual.ZhDocString.Ch19Ch20.G7.c011}
 
-{docstring ISize.size}
+{zhdocstring ISize.size Manual.ZhDocString.Ch19Ch20.G7.c012}
 
-{docstring UInt8.size}
+{zhdocstring UInt8.size Manual.ZhDocString.Ch19Ch20.G7.c013}
 
-{docstring Int8.size}
+{zhdocstring Int8.size Manual.ZhDocString.Ch19Ch20.G7.c014}
 
-{docstring UInt16.size}
+{zhdocstring UInt16.size Manual.ZhDocString.Ch19Ch20.G7.c015}
 
-{docstring Int16.size}
+{zhdocstring Int16.size Manual.ZhDocString.Ch19Ch20.G7.c016}
 
-{docstring UInt32.size}
+{zhdocstring UInt32.size Manual.ZhDocString.Ch19Ch20.G7.c017}
 
-{docstring Int32.size}
+{zhdocstring Int32.size Manual.ZhDocString.Ch19Ch20.G7.c018}
 
-{docstring UInt64.size}
+{zhdocstring UInt64.size Manual.ZhDocString.Ch19Ch20.G7.c019}
 
-{docstring Int64.size}
+{zhdocstring Int64.size Manual.ZhDocString.Ch19Ch20.G7.c020}
 
 ## 范围
 
 %%%
 tag := "Lean-__________________--Basic-Types--Fixed-Precision-Integers--API-Reference--Ranges"
 %%%
-{docstring ISize.minValue}
+{zhdocstring ISize.minValue Manual.ZhDocString.Ch19Ch20.G7.c021}
 
-{docstring ISize.maxValue}
+{zhdocstring ISize.maxValue Manual.ZhDocString.Ch19Ch20.G7.c022}
 
-{docstring Int8.minValue}
+{zhdocstring Int8.minValue Manual.ZhDocString.Ch19Ch20.G7.c023}
 
-{docstring Int8.maxValue}
+{zhdocstring Int8.maxValue Manual.ZhDocString.Ch19Ch20.G7.c024}
 
-{docstring Int16.minValue}
+{zhdocstring Int16.minValue Manual.ZhDocString.Ch19Ch20.G7.c025}
 
-{docstring Int16.maxValue}
+{zhdocstring Int16.maxValue Manual.ZhDocString.Ch19Ch20.G7.c026}
 
-{docstring Int32.minValue}
+{zhdocstring Int32.minValue Manual.ZhDocString.Ch19Ch20.G7.c027}
 
-{docstring Int32.maxValue}
+{zhdocstring Int32.maxValue Manual.ZhDocString.Ch19Ch20.G7.c028}
 
-{docstring Int64.minValue}
+{zhdocstring Int64.minValue Manual.ZhDocString.Ch19Ch20.G7.c029}
 
-{docstring Int64.maxValue}
+{zhdocstring Int64.maxValue Manual.ZhDocString.Ch19Ch20.G7.c030}
 
 ## 转换
 
@@ -203,48 +204,48 @@ tag := "Lean-__________________--Basic-Types--Fixed-Precision-Integers--API-Refe
 %%%
 tag := "Lean-__________________--Basic-Types--Fixed-Precision-Integers--API-Reference--Conversions--To-and-From--Int"
 %%%
-{docstring ISize.toInt}
+{zhdocstring ISize.toInt Manual.ZhDocString.Ch19Ch20.G7.c031}
 
-{docstring Int8.toInt}
+{zhdocstring Int8.toInt Manual.ZhDocString.Ch19Ch20.G7.c032}
 
-{docstring Int16.toInt}
+{zhdocstring Int16.toInt Manual.ZhDocString.Ch19Ch20.G7.c033}
 
-{docstring Int32.toInt}
+{zhdocstring Int32.toInt Manual.ZhDocString.Ch19Ch20.G7.c034}
 
-{docstring Int64.toInt}
-
-
-{docstring ISize.ofInt}
-
-{docstring Int8.ofInt}
-
-{docstring Int16.ofInt}
-
-{docstring Int32.ofInt}
-
-{docstring Int64.ofInt}
+{zhdocstring Int64.toInt Manual.ZhDocString.Ch19Ch20.G7.c035}
 
 
-{docstring ISize.ofIntClamp}
+{zhdocstring ISize.ofInt Manual.ZhDocString.Ch19Ch20.G7.c036}
 
-{docstring Int8.ofIntClamp}
+{zhdocstring Int8.ofInt Manual.ZhDocString.Ch19Ch20.G7.c037}
 
-{docstring Int16.ofIntClamp}
+{zhdocstring Int16.ofInt Manual.ZhDocString.Ch19Ch20.G7.c038}
 
-{docstring Int32.ofIntClamp}
+{zhdocstring Int32.ofInt Manual.ZhDocString.Ch19Ch20.G7.c039}
 
-{docstring Int64.ofIntClamp}
+{zhdocstring Int64.ofInt Manual.ZhDocString.Ch19Ch20.G7.c040}
 
 
-{docstring ISize.ofIntLE}
+{zhdocstring ISize.ofIntClamp Manual.ZhDocString.Ch19Ch20.G7.c041}
 
-{docstring Int8.ofIntLE}
+{zhdocstring Int8.ofIntClamp Manual.ZhDocString.Ch19Ch20.G7.c042}
 
-{docstring Int16.ofIntLE}
+{zhdocstring Int16.ofIntClamp Manual.ZhDocString.Ch19Ch20.G7.c043}
 
-{docstring Int32.ofIntLE}
+{zhdocstring Int32.ofIntClamp Manual.ZhDocString.Ch19Ch20.G7.c044}
 
-{docstring Int64.ofIntLE}
+{zhdocstring Int64.ofIntClamp Manual.ZhDocString.Ch19Ch20.G7.c045}
+
+
+{zhdocstring ISize.ofIntLE Manual.ZhDocString.Ch19Ch20.G7.c046}
+
+{zhdocstring Int8.ofIntLE Manual.ZhDocString.Ch19Ch20.G7.c047}
+
+{zhdocstring Int16.ofIntLE Manual.ZhDocString.Ch19Ch20.G7.c048}
+
+{zhdocstring Int32.ofIntLE Manual.ZhDocString.Ch19Ch20.G7.c049}
+
+{zhdocstring Int64.ofIntLE Manual.ZhDocString.Ch19Ch20.G7.c050}
 
 
 ### 到/从 `Nat` 转换
@@ -252,67 +253,67 @@ tag := "Lean-__________________--Basic-Types--Fixed-Precision-Integers--API-Refe
 %%%
 tag := "Lean-__________________--Basic-Types--Fixed-Precision-Integers--API-Reference--Conversions--To-and-From--Nat"
 %%%
-{docstring USize.ofNat}
+{zhdocstring USize.ofNat Manual.ZhDocString.Ch19Ch20.G7.c051}
 
-{docstring ISize.ofNat}
+{zhdocstring ISize.ofNat Manual.ZhDocString.Ch19Ch20.G7.c052}
 
-{docstring UInt8.ofNat}
+{zhdocstring UInt8.ofNat Manual.ZhDocString.Ch19Ch20.G7.c053}
 
-{docstring Int8.ofNat}
+{zhdocstring Int8.ofNat Manual.ZhDocString.Ch19Ch20.G7.c054}
 
-{docstring UInt16.ofNat}
+{zhdocstring UInt16.ofNat Manual.ZhDocString.Ch19Ch20.G7.c055}
 
-{docstring Int16.ofNat}
+{zhdocstring Int16.ofNat Manual.ZhDocString.Ch19Ch20.G7.c056}
 
-{docstring UInt32.ofNat}
+{zhdocstring UInt32.ofNat Manual.ZhDocString.Ch19Ch20.G7.c057}
 
-{docstring Int32.ofNat}
+{zhdocstring Int32.ofNat Manual.ZhDocString.Ch19Ch20.G7.c058}
 
-{docstring UInt64.ofNat}
+{zhdocstring UInt64.ofNat Manual.ZhDocString.Ch19Ch20.G7.c059}
 
-{docstring Int64.ofNat}
+{zhdocstring Int64.ofNat Manual.ZhDocString.Ch19Ch20.G7.c060}
 
-{docstring USize.ofNat32}
+{zhdocstring USize.ofNat32 Manual.ZhDocString.Ch19Ch20.G7.c061}
 
-{docstring USize.ofNatLT}
+{zhdocstring USize.ofNatLT Manual.ZhDocString.Ch19Ch20.G7.c062}
 
-{docstring UInt8.ofNatLT}
+{zhdocstring UInt8.ofNatLT Manual.ZhDocString.Ch19Ch20.G7.c063}
 
-{docstring UInt16.ofNatLT}
+{zhdocstring UInt16.ofNatLT Manual.ZhDocString.Ch19Ch20.G7.c064}
 
-{docstring UInt32.ofNatLT}
+{zhdocstring UInt32.ofNatLT Manual.ZhDocString.Ch19Ch20.G7.c065}
 
-{docstring UInt64.ofNatLT}
+{zhdocstring UInt64.ofNatLT Manual.ZhDocString.Ch19Ch20.G7.c066}
 
-{docstring USize.ofNatClamp}
+{zhdocstring USize.ofNatClamp Manual.ZhDocString.Ch19Ch20.G7.c067}
 
-{docstring UInt8.ofNatClamp}
+{zhdocstring UInt8.ofNatClamp Manual.ZhDocString.Ch19Ch20.G7.c068}
 
-{docstring UInt16.ofNatClamp}
+{zhdocstring UInt16.ofNatClamp Manual.ZhDocString.Ch19Ch20.G7.c069}
 
-{docstring UInt32.ofNatClamp}
+{zhdocstring UInt32.ofNatClamp Manual.ZhDocString.Ch19Ch20.G7.c070}
 
-{docstring UInt64.ofNatClamp}
+{zhdocstring UInt64.ofNatClamp Manual.ZhDocString.Ch19Ch20.G7.c071}
 
-{docstring USize.toNat}
+{zhdocstring USize.toNat Manual.ZhDocString.Ch19Ch20.G7.c072}
 
-{docstring ISize.toNatClampNeg}
+{zhdocstring ISize.toNatClampNeg Manual.ZhDocString.Ch19Ch20.G7.c073}
 
-{docstring UInt8.toNat}
+{zhdocstring UInt8.toNat Manual.ZhDocString.Ch19Ch20.G7.c074}
 
-{docstring Int8.toNatClampNeg}
+{zhdocstring Int8.toNatClampNeg Manual.ZhDocString.Ch19Ch20.G7.c075}
 
-{docstring UInt16.toNat}
+{zhdocstring UInt16.toNat Manual.ZhDocString.Ch19Ch20.G7.c076}
 
-{docstring Int16.toNatClampNeg}
+{zhdocstring Int16.toNatClampNeg Manual.ZhDocString.Ch19Ch20.G7.c077}
 
-{docstring UInt32.toNat}
+{zhdocstring UInt32.toNat Manual.ZhDocString.Ch19Ch20.G7.c078}
 
-{docstring Int32.toNatClampNeg}
+{zhdocstring Int32.toNatClampNeg Manual.ZhDocString.Ch19Ch20.G7.c079}
 
-{docstring UInt64.toNat}
+{zhdocstring UInt64.toNat Manual.ZhDocString.Ch19Ch20.G7.c080}
 
-{docstring Int64.toNatClampNeg}
+{zhdocstring Int64.toNatClampNeg Manual.ZhDocString.Ch19Ch20.G7.c081}
 
 
 ### 到其他固定宽度整数转换
@@ -320,104 +321,104 @@ tag := "Lean-__________________--Basic-Types--Fixed-Precision-Integers--API-Refe
 %%%
 tag := "Lean-__________________--Basic-Types--Fixed-Precision-Integers--API-Reference--Conversions--To-Other-Fixed-Width-Integers"
 %%%
-{docstring USize.toUInt8}
+{zhdocstring USize.toUInt8 Manual.ZhDocString.Ch19Ch20.G7.c082}
 
-{docstring USize.toUInt16}
+{zhdocstring USize.toUInt16 Manual.ZhDocString.Ch19Ch20.G7.c083}
 
-{docstring USize.toUInt32}
+{zhdocstring USize.toUInt32 Manual.ZhDocString.Ch19Ch20.G7.c084}
 
-{docstring USize.toUInt64}
+{zhdocstring USize.toUInt64 Manual.ZhDocString.Ch19Ch20.G7.c085}
 
-{docstring USize.toISize}
-
-
-{docstring UInt8.toInt8}
-
-{docstring UInt8.toUInt16}
-
-{docstring UInt8.toUInt32}
-
-{docstring UInt8.toUInt64}
-
-{docstring UInt8.toUSize}
+{zhdocstring USize.toISize Manual.ZhDocString.Ch19Ch20.G7.c086}
 
 
-{docstring UInt16.toUInt8}
+{zhdocstring UInt8.toInt8 Manual.ZhDocString.Ch19Ch20.G7.c087}
 
-{docstring UInt16.toInt16}
+{zhdocstring UInt8.toUInt16 Manual.ZhDocString.Ch19Ch20.G7.c088}
 
-{docstring UInt16.toUInt32}
+{zhdocstring UInt8.toUInt32 Manual.ZhDocString.Ch19Ch20.G7.c089}
 
-{docstring UInt16.toUInt64}
+{zhdocstring UInt8.toUInt64 Manual.ZhDocString.Ch19Ch20.G7.c090}
 
-{docstring UInt16.toUSize}
-
-
-{docstring UInt32.toUInt8}
-
-{docstring UInt32.toUInt16}
-
-{docstring UInt32.toInt32}
-
-{docstring UInt32.toUInt64}
-
-{docstring UInt32.toUSize}
+{zhdocstring UInt8.toUSize Manual.ZhDocString.Ch19Ch20.G7.c091}
 
 
-{docstring UInt64.toUInt8}
+{zhdocstring UInt16.toUInt8 Manual.ZhDocString.Ch19Ch20.G7.c092}
 
-{docstring UInt64.toUInt16}
+{zhdocstring UInt16.toInt16 Manual.ZhDocString.Ch19Ch20.G7.c093}
 
-{docstring UInt64.toUInt32}
+{zhdocstring UInt16.toUInt32 Manual.ZhDocString.Ch19Ch20.G7.c094}
 
-{docstring UInt64.toInt64}
+{zhdocstring UInt16.toUInt64 Manual.ZhDocString.Ch19Ch20.G7.c095}
 
-{docstring UInt64.toUSize}
-
-
-{docstring ISize.toInt8}
-
-{docstring ISize.toInt16}
-
-{docstring ISize.toInt32}
-
-{docstring ISize.toInt64}
+{zhdocstring UInt16.toUSize Manual.ZhDocString.Ch19Ch20.G7.c096}
 
 
-{docstring Int8.toInt16}
+{zhdocstring UInt32.toUInt8 Manual.ZhDocString.Ch19Ch20.G7.c097}
 
-{docstring Int8.toInt32}
+{zhdocstring UInt32.toUInt16 Manual.ZhDocString.Ch19Ch20.G7.c098}
 
-{docstring Int8.toInt64}
+{zhdocstring UInt32.toInt32 Manual.ZhDocString.Ch19Ch20.G7.c099}
 
-{docstring Int8.toISize}
+{zhdocstring UInt32.toUInt64 Manual.ZhDocString.Ch19Ch20.G7.c100}
 
-
-{docstring Int16.toInt8}
-
-{docstring Int16.toInt32}
-
-{docstring Int16.toInt64}
-
-{docstring Int16.toISize}
+{zhdocstring UInt32.toUSize Manual.ZhDocString.Ch19Ch20.G7.c101}
 
 
-{docstring Int32.toInt8}
+{zhdocstring UInt64.toUInt8 Manual.ZhDocString.Ch19Ch20.G7.c102}
 
-{docstring Int32.toInt16}
+{zhdocstring UInt64.toUInt16 Manual.ZhDocString.Ch19Ch20.G7.c103}
 
-{docstring Int32.toInt64}
+{zhdocstring UInt64.toUInt32 Manual.ZhDocString.Ch19Ch20.G7.c104}
 
-{docstring Int32.toISize}
+{zhdocstring UInt64.toInt64 Manual.ZhDocString.Ch19Ch20.G7.c105}
+
+{zhdocstring UInt64.toUSize Manual.ZhDocString.Ch19Ch20.G7.c106}
 
 
-{docstring Int64.toInt8}
+{zhdocstring ISize.toInt8 Manual.ZhDocString.Ch19Ch20.G7.c107}
 
-{docstring Int64.toInt16}
+{zhdocstring ISize.toInt16 Manual.ZhDocString.Ch19Ch20.G7.c108}
 
-{docstring Int64.toInt32}
+{zhdocstring ISize.toInt32 Manual.ZhDocString.Ch19Ch20.G7.c109}
 
-{docstring Int64.toISize}
+{zhdocstring ISize.toInt64 Manual.ZhDocString.Ch19Ch20.G7.c110}
+
+
+{zhdocstring Int8.toInt16 Manual.ZhDocString.Ch19Ch20.G7.c111}
+
+{zhdocstring Int8.toInt32 Manual.ZhDocString.Ch19Ch20.G7.c112}
+
+{zhdocstring Int8.toInt64 Manual.ZhDocString.Ch19Ch20.G7.c113}
+
+{zhdocstring Int8.toISize Manual.ZhDocString.Ch19Ch20.G7.c114}
+
+
+{zhdocstring Int16.toInt8 Manual.ZhDocString.Ch19Ch20.G7.c115}
+
+{zhdocstring Int16.toInt32 Manual.ZhDocString.Ch19Ch20.G7.c116}
+
+{zhdocstring Int16.toInt64 Manual.ZhDocString.Ch19Ch20.G7.c117}
+
+{zhdocstring Int16.toISize Manual.ZhDocString.Ch19Ch20.G7.c118}
+
+
+{zhdocstring Int32.toInt8 Manual.ZhDocString.Ch19Ch20.G7.c119}
+
+{zhdocstring Int32.toInt16 Manual.ZhDocString.Ch19Ch20.G7.c120}
+
+{zhdocstring Int32.toInt64 Manual.ZhDocString.Ch19Ch20.G7.c121}
+
+{zhdocstring Int32.toISize Manual.ZhDocString.Ch19Ch20.G7.c122}
+
+
+{zhdocstring Int64.toInt8 Manual.ZhDocString.Ch19Ch20.G7.c123}
+
+{zhdocstring Int64.toInt16 Manual.ZhDocString.Ch19Ch20.G7.c124}
+
+{zhdocstring Int64.toInt32 Manual.ZhDocString.Ch19Ch20.G7.c125}
+
+{zhdocstring Int64.toISize Manual.ZhDocString.Ch19Ch20.G7.c126}
 
 
 
@@ -426,97 +427,97 @@ tag := "Lean-__________________--Basic-Types--Fixed-Precision-Integers--API-Refe
 %%%
 tag := "Lean-__________________--Basic-Types--Fixed-Precision-Integers--API-Reference--Conversions--To-Floating-Point-Numbers"
 %%%
-{docstring ISize.toFloat}
+{zhdocstring ISize.toFloat Manual.ZhDocString.Ch19Ch20.G7.c127}
 
-{docstring ISize.toFloat32}
+{zhdocstring ISize.toFloat32 Manual.ZhDocString.Ch19Ch20.G7.c128}
 
-{docstring Int8.toFloat}
+{zhdocstring Int8.toFloat Manual.ZhDocString.Ch19Ch20.G7.c129}
 
-{docstring Int8.toFloat32}
+{zhdocstring Int8.toFloat32 Manual.ZhDocString.Ch19Ch20.G7.c130}
 
-{docstring Int16.toFloat}
+{zhdocstring Int16.toFloat Manual.ZhDocString.Ch19Ch20.G7.c131}
 
-{docstring Int16.toFloat32}
+{zhdocstring Int16.toFloat32 Manual.ZhDocString.Ch19Ch20.G7.c132}
 
-{docstring Int32.toFloat}
+{zhdocstring Int32.toFloat Manual.ZhDocString.Ch19Ch20.G7.c133}
 
-{docstring Int32.toFloat32}
+{zhdocstring Int32.toFloat32 Manual.ZhDocString.Ch19Ch20.G7.c134}
 
-{docstring Int64.toFloat}
+{zhdocstring Int64.toFloat Manual.ZhDocString.Ch19Ch20.G7.c135}
 
-{docstring Int64.toFloat32}
+{zhdocstring Int64.toFloat32 Manual.ZhDocString.Ch19Ch20.G7.c136}
 
-{docstring USize.toFloat}
+{zhdocstring USize.toFloat Manual.ZhDocString.Ch19Ch20.G7.c137}
 
-{docstring USize.toFloat32}
+{zhdocstring USize.toFloat32 Manual.ZhDocString.Ch19Ch20.G7.c138}
 
-{docstring UInt8.toFloat}
+{zhdocstring UInt8.toFloat Manual.ZhDocString.Ch19Ch20.G7.c139}
 
-{docstring UInt8.toFloat32}
+{zhdocstring UInt8.toFloat32 Manual.ZhDocString.Ch19Ch20.G7.c140}
 
-{docstring UInt16.toFloat}
+{zhdocstring UInt16.toFloat Manual.ZhDocString.Ch19Ch20.G7.c141}
 
-{docstring UInt16.toFloat32}
+{zhdocstring UInt16.toFloat32 Manual.ZhDocString.Ch19Ch20.G7.c142}
 
-{docstring UInt32.toFloat}
+{zhdocstring UInt32.toFloat Manual.ZhDocString.Ch19Ch20.G7.c143}
 
-{docstring UInt32.toFloat32}
+{zhdocstring UInt32.toFloat32 Manual.ZhDocString.Ch19Ch20.G7.c144}
 
-{docstring UInt64.toFloat}
+{zhdocstring UInt64.toFloat Manual.ZhDocString.Ch19Ch20.G7.c145}
 
-{docstring UInt64.toFloat32}
+{zhdocstring UInt64.toFloat32 Manual.ZhDocString.Ch19Ch20.G7.c146}
 
 ### 到/从位向量转换
 
 %%%
 tag := "Lean-__________________--Basic-Types--Fixed-Precision-Integers--API-Reference--Conversions--To-and-From-Bitvectors"
 %%%
-{docstring ISize.toBitVec}
+{zhdocstring ISize.toBitVec Manual.ZhDocString.Ch19Ch20.G7.c147}
 
-{docstring ISize.ofBitVec}
+{zhdocstring ISize.ofBitVec Manual.ZhDocString.Ch19Ch20.G7.c148}
 
-{docstring Int8.toBitVec}
+{zhdocstring Int8.toBitVec Manual.ZhDocString.Ch19Ch20.G7.c149}
 
-{docstring Int8.ofBitVec}
+{zhdocstring Int8.ofBitVec Manual.ZhDocString.Ch19Ch20.G7.c150}
 
-{docstring Int16.toBitVec}
+{zhdocstring Int16.toBitVec Manual.ZhDocString.Ch19Ch20.G7.c151}
 
-{docstring Int16.ofBitVec}
+{zhdocstring Int16.ofBitVec Manual.ZhDocString.Ch19Ch20.G7.c152}
 
-{docstring Int32.toBitVec}
+{zhdocstring Int32.toBitVec Manual.ZhDocString.Ch19Ch20.G7.c153}
 
-{docstring Int32.ofBitVec}
+{zhdocstring Int32.ofBitVec Manual.ZhDocString.Ch19Ch20.G7.c154}
 
-{docstring Int64.toBitVec}
+{zhdocstring Int64.toBitVec Manual.ZhDocString.Ch19Ch20.G7.c155}
 
-{docstring Int64.ofBitVec}
+{zhdocstring Int64.ofBitVec Manual.ZhDocString.Ch19Ch20.G7.c156}
 
 ### 到/从有限数转换
 
 %%%
 tag := "Lean-__________________--Basic-Types--Fixed-Precision-Integers--API-Reference--Conversions--To-and-From-Finite-Numbers"
 %%%
-{docstring USize.toFin}
+{zhdocstring USize.toFin Manual.ZhDocString.Ch19Ch20.G7.c157}
 
-{docstring UInt8.toFin}
+{zhdocstring UInt8.toFin Manual.ZhDocString.Ch19Ch20.G7.c158}
 
-{docstring UInt16.toFin}
+{zhdocstring UInt16.toFin Manual.ZhDocString.Ch19Ch20.G7.c159}
 
-{docstring UInt32.toFin}
+{zhdocstring UInt32.toFin Manual.ZhDocString.Ch19Ch20.G7.c160}
 
-{docstring UInt64.toFin}
+{zhdocstring UInt64.toFin Manual.ZhDocString.Ch19Ch20.G7.c161}
 
-{docstring USize.ofFin}
+{zhdocstring USize.ofFin Manual.ZhDocString.Ch19Ch20.G7.c162}
 
-{docstring UInt8.ofFin}
+{zhdocstring UInt8.ofFin Manual.ZhDocString.Ch19Ch20.G7.c163}
 
-{docstring UInt16.ofFin}
+{zhdocstring UInt16.ofFin Manual.ZhDocString.Ch19Ch20.G7.c164}
 
-{docstring UInt32.ofFin}
+{zhdocstring UInt32.ofFin Manual.ZhDocString.Ch19Ch20.G7.c165}
 
-{docstring UInt64.ofFin}
+{zhdocstring UInt64.ofFin Manual.ZhDocString.Ch19Ch20.G7.c166}
 
-{docstring USize.repr}
+{zhdocstring USize.repr Manual.ZhDocString.Ch19Ch20.G7.c167}
 
 ### 到字符转换
 
@@ -526,7 +527,7 @@ tag := "Lean-__________________--Basic-Types--Fixed-Precision-Integers--API-Refe
 {name}`Char` 类型是对 {name}`UInt32` 的包装器，它需要一个证明，证明所包装的整数表示一个 Unicode 代码点。
 该谓词是 {name}`UInt32` API 的一部分。
 
-{docstring UInt32.isValidChar}
+{zhdocstring UInt32.isValidChar Manual.ZhDocString.Ch19Ch20.G7.c168}
 
 {include 2 Manual.BasicTypes.UInt.Comparisons}
 
@@ -550,123 +551,123 @@ open Lean Elab Command in
       elabCommand <| ← `(example : $(mkIdent c):ident $(mkIdent t) := inferInstance)
 ```
 
-{docstring USize.land}
+{zhdocstring USize.land Manual.ZhDocString.Ch19Ch20.G7.c169}
 
-{docstring ISize.land}
+{zhdocstring ISize.land Manual.ZhDocString.Ch19Ch20.G7.c170}
 
-{docstring UInt8.land}
+{zhdocstring UInt8.land Manual.ZhDocString.Ch19Ch20.G7.c171}
 
-{docstring Int8.land}
+{zhdocstring Int8.land Manual.ZhDocString.Ch19Ch20.G7.c172}
 
-{docstring UInt16.land}
+{zhdocstring UInt16.land Manual.ZhDocString.Ch19Ch20.G7.c173}
 
-{docstring Int16.land}
+{zhdocstring Int16.land Manual.ZhDocString.Ch19Ch20.G7.c174}
 
-{docstring UInt32.land}
+{zhdocstring UInt32.land Manual.ZhDocString.Ch19Ch20.G7.c175}
 
-{docstring Int32.land}
+{zhdocstring Int32.land Manual.ZhDocString.Ch19Ch20.G7.c176}
 
-{docstring UInt64.land}
+{zhdocstring UInt64.land Manual.ZhDocString.Ch19Ch20.G7.c177}
 
-{docstring Int64.land}
+{zhdocstring Int64.land Manual.ZhDocString.Ch19Ch20.G7.c178}
 
-{docstring USize.lor}
+{zhdocstring USize.lor Manual.ZhDocString.Ch19Ch20.G7.c179}
 
-{docstring ISize.lor}
+{zhdocstring ISize.lor Manual.ZhDocString.Ch19Ch20.G7.c180}
 
-{docstring UInt8.lor}
+{zhdocstring UInt8.lor Manual.ZhDocString.Ch19Ch20.G7.c181}
 
-{docstring Int8.lor}
+{zhdocstring Int8.lor Manual.ZhDocString.Ch19Ch20.G7.c182}
 
-{docstring UInt16.lor}
+{zhdocstring UInt16.lor Manual.ZhDocString.Ch19Ch20.G7.c183}
 
-{docstring Int16.lor}
+{zhdocstring Int16.lor Manual.ZhDocString.Ch19Ch20.G7.c184}
 
-{docstring UInt32.lor}
+{zhdocstring UInt32.lor Manual.ZhDocString.Ch19Ch20.G7.c185}
 
-{docstring Int32.lor}
+{zhdocstring Int32.lor Manual.ZhDocString.Ch19Ch20.G7.c186}
 
-{docstring UInt64.lor}
+{zhdocstring UInt64.lor Manual.ZhDocString.Ch19Ch20.G7.c187}
 
-{docstring Int64.lor}
+{zhdocstring Int64.lor Manual.ZhDocString.Ch19Ch20.G7.c188}
 
-{docstring USize.xor}
+{zhdocstring USize.xor Manual.ZhDocString.Ch19Ch20.G7.c189}
 
-{docstring ISize.xor}
+{zhdocstring ISize.xor Manual.ZhDocString.Ch19Ch20.G7.c190}
 
-{docstring UInt8.xor}
+{zhdocstring UInt8.xor Manual.ZhDocString.Ch19Ch20.G7.c191}
 
-{docstring Int8.xor}
+{zhdocstring Int8.xor Manual.ZhDocString.Ch19Ch20.G7.c192}
 
-{docstring UInt16.xor}
+{zhdocstring UInt16.xor Manual.ZhDocString.Ch19Ch20.G7.c193}
 
-{docstring Int16.xor}
+{zhdocstring Int16.xor Manual.ZhDocString.Ch19Ch20.G7.c194}
 
-{docstring UInt32.xor}
+{zhdocstring UInt32.xor Manual.ZhDocString.Ch19Ch20.G7.c195}
 
-{docstring Int32.xor}
+{zhdocstring Int32.xor Manual.ZhDocString.Ch19Ch20.G7.c196}
 
-{docstring UInt64.xor}
+{zhdocstring UInt64.xor Manual.ZhDocString.Ch19Ch20.G7.c197}
 
-{docstring Int64.xor}
+{zhdocstring Int64.xor Manual.ZhDocString.Ch19Ch20.G7.c198}
 
-{docstring USize.complement}
+{zhdocstring USize.complement Manual.ZhDocString.Ch19Ch20.G7.c199}
 
-{docstring ISize.complement}
+{zhdocstring ISize.complement Manual.ZhDocString.Ch19Ch20.G7.c200}
 
-{docstring UInt8.complement}
+{zhdocstring UInt8.complement Manual.ZhDocString.Ch19Ch20.G7.c201}
 
-{docstring Int8.complement}
+{zhdocstring Int8.complement Manual.ZhDocString.Ch19Ch20.G7.c202}
 
-{docstring UInt16.complement}
+{zhdocstring UInt16.complement Manual.ZhDocString.Ch19Ch20.G7.c203}
 
-{docstring Int16.complement}
+{zhdocstring Int16.complement Manual.ZhDocString.Ch19Ch20.G7.c204}
 
-{docstring UInt32.complement}
+{zhdocstring UInt32.complement Manual.ZhDocString.Ch19Ch20.G7.c205}
 
-{docstring Int32.complement}
+{zhdocstring Int32.complement Manual.ZhDocString.Ch19Ch20.G7.c206}
 
-{docstring UInt64.complement}
+{zhdocstring UInt64.complement Manual.ZhDocString.Ch19Ch20.G7.c207}
 
-{docstring Int64.complement}
+{zhdocstring Int64.complement Manual.ZhDocString.Ch19Ch20.G7.c208}
 
-{docstring USize.shiftLeft}
+{zhdocstring USize.shiftLeft Manual.ZhDocString.Ch19Ch20.G7.c209}
 
-{docstring ISize.shiftLeft}
+{zhdocstring ISize.shiftLeft Manual.ZhDocString.Ch19Ch20.G7.c210}
 
-{docstring UInt8.shiftLeft}
+{zhdocstring UInt8.shiftLeft Manual.ZhDocString.Ch19Ch20.G7.c211}
 
-{docstring Int8.shiftLeft}
+{zhdocstring Int8.shiftLeft Manual.ZhDocString.Ch19Ch20.G7.c212}
 
-{docstring UInt16.shiftLeft}
+{zhdocstring UInt16.shiftLeft Manual.ZhDocString.Ch19Ch20.G7.c213}
 
-{docstring Int16.shiftLeft}
+{zhdocstring Int16.shiftLeft Manual.ZhDocString.Ch19Ch20.G7.c214}
 
-{docstring UInt32.shiftLeft}
+{zhdocstring UInt32.shiftLeft Manual.ZhDocString.Ch19Ch20.G7.c215}
 
-{docstring Int32.shiftLeft}
+{zhdocstring Int32.shiftLeft Manual.ZhDocString.Ch19Ch20.G7.c216}
 
-{docstring UInt64.shiftLeft}
+{zhdocstring UInt64.shiftLeft Manual.ZhDocString.Ch19Ch20.G7.c217}
 
-{docstring Int64.shiftLeft}
+{zhdocstring Int64.shiftLeft Manual.ZhDocString.Ch19Ch20.G7.c218}
 
-{docstring USize.shiftRight}
+{zhdocstring USize.shiftRight Manual.ZhDocString.Ch19Ch20.G7.c219}
 
-{docstring ISize.shiftRight}
+{zhdocstring ISize.shiftRight Manual.ZhDocString.Ch19Ch20.G7.c220}
 
-{docstring UInt8.shiftRight}
+{zhdocstring UInt8.shiftRight Manual.ZhDocString.Ch19Ch20.G7.c221}
 
-{docstring Int8.shiftRight}
+{zhdocstring Int8.shiftRight Manual.ZhDocString.Ch19Ch20.G7.c222}
 
-{docstring UInt16.shiftRight}
+{zhdocstring UInt16.shiftRight Manual.ZhDocString.Ch19Ch20.G7.c223}
 
-{docstring Int16.shiftRight}
+{zhdocstring Int16.shiftRight Manual.ZhDocString.Ch19Ch20.G7.c224}
 
-{docstring UInt32.shiftRight}
+{zhdocstring UInt32.shiftRight Manual.ZhDocString.Ch19Ch20.G7.c225}
 
-{docstring Int32.shiftRight}
+{zhdocstring Int32.shiftRight Manual.ZhDocString.Ch19Ch20.G7.c226}
 
-{docstring UInt64.shiftRight}
+{zhdocstring UInt64.shiftRight Manual.ZhDocString.Ch19Ch20.G7.c227}
 
 
-{docstring Int64.shiftRight}
+{zhdocstring Int64.shiftRight Manual.ZhDocString.Ch19Ch20.G7.c228}

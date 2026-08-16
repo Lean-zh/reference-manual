@@ -5,6 +5,7 @@ Author: David Thrane Christiansen
 -/
 
 import VersoManual
+import Manual.ZhDocString.Ch19Ch20.G7
 
 import Manual.Meta
 import Manual.BasicTypes.Nat
@@ -96,11 +97,11 @@ variable {m : Type → Type} [Monad m] {α : Type}
 可能的情况下，应优先使用 {lean}`Unit` 而不是 {name}`PUnit`，以避免不必要的宇宙参数。
 如有疑问，请使用 {lean}`Unit` 直到出现宇宙层级的错误。
 
-{docstring Unit}
+{zhdocstring Unit Manual.ZhDocString.Ch19Ch20.G7.c229}
 
-{docstring Unit.unit}
+{zhdocstring Unit.unit Manual.ZhDocString.Ch19Ch20.G7.c230}
 
-{docstring PUnit}
+{zhdocstring PUnit Manual.ZhDocString.Ch19Ch20.G7.c231}
 
 ## 定义等价
 
@@ -181,7 +182,7 @@ example (e1 e2 : ProofUnitLike) : e1 = e2 := rfl
 %%%
 tag := "Lean-__________________--Basic-Types--Booleans"
 %%%
-{docstring Bool}
+{zhdocstring Bool Manual.ZhDocString.Ch19Ch20.G7.c232}
 
 构造子 {lean}`Bool.true` 和 {lean}`Bool.false` 是从 {lean}`Bool` 命名空间导出的，因此它们可以被写成 {lean}`true` 和 {lean}`false`。
 
@@ -287,17 +288,17 @@ end ShortCircuit
 ```
 
 
-{docstring cond}
+{zhdocstring cond Manual.ZhDocString.Ch19Ch20.G7.c233}
 
-{docstring Bool.dcond}
+{zhdocstring Bool.dcond Manual.ZhDocString.Ch19Ch20.G7.c234}
 
-{docstring Bool.not}
+{zhdocstring Bool.not Manual.ZhDocString.Ch19Ch20.G7.c235}
 
-{docstring Bool.and}
+{zhdocstring Bool.and Manual.ZhDocString.Ch19Ch20.G7.c236}
 
-{docstring Bool.or}
+{zhdocstring Bool.or Manual.ZhDocString.Ch19Ch20.G7.c237}
 
-{docstring Bool.xor}
+{zhdocstring Bool.xor Manual.ZhDocString.Ch19Ch20.G7.c238}
 
 ### 比较
 
@@ -306,36 +307,36 @@ tag := "Lean-__________________--Basic-Types--Booleans--API-Reference--Compariso
 %%%
 大多数关于布尔值的比较应该使用 {inst}`DecidableEq Bool`、{inst}`LT Bool` 和 {inst}`LE Bool` 实例来执行。
 
-{docstring Bool.decEq}
+{zhdocstring Bool.decEq Manual.ZhDocString.Ch19Ch20.G7.c239}
 
 ### 转换
 
 %%%
 tag := "Lean-__________________--Basic-Types--Booleans--API-Reference--Conversions"
 %%%
-{docstring Bool.toISize}
+{zhdocstring Bool.toISize Manual.ZhDocString.Ch19Ch20.G7.c240}
 
-{docstring Bool.toUInt8}
+{zhdocstring Bool.toUInt8 Manual.ZhDocString.Ch19Ch20.G7.c241}
 
-{docstring Bool.toUInt16}
+{zhdocstring Bool.toUInt16 Manual.ZhDocString.Ch19Ch20.G7.c242}
 
-{docstring Bool.toUInt32}
+{zhdocstring Bool.toUInt32 Manual.ZhDocString.Ch19Ch20.G7.c243}
 
-{docstring Bool.toUInt64}
+{zhdocstring Bool.toUInt64 Manual.ZhDocString.Ch19Ch20.G7.c244}
 
-{docstring Bool.toUSize}
+{zhdocstring Bool.toUSize Manual.ZhDocString.Ch19Ch20.G7.c245}
 
-{docstring Bool.toInt8}
+{zhdocstring Bool.toInt8 Manual.ZhDocString.Ch19Ch20.G7.c246}
 
-{docstring Bool.toInt16}
+{zhdocstring Bool.toInt16 Manual.ZhDocString.Ch19Ch20.G7.c247}
 
-{docstring Bool.toInt32}
+{zhdocstring Bool.toInt32 Manual.ZhDocString.Ch19Ch20.G7.c248}
 
-{docstring Bool.toInt64}
+{zhdocstring Bool.toInt64 Manual.ZhDocString.Ch19Ch20.G7.c249}
 
-{docstring Bool.toNat}
+{zhdocstring Bool.toNat Manual.ZhDocString.Ch19Ch20.G7.c250}
 
-{docstring Bool.toInt}
+{zhdocstring Bool.toInt Manual.ZhDocString.Ch19Ch20.G7.c251}
 
 
 {include 0 Manual.BasicTypes.Option}
