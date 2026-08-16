@@ -9,6 +9,7 @@ import VersoManual
 import Manual.Meta
 
 import Lean.Parser.Command
+import Manual.ZhDocString.IO
 
 open Manual
 open Verso.Genre
@@ -19,99 +20,106 @@ set_option pp.rawOnError true
 
 set_option linter.unusedVariables false
 
-#doc (Manual) "Files, File Handles, and Streams" =>
+#doc (Manual) "文件、文件句柄与流" =>
+%%%
+tag := "Lean-__________________--IO--Files___-File-Handles___-and-Streams"
+file := "Files___-File-Handles___-and-Streams"
+%%%
 
-Lean provides a consistent filesystem API on all supported platforms.
-These are the key concepts:
+Lean 在所有受支持的平台上提供一致的文件系统 API。
+其中的关键概念如下：
 
-: {deftech}[Files]
+: {deftech (key := "Files")}[文件]
 
-  Files are an abstraction provided by operating systems that provide random access to persistently-stored data, organized hierarchically into directories.
+  文件是操作系统提供的一种抽象，它支持随机访问持久存储的数据；这些数据按目录组成层级结构。
 
-: {deftech}[Directories]
+: {deftech (key := "Directories")}[目录]
 
-  Directories, also known as _folders_, may contain files or other directories.
-  Fundamentally, a directory maps names to the files and/or directories that it contains.
+  目录也称为_文件夹_，其中可以包含文件或其他目录。
+  从根本上说，目录把名称映射到其中包含的文件和／或目录。
 
-: {deftech}[File Handles]
+: {deftech (key := "File Handles")}[文件句柄]
 
-  File handles ({name IO.FS.Handle}`Handle`) are abstract references to files that have been opened for reading and/or writing.
-  A file handle maintains a mode that determines whether reading and/or writing are allowed, along with a cursor that points at a specific location in the file.
-  Reading from or writing to a file handle advances the cursor.
-  File handles may be {deftech}[buffered], which means that reading from a file handle may not return the current contents of the persistent data, and writing to a file handle may not modify them immediately.
+  文件句柄（{name IO.FS.Handle}`Handle`）是对已打开以供读取和／或写入的文件的抽象引用。
+  文件句柄维护一种模式，用来确定是否允许读取和／或写入；它还维护一个指向文件中特定位置的游标。
+  通过文件句柄读取或写入都会推进该游标。
+  文件句柄可以是{deftech (key := "buffered")}[带缓冲的]；这意味着通过文件句柄读取时，可能不会返回持久数据的当前内容，而写入时也可能不会立即修改这些内容。
 
-: Paths
+: 路径
 
-  Files are primarily accessed via {deftech}_paths_ ({name}`System.FilePath`).
-  A path is a sequence of directory names, potentially terminated by a file name.
-  They are represented by strings in which separator characters {margin}[The current platform's separator characters are listed in {name}`System.FilePath.pathSeparators`.] delimit the names.
+  文件主要通过{deftech (key := "paths")}_路径_（{name}`System.FilePath`）来访问。
+  路径是一个目录名序列，末尾也可能是文件名。
+  路径由字符串表示，其中的分隔符字符{margin}[当前平台的分隔符字符列于 {name}`System.FilePath.pathSeparators`。]用于分隔各个名称。
 
-  The details of paths are platform-specific.
-  {deftech}[Absolute paths] begin in a {deftech}_root directory_; some operating systems have a single root, while others may have multiple root directories.
-  Relative paths do not begin in a root directory and require that some other directory be taken as a starting point.
-  In addition to directories, paths may contain the special directory names `.`, which refers to the directory in which it is found, and `..`, which refers to prior directory in the path.
+  路径的具体细节因平台而异。
+  {deftech (key := "Absolute paths")}[绝对路径]始于{deftech (key := "root directory")}_根目录_；有些操作系统只有一个根目录，另一些则可能有多个根目录。
+  相对路径不以根目录开头，需要把另一个目录作为起点。
+  除普通目录外，路径还可以包含特殊目录名 `.` 和 `..`：前者指其所在目录，后者指路径中的上一级目录。
 
-  Filenames, and thus paths, may end in one or more {deftech}_extensions_ that identify the file's type.
-  Extensions are delimited by the character {name}`System.FilePath.extSeparator`.
-  On some platforms, executable files have a special extension ({name}`System.FilePath.exeExtension`).
+  文件名乃至路径可以以一个或多个标识文件类型的{deftech (key := "extensions")}_扩展名_结尾。
+  扩展名由字符 {name}`System.FilePath.extSeparator` 分隔。
+  在某些平台上，可执行文件具有特殊扩展名（{name}`System.FilePath.exeExtension`）。
 
-: {deftech}[Streams]
+: {deftech (key := "Streams")}[流]
 
-  Streams are a higher-level abstraction over files, both providing additional functionality and hiding some details of files.
-  While {tech}[file handles] are essentially a thin wrapper around the operating system's representation, streams are implemented in Lean as a structure called {lean}`IO.FS.Stream`.
-  Because streams are implemented in Lean, user code can create additional streams, which can be used seamlessly together with those provided in the standard library.
+  流是文件之上的高层抽象，既提供额外功能，也隐藏文件的一些细节。
+  {tech (key := "file handles")}[文件句柄]本质上只是对操作系统表示的薄封装，而流则在 Lean 中实现为名为 {lean}`IO.FS.Stream` 的结构。
+  由于流在 Lean 中实现，用户代码可以创建额外的流，并与标准库提供的流无缝配合使用。
 
-# Low-Level File API
+# 底层文件 API
+%%%
+tag := "Lean-__________________--IO--Files___-File-Handles___-and-Streams--Low-Level-File-API"
+%%%
 
-At the lowest level, files are explicitly opened using {name IO.FS.Handle.mk}`Handle.mk`.
-When the last reference to the handle object is dropped, the file is closed.
-There is no explicit way to close a file handle other than by ensuring that there are no references to it.
-
-
-{docstring IO.FS.Handle}
-
-{docstring IO.FS.Handle.mk}
-
-{docstring IO.FS.Mode}
-
-{docstring IO.FS.Handle.read}
-
-{docstring IO.FS.Handle.readToEnd}
-
-{docstring IO.FS.Handle.readBinToEnd}
-
-{docstring IO.FS.Handle.readBinToEndInto}
-
-{docstring IO.FS.Handle.getLine}
-
-{docstring IO.FS.Handle.write}
-
-{docstring IO.FS.Handle.putStr}
-
-{docstring IO.FS.Handle.putStrLn}
-
-{docstring IO.FS.Handle.flush}
-
-{docstring IO.FS.Handle.rewind}
-
-{docstring IO.FS.Handle.truncate}
-
-{docstring IO.FS.Handle.isTty}
-
-{docstring IO.FS.Handle.lock}
-
-{docstring IO.FS.Handle.tryLock}
-
-{docstring IO.FS.Handle.unlock}
+在最底层，文件通过 {name IO.FS.Handle.mk}`Handle.mk` 显式打开。
+当句柄对象的最后一个引用被丢弃时，文件随即关闭。
+除了确保文件句柄不再有任何引用外，没有其他显式关闭句柄的方法。
 
 
-::::example "One File, Multiple Handles"
-This program has two handles to the same file.
-Because file I/O may be buffered independently for each handle, {name IO.FS.Handle.flush}`Handle.flush` should be called when the buffers need to be synchronized with the file's actual contents.
-Here, the two handles proceed in lock-step through the file, with one of them a single byte ahead of the other.
-The first handle is used to count the number of occurrences of `'A'`, while the second is used to replace each `'A'` with `'!'`.
-The second handle is opened in {name IO.FS.Mode.readWrite}`readWrite` mode rather than {name IO.FS.Mode.write}`write` mode because opening an existing file in {name IO.FS.Mode.write}`write` mode replaces it with an empty file.
-In this case, the buffers don't need to be flushed during execution because modifications occur only to parts of the file that will not be read again, but the write handle should be flushed after the loop has completed.
+{zhdocstring IO.FS.Handle Manual.ZhDocString.IO.c060}
+
+{zhdocstring IO.FS.Handle.mk Manual.ZhDocString.IO.c061}
+
+{zhdocstring IO.FS.Mode Manual.ZhDocString.IO.c062}
+
+{zhdocstring IO.FS.Handle.read Manual.ZhDocString.IO.c063}
+
+{zhdocstring IO.FS.Handle.readToEnd Manual.ZhDocString.IO.c064}
+
+{zhdocstring IO.FS.Handle.readBinToEnd Manual.ZhDocString.IO.c065}
+
+{zhdocstring IO.FS.Handle.readBinToEndInto Manual.ZhDocString.IO.c066}
+
+{zhdocstring IO.FS.Handle.getLine Manual.ZhDocString.IO.c067}
+
+{zhdocstring IO.FS.Handle.write Manual.ZhDocString.IO.c068}
+
+{zhdocstring IO.FS.Handle.putStr Manual.ZhDocString.IO.c069}
+
+{zhdocstring IO.FS.Handle.putStrLn Manual.ZhDocString.IO.c070}
+
+{zhdocstring IO.FS.Handle.flush Manual.ZhDocString.IO.c071}
+
+{zhdocstring IO.FS.Handle.rewind Manual.ZhDocString.IO.c072}
+
+{zhdocstring IO.FS.Handle.truncate Manual.ZhDocString.IO.c073}
+
+{zhdocstring IO.FS.Handle.isTty Manual.ZhDocString.IO.c074}
+
+{zhdocstring IO.FS.Handle.lock Manual.ZhDocString.IO.c075}
+
+{zhdocstring IO.FS.Handle.tryLock Manual.ZhDocString.IO.c076}
+
+{zhdocstring IO.FS.Handle.unlock Manual.ZhDocString.IO.c077}
+
+
+::::example "一个文件，多个句柄" (file := "One File, Multiple Handles")
+该程序持有同一文件的两个句柄。
+由于每个句柄的文件 I/O 可能独立缓冲，需要让缓冲区与文件实际内容同步时，应调用 {name IO.FS.Handle.flush}`Handle.flush`。
+这里，两个句柄步调一致地遍历文件，其中一个始终比另一个领先一个字节。
+第一个句柄用于统计 `'A'` 的出现次数，第二个则用于把每个 `'A'` 替换为 `'!'`。
+第二个句柄以 {name IO.FS.Mode.readWrite}`readWrite` 模式而非 {name IO.FS.Mode.write}`write` 模式打开，因为以 {name IO.FS.Mode.write}`write` 模式打开现有文件会用空文件替换它。
+在此例中，修改只发生在不会再被读取的文件区域，因此执行期间无须刷新缓冲区；但循环结束后应刷新写句柄。
 
 :::ioExample
 ```ioLean
@@ -140,12 +148,12 @@ def main : IO Unit := do
   IO.println s!"Contents: '{(← IO.FS.readFile "data").trimAscii}'"
 ```
 
-When run on this file:
+以该文件为输入运行时：
 ```inputFile "data"
 AABAABCDAB
 ```
 
-the program outputs:
+程序输出：
 ```stdout
 Starting contents: 'AABAABCDAB'
 Count: 5
@@ -154,7 +162,7 @@ Contents: '!!B!!BCD!B'
 ```stderr -show
 ```
 
-Afterwards, the file contains:
+此后，文件内容为：
 ```outputFile "data"
 !!B!!BCD!B
 ```
@@ -162,154 +170,163 @@ Afterwards, the file contains:
 :::
 ::::
 
-# Streams
+# 流
+%%%
+tag := "Lean-__________________--IO--Files___-File-Handles___-and-Streams--Streams"
+%%%
 
-{docstring IO.FS.Stream}
+{zhdocstring IO.FS.Stream Manual.ZhDocString.IO.c078}
 
-{docstring IO.FS.Stream.ofBuffer}
+{zhdocstring IO.FS.Stream.ofBuffer Manual.ZhDocString.IO.c079}
 
-{docstring IO.FS.Stream.ofHandle}
+{zhdocstring IO.FS.Stream.ofHandle Manual.ZhDocString.IO.c080}
 
-{docstring IO.FS.Stream.putStrLn}
+{zhdocstring IO.FS.Stream.putStrLn Manual.ZhDocString.IO.c081}
 
-{docstring IO.FS.Stream.Buffer}
+{zhdocstring IO.FS.Stream.Buffer Manual.ZhDocString.IO.c082}
 
 
-# Paths
+# 路径
+%%%
+tag := "Lean-__________________--IO--Files___-File-Handles___-and-Streams--Paths"
+%%%
 
-Paths are represented by strings.
-Different platforms have different conventions for paths: some use slashes (`/`) as directory separators, others use backslashes (`\`).
-Some are case-sensitive, others are not.
-Different Unicode encodings and normal forms may be used to represent filenames, and some platforms consider filenames to be byte sequences rather than strings.
-A string that represents an {tech}[absolute path] on one system may not even be a valid path on another system.
+路径由字符串表示。
+不同平台采用不同的路径约定：有些使用斜杠（`/`）作为目录分隔符，另一些使用反斜杠（`\`）。
+有些平台区分大小写，另一些则不区分。
+文件名可能采用不同的 Unicode 编码与规范化形式表示；有些平台还把文件名视为字节序列而非字符串。
+在一个系统上表示{tech (key := "absolute path")}[绝对路径]的字符串，在另一个系统上甚至可能不是有效路径。
 
-To write Lean code that is as compatible as possible with multiple systems, it can be helpful to use Lean's path manipulation primitives instead of raw string manipulation.
-Helpers such as {name}`System.FilePath.join` take platform-specific rules for absolute paths into account, {name}`System.FilePath.pathSeparator` contains the appropriate path separator for the current platform, and {name}`System.FilePath.exeExtension` contains any necessary extension for executable files.
-Avoid hard-coding these rules.
+为了编写尽可能兼容多个系统的 Lean 代码，最好使用 Lean 的路径操作原语，而不是直接操作字符串。
+{name}`System.FilePath.join` 等辅助函数会考虑平台特有的绝对路径规则；{name}`System.FilePath.pathSeparator` 包含当前平台适用的路径分隔符；{name}`System.FilePath.exeExtension` 则包含可执行文件所需的扩展名。
+请勿硬编码这些规则。
 
-There is an instance of the {lean}`Div` type class for {name System.FilePath}`FilePath` which allows the slash operator to be used to concatenate paths.
+{name System.FilePath}`FilePath` 具有 {lean}`Div` 类型类的实例，因此可以使用斜杠运算符拼接路径。
 
-{docstring System.FilePath +allowMissing}
+{zhdocstring System.FilePath Manual.ZhDocString.IO.c083 +allowMissing}
 
-{docstring System.mkFilePath}
+{zhdocstring System.mkFilePath Manual.ZhDocString.IO.c084}
 
-{docstring System.FilePath.join}
+{zhdocstring System.FilePath.join Manual.ZhDocString.IO.c085}
 
-{docstring System.FilePath.normalize}
+{zhdocstring System.FilePath.normalize Manual.ZhDocString.IO.c086}
 
-{docstring System.FilePath.isAbsolute}
+{zhdocstring System.FilePath.isAbsolute Manual.ZhDocString.IO.c087}
 
-{docstring System.FilePath.isRelative}
+{zhdocstring System.FilePath.isRelative Manual.ZhDocString.IO.c088}
 
-{docstring System.FilePath.parent}
+{zhdocstring System.FilePath.parent Manual.ZhDocString.IO.c089}
 
-{docstring System.FilePath.components}
+{zhdocstring System.FilePath.components Manual.ZhDocString.IO.c090}
 
-{docstring System.FilePath.fileName}
+{zhdocstring System.FilePath.fileName Manual.ZhDocString.IO.c091}
 
-{docstring System.FilePath.fileStem}
+{zhdocstring System.FilePath.fileStem Manual.ZhDocString.IO.c092}
 
-{docstring System.FilePath.extension}
+{zhdocstring System.FilePath.extension Manual.ZhDocString.IO.c093}
 
-{docstring System.FilePath.addExtension}
+{zhdocstring System.FilePath.addExtension Manual.ZhDocString.IO.c094}
 
-{docstring System.FilePath.withExtension}
+{zhdocstring System.FilePath.withExtension Manual.ZhDocString.IO.c095}
 
-{docstring System.FilePath.withFileName}
+{zhdocstring System.FilePath.withFileName Manual.ZhDocString.IO.c096}
 
-{docstring System.FilePath.pathSeparator}
+{zhdocstring System.FilePath.pathSeparator Manual.ZhDocString.IO.c097}
 
-{docstring System.FilePath.pathSeparators}
+{zhdocstring System.FilePath.pathSeparators Manual.ZhDocString.IO.c098}
 
-{docstring System.FilePath.extSeparator}
+{zhdocstring System.FilePath.extSeparator Manual.ZhDocString.IO.c099}
 
-{docstring System.FilePath.exeExtension}
+{zhdocstring System.FilePath.exeExtension Manual.ZhDocString.IO.c100}
 
-# Interacting with the Filesystem
+# 与文件系统交互
+%%%
+tag := "Lean-__________________--IO--Files___-File-Handles___-and-Streams--Interacting-with-the-Filesystem"
+%%%
 
-Some operations on paths consult the filesystem.
+有些路径操作会查询文件系统。
 
-{docstring IO.FS.Metadata}
+{zhdocstring IO.FS.Metadata Manual.ZhDocString.IO.c101}
 
-{docstring System.FilePath.metadata}
+{zhdocstring System.FilePath.metadata Manual.ZhDocString.IO.c102}
 
-{docstring System.FilePath.symlinkMetadata}
+{zhdocstring System.FilePath.symlinkMetadata Manual.ZhDocString.IO.c103}
 
-{docstring System.FilePath.pathExists}
+{zhdocstring System.FilePath.pathExists Manual.ZhDocString.IO.c104}
 
-{docstring System.FilePath.isDir}
+{zhdocstring System.FilePath.isDir Manual.ZhDocString.IO.c105}
 
-{docstring IO.FS.DirEntry}
+{zhdocstring IO.FS.DirEntry Manual.ZhDocString.IO.c106}
 
-{docstring IO.FS.DirEntry.path}
+{zhdocstring IO.FS.DirEntry.path Manual.ZhDocString.IO.c107}
 
-{docstring System.FilePath.readDir}
+{zhdocstring System.FilePath.readDir Manual.ZhDocString.IO.c108}
 
-{docstring System.FilePath.walkDir}
+{zhdocstring System.FilePath.walkDir Manual.ZhDocString.IO.c109}
 
-{docstring IO.AccessRight +allowMissing}
+{zhdocstring IO.AccessRight Manual.ZhDocString.IO.c110 +allowMissing}
 
-{docstring IO.AccessRight.flags}
+{zhdocstring IO.AccessRight.flags Manual.ZhDocString.IO.c111}
 
-{docstring IO.FileRight}
+{zhdocstring IO.FileRight Manual.ZhDocString.IO.c112}
 
-{docstring IO.FileRight.flags}
+{zhdocstring IO.FileRight.flags Manual.ZhDocString.IO.c113}
 
-{docstring IO.setAccessRights}
+{zhdocstring IO.setAccessRights Manual.ZhDocString.IO.c114}
 
-{docstring IO.FS.removeFile}
+{zhdocstring IO.FS.removeFile Manual.ZhDocString.IO.c115}
 
-{docstring IO.FS.rename}
+{zhdocstring IO.FS.rename Manual.ZhDocString.IO.c116}
 
-{docstring IO.FS.removeDir}
+{zhdocstring IO.FS.removeDir Manual.ZhDocString.IO.c117}
 
-{docstring IO.FS.lines}
+{zhdocstring IO.FS.lines Manual.ZhDocString.IO.c118}
 
-{docstring IO.FS.withTempFile}
+{zhdocstring IO.FS.withTempFile Manual.ZhDocString.IO.c119}
 
-{docstring IO.FS.withTempDir}
+{zhdocstring IO.FS.withTempDir Manual.ZhDocString.IO.c120}
 
-{docstring IO.FS.createDirAll}
+{zhdocstring IO.FS.createDirAll Manual.ZhDocString.IO.c121}
 
-{docstring IO.FS.writeBinFile}
+{zhdocstring IO.FS.writeBinFile Manual.ZhDocString.IO.c122}
 
-{docstring IO.FS.withFile}
+{zhdocstring IO.FS.withFile Manual.ZhDocString.IO.c123}
 
-{docstring IO.FS.removeDirAll}
+{zhdocstring IO.FS.removeDirAll Manual.ZhDocString.IO.c124}
 
-{docstring IO.FS.createTempFile}
+{zhdocstring IO.FS.createTempFile Manual.ZhDocString.IO.c125}
 
-{docstring IO.FS.createTempDir}
+{zhdocstring IO.FS.createTempDir Manual.ZhDocString.IO.c126}
 
-{docstring IO.FS.readFile}
+{zhdocstring IO.FS.readFile Manual.ZhDocString.IO.c127}
 
-{docstring IO.FS.realPath}
+{zhdocstring IO.FS.realPath Manual.ZhDocString.IO.c128}
 
-{docstring IO.FS.writeFile}
+{zhdocstring IO.FS.writeFile Manual.ZhDocString.IO.c129}
 
-{docstring IO.FS.readBinFile}
+{zhdocstring IO.FS.readBinFile Manual.ZhDocString.IO.c130}
 
-{docstring IO.FS.createDir}
+{zhdocstring IO.FS.createDir Manual.ZhDocString.IO.c131}
 
-# Standard I/O
+# 标准 I/O
 %%%
 tag := "stdio"
 %%%
 
-On operating systems that are derived from or inspired by Unix, {deftech}_standard input_, {deftech}_standard output_, and {deftech}_standard error_ are the names of three streams that are available in each process.
-Generally, programs are expected to read from standard input, write ordinary output to the standard output, and error messages to the standard error.
-By default, standard input receives input from the console, while standard output and standard error output to the console, but all three are often redirected to or from pipes or files.
+在源自 Unix 或受其启发的操作系统中，{deftech (key := "standard input")}_标准输入_、{deftech (key := "standard output")}_标准输出_和{deftech (key := "standard error")}_标准错误_是每个进程中可用的三个流的名称。
+通常，程序应从标准输入读取数据，把普通输出写入标准输出，并把错误消息写入标准错误。
+默认情况下，标准输入从控制台接收输入，而标准输出和标准错误向控制台输出；不过，这三个流经常被重定向到管道或文件，或从中读取。
 
-Rather than providing direct access to the operating system's standard I/O facilities, Lean wraps them in {name IO.FS.Stream}`Stream`s.
-Additionally, the {lean}`IO` monad contains special support for replacing or locally overriding them.
-This extra level of indirection makes it possible to redirect input and output within a Lean program.
+Lean 并不直接提供对操作系统标准 I/O 设施的访问，而是用 {name IO.FS.Stream}`Stream` 对其加以封装。
+此外，{lean}`IO` 单子还特别支持替换或局部覆盖这些流。
+这一额外的间接层使 Lean 程序能够在内部重定向输入与输出。
 
 
-{docstring IO.getStdin}
+{zhdocstring IO.getStdin Manual.ZhDocString.IO.c132}
 
-::::example "Reading from Standard Input"
-In this example, {lean}`IO.getStdin` and {lean}`IO.getStdout` are used to get the current standard input and output, respectively.
-These can be read from and written to.
+::::example "从标准输入读取" (file := "Reading from Standard Input")
+本例分别使用 {lean}`IO.getStdin` 和 {lean}`IO.getStdout` 获取当前的标准输入与标准输出。
+可以从前者读取，也可以向后者写入。
 
 :::ioExample
 ```ioLean
@@ -322,11 +339,11 @@ def main : IO Unit := do
   stdout.putStrLn name
 ```
 
-With this standard input:
+给定以下标准输入：
 ```stdin
 Lean user
 ```
-the standard output is:
+标准输出为：
 ```stdout
 Who is it?
 Hello, Lean user
@@ -334,28 +351,28 @@ Hello, Lean user
 :::
 ::::
 
-{docstring IO.setStdin}
+{zhdocstring IO.setStdin Manual.ZhDocString.IO.c133}
 
-{docstring IO.withStdin}
+{zhdocstring IO.withStdin Manual.ZhDocString.IO.c134}
 
-{docstring IO.getStdout}
+{zhdocstring IO.getStdout Manual.ZhDocString.IO.c135}
 
-{docstring IO.setStdout}
+{zhdocstring IO.setStdout Manual.ZhDocString.IO.c136}
 
-{docstring IO.withStdout}
+{zhdocstring IO.withStdout Manual.ZhDocString.IO.c137}
 
-{docstring IO.getStderr}
+{zhdocstring IO.getStderr Manual.ZhDocString.IO.c138}
 
-{docstring IO.setStderr}
+{zhdocstring IO.setStderr Manual.ZhDocString.IO.c139}
 
-{docstring IO.withStderr}
+{zhdocstring IO.withStderr Manual.ZhDocString.IO.c140}
 
-{docstring IO.FS.withIsolatedStreams}
+{zhdocstring IO.FS.withIsolatedStreams Manual.ZhDocString.IO.c141}
 
 ::::keepEnv
-:::example "Redirecting Standard I/O to Strings"
-The {lean}`countdown` function counts down from a specified number, writing its progress to standard output.
-Using `IO.FS.withIsolatedStreams`, this output can be redirected to a string.
+:::example "将标准 I/O 重定向到字符串" (file := "Redirecting Standard I/O to Strings")
+{lean}`countdown` 函数从指定数字开始倒数，并把进度写入标准输出。
+使用 `IO.FS.withIsolatedStreams` 可将该输出重定向到字符串。
 
 ```lean (name := countdown)
 def countdown : Nat → IO Unit
@@ -372,17 +389,20 @@ def runCountdown : IO String := do
 #eval runCountdown
 ```
 
-Running {lean}`countdown` yields a string that contains the output:
+运行 {lean}`countdown` 会得到一个包含输出的字符串：
 ```leanOutput countdown
 "10\n9\n8\n7\n6\n5\n4\n3\n2\n1\nBlastoff!\n"
 ```
 :::
 ::::
 
-# Files and Directories
+# 文件与目录
+%%%
+tag := "Lean-__________________--IO--Files___-File-Handles___-and-Streams--Files-and-Directories"
+%%%
 
-{docstring IO.currentDir}
+{zhdocstring IO.currentDir Manual.ZhDocString.IO.c142}
 
-{docstring IO.appPath}
+{zhdocstring IO.appPath Manual.ZhDocString.IO.c143}
 
-{docstring IO.appDir}
+{zhdocstring IO.appDir Manual.ZhDocString.IO.c144}

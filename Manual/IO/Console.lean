@@ -9,6 +9,7 @@ import VersoManual
 import Manual.Meta
 
 import Lean.Parser.Command
+import Manual.ZhDocString.IO
 
 open Manual
 open Verso.Genre
@@ -19,23 +20,27 @@ set_option pp.rawOnError true
 
 set_option linter.unusedVariables false
 
-#doc (Manual) "Console Output" =>
+#doc (Manual) "控制台输出" =>
+%%%
+tag := "Lean-__________________--IO--Console-Output"
+file := "Console-Output"
+%%%
 
-Lean includes convenience functions for writing to {tech}[standard output] and {tech}[standard error].
-All make use of {lean}`ToString` instances, and the varieties whose names end in `-ln` add a newline after the output.
-These convenience functions only expose a part of the functionality available {ref "stdio"}[using the standard I/O streams].
-In particular, to read a line from standard input, use a combination of {lean}`IO.getStdin` and {lean}`IO.FS.Stream.getLine`.
+Lean 提供了向{tech (key := "standard output")}[标准输出]和{tech (key := "standard error")}[标准错误]写入内容的便捷函数。
+这些函数都使用 {lean}`ToString` 实例；名称以 `-ln` 结尾的变体会在输出后添加换行符。
+这些便捷函数只暴露了{ref "stdio"}[标准 I/O 流]所提供的一部分功能。
+特别是，要从标准输入读取一行，应组合使用 {lean}`IO.getStdin` 与 {lean}`IO.FS.Stream.getLine`。
 
-{docstring IO.print}
+{zhdocstring IO.print Manual.ZhDocString.IO.c056}
 
-{docstring IO.println}
+{zhdocstring IO.println Manual.ZhDocString.IO.c057}
 
-{docstring IO.eprint}
+{zhdocstring IO.eprint Manual.ZhDocString.IO.c058}
 
-{docstring IO.eprintln}
+{zhdocstring IO.eprintln Manual.ZhDocString.IO.c059}
 
-::::example "Printing"
-This program demonstrates all four convenience functions for console I/O.
+::::example "打印" (file := "Printing")
+该程序演示了全部四个控制台 I/O 便捷函数。
 
 :::ioExample
 ```ioLean
@@ -49,14 +54,14 @@ def main : IO Unit := do
   IO.eprintln " so they can be corrected."
 ```
 
-It outputs the following to the standard output:
+它向标准输出写入以下内容：
 
 ```stdout
 This is the Lean language reference.
 Thank you for reading it!
 ```
 
-and the following to the standard error:
+并向标准错误写入以下内容：
 
 ```stderr
 Please report any errors so they can be corrected.

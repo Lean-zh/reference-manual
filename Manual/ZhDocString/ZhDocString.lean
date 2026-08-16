@@ -17,12 +17,19 @@ variable [Lean.Elab.MonadInfoTree m]
 structure ZhDocstringOpts where
   enName : Ident × Name
   zhName : Ident × Name
+  allowMissing : Bool
+  hideFields : Bool := false
+  hideStructureConstructor : Bool := false
   label : Option String := none
 
 meta def ZhDocstringOpts.parse : ArgParse m ZhDocstringOpts :=
   ZhDocstringOpts.mk <$>
     .positional `enName .documentableName <*>
     .positional `zhName .documentableName <*>
+    .flagM `allowMissing (verso.docstring.allowMissing.get <$> getOptions)
+      "缺少文档字符串时仅警告" <*>
+    .flag `hideFields false <*>
+    .flag `hideStructureConstructor false <*>
     .named `label .string true
 
 meta instance : FromArgs ZhDocstringOpts m := ⟨ZhDocstringOpts.parse⟩
@@ -66,21 +73,24 @@ silently attaching a translation to the wrong declaration.
 -/
 @[block_command]
 meta def zhdocstring : BlockCommandOf ZhDocstringOpts
-  | ⟨(enStx, enName), (zhStx, zhName), customLabel⟩ => do
-    Doc.PointOfInterest.save (← getRef) enName.toString (detail? := some "中文文档")
-    let body ← translatedBlocks [enName, zhName] zhStx (← getDocString? (← getEnv) zhName)
-    let enDeclType ← Block.Docstring.DeclType.ofName enName
-    let zhDeclType ← Block.Docstring.DeclType.ofName zhName
-    let enSignature ← Signature.forName enName
-    let extras ← translatedExtras enStx enName zhName enDeclType zhDeclType
-    let altNames ← getStoredSuggestions enName
-    let customLabel := customLabel.orElse fun _ =>
-      let label := translatedDeclLabel enDeclType
-      if label.isEmpty then none else some label
-    ``(Verso.Doc.Block.other
-        (Verso.Genre.Manual.Block.docstring $(quote enName) $(quote enDeclType)
-          $(quote enSignature) $(quote customLabel) $(quote altNames.toArray))
-        #[$(body ++ extras),*])
+  | ⟨(enStx, enName), (zhStx, zhName), allowMissing, hideFields, hideCtor, customLabel⟩ => do
+    withOptions (verso.docstring.allowMissing.set · allowMissing) do
+      Doc.PointOfInterest.save (← getRef) enName.toString (detail? := some "中文文档")
+      let body ← translatedBlocks [enName, zhName] zhStx (← getDocString? (← getEnv) zhName)
+      let enDeclType ← Block.Docstring.DeclType.ofName enName
+        (hideFields := hideFields) (hideStructureConstructor := hideCtor)
+      let zhDeclType ← Block.Docstring.DeclType.ofName zhName
+        (hideFields := hideFields) (hideStructureConstructor := hideCtor)
+      let enSignature ← Signature.forName enName
+      let extras ← translatedExtras enStx enName zhName enDeclType zhDeclType
+      let altNames ← getStoredSuggestions enName
+      let customLabel := customLabel.orElse fun _ =>
+        let label := translatedDeclLabel enDeclType
+        if label.isEmpty then none else some label
+      ``(Verso.Doc.Block.other
+          (Verso.Genre.Manual.Block.docstring $(quote enName) $(quote enDeclType)
+            $(quote enSignature) $(quote customLabel) $(quote altNames.toArray))
+          #[$(body ++ extras),*])
 where
   translatedExtras (blame : Syntax) (enName zhName : Name)
       (enDeclType zhDeclType : Block.Docstring.DeclType) : DocElabM (Array Term) := do
@@ -176,7 +186,8 @@ signature. This is the translated counterpart of `includeDocstring` for use insi
 -/
 @[block_command]
 meta def zhincludeDocstring : BlockCommandOf ZhDocstringOpts
-  | ⟨(_enStx, enName), (zhStx, zhName), _customLabel⟩ => do
+  | ⟨(_enStx, enName), (zhStx, zhName), _allowMissing, _hideFields,
+      _hideStructureConstructor, _customLabel⟩ => do
     let body ← translatedBlocks [enName, zhName] zhStx (← getDocString? (← getEnv) zhName)
     ``(Doc.Block.concat #[$body,*])
 

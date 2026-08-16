@@ -9,6 +9,7 @@ import VersoManual
 import Manual.Meta
 
 import Lean.Parser.Command
+import Manual.ZhDocString.IO
 
 open Manual
 open Verso.Genre
@@ -19,9 +20,10 @@ set_option pp.rawOnError true
 
 set_option linter.unusedVariables false
 
-#doc (Manual) "Tasks and Threads" =>
+#doc (Manual) "任务与线程" =>
 %%%
 tag := "concurrency"
+file := "Tasks-and-Threads"
 %%%
 
 :::leanSection
@@ -29,187 +31,217 @@ tag := "concurrency"
 variable {α : Type u}
 ```
 
-{deftech}_Tasks_ are the fundamental primitive for writing multi-threaded code.
-A {lean}`Task α` represents a computation that, at some point, will {tech (key := "resolve promise")}_resolve_ to a value of type `α`; it may be computed on a separate thread.
-When a task has resolved, its value can be read; attempting to get the value of a task before it resolves causes the current thread to block until the task has resolved.
-Tasks are similar to promises in JavaScript, `JoinHandle` in Rust, and `Future` in Scala.
+{deftech (key := "Tasks")}_任务_是编写多线程代码的基本原语。
+{lean}`Task α` 表示一个会在某一时刻{tech (key := "resolve promise")}_兑现_为 `α` 类型值的计算；该计算可以在另一个线程上执行。
+任务兑现后即可读取其值；若在兑现前尝试取得其值，当前线程会阻塞，直至任务兑现。
+任务类似于 JavaScript 中的承诺、Rust 中的 `JoinHandle` 以及 Scala 中的 `Future`。
 
-Tasks may either carry out pure computations or {name}`IO` actions.
-The API of pure tasks resembles that of {tech}[thunks]: {name}`Task.spawn` creates a {lean}`Task α` from a function in {lean}`Unit → α`, and {name}`Task.get` waits until the function's value has been computed and then returns it.
-The value is cached, so subsequent requests do not need to recompute it.
-The key difference lies in when the computation occurs: while the values of thunks are not computed until they are forced, tasks execute opportunistically in a separate thread.
+任务既可以执行纯计算，也可以执行 {name}`IO` 动作。
+纯任务的 API 类似于{tech (key := "thunks")}[悬式]的 API：{name}`Task.spawn` 从 {lean}`Unit → α` 函数创建 {lean}`Task α`，而 {name}`Task.get` 等待函数值计算完毕后将其返回。
+该值会被缓存，后续请求无须重新计算。
+关键区别在于计算发生的时机：悬式的值只有在被强制求值时才计算，而任务会伺机在另一线程中执行。
 
-Tasks in {name}`IO` are created using {name}`IO.asTask`.
-Similarly, {name}`BaseIO.asTask` and {name}`EIO.asTask` create tasks in other {name}`IO` monads.
-These tasks may have side effects, and can communicate with other tasks.
+{name}`IO` 中的任务使用 {name}`IO.asTask` 创建。
+类似地，{name}`BaseIO.asTask` 与 {name}`EIO.asTask` 用于在其他 {name}`IO` 单子中创建任务。
+这些任务可能产生副作用，也可以与其他任务通信。
 :::
 
-When the last reference to a task is dropped it is {deftech (key := "cancel")}_cancelled_.
-Pure tasks created with {name}`Task.spawn` are terminated upon cancellation.
-Tasks spawned with {name}`IO.asTask`, {name}`EIO.asTask`, or {name}`BaseIO.asTask` continue executing and must explicitly check for cancellation using {name}`IO.checkCanceled`.
-Tasks may be explicitly cancelled using {name}`IO.cancel`.
+当任务的最后一个引用被丢弃时，该任务会被{deftech (key := "cancel")}_取消_。
+使用 {name}`Task.spawn` 创建的纯任务会在取消时终止。
+使用 {name}`IO.asTask`、{name}`EIO.asTask` 或 {name}`BaseIO.asTask` 生成的任务会继续执行，必须使用 {name}`IO.checkCanceled` 显式检查是否已取消。
+可以使用 {name}`IO.cancel` 显式取消任务。
 
-The Lean runtime maintains a thread pool for running tasks.
-The size of the thread pool is determined by the environment variable {envVar +def}`LEAN_NUM_THREADS` if it is set, or by the number of logical processors on the current machine otherwise.
-The size of the thread pool is not a hard limit; in certain situations it may be exceeded to avoid deadlocks.
-By default, these threads are used to run tasks; each task has a {deftech (key := "task priority")}_priority_ ({name}`Task.Priority`), and higher-priority tasks take precedence over lower-priority tasks.
-Tasks may also be assigned to dedicated threads by spawning them with a sufficiently high priority.
+Lean 运行时维护一个用于运行任务的线程池。
+若设置了环境变量 {envVar +def}`LEAN_NUM_THREADS`，线程池大小由它决定；否则由当前机器的逻辑处理器数量决定。
+线程池大小并非硬性上限；在某些情况下，为避免死锁可以超出该大小。
+默认情况下，这些线程用于运行任务；每个任务都有一个{deftech (key := "task priority")}_优先级_（{name}`Task.Priority`），高优先级任务先于低优先级任务执行。
+也可以用足够高的优先级生成任务，从而为其分配专用线程。
 
-{docstring Task (label := "type") +hideStructureConstructor +hideFields}
+{zhdocstring Task Manual.ZhDocString.IO.c161 (label := "type") +hideStructureConstructor +hideFields}
 
-# Creating Tasks
+# 创建任务
+%%%
+tag := "Lean-__________________--IO--Tasks-and-Threads--Creating-Tasks"
+%%%
 
-Pure tasks should typically be created with {name}`Task.spawn`, as {name}`Task.pure` is a task that's already been resolved with the provided value.
-Impure tasks are created by one of the {name BaseIO.asTask}`asTask` actions.
+纯任务通常应使用 {name}`Task.spawn` 创建；{name}`Task.pure` 则表示一个已经兑现为所给值的任务。
+非纯任务由某个 {name BaseIO.asTask}`asTask` 动作创建。
 
-## Pure Tasks
+## 纯任务
+%%%
+tag := "Lean-__________________--IO--Tasks-and-Threads--Creating-Tasks--Pure-Tasks"
+%%%
 
-Pure tasks may be created outside the {name}`IO` family of monads.
-They are terminated when the last reference to them is dropped.
+纯任务可以在 {name}`IO` 单子族之外创建。
+当其最后一个引用被丢弃时，它们会终止。
 
-{docstring Task.spawn}
+{zhdocstring Task.spawn Manual.ZhDocString.IO.c162}
 
-{docstring Task.pure}
+{zhdocstring Task.pure Manual.ZhDocString.IO.c163}
 
-## Impure Tasks
+## 非纯任务
+%%%
+tag := "Lean-__________________--IO--Tasks-and-Threads--Creating-Tasks--Impure-Tasks"
+%%%
 
-When spawning a task with side effects using one of the {name IO.asTask}`asTask` functions, it's important to actually execute the resulting {name}`IO` action.
-A task is spawned each time the resulting action is executed, not when {name IO.asTask}`asTask` is called.
-Impure tasks continue running even when there are no references to them, though this does result in cancellation being requested.
-Cancellation may also be explicitly requested using {name}`IO.cancel`.
-The impure task must check for cancellation using {name}`IO.checkCanceled`.
+使用某个 {name IO.asTask}`asTask` 函数生成带副作用的任务时，务必要真正执行所得的 {name}`IO` 动作。
+每次执行所得动作时都会生成一个任务；调用 {name IO.asTask}`asTask` 时并不会生成任务。
+即使不再有任何引用，非纯任务仍会继续运行，不过此时会发出取消请求。
+也可以使用 {name}`IO.cancel` 显式请求取消。
+非纯任务必须使用 {name}`IO.checkCanceled` 检查取消请求。
 
-{docstring BaseIO.asTask}
+{zhdocstring BaseIO.asTask Manual.ZhDocString.IO.c164}
 
-{docstring EIO.asTask}
+{zhdocstring EIO.asTask Manual.ZhDocString.IO.c165}
 
-{docstring IO.asTask}
+{zhdocstring IO.asTask Manual.ZhDocString.IO.c166}
 
-## Priorities
+## 优先级
+%%%
+tag := "Lean-__________________--IO--Tasks-and-Threads--Creating-Tasks--Priorities"
+%%%
 
-Task priorities are used by the thread scheduler to assign tasks to threads.
-Within the priority range {name Task.Priority.default}`default`–{name Task.Priority.max}`max`, higher-priority tasks always take precedence over lower-priority tasks.
-Tasks spawned with priority {name Task.Priority.dedicated}`dedicated` are assigned their own dedicated threads and do not contend with other tasks for the threads in the thread pool.
+线程调度器使用任务优先级把任务分配给线程。
+在 {name Task.Priority.default}`default` 到 {name Task.Priority.max}`max` 的优先级范围内，高优先级任务总是先于低优先级任务执行。
+以 {name Task.Priority.dedicated}`dedicated` 优先级生成的任务会被分配各自的专用线程，不会与其他任务争用线程池中的线程。
 
-{docstring Task.Priority}
+{zhdocstring Task.Priority Manual.ZhDocString.IO.c167}
 
-{docstring Task.Priority.default}
+{zhdocstring Task.Priority.default Manual.ZhDocString.IO.c168}
 
-{docstring Task.Priority.max}
+{zhdocstring Task.Priority.max Manual.ZhDocString.IO.c169}
 
-{docstring Task.Priority.dedicated}
+{zhdocstring Task.Priority.dedicated Manual.ZhDocString.IO.c170}
 
-# Task Results
+# 任务结果
+%%%
+tag := "Lean-__________________--IO--Tasks-and-Threads--Task-Results"
+%%%
 
-{docstring Task.get}
+{zhdocstring Task.get Manual.ZhDocString.IO.c171}
 
-{docstring IO.wait}
+{zhdocstring IO.wait Manual.ZhDocString.IO.c172}
 
-{docstring IO.waitAny}
+{zhdocstring IO.waitAny Manual.ZhDocString.IO.c173}
 
-# Sequencing Tasks
+# 任务定序
+%%%
+tag := "Lean-__________________--IO--Tasks-and-Threads--Sequencing-Tasks"
+%%%
 
-These operators create new tasks from old ones.
-When possible, it's good to use {name}`Task.map` or {name}`Task.bind` instead of manually calling {name}`Task.get` in a new task because they don't temporarily increase the size of the thread pool.
+这些运算符从已有任务创建新任务。
+只要可能，最好使用 {name}`Task.map` 或 {name}`Task.bind`，而不要在新任务中手动调用 {name}`Task.get`，因为前两者不会暂时增大线程池。
 
-{docstring Task.map}
+{zhdocstring Task.map Manual.ZhDocString.IO.c174}
 
-{docstring Task.bind}
+{zhdocstring Task.bind Manual.ZhDocString.IO.c175}
 
-{docstring Task.mapList}
+{zhdocstring Task.mapList Manual.ZhDocString.IO.c176}
 
-{docstring BaseIO.mapTask}
+{zhdocstring BaseIO.mapTask Manual.ZhDocString.IO.c177}
 
-{docstring EIO.mapTask}
+{zhdocstring EIO.mapTask Manual.ZhDocString.IO.c178}
 
-{docstring IO.mapTask}
+{zhdocstring IO.mapTask Manual.ZhDocString.IO.c179}
 
-{docstring BaseIO.mapTasks}
+{zhdocstring BaseIO.mapTasks Manual.ZhDocString.IO.c180}
 
-{docstring EIO.mapTasks}
+{zhdocstring EIO.mapTasks Manual.ZhDocString.IO.c181}
 
-{docstring IO.mapTasks}
+{zhdocstring IO.mapTasks Manual.ZhDocString.IO.c182}
 
-{docstring BaseIO.bindTask}
+{zhdocstring BaseIO.bindTask Manual.ZhDocString.IO.c183}
 
-{docstring EIO.bindTask}
+{zhdocstring EIO.bindTask Manual.ZhDocString.IO.c184}
 
-{docstring IO.bindTask}
+{zhdocstring IO.bindTask Manual.ZhDocString.IO.c185}
 
-{docstring BaseIO.chainTask}
+{zhdocstring BaseIO.chainTask Manual.ZhDocString.IO.c186}
 
-{docstring EIO.chainTask}
+{zhdocstring EIO.chainTask Manual.ZhDocString.IO.c187}
 
-{docstring IO.chainTask}
+{zhdocstring IO.chainTask Manual.ZhDocString.IO.c188}
 
-# Cancellation and Status
+# 取消与状态
+%%%
+tag := "Lean-__________________--IO--Tasks-and-Threads--Cancellation-and-Status"
+%%%
 
-Impure tasks should use `IO.checkCanceled` to react to cancellation, which occurs either as a result of `IO.cancel` or when the last reference to the task is dropped.
-Pure tasks are terminated automatically upon cancellation.
+非纯任务应使用 `IO.checkCanceled` 响应取消；取消可能由 `IO.cancel` 引发，也可能在任务的最后一个引用被丢弃时发生。
+纯任务会在取消时自动终止。
 
-{docstring IO.cancel}
+{zhdocstring IO.cancel Manual.ZhDocString.IO.c189}
 
-{docstring IO.checkCanceled}
+{zhdocstring IO.checkCanceled Manual.ZhDocString.IO.c190}
 
-{docstring IO.hasFinished}
+{zhdocstring IO.hasFinished Manual.ZhDocString.IO.c191}
 
-{docstring IO.getTaskState}
+{zhdocstring IO.getTaskState Manual.ZhDocString.IO.c192}
 
-{docstring IO.TaskState}
+{zhdocstring IO.TaskState Manual.ZhDocString.IO.c193}
 
-{docstring IO.getTID}
+{zhdocstring IO.getTID Manual.ZhDocString.IO.c194}
 
-# Promises
+# 承诺
+%%%
+tag := "Lean-__________________--IO--Tasks-and-Threads--Promises"
+%%%
 
-Promises represent a value that will be supplied in the future.
-Supplying the value is called {deftech (key := "resolve promise")}_resolving_ the promise.
-Once created, a promise can be stored in a data structure or passed around like any other value, and attempts to read from it will block until it is resolved.
+承诺表示一个将在未来提供的值。
+提供该值称为{deftech (key := "resolve promise")}_兑现_承诺。
+承诺创建后，可以像其他值一样存入数据结构或四处传递；尝试读取它时会阻塞，直至它兑现。
 
 
-{docstring IO.Promise}
+{zhdocstring IO.Promise Manual.ZhDocString.IO.c195}
 
-{docstring IO.Promise.new}
+{zhdocstring IO.Promise.new Manual.ZhDocString.IO.c196}
 
-{docstring IO.Promise.isResolved}
+{zhdocstring IO.Promise.isResolved Manual.ZhDocString.IO.c197}
 
-{docstring IO.Promise.result?}
+{zhdocstring IO.Promise.result? Manual.ZhDocString.IO.c198}
 
-{docstring IO.Promise.result!}
+{zhdocstring IO.Promise.result! Manual.ZhDocString.IO.c199}
 
-{docstring IO.Promise.resultD}
+{zhdocstring IO.Promise.resultD Manual.ZhDocString.IO.c200}
 
-{docstring IO.Promise.resolve}
+{zhdocstring IO.Promise.resolve Manual.ZhDocString.IO.c201}
 
-# Communication Between Tasks
+# 任务间通信
+%%%
+tag := "Lean-__________________--IO--Tasks-and-Threads--Communication-Between-Tasks"
+%%%
 
-In addition to the types and operations described in this section, {name}`IO.Ref` can be used as a lock.
-Taking the reference (using {name ST.Ref.take}`take`) causes other threads to block when reading until the reference is {name ST.Ref.set}`set` again.
-This pattern is described in {ref "ref-locks"}[the section on reference cells].
+除本节介绍的类型与操作外，{name}`IO.Ref` 也可用作锁。
+取走引用（使用 {name ST.Ref.take}`take`）会使其他线程在读取时阻塞，直到再次用 {name ST.Ref.set}`set` 设置该引用。
+这种模式在{ref "ref-locks"}[引用单元一节]中介绍。
 
-## Channels
+## 通道
+%%%
+tag := "Lean-__________________--IO--Tasks-and-Threads--Communication-Between-Tasks--Channels"
+%%%
 
-The types and functions in this section are available after importing {module}`Std.Sync.Channel`.
+导入 {module}`Std.Sync.Channel` 后即可使用本节中的类型与函数。
 
-{docstring Std.Channel}
+{zhdocstring Std.Channel Manual.ZhDocString.IO.c202}
 
-{docstring Std.Channel.new}
+{zhdocstring Std.Channel.new Manual.ZhDocString.IO.c203}
 
-{docstring Std.Channel.send}
+{zhdocstring Std.Channel.send Manual.ZhDocString.IO.c204}
 
-{docstring Std.Channel.recv}
+{zhdocstring Std.Channel.recv Manual.ZhDocString.IO.c205}
 
 
-{docstring Std.Channel.forAsync}
+{zhdocstring Std.Channel.forAsync Manual.ZhDocString.IO.c206}
 
 
-{docstring Std.Channel.sync}
+{zhdocstring Std.Channel.sync Manual.ZhDocString.IO.c207}
 
-{docstring Std.Channel.Sync}
+{zhdocstring Std.Channel.Sync Manual.ZhDocString.IO.c208}
 
 
-{docstring Std.CloseableChannel}
+{zhdocstring Std.CloseableChannel Manual.ZhDocString.IO.c209}
 
-{docstring Std.CloseableChannel.new}
+{zhdocstring Std.CloseableChannel.new Manual.ZhDocString.IO.c210}
 
 
 
@@ -219,36 +251,42 @@ The types and functions in this section are available after importing {module}`S
 ```lean -show
 variable {m : Type → Type v} {α : Type} [MonadLiftT BaseIO m] [Inhabited α] [Monad m]
 ```
-Synchronous channels can also be read using {keywordOf Lean.Parser.Term.doFor}`for` loops.
-In particular, there is an instance of type {inst}`ForIn m (Std.Channel.Sync α) α` for every monad {lean}`m` with a {inst}`MonadLiftT BaseIO m` instance and {lean}`α` with an {inst}`Inhabited α` instance.
+同步通道也可使用 {keywordOf Lean.Parser.Term.doFor}`for` 循环读取。
+具体而言，对于每个具有 {inst}`MonadLiftT BaseIO m` 实例的单子 {lean}`m`，以及每个具有 {inst}`Inhabited α` 实例的 {lean}`α`，都存在类型为 {inst}`ForIn m (Std.Channel.Sync α) α` 的实例。
 :::
-## Mutexes
+## 互斥锁
+%%%
+tag := "Lean-__________________--IO--Tasks-and-Threads--Communication-Between-Tasks--Mutexes"
+%%%
 
-The types and functions in this section are available after importing {module}`Std.Sync.Mutex`.
+导入 {module}`Std.Sync.Mutex` 后即可使用本节中的类型与函数。
 
-{docstring Std.Mutex (label := "type") +hideStructureConstructor +hideFields}
+{zhdocstring Std.Mutex Manual.ZhDocString.IO.c211 (label := "type") +hideStructureConstructor +hideFields}
 
-{docstring Std.Mutex.new}
+{zhdocstring Std.Mutex.new Manual.ZhDocString.IO.c212}
 
-{docstring Std.Mutex.atomically}
+{zhdocstring Std.Mutex.atomically Manual.ZhDocString.IO.c213}
 
-{docstring Std.Mutex.atomicallyOnce}
+{zhdocstring Std.Mutex.atomicallyOnce Manual.ZhDocString.IO.c214}
 
-{docstring Std.AtomicT}
+{zhdocstring Std.AtomicT Manual.ZhDocString.IO.c215}
 
 
-## Condition Variables
+## 条件变量
+%%%
+tag := "Lean-__________________--IO--Tasks-and-Threads--Communication-Between-Tasks--Condition-Variables"
+%%%
 
-The types and functions in this section are available after importing {module}`Std.Sync.Mutex`.
+导入 {module}`Std.Sync.Mutex` 后即可使用本节中的类型与函数。
 
-{docstring Std.Condvar}
+{zhdocstring Std.Condvar Manual.ZhDocString.IO.c216}
 
-{docstring Std.Condvar.new}
+{zhdocstring Std.Condvar.new Manual.ZhDocString.IO.c217}
 
-{docstring Std.Condvar.wait}
+{zhdocstring Std.Condvar.wait Manual.ZhDocString.IO.c218}
 
-{docstring Std.Condvar.notifyOne}
+{zhdocstring Std.Condvar.notifyOne Manual.ZhDocString.IO.c219}
 
-{docstring Std.Condvar.notifyAll}
+{zhdocstring Std.Condvar.notifyAll Manual.ZhDocString.IO.c220}
 
-{docstring Std.Condvar.waitUntil}
+{zhdocstring Std.Condvar.waitUntil Manual.ZhDocString.IO.c221}
