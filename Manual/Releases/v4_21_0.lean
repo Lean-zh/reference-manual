@@ -21,10 +21,13 @@ file := "v4.21.0"
 ````markdown
 本次发布共合入 295 项变更。除下文列出的 100 项功能新增和 83 项修复外，还有 2 项重构、4 项文档改进、6 项性能改进、2 项测试套件改进以及 98 项其他变更。
 
-## 亮点
+````
+# 亮点
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___21___0-_LPAR_2025-06-30_RPAR_--Highlights"
 %%%
+
+````markdown
 
 _`'Unknown identifier'` 代码操作_
 
@@ -117,10 +120,13 @@ _其他亮点_
   `assert!` 不再中止执行，以及用户
   可以重定向错误消息这两个事实。
 
-## 语言
+````
+# 语言
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___21___0-_LPAR_2025-06-30_RPAR_--Language"
 %%%
+
+````markdown
 
 * [#6973](https://github.com/leanprover/lean4/pull/6973) 让 `dsimp` 不再访问证明项，这应当能使
   `simp` 和 `dsimp` 更高效。
@@ -550,10 +556,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___21___0-_LPAR_2025-0
   它还修复了 reification 过程中的一个缺陷，并改进了 `ring` 和 `cutsat`
   模块中的项内部化。
 
-## 库
+````
+# 库
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___21___0-_LPAR_2025-06-30_RPAR_--Library"
 %%%
+
+````markdown
 
 * [#7352](https://github.com/leanprover/lean4/pull/7352) 重做了围绕 `Id` 单子的 `simp` 集，
   使其不会省略或展开 `pure` 与 `Id.run`。
@@ -749,10 +758,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___21___0-_LPAR_2025-0
   `x < ↑n`，而不是 `↑x < n`，这并不理想。不过需要注意，
   在 Mathlib 中这仍然会发生！
 
-## 编译器
+````
+# 编译器
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___21___0-_LPAR_2025-06-30_RPAR_--Compiler"
 %%%
+
+````markdown
 
 * [#8211](https://github.com/leanprover/lean4/pull/8211) 为从新编译器的 LCNF 表示生成 IR 增加了支持。
 
@@ -831,10 +843,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___21___0-_LPAR_2025-0
 * [#8582](https://github.com/leanprover/lean4/pull/8582) 修复了 `Param.toMono` 中状态被意外丢弃的问题。
   这段代码最初编写时，除 `typeParams` 外并没有其他状态。
 
-## 美观打印
+````
+# 美观打印
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___21___0-_LPAR_2025-06-30_RPAR_--Pretty-Printing"
 %%%
+
+````markdown
 
 * [#8041](https://github.com/leanprover/lean4/pull/8041) 修改了 `pp.showLetValues` 的行为，
   现在会使用一个可悬停的 `⋯` 来隐藏 let 的值。这个选项现在默认是 false，
@@ -852,18 +867,24 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___21___0-_LPAR_2025-0
 * [#8504](https://github.com/leanprover/lean4/pull/8504) 修改了 pretty printer，使其对类父投影使用
   点记法。此前类从不使用点记法。
 
-## 文档
+````
+# 文档
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___21___0-_LPAR_2025-06-30_RPAR_--Documentation"
 %%%
 
+````markdown
+
 * [#8199](https://github.com/leanprover/lean4/pull/8199) 增加了一份文档风格指南，其中既包含一般原则，
   也包含文档字符串特有的注意事项。
 
-## 服务器
+````
+# 服务器
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___21___0-_LPAR_2025-06-30_RPAR_--Server"
 %%%
+
+````markdown
 
 * [#7665](https://github.com/leanprover/lean4/pull/7665) 和 [#8180](https://github.com/leanprover/lean4/pull/8180) 增加了
   用于处理 `'Unknown identifier'` 错误的代码操作支持：既可以导入缺失的声明，也可以
@@ -882,10 +903,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___21___0-_LPAR_2025-0
   `Unknown identifier` 错误区间上的代码操作无法正常工作；同时还调整了
   若干 `Unknown identifier` 区间，使其真正结束在对应的标识符上。
 
-## Lake
+````
+# Lake
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___21___0-_LPAR_2025-06-30_RPAR_--Lake"
 %%%
+
+````markdown
 
 * [#8383](https://github.com/leanprover/lean4/pull/8383) 修复了 `import Lake` 与预编译模块配合使用的问题，
   该功能此前在 MacOS 上已损坏。
@@ -905,10 +929,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___21___0-_LPAR_2025-0
 * [#8539](https://github.com/leanprover/lean4/pull/8539) 修改了 Lake，使模块构建产出的 Lean 消息使用相对路径。
   这使这些消息能在不同机器之间可移植，这对 Mathlib 的缓存很有用。
 
-## 其他
+````
+# 其他
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___21___0-_LPAR_2025-06-30_RPAR_--Other"
 %%%
+
+````markdown
 
 * [#8192](https://github.com/leanprover/lean4/pull/8192) 包含了在发布 v4.20.0-rc1 期间准备的
   `release_checklist.py` 脚本升级。

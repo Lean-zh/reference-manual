@@ -21,10 +21,13 @@ file := "v4.23.0"
 ````markdown
 本次发布共合入 610 项改动。除下文列出的 95 项功能新增和 139 项修复外，还有 61 项重构、12 项文档改进、71 项性能改进，以及 232 项其他改动。
 
-## 亮点
+````
+# 亮点
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___23___0-_LPAR_2025-09-15_RPAR_--Highlights"
 %%%
+
+````markdown
 
 Lean v4.23.0 带来了显著的性能改进、更好的错误消息，以及 `grind`、编译器和 Lean 其他组件中的大量错误修复、打磨与整合。
 
@@ -47,10 +50,13 @@ Lean v4.23.0 带来了显著的性能改进、更好的错误消息，以及 `gr
 
 你可以在 [Lean playground](https://live.lean-lang.org/#codez=PQWghAUAxABAEgSwHYBcDOMBmB7ATjZANwEMAbBAExiWIFsBTK43AcwFcHUNkYAHYlCnq4kaCCGAQIyCmwDGKBIXowAKjADuAC2H0IMGAB8YtANYBGGAAoAHjACeMAF4wAXDABC2bKQCUU+hs6XlIVKxQ3NV83AF59EwE5LRgIjQQULXjjADozSytHVxiU3DZ6aKsNWJKyipcirDI0cpgYgD5rfylQSFhELiw8GDliZuo6ejEJAKDaELCAI0ivH2j3ADkBaoX7eJHmjAW90ZUkbCRAhDQhVFa2+IM0UwRebvBoeGR0QfxaK7RkCwYNdSgo2LgVMhrsQkHIVJgEPRSBQppIICD5ChwSoAMqaHQQ+IIpEUSwbARExHIgBMkQAavQFENNhFicjzDNgqFIniivEAN4AXwgQA) 中尝试以上所有功能。
 
-### 破坏性变更
+````
+## 破坏性变更
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___23___0-_LPAR_2025-09-15_RPAR_--Highlights--Breaking-Changes"
 %%%
+
+````markdown
 
 - [#9800](https://github.com/leanprover/lean4/pull/9800) 改进三角洲衍生处理器,使其有能力
 与装有粘合器以及能够回溯
@@ -86,10 +92,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___23___0-_LPAR_2025-0
 反对称、整数、`min_ex_or`
 等,加上相应的实例参数。
 
-## 语言
+````
+# 语言
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___23___0-_LPAR_2025-09-15_RPAR_--Language"
 %%%
+
+````markdown
 
 * [#6732](https://github.com/leanprover/lean4/pull/6732) 增加支持转换模式中的`clear` 战术。
 
@@ -707,10 +716,13 @@ PR, 每当内核类型核对表格“ eagerReduce” 的参数时
 ````
 
 ````markdown
-## 库
+````
+# 库
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___23___0-_LPAR_2025-09-15_RPAR_--Library"
 %%%
+
+````markdown
 
 * [#7450](https://github.com/leanprover/lean4/pull/7450) 执行`Nat.dfold`,一个附属类似`Nat.fold`的`Nat.dfold`。
 
@@ -838,10 +850,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___23___0-_LPAR_2025-0
 
 * [#9850](https://github.com/leanprover/lean4/pull/9850) 为 `Std.PRange` 记号添加了反精译器。
 
-## 编译器
+````
+# 编译器
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___23___0-_LPAR_2025-09-15_RPAR_--Compiler"
 %%%
+
+````markdown
 
 * [#8691](https://github.com/leanprover/lean4/pull/8691) 确保当使用新编译器进行编译失败时，状态会被回滚。这对于不可计算的 section 尤其重要，因为编译器可能会生成半编译的函数，而这些函数随后可能在编译其他函数时被错误地使用。
 
@@ -985,10 +1000,13 @@ C++ 编译器被删除后, 我们可以移动 IR
 它可以确定数组将继续持有
 有效引用返回值寿命的元素。
 
-## 美观打印
+````
+# 美观打印
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___23___0-_LPAR_2025-09-15_RPAR_--Pretty-Printing"
 %%%
+
+````markdown
 
 * [#8391](https://github.com/leanprover/lean4/pull/8391) 为 `Vector.mk` 添加了一个 unexpander，它会把 `Vector.mk #[...] _` 反展开为 `#v[...]`。
   ```lean
@@ -1012,10 +1030,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___23___0-_LPAR_2025-0
 命令获得它自己的编号。这还没有影响精美的打印
 宇宙水平的可变变量。
 
-## 文档
+````
+# 文档
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___23___0-_LPAR_2025-09-15_RPAR_--Documentation"
 %%%
+
+````markdown
 
 * [#9093](https://github.com/leanprover/lean4/pull/9093)为`ToFormat.toFormat`增加一个缺失的文档。
 
@@ -1023,10 +1044,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___23___0-_LPAR_2025-0
 
 * [#9593](https://github.com/leanprover/lean4/pull/9593) 大大简化`propext` 的句号。
 
-## 服务器
+````
+# 服务器
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___23___0-_LPAR_2025-09-15_RPAR_--Server"
 %%%
+
+````markdown
 
 * [#9040](https://github.com/leanprover/lean4/pull/9040) 改进了“转到定义”的用户体验，具体包括：
   - 对类型类投影使用“转到定义”时，现在会提取参与其中的具体实例，并将它们作为可跳转的位置。例如，对 `toString 0` 中的 `toString` 使用“转到定义”将得到 `ToString.toString` 和 `ToString Nat`。
@@ -1042,10 +1066,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___23___0-_LPAR_2025-0
 * [#9784](https://github.com/leanprover/lean4/pull/9784)确保编辑器进度栏更好地反映实际
 平行拟订的进展。
 
-## Lake
+````
+# Lake
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___23___0-_LPAR_2025-09-15_RPAR_--Lake"
 %%%
+
+````markdown
 
 * [#9053](https://github.com/leanprover/lean4/pull/9053)更新Lake,以解决供过渡用的`.olean`文件
 通过`modules`字段`lean --setup` 中`modules`项]的倾销进口。
@@ -1118,10 +1145,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___23___0-_LPAR_2025-0
 仅将文本模块标题的查询格式改进为
 产生有效页眉。
 
-## 其他
+````
+# 其他
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___23___0-_LPAR_2025-09-15_RPAR_--Other"
 %%%
+
+````markdown
 
 * [#9106](https://github.com/leanprover/lean4/pull/9106) 修复了在不启用 `LEAN_USE_GMP` 构建时出现的 `undefined symbol: lean::mpz::divexact(lean::mpz const&, lean::mpz const&)`。
 

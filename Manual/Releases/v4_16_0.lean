@@ -19,15 +19,21 @@ file := "v4.16.0"
 %%%
 
 ````markdown
-## 高亮
+````
+# 高亮
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___16___0-_LPAR_2025-02-03_RPAR_--Highlights"
 %%%
 
-### 各不相同的 sorry
+````markdown
+
+````
+## 各不相同的 sorry
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___16___0-_LPAR_2025-02-03_RPAR_--Highlights--Unique-sorrys"
 %%%
+
+````markdown
 
 [#5757](https://github.com/leanprover/lean4/pull/5757) 通过确保每个 sorry 在定义上都不等同于其他 sorry，让人为定义体中用 sorry 占位的定义构造“伪造”定理变得更困难。例如，下面的代码现在会失败：
 ```lean
@@ -45,10 +51,13 @@ example : f 0 = f 1 := rfl -- fails
 ```
 现在，大多数合成 sorry 的来源（回顾一下：即由精化器产生的 sorry）都会是唯一的；唯一的例外是精化错误，因为让这类 `sorry` 也唯一化往往会造成令人困惑的连锁报错。不过，总体而言，这些 `sorry` 现在都会带标签。这样一来，在 Infoview 中对 `sorry` 使用“转到定义”就会跳到它的来源。选项 `set_option pp.sorrySource true` 会让漂亮打印器在 `sorry` 上显示源位置。
 
-### 数字字面量中的分隔符
+````
+## 数字字面量中的分隔符
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___16___0-_LPAR_2025-02-03_RPAR_--Highlights--Separators-in-numeric-literals"
 %%%
+
+````markdown
 
 [#6204](https://github.com/leanprover/lean4/pull/6204) 允许在数字字面量中使用 `_` 作为分隔符。例如 `1_000_000`、`0xff_ff` 或 `0b_10_11_01_00`。新的词法语法如下：
 ```text
@@ -59,10 +68,13 @@ numeral16 : "0" [xX] ("_"* hex_char+)+
 float     : numeral10 "." numeral10? [eE[+-]numeral10]
 ```
 
-### 其他新特性
+````
+## 其他新特性
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___16___0-_LPAR_2025-02-03_RPAR_--Highlights--Additional-new-features"
 %%%
+
+````markdown
 
 * [#6300](https://github.com/leanprover/lean4/pull/6300) 新增 `debug.proofAsSorry` 选项。启用后，定理的证明会被忽略，并替换为 `sorry`。
 
@@ -70,17 +82,23 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___16___0-_LPAR_2025-0
 
 * [#6366](https://github.com/leanprover/lean4/pull/6366) 新增对 `Float32` 的支持，并修复了运行时中的一个问题。
 
-### 库更新
+````
+## 库更新
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___16___0-_LPAR_2025-02-03_RPAR_--Highlights--Library-updates"
 %%%
 
+````markdown
+
 Lean 4 库进行了大量更新，改进了算术推理、增强了数据结构 API，并优化了库的组织方式。重点变化包括：更好地支持按位运算、移位与转换；扩充了 Array、Vector 和 List 的引理；并改进了顺序相关定义。一些模块为提高清晰度而重新组织，内部细化也进一步提升了一致性与正确性。
 
-### 破坏性变更
+````
+## 破坏性变更
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___16___0-_LPAR_2025-02-03_RPAR_--Highlights--Breaking-changes"
 %%%
+
+````markdown
 
 [#6330](https://github.com/leanprover/lean4/pull/6330) 从函数归纳原理中移除了不必要的参数。这是一项破坏性变更；受影响的代码通常只需少传几个参数即可完成调整。
 
@@ -88,10 +106,13 @@ _本高亮部分由 Violetta Sim 撰写。_
 
 本次发布共合入 201 项变更。除下方列出的 74 项功能新增和 44 项修复外，另有 7 项重构、5 项文档改进和 62 项杂项工作。
 
-## 语言
+````
+# 语言
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___16___0-_LPAR_2025-02-03_RPAR_--Language"
 %%%
+
+````markdown
 
 * [#3696](https://github.com/leanprover/lean4/pull/3696) 让所有消息构造器都能处理漂亮打印器错误。
 
@@ -260,10 +281,13 @@ tactic 'cases' failed, major premise type is not an inductive type
 
 * [#6514](https://github.com/leanprover/lean4/pull/6514) 通过避免创建不必要的元变量，增强了 `grind` 中断言新事实的过程。
 
-## 库
+````
+# 库
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___16___0-_LPAR_2025-02-03_RPAR_--Library"
 %%%
+
+````markdown
 
 * [#6182](https://github.com/leanprover/lean4/pull/6182) 新增 `BitVec.[toInt|toFin]_concat`，并将若干定理移到 concat 章节，因为 `toInt_concat` 的证明需要 `BitVec.msb_concat`。
 
@@ -331,10 +355,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___16___0-_LPAR_2025-0
 
 * [#6477](https://github.com/leanprover/lean4/pull/6477) 增加支撑 `partial_fixpoint` 特性所需的 domain theory。
 
-## 编译器
+````
+# 编译器
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___16___0-_LPAR_2025-02-03_RPAR_--Compiler"
 %%%
+
+````markdown
 
 * [#6311](https://github.com/leanprover/lean4/pull/6311) 为新代码生成器新增 `HEq` 支持。
 
@@ -356,35 +383,47 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___16___0-_LPAR_2025-0
 
 * [#6574](https://github.com/leanprover/lean4/pull/6574) 真实地阻止了 Lake 意外拾取机器上安装的其他工具链。
 
-## 漂亮打印
+````
+# 漂亮打印
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___16___0-_LPAR_2025-02-03_RPAR_--Pretty-Printing"
 %%%
+
+````markdown
 
 * [#5689](https://github.com/leanprover/lean4/pull/5689) 调整了漂亮打印器反解析名称的方式。以前漂亮打印时会使用所有 `export`；现在只使用那些把名称导入父命名空间的 `export`（启发式地说，这些是库作者有意提供的“API 导出”），而不再使用把名称导入无关命名空间的“横向导出”；#6189 中的 dot 记法特性现在会鼓励后者。
 
 * [#5757](https://github.com/leanprover/lean4/pull/5757) 除了引入带标签的 `sorry` 外，还修复了一个问题：带借用注解参数（例如 `String.append` 的第二个参数）漂亮打印后附带的元数据，与普通参数附带的元数据不一致。
 
-## 文档
+````
+# 文档
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___16___0-_LPAR_2025-02-03_RPAR_--Documentation"
 %%%
 
+````markdown
+
 * [#6450](https://github.com/leanprover/lean4/pull/6450) 为 `@[app_delab]` 属性添加文档字符串。
 
-## 服务器
+````
+# 服务器
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___16___0-_LPAR_2025-02-03_RPAR_--Server"
 %%%
+
+````markdown
 
 * [#6279](https://github.com/leanprover/lean4/pull/6279) 修复了结构实例字段补全中的一个问题。此前它在使用 Mathlib 风格方括号结构实例时无法正常工作。
 
 * [#6408](https://github.com/leanprover/lean4/pull/6408) 修复了一次回归：此前不存在的目标也会被显示出来。这个回归由 #5835 触发，最初源于 #4926。
 
-## Lake
+````
+# Lake
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___16___0-_LPAR_2025-02-03_RPAR_--Lake"
 %%%
+
+````markdown
 
 * [#6176](https://github.com/leanprover/lean4/pull/6176) 修改了 Lake 的构建流程，不再使用 `leanc` 编译 C 文件或链接共享库与可执行文件。取而代之的是，它直接以所需参数调用随包附带的编译器（若无则调用本地编译器）。
 
@@ -402,10 +441,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___16___0-_LPAR_2025-0
 
 * [#6631](https://github.com/leanprover/lean4/pull/6631) 为共享库设置 `MACOSX_DEPLOYMENT_TARGET`（此前只对可执行文件设置）。
 
-## 其他
+````
+# 其他
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___16___0-_LPAR_2025-02-03_RPAR_--Other"
 %%%
+
+````markdown
 
 * [#6285](https://github.com/leanprover/lean4/pull/6285) 将 `ToLevel` 类型类从 mathlib 上游化，并用它修复现有 `ToExpr` 实例，使其真正具备宇宙多态性（此前当宇宙层级非零时会生成格式错误的表达式）。我们还在 mathlib 的 `ToLevel` 定义基础上做了改进，确保该类无论宇宙参数如何都始终位于 `Type` 中。
 

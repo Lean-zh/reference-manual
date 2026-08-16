@@ -20,10 +20,13 @@ file := "v4.15.0"
 
 ````markdown
 
-## 语言
+````
+# 语言
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___15___0-_LPAR_2025-01-04_RPAR_--Language"
 %%%
+
+````markdown
 
 - [#4595](https://github.com/leanprover/lean4/pull/4595) 实现了 `Simp.Config.implicitDefEqsProofs`。当其为 `true`（默认即为 `true`）时，`simp` **不会** 为与 `rfl` 定理关联的重写规则构造证明项。用户通过给定理加上 @[simp] 属性来提供重写规则。如果定理的证明只是 `rfl`（自反性），并且 `implicitDefEqProofs := true`，那么 `simp` **不会** 构造一个应用该注解定理的证明项。
 
@@ -160,10 +163,13 @@ structure PosFun where
 
 - [#6236](https://github.com/leanprover/lean4/pull/6236) 修复了这样一个问题：编辑包含嵌套文档字符串的命令时，整个命令无法被重新解析。
 
-## 库
+````
+# 库
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___15___0-_LPAR_2025-01-04_RPAR_--Library"
 %%%
+
+````markdown
 
 - [#4904](https://github.com/leanprover/lean4/pull/4904) 为 Lean 4 Std 引入日期与时间功能。
 
@@ -335,10 +341,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___15___0-_LPAR_2025-0
 
 - [#6247](https://github.com/leanprover/lean4/pull/6247) 添加定理 `numBits_pos`、`le_numBits`、`numBits_le`，让证明有关 `System.Platform.numBits` 的不等式更容易。
 
-## 编译器
+````
+# 编译器
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___15___0-_LPAR_2025-01-04_RPAR_--Compiler"
 %%%
+
+````markdown
 
 - [#5840](https://github.com/leanprover/lean4/pull/5840) 修改 `lean_sharecommon_{eq,hash}`，使其只考虑对象的有效字节，而不考虑任何未指定/未初始化的空余容量中的字节。
 
@@ -353,10 +362,13 @@ https://github.com/google/sanitizers/wiki/AddressSanitizerUseAfterReturn#algorit
 
 - [#6257](https://github.com/leanprover/lean4/pull/6257) 加固 `markPersistent` 的使用。
 
-## 漂亮打印
+````
+# 漂亮打印
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___15___0-_LPAR_2025-01-04_RPAR_--Pretty-Printing"
 %%%
+
+````markdown
 
 - [#2934](https://github.com/leanprover/lean4/pull/2934) 新增选项 `pp.parens`（默认值：false），它会让漂亮打印器积极插入括号，这在教学和理解表达式结构时都很有用。例如，它会把 `p → q → r` 漂亮打印为 `p → (q → r)`。
 
@@ -374,10 +386,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___15___0-_LPAR_2025-0
 
 - [#6213](https://github.com/leanprover/lean4/pull/6213) 使 “synthesized 类型类实例 is not definitionally equal” 这类错误能显示出具体差异。
 
-## 文档
+````
+# 文档
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___15___0-_LPAR_2025-01-04_RPAR_--Documentation"
 %%%
+
+````markdown
 
 - [#6009](https://github.com/leanprover/lean4/pull/6009) 修复了 prec 的文档字符串中的一个拼写错误，并让文字表述更精确一点。
 
@@ -393,10 +408,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___15___0-_LPAR_2025-0
 
 - [#6239](https://github.com/leanprover/lean4/pull/6239) 解释了 `Expr.abstract` 引入 de Bruijn 索引的顺序。
 
-## 服务器
+````
+# 服务器
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___15___0-_LPAR_2025-01-04_RPAR_--Server"
 %%%
+
+````markdown
 
 - [#5835](https://github.com/leanprover/lean4/pull/5835) 为结构体实例记法的字段添加自动补全。具体来说，现在在结构体实例记法的空白处用 `Ctrl+Space` 查询补全时，会出现完整字段列表。对自定义语法，也可以通过把字段列表解析器包在 `structInstFields` 解析器中来启用空白处结构补全。
 
@@ -408,10 +426,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___15___0-_LPAR_2025-0
 
 - [#6246](https://github.com/leanprover/lean4/pull/6246) 修复了一个性能问题：此前 Lean 语言服务器每次保存文件时都会遍历整个项目文件树，阻塞所有其他请求与通知的处理，并在保存后显著增加整体语言服务器延迟。
 
-## Lake
+````
+# Lake
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___15___0-_LPAR_2025-01-04_RPAR_--Lake"
 %%%
+
+````markdown
 
 - [#5684](https://github.com/leanprover/lean4/pull/5684) 在 `lake update` 时更新工具链。
 
@@ -423,10 +444,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___15___0-_LPAR_2025-0
 
 - [#6231](https://github.com/leanprover/lean4/pull/6231) 改进了 Lake 从 Reservoir 获取依赖失败时产生的错误信息。如果该包未被索引，它会给出如何从 GitHub 引入该包的建议。
 
-## 其他
+````
+# 其他
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___15___0-_LPAR_2025-01-04_RPAR_--Other"
 %%%
+
+````markdown
 
 - [#6137](https://github.com/leanprover/lean4/pull/6137) 添加对在跟踪性能分析器输出中显示多个线程的支持。
 

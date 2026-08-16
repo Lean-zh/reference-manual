@@ -21,10 +21,13 @@ file := "v4.13.0"
 ```markdown
 **完整变更日志**：https://github.com/leanprover/lean4/compare/v4.12.0...v4.13.0
 
-### 语言特性、策略与元程序
+```
+# 语言特性、策略与元程序
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___13___0-_LPAR_2024-11-01_RPAR_--Language-features___-tactics___-and-metaprograms"
 %%%
+
+```markdown
 
 * `structure` 命令
   * [#5511](https://github.com/leanprover/lean4/pull/5511) 允许结构体父类型是类型同义词。
@@ -98,10 +101,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___13___0-_LPAR_2024-1
 
 
 
-### 语言服务器、组件与 IDE 扩展
+```
+# 语言服务器、组件与 IDE 扩展
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___13___0-_LPAR_2024-11-01_RPAR_--Language-server___-widgets___-and-IDE-extensions"
 %%%
+
+```markdown
 
 * [#5205](https://github.com/leanprover/lean4/pull/5205) 降低了 tactic 块中自动补全的延迟。
 * [#5237](https://github.com/leanprover/lean4/pull/5237) 修复了 VS Code 中的符号出现高亮：当从标识符右侧将光标移入时，不会高亮其出现位置的问题。
@@ -112,20 +118,26 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___13___0-_LPAR_2024-1
 * [#5428](https://github.com/leanprover/lean4/pull/5428) 确保在等待精化时，总会将某个最近的文件范围作为进度进行报告。
 
 
-### 美观打印
+```
+# 美观打印
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___13___0-_LPAR_2024-11-01_RPAR_--Pretty-printing"
 %%%
+
+```markdown
 
 * [#4979](https://github.com/leanprover/lean4/pull/4979) 让美观打印器对作为 token 的标识符进行转义。
 * [#5389](https://github.com/leanprover/lean4/pull/5389) 让格式化器使用当前的 token 表。
 * [#5513](https://github.com/leanprover/lean4/pull/5513) 在格式化 token 时使用可换行空白而不是不可换行空白。
 
 
-### 库
+```
+# 库
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___13___0-_LPAR_2024-11-01_RPAR_--Library"
 %%%
+
+```markdown
 
 * [#5222](https://github.com/leanprover/lean4/pull/5222) 减少了 `Json.compress` 的分配。
 * [#5231](https://github.com/leanprover/lean4/pull/5231) 上游合入了 `Zero` 和 `NeZero`。
@@ -301,10 +313,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___13___0-_LPAR_2024-1
   * [#5381](https://github.com/leanprover/lean4/pull/5381) 清理了冗余的 simp 引理。
 
 
-### 编译器、运行时与 FFI
+```
+# 编译器、运行时与 FFI
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___13___0-_LPAR_2024-11-01_RPAR_--Compiler___-runtime___-and-FFI"
 %%%
+
+```markdown
 
 * [#4685](https://github.com/leanprover/lean4/pull/4685) 修复了 C 语言 `run_new_frontend` 签名中的一个拼写错误。
 * [#4729](https://github.com/leanprover/lean4/pull/4729) 让 IR 检查器提示使用 `noncomputable`。
@@ -316,10 +331,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___13___0-_LPAR_2024-1
 * [#5564](https://github.com/leanprover/lean4/pull/5564) 移除了不合规范的 0 大小数组。（@eric-wieser）
 
 
-### Lake
+```
+# Lake
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___13___0-_LPAR_2024-11-01_RPAR_--Lake"
 %%%
+
+```markdown
 * Reservoir 构建缓存。Lake 现在会在构建前尝试从 Reservoir 获取该包的预构建副本。此功能仅对 leanprover 或 leanprover-community 组织中、且版本已被 Reservoir 索引的包启用。用户可以通过在 CLI 上传入 --no-cache，或将环境变量 LAKE_NO_CACHE 设为 true，强制 Lake 从源码构建包。[#5486](https://github.com/leanprover/lean4/pull/5486)、[#5572](https://github.com/leanprover/lean4/pull/5572)、[#5583](https://github.com/leanprover/lean4/pull/5583)、[#5600](https://github.com/leanprover/lean4/pull/5600)、[#5641](https://github.com/leanprover/lean4/pull/5641)、[#5642](https://github.com/leanprover/lean4/pull/5642)。
 * [#5504](https://github.com/leanprover/lean4/pull/5504) 让 lake new 和 lake init 默认生成 TOML 配置。
 * [#5878](https://github.com/leanprover/lean4/pull/5878) 修复了一个严重问题：当 Lake 试图清理以错误名称声明的依赖时，可能会删除路径依赖。
@@ -327,10 +345,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___13___0-_LPAR_2024-1
 * **破坏性变更**
   * [#5641](https://github.com/leanprover/lean4/pull/5641) 在包内构建某个目标时，Lake 将不再构建该包依赖项的包级额外目标依赖。从技术上说，一个包的 extraDep facet 不再传递性地构建其依赖项的 extraDep facet（其中包括它们的 extraDepTargets）。
 
-### 文档修复
+```
+# 文档修复
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___13___0-_LPAR_2024-11-01_RPAR_--Documentation-fixes"
 %%%
+
+```markdown
 
 * [#3918](https://github.com/leanprover/lean4/pull/3918) 添加了 `@[builtin_doc]` attribute。（@digama0）
 * [#4305](https://github.com/leanprover/lean4/pull/4305) 解释了借用语法。（@eric-wieser）
@@ -342,10 +363,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___13___0-_LPAR_2024-1
 * [#5087](https://github.com/leanprover/lean4/pull/5087) 说明了 `inferType` 并不保证类型正确性。
 * @euprunin 对文档字符串中的拼写做了大量修复：[#5425](https://github.com/leanprover/lean4/pull/5425) [#5426](https://github.com/leanprover/lean4/pull/5426) [#5427](https://github.com/leanprover/lean4/pull/5427) [#5430](https://github.com/leanprover/lean4/pull/5430) [#5431](https://github.com/leanprover/lean4/pull/5431) [#5434](https://github.com/leanprover/lean4/pull/5434) [#5435](https://github.com/leanprover/lean4/pull/5435) [#5436](https://github.com/leanprover/lean4/pull/5436) [#5438](https://github.com/leanprover/lean4/pull/5438) [#5439](https://github.com/leanprover/lean4/pull/5439) [#5440](https://github.com/leanprover/lean4/pull/5440) [#5599](https://github.com/leanprover/lean4/pull/5599)
 
-### CI 变更
+```
+# CI 变更
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___13___0-_LPAR_2024-11-01_RPAR_--Changes-to-CI"
 %%%
+
+```markdown
 
 * [#5343](https://github.com/leanprover/lean4/pull/5343) 允许通过评论添加 `release-ci` 标签。（@thorimur）
 * [#5344](https://github.com/leanprover/lean4/pull/5344) 在工作流中正确设置检查级别。（@thorimur）

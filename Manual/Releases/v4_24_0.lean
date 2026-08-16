@@ -21,10 +21,13 @@ file := "v4.24.0"
 ````markdown
 本次发布共合入 377 项改动。除下文列出的 105 项功能新增和 75 项修复外，还有 25 项重构、9 项文档改进、21 项性能改进、4 项测试套件改进，以及 138 项其他改动。
 
-## 亮点
+````
+# 亮点
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___24___0-_LPAR_2025-10-14_RPAR_--Highlights"
 %%%
+
+````markdown
 
 Lean 4.24.0 持续改进了模块系统和验证框架，增强了 `grind` 策略，并推进了标准库的发展。本次发布还引入了更高效的 `DecidableEq` 实例和 `noConfusion` 构造（[#10152](https://github.com/leanprover/lean4/pull/10152) 与 [#10300](https://github.com/leanprover/lean4/pull/10300)），从而优化编译。
 
@@ -34,17 +37,23 @@ Lean 4.24.0 持续改进了模块系统和验证框架，增强了 `grind` 策�
 
 和往常一样，本次也包含大量错误修复和新特性，下面列出其中一部分：
 
-### “try this” 建议显示在 “Messages” 下方
+````
+## “try this” 建议显示在 “Messages” 下方
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___24___0-_LPAR_2025-10-14_RPAR_--Highlights--___Try-this___-suggestions-are-rendered-under-___Messages___"
 %%%
 
+````markdown
+
 - [#9966](https://github.com/leanprover/lean4/pull/9966) 调整了 “try this” 小部件的呈现方式：它现在显示为 `Messages` 下方的一条小部件消息，而不是 `Suggestions` 区域下单独的小部件。这样做的主要好处是，这条消息不会再在 `Messages` 和 `Suggestions` 之间重复显示。
 
-### `mvcgen` 中的 `invariants` 与 `with` 小节
+````
+## `mvcgen` 中的 `invariants` 与 `with` 小节
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___24___0-_LPAR_2025-10-14_RPAR_--Highlights--invariants-and-with-sections-in-mvcgen"
 %%%
+
+````markdown
 
 - [#9927](https://github.com/leanprover/lean4/pull/9927) 为 `mvcgen` 实现了受 `induction` 启发的扩展语法，允许可选的 `invariants` 和 `with` 小节。
 
@@ -76,17 +85,23 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___24___0-_LPAR_2025-1
     with grind
   ```
 
-### 库：二进有理数
+````
+## 库：二进有理数
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___24___0-_LPAR_2025-10-14_RPAR_--Highlights--Library___-Dyadic-rationals"
 %%%
 
+````markdown
+
 - [#9993](https://github.com/leanprover/lean4/pull/9993) 定义了二进有理数，并证明它们构成一个可嵌入到有理数中的有序环。
 
-### `grind` AC 求解器
+````
+## `grind` AC 求解器
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___24___0-_LPAR_2025-10-14_RPAR_--Highlights--Grind-AC-solver"
 %%%
+
+````markdown
 
 `grind` 现在可以对结合、交换、幂等以及/或者幺元运算进行推理（[#10105](https://github.com/leanprover/lean4/pull/10105)、[#10146](https://github.com/leanprover/lean4/pull/10146) 等）：
 
@@ -102,20 +117,26 @@ example {α : Sort u} (op : α → α → α) (u : α) [Std.Associative op] [Std
   grind only
 ```
 
-### 元编程说明
+````
+## 元编程说明
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___24___0-_LPAR_2025-10-14_RPAR_--Highlights--Metaprogramming-notes"
 %%%
+
+````markdown
 
 - [#10306](https://github.com/leanprover/lean4/pull/10306)在`rw` 战术中修补了几个错误。
 
 代之以`Lean.MVarId.rewrite`取代`Lean.Elab.Tactic.elabRewrite`
 用于拟订重写定理和对表达式进行重写。
 
-### 破坏性变更
+````
+## 破坏性变更
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___24___0-_LPAR_2025-10-14_RPAR_--Highlights--Breaking-changes"
 %%%
+
+````markdown
 
 - [#9749](https://github.com/leanprover/lean4/pull/9749) 将 Lake 代码库全面重构为使用新的模块系统。`Lake` 中的每个模块现在都是真正的 `module`。
 
@@ -124,10 +145,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___24___0-_LPAR_2025-1
 如果关键 API 现在无法进入, 但似乎应该公开, 鼓励用户使用
 将此作为GitHub的一个问题提出报告。
 
-## 语言
+````
+# 语言
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___24___0-_LPAR_2025-10-14_RPAR_--Language"
 %%%
+
+````markdown
 
 * [#8891](https://github.com/leanprover/lean4/pull/8891) 改进通过时产生的错误信息(自动)
 当地假设为`grind`。
@@ -625,10 +649,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___24___0-_LPAR_2025-1
 as- is; 允许使用 `fun` 等自定义选项, 例如
 `pp.unicode.fun` 选入英俊印刷时的 Unicode 格式。
 
-## 库
+````
+# 库
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___24___0-_LPAR_2025-10-14_RPAR_--Library"
 %%%
+
+````markdown
 
 * [#7858](https://github.com/leanprover/lean4/pull/7858) 执行未签名的溢漏探测快速电路
 Bitwuzla使用的乘法建议如下:
@@ -790,10 +817,13 @@ API 区域 API。它也引入了推荐的拼法。例如,a
 从麦特立卜起行,我们可以做一个更好的工作。
 在`grind` 中通过注射进行争论,如果有的话。
 
-## 编译器
+````
+# 编译器
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___24___0-_LPAR_2025-10-14_RPAR_--Compiler"
 %%%
+
+````markdown
 
 * [#9631](https://github.com/leanprover/lean4/pull/9631) 使 `IO.RealWorld` 透明。它还添加了一个新的编译器 - 仅
 `lcRealWorld` 常数,用于在编译器中代表这类类型的编译器。
@@ -841,10 +871,13 @@ Windows 上的系统文件路径
 * [#10355](https://github.com/leanprover/lean4/pull/10355)更改`toLCNF`,将内置型号的`.proj`转换为使用
 代之以预测职能。
 
-## 美观打印
+````
+# 美观打印
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___24___0-_LPAR_2025-10-14_RPAR_--Pretty-Printing"
 %%%
+
+````markdown
 
 * [#10122](https://github.com/leanprover/lean4/pull/10122) 增加支持使用通用版面的漂亮印刷
 关于公共类型私人定义的注释(点符号)
@@ -869,18 +902,24 @@ as- is; 允许使用 `fun` 等自定义选项, 例如
 只有非卫生的这种二进制名称印得漂亮。设置 `pp.all`
 `pp.piBinderNames` ,如果未另作明确规定。
 
-## 文档
+````
+# 文档
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___24___0-_LPAR_2025-10-14_RPAR_--Documentation"
 %%%
 
+````markdown
+
 * [#9956](https://github.com/leanprover/lean4/pull/9956)对`let`和`have`战术补充补充信息
 有关不透明性、何时使用每个工具以及相关战术的口号。
 
-## 服务器
+````
+# 服务器
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___24___0-_LPAR_2025-10-14_RPAR_--Server"
 %%%
+
+````markdown
 
 * [#9966](https://github.com/leanprover/lean4/pull/9966) 调整“ 尝试此小部件” 小部件, 以作为小部件消息格式化
 在“ Messages” 栏下, 而不是在“ 建议” 栏下的单独小部件 。
@@ -898,10 +937,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___24___0-_LPAR_2025-1
 `import Mathlib`,完成`i`,过去用3200米,现在改用
 a = 920米。
 
-## Lake
+````
+# Lake
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___24___0-_LPAR_2025-10-14_RPAR_--Lake"
 %%%
+
+````markdown
 
 * [#9749](https://github.com/leanprover/lean4/pull/9749) 重构Lake代码基使用新的模块系统
 `Lake`中的每一单元现在都是`module`。
@@ -909,10 +951,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___24___0-_LPAR_2025-1
 * [#10276](https://github.com/leanprover/lean4/pull/10276)将`verLit`语法移入 `Lake.DSL`命名空间
 符合`Lake.DSL`中的其他代码。
 
-## 其他
+````
+# 其他
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___24___0-_LPAR_2025-10-14_RPAR_--Other"
 %%%
+
+````markdown
 
 * [#10043](https://github.com/leanprover/lean4/pull/10043) 允许Lean的旁听员在
 字符串结尾处, 可以在输入的分区中引用 。

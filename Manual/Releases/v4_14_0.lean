@@ -22,10 +22,13 @@ file := "v4.14.0"
 
 **完整变更日志**：https://github.com/leanprover/lean4/compare/v4.13.0...v4.14.0
 
-### 语言特性、策略与元程序
+````
+# 语言特性、策略与元程序
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___14___0-_LPAR_2024-12-02_RPAR_--Language-features___-tactics___-and-metaprograms"
 %%%
+
+````markdown
 
 * `structure` 与 `inductive` 命令
   * [#5517](https://github.com/leanprover/lean4/pull/5517) 改进了对 `inductive` 或 `structure.` 结果类型的宇宙层级推断。回顾一下：若一个取值于 `Prop` 的归纳类型至多只有一个构造子，且该构造子的所有参数都位于 `Prop` 中，那么它就是语法上的子单例。这类类型具有大消去，因此定义在 `Type` 或 `Prop` 中都没有问题。现在推断规则改为：如果某个类型是语法上的子单例、恰好只有一个构造子，并且该构造子至少有一个参数/字段，那么 `inductive`/`structure` 命令会优先创建 `Prop` 而不是 `Type`。因此，`structure S : Prop` 中的 `: Prop` 往往不再需要。（与 @arthur-adjedj 合作）
@@ -165,10 +168,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___14___0-_LPAR_2024-1
   * [#5811](https://github.com/leanprover/lean4/pull/5811) 改进了 `rwa` tactic 的文档字符串。
 
 
-### 语言服务器、组件与 IDE 扩展
+````
+# 语言服务器、组件与 IDE 扩展
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___14___0-_LPAR_2024-12-02_RPAR_--Language-server___-widgets___-and-IDE-extensions"
 %%%
+
+````markdown
 
 * [#5224](https://github.com/leanprover/lean4/pull/5224) 按照 LSP 规范修复了 `WorkspaceClientCapabilities`，使 `applyEdit` 成为可选项。（@pzread）
 * [#5340](https://github.com/leanprover/lean4/pull/5340) 修复了关闭语言服务器时的服务器死锁，以及文件 worker 崩溃后客户端与语言服务器不同步的问题。
@@ -180,10 +186,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___14___0-_LPAR_2024-1
 * [#5736](https://github.com/leanprover/lean4/pull/5736)、[#5752](https://github.com/leanprover/lean4/pull/5752)、[#5763](https://github.com/leanprover/lean4/pull/5763)、[#5802](https://github.com/leanprover/lean4/pull/5802) 和 [#5805](https://github.com/leanprover/lean4/pull/5805) 修复了语言服务器中的多项性能问题。
 * [#5801](https://github.com/leanprover/lean4/pull/5801) 将定理自动补全与非定理自动补全区分开来。
 
-### 美观打印
+````
+# 美观打印
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___14___0-_LPAR_2024-12-02_RPAR_--Pretty-printing"
 %%%
+
+````markdown
 
 * [#5640](https://github.com/leanprover/lean4/pull/5640) 修复了一个 bug：消息中的目标状态可能会把换行打印为空格。
 * [#5643](https://github.com/leanprover/lean4/pull/5643) 添加了选项 `pp.mvars.delayed`（默认 false）；当其为 false 时，延迟赋值元变量会被美观打印为它们已赋的内容。现在 `fun x : Nat => ?a` 会打印为 `fun x : Nat => ?a`，而不是 `fun x ↦ ?m.7 x`。
@@ -196,10 +205,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___14___0-_LPAR_2024-1
 * [#5639](https://github.com/leanprover/lean4/pull/5639) 确保名称字面量在美观打印时使用转义。
 * [#5854](https://github.com/leanprover/lean4/pull/5854) 为 `<|>`、`<*>`、`>>`、`<*` 和 `*>` 添加了反精化器。
 
-### 库
+````
+# 库
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___14___0-_LPAR_2024-12-02_RPAR_--Library"
 %%%
+
+````markdown
 
 * `Array`
   * [#5687](https://github.com/leanprover/lean4/pull/5687) 弃用了 `Array.data`。
@@ -281,20 +293,26 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___14___0-_LPAR_2024-1
   * [#5900](https://github.com/leanprover/lean4/pull/5900) 从 `Sum.forall` 和 `Sum.exists` 移除了 `@[simp]`。
   * [#5812](https://github.com/leanprover/lean4/pull/5812) 移除了冗余的 `Decidable` 假设。（@FR-vdash-bot）
 
-### 编译器、运行时与 FFI
+````
+# 编译器、运行时与 FFI
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___14___0-_LPAR_2024-12-02_RPAR_--Compiler___-runtime___-and-FFI"
 %%%
+
+````markdown
 
 * [#5685](https://github.com/leanprover/lean4/pull/5685) 修复了帮助消息中的标志，移除了 `-f` 标志，并添加了 `-g` 标志。（@James-Oswald）
 * [#5930](https://github.com/leanprover/lean4/pull/5930) 添加了 `--short-version`（`-V`）选项，用于显示简短版本信息。（@juhp）
 * [#5144](https://github.com/leanprover/lean4/pull/5144) 将所有 64 位平台统一切换为始终使用 GMP 进行大整数运算。
 * [#5753](https://github.com/leanprover/lean4/pull/5753) 将支持的最低 Windows 版本提升到 Windows 10 1903（发布于 2019 年 5 月）。
 
-### Lake
+````
+# Lake
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___14___0-_LPAR_2024-12-02_RPAR_--Lake"
 %%%
+
+````markdown
 
 * [#5715](https://github.com/leanprover/lean4/pull/5715) 将 `lake new math` 改为使用 `autoImplicit false`。（@eric-wieser）
 * [#5688](https://github.com/leanprover/lean4/pull/5688) 让 `Lake` 不再在 `Lake` 命名空间中创建核心别名。
@@ -304,19 +322,25 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___14___0-_LPAR_2024-1
 * [#6218](https://github.com/leanprover/lean4/pull/6218) 让 Lake 在包的构建目录已存在时，不再自动抓取 GitHub cloud release（与 Reservoir 缓存的行为保持一致）。这可避免缓存覆盖现有的预构建产物。用户仍可通过运行 `lake build <pkg>:release` 手动抓取缓存并覆盖构建目录。
 * [#6231](https://github.com/leanprover/lean4/pull/6231) 改进了 Lake 在无法从 Reservoir 获取依赖时给出的错误信息。如果该包未被索引，它会给出如何从 GitHub 引入该包的建议。
 
-### 文档
+````
+# 文档
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___14___0-_LPAR_2024-12-02_RPAR_--Documentation"
 %%%
+
+````markdown
 
 * [#5617](https://github.com/leanprover/lean4/pull/5617) 修复了 MSYS2 的构建说明。
 * [#5725](https://github.com/leanprover/lean4/pull/5725) 指出 `OfScientific` 接收的是原始字面量。（@eric-wieser）
 * [#5794](https://github.com/leanprover/lean4/pull/5794) 为应用省略号记法添加了一个文档占位条目。（@eric-wieser）
 
-### 破坏性变更
+````
+# 破坏性变更
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___14___0-_LPAR_2024-12-02_RPAR_--Breaking-changes"
 %%%
+
+````markdown
 
 * 用于向 deriving handler 提供参数的语法已被移除，因为生态中的主要 Lean 项目都没有使用它。因此，`applyDerivingHandlers` 现在少接收一个参数，`registerDerivingHandlerWithArgs` 现在简化为 `registerDerivingHandler`，`DerivingHandler` 不再包含那个未使用的参数，而 `DerivingHandlerNoArgs` 已被弃用。迁移代码时，请删除未使用的 `none` 参数，并改用 `registerDerivingHandler` 与 `DerivingHandler`。([#5265](https://github.com/leanprover/lean4/pull/5265))
 * 支持的最低 Windows 版本已提升到 Windows 10 1903（2019 年 5 月发布）。([#5753](https://github.com/leanprover/lean4/pull/5753))

@@ -19,10 +19,13 @@ file := "v4.11.0"
 %%%
 
 ````markdown
-### 语言特性、策略与元程序
+````
+# 语言特性、策略与元程序
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___11___0-_LPAR_2024-09-02_RPAR_--Language-features___-tactics___-and-metaprograms"
 %%%
+
+````markdown
 
 * 变量引入机制已经改变。和以前一样，当某个定义引用了变量时，Lean 会将该变量作为定义的参数加入；但现在在定理体中，不再根据使用情况自动引入变量，以确保对证明的修改不会改变整个定理的陈述。取而代之的是，只有当变量出现在定理头部、出现在 **`include` 命令** 中，或者是仅依赖这些变量的实例隐式参数时，它们才会在证明中可用。可以使用 **`omit` 命令** 省略已引入的变量。
 
@@ -138,19 +141,25 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___11___0-_LPAR_2024-0
   * [#4807](https://github.com/leanprover/lean4/pull/4807) 引入了 `Lean.Meta.PProdN` 模块，用于打包和投影嵌套的 `PProd`。
   * [#5170](https://github.com/leanprover/lean4/pull/5170) 修复了 `Syntax.unsetTrailing`。因此，在 `import` 块中最后一个模块名上，“跳转到定义”现在可以正常工作了（问题 [#4958](https://github.com/leanprover/lean4/issues/4958)）。
 
-### 语言服务器、组件与 IDE 扩展
+````
+# 语言服务器、组件与 IDE 扩展
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___11___0-_LPAR_2024-09-02_RPAR_--Language-server___-widgets___-and-IDE-extensions"
 %%%
+
+````markdown
 
 * [#4727](https://github.com/leanprover/lean4/pull/4727) 让信息视图请求的响应在相关 tactic 执行完成后立刻返回。
 * [#4580](https://github.com/leanprover/lean4/pull/4580) 让空白变动不再使导入失效，因此在导入后开始输入第一个声明也不应再触发重新加载。
 * [#4780](https://github.com/leanprover/lean4/pull/4780) 修复了一个问题：悬停在未导入的内建名称上可能导致 panic。
 
-### 美观打印
+````
+# 美观打印
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___11___0-_LPAR_2024-09-02_RPAR_--Pretty-printing"
 %%%
+
+````markdown
 
 * [#4558](https://github.com/leanprover/lean4/pull/4558) 修复了 `pp.instantiateMVars` 设置，并将默认值改为 `true`。
 * [#4631](https://github.com/leanprover/lean4/pull/4631) 确保语法节点总会运行自己的格式化器。修复了一个问题：若 `ppSpace` 出现在 `macro` 或 `elab` 命令中，它不会按带空格的形式格式化。
@@ -160,10 +169,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___11___0-_LPAR_2024-0
 * [#4786](https://github.com/leanprover/lean4/pull/4786) 调整了加括号器，使只有括号本身可悬停；其实现方式是让括号“窃取”被括起来表达式的项信息。
 * [#4854](https://github.com/leanprover/lean4/pull/4854) 允许省略应用末尾任意长的一串可选参数，而此前保守的行为至多只省略一个可选参数。
 
-### 库
+````
+# 库
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___11___0-_LPAR_2024-09-02_RPAR_--Library"
 %%%
+
+````markdown
 
 * `Nat`
   * [#4597](https://github.com/leanprover/lean4/pull/4597) 添加了按位运算引理 `Nat.and_le_(left|right)`。
@@ -235,10 +247,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___11___0-_LPAR_2024-0
   * 拼写修复：[#4737](https://github.com/leanprover/lean4/pull/4737)、[7d2155](https://github.com/leanprover/lean4/commit/7d2155943c67c743409420b4546d47fadf73af1c)
   * 文档：[#4782](https://github.com/leanprover/lean4/pull/4782)、[#4869](https://github.com/leanprover/lean4/pull/4869)、[#4648](https://github.com/leanprover/lean4/pull/4648)
 
-### Lean 内部实现
+````
+# Lean 内部实现
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___11___0-_LPAR_2024-09-02_RPAR_--Lean-internals"
 %%%
+
+````markdown
 * **精化**
   * [#4596](https://github.com/leanprover/lean4/pull/4596) 在 `unstuckMVar` 过程中强制执行 `isDefEqStuckEx`：如果元变量是在先前层级中创建的，isDefEq 会抛出 stuck defeq 异常。这会带来更好的错误消息，并有助于 `rw` 成功合成实例（见问题 [#2736](https://github.com/leanprover/lean4/issues/2736)）。
   * [#4713](https://github.com/leanprover/lean4/pull/4713) 修复了在存在重载符号时的弃用警告。
@@ -292,20 +307,26 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___11___0-_LPAR_2024-0
   * 拼写修复：[#4635](https://github.com/leanprover/lean4/pull/4635)、[#4719](https://github.com/leanprover/lean4/pull/4719)、[af40e6](https://github.com/leanprover/lean4/commit/af40e618111581c82fc44de922368a02208b499f)
   * 文档：[#4748](https://github.com/leanprover/lean4/pull/4748)（`Command.Scope`）
 
-### 编译器、运行时与 FFI
+````
+# 编译器、运行时与 FFI
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___11___0-_LPAR_2024-09-02_RPAR_--Compiler___-runtime___-and-FFI"
 %%%
+
+````markdown
 * [#4661](https://github.com/leanprover/lean4/pull/4661) 将 `Std` 从 `libleanshared` 移到体积小得多的 `libInit_shared`。这修复了 Windows 构建。
 * [#4668](https://github.com/leanprover/lean4/pull/4668) 修复了初始化，在 `lean_initialize` 中显式初始化 `Std`。
 * [#4746](https://github.com/leanprover/lean4/pull/4746) 调整了 `shouldExport`，排除更多符号以低于 Windows 符号数限制。[#4884](https://github.com/leanprover/lean4/pull/4884) 和 [#4956](https://github.com/leanprover/lean4/pull/4956) 添加了一些例外以支持 Verso。
 * [#4778](https://github.com/leanprover/lean4/pull/4778) 添加了 `lean_is_exclusive_obj`（`Lean.isExclusiveUnsafe`）和 `lean_set_external_data`。
 * [#4515](https://github.com/leanprover/lean4/pull/4515) 修复了在 Windows 上调用带空格路径程序的问题。
 
-### Lake
+````
+# Lake
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___11___0-_LPAR_2024-09-02_RPAR_--Lake"
 %%%
+
+````markdown
 
 * [#4735](https://github.com/leanprover/lean4/pull/4735) 改进了多项与 Git 检出、云端发布以及相关错误处理有关的内容。
 
@@ -322,10 +343,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___11___0-_LPAR_2024-0
 * 文档：[#4853](https://github.com/leanprover/lean4/pull/4853)
 
 
-### DevOps/CI
+````
+# DevOps/CI
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___11___0-_LPAR_2024-09-02_RPAR_--DevOps___CI"
 %%%
+
+````markdown
 
 * **工作流**
   * [#4531](https://github.com/leanprover/lean4/pull/4531) 让发布触发 `release.lean-lang.org` 的更新。
@@ -349,10 +373,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___11___0-_LPAR_2024-0
 * [c02aa9](https://github.com/leanprover/lean4/commit/c02aa98c6a08c3a9b05f68039c071085a4ef70d7) 在贡献指南中记录了**分诊团队**。
 
 
-### 破坏性变更
+````
+# 破坏性变更
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___11___0-_LPAR_2024-09-02_RPAR_--Breaking-changes"
 %%%
+
+````markdown
 
 * 对于由 `@[ext]` 生成的 `ext` 和 `ext_iff` 引理，`x` 和 `y` 这两个项参数现在变为隐式。此外，这两个引理现在受保护。([#4543](https://github.com/leanprover/lean4/pull/4543))
 

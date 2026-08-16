@@ -228,6 +228,8 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___27___0-_LPAR_2026-0
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___27___0-_LPAR_2026-01-24_RPAR_--Language"
 %%%
 
+````markdown
+
 * [#7965](https://github.com/leanprover/lean4/pull/7965) 允许通过良基递归定义的递归函数在终止度量类型为 `Nat` 时使用不同的 `fix` 函数。
   这个不动点算子会对由给定度量初始化的 “fuel” 做结构递归，因此可以合理地被归约，例如在 `by decide` 证明中。
 
@@ -568,6 +570,8 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___27___0-_LPAR_2026-0
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___27___0-_LPAR_2026-01-24_RPAR_--Tactics"
 %%%
+
+````markdown
 
 * [#11226](https://github.com/leanprover/lean4/pull/11226) 终于移除了旧的 `grind` 框架 `SearchM`，并改用新的 `Action` 框架。
 

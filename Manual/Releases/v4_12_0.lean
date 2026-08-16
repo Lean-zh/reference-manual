@@ -19,10 +19,13 @@ file := "v4.12.0"
 %%%
 
 ````markdown
-### 语言特性、策略与元程序
+````
+# 语言特性、策略与元程序
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___12___0-_LPAR_2024-10-01_RPAR_--Language-features___-tactics___-and-metaprograms"
 %%%
+
+````markdown
 
 * `bv_decide` tactic。本次发布引入了一个新 tactic，用于证明涉及 `BitVec` 和 `Bool` 的目标。它会将目标化简为一个 SAT 实例，由外部求解器将其驳倒，然后在 Lean 中检查生成的 LRAT 证明。接着通过反射合成该目标的证明。由于这一过程使用的是经过验证的算法，因此这个 tactic 生成的证明会用到 `Lean.ofReduceBool`，也就是说该 tactic 将 Lean 编译器纳入了可信计算基。外部求解器 CaDiCaL 已随 Lean 一起提供，使用 `bv_decide` 时无需另行安装。
 
@@ -116,10 +119,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___12___0-_LPAR_2024-1
   * [#5173](https://github.com/leanprover/lean4/pull/5173) 在消息中为 ✅️、❌️、💥️ 使用 emoji 变体选择符，从而改进字体选择。
   * [#5183](https://github.com/leanprover/lean4/pull/5183) 修复了 `rename_i` 中一个 bug：实现细节假设此前可能被重命名。
 
-### 语言服务器、组件与 IDE 扩展
+````
+# 语言服务器、组件与 IDE 扩展
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___12___0-_LPAR_2024-10-01_RPAR_--Language-server___-widgets___-and-IDE-extensions"
 %%%
+
+````markdown
 
 * [#4821](https://github.com/leanprover/lean4/pull/4821) 解决了两个尤其影响 Windows 用户的语言服务器 bug。(1) 编辑头部可能导致 watchdog 无法正确重启文件 worker，从而使文件看起来一直在处理中。(2) 在特别慢的 Windows 机器上，我们发现启动语言服务器有时根本无法成功。该 PR 还解决了一个问题：文件 worker 重启期间收到的消息此前不会在重启后正确转发给相应的文件 worker。
 * [#5006](https://github.com/leanprover/lean4/pull/5006) 更新了用户组件手册。
@@ -129,19 +135,25 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___12___0-_LPAR_2024-1
 * **其他修复或改进**
   * [#5031](https://github.com/leanprover/lean4/pull/5031) 将 `Lsp.Diagnostics` 中的一个实例局部化。
 
-### 美观打印
+````
+# 美观打印
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___12___0-_LPAR_2024-10-01_RPAR_--Pretty-printing"
 %%%
+
+````markdown
 
 * [#4976](https://github.com/leanprover/lean4/pull/4976) 引入了 `@[app_delab]`，这是一个用于为特定常量创建反精化器的宏。语法 `@[app_delab ident]` 会将 `ident` 解析为其常量名 `name`，然后展开为 `@[delab app.name]`。
 * [#4982](https://github.com/leanprover/lean4/pull/4982) 修复了一个 bug：美观打印器此前假设结构体投影一定类型正确（这类项可能出现在类型不匹配错误中）。同时改进了结构体 `#print` 输出的可悬停性。
 * [#5218](https://github.com/leanprover/lean4/pull/5218) 和 [#5239](https://github.com/leanprover/lean4/pull/5239) 添加了调试选项 `pp.exprSizes`。当其为 true 时，每个美观打印表达式前都会带上 `[size a/b/c]`，其中 `a` 是不共享时的大小，`b` 是实际大小，`c` 是最大可能共享时的大小。
 
-### 库
+````
+# 库
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___12___0-_LPAR_2024-10-01_RPAR_--Library"
 %%%
+
+````markdown
 
 * [#5020](https://github.com/leanprover/lean4/pull/5020) 交换了 `Membership.mem` 的参数。这样做的一个目的是让类似集合的 `CoeSort` 强制转换引用 eta 展开的函数 `fun x => Membership.mem s x`，从而可在许多计算中发生规约。另一个目的是让将 `s` 参数放在前面可以得到更好的 discrimination tree 键。（见破坏性变更。）
 * `Array`
@@ -232,10 +244,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___12___0-_LPAR_2024-1
   * [#5229](https://github.com/leanprover/lean4/pull/5229) 从若干 `simp` tactic 中移除了未使用的引理。
   * [#5199](https://github.com/leanprover/lean4/pull/5199) 移除了已弃用超过 6 个月的内容。
 
-### Lean 内部实现
+````
+# Lean 内部实现
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___12___0-_LPAR_2024-10-01_RPAR_--Lean-internals"
 %%%
+
+````markdown
 
 * **性能**
   * 一些核心算法已用 C++ 重写以提升性能。
@@ -265,10 +280,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___12___0-_LPAR_2024-1
   * [#3698](https://github.com/leanprover/lean4/pull/3698) 修复了一个 bug：label attribute 之前不会传递 attribute kind。
   * 拼写修复：[#5080](https://github.com/leanprover/lean4/pull/5080)、[#5150](https://github.com/leanprover/lean4/pull/5150)、[#5202](https://github.com/leanprover/lean4/pull/5202)
 
-### 编译器、运行时与 FFI
+````
+# 编译器、运行时与 FFI
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___12___0-_LPAR_2024-10-01_RPAR_--Compiler___-runtime___-and-FFI"
 %%%
+
+````markdown
 
 * [#3106](https://github.com/leanprover/lean4/pull/3106) 将前端迁移到新的快照架构。注意 `Frontend.processCommand` 和 `FrontendM` 不再被 Lean 核心使用，但它们会保留。
 * [#4919](https://github.com/leanprover/lean4/pull/4919) 为 Windows 上运行时的 `AUTO_THREAD_FINALIZATION` 特性补上了缺失的 include。
@@ -283,19 +301,25 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___12___0-_LPAR_2024-1
 * [#4952](https://github.com/leanprover/lean4/pull/4952) 将 panic 输出到 Lean 重定向后的 stderr，确保在语言服务器中，panic 会以常规消息可见，并且在命令行上与其他消息保持正确顺序。
 * [#4963](https://github.com/leanprover/lean4/pull/4963) 链接了 LibUV。
 
-### Lake
+````
+# Lake
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___12___0-_LPAR_2024-10-01_RPAR_--Lake"
 %%%
+
+````markdown
 
 * [#5030](https://github.com/leanprover/lean4/pull/5030) 移除了死代码。
 * [#4770](https://github.com/leanprover/lean4/pull/4770) 为包配置添加了额外字段，Reservoir 将会使用它们。详情见 PR 描述。
 
 
-### DevOps/CI
+````
+# DevOps/CI
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___12___0-_LPAR_2024-10-01_RPAR_--DevOps___CI"
 %%%
+
+````markdown
 * [#4914](https://github.com/leanprover/lean4/pull/4914) 和 [#4937](https://github.com/leanprover/lean4/pull/4937) 改进了发布检查清单。
 * [#4925](https://github.com/leanprover/lean4/pull/4925) 忽略了过时的 leanpkg 测试。
 * [#5003](https://github.com/leanprover/lean4/pull/5003) 在 CI 中升级了 `actions/cache`。
@@ -313,10 +337,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___12___0-_LPAR_2024-1
 * [#5099](https://github.com/leanprover/lean4/pull/5099) 让 `restart-on-label` 工作流也按 commit SHA 过滤。
 * [#4325](https://github.com/leanprover/lean4/pull/4325) 添加了 CaDiCaL。
 
-### 破坏性变更
+````
+# 破坏性变更
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___12___0-_LPAR_2024-10-01_RPAR_--Breaking-changes"
 %%%
+
+````markdown
 
 * 现在构建 Lean 需要 [LibUV](https://libuv.org/)。此变更只影响自行编译 Lean、而不是通过 `elan` 获取工具链的开发者。我们已经更新了官方构建说明，加入了如何在受支持平台上获取 LibUV 的信息。([#4963](https://github.com/leanprover/lean4/pull/4963))
 

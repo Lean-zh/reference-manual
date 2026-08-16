@@ -23,17 +23,23 @@ file := "v4.19.0"
 ````markdown
 本次发布共合入 420 项变更。除下文列出的 164 项功能新增和 78 项修复外，还有 13 项重构、29 项文档改进、31 项性能改进、9 项测试套件改进以及 94 项其他变更。
 
-## 亮点
+````
+# 亮点
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___19___0-_LPAR_2025-05-01_RPAR_--Highlights"
 %%%
 
+````markdown
+
 Lean v4.19.0 带来了多项新特性、错误修复、性能提升和库方面的发展，并在文档、语言服务器和 Lake 等方面提供了诸多易用性改进。
 
-### VS Code 中的新装饰
+````
+## VS Code 中的新装饰
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___19___0-_LPAR_2025-05-01_RPAR_--Highlights--New-Decorations-in-VS-Code"
 %%%
+
+````markdown
 
 VS Code 中的视觉反馈得到了改进，扩展现在提供了：
 
@@ -47,17 +53,23 @@ VS Code 中的视觉反馈得到了改进，扩展现在提供了：
 以上所有特性都可以关闭，而 “Goals accomplished!” 图标还可以在 VS Code 扩展设置中进行配置。
 详情请参见 [leanprover/vscode-lean4#585](https://github.com/leanprover/vscode-lean4/pull/585)。
 
-### 并行精化
+````
+## 并行精化
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___19___0-_LPAR_2025-05-01_RPAR_--Highlights--Parallel-Elaboration"
 %%%
 
+````markdown
+
 * [#7084](https://github.com/leanprover/lean4/pull/7084) 允许定理体（即证明）的精化彼此并行，也可与其他精化任务并行进行。
 
-### 语言特性
+````
+## 语言特性
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___19___0-_LPAR_2025-05-01_RPAR_--Highlights--Language-Features"
 %%%
+
+````markdown
 
 * [#5182](https://github.com/leanprover/lean4/pull/5182) 让通过良基递归定义的函数默认使用 `opaque` 的良基性证明。这可以可靠地阻止内核对此类定义和证明做归约，而这种归约通常慢得难以接受（修复了 [#2171](https://github.com/leanprover/lean4/issues/2171)），并且经常导致难以调试的内核类型检查失败。该变更使 `unseal` 对这类定义不再有效。若想避免使用 opaque 证明，请为函数定义加上 `@[semireducible]` 标注。
 
@@ -108,10 +120,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___19___0-_LPAR_2025-0
 
   **破坏性变更：** `Command.State.infoState` 的其他元编程使用者，可能需要手动对其调用 `InfoState.substituteLazy` 以填补所有空洞。
 
-### 结构与类的更新
+````
+## 结构与类的更新
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___19___0-_LPAR_2025-05-01_RPAR_--Highlights--Updates-to-structures-and-classes"
 %%%
+
+````markdown
 
 * [#7302](https://github.com/leanprover/lean4/pull/7302) 修改了 `structure`/`class` 命令中字段的精化方式，并且在出现菱形继承时，让默认值遵循结构解析顺序。此前，子对象的细节会在精化期间暴露出来；在局部上下文中，任何来自子对象的字段都被定义为对子对象字段的投影。现在，每个字段都表示为局部变量。所有父项（而不只是子对象父项）现在都会出现在局部上下文中，并且被定义为将父构造子应用到字段变量后的局部变量（与此前的关系相反）。更多细节请参见 PR 描述。
 
@@ -122,10 +137,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___19___0-_LPAR_2025-0
 
 * [#7742](https://github.com/leanprover/lean4/pull/7742) 为 `structure`/`class` 增加了一项特性：字段定义中没有类型的绑定器会被解释为覆盖该字段投影函数中类型参数的绑定器种类。更多细节请参见 PR 描述。
 
-### 库更新
+````
+## 库更新
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___19___0-_LPAR_2025-05-01_RPAR_--Highlights--Library-Updates"
 %%%
+
+````markdown
 
 * 异步机制方面的发展；
 * 整数除法 API 的标准化；
@@ -136,19 +154,25 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___19___0-_LPAR_2025-0
 
 详见下方的“库”一节。
 
-### 其他亮点
+````
+## 其他亮点
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___19___0-_LPAR_2025-05-01_RPAR_--Highlights--Other-Highlights"
 %%%
+
+````markdown
 
 * 文档得到了大幅扩充。详见下方的“文档”一节。
 
 * [#7185](https://github.com/leanprover/lean4/pull/7185) 重构了 Lake 的构建内部机制，以便引入超出包、模块和库范畴的目标与构面。构面、构建键、构建信息和 CLI 命令都被泛化到了任意目标类型。
 
-## 语言
+````
+# 语言
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___19___0-_LPAR_2025-05-01_RPAR_--Language"
 %%%
+
+````markdown
 
 * [#5182](https://github.com/leanprover/lean4/pull/5182) 让通过良基递归定义的函数默认使用 `opaque` 的良基性证明；详见上方亮点部分。
 
@@ -198,10 +222,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___19___0-_LPAR_2025-0
 
 * [#7728](https://github.com/leanprover/lean4/pull/7728) 修复了 `abstractNestedProofs` 中的问题。我们还应当抽象出现在推断命题中的证明。
 
-### 结构
+````
+## 结构
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___19___0-_LPAR_2025-05-01_RPAR_--Language--Structures"
 %%%
+
+````markdown
 
 * [#7302](https://github.com/leanprover/lean4/pull/7302) 修改了 `structure`/`class` 命令中字段的精化方式，并且在出现菱形继承时，让默认值遵循结构解析顺序。此前，子对象的细节会在精化期间暴露出来；在局部上下文中，任何来自子对象的字段都被定义为对子对象字段的投影。现在，每个字段都表示为局部变量。所有父项（而不只是子对象父项）现在都会出现在局部上下文中，并且被定义为将父构造子应用到字段变量后的局部变量（与此前的关系相反）。其他说明如下：
   - 现在会处理完整的父项集合，并检查所有父投影名称的一致性。每个父项现在都会出现在局部上下文中。
@@ -241,10 +268,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___19___0-_LPAR_2025-0
 
 * [#7746](https://github.com/leanprover/lean4/pull/7746) 为那些从未表示为子对象的父项复制而来的结构字段添加了声明范围，以支持“跳转到定义”。该声明范围对应 `extends` 子句中的父项。
 
-### 并行精化
+````
+## 并行精化
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___19___0-_LPAR_2025-05-01_RPAR_--Language--Parallel-Elaboration"
 %%%
+
+````markdown
 
 * [#7084](https://github.com/leanprover/lean4/pull/7084) 允许定理体（即证明）的精化彼此并行，也可与其他精化任务并行进行。
 
@@ -258,10 +288,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___19___0-_LPAR_2025-0
 
 * [#8101](https://github.com/leanprover/lean4/pull/8101) 修复了一个并行化回归：诸如检查命令错误的检查器先前将无法再找到这类消息。
 
-### bv_decide
+````
+## bv\_decide
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___19___0-_LPAR_2025-05-01_RPAR_--Language--bv_decide"
 %%%
+
+````markdown
 
 * [#7298](https://github.com/leanprover/lean4/pull/7298) 向 bv_decide 的预处理中加入了若干重写，涉及 if-then-else 与乘法、取负等运算的组合。
 
@@ -323,10 +356,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___19___0-_LPAR_2025-0
 
 * [#7733](https://github.com/leanprover/lean4/pull/7733) 确保在 AIG 中，常量电路节点总是存放在第一个位置。这样在需要常量节点时就可以跳过缓存查找。
 
-### Grind
+````
+## Grind
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___19___0-_LPAR_2025-05-01_RPAR_--Language--Grind"
 %%%
+
+````markdown
 
 * [#7355](https://github.com/leanprover/lean4/pull/7355) 修复了 `grind` 策略中 `markNestedProofs` 预处理器的一个 bug。
 
@@ -374,10 +410,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___19___0-_LPAR_2025-0
 
 * [#7781](https://github.com/leanprover/lean4/pull/7781) 为 `grind` 添加了一条新的 `Bool` 不等式传播规则。现在，它会从不等式 `x = false`（`x = true`）传播出 `x = true`（`x = false`）。这确保我们不必对 `x` 做分类讨论才能得知该事实。请参见测试。
 
-### CutSat
+````
+## CutSat
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___19___0-_LPAR_2025-05-01_RPAR_--Language--CutSat"
 %%%
+
+````markdown
 
 * [#7312](https://github.com/leanprover/lean4/pull/7312) 在 cutsat 线性整数算术过程中，为 `cooper_dvd_left` 及其变体实现了证明项生成。
 
@@ -437,10 +476,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___19___0-_LPAR_2025-0
 
 * [#7579](https://github.com/leanprover/lean4/pull/7579) 改进了 cutsat 过程生成的反例，并为 `Nat` 提供了恰当支持。在这个 PR 之前，自然数变量 `x` 的赋值会被表示为 `NatCast.natCast x`。
 
-## 库
+````
+# 库
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___19___0-_LPAR_2025-05-01_RPAR_--Library"
 %%%
+
+````markdown
 
 * [#6496](https://github.com/leanprover/lean4/pull/6496) 为 bv_decide 添加了短路支持，以加速带共享系数的乘法。具体来说，`a * x = b * x` 可以扩展为 `a = b v (a * x = b * x)`。如果 `a = b` 为真，后者会更快，因为此时无需考虑乘法电路即可判断 `a = b`。另一方面，我们仍需要乘法电路，因为由于二补码回绕，`a * x = b * x -> a = b` 并不总是成立。
 
@@ -514,10 +556,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___19___0-_LPAR_2025-0
 
   **破坏性变更：** 虽然许多引理只是改名，而旧签名的引理也仅仅被弃用，但也有一些引理在未改名的情况下被更改。它们现在使用 `getElem` 变体，而不是 `get`。
 
-### 异步
+````
+## 异步
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___19___0-_LPAR_2025-05-01_RPAR_--Library--Async"
 %%%
+
+````markdown
 
 * [#6683](https://github.com/leanprover/lean4/pull/6683) 使用 LibUV 引入了 TCP socket 支持，从而支持基于它的异步 I/O 操作。
 
@@ -537,10 +582,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___19___0-_LPAR_2025-0
 
 * [#7771](https://github.com/leanprover/lean4/pull/7771) 添加了屏障原语 `Std.Barrier`。
 
-### 有限类型
+````
+## 有限类型
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___19___0-_LPAR_2025-05-01_RPAR_--Library--Finite-Types"
 %%%
+
+````markdown
 
 * [#7228](https://github.com/leanprover/lean4/pull/7228) 添加了用于化简含 `IntX` 表达式的 simproc。
 
@@ -564,10 +612,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___19___0-_LPAR_2025-0
 
 * [#7694](https://github.com/leanprover/lean4/pull/7694) 包含从 #7592 拆分出来的补充材料，涉及 `BitVec`、`Int` 和 `Nat`。
 
-### 树映射
+````
+## 树映射
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___19___0-_LPAR_2025-05-01_RPAR_--Library--Tree-Map"
 %%%
+
+````markdown
 
 * [#7270](https://github.com/leanprover/lean4/pull/7270) 为树映射函数 `foldlM`、`foldl`、`foldrM` 和 `foldr` 及其与其他已有引理支持函数之间的相互作用提供了引理。此外，它还将 `fold*`/`keys` 引理泛化到任意树映射；此前这些引理只针对 `DTreeMap α Unit` 的情形陈述。
 
@@ -607,10 +658,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___19___0-_LPAR_2025-0
 
 * [#7697](https://github.com/leanprover/lean4/pull/7697) 跟进了 #7695。此前我们从判别模式不佳的树映射引理上移除了 `simp` 属性；在这个 PR 中，我们引入了一些基于 `Ord` 的引理，它们对 simp 更友好。
 
-### `BitVec` API
+````
+## `BitVec` API
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___19___0-_LPAR_2025-05-01_RPAR_--Library--BitVec-API"
 %%%
+
+````markdown
 
 * [#7104](https://github.com/leanprover/lean4/pull/7104) 添加了 `BitVec.[toNat|toFin|toInt]_[sshiftRight|sshiftRight']` 及带 `of_msb_*` 的变体。同时还加入了 `toInt_zero_length` 和 `toInt_of_zero_length`。为支撑主定理，我们还添加了 `toInt_shiftRight_lt` 和 `le_toInt_shiftRight`，从而可以通过 omega 自动推出主定理。
 
@@ -644,10 +698,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___19___0-_LPAR_2025-0
 
 * [#7699](https://github.com/leanprover/lean4/pull/7699) 添加了 `BitVec.toInt_srem` 引理，将 `BitVec.srem` 与 `Int.tmod` 联系起来。
 
-### Bitwuzla 重写规则
+````
+## Bitwuzla 重写规则
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___19___0-_LPAR_2025-05-01_RPAR_--Library--Bitwuzla-Rewrite-Rules"
 %%%
+
+````markdown
 
 * [#7424](https://github.com/leanprover/lean4/pull/7424) 证明了 Bitwuzla 的规则 [`BV_ZERO_EXTEND_ELIM`](https://github.com/bitwuzla/bitwuzla/blob/6a1a768987cca77f36ebfe06f3a786348a481bbd/src/rewrite/rewrites_bv.cpp#L4021-L4033)：
 
@@ -707,26 +764,35 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___19___0-_LPAR_2025-0
 
 * [#7757](https://github.com/leanprover/lean4/pull/7757) 添加了 Bitwuzla 重写 `NORM_BV_ADD_CONCAT`，用于对 append 上的加法做符号化简。
 
-## 编译器
+````
+# 编译器
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___19___0-_LPAR_2025-05-01_RPAR_--Compiler"
 %%%
+
+````markdown
 
 * [#7398](https://github.com/leanprover/lean4/pull/7398) 修复了旧代码生成器 cce（Common Case Elimination）阶段中的一个作用域错误。该阶段先前会为公共的次要前提创建连接点，即使其中一些前提位于局部定义函数的函数体中，结果导致对连接点的引用作用域不正确。修复方式是在访问 lambda 时保存/恢复候选项。
 
 * [#7710](https://github.com/leanprover/lean4/pull/7710) 改进了 Lean 的内存使用情况，尤其是对长时间运行的服务器进程，最多可降低 60%。
 
-## 美观打印
+````
+# 美观打印
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___19___0-_LPAR_2025-05-01_RPAR_--Pretty-Printing"
 %%%
 
+````markdown
+
 * [#7589](https://github.com/leanprover/lean4/pull/7589) 修改了结构体实例记法的美观打印器：如果某个字段的值与该字段默认值在定义上相等（在可约透明度范围内），则该字段会被省略。将 `pp.structureInstances.defaults` 设为 true，可强制仍然打印这类字段。
 
-## 文档
+````
+# 文档
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___19___0-_LPAR_2025-05-01_RPAR_--Documentation"
 %%%
+
+````markdown
 
 * [#7198](https://github.com/leanprover/lean4/pull/7198) 让 `Char` 命名空间中的文档字符串符合文档约定。
 
@@ -778,10 +844,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___19___0-_LPAR_2025-0
 
 * [#7713](https://github.com/leanprover/lean4/pull/7713) 让 BitVec 文档字符串彼此之间以及与其余 API 的风格保持一致。
 
-## 服务器
+````
+# 服务器
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___19___0-_LPAR_2025-05-01_RPAR_--Server"
 %%%
+
+````markdown
 
 * [#7178](https://github.com/leanprover/lean4/pull/7178) 修复了语言服务器中的一个竞争条件：在编辑文件头部时，它有时会丢弃请求并永远不作回应。这会导致 VS Code 中的语义高亮停止工作，因为一旦先前请求被丢弃，VS Code 就会停止继续发送请求；同时也会使 InfoView 出现异常。导入自动补全也会因此显得有些怪异，因为这些请求有时也会被丢弃。这个竞争条件自 2020 年语言服务器第一版以来就一直存在。
 
@@ -801,10 +870,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___19___0-_LPAR_2025-0
 
 * [#7882](https://github.com/leanprover/lean4/pull/7882) 修复了一个回归：当文档发生变化时，先前版本文档的精化不会被取消。
 
-## Lake
+````
+# Lake
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___19___0-_LPAR_2025-05-01_RPAR_--Lake"
 %%%
+
+````markdown
 
 * [#7185](https://github.com/leanprover/lean4/pull/7185) 重构了 Lake 的构建内部机制，以便引入超出包、模块和库范畴的目标与构面。构面、构建键、构建信息和 CLI 命令都被泛化到了任意目标类型。
 
@@ -840,10 +912,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___19___0-_LPAR_2025-0
 
 * [#7763](https://github.com/leanprover/lean4/pull/7763) 更正了构建键获取逻辑，使其能够生成具有正确数据种类的作业，并修复了从键字面量到目标的一次失败强制转换。
 
-## 其他
+````
+# 其他
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___19___0-_LPAR_2025-05-01_RPAR_--Other"
 %%%
+
+````markdown
 
 * [#7326](https://github.com/leanprover/lean4/pull/7326) 更新了发布说明脚本，以更好地缩进 PR 描述。
 

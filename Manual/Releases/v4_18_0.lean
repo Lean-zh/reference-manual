@@ -23,10 +23,13 @@ file := "v4.18.0"
 ````markdown
 本次发布共合入 344 项变更。除下文列出的 166 项功能新增和 38 项修复外，还有 13 项重构、10 项文档改进、3 项性能改进、4 项测试套件改进以及 109 项其他变更。
 
-## 亮点
+````
+# 亮点
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___18___0-_LPAR_2025-04-02_RPAR_--Highlights"
 %%%
+
+````markdown
 
 Lean v4.18 带来了多项令人振奋的新特性：
 
@@ -114,10 +117,13 @@ BitVec 与定宽整数类型（`IntX`）的验证 API 有显著进展，同时�
 
 _这份亮点摘要由 Violetta Sim 贡献。_
 
-## 语言
+````
+# 语言
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___18___0-_LPAR_2025-04-02_RPAR_--Language"
 %%%
+
+````markdown
 
 * [#6634](https://github.com/leanprover/lean4/pull/6634) 为 `variable` 命令添加了支持，可将已有变量的绑定器注解在严格隐式和实例隐式之间来回切换。
 
@@ -194,10 +200,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___18___0-_LPAR_2025-0
 
 * [#7294](https://github.com/leanprover/lean4/pull/7294) 修复了 `Std.Internal.Rat.floor` 和 `Std.Internal.Rat.ceil` 中的错误。
 
-### `try?` 策略更新
+````
+## `try?` 策略更新
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___18___0-_LPAR_2025-04-02_RPAR_--Language--Updates-to-the-try___-Tactic"
 %%%
+
+````markdown
 
 * [#6961](https://github.com/leanprover/lean4/pull/6961) 添加了辅助策略 `evalAndSuggest`。它将用于重构 `try?`。
 
@@ -254,10 +263,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___18___0-_LPAR_2025-0
 
 * [#7082](https://github.com/leanprover/lean4/pull/7082) 让 `try?` 使用 `fun_induction`，而不是 `induction … using foo.induct`。如果没有歧义，它会使用无参数简写 `fun_induction foo`。同时如果没有必要，也会避免先使用 `expose_names`，而是先直接尝试。
 
-### 函数归纳策略
+````
+## 函数归纳策略
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___18___0-_LPAR_2025-04-02_RPAR_--Language--Functional-Induction-Tactic"
 %%%
+
+````markdown
 
 * [#7069](https://github.com/leanprover/lean4/pull/7069) 添加了 `fun_induction` 和 `fun_cases` 策略，它们让使用函数归纳原则和函数分类原则更加方便。
 
@@ -265,10 +277,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___18___0-_LPAR_2025-0
 
 * [#7127](https://github.com/leanprover/lean4/pull/7127) 跟进了 #7103 中 `induction` 泛化行为的变更，以保持 `fun_induction` 与之同步。同时也修复了一个 `Syntax` 索引差一错误。
 
-### `bv_decide` 策略
+````
+## `bv_decide` 策略
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___18___0-_LPAR_2025-04-02_RPAR_--Language--bv_decide-Tactic"
 %%%
+
+````markdown
 
 * [#6741](https://github.com/leanprover/lean4/pull/6741) 为 bv_decide 的预处理器实现了两条规则：将 `|||` 降低为 `&&&`，以便实现更多项共享并应用 `&&&` 相关规则；同时加入形如 `(a &&& b == -1#w) = (a == -1#w && b == -1#w)` 的重写，以保留在这种降级之前已经存在的重写行为。
 
@@ -296,10 +311,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___18___0-_LPAR_2025-0
 
 * [#7275](https://github.com/leanprover/lean4/pull/7275) 将 Bitwuzla 的所有 level 1 重写加入 bv_decide 的预处理器。
 
-### 精化并行化
+````
+## 精化并行化
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___18___0-_LPAR_2025-04-02_RPAR_--Language--Parallelizing-Elaboration"
 %%%
+
+````markdown
 
 * [#6770](https://github.com/leanprover/lean4/pull/6770) 让代码生成能够与后续精化并行进行。
 
@@ -309,10 +327,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___18___0-_LPAR_2025-0
 
 * [#7076](https://github.com/leanprover/lean4/pull/7076) 引入了核心并行 API，以确保辅助声明可以惰性生成，同时不会重复工作，也不会在线程间产生冲突。
 
-### `simp +arith` 中的线性整数规范化
+````
+## `simp +arith` 中的线性整数规范化
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___18___0-_LPAR_2025-04-02_RPAR_--Language--Linear-Integer-Normalization-in-simp-___arith"
 %%%
+
+````markdown
 
 * [#7000](https://github.com/leanprover/lean4/pull/7000) 添加了用于证明线性整数规范化器正确性的辅助定理。
 
@@ -328,10 +349,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___18___0-_LPAR_2025-0
 
 * [#7043](https://github.com/leanprover/lean4/pull/7043) 弃用了 `simp_arith`、`simp_arith!`、`simp_all_arith` 和 `simp_all_arith!` 这些策略。用户只需使用 `+arith` 选项即可。
 
-### `grind` 策略
+````
+## `grind` 策略
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___18___0-_LPAR_2025-04-02_RPAR_--Language--grind-Tactic"
 %%%
+
+````markdown
 
 `grind` 策略目前仍属实验性功能，仍在开发中。请避免在生产项目中使用它。
 
@@ -345,10 +369,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___18___0-_LPAR_2025-0
 
 * [#7231](https://github.com/leanprover/lean4/pull/7231) 为 `grind` 实现了构造不等证明的函数。
 
-#### Cutsat 过程（线性整数算术问题求解器）
+````
+### Cutsat 过程（线性整数算术问题求解器）
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___18___0-_LPAR_2025-04-02_RPAR_--Language--grind-Tactic--Cutsat-Procedure-_LPAR_Solver-for-Linear-Integer-Arithmetic-Problems_RPAR_"
 %%%
+
+````markdown
 
 * [#7077](https://github.com/leanprover/lean4/pull/7077) 证明了 cutsat 过程中用于论证 “Div-Solve” 规则正确性的辅助定理。
 
@@ -424,10 +451,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___18___0-_LPAR_2025-0
 
 * [#7409](https://github.com/leanprover/lean4/pull/7409) 允许在良基定义的预处理中使用 `dsimp`。这修复了某些回归：当使用未命名条件的 `if-then-else` 时，如果终止性证明需要用到该条件，而相关子表达式只能通过 dsimp 而不能通过 simp 到达（例如位于依赖 let 中），先前会失败。
 
-## 库
+````
+# 库
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___18___0-_LPAR_2025-04-02_RPAR_--Library"
 %%%
+
+````markdown
 
 * [#5498](https://github.com/leanprover/lean4/pull/5498) 在有证明可用时，将 `BitVec.getElem` 设为 simp 规范形，并修改 `ext`，使其返回 `x[i]` 加上一个证明越界检查通过的假设。这让 `BitVec` 进一步与 Lean 标准数据类型的 API 约定保持一致。
 
@@ -583,10 +613,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___18___0-_LPAR_2025-0
 
 * [#7277](https://github.com/leanprover/lean4/pull/7277) 修复了 Float32.ofInt 中的一个 bug；此前它会返回 Float(64)。
 
-## 编译器
+````
+# 编译器
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___18___0-_LPAR_2025-04-02_RPAR_--Compiler"
 %%%
+
+````markdown
 
 * [#6928](https://github.com/leanprover/lean4/pull/6928) 在 LCNF elimDeadBranches 分析中，让 extern 声明求值为 ⊤，而不是 ⊥ 的默认值。
 
@@ -600,17 +633,23 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___18___0-_LPAR_2025-0
 
 * [#7086](https://github.com/leanprover/lean4/pull/7086) 让新代码生成器中的 arity reduction 阶段在处理无已用参数声明时与旧版本保持一致。这很重要，因为否则我们可能创建一个不带参数的顶层声明，却包含不可达代码，而这些代码会在初始化期间被无条件求值。用新代码生成器构建的 Init.Core 在初始化时确实会出现这种情况。
 
-## 美观打印
+````
+# 美观打印
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___18___0-_LPAR_2025-04-02_RPAR_--Pretty-Printing"
 %%%
 
+````markdown
+
 * [#7074](https://github.com/leanprover/lean4/pull/7074) 修改了签名美观打印器，为绑定器中的参数添加悬停信息。这让绑定器中的悬停体验与 pi 类型中的悬停保持一致。
 
-## 文档
+````
+# 文档
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___18___0-_LPAR_2025-04-02_RPAR_--Documentation"
 %%%
+
+````markdown
 
 * [#6886](https://github.com/leanprover/lean4/pull/6886) 使用 #6869 中的 `recommended_spelling` 命令，为 Lean core 中定义的许多记号添加了推荐拼写。
 
@@ -624,10 +663,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___18___0-_LPAR_2025-0
 
 * [#7111](https://github.com/leanprover/lean4/pull/7111) 扩展了标准库风格指南，增加了关于 universe 变量、记号与 Unicode 用法，以及结构体定义的指导。
 
-## 服务器
+````
+# 服务器
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___18___0-_LPAR_2025-04-02_RPAR_--Server"
 %%%
+
+````markdown
 
 * [#6329](https://github.com/leanprover/lean4/pull/6329) 让语言服务器能够将多个互不相交的行区间显示为“正在处理”。即使在并行化尚未落地之前，我们也利用该特性在声明第一行显示诸如内核检查之类的后精化任务，以便将其与最后一步策略区分开来。
 
@@ -665,10 +707,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___18___0-_LPAR_2025-0
 
 * [#7175](https://github.com/leanprover/lean4/pull/7175) 修复了一个 `Elab.async` 回归：精化任务会在文档编辑时被取消，即便其结果其实可以在文档新版本中复用，从而导致报告出不完整结果。
 
-## Lake
+````
+# Lake
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___18___0-_LPAR_2025-04-02_RPAR_--Lake"
 %%%
+
+````markdown
 
 * [#6829](https://github.com/leanprover/lean4/pull/6829) 修改了 Lake 配置失败时的错误信息，以反映问题并不总是来自无效的 lakefile，也可能来自网络错误等其他问题。新的错误信息覆盖了所有这些可能性。
 
@@ -696,10 +741,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___18___0-_LPAR_2025-0
 
 * [#7608](https://github.com/leanprover/lean4/pull/7608) 移除了 Lake 构建和配置文件中对 Lake 插件的使用。
 
-## 其他
+````
+# 其他
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___18___0-_LPAR_2025-04-02_RPAR_--Other"
 %%%
+
+````markdown
 
 * [#7129](https://github.com/leanprover/lean4/pull/7129) 在定义具有巨大 `Expr` 表示时，优化了未使用变量检查器的性能。
 

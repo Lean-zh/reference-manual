@@ -19,10 +19,13 @@ file := "v4.8.0"
 %%%
 
 ````markdown
-### 语言特性、策略与元程序
+````
+# 语言特性、策略与元程序
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___8___0-_LPAR_2024-06-05_RPAR_--Language-features___-tactics___-and-metaprograms"
 %%%
+
+````markdown
 
 * **函数归纳原理。**
   [#3432](https://github.com/leanprover/lean4/pull/3432), [#3620](https://github.com/leanprover/lean4/pull/3620),
@@ -171,10 +174,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___8___0-_LPAR_2024-06
   [#3891](https://github.com/leanprover/lean4/pull/3891), [#3873](https://github.com/leanprover/lean4/pull/3873),
   [#3908](https://github.com/leanprover/lean4/pull/3908), [#3872](https://github.com/leanprover/lean4/pull/3872)。
 
-### 语言服务器与 IDE 扩展
+````
+# 语言服务器与 IDE 扩展
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___8___0-_LPAR_2024-06-05_RPAR_--Language-server-and-IDE-extensions"
 %%%
+
+````markdown
 
 * [#3602](https://github.com/leanprover/lean4/pull/3602) 启用了 `import` 自动补全。
 * [#3608](https://github.com/leanprover/lean4/pull/3608) 修复了问题 [leanprover/vscode-lean4#392](https://github.com/leanprover/vscode-lean4/issues/392)。
@@ -195,10 +201,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___8___0-_LPAR_2024-06
   即会使用光标之前的信息节点来计算补全的问题。
 * [#3985](https://github.com/leanprover/lean4/pull/3985) 让跟踪计时显示在 Infoview 中。
 
-### 漂亮打印
+````
+# 漂亮打印
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___8___0-_LPAR_2024-06-05_RPAR_--Pretty-printing"
 %%%
+
+````markdown
 
 * [#3797](https://github.com/leanprover/lean4/pull/3797) 修复了对 binder 的悬停，使其显示类型。
 * [#3640](https://github.com/leanprover/lean4/pull/3640) 和 [#3735](https://github.com/leanprover/lean4/pull/3735)：添加了属性 `@[pp_using_anonymous_constructor]`，使结构体被漂亮打印为 `⟨x, y, z⟩`
@@ -226,10 +235,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___8___0-_LPAR_2024-06
 * [#3917](https://github.com/leanprover/lean4/pull/3917) 让 binder 可悬停，并为其提供文档字符串。
 * [#4034](https://github.com/leanprover/lean4/pull/4034) 让 Infoview 中 `match` 表达式右侧项的悬停信息能够稳定显示正确项。
 
-### 库
+````
+# 库
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___8___0-_LPAR_2024-06-05_RPAR_--Library"
 %%%
+
+````markdown
 
 * `Bool`/`Prop`
   * [#3508](https://github.com/leanprover/lean4/pull/3508) 改进了 `Bool` 与 `Prop` 项上的 `simp` 合流性。
@@ -297,10 +309,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___8___0-_LPAR_2024-06
   [#3860](https://github.com/leanprover/lean4/pull/3860), [#3859](https://github.com/leanprover/lean4/pull/3859),
   [#3871](https://github.com/leanprover/lean4/pull/3871), [#3919](https://github.com/leanprover/lean4/pull/3919)。
 
-### Lean 内部机制
+````
+# Lean 内部机制
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___8___0-_LPAR_2024-06-05_RPAR_--Lean-internals"
 %%%
+
+````markdown
 
 * **Defeq 与 WHNF 算法**
   * [#3616](https://github.com/leanprover/lean4/pull/3616) 为化简 `Nat.rec` 表达式提供了更好的支持。
@@ -373,10 +388,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___8___0-_LPAR_2024-06
   [#3946](https://github.com/leanprover/lean4/pull/3946), [#4007](https://github.com/leanprover/lean4/pull/4007),
   [#4026](https://github.com/leanprover/lean4/pull/4026)。
 
-### 编译器、运行时与 FFI
+````
+# 编译器、运行时与 FFI
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___8___0-_LPAR_2024-06-05_RPAR_--Compiler___-runtime___-and-FFI"
 %%%
+
+````markdown
 
 * [#3632](https://github.com/leanprover/lean4/pull/3632) 让那些不是由 Lean 自身启动的线程也能分配和释放线程局部运行时资源。
 * [#3627](https://github.com/leanprover/lean4/pull/3627) 改进了关于压缩闭包（compacting closures）的错误消息。
@@ -386,10 +404,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___8___0-_LPAR_2024-06
 * [6e731b](https://github.com/leanprover/lean4/commit/6e731b4370000a8e7a5cfb675a7f3d7635d21f58)
   移除了 `interpreter` 的复制构造函数，以避免潜在的内存安全问题。
 
-### Lake
+````
+# Lake
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___8___0-_LPAR_2024-06-05_RPAR_--Lake"
 %%%
+
+````markdown
 
 * **TOML Lake 配置。** [#3298](https://github.com/leanprover/lean4/pull/3298), [#4104](https://github.com/leanprover/lean4/pull/4104)。
 
@@ -456,10 +477,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___8___0-_LPAR_2024-06
   * [#4033](https://github.com/leanprover/lean4/pull/4033) 修复了 quiet 模式。
 * **文档：** [#3704](https://github.com/leanprover/lean4/pull/3704)。
 
-### DevOps
+````
+# DevOps
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___8___0-_LPAR_2024-06-05_RPAR_--DevOps"
 %%%
+
+````markdown
 
 * [#3536](https://github.com/leanprover/lean4/pull/3536) 和 [#3833](https://github.com/leanprover/lean4/pull/3833)
   为发布流程添加了检查清单。
@@ -487,10 +511,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___8___0-_LPAR_2024-06
 * [18a699](https://github.com/leanprover/lean4/commit/18a69914da53dbe37c91bc2b9ce65e1dc01752b6)
   修复了 asan 链接
 
-### 破坏性变更
+````
+# 破坏性变更
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___8___0-_LPAR_2024-06-05_RPAR_--Breaking-changes"
 %%%
+
+````markdown
 
 * 由于 Lake 构建的大规模重构，任何使用 Lake API 受影响部分的代码，或依赖 Lake 构建旧输出格式的代码，都很可能已经损坏。我们已尽力将破坏降到最低；在可能的情况下，旧定义已被标记为 `@[deprecated]`，并附带对新替代方案的引用。
 

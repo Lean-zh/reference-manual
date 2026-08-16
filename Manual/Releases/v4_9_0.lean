@@ -19,10 +19,13 @@ file := "v4.9.0"
 %%%
 
 ````markdown
-### 语言特性、策略与元程序
+````
+# 语言特性、策略与元程序
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___9___0-_LPAR_2024-07-01_RPAR_--Language-features___-tactics___-and-metaprograms"
 %%%
+
+````markdown
 
 * **定义透明性**
   * [#4053](https://github.com/leanprover/lean4/pull/4053) 新增了 `seal` 与 `unseal` 命令，使定义在局部范围内变为不可约或半可约。
@@ -160,19 +163,25 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___9___0-_LPAR_2024-07
 * **文档：** [#4238](https://github.com/leanprover/lean4/pull/4238), [#4294](https://github.com/leanprover/lean4/pull/4294),
   [#4338](https://github.com/leanprover/lean4/pull/4338).
 
-### 语言服务器、小部件与 IDE 扩展
+````
+# 语言服务器、小部件与 IDE 扩展
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___9___0-_LPAR_2024-07-01_RPAR_--Language-server___-widgets___-and-IDE-extensions"
 %%%
+
+````markdown
 * [#4066](https://github.com/leanprover/lean4/pull/4066) 修复了浏览 Lean 核心源码时 “Find References” 等功能的问题。
 * [#4254](https://github.com/leanprover/lean4/pull/4254) 允许在结构化消息中嵌入用户小部件。
   配套 PR 为 [vscode-lean4#449](https://github.com/leanprover/vscode-lean4/pull/449)。
 * [#4445](https://github.com/leanprover/lean4/pull/4445) 让 watchdog 在面对行为不良的客户端时更加稳健。
 
-### 库
+````
+# 库
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___9___0-_LPAR_2024-07-01_RPAR_--Library"
 %%%
+
+````markdown
 * [#4059](https://github.com/leanprover/lean4/pull/4059) 将来自 Batteries 的许多 `List` 与 `Array` 操作和定理上游化。
 * [#4055](https://github.com/leanprover/lean4/pull/4055) 移除了 `Subtype` 上未使用的 `Inhabited` 实例。
 * [#3967](https://github.com/leanprover/lean4/pull/3967) 为现有 `@[deprecated]` 属性添加了日期。
@@ -219,10 +228,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___9___0-_LPAR_2024-07
 * **文档：** [#4001](https://github.com/leanprover/lean4/pull/4001), [#4166](https://github.com/leanprover/lean4/pull/4166),
   [#4332](https://github.com/leanprover/lean4/pull/4332)。
 
-### Lean 内部机制
+````
+# Lean 内部机制
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___9___0-_LPAR_2024-07-01_RPAR_--Lean-internals"
 %%%
+
+````markdown
 * **Defeq 与 WHNF 算法**
   * [#4029](https://github.com/leanprover/lean4/pull/4029) 移除了不必要的 `checkpointDefEq`
   * [#4206](https://github.com/leanprover/lean4/pull/4206) 修复了 `isReadOnlyOrSyntheticOpaque`，使其遵守元变量深度。
@@ -260,19 +272,25 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___9___0-_LPAR_2024-07
   * 清理：[#4112](https://github.com/leanprover/lean4/pull/4112), [#4126](https://github.com/leanprover/lean4/pull/4126), [#4091](https://github.com/leanprover/lean4/pull/4091), [#4139](https://github.com/leanprover/lean4/pull/4139), [#4153](https://github.com/leanprover/lean4/pull/4153)。
   * 测试：[030406](https://github.com/leanprover/lean4/commit/03040618b8f9b35b7b757858483e57340900cdc4), [#4133](https://github.com/leanprover/lean4/pull/4133)。
 
-### 编译器、运行时与 FFI
+````
+# 编译器、运行时与 FFI
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___9___0-_LPAR_2024-07-01_RPAR_--Compiler___-runtime___-and-FFI"
 %%%
+
+````markdown
 * [#4100](https://github.com/leanprover/lean4/pull/4100) 改进了 reset/reuse 算法；现在它会进行第二遍处理，放宽“复用的内存单元必须仅用于完全相同构造子”的限制。
 * [#2903](https://github.com/leanprover/lean4/pull/2903) 修复了旧编译器因错误处理 `noConfusion` 应用而导致的段错误。
 * [#4311](https://github.com/leanprover/lean4/pull/4311) 修复了常量折叠中的错误。
 * [#3915](https://github.com/leanprover/lean4/pull/3915) 记录了归纳类型的运行时内存布局。
 
-### Lake
+````
+# Lake
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___9___0-_LPAR_2024-07-01_RPAR_--Lake"
 %%%
+
+````markdown
 * [#4518](https://github.com/leanprover/lean4/pull/4518) 让 trace 读取更加稳健。现在若 trace 文件无效或不可读，Lake 会重新构建，并且向后兼容旧的纯数字 trace。
 * [#4057](https://github.com/leanprover/lean4/pull/4057) 为 `require` 命令上的文档字符串提供支持。
 * [#4088](https://github.com/leanprover/lean4/pull/4088) 改进了 `family_def` 与 `library_data` 命令的悬停信息。
@@ -302,10 +320,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___9___0-_LPAR_2024-07
   * [#4346](https://github.com/leanprover/lean4/pull/4346) 改进了 `tests/serve`
   * [#4356](https://github.com/leanprover/lean4/pull/4356) 在缺失或无效构建日志的警告中加入了构建日志路径。
 
-### DevOps
+````
+# DevOps
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___9___0-_LPAR_2024-07-01_RPAR_--DevOps"
 %%%
+
+````markdown
 * [#3984](https://github.com/leanprover/lean4/pull/3984) 添加了一个用于 `git rebase -i` 的脚本（`script/rebase-stage0.sh`），可自动更新每个 stage0。
 * [#4108](https://github.com/leanprover/lean4/pull/4108) 完成了从 Std 过渡到 Batteries 的相关重命名。
 * [#4109](https://github.com/leanprover/lean4/pull/4109) 调整了 Github bug 模板，提及使用 [live.lean-lang.org](https://live.lean-lang.org) 进行测试。
@@ -324,10 +345,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___9___0-_LPAR_2024-07
 * [#4361](https://github.com/leanprover/lean4/pull/4361) 在 `pr-release` CI 步骤中加入了 elan 安装。
 * [#4628](https://github.com/leanprover/lean4/pull/4628) 修复了缺少导出符号的 Windows 构建。
 
-### 破坏性变更
+````
+# 破坏性变更
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___9___0-_LPAR_2024-07-01_RPAR_--Breaking-changes"
 %%%
+
+````markdown
 尽管大多数改动都可能被视为破坏性变更，本节特别指出了 API 变更。
 
 * `Nat.zero_or` 与 `Nat.or_zero` 已互换（[#4094](https://github.com/leanprover/lean4/pull/4094)）。

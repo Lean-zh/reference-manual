@@ -25,10 +25,13 @@ Lean 开发团队自豪地宣布 Lean 4 的首个里程碑版本发布。此次�
 
 Leonardo de Moura 与 Sebastian Ullrich
 
-#### 致谢
+```
+# 致谢
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___0___0-m1-_LPAR_2021-01-04_RPAR_--Acknowledgements"
 %%%
+
+```markdown
 * Daniel Selsam - 类型类解析、反馈、设计讨论
 * Marc Huisinga 和 Wojciech Nawrocki - Lean Server
 * Joe Hendrix、Andrew Kent、Rob Dockins、Simon Winwood（Galois Inc）- 早期采用者、建议、反馈

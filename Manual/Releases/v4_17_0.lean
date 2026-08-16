@@ -25,10 +25,13 @@ file := "v4.17.0"
 本次发布共合入 319 项变更。除下方列出的 168 项功能新增和 57 项修复外，另有 12 项重构、13 项文档改进和 56 项杂项工作。
 
 
-## 高亮
+````
+# 高亮
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___17___0-_LPAR_2025-03-03_RPAR_--Highlights"
 %%%
+
+````markdown
 
 Lean v4.17 带来了一系列新特性、性能改进和问题修复。用户可见的重点更新包括：
 
@@ -44,10 +47,13 @@ Lean v4.17 带来了一系列新特性、性能改进和问题修复。用户可
 
 * [#6597](https://github.com/leanprover/lean4/pull/6597) 修复了信息视图中嵌套跟踪节点的缩进问题。
 
-### 新语言特性
+````
+## 新语言特性
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___17___0-_LPAR_2025-03-03_RPAR_--Highlights--New-Language-Features"
 %%%
+
+````markdown
 
 * **部分不动点**
 
@@ -118,19 +124,25 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___17___0-_LPAR_2025-0
 
  [#6261](https://github.com/leanprover/lean4/pull/6261) 增加了 `foo.fun_cases`，这是一个自动生成的定理，会按照 `foo` 的分支结构拆分目标，类似函数归纳原理，但它适用于所有函数（不只是递归函数），并且不提供归纳假设。
 
-### 新 CLI 特性
+````
+## 新 CLI 特性
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___17___0-_LPAR_2025-03-03_RPAR_--Highlights--New-CLI-Features"
 %%%
+
+````markdown
 
 * [#6427](https://github.com/leanprover/lean4/pull/6427) 为 Lean CLI 增加了 `--src-deps` 选项，对应于 `--deps`。它会解析 Lean 代码的头部，并打印（传递导入的）模块源码文件路径（根据 `LEAN_SRC_PATH` 推导）。
 
 * [#6323](https://github.com/leanprover/lean4/pull/6323) 新增 Lake CLI 命令 `lake query`，既会构建目标，也会输出其结果。它可以生成原始文本或 JSON 格式的输出（使用 `--json` / `-J`）。
 
-### 破坏性变更
+````
+## 破坏性变更
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___17___0-_LPAR_2025-03-03_RPAR_--Highlights--Breaking-Changes"
 %%%
+
+````markdown
 
 * [#6602](https://github.com/leanprover/lean4/pull/6602) 允许点标识符记法解析到当前定义，或者同一互递归代码块中的其他定义。现有使用点标识符记法的代码，如果标识符与定义同名，可能需要添加 `nonrec`。
 
@@ -138,10 +150,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___17___0-_LPAR_2025-0
 
 _本高亮部分由 Violetta Sim 撰写。_
 
-## 语言
+````
+# 语言
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___17___0-_LPAR_2025-03-03_RPAR_--Language"
 %%%
+
+````markdown
 
 * [#5145](https://github.com/leanprover/lean4/pull/5145) 将内核使用的环境与精化器使用的环境分离开来，为跟踪异步精化的声明奠定了基础；后者中的这类声明只会作为概念存在于精化器一侧。
 
@@ -505,10 +520,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___17___0-_LPAR_2025-0
 
 * [#6905](https://github.com/leanprover/lean4/pull/6905) 增加了 `try?` 策略；详见上文。
 
-## 库
+````
+# 库
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___17___0-_LPAR_2025-03-03_RPAR_--Library"
 %%%
+
+````markdown
 
 * [#6177](https://github.com/leanprover/lean4/pull/6177) 实现了 `BitVec.*_fill`。
 
@@ -642,10 +660,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___17___0-_LPAR_2025-0
 
 * [#6912](https://github.com/leanprover/lean4/pull/6912) 对齐了 `List`/`Array`/`Vector` 上当前已覆盖的 `find` 类定理。这套 API 仍有不少空缺，后续会继续补齐。
 
-## 编译器
+````
+# 编译器
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___17___0-_LPAR_2025-03-03_RPAR_--Compiler"
 %%%
+
+````markdown
 
 * [#6535](https://github.com/leanprover/lean4/pull/6535) 避免了 Windows 上的链接器警告。
 
@@ -667,10 +688,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___17___0-_LPAR_2025-0
 
 * [#6837](https://github.com/leanprover/lean4/pull/6837) 将 Float32 加入 LCNF 的 builtinRuntimeTypes 列表。这在最初实现 Float32 时被遗漏了，而这一遗漏的副作用是会在 IR 中把 Float32 降级为 obj。
 
-## 漂亮打印
+````
+# 漂亮打印
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___17___0-_LPAR_2025-03-03_RPAR_--Pretty-Printing"
 %%%
+
+````markdown
 
 * [#6703](https://github.com/leanprover/lean4/pull/6703) 修改了 delaborator，使得在 `pp.tagAppFns` 模式下，广义字段记法会带上头常量的标签。其效果是 docgen 文档会为 dot 记法自动加链接。内部变更：现在格式化后的 `rawIdent` 也可以被加标签。
 
@@ -680,10 +704,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___17___0-_LPAR_2025-0
 
 * [#6730](https://github.com/leanprover/lean4/pull/6730) 修改了应用反展开器的调用方式。以前 ref 是 `.missing`，现在则改为头常量的 delaborated syntax。这样一来，当 `pp.tagAppFns` 为真时，应用反展开器里的词元会带上头常量注解。其结果是在 docgen 中，这些词元也会被自动加链接。这一新行为与 `notation` 定义应用反展开器的方式保持一致。
 
-## 文档
+````
+# 文档
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___17___0-_LPAR_2025-03-03_RPAR_--Documentation"
 %%%
+
+````markdown
 
 * [#6549](https://github.com/leanprover/lean4/pull/6549) 修复了 #6548。
 
@@ -697,19 +724,25 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___17___0-_LPAR_2025-0
 
 * [#6885](https://github.com/leanprover/lean4/pull/6885) 修复了 `HDiv.hDiv` 文档字符串（即悬停在 `/` 上时显示的内容）中截断整数除法函数的名称。该名称已在 #5301 中从 `Int.div` 改为 `Int.tdiv`。
 
-## 服务器
+````
+# 服务器
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___17___0-_LPAR_2025-03-03_RPAR_--Server"
 %%%
+
+````markdown
 
 * [#6597](https://github.com/leanprover/lean4/pull/6597) 修复了信息视图中嵌套跟踪节点的缩进问题。
 
 * [#6794](https://github.com/leanprover/lean4/pull/6794) 修复了一个严重的自动补全性能回归，该回归由 #5666（也就是 v4.14.0）引入。
 
-## Lake
+````
+# Lake
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___17___0-_LPAR_2025-03-03_RPAR_--Lake"
 %%%
+
+````markdown
 
 * [#6290](https://github.com/leanprover/lean4/pull/6290) 使用 `StateRefT` 而非 `StateT`，为 Lake 构建单子配备构建存储。
 
@@ -729,10 +762,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___17___0-_LPAR_2025-0
 
 * [#7209](https://github.com/leanprover/lean4/pull/7209) 修复了 Windows 新版 MSYS2 上失效的 Lake 测试。从 MSYS2 0.0.20250221 起，`OSTYPE` 现在报告为 `cygwin` 而不是 `msys`，因此需要在若干 Lake 测试中加以处理。
 
-## 其他
+````
+# 其他
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___17___0-_LPAR_2025-03-03_RPAR_--Other"
 %%%
+
+````markdown
 
 * [#6479](https://github.com/leanprover/lean4/pull/6479) 通过使用查找表检查字符串是否需要转义，加快了 JSON 序列化速度。
 

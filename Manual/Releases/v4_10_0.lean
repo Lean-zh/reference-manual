@@ -19,10 +19,13 @@ file := "v4.10.0"
 %%%
 
 ````markdown
-### 语言特性、策略与元程序
+````
+# 语言特性、策略与元程序
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___10___0-_LPAR_2024-07-31_RPAR_--Language-features___-tactics___-and-metaprograms"
 %%%
+
+````markdown
 
 * `split` 策略：
   * [#4401](https://github.com/leanprover/lean4/pull/4401) 改进了 `split` 在泛化 match 判别式时采用的策略，并新增 `trace.split.failure` 跟踪类以便诊断问题。
@@ -109,25 +112,34 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___10___0-_LPAR_2024-0
   * [#4416](https://github.com/leanprover/lean4/pull/4416) 对 `#print axioms` 的输出排序，以确保结果确定。
   * [#4528](https://github.com/leanprover/lean4/pull/4528) 修复了 cdot 聚焦策略的错误消息范围。
 
-### 语言服务器、小部件与 IDE 扩展
+````
+# 语言服务器、小部件与 IDE 扩展
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___10___0-_LPAR_2024-07-31_RPAR_--Language-server___-widgets___-and-IDE-extensions"
 %%%
 
+````markdown
+
 * [#4443](https://github.com/leanprover/lean4/pull/4443) 让 watchdog 在面对行为不良的客户端时更加稳健。
 
-### 漂亮打印
+````
+# 漂亮打印
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___10___0-_LPAR_2024-07-31_RPAR_--Pretty-printing"
 %%%
 
+````markdown
+
 * [#4433](https://github.com/leanprover/lean4/pull/4433) 在上下文不可用时恢复了后备漂亮打印器，并为 `addMessageContext` 添加了文档。
 * [#4556](https://github.com/leanprover/lean4/pull/4556) 引入 `pp.maxSteps` 选项，并将 `pp.deepTerms` 的默认值设为 `false`。两者共同避免了过大或过深的项压垮 Infoview。
 
-### 库
+````
+# 库
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___10___0-_LPAR_2024-07-31_RPAR_--Library"
 %%%
+
+````markdown
 * [#4560](https://github.com/leanprover/lean4/pull/4560) 将 `GetElem` 类拆分为 `GetElem` 与 `GetElem?`。
   这使得可以从 `GetElem.getElem?` 与 `GetElem.getElem!` 中移除 `Decidable` 实例参数，从而提升它们的可重写性。
   更多信息请参见这些类的文档字符串。
@@ -176,10 +188,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___10___0-_LPAR_2024-0
   * [#3056](https://github.com/leanprover/lean4/pull/3056) 统一改用 `(· == a)`，而不再使用 `(a == ·)`。
   * [#4502](https://github.com/leanprover/lean4/pull/4502) 修复了使用 Batteries linter 检查库时报告的错误。
 
-### Lean 内部机制
+````
+# Lean 内部机制
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___10___0-_LPAR_2024-07-31_RPAR_--Lean-internals"
 %%%
+
+````markdown
 
 * [#4391](https://github.com/leanprover/lean4/pull/4391) 让 `getBitVecValue?` 能识别 `BitVec.ofNatLt`。
 * [#4410](https://github.com/leanprover/lean4/pull/4410) 调整了 `instantiateMVars` 算法，使其在对已实例化的元变量做 beta 化简时，也会对 `let` 表达式做 zeta 化简。
@@ -221,20 +236,26 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___10___0-_LPAR_2024-0
   * [#4563](https://github.com/leanprover/lean4/pull/4563) 为 `IndPredBelow.mkBelowMatcher` 中的一个错误添加了变通方案。
 * **清理：** [#4380](https://github.com/leanprover/lean4/pull/4380), [#4431](https://github.com/leanprover/lean4/pull/4431), [#4494](https://github.com/leanprover/lean4/pull/4494), [e8f768](https://github.com/leanprover/lean4/commit/e8f768f9fd8cefc758533bc76e3a12b398ed4a39), [de2690](https://github.com/leanprover/lean4/commit/de269060d17a581ed87f40378dbec74032633b27), [d3a756](https://github.com/leanprover/lean4/commit/d3a7569c97123d022828106468d54e9224ed8207), [#4404](https://github.com/leanprover/lean4/pull/4404), [#4537](https://github.com/leanprover/lean4/pull/4537).
 
-### 编译器、运行时与 FFI
+````
+# 编译器、运行时与 FFI
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___10___0-_LPAR_2024-07-31_RPAR_--Compiler___-runtime___-and-FFI"
 %%%
+
+````markdown
 
 * [d85d3d](https://github.com/leanprover/lean4/commit/d85d3d5f3a09ff95b2ee47c6f89ef50b7e339126) 修复了所有权计算中尾调用判定准则的问题。
 * [#3963](https://github.com/leanprover/lean4/pull/3963) 在运行时的 C++ 到 Lean 边界上新增 UTF-8 校验。
 * [#4512](https://github.com/leanprover/lean4/pull/4512) 修复了解释器在加载已初始化值时缺失 unboxing 的问题。
 * [#4477](https://github.com/leanprover/lean4/pull/4477) 暴露了内置 C 编译器（clang）的编译器标志。
 
-### Lake
+````
+# Lake
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___10___0-_LPAR_2024-07-31_RPAR_--Lake"
 %%%
+
+````markdown
 
 * [#4384](https://github.com/leanprover/lean4/pull/4384) 弃用了 `inputFile`，并以 `inputBinFile` 和 `inputTextFile` 取代。不同于 `inputBinFile`（以及 `inputFile`），`inputTextFile` 会规范化行尾，从而有助于保证文本文件跟踪与平台无关。
 * [#4371](https://github.com/leanprover/lean4/pull/4371) 简化了依赖解析代码。
@@ -284,10 +305,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___10___0-_LPAR_2024-0
   和[源替换](https://doc.rust-lang.org/cargo/reference/source-replacement.html)
   相对应。
 
-### DevOps/CI
+````
+# DevOps/CI
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___10___0-_LPAR_2024-07-31_RPAR_--DevOps___CI"
 %%%
+
+````markdown
 * [#4427](https://github.com/leanprover/lean4/pull/4427) 为 `leanprover/lean4` 的 CI 使用 Namespace runners。
 * [#4440](https://github.com/leanprover/lean4/pull/4440) 修复了 CI 中的 speedcenter 测试。
 * [#4441](https://github.com/leanprover/lean4/pull/4441) 修复了工作流变更会破坏未 rebase PR 的 CI 的问题。
@@ -304,10 +328,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___10___0-_LPAR_2024-0
   * [#3811](https://github.com/leanprover/lean4/pull/3811) 为 lib target 添加了平台相关标志。
   * [#4587](https://github.com/leanprover/lean4/pull/4587) 在 darwin 上把 `-lStd` 的链接重新加入 nix 构建标志。
 
-### 破坏性变更
+````
+# 破坏性变更
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___10___0-_LPAR_2024-07-31_RPAR_--Breaking-changes"
 %%%
+
+````markdown
 
 * `Char.csize` 已被 `Char.utf8Size` 取代（[#4357](https://github.com/leanprover/lean4/pull/4357)）。
 * 库引理现在统一写作 `(· == a)`，而不是 `(a == ·)`（[#3056](https://github.com/leanprover/lean4/pull/3056)）。

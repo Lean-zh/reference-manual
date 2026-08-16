@@ -21,15 +21,21 @@ file := "v4.22.0"
 ````markdown
 本次发布共合入 468 项变更。除下文列出的 185 项功能新增和 85 项修复外，还有 15 项重构、5 项文档改进、4 项性能提升、0 项测试套件改进以及 174 项其他变更。
 
-## 亮点
+````
+# 亮点
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___22___0-_LPAR_2025-08-14_RPAR_--Highlights"
 %%%
 
-### `grind` 正式发布！
+````markdown
+
+````
+## `grind` 正式发布！
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___22___0-_LPAR_2025-08-14_RPAR_--Highlights--Grind-is-released___"
 %%%
+
+````markdown
 
 Lean 现在内置了新的 SMT 风格策略 `grind`，并为 Lean 标准库配套提供了相应标注。
 `grind` 附带按理论划分的求解器，包括 `cutsat`（取代 `omega`，并支持模型构造）
@@ -37,19 +43,25 @@ Lean 现在内置了新的 SMT 风格策略 `grind`，并为 Lean 标准库配�
 
 另请参见[参考手册中关于 grind 的章节](https://lean-lang.org/doc/reference/latest//The--grind--tactic/#grind)。
 
-### 新编译器
+````
+## 新编译器
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___22___0-_LPAR_2025-08-14_RPAR_--Highlights--New-compiler"
 %%%
+
+````markdown
 
 旧编译器已被新编译器取代（[#8577](https://github.com/leanprover/lean4/pull/8577)）！
 这解决了许多长期存在的问题，也为未来的大量功能与性能改进
 打下了基础。
 
-### 新的 `math` 项目模板
+````
+## 新的 `math` 项目模板
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___22___0-_LPAR_2025-08-14_RPAR_--Highlights--New-math-project-template"
 %%%
+
+````markdown
 
 [#8866](https://github.com/leanprover/lean4/pull/8866) 升级了 `lake init` 与
 `lake new` 的 `math` 模板，使其满足严格的 Mathlib 维护标准。
@@ -60,28 +72,37 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___22___0-_LPAR_2025-0
 * 由 [doc-gen4](https://github.com/leanprover/doc-gen4) 生成并托管在 `github.io` 上的 API 文档。
 * 带有若干 GitHub 专用说明的 README。
 
-### 签名帮助
+````
+## 签名帮助
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___22___0-_LPAR_2025-08-14_RPAR_--Highlights--Signature-help"
 %%%
 
+````markdown
+
 [#8511](https://github.com/leanprover/lean4/pull/8511) 在编辑器中实现了签名帮助支持。
 演示可参见该 PR 的说明。
 
-### 显示导入层级
+````
+## 显示导入层级
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___22___0-_LPAR_2025-08-14_RPAR_--Highlights--Displaying-import-hierarchy"
 %%%
+
+````markdown
 
 [#8654](https://github.com/leanprover/lean4/pull/8654)（以及 vscode-lean4 的
 [#620](https://github.com/leanprover/vscode-lean4/pull/620)）在
 VS Code 中增加了一个新的模块层级组件，可用于同时导航模块的
 导入树和被导入树。
 
-### `have`/`let` 语义重构
+````
+## `have`/`let` 语义重构
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___22___0-_LPAR_2025-08-14_RPAR_--Highlights--Refactor-of-have___let-semantics"
 %%%
+
+````markdown
 
 简而言之：为提升性能，非依赖的 `let` 绑定现在会被转换成 `have` 绑定。
 `have` 与 `let` 的语法现已统一，并新增了一些选项。
@@ -117,10 +138,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___22___0-_LPAR_2025-0
 * [#9086](https://github.com/leanprover/lean4/pull/9086) 弃用了 `let_fun` 语法，改用 `have`，
   并从 WHNF 与 `simp` 中移除了对 `letFun` 的支持。
 
-### Simp
+````
+## Simp
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___22___0-_LPAR_2025-08-14_RPAR_--Highlights--Simp"
 %%%
+
+````markdown
 
 * **标记未使用的 `simp` 参数**
 
@@ -149,10 +173,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___22___0-_LPAR_2025-0
   显式属性的好处是我们可以可靠地在跨模块边界时省略定理体。
   它也有助于文件内并行化。
 
-### 带解释的命名错误
+````
+## 带解释的命名错误
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___22___0-_LPAR_2025-08-14_RPAR_--Highlights--Named-errors-with-explanations"
 %%%
+
+````markdown
 
 Lean 现在支持带有关联解释的命名错误消息。
 
@@ -162,10 +189,13 @@ Lean 现在支持带有关联解释的命名错误消息。
 
 这套基础设施为可搜索的错误索引与更好的诊断打下了基础。
 
-### `finally` 代码段
+````
+## `finally` 代码段
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___22___0-_LPAR_2025-08-14_RPAR_--Highlights--finally-section"
 %%%
+
+````markdown
 
 [#8723](https://github.com/leanprover/lean4/pull/8723) 实现了位于（可能为空的）
 `where` 代码块之后的 `finally` 段。`where ... finally` 会打开一个
@@ -182,10 +212,13 @@ where x := 13
 finally all_goals assumption
 ```
 
-### 多态范围与切片
+````
+## 多态范围与切片
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___22___0-_LPAR_2025-08-14_RPAR_--Highlights--Polymorphic-ranges-and-slices"
 %%%
+
+````markdown
 
 [#8784](https://github.com/leanprover/lean4/pull/8784) 引入了新的范围语法：
 `1...*`, `1...=3`, `1...<3`, `1<...=2`, `*...=3.`.
@@ -193,10 +226,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___22___0-_LPAR_2025-0
 [#8947](https://github.com/leanprover/lean4/pull/8947) 将这一语法扩展到切片，
 从而允许写出 `xs[*...end]` 这样的表达式。
 
-### 库亮点
+````
+## 库亮点
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___22___0-_LPAR_2025-08-14_RPAR_--Highlights--Library-highlights"
 %%%
+
+````markdown
 
 标准库中的值得注意的新增内容包括：
 
@@ -208,10 +244,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___22___0-_LPAR_2025-0
 
 * 系统信息函数（[#8109](https://github.com/leanprover/lean4/pull/8109)）。
 
-### 实验性：单子化验证框架
+````
+## 实验性：单子化验证框架
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___22___0-_LPAR_2025-08-14_RPAR_--Highlights--Experimental___-monadic-verification-framework"
 %%%
+
+````markdown
 
 [#8995](https://github.com/leanprover/lean4/pull/8995) 在 `Std.Do.Triple` 中为单子程序
 引入了 Hoare 逻辑，并配套提供若干策略：
@@ -220,35 +259,47 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___22___0-_LPAR_2025-0
 * `mvcgen`，用于将 Hoare 三元组证明义务 `⦃P⦄ prog ⦃Q⦄`
   转换为纯验证条件。
 
-### 实验性：模块系统
+````
+## 实验性：模块系统
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___22___0-_LPAR_2025-08-14_RPAR_--Highlights--Experimental___-module-system"
 %%%
 
+````markdown
+
 新模块系统（通过在 import 语句前加 `module` 关键字启用）现已可供试验。
 
-### 实验性：在同一仓库的不同 checkout 之间共享 oleans
+````
+## 实验性：在同一仓库的不同 checkout 之间共享 oleans
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___22___0-_LPAR_2025-08-14_RPAR_--Highlights--Experimental___-sharing-oleans-between-different-checkouts-of-the-same-repository"
 %%%
+
+````markdown
 
 [#8922](https://github.com/leanprover/lean4/pull/8922) 为 Lake 引入了本地产物缓存。启用后，Lake
 会通过基于输入与内容寻址的缓存，在同一包的不同实例之间共享
 构建产物（已构建文件）。目前需要设置 `export LAKE_ARTIFACT_CACHE=true`。
 
-### 关于 `sorry` 的警告
+````
+## 关于 `sorry` 的警告
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___22___0-_LPAR_2025-08-14_RPAR_--Highlights--Warnings-about-sorrys"
 %%%
+
+````markdown
 
 [#8662](https://github.com/leanprover/lean4/pull/8662) 增加了 `warn.sorry` 选项（默认值为 true），
 当声明包含 `sorryAx` 时，会记录
 “declaration uses 'sorry'” 警告；若设为 false，则不记录该警告。
 
-### 破坏性变更
+````
+## 破坏性变更
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___22___0-_LPAR_2025-08-14_RPAR_--Highlights--Breaking-changes"
 %%%
+
+````markdown
 
 * [#8751](https://github.com/leanprover/lean4/pull/8751) 将 `Expr.letE` 的 `nondep`
   字段加入了 C++ 数据模型。
@@ -275,10 +326,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___22___0-_LPAR_2025-0
   破坏性变更：使用 `letLambdaTelescope`/`mkLetFVars` 时需要设置
   `generalizeNondepLet := false`；详情见 PR 说明。
 
-## 语言
+````
+# 语言
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___22___0-_LPAR_2025-08-14_RPAR_--Language"
 %%%
+
+````markdown
 
 * [#6672](https://github.com/leanprover/lean4/pull/6672) 将 `Lean.*`、`*.Tactic.*` 和
   `*.Linter.*` 下的所有声明从 `exact?` 与 `rw?` 的结果中过滤掉。
@@ -989,10 +1043,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___22___0-_LPAR_2025-0
 ````
 ````markdown
 
-## 库
+````
+# 库
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___22___0-_LPAR_2025-08-14_RPAR_--Library"
 %%%
+
+````markdown
 
 * [#8003](https://github.com/leanprover/lean4/pull/8003) 为 `Async` 操作增加了新的单子化接口。
 
@@ -1288,10 +1345,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___22___0-_LPAR_2025-0
 * [#9075](https://github.com/leanprover/lean4/pull/9075) 为 `ByteArray` 和 `FloatArray`
   增加了 `BEq` 实例（`ByteArray` 还额外有 `DecidableEq` 实例）。
 
-## 编译器
+````
+# 编译器
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___22___0-_LPAR_2025-08-14_RPAR_--Compiler"
 %%%
+
+````markdown
 
 * [#8594](https://github.com/leanprover/lean4/pull/8594) 从旧编译器中移除了对
   strictOr/strictAnd 的错误优化，并删除了一个错误的测试。要正确实现这些优化，
@@ -1424,10 +1484,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___22___0-_LPAR_2025-0
 * [#9003](https://github.com/leanprover/lean4/pull/9003) 在新编译器中实现了对 `main`
   类型合法性的检查。此前没有相关测试，因此这个问题一直未被发现。
 
-## 美观打印
+````
+# 美观打印
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___22___0-_LPAR_2025-08-14_RPAR_--Pretty-Printing"
 %%%
+
+````markdown
 
 * [#7954](https://github.com/leanprover/lean4/pull/7954) 改进了 `pp.oneline`，
   现在在把格式化语法截断为单行时会保留标签。需要注意的是，`[...]`
@@ -1447,10 +1510,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___22___0-_LPAR_2025-0
   而不是软换行。例如，`--` 注释之后会有一个硬换行。注意：
   生成带注释 Syntax 的元程序应确保在 `--` 注释末尾加入换行。
 
-## 文档
+````
+# 文档
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___22___0-_LPAR_2025-08-14_RPAR_--Documentation"
 %%%
+
+````markdown
 
 * [#8934](https://github.com/leanprover/lean4/pull/8934) 为若干错误增加了解释，
   包括与 noncomputability、冗余 `match` 分支以及非法归纳声明有关的错误。
@@ -1461,10 +1527,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___22___0-_LPAR_2025-0
 * [#8998](https://github.com/leanprover/lean4/pull/8998) 使与 `Format` 和 `Repr`
   相关的文档字符串在格式和风格上保持一致，并补充了缺失的文档字符串。
 
-## 服务器
+````
+# 服务器
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___22___0-_LPAR_2025-08-14_RPAR_--Server"
 %%%
+
+````markdown
 
 * [#8105](https://github.com/leanprover/lean4/pull/8105) 增加了对服务端 `RpcRef` 复用的支持，
   并修复了一个缺陷：文件仍在处理时，InfoView 中的 trace 节点会提前关闭。
@@ -1491,10 +1560,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___22___0-_LPAR_2025-0
 * [#9019](https://github.com/leanprover/lean4/pull/9019) 修复了语义高亮的一个缺陷：
   它此前只会高亮以字母数字字符开头的关键字。现在它改用 `Lean.isIdFirst`。
 
-## Lake
+````
+# Lake
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___22___0-_LPAR_2025-08-14_RPAR_--Lake"
 %%%
+
+````markdown
 
 * [#7738](https://github.com/leanprover/lean4/pull/7738) 让内建 facet 的记忆化
   可以通过 facet 配置上的 `memoize` 选项来开关。那些本质上只是别名的
@@ -1557,10 +1629,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___22___0-_LPAR_2025-0
 * [#9101](https://github.com/leanprover/lean4/pull/9101) 修复了 #9081 引入的一个缺陷：
   模块输入 trace 中会丢失源文件，同时模块作业日志中的部分条目也会丢失。
 
-## 其他
+````
+# 其他
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___22___0-_LPAR_2025-08-14_RPAR_--Other"
 %%%
+
+````markdown
 
 * [#8702](https://github.com/leanprover/lean4/pull/8702) 增强了 PR 发布工作流，
   使其同时创建短格式与带 SHA 后缀的发布标签。它会同时创建

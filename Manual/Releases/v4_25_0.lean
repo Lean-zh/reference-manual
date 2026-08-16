@@ -21,31 +21,43 @@ file := "v4.25.0"
 ````markdown
 本次发布共合入 398 项改动。除下文列出的 141 项功能新增和 83 项修复外，还有 21 项重构、9 项文档改进、4 项性能改进、5 项测试套件改进，以及 135 项其他改动。
 
-## 亮点
+````
+# 亮点
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___25___0-_LPAR_2025-11-14_RPAR_--Highlights"
 %%%
 
+````markdown
+
 Lean v4.25.0 带来了多项令人兴奋的新特性。编辑器集成为 “try this” 建议增加了交互性，Lake 增加了远程缓存支持。新的语言特性包括：自动为类型类方法生成规格定理、余归纳谓词，以及 `mvcgen` 中的不变式建议。`grind` 获得了一个交互模式，允许用户控制证明搜索，并可建议可复现的证明脚本。其推理能力还扩展到了单射函数、非交换（半）环，以及预序和有序环结构。标准库则带来了重新设计的 `String` 类型和更丰富的异步原语。请继续阅读下文了解详情！
 
-### 应用 “try this” 建议
+````
+## 应用 “try this” 建议
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___25___0-_LPAR_2025-11-14_RPAR_--Highlights--Apply-___try-this___-Suggestions"
 %%%
 
+````markdown
+
 [#10524](https://github.com/leanprover/lean4/pull/10524) 为 [#9966](https://github.com/leanprover/lean4/pull/9966) 中引入的 “try this” 消息增加了交互性（如悬停和转到定义）。同时，它把“应用建议”的链接改成了建议前方单独的 `[apply]` 按钮。
 
-### Lake 的远程缓存
+````
+## Lake 的远程缓存
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___25___0-_LPAR_2025-11-14_RPAR_--Highlights--Remote-Caching-with-Lake"
 %%%
 
+````markdown
+
 [#10188](https://github.com/leanprover/lean4/pull/10188) 为 Lake 增加了远程构件缓存（例如 Reservoir）支持。作为这项支持的一部分，还引入了一组新的 `lake cache` CLI 命令，用于管理 Lake 的缓存；现有的本地缓存支持也经过了重构，以便更好地与新的远程支持协同工作。
 
-### 余归纳谓词
+````
+## 余归纳谓词
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___25___0-_LPAR_2025-11-14_RPAR_--Highlights--Coinductive-Predicates"
 %%%
+
+````markdown
 
 [#10333](https://github.com/leanprover/lean4/pull/10333) 引入了 `coinductive` 关键字，可用与 `inductive` 关键字相同的语法来定义余归纳谓词。
 
@@ -91,10 +103,13 @@ info: tick.mutual_induct (pred_1 pred_2 : Prop) (hyp_1 : pred_1 → pred_2 → F
 #check tick.mutual_induct
 ```
 
-### `mvcgen` 不变式建议
+````
+## `mvcgen` 不变式建议
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___25___0-_LPAR_2025-11-14_RPAR_--Highlights--Mvcgen-Invariants-Suggestions"
 %%%
+
+````markdown
 
 [#10456](https://github.com/leanprover/lean4/pull/10456)和[#10566](https://github.com/leanprover/lean4/pull/10566)
 实现了 `mvcgen invariants?`，可根据不变式在 VC 中的使用方式来建议具体不变式。
@@ -159,15 +174,21 @@ theorem nodup_suggest_invariant (l : List Int) : nodup l ↔ l.Nodup := by
 但它是迭代的良好起点。它也很有用,因为用户不需要记住
 确切的语法。
 
-### `grind`
+````
+## `grind`
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___25___0-_LPAR_2025-11-14_RPAR_--Highlights--Grind"
 %%%
 
-#### 交互模式
+````markdown
+
+````
+### 交互模式
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___25___0-_LPAR_2025-11-14_RPAR_--Highlights--Grind--Interactive-mode"
 %%%
+
+````markdown
 
 `grind` 延长了交互模式`grind => …`
 [#10607](https://github.com/leanprover/lean4/pull/10607)、[#10677](https://github.com/leanprover/lean4/pull/10677)、...])
@@ -232,10 +253,13 @@ example (x y : Nat) : x ≥ y + 1 → x > 0 := by
 生成脚本中的锚以稳定的散列代码为基础 。
 此外,用户可以盘旋在他们身上,查看案件所使用的确切术语。
 
-#### 非交换（半）环归一化
+````
+### 非交换（半）环归一化
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___25___0-_LPAR_2025-11-14_RPAR_--Highlights--Grind--Non-commutative-_LPAR_semi_RPAR_ring-normalization"
 %%%
+
+````markdown
 
 - [#10375](https://github.com/leanprover/lean4/pull/10375) 为 `grind` 增加了对非交换环归一化的支持。新的归一化器也会考虑 `IsCharP` 类型类。
 
@@ -258,10 +282,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___25___0-_LPAR_2025-1
   example (a b : R) : (a + 2 * b)^2 = a^2 + 2 * a * b + 2 * b * a + 4 * b^2 := by grind
   ```
 
-#### 单射函数
+````
+### 单射函数
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___25___0-_LPAR_2025-11-14_RPAR_--Highlights--Grind--Injective-functions"
 %%%
+
+````markdown
 
 [#10445](https://github.com/leanprover/lean4/pull/10445),
 [#10447](https://github.com/leanprover/lean4/pull/10447),
@@ -303,10 +330,13 @@ example (f : InjFn (List Nat) α) (x y z : Nat)
   grind
 ```
 
-#### `grind order` 求解器
+````
+### `grind order` 求解器
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___25___0-_LPAR_2025-11-14_RPAR_--Highlights--Grind--Grind-order-solver"
 %%%
+
+````markdown
 
 磨磨现在可以解决预先订购和订购戒指的问题了
 [#10562](https://github.com/leanprover/lean4/pull/10562)、[#10598](https://github.com/leanprover/lean4/pull/10598)和[#10600](https://github.com/leanprover/lean4/pull/10600)。
@@ -319,10 +349,13 @@ example [LE α] [LT α] [Std.LawfulOrderLT α] [Std.IsLinearPreorder α] [CommRi
   grind -linarith (splits := 0)
 ```
 
-#### 新的模式推断启发式
+````
+### 新的模式推断启发式
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___25___0-_LPAR_2025-11-14_RPAR_--Highlights--Grind--New-pattern-inference-heuristic"
 %%%
+
+````markdown
 
 [#10422](https://github.com/leanprover/lean4/pull/10422)和[#10432](https://github.com/leanprover/lean4/pull/10432)
 执行新的电子匹配模式
@@ -356,10 +389,13 @@ info: Try these:
 set_option backward.grind.inferPattern true
 ```
 
-### 规格定理派生
+````
+## 规格定理派生
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___25___0-_LPAR_2025-11-14_RPAR_--Highlights--Specifications-Derivation"
 %%%
+
+````markdown
 
 Lean 现在为自定义和派生的类型类实例提供自动生成规格定理的能力：
 
@@ -411,10 +447,13 @@ Lean 现在为自定义和派生的类型类实例提供自动生成规格定理
 
 - [#10351](https://github.com/leanprover/lean4/pull/10351) 增加了 `deriving ReflBEq, LawfulBEq` 的能力。这两个类都必须列在 `deriving` 子句中。它原本是为了配合 `deriving BEq` 使用的（不过你也可以尝试把它用于手写的 `@[methods_specs] instance : BEq…` 实例）。不支持互递归或嵌套归纳类型。
 
-### `String` 类型重构
+````
+## `String` 类型重构
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___25___0-_LPAR_2025-11-14_RPAR_--Highlights--Overhaul-of-the-String-Type"
 %%%
+
+````markdown
 
 - [#10304](https://github.com/leanprover/lean4/pull/10304) 将`String` 重新定义为字节数组的类型`b`
 `b.IsValidUtf8`。这将字符串的数据模型更接近运行时的实际数据表示。
@@ -443,10 +482,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___25___0-_LPAR_2025-1
 ** 打破变化**:在本PR之后,`String.pos_lt_eq`不再为`simp` 列马。
 如果证明破损,添加`String.Pos.Raw.lt_iff`,作为`simp` 列马。
 
-### 异步框架
+````
+## 异步框架
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___25___0-_LPAR_2025-11-14_RPAR_--Highlights--Async-Framework"
 %%%
+
+````markdown
 
 扩大了Async框架,包括:
 
@@ -456,10 +498,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___25___0-_LPAR_2025-1
 - `StreamMap`，一种可在异步流中实现多路复用的类型（[#10400](https://github.com/leanprover/lean4/pull/10400)）；
 - `Std.CancellationToken` ([#10510](https://github.com/leanprover/lean4/pull/10510))。
 
-### 迭代器
+````
+## 迭代器
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___25___0-_LPAR_2025-11-14_RPAR_--Highlights--Iterators"
 %%%
+
+````markdown
 
 - [#10686](https://github.com/leanprover/lean4/pull/10686) 采用`any`、`anyM`、`all`和`allM`
 还会为它们提供润滑剂
@@ -469,25 +514,34 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___25___0-_LPAR_2025-1
 
 - [#10761](https://github.com/leanprover/lean4/pull/10761) 为哈希映射提供了迭代器。
 
-### InfoView Trace 搜索
+````
+## InfoView Trace 搜索
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___25___0-_LPAR_2025-11-14_RPAR_--Highlights--InfoView-Trace-Search"
 %%%
 
+````markdown
+
 [#10365](https://github.com/leanprover/lean4/pull/10365) 执行服务器侧的服务器侧,以在
 InfoView。 演示视频请参见 PR 描述 。
 
-### 实例的线性构造
+````
+## 实例的线性构造
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___25___0-_LPAR_2025-11-14_RPAR_--Highlights--Linear-Construction-of-Instances"
 %%%
 
+````markdown
+
 现在提供了 `DerivingBEq`（[#10268](https://github.com/leanprover/lean4/pull/10268)）和 `Deriving Ord`（[#10270](https://github.com/leanprover/lean4/pull/10270)）的替代实现：它们基于比较 `.ctorIdx`，并使用专门的匹配器来比较相同构造子（该匹配器在 [#10152](https://github.com/leanprover/lean4/pull/10152) 中加入），以避免默认匹配实现的二次开销。新的选项 `deriving.beq.linear_construction_threshold` 和 `deriving.ord.linear_construction_threshold` 用来设置采用这一新构造的构造子数量阈值（默认值为 10）。
 
-### 迁移到模块系统
+````
+## 迁移到模块系统
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___25___0-_LPAR_2025-11-14_RPAR_--Highlights--Porting-to-the-Module-System"
 %%%
+
+````markdown
 
 [#10807](https://github.com/leanprover/lean4/pull/10807) 采用`backward.privateInPublic` 备选办法援助`backward.privateInPublic`
 通过临时允许进入模块系统,将项目移植到模块系统
@@ -495,10 +549,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___25___0-_LPAR_2025-1
 此类存取器将生成警告警告,除非
 `backward.privateInPublic.warn` 已禁用。
 
-### 破坏性变更
+````
+## 破坏性变更
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___25___0-_LPAR_2025-11-14_RPAR_--Highlights--Breaking-Changes"
 %%%
+
+````markdown
 
 - [#10714](https://github.com/leanprover/lean4/pull/10714) 删除了对可约良基递归的支持，这是一个破坏性变更。在通过良基递归定义的定义上使用 `@[semireducible]` 会打印警告，提示它已不再生效。
 
@@ -517,10 +574,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___25___0-_LPAR_2025-1
 
 断开更改:调整`«end»` 语法以取一个`identWithPartialTrailingDot`,而不是取一个`ident`。
 
-## 语言
+````
+# 语言
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___25___0-_LPAR_2025-11-14_RPAR_--Language"
 %%%
+
+````markdown
 
 * [#7844](https://github.com/leanprover/lean4/pull/7844) 添加一个简单的执行MEPO的简单内容,来自“轻重量”
 用于机器产生的解析问题的关联过滤”由Meng著
@@ -774,10 +834,13 @@ t` and then introducing `t`。
 
 * [#10839](https://github.com/leanprover/lean4/pull/10839) 暴露了用于实现 `set_option` 记号的 `optionValue` 解析器。
 
-## 库
+````
+# 库
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___25___0-_LPAR_2025-11-14_RPAR_--Library"
 %%%
+
+````markdown
 
 * [#9258](https://github.com/leanprover/lean4/pull/9258) 向利恩标准库增加对信号处理器的支持。
 
@@ -855,10 +918,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___25___0-_LPAR_2025-1
 
 * [#10761](https://github.com/leanprover/lean4/pull/10761) 为哈希映射提供了迭代器。
 
-## 策略
+````
+# 策略
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___25___0-_LPAR_2025-11-14_RPAR_--Tactics"
 %%%
+
+````markdown
 
 * [#10445](https://github.com/leanprover/lean4/pull/10445) 添加了辅助定义，为即将在 `grind` 中加入的单射函数支持做准备。
 
@@ -1120,10 +1186,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___25___0-_LPAR_2025-1
 
 * [#10846](https://github.com/leanprover/lean4/pull/10846) 修复了 `finish?` 中 `instance only [...]` 策略生成的几个问题。
 
-## 编译器
+````
+# 编译器
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___25___0-_LPAR_2025-11-14_RPAR_--Compiler"
 %%%
+
+````markdown
 
 * [#10429](https://github.com/leanprover/lean4/pull/10429) 代码中专门化的修补和过于谨慎的再利用
 发电机。
@@ -1148,27 +1217,36 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___25___0-_LPAR_2025-1
 * [#10689](https://github.com/leanprover/lean4/pull/10689) 规定对守则中驻地协调员插入阶段的监督
 发电机。
 
-## 美观打印
+````
+# 美观打印
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___25___0-_LPAR_2025-11-14_RPAR_--Pretty-Printing"
 %%%
 
+````markdown
+
 * [#10376](https://github.com/leanprover/lean4/pull/10376) 修改了 `fun` binder 的 pretty printing，抑制了同一个 `fun` 内 binder 之间的安全遮蔽特性。例如，现在我们会看到 `fun x x_1 => 0`，而不是把它打印成 `fun x x => 0`。这个计算是按每个 `fun` 单独进行的，因此例如 `fun x => id fun x => 0` 仍会保持原样打印，从而继续利用安全遮蔽。
 
-## 文档
+````
+# 文档
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___25___0-_LPAR_2025-11-14_RPAR_--Documentation"
 %%%
+
+````markdown
 
 * [#10632](https://github.com/leanprover/lean4/pull/10632)为位数阵列添加缺失的文档字符串,并制作已有的
 符合我们的风格
 
 * [#10640](https://github.com/leanprover/lean4/pull/10640) 添加了一个缺失的文档字符串，并将我们的风格指南应用到 `String` API 的一部分上。
 
-## 服务器
+````
+# 服务器
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___25___0-_LPAR_2025-11-14_RPAR_--Server"
 %%%
+
+````markdown
 
 * [#10365](https://github.com/leanprover/lean4/pull/10365) 执行服务器侧的服务器侧,以在
 信息查看。
@@ -1208,10 +1286,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___25___0-_LPAR_2025-1
 还可以修补错误, 其中标识符有时会最小化到
 `[anonymous]`。
 
-## Lake
+````
+# Lake
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___25___0-_LPAR_2025-11-14_RPAR_--Lake"
 %%%
+
+````markdown
 
 * [#9855](https://github.com/leanprover/lean4/pull/9855) 为包和库添加了新的 `allowImportAll` 配置选项。上游包或库启用后，下游包就能 `import all` 该包或库的所有模块。这使包作者可以有选择地决定下游包是否能访问某些 `private` 元素。
 
@@ -1256,10 +1337,13 @@ MSYS2 结构(该结构既接受`lib`,又接受`lib`预 和
 与 `--old` 进行时间修改检查。
 过时了
 
-## 其他
+````
+# 其他
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___25___0-_LPAR_2025-11-14_RPAR_--Other"
 %%%
+
+````markdown
 
 * [#10383](https://github.com/leanprover/lean4/pull/10383)包括发布过程的一些改进,使发布过程
 更新`stable`事务组,使之更加稳健,并将`cslib`纳入`cslib`

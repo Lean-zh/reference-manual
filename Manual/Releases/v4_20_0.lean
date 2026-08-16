@@ -23,17 +23,23 @@ file := "v4.20.0"
 ````markdown
 本次发布共合入 346 项变更。除下文列出的 108 项功能新增和 85 项修复外，还有 6 项重构、7 项文档改进、8 项性能提升、4 项测试套件改进以及 126 项其他变更。
 
-## 亮点
+````
+# 亮点
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___20___0-_LPAR_2025-06-02_RPAR_--Highlights"
 %%%
 
+````markdown
+
 Lean v4.20.0 带来了多项新特性、缺陷修复、Lake 改进，以及为模块系统奠定的基础工作。
 
-### 语言特性
+````
+## 语言特性
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___20___0-_LPAR_2025-06-02_RPAR_--Highlights--Language-Features"
 %%%
+
+````markdown
 
 * [#6432](https://github.com/leanprover/lean4/pull/6432) 实现了 `extract_lets` 和 `lift_lets` 两个策略，
   用于操作 `let`/`let_fun` 表达式。`extract_lets` 策略
@@ -154,10 +160,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___20___0-_LPAR_2025-0
   单调性。对于非互递归谓词，会自动生成适当的
   （余）归纳证明原则（由 Park 归纳给出）。
 
-### 库亮点
+````
+## 库亮点
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___20___0-_LPAR_2025-06-02_RPAR_--Highlights--Library-Highlights"
 %%%
+
+````markdown
 
 [#8004](https://github.com/leanprover/lean4/pull/8004) 增加了外延哈希映射与哈希集合，
   名称为 `Std.ExtDHashMap`、`Std.ExtHashMap` 和 `Std.ExtHashSet`。外延
@@ -175,18 +184,24 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___20___0-_LPAR_2025-0
 - `Array`、`List` 中 `Perm` API 的更新，并新增了对 `Vector` 的支持，
 - `Array`/`List`/`Vector` 的更多引理。
 
-### Lake
+````
+## Lake
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___20___0-_LPAR_2025-06-02_RPAR_--Highlights--Lake"
 %%%
 
+````markdown
+
 * [#7909](https://github.com/leanprover/lean4/pull/7909) 为 Lake 增加了根据模块源文件路径
   构建模块的支持。命令行和服务器都会用到这一能力。
 
-### 破坏性变更
+````
+## 破坏性变更
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___20___0-_LPAR_2025-06-02_RPAR_--Highlights--Breaking-Changes"
 %%%
+
+````markdown
 
 * [#7474](https://github.com/leanprover/lean4/pull/7474) 更新了 `rw?`、`show_term` 及其他提供策略建议的策略，
   使其在必要时建议使用 `expose_names`，并像 `exact?` 那样在给出建议前先验证策略；
@@ -253,10 +268,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___20___0-_LPAR_2025-0
   应单独提供这一选项（例如通过 `s!"-L{(←getLeanLibDir).toString}"`）。
   可参见 FFI 示例了解具体做法。
 
-## 语言
+````
+# 语言
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___20___0-_LPAR_2025-06-02_RPAR_--Language"
 %%%
+
+````markdown
 
 * [#6325](https://github.com/leanprover/lean4/pull/6325) 确保环境可以被重复加载，
   且不会执行任意代码。
@@ -669,10 +687,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___20___0-_LPAR_2025-0
   实例被意外内联的问题；这个问题会导致大型结构的 `deriving`
   子句出现指数级编译时间。
 
-## 库
+````
+# 库
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___20___0-_LPAR_2025-06-02_RPAR_--Library"
 %%%
+
+````markdown
 
 * [#6081](https://github.com/leanprover/lean4/pull/6081) 为 `IO.Process.SpawnArgs` 增加了
   `inheritEnv` 字段。若其为 `false`，新建进程不会继承父进程环境。
@@ -901,10 +922,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___20___0-_LPAR_2025-0
 * [#8184](https://github.com/leanprover/lean4/pull/8184) 为所有 map 变体增加了
   `insertMany_append` 引理。
 
-## 编译器
+````
+# 编译器
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___20___0-_LPAR_2025-06-02_RPAR_--Compiler"
 %%%
+
+````markdown
 
 * [#6063](https://github.com/leanprover/lean4/pull/6063) 将 Lean 使用并随附发布的
   LLVM 与 clang 版本更新到了 19.1.2。
@@ -990,10 +1014,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___20___0-_LPAR_2025-0
 * [#8236](https://github.com/leanprover/lean4/pull/8236) 修复了 `extern_lib` 与
   `precompileModules` 组合使用时会导致 “symbol not found” 错误的问题。
 
-## 美观打印
+````
+# 美观打印
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___20___0-_LPAR_2025-06-02_RPAR_--Pretty-Printing"
 %%%
+
+````markdown
 
 * [#7805](https://github.com/leanprover/lean4/pull/7805) 修改了原始自然数字面量的美观打印；
   现在 `pp.explicit` 和 `pp.natLit` 都会启用 `nat_lit` 前缀。
@@ -1024,10 +1051,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___20___0-_LPAR_2025-0
   清除了局部实例的上下文中完成的。之所以会清除它们，是因为在名称净化步骤中
   局部上下文会被更新；但由于这一步只影响用户名，因此保留局部实例其实是合法的。
 
-## 文档
+````
+# 文档
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___20___0-_LPAR_2025-06-02_RPAR_--Documentation"
 %%%
+
+````markdown
 
 * [#7947](https://github.com/leanprover/lean4/pull/7947) 为
   `Lean.mkFreshId`、`Lean.Core.mkFreshUserName`、
@@ -1037,10 +1067,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___20___0-_LPAR_2025-0
 * [#8018](https://github.com/leanprover/lean4/pull/8018) 按照 #8014 之后的新现实，
   调整了 RArray 的文档字符串。
 
-## 服务器
+````
+# 服务器
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___20___0-_LPAR_2025-06-02_RPAR_--Server"
 %%%
+
+````markdown
 
 * [#7610](https://github.com/leanprover/lean4/pull/7610) 调整了 `TryThis` widget，
   使其不仅能作为面板 widget 工作，也能在 widget 消息中工作。
@@ -1057,10 +1090,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___20___0-_LPAR_2025-0
 * [#8242](https://github.com/leanprover/lean4/pull/8242) 修复了 `'goals accomplished'`
   诊断。它们在 #7902 中被意外破坏了。
 
-## Lake
+````
+# Lake
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___20___0-_LPAR_2025-06-02_RPAR_--Lake"
 %%%
+
+````markdown
 
 * [#7796](https://github.com/leanprover/lean4/pull/7796) 在 Lake 增强后的环境
   （例如 `lake env`）中，将 Lean 的共享库路径放到了工作区路径之前。
@@ -1114,10 +1150,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___20___0-_LPAR_2025-0
   与 `needs` 的文档。还加入了关于如何在 Lake 命令行、Lean 配置文件
   和 TOML 配置文件中指定目标的信息。
 
-## 其他
+````
+# 其他
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___20___0-_LPAR_2025-06-02_RPAR_--Other"
 %%%
+
+````markdown
 
 * [#7785](https://github.com/leanprover/lean4/pull/7785) 进一步自动化了发布流程，
   包括处理打标签、自动创建新的 `bump/v4.X.0` 分支，以及修复若干缺陷。
