@@ -19,7 +19,7 @@ file := "v4.23.0"
 %%%
 
 ````markdown
-本次发布共合入 610 项改动。除下文列出的 95 项功能新增和 139 项修复外，还有 61 项重构、12 项文档改进、71 项性能改进，以及 232 项其他改动。
+本次发布共合入 610 项变更。除下文列出的 95 项功能新增和 139 项修复外，还有 61 项重构、12 项文档改进、71 项性能改进，以及 232 项其他改动。
 
 ````
 # 亮点
@@ -35,18 +35,18 @@ Lean v4.23.0 带来了显著的性能改进、更好的错误消息，以及 `gr
 
 - 改进的 “Go to Definition” 导航（[#9040](https://github.com/leanprover/lean4/pull/9040)）
 
-  - 在类型类投影上使用 “Go to Definition” 时，现在会提取参与其中的具体实例，并将它们也作为可跳转的位置提供。例如，在 `toString 0` 的 `toString` 上使用该功能，会返回 `ToString.toString` 和 `ToString Nat`。
-  - 在会生成带有类型类投影语法的宏上使用 “Go to Definition” 时，现在也会提取参与其中的具体实例并提供跳转位置。例如，在 `1 + 1` 的 `+` 上使用该功能，会返回 `HAdd.hAdd`、`HAdd α α α` 和 `Add Nat`。
-  - “Go to Declaration” 现在除了给出 elaborator 和 parser 外，也会提供 “Go to Definition” 的全部结果。例如，在 `1 + 1` 的 `+` 上使用它，会返回 `HAdd.hAdd`、`HAdd α α α`、`Add Nat`、`` macro_rules | `($x + $y) => ... `` 以及 `infixl:65 " + " => HAdd.hAdd`。
-  - 对于类型中包含多个常量的值，“Go to Type Definition” 现在会为每个常量提供 “Go to Definition” 结果。例如，对 `x : Array Nat` 中的 `x` 使用它，会返回 `Array` 和 `Nat`。
+  - 对类型类投影使用 “Go to Definition” 时，现在会提取参与其中的具体实例，并将它们作为可跳转的位置提供。例如，对 `toString 0` 中的 `toString` 使用该功能，会返回 `ToString.toString` 和 `ToString Nat`。
+  - 对会生成带有类型类投影语法之宏使用 “Go to Definition” 时，现在也会提取参与其中的具体实例，并将它们作为可跳转的位置提供。例如，对 `1 + 1` 中的 `+` 使用该功能，会返回 `HAdd.hAdd`、`HAdd α α α` 和 `Add Nat`。
+  - “Go to Declaration” 现在除了给出参与其中的精译器和解析器外，也会提供 “Go to Definition” 的全部结果。例如，对 `1 + 1` 中的 `+` 使用它，会返回 `HAdd.hAdd`、`HAdd α α α`、`Add Nat`、`` macro_rules | `($x + $y) => ... `` 以及 `infixl:65 " + " => HAdd.hAdd`。
+  - 对类型中包含多个常量的值使用 “Go to Type Definition” 时，现在会为每个常量提供 “Go to Definition” 的结果。例如，对 `x : Array Nat` 中的 `x` 使用它，会返回 `Array` 和 `Nat`。
 
 - 面向错误的交互式代码动作提示：
 
-  - 对于“无效命名参数”错误,建议有效的参数名称([#9315](https://github.com/leanprover/lean4/pull/9315))
+  - 对于 “invalid named argument” 错误，建议合法的参数名（[#9315](https://github.com/leanprover/lean4/pull/9315)）
 
-  - 对于“无效案例名称”错误,建议有效的案例名称([#9316](https://github.com/leanprover/lean4/pull/9316))
+  - 对于 “invalid case name” 错误，建议合法的分支名（[#9316](https://github.com/leanprover/lean4/pull/9316)）
 
-  - 在结构实例中的“丢失字段”错误,建议插入所有缺失字段([#9317](https://github.com/leanprover/lean4/pull/9317))
+  - 对于结构实例中的 “fields missing” 错误，建议插入全部缺失字段（[#9317](https://github.com/leanprover/lean4/pull/9317)）
 
 你可以在 [Lean playground](https://live.lean-lang.org/#codez=PQWghAUAxABAEgSwHYBcDOMBmB7ATjZANwEMAbBAExiWIFsBTK43AcwFcHUNkYAHYlCnq4kaCCGAQIyCmwDGKBIXowAKjADuAC2H0IMGAB8YtANYBGGAAoAHjACeMAF4wAXDABC2bKQCUU+hs6XlIVKxQ3NV83AF59EwE5LRgIjQQULXjjADozSytHVxiU3DZ6aKsNWJKyipcirDI0cpgYgD5rfylQSFhELiw8GDliZuo6ejEJAKDaELCAI0ivH2j3ADkBaoX7eJHmjAW90ZUkbCRAhDQhVFa2+IM0UwRebvBoeGR0QfxaK7RkCwYNdSgo2LgVMhrsQkHIVJgEPRSBQppIICD5ChwSoAMqaHQQ+IIpEUSwbARExHIgBMkQAavQFENNhFicjzDNgqFIniivEAN4AXwgQA) 中尝试以上所有功能。
 
@@ -58,39 +58,19 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___23___0-_LPAR_2025-0
 
 ````markdown
 
-- [#9800](https://github.com/leanprover/lean4/pull/9800) 改进三角洲衍生处理器,使其有能力
-与装有粘合器以及能够回溯
-展开定义。 ** ** 退出变化**:
-例名使用 `instance` 命令的名称生成器,
-将新实例添加到当前命名空间中。
+- [#9800](https://github.com/leanprover/lean4/pull/9800) 改进了 delta 派生处理器，使其能够处理带绑定器的定义，也能够递归地展开定义。**破坏性变更：** 派生实例的名称会使用 `instance` 命令的名称生成器，而新实例会被加入当前命名空间。
 
-- [#9040](https://github.com/leanprover/lean4/pull/9040) 改进了“走向定义” UX。
-**破坏性变更**：`InfoTree.hoverableInfoAt?` 已被泛化为 `InfoTree.hoverableInfoAtM?`，现在它接受一个通用的 `filter` 参数，而不再像以前那样携带若干布尔标志。
+- [#9040](https://github.com/leanprover/lean4/pull/9040) 改进了 “Go to Definition” 的用户体验。**破坏性变更：** `InfoTree.hoverableInfoAt?` 已被泛化为 `InfoTree.hoverableInfoAtM?`；它现在接收一个通用的 `filter` 参数，而不再像以前那样携带若干布尔标志。
 
-- [#9594](https://github.com/leanprover/lean4/pull/9594) 优化 `Lean.Name.toString` ,给10%的指令
-受益。
+- [#9594](https://github.com/leanprover/lean4/pull/9594) 优化了 `Lean.Name.toString`，带来约 10% 的指令数收益。
 
-关键的是,这是作为旧`Lean.Name.toString`的**突破性变化**。
-用于支持标识符识别方法的方法。此方法
-现作为`Lean.Name.toStringWithToken`现作为`Lean.Name.toStringWithToken`提供,以便
-(高常见) `toString` 设置
-3⁄4 ̄ ̧漯B
+  关键的是，这是一项**破坏性变更**：旧版 `Lean.Name.toString` 以前还承担了标识 token 的功能。这个功能现在改由 `Lean.Name.toStringWithToken` 提供，从而可以专门优化极其常见的 `toString` 路径；在该路径上，这个函数只需返回 `false`。
 
-- [#9729](https://github.com/leanprover/lean4/pull/9729) 引入一种教条方式,向一种类型下订单
-结构**** 空白变化:**
+- [#9729](https://github.com/leanprover/lean4/pull/9729) 引入了一种为类型赋予序结构的规范方式。**破坏性变更：**
 
-  - `lt_of_le_of_lt`/`le_trans`
-`Vector`、`List`、`List`和`Array`已简化。
-`IsLinearOrder`例。 新的要求在逻辑上等同
-对旧的,但本例不是自动的,
-从小类中推导出。
-  - 替换类型`Std.Total (¬ · < · : α → α → Prop)`的假设
-`Std.Asymm (· < · : α → α → Prop)`。
-应加以限制,因为现在出现了一种产生
-后一种情况。
-  - 在 `Init.Data.List.MinMax` 中,多个定理签名被修改,
-反对称、整数、`min_ex_or`
-等,加上相应的实例参数。
+  - `Vector`、`List` 与 `Array` 上 `lt_of_le_of_lt`/`le_trans` 这些引理的前提被简化了：它们现在要求一个 `IsLinearOrder` 实例。新前提在逻辑上与旧前提等价，但 `IsLinearOrder` 实例不会从更小的类型类自动推导出来。
+  - 类型为 `Std.Total (¬ · < · : α → α → Prop)` 的假设会被等价的类型类 `Std.Asymm (· < · : α → α → Prop)` 取代。由于现在已经有实例能从前者导出后者，所以破坏面应当有限。
+  - 在 `Init.Data.List.MinMax` 中，多个定理签名被修改：显式的反对称性、总性、`min_ex_or` 等参数都被替换成了对应的实例参数。
 
 ````
 # 语言
@@ -100,35 +80,21 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___23___0-_LPAR_2025-0
 
 ````markdown
 
-* [#6732](https://github.com/leanprover/lean4/pull/6732) 增加支持转换模式中的`clear` 战术。
+* [#6732](https://github.com/leanprover/lean4/pull/6732) 为转换模式加入了对 `clear` 策略的支持。
 
-* [#8666](https://github.com/leanprover/lean4/pull/8666)调整试验模块系统以不导入
-非`meta` 声明。它这样做的方式是以不透明的方式替换这类IR
-关于出口和调整新编译器的外国出口和调整申报
-因此。
+* [#8666](https://github.com/leanprover/lean4/pull/8666) 调整了实验性模块系统，使其不再导入非 `meta` 声明的 IR。它通过在导出时用不透明的外部声明替换这类 IR，并相应调整新编译器来实现这一点。
 
-* [#8842](https://github.com/leanprover/lean4/pull/8842) 修补没有收集正则的错误
-由其它正数引用。 此错误的一个结果就是
-从`native_decide`所证明的定理中收集的轴轴值不得
-包括`Lean.trustCompiler`。
+* [#8842](https://github.com/leanprover/lean4/pull/8842) 修复了 `collectAxioms` 不会收集“被其他公理引用之公理”的错误。该错误的一个后果是：从用 `native_decide` 证明的定理中收集到的公理，可能不包含 `Lean.trustCompiler`。
 
-* [#9015](https://github.com/leanprover/lean4/pull/9015) 使`isDefEq` 探测到更多卡卡定义等同
-具体来说,如果`t =?= defn ?m`和`defn`
-依据其论点,这种平等被卡在`?m`。
-这一变化,我们不会看到这种依赖性,而会简单地返回`false`。
+* [#9015](https://github.com/leanprover/lean4/pull/9015) 让 `isDefEq` 能检测出更多因“智能展开”而卡住的定义等同性。具体来说，如果 `t =?= defn ?m` 且 `defn` 会对其参数做匹配，那么这个等式就会卡在 `?m` 上；在这项改动之前，我们看不到这种依赖，只会直接返回 `false`。
 
-* [#9084](https://github.com/leanprover/lean4/pull/9084) 增加`binrel%` `!=`和`≠`中定义的`!=`和`≠`
-`Init.Core` 。 这使精灵能够对两者都插入强制
-而不是承诺左侧的类型
-手边
+* [#9084](https://github.com/leanprover/lean4/pull/9084) 为 `Init.Core` 中定义的 `!=` 与 `≠` 记号添加了 `binrel%` 宏。这使精译器能够在关系两侧都插入强制转换，而不是直接固定左手边的类型。
 
-* [#9090](https://github.com/leanprover/lean4/pull/9090)在`whnfCore` 中未减少错误的地方修正错误
-反应器/辅助反射器的应用。
+* [#9090](https://github.com/leanprover/lean4/pull/9090) 修复了 `whnfCore` 中一个错误：它原本可能无法约化递归器/辅助定义的应用。
 
-* [#9097](https://github.com/leanprover/lean4/pull/9097)确保`mspec`使用已配置的透明度设置
-使`mvcgen`在调用`mspec`时使用默认透明度。
+* [#9097](https://github.com/leanprover/lean4/pull/9097) 确保 `mspec` 使用已配置的透明度设置，并让 `mvcgen` 在调用 `mspec` 时使用默认透明度。
 
-* [#9099](https://github.com/leanprover/lean4/pull/9099) 改进了“预期类型不匹配”错误信息：当类型的类型在定义上相等时省略它们；若不相等，则分成单独的行显示。
+* [#9099](https://github.com/leanprover/lean4/pull/9099) 改进了 “expected type mismatch” 错误消息：当两边“类型的类型”在定义上相等时就省略它们；若不相等，则分成单独的行显示。
 
 * [#9103](https://github.com/leanprover/lean4/pull/9103) 防止 `panic!` 中包含空字节时消息被截断。
 
@@ -136,22 +102,17 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___23___0-_LPAR_2025-0
 
 * [#9113](https://github.com/leanprover/lean4/pull/9113) 改进了 `grind` 的文档字符串，并尝试让它对新用户更有用。
 
-* [#9130](https://github.com/leanprover/lean4/pull/9130) 修正 `Grind.offset` 装置的意外发生
-地面模式。见新测试
+* [#9130](https://github.com/leanprover/lean4/pull/9130) 修复了 `Grind.offset` 装置意外出现在基模式中的问题。详见新增测试。
 
-* [#9131](https://github.com/leanprover/lean4/pull/9131) 将`usedLetOnly` 参数添加到`LocalContext.mkLambda` 和
-`LocalContext.mkForall`,与`MetavarContext`版本平行。
+* [#9131](https://github.com/leanprover/lean4/pull/9131) 为 `LocalContext.mkLambda` 与 `LocalContext.mkForall` 添加了 `usedLetOnly` 参数，以与 `MetavarContext` 版本保持一致。
 
-* [#9133](https://github.com/leanprover/lean4/pull/9133)在`grind`正常化者中增加对`a^(m+n)`的支持。
+* [#9133](https://github.com/leanprover/lean4/pull/9133) 在 `grind` 归一化器中加入了对 `a^(m+n)` 的支持。
 
-* [#9143](https://github.com/leanprover/lean4/pull/9143)清除了模块系统中一个相当丑陋的黑客,暴露了
-其类型提及`WellFounded`的定理体。
+* [#9143](https://github.com/leanprover/lean4/pull/9143) 清除了模块系统中的一个相当丑陋的权宜实现，从而暴露出那些类型提到 `WellFounded` 的定理之定义体。
 
-* [#9146](https://github.com/leanprover/lean4/pull/9146) 在 `grind ring` 中添加“安全”多边操作。使用
-通常的组合:`withIncRecDepth`和`checkSystem`。
+* [#9146](https://github.com/leanprover/lean4/pull/9146) 在 `grind ring` 中加入了“安全”的多项式操作。它们使用通常的组合器：`withIncRecDepth` 与 `checkSystem`。
 
-* [#9149](https://github.com/leanprover/lean4/pull/9149) 将`a^(m+n)` 研磨正常化器概括为任何半环。
-示例:
+* [#9149](https://github.com/leanprover/lean4/pull/9149) 将 `a^(m+n)` 的 `grind` 归一化器推广到任意半环。示例：
   ```
   variable [Field R]
 
@@ -163,30 +124,19 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___23___0-_LPAR_2025-0
   ```
 import Mathlib
 
-* [#9172](https://github.com/leanprover/lean4/pull/9172) 在 `matchEqBwdPat` 处修正错误。 类型可能包含模式
-变量。
+* [#9172](https://github.com/leanprover/lean4/pull/9172) 修复了 `matchEqBwdPat` 中的一个错误：类型里可能包含模式变量。
 
-* [#9173](https://github.com/leanprover/lean4/pull/9173) 修正试验模块系统在下列条件下的不兼容性:
-试图将有充分根据的复发与公开披露的定义结合起来。
+* [#9173](https://github.com/leanprover/lean4/pull/9173) 修复了实验性模块系统中的一个不兼容问题：当试图把良基递归与公开暴露的定义结合使用时会出错。
 
-* [#9176](https://github.com/leanprover/lean4/pull/9176) 进行`mvcgen` 拆分,不采用规格。
-这样做可以修复Rish报告的一个错误。
+* [#9176](https://github.com/leanprover/lean4/pull/9176) 让 `mvcgen` 对 `if` 做拆分，而不是应用规格。这样修复了 Rish 报告的一个错误。
 
-* [#9182](https://github.com/leanprover/lean4/pull/9182) 试图改进`grind` 电子匹配模式的推论。
-尽管如此,我们仍然需要更好的工具来说明和保持
-库的注解。
+* [#9182](https://github.com/leanprover/lean4/pull/9182) 尝试改进 `grind` 的 E-匹配模式推断。尽管如此，我们仍然需要更好的工具来为库中的 `grind` 标注做注释和维护。
 
-* [#9184](https://github.com/leanprover/lean4/pull/9184)用新的总计符号来修正`⇓`语法的偷窃
-通过将其降为非内建语法并将其范围扩大到
-`Std.Do`。
+* [#9184](https://github.com/leanprover/lean4/pull/9184) 修复了新的总后置条件记号“抢占” `⇓` 语法的问题：把它降格为非内建语法，并把作用域限制在 `Std.Do` 中。
 
-* [#9191](https://github.com/leanprover/lean4/pull/9191)如果
-否则,他们将隐匿循环电话。
+* [#9191](https://github.com/leanprover/lean4/pull/9191) 如果抽象后的证明原本会遮蔽递归调用，就让方程编译器重新展开它们。这修复了 #8939。
 
-这个修复了8939号
-
-* [#9193](https://github.com/leanprover/lean4/pull/9193) 解决按问题报告的意外内核预测问题
-#9187
+* [#9193](https://github.com/leanprover/lean4/pull/9193) 修复了 issue #9187 报告的意外内核投影问题。
 
 * [#9194](https://github.com/leanprover/lean4/pull/9194) 让 `Std.Do` 的逻辑与策略在宇宙层面上实现多态化，其代价是失去了一些定义性质；这些定义性质原本来自把基例 `SPred []` 从 `Prop` 切换到 `ULift Prop`。
 
@@ -196,7 +146,7 @@ import Mathlib
 
 * [#9202](https://github.com/leanprover/lean4/pull/9202) 扩展了 `grind` 所使用的 `Eq` simproc。它现在覆盖更多情况，并在要展开的声明列表中新增了 3 个可约声明。
 
-* [#9214](https://github.com/leanprover/lean4/pull/9214) 实现了对局部和 scoped `grind_pattern` 命令的支持。
+* [#9214](https://github.com/leanprover/lean4/pull/9214) 实现了对局部 `grind_pattern` 命令和 scoped `grind_pattern` 命令的支持。
 
 * [#9225](https://github.com/leanprover/lean4/pull/9225) 改进了 `congr` 策略，使它能够处理参数个数少于头函数元数的函数应用。这也修复了 `congr` 在 Mathlib 中面对取值于 `Set` 的函数时无法推进的问题，因为 `Set` 会被展开，从而让这类函数看起来像具有更高元数。
 
@@ -204,77 +154,53 @@ import Mathlib
 
 * [#9241](https://github.com/leanprover/lean4/pull/9241) 确保用于实现 `ToInt` 适配器（在 `grind cutsat` 中）的类型类实例会按需生成。
 
-* [#9244](https://github.com/leanprover/lean4/pull/9244) 改进`grind linarith` 模块中的实例生成。
+* [#9244](https://github.com/leanprover/lean4/pull/9244) 改进了 `grind linarith` 模块中的实例生成。
 
-* [#9251](https://github.com/leanprover/lean4/pull/9251) 将`Std.Do.PostCond.total` 和
-`Std.Do.Triple` 进入宏,继9015年的DefEq改进之后。
+* [#9251](https://github.com/leanprover/lean4/pull/9251) 在 #9015 的 DefEq 改进之后，把 `Std.Do.PostCond.total` 与 `Std.Do.Triple` 的内建精译器降格为宏。
 
-* [#9267](https://github.com/leanprover/lean4/pull/9267) 优化`grind` 中`Decidable` 实例的`Decidable`支助。
-`Decidable`是一个子子集,罐体不再浪费时间
-使这种情况正常化,在
-基准,例如`grind_bitvec2.lean`。
-一致性-封闭模块模块现在处理 `Decidable` 实例,并可以
-解答示例,例如:
+* [#9267](https://github.com/leanprover/lean4/pull/9267) 优化了 `grind` 对 `Decidable` 实例的支持。由于 `Decidable` 是子单例，规范化器不再浪费时间去归一化这些实例；在 `grind_bitvec2.lean` 之类基准中，这曾是一个显著的性能瓶颈。另外，一致闭包模块现在也会处理 `Decidable` 实例，并能解出如下例子：
   ```lean
   example (p q : Prop) (h₁ : Decidable p) (h₂ : Decidable (p ∧ q)) : (p ↔ q) → h₁ ≍ h₂ := by
     grind
   ```
 
-* [#9271](https://github.com/leanprover/lean4/pull/9271) 改进了 `grind` 所使用公式归一化器的性能。
+* [#9271](https://github.com/leanprover/lean4/pull/9271) 改进了 `grind` 所用公式归一化器的性能。
 
 * [#9287](https://github.com/leanprover/lean4/pull/9287) 重写了 “application type mismatch” 错误消息，使参数及其类型出现在应用表达式之前。
 
 * [#9293](https://github.com/leanprover/lean4/pull/9293) 用一个高效得多的版本替换了 `grind` 中使用的 `reduceCtorEq` simproc。`simp` 中默认使用的那个版本在这里纯属额外开销，因为 `grind` 的归一化器已经会做算术归一化。后续我们会在单独的 PR 中把这些性能改进推回默认的 `reduceCtorEq`。
 
-* [#9305](https://github.com/leanprover/lean4/pull/9305) 在 `simp` 中使用 `mkCongrSimpForConst?` API，以减少重复生成同一 congruence 引理的次数。在这个 PR 之前，
-`grind`将花费`1.5`在
-`grind_bitvec2.lean`基准的正常化。
-`0.6`s]. 应该在我们合并后作出更大的改变
-#9300。
+* [#9305](https://github.com/leanprover/lean4/pull/9305) 在 `simp` 中使用 `mkCongrSimpForConst?` API，以减少重复生成同一个 congruence 引理的次数。在这个 PR 之前，`grind` 在 `grind_bitvec2.lean` 基准的归一化阶段会花费 `1.5`s 来生成 congruence 定理；现在降到了 `0.6`s。等我们合并 #9300 后，这一改动的效果还会更明显。
 
 * [#9315](https://github.com/leanprover/lean4/pull/9315) 改进了函数应用与匹配模式中的 “invalid named argument” 错误消息：它会给出包含合法参数名的可点击提示。同时，它还修复了一个问题：这条错误消息此前会错误地把合法的匹配模式参数名标记为错误。
 
-* [#9316](https://github.com/leanprover/lean4/pull/9316) 添加可点击的代码动作提示到“ 无效的大小写名称 ”
-错误消息 。
+* [#9316](https://github.com/leanprover/lean4/pull/9316) 为 “invalid case name” 错误消息添加了可点击的代码动作提示。
 
-* [#9317](https://github.com/leanprover/lean4/pull/9317) 在“丢失字段”中添加结构错误信息
-实例表示一个代码动作提示,该提示插入所有缺失字段。
+* [#9317](https://github.com/leanprover/lean4/pull/9317) 为结构实例记号中的 “fields missing” 错误消息添加了代码动作提示，该提示会插入全部缺失字段。
 
-* [#9324](https://github.com/leanprover/lean4/pull/9324) 改进了检查两个任期是否
-`grind`中的不平等
+* [#9324](https://github.com/leanprover/lean4/pull/9324) 改进了 `grind` 中用于检查两个项是否不相等的函数。
 
-* [#9325](https://github.com/leanprover/lean4/pull/9325) 优化`grind` 中使用的布尔不平等宣传器。
+* [#9325](https://github.com/leanprover/lean4/pull/9325) 优化了 `grind` 中使用的布尔不等性传播器。
 
 * [#9326](https://github.com/leanprover/lean4/pull/9326) 优化`grind` 所使用的`propagateEqUp`。
 
 * [#9340](https://github.com/leanprover/lean4/pull/9340) 修改了 `grind cutsat` 中使用的从 `Nat` 到 `Int` 的编码。它更简单、更可扩展，也与通用的 `ToInt` 相似。在更新 stage0 后，我们将能删除遗留部分。
 
-* [#9351](https://github.com/leanprover/lean4/pull/9351) 优化`grind` 预处理步骤,在下列时间跳过步骤以优化`grind`预处理步骤:
-该词已在散列状态表格中存在。
+* [#9351](https://github.com/leanprover/lean4/pull/9351) 优化了 `grind` 的预处理步骤：当某个项已经出现在 hash-consing 表中时，就会跳过相应步骤。
 
 * [#9358](https://github.com/leanprover/lean4/pull/9358) 增加了对生成格论（协）归纳证明原理的支持，适用于通过 `mutual` 块并使用 `inductive_fixpoint`/`coinductive_fixpoint` 构造定义的谓词。
 
-* [#9367](https://github.com/leanprover/lean4/pull/9367)对`grind` 预处理器实施微小的优化。
+* [#9367](https://github.com/leanprover/lean4/pull/9367) 对 `grind` 预处理器做了一项小优化。
 
-* [#9369](https://github.com/leanprover/lean4/pull/9369)通过跳过不必要的步骤优化`grind`预处理器
-在可能的情况下。
+* [#9369](https://github.com/leanprover/lean4/pull/9369) 通过在可能时跳过不必要步骤，优化了 `grind` 预处理器。
 
-* [#9371](https://github.com/leanprover/lean4/pull/9371) 确定一个问题,该问题造成某些`deriving` 处理人当
-申报类型的名称与申报类型的名称与申报类型的名称相符。
-打开命名空间 。
+* [#9371](https://github.com/leanprover/lean4/pull/9371) 修复了一个问题：当正在声明的类型名称与某个打开命名空间中的声明同名时，会导致某些 `deriving` 处理器失败。
 
-* [#9372](https://github.com/leanprover/lean4/pull/9372) 确定产生等式时产生的性能问题
-使用含有多个
-字面文字。 这个问题被 # 9322 曝光, 是由一个组合产生的 。
-因素:
+* [#9372](https://github.com/leanprover/lean4/pull/9372) 修复了一个性能问题：当为使用了包含多个字面量之 match 表达式的函数生成方程引理时，会出现该问题。这个问题由 #9322 暴露出来，其成因包括：
 
-1. 将文学价值编集成一个依附当时值的链条
-表达式。
-2. 依赖如果达到后电子值的表达式费用要高得多
-简化比常规简化更简单。
-3. `split` 战术选择目标,将其分割,然后援引
-此外,`simp` 贯穿了整个`simp`
-目标是自下而上,在达到目标后不会停止。
+1. 字面量会被编译成一串依赖型 if-then-else 表达式。
+2. 依赖型 if-then-else 表达式的化简代价远高于普通版本。
+3. `split` 策略会先选择目标并把它拆开，然后对生成的子目标调用 `simp`；而且 `simp` 会自底向上遍历整个目标，到达目标位置后也不会停止。
 
 * [#9385](https://github.com/leanprover/lean4/pull/9385) 替换了 `grind` 中 `simpEq` simproc 使用的 `isDefEq` 测试。它的开销太大了。
 
@@ -284,32 +210,20 @@ import Mathlib
 
 * [#9395](https://github.com/leanprover/lean4/pull/9395) 修复了 `mkCongrSimpCore?` 中的一个错误，也就是 @joehendrix 在 #9388 中报告的问题。实际修复只有提交 `afc4ba617fe2ca5828e0e252558d893d7791d56b`；该 PR 的其余部分只是清理文件。
 
-* [#9398](https://github.com/leanprover/lean4/pull/9398) 避免昂贵的`inferType`调用`simpArith`。
-清理一些代码 并清除反模式。
+* [#9398](https://github.com/leanprover/lean4/pull/9398) 避免了 `simpArith` 中代价高昂的 `inferType` 调用。它还清理了一些代码并移除了反模式。
 
-* [#9408](https://github.com/leanprover/lean4/pull/9408) 实施简单优化:从属影响无
-在 `grind` 中被长期作为电子匹配定理处理。 in
-`grind_bitvec2.lean`,这一变化节省了大约3秒左右,尽可能多的
-产生自足影响。例如:
+* [#9408](https://github.com/leanprover/lean4/pull/9408) 实现了一个简单优化：依赖蕴含不再被长期当作 `grind` 中的 E-匹配定理。在 `grind_bitvec2.lean` 中，这项改动节省了大约 3 秒，因为会生成大量依赖蕴含。示例：
   ```lean
    ∀ (h : i + 1 ≤ w), x.abs.getLsbD i = x.abs[i]
    ```
 
-* [#9414](https://github.com/leanprover/lean4/pull/9414) 增加`isArrowProposition` 返回的个案数量
-`.undef`之外的结果。本函数用于执行`.undef`
-`isProof` 前提`isProof`,在《公约》
-`simp`。
+* [#9414](https://github.com/leanprover/lean4/pull/9414) 增加了 `isArrowProposition` 返回 `.undef` 以外结果的情形数量。这个函数用于实现 `isProof` 谓词，而 `simp` 会对访问到的每个子项调用它。
 
-* [#9421](https://github.com/leanprover/lean4/pull/9421))修正导致错误解释错误的错误解释错误到“偷”
-Infoview的容器在Lean网络编辑器中。
+* [#9421](https://github.com/leanprover/lean4/pull/9421) 修复了一个错误：它会让错误解释在 Lean 网页编辑器里“偷走” Infoview 的容器。
 
-* [#9423](https://github.com/leanprover/lean4/pull/9423) 更新了“未知”
-粘合器的“ 识别符号错误” 和“ 无法推断类型” 错误
-以及定义。
+* [#9423](https://github.com/leanprover/lean4/pull/9423) 更新了 “unknown identifier” 错误的格式，并为绑定器与定义上的 “failed to infer type” 错误补充了解释。
 
-* [#9424](https://github.com/leanprover/lean4/pull/9424) 改进了`split` 战术产生的错误信息,
-包括建议采用哪些语法修正法和相关战术
-可能会被混淆。
+* [#9424](https://github.com/leanprover/lean4/pull/9424) 改进了 `split` 策略产生的错误消息，包括给出语法修正建议，以及提示可能与之混淆的相关策略。
 
 * [#9443](https://github.com/leanprover/lean4/pull/9443) 让 cdot 函数扩展把 hygiene 信息考虑在内，修复了 “parenthesis capturing” 错误；这类错误会使错误的 cdot 与宏结合时触发 cdot 扩展。例如，给定
   ```lean
@@ -317,56 +231,41 @@ Infoview的容器在Lean网络编辑器中。
   ```
 `baz% ·` 过去会展开为 `1 + fun x => x`，但现在 `($t)` 中的括号不会再捕获 cdot。我们还修复了另一个疏漏：cdot 函数扩展此前忽略了类型标注和元组本应界定扩展边界这一事实；同时，引号预检查器现在也会忽略 `hygieneInfo` 中的标识符。（#9491 向括号与 cdot 语法加入了 hygiene 信息。）
 
-* [#9447](https://github.com/leanprover/lean4/pull/9447) 确保`mvcgen` 不仅试图关闭有状况的次级目标
-和纯粹的利恩目标。
+* [#9447](https://github.com/leanprover/lean4/pull/9447) 确保 `mvcgen` 不仅会尝试通过假设关闭带状态的子目标，也会尝试关闭纯 Lean 目标。
 
-* [#9448](https://github.com/leanprover/lean4/pull/9448))用嵌套感应处理倾斜崩溃(堆积溢出)
-和`SizeOf` 色雷斯的生成,在#9018中报告。
+* [#9448](https://github.com/leanprover/lean4/pull/9448) 处理了 #9018 报告的 Lean 崩溃（栈溢出）问题；该问题出现在嵌套归纳以及生成 `SizeOf` 规格引理时。
 
-* [#9451](https://github.com/leanprover/lean4/pull/9451)在采用`let`/`have`的`mintro`战略中增加支持]
-类似`intro`的定点目标。
-技术规格引入了这种装订装置。
+* [#9451](https://github.com/leanprover/lean4/pull/9451) 为 `mintro` 策略添加了在带状态目标中引入 `let`/`have` 绑定器的支持，行为类似 `intro`。当规格引入这类 `let` 绑定时，这一功能很有用。
 
-* [#9454](https://github.com/leanprover/lean4/pull/9454)引入战术`mleave`,使`SPred` 证明模式
-通过其抽象概念并应用一些轻度的
-简化。这有益于应用自动化,例如`grind`
-之后。
+* [#9454](https://github.com/leanprover/lean4/pull/9454) 引入了策略 `mleave`，它会通过穿过抽象做 eta 展开并施加一些温和的化简来退出 `SPred` 证明模式。这有助于随后应用诸如 `grind` 的自动化。
 
 * [#9464](https://github.com/leanprover/lean4/pull/9464) 让 `PProdN.reduceProjs` 也去查找投影函数。此前，所有可约 redex 都由 `PProdN` 中的函数创建，它们使用原始投影；但使用 `mkAdmProj` 时，投影函数会通过 `admissible_pprod_fst` 定理的类型渗入。因此我们干脆把这两类都约化掉。
 
-* [#9472](https://github.com/leanprover/lean4/pull/9472)将另一个问题固定在`congr_simp`
-多亏约翰·科姆林创造了Mwe
+* [#9472](https://github.com/leanprover/lean4/pull/9472) 修复了 `congr_simp` 定理中的另一个问题，它会影响 Mathlib。非常感谢 Johan Commelin 提供最小复现用例。
 
-* [#9476](https://github.com/leanprover/lean4/pull/9476) 在`grind cutsat` 中修补`Nat`和`Int`之间的桥梁。
+* [#9476](https://github.com/leanprover/lean4/pull/9476) 修复了 `grind cutsat` 中 `Nat` 与 `Int` 之间的桥接。
 
-* [#9479](https://github.com/leanprover/lean4/pull/9479) 改进用于评价的`evalInt?`功能
-从 `ToInt` 类型类中添加的配置参数。另添加
-用于处理`IsCharP`型类的新`evalNat?`函数,以及
-引入配置选项 :
+* [#9479](https://github.com/leanprover/lean4/pull/9479) 改进了 `evalInt?` 函数，它用于求值从 `ToInt` 类型类引入的配置参数。该 PR 还新增了用于处理 `IsCharP` 类型类的 `evalNat?` 函数，并引入了如下配置选项：
   ```
   grind (exp := <num>)
   ```
-此选项控制了在
-以前,`evalInt?`使用`whnf`,可以
-当减少诸如 `2^1024` 等条件时,堆叠空间已用完 。
+  该选项控制表达式求值时考虑的最大指数大小。此前，`evalInt?` 使用 `whnf`，在约化诸如 `2^1024` 这样的项时可能会耗尽栈空间。
 
-* [#9480](https://github.com/leanprover/lean4/pull/9480) 增加了一项功能：`structure` 构造器可以覆盖类型参数推断出的 binder kind。下面这个例子中，`toLp` 上的 `(p)` binder 会让 `p` 成为 `WithLp.toLp` 的显式参数：
+* [#9480](https://github.com/leanprover/lean4/pull/9480) 增加了一项功能：`structure` 构造器可以覆盖类型参数推断出的绑定器类别。下面这个例子中，`toLp` 上的 `(p)` 绑定器会让 `p` 成为 `WithLp.toLp` 的显式参数：
   ```lean
   structure WithLp (p : Nat) (V : Type) where toLp (p) ::
     ofLp : V
   ```
-这反映了 #7742 中为覆盖结构投影 binder kind 而添加的语法。类似地，只有 `structure` 头部中的参数可以更新；尝试更新通过 `variable` 引入的参数的 binder kind 会报错。
+这反映了 #7742 中为覆盖结构投影绑定器类别而添加的语法。类似地，只有 `structure` 头部中的参数可以更新；尝试更新通过 `variable` 引入的参数之绑定器类别会报错。
 
-* [#9481](https://github.com/leanprover/lean4/pull/9481) 修正使用 `grind` 时发生的内核类型不匹配
-含有非标准`OfNat.ofNat`术语的目标。
-#9477,定理中的`0`有:
+* [#9481](https://github.com/leanprover/lean4/pull/9481) 修复了在对含有非标准 `OfNat.ofNat` 项的目标使用 `grind` 时出现的内核类型不匹配。例如，在 issue #9477 中，定理 `range_lower` 里的 `0` 具有如下形式：
   ```lean
   (@OfNat.ofNat
     (Std.PRange.Bound (Std.PRange.RangeShape.lower (Std.PRange.RangeShape.mk Std.PRange.BoundShape.closed Std.PRange.BoundShape.open)) Nat)
     (nat_lit 0)
     (instOfNatNat (nat_lit 0)))
   ```
-而不是比较标准的表格:
+  而不是更标准的形式：
   ```lean
   (@OfNat.ofNat
     Nat
@@ -374,130 +273,77 @@ Infoview的容器在Lean网络编辑器中。
     (instOfNatNat (nat_lit 0)))
   ```
 
-* [#9487](https://github.com/leanprover/lean4/pull/9487) 修正了`grind linarith` 所构建的不正确的证明术语,
-如#9485报告的那样。
+* [#9487](https://github.com/leanprover/lean4/pull/9487) 修复了 `grind linarith` 构造出的一个错误证明项，正如 #9485 所报告的那样。
 
-* [#9491](https://github.com/leanprover/lean4/pull/9491) 将卫生信息添加到派/图/类型
-用于在#9443实施卫生点功能扩展。
+* [#9491](https://github.com/leanprover/lean4/pull/9491) 为括号、元组和类型标注语法加入了卫生信息，用于在 #9443 中实现具卫生性的 cdot 函数扩展。
 
-* [#9496](https://github.com/leanprover/lean4/pull/9496) 改进`set_option` 生成的错误信息
-命令。
+* [#9496](https://github.com/leanprover/lean4/pull/9496) 改进了 `set_option` 命令生成的错误消息。
 
-* [#9500](https://github.com/leanprover/lean4/pull/9500) 在`Lean.Grind.Field` 中添加一个`HPow \a Int \a`字段,并
-足以将它与行动联系起来,以便今后我们
-在 `grind` 中,为避免碰撞,我们还移动
-`HPow \a Nat \a` 中`Semiring`的`HPow \a Nat \a`字段,从扩展条款到`Semiring`
-最后,我们添加一些失败的测试,以测试指数的正常化。
+* [#9500](https://github.com/leanprover/lean4/pull/9500) 在 `Lean.Grind.Field` 中加入了 `HPow \a Int \a` 字段，并添加了足够的公理把它同相关运算联系起来，以便今后在 `grind` 中处理指数。为避免冲突，我们还把 `Semiring` 里的 `HPow \a Nat \a` 从 extends 子句移动成普通字段。最后，该 PR 增加了一些关于指数归一化的失败测试。
 
-* [#9505](https://github.com/leanprover/lean4/pull/9505)删除
-`Lean.Elab.Tactic.Do.VCGen` 进口时`mvcgen`
-现在应该可以导入 Mathlib 并仍然使用
-`mvcgen`。
+* [#9505](https://github.com/leanprover/lean4/pull/9505) 移除了 `Lean.Elab.Tactic.Do.VCGen` 中一些残留的语法定义；导入它们时会把 `mvcgen` 策略“取消定义”。现在应当可以导入 Mathlib 并继续使用 `mvcgen`。
 
-* [#9506](https://github.com/leanprover/lean4/pull/9506)在`mleave` 中加上一些缺失的简化物。
+* [#9506](https://github.com/leanprover/lean4/pull/9506) 为 `mleave` 补上了几个缺失的 simp 引理。
 
-* [#9507](https://github.com/leanprover/lean4/pull/9507) 使`mvcgen` `mintro` 具有拘束力。
+* [#9507](https://github.com/leanprover/lean4/pull/9507) 让 `mvcgen` 能用 `mintro` 引入 `let`/`have` 绑定。
 
-* [#9509](https://github.com/leanprover/lean4/pull/9509) 表面内核诊断,甚至在`example` 中也是如此。
+* [#9509](https://github.com/leanprover/lean4/pull/9509) 即使在 `example` 中，也会显示内核诊断信息。
 
-* [#9512](https://github.com/leanprover/lean4/pull/9512) 使`mframe`、`mspec`和`mvcgen`尊重卫生。
-无法获取的状态假设现在可以用新的策略命名
-`mrename_i` 类似`rename_i`。
+* [#9512](https://github.com/leanprover/lean4/pull/9512) 让 `mframe`、`mspec` 与 `mvcgen` 遵守卫生规则。无法访问的带状态假设现在可以用新的策略 `mrename_i` 命名，其行为类似 `rename_i`。
 
 * [#9516](https://github.com/leanprover/lean4/pull/9516) 确保当模块系统使私有声明变得不可访问时，相关错误消息会注明这一点。
 
 * [#9518](https://github.com/leanprover/lean4/pull/9518) 确保先前那些 “is marked as private” 消息在模块系统下仍然会被触发。
 
-* [#9520](https://github.com/leanprover/lean4/pull/9520)纠正9500年对`Lean.Grind.Field`的修改。
+* [#9520](https://github.com/leanprover/lean4/pull/9520) 纠正了 #9500 对 `Lean.Grind.Field` 的修改。
 
-* [#9522](https://github.com/leanprover/lean4/pull/9522) 使用`withAbstractAtoms` 防止内核意外发生
-键盘检查时, 减少 arith 调制器中的原子。 此 PR
-在 `grind` 中还设置了 `implicitDefEqProofs := false` 归和器
+* [#9522](https://github.com/leanprover/lean4/pull/9522) 使用 `withAbstractAtoms`，以防内核在类型检查时意外约化算术归一化器里的原子。该 PR 还在 `grind` 归一化器中设置了 `implicitDefEqProofs := false`。
 
-* [#9532](https://github.com/leanprover/lean4/pull/9532) 概括`Process.output`和`Process.run`
-`String` 论点可以划入`stdin`。
+* [#9532](https://github.com/leanprover/lean4/pull/9532) 将 `Process.output` 与 `Process.run` 泛化为可接收一个可选的 `String` 参数，并将其管道输入到 `stdin`。
 
-* [#9551](https://github.com/leanprover/lean4/pull/9551) 修正“ 独立消除失败” 的错误位置
-用于 `cases` 策略的错误。
+* [#9551](https://github.com/leanprover/lean4/pull/9551) 修正了 `cases` 策略中 “dependent elimination failed” 错误的位置。
 
-* [#9553](https://github.com/leanprover/lean4/pull/9553) 修正# 7830 中引入的错误, 如果光标在
-说明职位
+* [#9553](https://github.com/leanprover/lean4/pull/9553) 修复了 #7830 引入的一个错误：如果光标位于如下位置
   ```lean
   example (as bs : List Nat) : (as.append bs).length = as.length + bs.length := by
     induction as with
     | nil => -- 光标
     | cons b bs ih =>
   ```
-然后,Infoview将显示“无目标”,而不是目标。
-PPR 还修正一个单独的错误, 将光标放置在下一行
-在`induction`/`cases`战术之后
+那么 Infoview 过去会显示 “no goals”，而不是 `nil` 目标。该 PR 还修复了另一个独立错误：当把光标放在 `induction`/`cases` 策略后的下一行时
   ```lean
     induction as with
     | nil => sorry
     | cons b bs ih => sorry
     I -- < 光标
   ```
-将报告目标清单中的最初目标。
-多次改进错误回收(包括`allGoals`型逻辑)
-以及出现错误时可见的战术状态。
-添加`Tactic.throwOrLogErrorAt`/`Tactic.throwOrLogError`,用于投掷或
-取决于恢复状态, 记录错误 。
+它会在目标列表中错误地报告原始目标。此外，该 PR 还对错误恢复做了多项改进（包括针对前置策略的 `allGoals` 类逻辑），并改进了出错时可见的策略状态。还新增了 `Tactic.throwOrLogErrorAt`/`Tactic.throwOrLogError`，可根据恢复状态选择抛出或记录错误。
 
-* [#9571](https://github.com/leanprover/lean4/pull/9571) 恢复`induction` /`cases`中`Nat`的`induction` /`cases`中`Nat` 的特征,
-`zero`和`succ`标签是可悬浮的。这是在#1660中添加的,但
-在#3629和#3655中,当添加自定义除尘器时断裂。 in
-一般,如果感应型号`T` 的自定义除尘器`T.elim`具有
-替代 `foo`,且`T.foo`是一个常数,然后是`foo` 标签
-将具有`T.foo` 盘旋信息。
+* [#9571](https://github.com/leanprover/lean4/pull/9571) 恢复了这样一个特性：在 `Nat` 的 `induction`/`cases` 中，`zero` 和 `succ` 标签可以悬停查看。这个功能最初在 #1660 中加入，但在 #3629 和 #3655 为归纳类型添加自定义消去器时被破坏。更一般地说，如果归纳类型 `T` 的自定义消去器 `T.elim` 有某个替代项 `foo`，且 `T.foo` 是常量，那么 `foo` 标签现在也会带有 `T.foo` 的悬停信息。
 
-* [#9574](https://github.com/leanprover/lean4/pull/9574)增加备选案文`abstractProof`,以控制是否`grind`
-自动为生成的证明创建辅助性定理, 或
-不,没有。
+* [#9574](https://github.com/leanprover/lean4/pull/9574) 添加了选项 `abstractProof`，用于控制 `grind` 是否自动为生成的证明创建辅助定理。
 
-* [#9575](https://github.com/leanprover/lean4/pull/9575) 优化`grind ring` 产生的证明条件。
-例如,在本 PR 之前,内核用2.22秒(在M4 Max上)到
-在基准`grind_ring_5.lean`中检查证明;它现在需要
-仅0.63秒。
+* [#9575](https://github.com/leanprover/lean4/pull/9575) 优化了 `grind ring` 生成的证明项。例如，在这个 PR 之前，内核在 `grind_ring_5.lean` 基准中检查证明需要 2.22 秒（M4 Max 上）；现在只需 0.63 秒。
 
-* [#9578](https://github.com/leanprover/lean4/pull/9578) 解决了`grind` 不平等证明解释中的一个问题。
-当平等与`False`等同合并时出现问题
-类,但它不是 其一致性等级的根, 和它的
-一致性根尚未并入等值 `False`
-班级尚未结束 。
+* [#9578](https://github.com/leanprover/lean4/pull/9578) 修复了 `grind` 在构造“不相等”证明时的一个问题：当某个等式被并入 `False` 的等价类，但它不是其一致闭包类的根，且该类的根又尚未并入 `False` 的等价类时，就会出错。
 
-* [#9579](https://github.com/leanprover/lean4/pull/9579) 确保`ite`和`dite`被选定为电子匹配模式。
-它们是坏模式 因为当时的/门的树枝只是
-`grind` 确定该条件是否为
-`True`/`False`。
+* [#9579](https://github.com/leanprover/lean4/pull/9579) 确保 `ite` 和 `dite` 不会被选作 E-匹配模式。它们是糟糕的模式，因为 then/else 分支只有在 `grind` 判定条件为 `True`/`False` 之后才会被内部化。
 
 * [#9592](https://github.com/leanprover/lean4/pull/9592) 更新了归纳类型声明与匿名构造子记号产生的错误消息的样式和措辞，包括关于可推断构造子可见性更新的提示。
 
-* [#9595](https://github.com/leanprover/lean4/pull/9595) 改进写入无效时显示的错误消息
-在函数类型的自由变量上投影。
+* [#9595](https://github.com/leanprover/lean4/pull/9595) 改进了在函数类型自由变量上书写无效投影时显示的错误消息。
 
-* [#9606](https://github.com/leanprover/lean4/pull/9606)在替换时在折旧警告上加注
-常量具有不同的类型、可见度和/或命名空间。
+* [#9606](https://github.com/leanprover/lean4/pull/9606) 在废弃警告中补充说明：当替换用的常量与原常量类型、可见性和/或命名空间不同时，会在警告中注明。
 
-* [#9625](https://github.com/leanprover/lean4/pull/9625) 改进 wf_ preprocess 周围的跟踪信息 。
+* [#9625](https://github.com/leanprover/lean4/pull/9625) 改进了 `wf_preprocess` 周边的跟踪消息。
 
-* [#9628](https://github.com/leanprover/lean4/pull/9628) 引入所生成的`mutual_induct`变式
-(co) 相互界定的(co)引上证明原则
-与标准(co)上上上(原则)不同(该原则是项目项目)
-`mutual_induct` 产生
-结合所有结论。
+* [#9628](https://github.com/leanprover/lean4/pull/9628) 为互相定义的（协）归纳谓词所生成的（协）归纳证明原理引入了 `mutual_induct` 变体。与标准的（协）归纳原理不同（后者会分别投影出每个谓词的结论），`mutual_induct` 会生成所有结论的合取。
 
-* [#9633](https://github.com/leanprover/lean4/pull/9633) 更新由
-内置战术,使其格式适应现行公约。
+* [#9633](https://github.com/leanprover/lean4/pull/9633) 更新了多条由内建策略产生或与之相关的错误消息，使其格式适配当前约定。
 
-* [#9634](https://github.com/leanprover/lean4/pull/9634)修改点识别符号,以便`(.a : T)`解决
-`T.a` 关于根命名空间,如通用域
-缩写 。 这让符号指私人名称, 跟随别名,
-并使用开放式命名空间。 LSP 完成后将进行改进
-点识别符号是如何解决的, 但它还没有考虑到
-别名或开放命名空间 。
+* [#9634](https://github.com/leanprover/lean4/pull/9634) 修改了点标识符记号，使 `(.a : T)` 会像广义字段记号那样，相对于根命名空间解析为 `T.a`。这让该记号能够引用私有名称、跟随别名，并使用打开的命名空间。LSP 自动补全也改进为遵循点标识符的解析方式，不过它目前仍未考虑别名或打开的命名空间。
 
-* [#9637](https://github.com/leanprover/lean4/pull/9637) 提高了“最大宇宙水平抵消”的可读性
-超过错误消息 。
+* [#9637](https://github.com/leanprover/lean4/pull/9637) 提高了 “maximum universe level offset exceeded” 错误消息的可读性。
 
 * [#9646](https://github.com/leanprover/lean4/pull/9646) 使用更为简单的方法证明正在展开的理论
 由有充分根据的循环来定义的函数。
@@ -555,111 +401,69 @@ PPR 还修正一个单独的错误, 将光标放置在下一行
     grind
   ```
 
-* [#9700](https://github.com/leanprover/lean4/pull/9700)当`checkInvariants` 能够处理`checkInvariants` 违反`checkInvariants`
-`grind`
+* [#9700](https://github.com/leanprover/lean4/pull/9700) 修复了在 `grind` 中启用 `checkInvariants` 时出现的断言违规。
 
-* [#9701](https://github.com/leanprover/lean4/pull/9701) 开关改为非以本地 `Std.Do.Triple` `Std.Do.Triple` 符号
-SpecLemmas.lean 围绕第2阶段工作 建筑故障。
+* [#9701](https://github.com/leanprover/lean4/pull/9701) 在 `SpecLemmas.lean` 中切换到不会重载的本地 `Std.Do.Triple` 记号，以绕开一个 stage2 构建失败问题。
 
-* [#9702](https://github.com/leanprover/lean4/pull/9702) 将问题固定在`match` 外观变量的`match`
-似乎`__x` 在当地情况下不会有这种`implDetail`。
-`kindOfBinderName`现在是`LocalDeclKind.ofBinderName`。
+* [#9702](https://github.com/leanprover/lean4/pull/9702) 修复了 `match` 精译器中的一个问题：像 `__x` 这样的模式变量在局部上下文中本应具有 `implDetail` 种类，但此前并没有。现在 `kindOfBinderName` 改为 `LocalDeclKind.ofBinderName`。
 
-* [#9704](https://github.com/leanprover/lean4/pull/9704) 优化`grind cutsat` 产生的证明条件。
-绩效改进将在以后合并。
+* [#9704](https://github.com/leanprover/lean4/pull/9704) 优化了 `grind cutsat` 生成的证明项。更多性能改进会在后续合并。
 
-* [#9706](https://github.com/leanprover/lean4/pull/9706) 结合了`Poly.combine_k`和`Poly.mul_k`
-`grind cutsat` 证明条款。
+* [#9706](https://github.com/leanprover/lean4/pull/9706) 在 `grind cutsat` 的证明项里合并了 `Poly.combine_k` 与 `Poly.mul_k` 两个步骤。
 
-* [#9710](https://github.com/leanprover/lean4/pull/9710) 改进了`grind ring` 和`grind ring` 提出的某些证明条件;
-`grind cutsat`。
+* [#9710](https://github.com/leanprover/lean4/pull/9710) 改进了 `grind ring` 与 `grind cutsat` 生成的一些证明项。
 
-* [#9714](https://github.com/leanprover/lean4/pull/9714)增加一个`CommRing.Expr.toPoly` 优化的`CommRing.Expr.toPoly` 版本,用于内核
-我们使用此函数不仅是为了执行`grind ring`,而且是为了执行`grind ring`
-将环形模块与 `grind cutsat` 接口。
+* [#9714](https://github.com/leanprover/lean4/pull/9714) 为 `CommRing.Expr.toPoly` 增加了一个针对内核约化优化过的版本。我们使用这个函数不仅是为了实现 `grind ring`，也用它把 `ring` 模块同 `grind cutsat` 接起来。
 
-* [#9716](https://github.com/leanprover/lean4/pull/9716) 将跨包装`import all` 的验证转移到Lake和
-进口关键字的语法验证(`public`、`meta`和`all`)
-和两个进口采样器。
+* [#9716](https://github.com/leanprover/lean4/pull/9716) 将跨包 `import all` 的校验转移到了 Lake；导入关键字（`public`、`meta` 与 `all`）的语法校验则被移到了两个 `import` 解析器中。
 
-* [#9728](https://github.com/leanprover/lean4/pull/9728) 固定 #9724
+* [#9728](https://github.com/leanprover/lean4/pull/9728) 修复了 #9724。
 
-* [#9735](https://github.com/leanprover/lean4/pull/9735) 将9699年实施的传播规则扩大至恒定
-功能。
+* [#9735](https://github.com/leanprover/lean4/pull/9735) 将 #9699 中实现的传播规则扩展到常值函数。
 
-* [#9736](https://github.com/leanprover/lean4/pull/9736) 实施选择`mvcgen +jp`,采用略微亏损的《维也纳公约》
-用来防止 VC 指数爆炸的联点编码
-在控制流动方面发生分裂。
+* [#9736](https://github.com/leanprover/lean4/pull/9736) 实现了选项 `mvcgen +jp`，用一种略有损失的连接点 VC 编码来避免控制流做朴素拆分时导致的 VC 指数爆炸。
 
-* [#9754](https://github.com/leanprover/lean4/pull/9754)使`mleave`适用`at *`,并改进为下列目的而设的简化
-(#9581)。
+* [#9754](https://github.com/leanprover/lean4/pull/9754) 让 `mleave` 可以用于 `at *`，并改进了它的 simp 集，以便消去更多平凡目标（#9581）。
 
-* [#9755](https://github.com/leanprover/lean4/pull/9755)实施`mrevert ∀n`战术,“eta
-并且与`mintro ∀x1 ... ∀xn`目标一致。
+* [#9755](https://github.com/leanprover/lean4/pull/9755) 实现了 `mrevert ∀n` 策略，它会对带状态目标做 eta-约简，并与 `mintro ∀x1 ... ∀xn` 构成伴随关系。
 
-* [#9767](https://github.com/leanprover/lean4/pull/9767) 确定`grind` 所构建的平等一致性证明条件。
+* [#9767](https://github.com/leanprover/lean4/pull/9767) 修复了 `grind` 构造的等式一致性证明项。
 
-* [#9772](https://github.com/leanprover/lean4/pull/9772)在投影中修正一个错误,用于对已使用的建构或推进器的投影
-`grind`。 当等同时,它可以构建类型错误的术语
-类中包含各种等同。
+* [#9772](https://github.com/leanprover/lean4/pull/9772) 修复了 `grind` 中“跨构造器或投影传播投影”的一个错误。当某个等价类包含异质等式时，它此前可能构造出类型错误的项。
 
-* [#9776](https://github.com/leanprover/lean4/pull/9776) 将简化和展 - 展 - 降 - 延缓这两个步骤结合起来
-`grind` 以确保不错过任何可能的正常化步骤。
+* [#9776](https://github.com/leanprover/lean4/pull/9776) 在 `grind` 中把“化简”和“展开可约常量”两个步骤合并起来，以确保不会错过任何可能的归一化步骤。
 
-* [#9780](https://github.com/leanprover/lean4/pull/9780)将`grind`工作类别理论的测试套套套件扩展至`grind`
-帮助调试 Mathlib 的未决问题 。
+* [#9780](https://github.com/leanprover/lean4/pull/9780) 扩展了 `grind` 处理范畴论时的测试套件，以帮助调试 Mathlib 中尚未解决的问题。
 
-* [#9781](https://github.com/leanprover/lean4/pull/9781) 确保`mvcgen` 卫生。
-现在,所有当地人都无法无障碍地介绍。
+* [#9781](https://github.com/leanprover/lean4/pull/9781) 确保 `mvcgen` 具备卫生性。它现在生成的目标会把所有局部变量都以不可访问的方式引入。
 
 * [#9785](https://github.com/leanprover/lean4/pull/9785) 将 `MVarId.getMVarDependencies` 的一个实现细节拆分成了顶层函数。Aesop 依赖此前在 `where` 子句中定义的那个函数，而在 #9759 之后这已不再可行。
 
-* [#9798](https://github.com/leanprover/lean4/pull/9798) 介绍`Lean.realizeValue`,新的`Lean.realizeValue`
-`MetaM`计算结果的累积
+* [#9798](https://github.com/leanprover/lean4/pull/9798) 引入了 `Lean.realizeValue`，这是一个新的元编程 API，用于对 `MetaM` 计算结果做具备并行感知的缓存。
 
-* [#9800](https://github.com/leanprover/lean4/pull/9800) 改进三角洲衍生处理器,使其有能力
-与装有粘合器以及能够回溯
-此外,从三角洲中衍生的三角洲现在尝试所有明确的
-类中的非参数参数参数, 它可以处理“ 混合” 实例
-参数。`deriving` 语法已修改,以接受一般
-由此可以得出具体实例,以便:
-示例`deriving OfNat _ 1`或`deriving Module R`。
-被允许为 pi 类型, 以添加额外的假设; 这里有一个 Mathlib
-例如:
+* [#9800](https://github.com/leanprover/lean4/pull/9800) 改进了 delta 派生处理器，使其既能处理带绑定器的定义，也能递归展开定义。此外，delta 派生现在会尝试一个类中所有显式的非 `outParam` 参数，因此也能处理“混入式”实例参数。`deriving` 语法也被修改为接受一般项，因此现在可以派生更具体的实例，例如 `deriving OfNat _ 1` 或 `deriving Module R`。类还允许是一个 pi 类型，以便加入额外假设；下面是一个 Mathlib 例子：
   ```lean
   def Sym (α : Type*) (n : ℕ) :=
     { s : Multiset α // Multiset.card s = n }
   deriving [DecidableEq α] → DecidableEq _
   ```
-这里的下划线表示可以插入 `Sym α n` 的位置；当使用 `→` 时这是必要的。`deriving instance` 命令在进行 delta deriving 时也可以引用带作用域的变量。
-例名使用 `instance` 命令的名称生成器,
-将新实例添加到当前命名空间中。
+  这里的下划线表示可以插入 `Sym α n` 的位置；当使用 `→` 时这是必要的。`deriving instance` 命令在进行 delta deriving 时也可以引用带作用域的变量。**破坏性变更：** 派生实例的名称会使用 `instance` 命令的名称生成器，而新实例会被加入当前命名空间。
 
-* [#9804](https://github.com/leanprover/lean4/pull/9804) 允许`simp?` 、`dsimp?` 和`simp?`的引号列表中的后期逗号,
-`simpa`,等等......以前,只有在非`?`变式中才允许这样做。
-`simp`、`dsimp`、`simp_all`。
+* [#9804](https://github.com/leanprover/lean4/pull/9804) 允许在 `simp?`、`dsimp?`、`simpa` 等命令的参数列表里书写尾随逗号。此前，只有非 `?` 变体的 `simp`、`dsimp`、`simp_all` 才允许这样写。
 
-* [#9807](https://github.com/leanprover/lean4/pull/9807) 将`Std.List.Zipper.pref` 添加到一套`mleave`。
+* [#9807](https://github.com/leanprover/lean4/pull/9807) 把 `Std.List.Zipper.pref` 加入了 `mleave` 的 simp 集。
 
-* [#9809](https://github.com/leanprover/lean4/pull/9809) 添加一个用于分析`grind` 电子匹配注释的脚本。
-用于检测匹配循环的脚本。我们计划添加
-未来运行脚本的用户定位命令 。
+* [#9809](https://github.com/leanprover/lean4/pull/9809) 添加了一个用于分析 `grind` E-匹配标注的脚本，可用于检测匹配循环。我们计划在未来加入面向用户的命令来运行这个脚本。
 
-* [#9813](https://github.com/leanprover/lean4/pull/9813) 在 `unfoldReducible` 中修正意外的捆绑变量恐慌
-`grind`。
+* [#9813](https://github.com/leanprover/lean4/pull/9813) 修复了 `grind` 所用 `unfoldReducible` 中意外出现的绑定变量崩溃。
 
-* [#9814](https://github.com/leanprover/lean4/pull/9814)当`grind`
-这一点是不需要的。
+* [#9814](https://github.com/leanprover/lean4/pull/9814) 在 `grind` 中，当 `normalizeLevels` 预处理步骤并非必需时，会跳过该步骤。
 
-* [#9818](https://github.com/leanprover/lean4/pull/9818)在`DecidableEq`衍生处理器未在 `DecidableEq`衍生处理器中设置错误
-计数时的宇宙水平考虑到宇宙水平(缩略语类型)
-其建造者都无田地。关闭#9541。
+* [#9818](https://github.com/leanprover/lean4/pull/9818) 修复了 `DecidableEq` deriving 处理器在处理枚举类型（即所有构造器都没有字段的归纳类型）时没有把宇宙层级纳入考虑的错误。关闭 #9541。
 
-* [#9819](https://github.com/leanprover/lean4/pull/9819) 使`unsafe t`术语产生一个不透明的辅助词
-而不是不透明的辅助定义
-减少信号。
+* [#9819](https://github.com/leanprover/lean4/pull/9819) 让 `unsafe t` 项生成一个辅助不透明声明，而不是一个带有不透明可约性提示的辅助定义。
 
-* [#9831](https://github.com/leanprover/lean4/pull/9831) 为`Std.Range` 标记增加一个除法器。
+* [#9831](https://github.com/leanprover/lean4/pull/9831) 为 `Std.Range` 记号添加了一个反精译器。
 
 * [#9832](https://github.com/leanprover/lean4/pull/9832) 添加了 simp 引理 `SPred.entails_<n>`，用来替代 `SPred.entails_cons`；后者由于 #8074 而不适合作为 simp 引理。
 
@@ -667,55 +471,38 @@ SpecLemmas.lean 围绕第2阶段工作 建筑故障。
 
 * [#9834](https://github.com/leanprover/lean4/pull/9834) 修复了 `mvcgen` 中一个由 `wp` 应用接收到过多状态参数触发的错误；这种情况会在处理 `StateT` 原语时出现。
 
-* [#9841](https://github.com/leanprover/lean4/pull/9841) 将嵌入纯 `p : Prop` 的p符号迁移到
-`SPred σs` 扩展成简单、一阶表达式`SPred.pure p`
-可在`grind`中以电子比对加以支持。
+* [#9841](https://github.com/leanprover/lean4/pull/9841) 将把纯命题 `p : Prop` 嵌入 `SPred σs` 的 ⌜p⌝ 记号改为展开成简单的一阶表达式 `SPred.pure p`，从而可以在 `grind` 中通过 E-匹配支持它。
 
 * [#9843](https://github.com/leanprover/lean4/pull/9843) 使 `mvcgen` 为生成的 VC 产生确定性的 case 标签。不变式会命名为 `inv<n>`，其余每个 VC 会命名为 `vc<n>.*`，其中 `*` 部分会粗略指示其来源。
 
-* [#9852](https://github.com/leanprover/lean4/pull/9852) 删除 `inShareCommon` `grind`中使用的快速过滤器
-`shareCommon`不再仅用于全部前处理步骤。
-预处理条款。
+* [#9852](https://github.com/leanprover/lean4/pull/9852) 删除了 `grind` 预处理步骤里使用的快速过滤器 `inShareCommon`。`shareCommon` 已不再只用于完全预处理过的项。
 
-* [#9853](https://github.com/leanprover/lean4/pull/9853) 在`grind`中增加`Nat`和`Int`数字正常化。
+* [#9853](https://github.com/leanprover/lean4/pull/9853) 在 `grind` 中加入了 `Nat` 与 `Int` 数值字面量归一化器。
 
-* [#9857](https://github.com/leanprover/lean4/pull/9857) 确保`grind` 包含宇宙的E-相配式`grind`
-多晶地地面亚模式。例如,给定
+* [#9857](https://github.com/leanprover/lean4/pull/9857) 确保 `grind` 可以对包含宇宙多态基子模式的模式做 E-匹配。例如，给定
   ```
   set_option pp.universes true in
   attribute [grind?] Id.run_pure
   ```
-模式模式
+  模式
   ```
   Id.run_pure.{u_1}: [@Id.run.{u_1} #1 (@pure.{u_1, u_1} `[Id.{u_1}] `[Applicative.toPure.{u_1, u_1}] _ #0)]
   ```
-包含两个嵌套的宇宙多形态地面模式
+  包含两个嵌套的宇宙多态基模式
   - `Id.{u_1}`
   - `Applicative.toPure.{u_1, u_1}`
 
 * [#9860](https://github.com/leanprover/lean4/pull/9860) 修正 `grind` 中的 E-匹配定理激活。
 
-* [#9865](https://github.com/leanprover/lean4/pull/9865) 进一步支持对内核型号的校对和反省
-。 它处理 # 9854 所暴露的性能问题 。
-PR, 每当内核类型核对表格“ eagerReduce” 的参数时
-,它进入了“缩小”模式。在这个模式中,内核更多
-急切要缩短用词。 新的 `eagerReduce _` 提示通常用于
-以 `Eq.refl true` 换行 `Eq.refl true`。新提示不应对任何
-现有的利恩包包 。
+* [#9865](https://github.com/leanprover/lean4/pull/9865) 为内核类型检查器加入了更好的反射式证明支持，以处理 #9854 暴露的性能问题。现在每当内核类型检查形如 `eagerReduce _` 的参数时，就会进入“急切约化”模式；在该模式下，内核会更积极地约化项。新的 `eagerReduce _` 提示常用于包裹 `Eq.refl true`，且不应对现有 Lean 包造成负面影响。
 
-* [#9867](https://github.com/leanprover/lean4/pull/9867) 在`grind ring` 中确定一种非决定性行为。
+* [#9867](https://github.com/leanprover/lean4/pull/9867) 修复了 `grind ring` 中的一种非确定性行为。
 
-* [#9880](https://github.com/leanprover/lean4/pull/9880)确保每个模式最多一次激活一个本地全量
-`grind`。
+* [#9880](https://github.com/leanprover/lean4/pull/9880) 确保在 `grind` 中，每个模式至多激活一次局部 `forall`。
 
-* [#9883](https://github.com/leanprover/lean4/pull/9883) 改进多余`grind` 参数的警告信息。
-并非基于实际推断模式,而是提供种类。
+* [#9883](https://github.com/leanprover/lean4/pull/9883) 改进了多余 `grind` 参数的警告消息。它不是基于实际推断出的模式，而是基于所提供参数的种类来给出提示。
 
-* [#9885](https://github.com/leanprover/lean4/pull/9885) 最初的动机是注意到 `Lean.Grind.Preorder.toLE` 会出现在冗长的 Mathlib 类型类搜索中；这项改动将阻止这些搜索。这些修改也为未来可能移除自定义 `Lean.Grind.*` 类型类、并与 #9729 引入的新类型类统一做好了准备。
-9729年推出的新类型班级。
-````
-
-````markdown
+* [#9885](https://github.com/leanprover/lean4/pull/9885) 这一改动最初是因为注意到 `Lean.Grind.Preorder.toLE` 会出现在冗长的 Mathlib 类型类搜索中；现在它会阻止这类搜索。这些修改也为未来可能移除自定义 `Lean.Grind.*` 类型类、并与 #9729 引入的新类型类统一做好了准备。
 ````
 # 库
 %%%
@@ -724,23 +511,17 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___23___0-_LPAR_2025-0
 
 ````markdown
 
-* [#7450](https://github.com/leanprover/lean4/pull/7450) 执行`Nat.dfold`,一个附属类似`Nat.fold`的`Nat.dfold`。
+* [#7450](https://github.com/leanprover/lean4/pull/7450) 实现了 `Nat.dfold`，它是 `Nat.fold` 的依赖类型版本。
 
-* [#9096](https://github.com/leanprover/lean4/pull/9096)删除一些不必要的`Decidable*`实例参数
-`Classical`名称空间而不是`Decidable`的名称空间中使用 Lemmas
-命名空间 。
+* [#9096](https://github.com/leanprover/lean4/pull/9096) 通过使用 `Classical` 命名空间中的引理而不是 `Decidable` 命名空间中的引理，移除了一些不必要的 `Decidable*` 实例参数。
 
-* [#9121](https://github.com/leanprover/lean4/pull/9121) 允许`grind` 以`Prod` 的宇宙变体为例。
+* [#9121](https://github.com/leanprover/lean4/pull/9121) 允许 `grind` 对 `Prod` 的宇宙变体做 case 分析。
 
-* [#9129](https://github.com/leanprover/lean4/pull/9129) 修正关于布丁等式的修饰品 , 以表示 `(!x) = y`
-`(!decide (x = y)) = true`改为`(!decide (x = y)) = true`
+* [#9129](https://github.com/leanprover/lean4/pull/9129) 修正了关于布尔等式的 simp 引理，使其写成 `(!x) = y`，而不是 `(!decide (x = y)) = true`。
 
-* [#9135](https://github.com/leanprover/lean4/pull/9135) 允许将`forIn`、`foldM`和`fold`的纯`forIn`、`foldM`和`fold`结果类型
-迭代器(`Iter`)在与迭代器不同的宇宙中。
+* [#9135](https://github.com/leanprover/lean4/pull/9135) 允许纯迭代器（`Iter`）上的 `forIn`、`foldM` 和 `fold` 结果类型位于与迭代器不同的宇宙中。
 
-* [#9142](https://github.com/leanprover/lean4/pull/9142) 使用有充分依据的重复使用修改 `Fin.reverseInduction`
-使用`let rec`,从而使其定义上更平等。
-@digama0合著。
+* [#9142](https://github.com/leanprover/lean4/pull/9142) 把 `Fin.reverseInduction` 从使用良基递归改为使用 `let rec`，从而改善其定义等同性。与 @digama0 共同完成。
 
   ```lean
   namespace Fin
@@ -753,31 +534,22 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___23___0-_LPAR_2025-0
 
 * [#9249](https://github.com/leanprover/lean4/pull/9249) 添加了定理 `BitVec.clzAuxRec_eq_clzAuxRec_of_getLsbD_false`，它比 `BitVec.clzAuxRec_eq_clzAuxRec_of_le` 更一般，并在 bitblaster 中取代了后者。
 
-* [#9260](https://github.com/leanprover/lean4/pull/9260) removes uses of `Lean.RBMap` in Lean itself.
+* [#9260](https://github.com/leanprover/lean4/pull/9260) 在 Lean 自身中移除了对 `Lean.RBMap` 的使用。
 
 * [#9263](https://github.com/leanprover/lean4/pull/9263) 修复了 `toISO8601String`，使其生成符合 ISO 8601 格式规范的字符串。先前的实现会用 `.` 而不是 `:` 分隔分钟和秒钟部分，并且在时区偏移中没有用 `:` 分隔小时和分钟部分。
 
-* [#9285](https://github.com/leanprover/lean4/pull/9285) removes the unnecessary requirement of `BEq α` for
-  `Array.any_push`, `Array.any_push'`, `Array.all_push`, `Array.all_push'`
-  as well as `Vector.any_push` and `Vector.all_push`.
+* [#9285](https://github.com/leanprover/lean4/pull/9285) 移除了 `Array.any_push`、`Array.any_push'`、`Array.all_push`、`Array.all_push'` 以及 `Vector.any_push`、`Vector.all_push` 对 `BEq α` 的不必要要求。
 
 * [#9301](https://github.com/leanprover/lean4/pull/9301) 为与 `Zipper` 相关的定理添加了 `simp` 和 `grind` 标注，以改进对 `Std.Do` 不变式的推理。
 
-* [#9391](https://github.com/leanprover/lean4/pull/9391) replaces the proof of the simplification lemma `Nat.zero_mod`
-  with
-  `rfl` since it is, by design, a definitional equality. This solves an
-  issue
-  whereby the lemma could not be used by the simplifier when in 'dsimp'
-  mode.
+* [#9391](https://github.com/leanprover/lean4/pull/9391) 把化简引理 `Nat.zero_mod` 的证明替换为 `rfl`，因为它按设计就是定义等式。这修复了一个问题：此前该引理在 `dsimp` 模式下无法被化简器使用。
 
 * [#9441](https://github.com/leanprover/lean4/pull/9441) 修复了 `String.prev` 的行为，使运行时实现与参考实现保持一致。具体来说，现在以下陈述成立：
-  - `(s.prev p).byteIdx` is at least `p.byteIdx - 4` and at most
-  `p.byteIdx - 1`
+  - `(s.prev p).byteIdx` 至少为 `p.byteIdx - 4`，至多为 `p.byteIdx - 1`
   - `s.prev 0 = 0`
-  - `s.prev` is monotone
+  - `s.prev` 是单调的
 
-* [#9449](https://github.com/leanprover/lean4/pull/9449) fix the behavior of `String.next` on the scalar boundary (`2 ^
-  63 - 1` on 64-bit platforms).
+* [#9449](https://github.com/leanprover/lean4/pull/9449) 修复了 `String.next` 在标量边界（64 位平台上的 `2 ^ 63 - 1`）处的行为。
 
 * [#9451](https://github.com/leanprover/lean4/pull/9451) 让 `mintro` 策略支持像 `intro` 一样在带状态的目标中引入 `let`/`have` binder。当规格引入此类 `let` 绑定时，这很有用。
 
@@ -787,7 +559,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___23___0-_LPAR_2025-0
 
 * [#9528](https://github.com/leanprover/lean4/pull/9528) 添加了 `List.zipWithM` 和 `Array.zipWithM`。
 
-* [#9529](https://github.com/leanprover/lean4/pull/9529) upstreams some helper instances for `NameSet` from Batteries.
+* [#9529](https://github.com/leanprover/lean4/pull/9529) 将 `NameSet` 的一些辅助实例从 Batteries 上游合入。
 
 * [#9538](https://github.com/leanprover/lean4/pull/9538) 添加了两个与 `Iter.toArray` 相关的引理。
 
@@ -795,8 +567,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___23___0-_LPAR_2025-0
 
 * [#9586](https://github.com/leanprover/lean4/pull/9586) 为 `Vector α n` 添加了按分量进行的代数运算以及相关实例。
 
-* [#9594](https://github.com/leanprover/lean4/pull/9594) optimizes `Lean.Name.toString`, giving a 10% instruction
-  benefit.
+* [#9594](https://github.com/leanprover/lean4/pull/9594) 优化了 `Lean.Name.toString`，带来约 10% 的指令数收益。
 
 * [#9609](https://github.com/leanprover/lean4/pull/9609) 为 `Prod.lex_def` 添加了 `@[grind =]`。注意，`omega` 对 `Prod.Lex` 有特殊处理，而 `grind` 的 cutsat 模块要实现同等能力就需要它。
 
@@ -804,27 +575,21 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___23___0-_LPAR_2025-0
 
 * [#9620](https://github.com/leanprover/lean4/pull/9620) 将 `List.pairwise_iff_forall_sublist` 的两个方向分别作为具名引理加入。
 
-* [#9621](https://github.com/leanprover/lean4/pull/9621) renames `Xor` to `XorOp`, to match `AndOp`, etc.
+* [#9621](https://github.com/leanprover/lean4/pull/9621) 将 `Xor` 重命名为 `XorOp`，以与 `AndOp` 等保持一致。
 
 * [#9622](https://github.com/leanprover/lean4/pull/9622) 补上了一个关于 `List.sum` 的缺失引理，并添加了一个 grind 标注。
 
-* [#9701](https://github.com/leanprover/lean4/pull/9701) switches to a non-verloading local `Std.Do.Triple` notation in
-  SpecLemmas.lean to work around a stage2 build failure.
+* [#9701](https://github.com/leanprover/lean4/pull/9701) 在 `SpecLemmas.lean` 中切换到不会重载的本地 `Std.Do.Triple` 记号，以绕开一个 stage2 构建失败问题。
 
-* [#9721](https://github.com/leanprover/lean4/pull/9721) tags more `SInt` and `UInt` lemmas with `int_toBitVec` so
-  `bv_decide`
-  can handle casts between them and negation.
+* [#9721](https://github.com/leanprover/lean4/pull/9721) 为更多 `SInt` 与 `UInt` 引理加上了 `int_toBitVec` 标记，从而让 `bv_decide` 能处理它们之间的类型转换以及取负。
 
 * [#9729](https://github.com/leanprover/lean4/pull/9729) 引入了一种为类型赋予序结构的规范方式。基础运算（`LE`、`LT`、`Min`、`Max`，以及后续 PR 中的 `BEq`、`Ord` 等）与任何更高层次的性质（预序、偏序、线序等）都按需要与 `LE` 关联起来。该 PR 为许多核心类型提供了 `IsLinearOrder` 实例，并更新了若干引理的签名。
 
 * [#9732](https://github.com/leanprover/lean4/pull/9732) 用 Lean 而不是 C++ 重新实现了 `IO.waitAny`。这样可以减小 `task_manager` 的体积和复杂度，从而便于未来重构。
 
-* [#9736](https://github.com/leanprover/lean4/pull/9736) implements the option `mvcgen +jp` to employ a slightly lossy VC
-  encoding for join points that prevents exponential VC blowup incurred by
-  naïve splitting on control flow.
+* [#9736](https://github.com/leanprover/lean4/pull/9736) 实现了选项 `mvcgen +jp`，用一种略有损失的 join point VC 编码来避免控制流做朴素拆分时导致的 VC 指数爆炸。
 
-* [#9739](https://github.com/leanprover/lean4/pull/9739) removes the `instance` attribute from `lexOrd` that was
-  accidentally applied in `Std.Classes.Ord.Basic`.
+* [#9739](https://github.com/leanprover/lean4/pull/9739) 从 `Std.Classes.Ord.Basic` 中误加到 `lexOrd` 上的 `instance` 属性已被移除。
 
 * [#9757](https://github.com/leanprover/lean4/pull/9757) 为关键的 `Std.Do.SPred` 引理添加了 `grind` 标注。
 
@@ -838,13 +603,9 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___23___0-_LPAR_2025-0
 
 * [#9805](https://github.com/leanprover/lean4/pull/9805) 改进了不变式和后置条件的 API，因此对现有的 `Std.Do` 预发布 API 引入了一些破坏性变更。它还把 Markus Himmel 的 `pairsSumToZero` 示例加入为测试用例。
 
-* [#9832](https://github.com/leanprover/lean4/pull/9832) adds simp lemmas `SPred.entails_<n>` to replace
-  `SPred.entails_cons` which was dysfunctional as a simp lemma due to
-  #8074.
+* [#9832](https://github.com/leanprover/lean4/pull/9832) 添加了 simp 引理 `SPred.entails_<n>`，用来替代 `SPred.entails_cons`；后者由于 #8074 而不适合作为 simp 引理。
 
-* [#9841](https://github.com/leanprover/lean4/pull/9841) migrates the ⌜p⌝ notation for embedding pure `p : Prop` into
-  `SPred σs` to expand into a simple, first-order expression `SPred.pure p`
-  that can be supported by E-matching in `grind`.
+* [#9841](https://github.com/leanprover/lean4/pull/9841) 将把纯命题 `p : Prop` 嵌入 `SPred σs` 的 ⌜p⌝ 记号改为展开成简单的一阶表达式 `SPred.pure p`，从而可以在 `grind` 中通过 E-匹配支持它。
 
 * [#9848](https://github.com/leanprover/lean4/pull/9848) 为 `Std.PRange` 中的 `forIn` 和 `forIn'` 添加了 `@[spec]` 引理。
 
@@ -860,145 +621,55 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___23___0-_LPAR_2025-0
 
 * [#8691](https://github.com/leanprover/lean4/pull/8691) 确保当使用新编译器进行编译失败时，状态会被回滚。这对于不可计算的 section 尤其重要，因为编译器可能会生成半编译的函数，而这些函数随后可能在编译其他函数时被错误地使用。
 
-* [#9134](https://github.com/leanprover/lean4/pull/9134) 更改 ToIR 将 `lowerEnumToScalarType?`调 `lowerEnumToScalarType?`
-`ConstructorVal.induct` 而不是建造者本身的名称。
-这是对新编译器中代码的某些重新设置的监督
-它不应影响编译代码的运行时间(由于
-LLLLDM 优化的附加标签/贴贴标签), 但它确实使
-口译员的IR为口译员,效率略高。
+* [#9134](https://github.com/leanprover/lean4/pull/9134) 修改了 ToIR：调用 `lowerEnumToScalarType?` 时传入 `ConstructorVal.induct`，而不是构造器自身的名字。这是新编译器代码在落地前一次重构中的疏漏。它不应影响已编译代码的运行时间（因为额外的打标签/去标签会被 LLVM 优化掉），但会让解释器使用的 IR 稍微更高效一些。
 
-* [#9144](https://github.com/leanprover/lean4/pull/9144) 增加支持,以更诱人的方式代表昆虫,
-被归纳为向那些未能成为主要对象的国家提供支助
-因为参数或无关的字段。虽然这是很好的,
-它实际上的动机是希望的未来的正确性。
-优化优化。 如果我们
-`object`/`tobject` 保证在`object`/`tobject`
-一种物体的指针,和可以贴有标记的弧弧线的指针。
-特别是,在本PR测试中增加的种类,如本PR测试中增加的种类,将具有所有
-以标记值编码,但按自然
-扩大现有代表类型规则的范围
-`object` 而不是`tobject`。
+* [#9144](https://github.com/leanprover/lean4/pull/9144) 增加了把更多归纳类型表示成枚举的支持，概括地说，就是把支持范围扩展到那些因为参数或无关字段而无法成为枚举的类型。虽然这本身就很有用，但真正动机是为了保证未来某项优化的正确性：如果我们实现 `object`/`tobject` 区分，以分别表示“保证是对象指针的值”和“也可能是带标签标量的值”，那么现有的类型表示规则其实并不健全。特别是，本 PR 测试中新加入的那类类型，其所有构造器都会被编码成带标签的值，但若按现有规则自然扩展，它们会被归为 `object` 而不是 `tobject`。
 
-* [#9154](https://github.com/leanprover/lean4/pull/9154) 收紧了IR在申请关闭方面的打字规则。
-当重读一些代码时,我意识到代码在 `mkPartialApp`中
-有明确的打字牌--`.object`和`type`应互换。然而,它却被互换。
-无关紧要,因为IR会过后 平息这里的不匹配。
-更合理的是,必须先严格前端,要求申请
-总是返回 `.object`。
+* [#9154](https://github.com/leanprover/lean4/pull/9154) 收紧了 IR 中关于闭包应用的类型规则。重读部分代码时我发现，`mkPartialApp` 里有一个明显的笔误——`.object` 和 `type` 应当互换。尽管之后的 IR 阶段会把这里的不匹配“抹平”，但更合理的做法仍然是在前端就严格要求：闭包应用始终返回 `.object`。
 
-* [#9159](https://github.com/leanprover/lean4/pull/9159) 在基准阶段执行不内插_覆盖内插的不内衬
-目前的情况允许建造者/案件
-将不匹配暴露于简单化,这引发了一种断言
-失败的失败。没有早于 Expr 出现的原因是 Expr
-定制的场外获取器外部操作 。
+* [#9159](https://github.com/leanprover/lean4/pull/9159) 在 LCNF 编译的基础阶段，强制 `_override` 实现不被内联。当前做法会让构造器/`cases` 之间的不匹配暴露给化简器，从而触发断言失败。之所以这个问题没有更早在 `Expr` 上暴露出来，是因为 `Expr` 的计算字段 getter 有自定义的外部实现。
 
-* [#9177](https://github.com/leanprover/lean4/pull/9177) 使`pullInstances` 过号避免引任何实例
-含有被删除的参数的表达式, 因为我们不正确
-表示在消除后继续存在的相互依存关系。
+* [#9177](https://github.com/leanprover/lean4/pull/9177) 让 `pullInstances` 阶段避免拉取任何包含已擦除命题的实例表达式，因为我们并没有正确表示擦除后仍然存在的依赖关系。
 
-* [#9198](https://github.com/leanprover/lean4/pull/9198) 修改编译器的专业分析,以便考虑
-以只会改变其特性的方式拆散的较高顺序参数
-`Prop` 参数有待确定。
-a 仅仅是`@[specialize]`,而不是编译器必须选择加入
-更具攻击性的特定参数专业化。
+* [#9198](https://github.com/leanprover/lean4/pull/9198) 修改了编译器的特化分析，使其把那类只会改变其 `Prop` 参数的重新打包高阶参数视为固定参数。这意味着它们只需 `@[specialize]` 即可被特化，而不必让编译器显式启用更激进的按参数特化。
 
 * [#9207](https://github.com/leanprover/lean4/pull/9207) 让当某个对象应标记为 `noncomputable` 时所产生错误消息中的相关声明可点击跳转。
 
-* [#9209](https://github.com/leanprover/lean4/pull/9209) 更改 `getLiteral` 的`elimDeadBranches` 的`getLiteral` 助手功能
-来正确处理构造器的感带导管。此函数不是
-尽可能经常使用,这使得这个问题很少被外界查问
-目标测试案例。
+* [#9209](https://github.com/leanprover/lean4/pull/9209) 修改了 `elimDeadBranches` 的辅助函数 `getLiteral`，使其能够正确处理带构造器的归纳类型。这个函数平时没有尽可能多地被使用，所以除了定向测试用例之外，这个问题很少会被触发。
 
-* [#9218](https://github.com/leanprover/lean4/pull/9218) 使LCNF`elimDeadBranches` 接风器处理不安全
-更小心。现在,如果不安全的排除作用的结果将只有在以下情况下才会成为_____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
-有循环呼叫的值流。
+* [#9218](https://github.com/leanprover/lean4/pull/9218) 让 LCNF 的 `elimDeadBranches` 阶段在处理 `unsafe` 声明时更谨慎。现在，只有当递归调用存在值流出时，`unsafe` 声明的结果才会变成 `⊤`。
 
-* [#9221](https://github.com/leanprover/lean4/pull/9221)删除有错误假设的代码,即LCNF本地 vars
-`ElimDead.lean`中有其他评论意见。
-声称这是不可能的,所以这一定是个改变
-在开发新编译器的早期。
+* [#9221](https://github.com/leanprover/lean4/pull/9221) 删除了基于错误假设的代码：它假定 LCNF 局部变量可能出现在类型中。`ElimDead.lean` 里其他注释都说这种情况不可能发生，因此这大概是新编译器开发早期遗留下来的改动。
 
-* [#9224](https://github.com/leanprover/lean4/pull/9224)修改`toMono` 通行证,以审议申请的类型
-并删除所有与删除的参数对应的参数参数。
-通过改变单体型(a)和(a)的单体型
-我本想把这和
-但我试图让建筑师 同样的行为
-#9222(正准备编写本PR)有微小表现
-后退其实是变化的附带因素。 尽管如此,我还是决定
-今后,我们有望
-此项延伸至构建器、外部偏差等 。
+* [#9224](https://github.com/leanprover/lean4/pull/9224) 修改了 `toMono` 阶段，使其会考虑应用的类型，并擦除所有对应于已擦除参数的实参。通过改变声明的 mono 类型，这提供了一种轻量级的相关性分析。我本来希望把它同构造器上的行为统一起来，但我在 #9222（为本 PR 做准备）中尝试让构造器也采用同样行为时引入了轻微性能回退，尽管这其实只是这项改动的副作用。因此我暂时按下不表。未来我们希望把这一做法扩展到构造器、外部声明等位置。
 
-* [#9266](https://github.com/leanprover/lean4/pull/9266)对LCNF单型`.mdata`增加支持(然后将其丢弃)
-在 IR 类型级别, 而不是在 IR 类型级别上 。 这更符合
-旧编译器 C++ 代码中的 Excter Excter 编辑器的 C++ 代码
-用于当前创建外部解码, 并将很快被替换 。
+* [#9266](https://github.com/leanprover/lean4/pull/9266) 为 LCNF mono 类型增加了对 `.mdata` 的支持（然后在 IR 类型层面将其丢弃）。这更贴近旧编译器 C++ 代码中外部声明的行为；目前创建外部声明时仍在使用那套代码，但很快会被替换。
 
-* [#9268](https://github.com/leanprover/lean4/pull/9268) 将`lean_add_extern`/`addExtern`的执行从`lean_add_extern``lean_add_extern`]`addExtern`
-C++ 进入 Lean 。 我相信是最后一个 C++ 助手功能
-新编译器所依赖的库库/ 编译器目录。 I put
-复制一些代码,因为此函数
-需要在 CORM 中执行, 而其他 IR 函数则在
-C++ 编译器被删除后, 我们可以移动 IR
-函数进入 CORM 。
+* [#9268](https://github.com/leanprover/lean4/pull/9268) 将 `lean_add_extern`/`addExtern` 的实现从 C++ 挪到了 Lean。我相信这是库/编译器目录中最后一个仍被新编译器依赖的 C++ 辅助函数。我把它放进了单独的文件，并复制了少量代码，因为该函数需要在 `CoreM` 中执行，而其他 IR 函数位于它们自己的 monad 栈里。等 C++ 编译器被移除后，我们就可以把这些 IR 函数也迁入 `CoreM`。
 
-* [#9275](https://github.com/leanprover/lean4/pull/9275) 删除以 C++ 写入的旧编译器 。
+* [#9275](https://github.com/leanprover/lean4/pull/9275) 删除了用 C++ 编写的旧编译器。
 
-* [#9279](https://github.com/leanprover/lean4/pull/9279) 将`compiler.extract_closed`选项移到`compiler.extract_closed`
-利昂(并添加一个试验,以便它在未来被抓住)。
+* [#9279](https://github.com/leanprover/lean4/pull/9279) 在将 `compiler.extract_closed` 选项迁移到 Lean 之后修复了它（并新增了测试，以便将来及时发现同类问题）。
 
-* [#9310](https://github.com/leanprover/lean4/pull/9310) 修正 IR 构造器参数调低以正确处理
-在所有情况下,相关参数的相关参数均被传递为不相关的论点。
-之所以发生这种情况,是因为建筑商的论据降低(不完整)
-将LCNF-I至IR的参数下调,确定
-仅采用通用辅助者函数。这很可能是由于
-当新编译器还在分支上时, 不完整的重构 。
+* [#9310](https://github.com/leanprover/lean4/pull/9310) 修复了 IR 构造器参数下调，以便在所有情况下都能正确处理“给相关参数传递无关实参”的情形。问题之所以出现，是因为构造器参数下调不完整地重写了一遍通用的 LCNF 到 IR 参数下调逻辑；修复方式就是直接采用通用辅助函数。这大概也是新编译器还在分支上时一次不完整重构留下的问题。
 
-* [#9336](https://github.com/leanprover/lean4/pull/9336) 修改`trace.Compiler.result` 的`trace.Compiler.result`执行,以使用[`trace.Compiler.result`
-在LCNF单体中提供而不是搜索这些设备时,这些设备被提供,而不是在LCNF单体中查找。
-环境的扩展,这似乎是为了 省去环境的麻烦
-打印标记前重新规范fval 身份标识符。 这意味着
-`._closed` 由`extractClosed` 通行证创建的`extractClosed`号]决定现在将是
-包含在输出中的输出中, 如果您
-我不知道发生了什么事情。
+* [#9336](https://github.com/leanprover/lean4/pull/9336) 修改了 `trace.Compiler.result` 的实现：它现在直接使用提供给它的声明，而不是去 LCNF mono 环境扩展里重新查找。之前那么做看起来只是为了省去在打印声明前重新规范化 fvar ID 的麻烦。这意味着由 `extractClosed` pass 生成的 `._closed` 声明现在也会出现在输出里；如果你之前不知道发生了什么，这原本会非常令人困惑。
 
-* [#9344](https://github.com/leanprover/lean4/pull/9344) 正确缩入 `IR.FnBody.case` 的`xType` 字段
-构造器。 事实证明, 这一点没有明显的后果
-不正确,因为它被`Boxing`保守地重新引用
-过。
+* [#9344](https://github.com/leanprover/lean4/pull/9344) 正确填充了 `IR.FnBody.case` 构造器的 `xType` 字段。事实证明，这个字段此前出错并没有明显后果，因为 `Boxing` pass 会保守地重新计算它。
 
-* [#9393](https://github.com/leanprover/lean4/pull/9393) 修补一个不安全的把戏, 在其中, 用于 Expresss 散列表的监控器
-(由指针以指针为主)是通过构建运行时间的值来创建的 。
-无法成为有效的 Expr Expr 。为此选择的值
-违反Expr没有
-我们改成新分配的单位
-=单位价值。
+* [#9393](https://github.com/leanprover/lean4/pull/9393) 修复了一个不安全的小技巧：它会通过构造一个运行时表示永远不可能成为有效 `Expr` 的值，来为 `Expr` 哈希表（以指针为键）创建哨兵。此前选用的值是 `Unit.unit`，这违反了“`Expr` 没有标量构造器”的推断。现在改成一个新分配的 `Unit × Unit` 值。
 
-* [#9411](https://github.com/leanprover/lean4/pull/9411) 增加支持编制`casesOn` 分录的`casesOn`。
-取决于 Elaborator 的类型检查, 以将此项限制在
-`Prop` 实际可消除为`Type n`的`Prop`。
-或`Prop`中不在`Prop`
-该事项)。
+* [#9411](https://github.com/leanprover/lean4/pull/9411) 增加了对子单例之 `casesOn` 的编译支持。我们依赖精译器的类型检查，把它限制在那些实际上能消去到 `Type n` 的 `Prop` 归纳类型上；它目前还不覆盖这些类型的其他递归器（更不用说不在 `Prop` 中的归纳类型了）。
 
-* [#9703](https://github.com/leanprover/lean4/pull/9703) 更改了 LCNF `elimDeadBranches` pass，使其把所有非 `Nat` 的字面量类型都视为 `⊤`。事实证明，要在当前抽象值表示下正确处理所有这些类型，复杂度出人意料地高，因此最好先把这个修复落地。
+* [#9703](https://github.com/leanprover/lean4/pull/9703) 更改了 LCNF `elimDeadBranches` 阶段，使其把所有非 `Nat` 的字面量类型都视为 `⊤`。事实证明，要在当前抽象值表示下正确处理所有这些类型，复杂度出人意料地高，因此最好先把这个修复落地。
 
-* [#9720](https://github.com/leanprover/lean4/pull/9720) 清除暗示假设该类型类型的错误
-无法在正在添加的测试中显示的已删除类型之间的依赖关系
-发生错误时,将很难精确错误。
-以LCNF类型提供的信息,目前资料很少。
-价值(我不记得它曾经发现一个实际问题)
-更感性地删除它。
+* [#9720](https://github.com/leanprover/lean4/pull/9720) 删除了一条错误消息。它隐含地假定“新增测试中出现的那种、已擦除类型之间的类型依赖不可能发生”。仅凭 LCNF 类型中现有的信息，很难把这条错误消息做得更精确，而它持续存在的价值又很小（我不记得它曾真正发现过问题），所以删掉更合理。
 
-* [#9827](https://github.com/leanprover/lean4/pull/9827) 更改 `Quot.lcInv` (编译器内部格式)的下调
-`Quot.lift`中`toMono`项,以支持过量申请。
+* [#9827](https://github.com/leanprover/lean4/pull/9827) 修改了在 `toMono` 中对 `Quot.lcInv`（`Quot.lift` 的编译器内部形式）的下调方式，以支持过量应用。
 
-* [#9847](https://github.com/leanprover/lean4/pull/9847) 添加一个检查,以检查在此直言的内衬路径中的腐蚀性分层,
-来修正旧编译器的回归 。
+* [#9847](https://github.com/leanprover/lean4/pull/9847) 在这条定制内联路径中加入了对递归声明的检查，从而修复了旧编译器中的一处回归。
 
-* [#9864](https://github.com/leanprover/lean4/pull/9864) 添加`Array.getInternal` `Array.getInternal` 和
-`Array.get!Internal` 退还他们借回的论据,即没有
-用于编译器在
-它可以确定数组将继续持有
-有效引用返回值寿命的元素。
+* [#9864](https://github.com/leanprover/lean4/pull/9864) 为 `Array.getInternal` 与 `Array.get!Internal` 添加了新的变体，它们会以借用方式返回其参数，也就是不会增加引用计数。编译器可以在确认数组会在返回值生命周期内继续持有该元素的有效引用时使用它们。
 
 ````
 # 美观打印
@@ -1008,7 +679,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___23___0-_LPAR_2025-0
 
 ````markdown
 
-* [#8391](https://github.com/leanprover/lean4/pull/8391) 为 `Vector.mk` 添加了一个 unexpander，它会把 `Vector.mk #[...] _` 反展开为 `#v[...]`。
+* [#8391](https://github.com/leanprover/lean4/pull/8391) 为 `Vector.mk` 添加了一个反精译器，它会把 `Vector.mk #[...] _` 反展开为 `#v[...]`。
   ```lean
   -- 之前：
   #check #v[1, 2, 3] -- { toArray := #[1, 2, 3], size_toArray := ⋯ } : Vector Nat 3
@@ -1016,19 +687,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___23___0-_LPAR_2025-0
   #check #v[1, 2, 3] -- #v[1, 2, 3] : Vector Nat 3
   ```
 
-* [#9475](https://github.com/leanprover/lean4/pull/9475) 修复了某些语法因缺失空白建议而导致的美观打印方式。
+* [#9475](https://github.com/leanprover/lean4/pull/9475) 修复了某些语法因缺失空白提示而导致的美观打印结果。
 
 * [#9494](https://github.com/leanprover/lean4/pull/9494) 修复了一个问题：它会导致某些错误消息试图为不存在的标识符显示悬停信息。
 
-* [#9555](https://github.com/leanprover/lean4/pull/9555) 允许信件数据中的提示提示指定自定义预览间隔
-范围超出代码动作指定的编辑区域。
+* [#9555](https://github.com/leanprover/lean4/pull/9555) 允许消息数据中的提示指定自定义预览范围，使其可以超出代码动作指定的编辑区域。
 
-* [#9778](https://github.com/leanprover/lean4/pull/9778) 修改匿名可变元的漂亮印刷版,以便使用
-索引而不是内部名称。这导致较小数字
-`?m.123` 中的后缀,因为索引是在给定的
-相对于整个文件,因此每个文件
-命令获得它自己的编号。这还没有影响精美的打印
-宇宙水平的可变变量。
+* [#9778](https://github.com/leanprover/lean4/pull/9778) 修改了匿名元变量的美观打印方式，使其使用索引而不是内部名称。这样一来，`?m.123` 这类后缀里的数字会更小，因为索引是在给定的元变量上下文内编号，而不是在整个文件范围内编号，因此每个命令都会有自己的编号。这个改动目前还不影响宇宙层级元变量的美观打印。
 
 ````
 # 文档
@@ -1038,11 +703,11 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___23___0-_LPAR_2025-0
 
 ````markdown
 
-* [#9093](https://github.com/leanprover/lean4/pull/9093)为`ToFormat.toFormat`增加一个缺失的文档。
+* [#9093](https://github.com/leanprover/lean4/pull/9093) 为 `ToFormat.toFormat` 补上了缺失的文档字符串。
 
-* [#9152](https://github.com/leanprover/lean4/pull/9152)为`registerDerivingHandler`修正一个过时的`registerDerivingHandler`
+* [#9152](https://github.com/leanprover/lean4/pull/9152) 修复了 `registerDerivingHandler` 的一条过时文档字符串。
 
-* [#9593](https://github.com/leanprover/lean4/pull/9593) 大大简化`propext` 的句号。
+* [#9593](https://github.com/leanprover/lean4/pull/9593) 大幅简化了 `propext` 的文档字符串。
 
 ````
 # 服务器
@@ -1052,19 +717,17 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___23___0-_LPAR_2025-0
 
 ````markdown
 
-* [#9040](https://github.com/leanprover/lean4/pull/9040) 改进了“转到定义”的用户体验，具体包括：
-  - 对类型类投影使用“转到定义”时，现在会提取参与其中的具体实例，并将它们作为可跳转的位置。例如，对 `toString 0` 中的 `toString` 使用“转到定义”将得到 `ToString.toString` 和 `ToString Nat`。
-  - 对会生成带有类型类投影语法的宏使用“转到定义”时，现在也会提取参与其中的具体实例并提供跳转位置。例如，对 `1 + 1` 中的 `+` 使用“转到定义”将得到 `HAdd.hAdd`、`HAdd α α α` 和 `Add Nat`。
-  - 使用“转到声明”时，现在除了精化器和解析器外，还会给出“转到定义”的全部结果。例如，对 `1 + 1` 中的 `+` 使用“转到声明”将得到 `HAdd.hAdd`、`HAdd α α α`、`Add Nat`、``macro_rules | `($x + $y) => ...`` 和 `infixl:65 " + " => HAdd.hAdd` 的结果。
-  - 对类型中包含多个常量的值使用“转到类型定义”时，现在会为每个常量提供“转到定义”的结果。例如，对 `x : Array Nat` 中的 `x` 使用“转到类型定义”将得到 `Array` 和 `Nat` 的结果。
+* [#9040](https://github.com/leanprover/lean4/pull/9040) 改进了 “Go to Definition” 的用户体验，具体包括：
+  - 对类型类投影使用 “Go to Definition” 时，现在会提取参与其中的具体实例，并将它们作为可跳转的位置提供。例如，对 `toString 0` 中的 `toString` 使用该功能，会得到 `ToString.toString` 和 `ToString Nat`。
+  - 对会生成带有类型类投影语法之宏使用 “Go to Definition” 时，现在也会提取参与其中的具体实例，并将它们作为可跳转的位置提供。例如，对 `1 + 1` 中的 `+` 使用该功能，会得到 `HAdd.hAdd`、`HAdd α α α` 和 `Add Nat`。
+  - 使用 “Go to Declaration” 时，现在除了给出参与其中的精译器和解析器外，还会给出 “Go to Definition” 的全部结果。例如，对 `1 + 1` 中的 `+` 使用它，会得到 `HAdd.hAdd`、`HAdd α α α`、`Add Nat`、``macro_rules | `($x + $y) => ...`` 和 `infixl:65 " + " => HAdd.hAdd`。
+  - 对类型中包含多个常量的值使用 “Go to Type Definition” 时，现在会为每个常量提供 “Go to Definition” 的结果。例如，对 `x : Array Nat` 中的 `x` 使用它，会得到 `Array` 和 `Nat`。
 
 * [#9163](https://github.com/leanprover/lean4/pull/9163) 目前在服务器中禁用了由 `lake setup-file` 产生的头部。等到 Lake 在处理工作区模块时会考虑服务器给出的头部后，它会重新启用。否则，当磁盘上的文件与编辑器中的文件对该文件是否参与模块系统存在分歧时，`setup-file` 头部会产生奇怪的行为。
 
-* [#9563](https://github.com/leanprover/lean4/pull/9563)在模糊匹配时对 `~20%` 进行某些微优化
-指令获胜 。
+* [#9563](https://github.com/leanprover/lean4/pull/9563) 对模糊匹配做了一些微优化，带来约 `~20%` 的指令数收益。
 
-* [#9784](https://github.com/leanprover/lean4/pull/9784)确保编辑器进度栏更好地反映实际
-平行拟订的进展。
+* [#9784](https://github.com/leanprover/lean4/pull/9784) 确保编辑器进度条能更准确地反映并行精译的实际进度。
 
 ````
 # Lake
@@ -1074,29 +737,15 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___23___0-_LPAR_2025-0
 
 ````markdown
 
-* [#9053](https://github.com/leanprover/lean4/pull/9053)更新Lake,以解决供过渡用的`.olean`文件
-通过`modules`字段`lean --setup` 中`modules`项]的倾销进口。
-表示利恩现在可以直接使用来自
-湖缓藏地,无需将其定位于特定的等级
-路径。
+* [#9053](https://github.com/leanprover/lean4/pull/9053) 更新了 Lake，使 Lean 可以通过 `lean --setup` 的 `modules` 字段解析传递导入所需的 `.olean` 文件。这意味着 Lean 现在可以直接使用 Lake 缓存中的 `.olean` 文件，而不必再把它们定位到某个特定的层级路径。
 
-* [#9101](https://github.com/leanprover/lean4/pull/9101) 修正源文件被丢弃的# 9081 所引入的臭虫
-从模块输入跟踪中取出模块输入跟踪,并且从
-模块工作日志 。
+* [#9101](https://github.com/leanprover/lean4/pull/9101) 修复了 #9081 引入的一个错误：它会让源文件从模块输入跟踪中丢失，并让模块作业日志中的一些条目消失。
 
-* [#9162](https://github.com/leanprover/lean4/pull/9162) 修改`,ir` 文物`,ir` 内容中的关键湖用途
-(h) 数据结构`r`,维持单项公约的数据结构`r`,
-字符关键字名称。
+* [#9162](https://github.com/leanprover/lean4/pull/9162) 将 Lake 在内容哈希数据结构里为 `,ir` 产物使用的键改成了 `r`，以保持“单字符键名”的约定。
 
 * [#9165](https://github.com/leanprover/lean4/pull/9165) 修复了 Lake 创建静态归档文件过程中的两个问题。
 
-* [#9332](https://github.com/leanprover/lean4/pull/9332)改变湖中依赖性克隆机制,以便记录
-有关湖泊是克隆的信息a
-在完成前(而不是在完成前)发生
-开始 。 这是
-对于不理解为什么湖看起来的用户来说,
-被困在无
-设置新工程时, 输出为 :
+* [#9332](https://github.com/leanprover/lean4/pull/9332) 修改了 Lake 中的依赖克隆机制，使得 “Lake 正在克隆某个依赖” 这一日志消息会在开始克隆时出现，而不是在克隆完成后才出现。这大大缓解了用户在新建项目时看到 Lake “无故卡住”的困惑；现在输出如下：
   ```
   λ lake +lean4 new math math
   info: downloading mathlib `lean-toolchain` file
@@ -1106,44 +755,25 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___23___0-_LPAR_2025-0
   info: leanprover-community/mathlib: checking out revision 'cd11c28c6a0d514a41dd7be9a862a9c8815f8599'
   ```
 
-* [#9434](https://github.com/leanprover/lean4/pull/9434) 改变湖中地方缓存基础设施,以恢复
-缓存中的可执行文件以及共享和静态库。 这意味着
-他们保留其预期姓名,有些使用案件仍然依赖这些名字。
+* [#9434](https://github.com/leanprover/lean4/pull/9434) 修改了 Lake 的本地缓存基础设施，使其能够从缓存中恢复可执行文件、共享库和静态库。这意味着它们会保留预期名称，而某些用例仍然依赖这些名称。
 
 * [#9435](https://github.com/leanprover/lean4/pull/9435) 添加了 `libPrefixOnWindows` 包与库配置选项。启用后，Lake 会在 Windows 上为静态库和共享库加上 `lib` 前缀（也就是与 Unix 上相同的方式）。
 
-* [#9436](https://github.com/leanprover/lean4/pull/9436) 增加工作数量,直至湖生产的最终信息
-在一个成功运行的 `lake build` 上。
+* [#9436](https://github.com/leanprover/lean4/pull/9436) 在 `lake build` 成功运行后的最终消息中加入了本次运行的作业数量。
 
-* [#9478](https://github.com/leanprover/lean4/pull/9478)为`meta import`增加适当的湖湖支持。
-湖传到`Lean'
-设置。
+* [#9478](https://github.com/leanprover/lean4/pull/9478) 为 `meta import` 增加了正确的 Lake 支持。模块 IR 现在会被记录到跟踪信息中，也会出现在 Lake 传给 `lean --setup` 的预解析模块里。
 
-* [#9525](https://github.com/leanprover/lean4/pull/9525) 修复湖对模块系统的处理`import all`。
-以前,湖处理`import all` 同样的非模块`import`,
-在过境进口树上进口所有私人数据。
-两者有区别,而`import all M`只是进口私人
-`M`数据的数据。 `M`的直接私人进口`M` 得到遵循,但`M`的直接私人进口
-不升级。
+* [#9525](https://github.com/leanprover/lean4/pull/9525) 修复了 Lake 对模块系统 `import all` 的处理。此前，Lake 会像处理非模块化 `import` 一样处理 `import all`，从而把传递导入树中的所有私有数据都导入进来。现在 Lake 会区分这两者：`import all M` 只会导入 `M` 的私有数据。`M` 的直接私有导入会被跟随，但不会被提升。
 
-* [#9559](https://github.com/leanprover/lean4/pull/9559)更改 `lake setup-file`,以使用服务器提供的页眉
-工作空间模块。
+* [#9559](https://github.com/leanprover/lean4/pull/9559) 修改了 `lake setup-file`，使其对工作区模块使用服务器提供的头部。
 
-* [#9604](https://github.com/leanprover/lean4/pull/9604) 将 Lake 生成 thin archive 的行为限制为仅用于 Windows core build（即 `bootstrap = true`）。macOS 上构建 core 时通常使用的未捆绑 `ar` 不支持 `--thin`，因此除非必要我们会避免使用它。
+* [#9604](https://github.com/leanprover/lean4/pull/9604) 将 Lake 生成瘦归档的行为限制为仅用于 Windows 的核心构建（即 `bootstrap = true`）。macOS 上构建 core 时通常使用的未捆绑 `ar` 不支持 `--thin`，因此除非必要我们会避免使用它。
 
-* [#9677](https://github.com/leanprover/lean4/pull/9677) 建筑物监测器的每个建造步骤增加建造时间(以下)
-`-v` 或在[CI]中)和`--no-build` 上出现的延迟,直至`--no-build`
-构建监视器完成 。 因此, [`--no-build` 失败现在将报告
-其目标因需要重建而封锁了湖。
+* [#9677](https://github.com/leanprover/lean4/pull/9677) 为构建监视器的每个构建步骤加入了构建耗时（在 `-v` 或 CI 中显示），并让 `--no-build` 在构建监视器结束后才退出。因此，`--no-build` 失败现在会报告究竟是哪些目标因为需要重建而阻塞了 Lake。
 
-* [#9697](https://github.com/leanprover/lean4/pull/9697) 将处理固定在a`lake lean`和`lake setup-file`
-多点( 如 `src/Foo.Bar.lean` ) 的库源文件 。
+* [#9697](https://github.com/leanprover/lean4/pull/9697) 修复了 `lake lean` 与 `lake setup-file` 对带多个点的库源文件（例如 `src/Foo.Bar.lean`）的处理。
 
-* [#9698](https://github.com/leanprover/lean4/pull/9698)调整 `lake query` 至无
-需要文本和JSON表格,而与任何
-类别也已经重新命名。此外,
-仅将文本模块标题的查询格式改进为
-产生有效页眉。
+* [#9698](https://github.com/leanprover/lean4/pull/9698) 调整了 `lake query` 的格式化类型类，使其不再要求同时具备文本和 JSON 两种形式，而是允许任意组合；这些类型类也被重命名了。此外，文本模块头的查询格式也被改进为只生成有效头部。
 
 ````
 # 其他
@@ -1157,7 +787,6 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___23___0-_LPAR_2025-0
 
 * [#9114](https://github.com/leanprover/lean4/pull/9114) 进一步改进了发布自动化，能在发往下游仓库的 bump PR 中自动纳入来自 `nightly-testing` 和 `bump/v4.X.0` 分支的内容。
 
-* [#9659](https://github.com/leanprover/lean4/pull/9659) 确定`trace.profiler.output`选项与`trace.profiler.output`选项的兼容性
-Firefox 配置文件器的新版本
+* [#9659](https://github.com/leanprover/lean4/pull/9659) 修复了 `trace.profiler.output` 选项与新版 Firefox Profiler 的兼容性。
 
 ````
