@@ -21,31 +21,32 @@ set_option pp.rawOnError true
 open Std.Iterators Types
 open Std (TreeMap Iter IterM IterStep Iterator PlausibleIterStep IteratorLoop IteratorAccess LawfulIteratorLoop)
 
-#doc (Manual) "Iterators" =>
+#doc (Manual) "迭代器" =>
 %%%
+file := "Iterators"
 tag := "iterators"
 %%%
 
-An {deftech}_iterator_ provides sequential access to each element of some source of data.
-Typical iterators allow the elements in a collection, such as a list, array, or {name Std.TreeMap}`TreeMap` to be accessed one by one, but they can also provide access to data by carrying out some {tech (key := "monad")}[monadic] effect, such as reading files.
-Iterators provide a common interface to all of these operations.
-Code that is written to the iterator API can be agnostic as to the source of the data.
+{deftech (key := "iterator")}_迭代器_提供对某个数据源中各元素的顺序访问。
+典型的迭代器允许逐个访问列表、数组或 {name Std.TreeMap}`TreeMap` 等集合中的元素；它们也可以通过执行某种{tech (key := "monad")}[单子式]效果（例如读取文件）来提供数据访问。
+迭代器为所有这些操作提供了统一接口。
+依据迭代器接口编写的代码无需关心数据来自何处。
 
-Each iterator maintains an internal state that enables it to determine the next value.
-Because Lean is a pure functional language, consuming an iterator does not invalidate it, but instead copies it with an updated state.
-As usual, {tech (key := "reference count")}[reference counting] is used to optimize programs that use values only once into programs that destructively modify values.
+每个迭代器都维护一份内部状态，用以确定下一个值。
+由于 Lean 是纯函数式语言，消费迭代器不会使其失效，而是会复制出一个状态已更新的迭代器。
+一如既往，{tech (key := "reference count")}[引用计数]会将仅使用值一次的程序优化为以破坏性方式修改值的程序。
 
-To use iterators, import {module}`Std.Data.Iterators`.
+要使用迭代器，请导入 {module}`Std.Data.Iterators`。
 
-:::example "Mixing Collections"
+:::example "混用集合" (file := "Mixing Collections")
 ```imports -show
 import Std.Data.Iterators
 ```
 ```lean -show
 open Std
 ```
-Combining a list and an array using {name}`List.zip` or {name}`Array.zip` would ordinarily require converting one of them into the other collection.
-Using iterators, they can be processed without conversion:
+通常，使用 {name}`List.zip` 或 {name}`Array.zip` 合并列表与数组，需要先将其中一个转换成另一种集合。
+使用迭代器，无需转换即可处理二者：
 ```lean (name := zip)
 def colors : Array String := #["purple", "gray", "blue"]
 def codes : List String := ["aa27d1", "a0a0a0", "0000c5"]
@@ -57,7 +58,7 @@ def codes : List String := ["aa27d1", "a0a0a0", "0000c5"]
 ```
 :::
 
-::::example "Avoiding Intermediate Structures"
+::::example "避免中间结构" (file := "Avoiding Intermediate Structures")
 ```imports -show
 import Std.Data.Iterators
 ```
@@ -65,11 +66,11 @@ import Std.Data.Iterators
 open Std
 ```
 :::paragraph
-In this example, an array of colors and a list of color codes are combined.
-The program separates three intermediate stages:
-1. The names and codes are combined into pairs.
-2. The pairs are transformed into readable strings.
-3. The strings are combined with newlines.
+本例合并一个颜色数组和一个颜色编码列表。
+程序分为三个中间阶段：
+1. 将名称与编码组合成二元组。
+2. 将二元组转换为可读字符串。
+3. 用换行符连接这些字符串。
 ```lean (name := intermediate)
 def colors : Array String := #["purple", "gray", "blue"]
 
@@ -92,68 +93,76 @@ blue ↦ #0000c5
 ```
 :::
 
-The intermediate stages of the computation do not allocate new data structures.
-Instead, all the steps of the transformation are fused into a single loop, with {name}`Iter.fold` carrying out one step at a time.
-In each step, a single color and color code are combined into a pair, rewritten to a string, and added to the result string.
+计算的中间阶段不会分配新的数据结构。
+相反，转换的所有步骤会融合为一个循环，由 {name}`Iter.fold` 每次执行一步。
+每一步都会将一个颜色及其编码组合成二元组、改写为字符串，再加入结果字符串。
 ::::
 
-The Lean standard library provides three kinds of iterator operations.
-{deftech}_Producers_ create a new iterator from some source of data.
-They determine which data is to be returned by an iterator, and how this data is to be computed, but they are not in control of _when_ the computations occur.
-{deftech}_Consumers_ use the data in an iterator for some purpose.
-Consumers request the iterator's data, and the iterator computes only enough data to satisfy a consumer's requests.
-{deftech (key := "iterator combinator")}_Combinators_ are both consumers and producers: they create new iterators from existing iterators.
-Examples include {name}`Iter.map` and {name}`Iter.filter`.
-The resulting iterators produce data by consuming their underlying iterators, and do not actually iterate over the underlying collection until they themselves are consumed.
+Lean 标准库提供三类迭代器操作。
+{deftech (key := "Producers")}_生产者_从某个数据源创建新的迭代器。
+它们决定迭代器返回哪些数据以及如何计算这些数据，但不控制计算在_何时_发生。
+{deftech (key := "Consumers")}_消费者_将迭代器中的数据用于某种目的。
+消费者向迭代器请求数据，而迭代器只计算足以满足请求的数据。
+{deftech (key := "iterator combinator")}_组合子_既是消费者也是生产者：它们从现有迭代器创建新的迭代器。
+例如 {name}`Iter.map` 和 {name}`Iter.filter`。
+所得迭代器通过消费其底层迭代器来生产数据；只有当它们自身被消费时，才会真正遍历底层集合。
 
 
 :::keepEnv
 ```lean -show
-/-- A collection type. -/
+/-- 一种集合类型。 -/
 structure Coll : Type u where
-/-- The elements of the collection `Coll`. -/
+/-- 集合 `Coll` 的元素。 -/
 structure Elem : Type u where
-/-- Returns an iterator for `c`. -/
+/-- 返回 `c` 的迭代器。 -/
 def Coll.iter (c : Coll) := (#[].iter : Iter Elem)
 ```
-Each built-in collection for which it makes sense to do so can be iterated over.
-In other words, the collection libraries include iterator {tech}[producers].
-By convention, a collection type {name}`Coll` provides a function {name}`Coll.iter` that returns an iterator over the elements of a collection.
-Examples include {name}`List.iter`, {name}`Array.iter`, and {name}`TreeMap.iter`.
-Additionally, other built-in types such as ranges support iteration using the same convention.
+每种适合迭代的内置集合都可以被遍历。
+换言之，集合库包含迭代器{tech (key := "producers")}[生产者]。
+按照约定，集合类型 {name}`Coll` 会提供函数 {name}`Coll.iter`，返回遍历该集合元素的迭代器。
+例如 {name}`List.iter`、{name}`Array.iter` 和 {name}`TreeMap.iter`。
+此外，区间等其他内置类型也按同一约定支持迭代。
 :::
 
-# Run-Time Considerations
+# 运行时考量
+%%%
+file := "Run-Time-Considerations"
+tag := "Lean-__________________--Iterators--Run-Time-Considerations"
+%%%
 
-For many use cases, using iterators can give a performance benefit by avoiding allocating intermediate data structures.
-Without iterators, zipping a list with an array requires first converting one of them to the other type, allocating an intermediate structure, and then using the appropriate {name List.zip}`zip` function.
-Using iterators, the intermediate structure can be avoided.
+在许多使用场景中，迭代器可以避免分配中间数据结构，从而提升性能。
+若不使用迭代器，将列表与数组配对时，必须先把其中一个转换成另一种类型并分配中间结构，然后再使用相应的 {name List.zip}`zip` 函数。
+使用迭代器即可避免这一中间结构。
 
-When an iterator is consumed, the resulting computation should be thought of as a single loop, even if the iterator itself is built using combinators from a number of underlying iterators.
-One step of the loop may carry out multiple steps from the underlying iterators.
-In many cases, the Lean compiler can optimize iterator computations, removing the intermediate overhead, but this is not guaranteed.
-When profiling shows that significant time is taken by a tight loop that involves multiple sources of data, it can be necessary to inspect the compiler's IR to see whether the iterators' operations were fused.
-In particular, if the IR contains many pattern matches over steps, then it can be a sign of a failure to inline or specialize.
-If this is the case, it may be necessary to write a tail-recursive function by hand rather than using the higher-level API.
+消费迭代器时，应将所得计算视作单个循环，即使该迭代器本身是用组合子从多个底层迭代器构建的。
+循环的一步可能会执行底层迭代器的多个步骤。
+在许多情况下，Lean 编译器可以优化迭代器计算并消除中间开销，但并不保证总能如此。
+若性能分析表明涉及多个数据源的紧密循环耗时显著，可能需要检查编译器的中间表示，以确认迭代器操作是否已融合。
+尤其是，当中间表示中包含大量针对步骤的模式匹配时，这可能表示内联或特化失败。
+此时可能需要手写尾递归函数，而不是使用高层接口。
 
-# Iterator Definitions
+# 迭代器定义
+%%%
+file := "Iterator-Definitions"
+tag := "Lean-__________________--Iterators--Iterator-Definitions"
+%%%
 
-Iterators may be either monadic or pure, and they may be finite, productive, or potentially infinite.
-{deftech (key:="monadic iterator")}_Monadic_ iterators use side effects in some {tech}[monad] to emit each value, and must therefore be used in the monad, while {deftech (key:="pure iterator")}_pure_ iterators do not require side effects.
-For example, iterating over all files in a directory requires the {name}`IO` monad.
-Pure iterators have type {name}`Iter`, while monadic iterators are represented by {name}`IterM`.
+迭代器可以是单子式或纯的，也可以是有限、能产或潜在无限的。
+{deftech (key:="monadic iterator")}_单子式_迭代器使用某个{tech (key := "monad")}[单子]中的副作用来发出各个值，因此必须在该单子中使用；而{deftech (key:="pure iterator")}_纯_迭代器不需要副作用。
+例如，迭代目录中的所有文件需要 {name}`IO` 单子。
+纯迭代器的类型为 {name}`Iter`，单子式迭代器则由 {name}`IterM` 表示。
 
 {docstring Iter}
 
 {docstring IterM}
 
-The types {name}`Iter` and {name}`IterM` are merely wrappers around an internal state.
-This inner state type is the implicit parameter to the iterator types.
-For basic producer iterators, like the one that results from {name}`List.iter`, this type is fairly simple; however, iterators that result from {tech (key := "iterator combinator")}[combinators] use polymorphic state types that can grow large.
-Because Lean elaborates the specified return type of a function before elaborating its body, it may not be possible to automatically determine the internal state type of an iterator type returned by a function.
-In these cases, it can be helpful to omit the return type from the signature and instead place a type annotation on the definition's body, which allows the specific iterator combinators invoked from the body to be used to determine the state type.
+类型 {name}`Iter` 和 {name}`IterM` 只是内部状态的包装。
+该内部状态类型是迭代器类型的隐式参数。
+对于 {name}`List.iter` 所产生的这类基本生产者迭代器，该类型相当简单；但由{tech (key := "iterator combinator")}[组合子]产生的迭代器会使用可能变得很庞大的多态状态类型。
+由于 Lean 会先精译函数指定的返回类型，再精译其函数体，因此可能无法自动确定函数所返回迭代器类型的内部状态类型。
+此时可以省略签名中的返回类型，改在定义体上添加类型标注，从而让定义体中调用的具体迭代器组合子参与确定状态类型。
 
-:::example "Iterator State Types"
+:::example "迭代器状态类型" (file := "Iterator State Types")
 ```imports -show
 import Std.Data.Iterators
 ```
@@ -162,7 +171,7 @@ open Std
 open Iterators.Types (ListIterator ArrayIterator Map)
 ```
 
-Writing the internal state type explicitly for list and array iterators is feasible:
+可以显式写出列表与数组迭代器的内部状态类型：
 ```lean
 def reds := ["red", "crimson"]
 
@@ -170,7 +179,7 @@ example : @Iter (ListIterator String) String := reds.iter
 
 example : @Iter (ArrayIterator String) String := reds.toArray.iter
 ```
-However, the internal state type of a use of the {name}`Iter.map` combinator is quite complicated:
+但使用 {name}`Iter.map` 组合子时，其内部状态类型相当复杂：
 ```lean
 example :
     @Iter
@@ -179,7 +188,7 @@ example :
       Nat :=
   reds.iter.map String.length
 ```
-Omitting the state type leads to an error:
+省略状态类型会导致错误：
 ```lean +error (name := noStateType)
 example : Iter Nat := reds.iter.map String.length
 ```
@@ -191,7 +200,7 @@ context:
 
 Note: Because this declaration's type has been explicitly provided, all parameter types and holes (e.g., `_`) in its header are resolved before its body is processed; information from the declaration body cannot be used to infer what these values should be
 ```
-Rather than writing the state type by hand, it can be convenient to omit the return type and instead provide the annotation around the term:
+与其手写状态类型，不如省略返回类型，改在项的外部提供标注：
 ```lean
 example := (reds.iter.map String.length : Iter Nat)
 
@@ -201,41 +210,41 @@ example :=
 ```
 :::
 
-The actual process of iteration consists of producing a sequence of iteration steps when requested.
-Each step returns an updated iterator with a new internal state along with either a data value (in {name}`IterStep.yield`), an indicator that the caller should request a data value again ({name}`IterStep.skip`), or an indication that iteration is finished ({name}`IterStep.done`).
-Without the ability to {name IterStep.skip}`skip`, it would be much more difficult to work with iterator combinators such as {name}`Iter.filter` that do not yield values for all of those yielded by the underlying iterator.
-With {name IterStep.skip}`skip`, the implementation of {name Iter.filter}`filter` doesn't need to worry about whether the underlying iterator is {tech (key:="finite iterator")}[finite] in order to be a well-defined function, and reasoning about its finiteness can be carried out in separate proofs.
-Additionally, {name Iter.filter}`filter` would require an inner loop, which is much more difficult for the compiler to inline.
+实际的迭代过程是在收到请求时产生一系列迭代步骤。
+每一步都会返回具有新内部状态的更新后迭代器，同时还会返回以下三者之一：数据值（{name}`IterStep.yield`）、提示调用方应再次请求数据值的标志（{name}`IterStep.skip`），或迭代已经结束的标志（{name}`IterStep.done`）。
+若不能使用 {name IterStep.skip}`skip`，就会很难处理 {name}`Iter.filter` 这类不会为底层迭代器发出的每个值都产出结果的迭代器组合子。
+借助 {name IterStep.skip}`skip`，{name Iter.filter}`filter` 的实现无需为了成为良定义函数而考虑底层迭代器是否{tech (key:="finite iterator")}[有限]；关于其有限性的推理可以在单独的证明中完成。
+此外，否则 {name Iter.filter}`filter` 还需要一个内层循环，而编译器很难将其内联。
 
 {docstring IterStep}
 
-Steps taken by {name}`Iter` and {name}`IterM` are respectively represented by the types {name}`Iter.Step` and {name}`IterM.Step`.
-Both types of step are wrappers around {name}`IterStep` that include {ref "iterator-plausibility"}[additional proofs] that are used to track termination behavior.
+{name}`Iter` 和 {name}`IterM` 所执行的步骤分别由类型 {name}`Iter.Step` 和 {name}`IterM.Step` 表示。
+这两种步骤类型都是 {name}`IterStep` 的包装，其中包含用于跟踪终止行为的{ref "iterator-plausibility"}[额外证明]。
 
 {docstring Iter.Step}
 
 {docstring IterM.Step}
 
-Steps are produced from iterators using {name}`Iterator.step`, which is a method of the {name}`Iterator` type class.
-{name}`Iterator` is used for both pure and monadic iterators; pure iterators can be completely polymorphic in the choice of monad, which allows callers to instantiate it with {name}`Id`.
+迭代器通过 {name}`Iterator.step` 产生步骤；它是 {name}`Iterator` 类型类的方法。
+{name}`Iterator` 同时用于纯迭代器和单子式迭代器；纯迭代器可以对单子的选择完全多态，因此调用方可以用 {name}`Id` 将其实例化。
 
 {docstring Iterator +allowMissing}
 
-## Plausibility
+## 合理性
 %%%
 tag := "iterator-plausibility"
 %%%
 
-In addition to the step function, instances of {name}`Iterator` include a relation {name}`Iterator.IsPlausibleStep`.
-This relation exists because most iterators both maintain invariants over their internal state and yield values in a predictable manner.
-For example, array iterators track both an array and a current index into it.
-Stepping an array iterator results in an iterator over the same underlying array; it yields a value when the index is small enough, or is done otherwise.
-The {deftech}_plausible steps_ from an iterator state are those which are related to it via the iterator's implementation of {name Iterator.IsPlausibleStep}`IsPlausibleStep`.
-Tracking plausibility at the logical level makes it feasible to reason about termination behavior for monadic iterators.
+除了步骤函数，{name}`Iterator` 的实例还包含关系 {name}`Iterator.IsPlausibleStep`。
+该关系之所以存在，是因为大多数迭代器既会维持其内部状态上的不变量，也会以可预测的方式产出值。
+例如，数组迭代器会同时跟踪一个数组以及指向其中的当前索引。
+推进数组迭代器会得到仍遍历同一底层数组的迭代器；当索引足够小时它会产出一个值，否则便结束。
+从某个迭代器状态出发的{deftech (key := "plausible steps")}_合理步骤_，是指通过该迭代器对 {name Iterator.IsPlausibleStep}`IsPlausibleStep` 的实现而与该状态相关的步骤。
+在逻辑层面跟踪合理性，使得推理单子式迭代器的终止行为成为可能。
 
-Both {name}`Iter.Step` and {name}`IterM.Step` are defined in terms of {name}`PlausibleIterStep`; thus, both types can be used with {tech}[leading dot notation] for its namespace.
-An {name}`Iter.Step` or {name}`IterM.Step` can be analyzed using the three {ref "match_pattern-functions"}[match pattern functions] {name}`PlausibleIterStep.yield`, {name}`PlausibleIterStep.skip`, and {name}`PlausibleIterStep.done`.
-These functions pair the information in the underlying {name}`IterStep` with the surrounding proof object.
+{name}`Iter.Step` 与 {name}`IterM.Step` 都以 {name}`PlausibleIterStep` 定义；因此，这两种类型都可以对其命名空间使用{tech (key := "leading dot notation")}[前导点记法]。
+可以使用三个{ref "match_pattern-functions"}[匹配模式函数] {name}`PlausibleIterStep.yield`、{name}`PlausibleIterStep.skip` 和 {name}`PlausibleIterStep.done` 分析 {name}`Iter.Step` 或 {name}`IterM.Step`。
+这些函数把底层 {name}`IterStep` 中的信息与其外围证明对象配对。
 
 {docstring PlausibleIterStep}
 
@@ -245,35 +254,38 @@ These functions pair the information in the underlying {name}`IterStep` with the
 
 {docstring PlausibleIterStep.done}
 
-## Finite and Productive Iterators
+## 有限且能产的迭代器
+%%%
+tag := "Lean-__________________--Iterators--Iterator-Definitions--Finite-and-Productive-Iterators"
+%%%
 
 :::paragraph
-Not all iterators are guaranteed to return a finite number of results; it is perfectly sensible to iterate over all of the natural numbers.
-Similarly, not all iterators are guaranteed to either return a single result or terminate; iterators may be defined using arbitrary programs.
-Thus, Lean divides iterators into three termination classes:
-* {deftech (key:="finite iterator")}_Finite_ iterators are guaranteed to finish iterating after a finite number of steps. These iterators have a {name}`Finite` instance.
-* {deftech (key:="productive iterator")}_Productive_ iterators are guaranteed to yield a value or terminate in finitely many steps, but they may yield infinitely many values. These iterators have a {name}`Productive` instance.
-* All other iterators, whose termination behavior is unknown. These iterators have neither instance.
+并非所有迭代器都保证返回有限个结果；遍历所有自然数完全合理。
+同样，并非所有迭代器都保证返回一个结果或终止；迭代器可以用任意程序定义。
+因此，Lean 将迭代器分为三类终止性类别：
+* {deftech (key:="finite iterator")}_有限_迭代器保证在有限步后结束迭代。这些迭代器具有 {name}`Finite` 实例。
+* {deftech (key:="productive iterator")}_能产_迭代器保证在有限步内产出一个值或终止，但它们可能产出无限多个值。这些迭代器具有 {name}`Productive` 实例。
+* 其余终止行为未知的迭代器。这些迭代器不具有上述任何一种实例。
 
-All finite iterators are necessarily productive.
+所有有限迭代器必然都是能产的。
 :::
 
 {docstring Finite}
 
 {docstring Productive}
 
-Lean's standard library provides many functions that iterate over an iterator. These consumer functions usually do not
-make any assumptions about the underlying iterator. In particular, such functions may run forever for certain iterators.
+Lean 标准库提供了许多遍历迭代器的函数。这些消费者函数通常不会
+对底层迭代器作任何假设。尤其是，对某些迭代器而言，这类函数可能永远运行下去。
 
-Sometimes, it is of utmost importance that a function does terminate.
-For these cases, the combinator {name}`Iter.ensureTermination` results in an iterator that provides variants of consumers that are guaranteed to terminate.
-They usually require proof that the involved iterator is finite.
+有时，确保函数确实终止至关重要。
+在这些情况下，组合子 {name}`Iter.ensureTermination` 会得到一种迭代器，它提供保证终止的消费者变体。
+这些变体通常要求证明所涉及的迭代器是有限的。
 
 {docstring Iter.ensureTermination}
 
 {docstring IterM.ensureTermination}
 
-::::example "Iterating Over `Nat`"
+::::example "迭代 `Nat`" (file := "Iterating Over Nat")
 ```imports -show
 import Std.Data.Iterators
 ```
@@ -282,18 +294,18 @@ open Std
 open Iterators (Productive)
 ```
 :::paragraph
-To write an iterator that yields each natural number in turn, the first step is to implement its internal state.
-This iterator only needs to remember the next natural number:
+要编写依次产出每个自然数的迭代器，第一步是实现其内部状态。
+该迭代器只需记住下一个自然数：
 ```lean
 structure Nats where
   next : Nat
 ```
 :::
 :::paragraph
-This iterator will only ever yield the next natural number.
-Thus, its step function will never return {name IterStep.skip}`skip` or {name IterStep.done}`done`.
-Whenever it yields a value, the value will be the internal state's {name Nats.next}`next` field, and the successor iterator's {name Nats.next}`next` field will be one greater.
-The {tactic}`grind` tactic suffices to show that the step is indeed plausible:
+该迭代器只会产出下一个自然数。
+因此，它的步骤函数绝不会返回 {name IterStep.skip}`skip` 或 {name IterStep.done}`done`。
+每当它产出一个值时，该值就是内部状态的 {name Nats.next}`next` 字段，而后继迭代器的 {name Nats.next}`next` 字段则会增加一。
+{tactic}`grind` 策略足以证明该步骤确实合理：
 ```lean
 instance [Pure m] : Iterator Nats m Nat where
   IsPlausibleStep it
@@ -307,9 +319,9 @@ instance [Pure m] : Iterator Nats m Nat where
       .yield { it with internalState.next := n + 1 } n (by grind)
 ```
 
-Whenever an iterator is defined, an {name}`IteratorLoop` instance should be provided.
-They are required for most consumers of iterators such as {name}`Iter.toList` or the `for` loops.
-One can use their default implementations as follows:
+每当定义迭代器时，都应提供 {name}`IteratorLoop` 实例。
+{name}`Iter.toList` 或 `for` 循环等大多数迭代器消费者都需要它。
+可以如下使用其默认实现：
 
 ```lean
 instance [Pure m] [Monad n] : IteratorLoop Nats m n :=
@@ -322,8 +334,8 @@ instance [Pure m] [Monad n] : IteratorLoop Nats m n :=
 section
 variable [Pure m] [inst : Iterator Nats m Nat] (it it' : IterM (α := Nats) m Nat)
 ```
-This {name Iterator.step}`step` function is productive because it never returns {name IterStep.skip}`skip`.
-Thus, the proof that each chain of {name IterStep.skip}`skip`s has finite length can rely on the fact that when {lean}`it` is a {name}`Nats` iterator, {lean}`Iterator.IsPlausibleStep it (.skip it') = False`:
+此 {name Iterator.step}`step` 函数是能产的，因为它绝不返回 {name IterStep.skip}`skip`。
+因此，要证明每条 {name IterStep.skip}`skip` 链长度有限，可以利用这一事实：当 {lean}`it` 是 {name}`Nats` 迭代器时，{lean}`Iterator.IsPlausibleStep it (.skip it') = False`：
 ```lean -show
 end
 ```
@@ -331,12 +343,12 @@ end
 instance [Pure m] : Productive Nats m where
   wf := .intro <| fun _ => .intro _ nofun
 ```
-Because there are infinitely many {name}`Nat`s, the iterator is not finite.
+因为 {name}`Nat` 有无限多个，所以该迭代器不是有限的。
 :::
 
 
 :::paragraph
-A {name}`Nats` iterator can be created using this function:
+可以使用此函数创建 {name}`Nats` 迭代器：
 ```lean
 def Nats.iter : Iter (α := Nats) Nat :=
   IterM.mk { next := 0 } |>.toIter
@@ -344,18 +356,18 @@ def Nats.iter : Iter (α := Nats) Nat :=
 :::
 
 :::paragraph
-One can print all natural numbers by running the following function:
+运行以下函数可以打印所有自然数：
 ```lean
 def f : IO Unit := do
   for x in Nats.iter do
     IO.println s!"{x}"
 ```
-This function never terminates, printing all natural numbers in increasing order, one
-after another.
+该函数永不终止，它会按递增顺序打印所有自然数，一个接
+一个。
 :::
 
 :::paragraph
-This iterator is most useful with combinators such as {name}`Iter.zip`:
+该迭代器与 {name}`Iter.zip` 等组合子配合使用时最为有用：
 ```lean (name := natzip)
 #eval show IO Unit from do
   let xs : List String := ["cat", "dog", "pachycephalosaurus"]
@@ -370,8 +382,8 @@ This iterator is most useful with combinators such as {name}`Iter.zip`:
 :::
 
 :::paragraph
-In contrast to the previous example, this loop terminates because `xs.iter` is a finite iterator,
-One can make sure that a loop actually terminates by providing a {name}`Finite` instance:
+与前例不同，该循环会终止，因为 `xs.iter` 是有限迭代器。
+可以通过提供 {name}`Finite` 实例来确保循环确实终止：
 ```lean (name := natfin)
 #check type_of% (Nats.iter.zip ["cat", "dog"].iter).internalState
 
@@ -383,7 +395,7 @@ Zip Nats Id (ListIterator String) String : Type
 ```leanOutput natfin
 Zip.instFinite₂
 ```
-In contrast, `Nats.iter` has no `Finite` instance because it yields infinitely many values:
+相比之下，`Nats.iter` 会产出无限多个值，因此没有 `Finite` 实例：
 ```lean (name := natinf) +error
 #synth Finite Nats Id
 ```
@@ -394,7 +406,7 @@ failed to synthesize
 Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.
 ```
 
-Because there are infinitely many {name}`Nat`s, using {name}`Iter.ensureTermination` results in an error:
+因为 {name}`Nat` 有无限多个，使用 {name}`Iter.ensureTermination` 会导致错误：
 ```lean (name := natterm) +error
 #eval show IO Unit from do
   for x in Nats.iter.ensureTermination do
@@ -409,7 +421,7 @@ Hint: Type class instance resolution failures can be inspected with the `set_opt
 :::
 ::::
 
-::::example "Iterating Over Triples"
+::::example "迭代三元组" (file := "Iterating Over Triples")
 ```imports -show
 import Std.Data.Iterators
 ```
@@ -417,7 +429,7 @@ import Std.Data.Iterators
 open Std
 open Iterators (Finite)
 ```
-The type {name}`Triple` contains three values of the same type:
+类型 {name}`Triple` 包含三个相同类型的值：
 ```lean
 structure Triple α where
   fst : α
@@ -425,14 +437,14 @@ structure Triple α where
   thd : α
 ```
 
-The internal state of an iterator over {name}`Triple` can consist of a triple paired with a current position.
-This position may either be one of the fields or an indication that iteration is finished.
+遍历 {name}`Triple` 的迭代器，其内部状态可以由一个三元组和当前位置配对组成。
+该位置可以是其中一个字段，也可以表示迭代已结束。
 ```lean
 inductive TriplePos where
   | fst | snd | thd | done
 ```
 
-Positions can be used to look up elements:
+可以使用位置查找元素：
 
 ```lean
 def Triple.get? (xs : Triple α) (pos : TriplePos) : Option α :=
@@ -443,7 +455,7 @@ def Triple.get? (xs : Triple α) (pos : TriplePos) : Option α :=
   | _ => none
 ```
 
-Each field's position has a successor position:
+每个字段位置都有一个后继位置：
 ```lean
 @[grind, grind cases]
 inductive TriplePos.Succ : TriplePos → TriplePos → Prop where
@@ -452,20 +464,20 @@ inductive TriplePos.Succ : TriplePos → TriplePos → Prop where
   | thd : Succ .thd .done
 ```
 
-The iterator itself pairs a triple with the position of the next element:
+迭代器本身将三元组与下一个元素的位置配对：
 ```lean
 structure TripleIterator α where
   triple : Triple α
   pos : TriplePos
 ```
 
-Iteration begins at {name TriplePos.fst}`fst`:
+迭代从 {name TriplePos.fst}`fst` 开始：
 ```lean
 def Triple.iter (xs : Triple α) : Iter (α := TripleIterator α) α :=
   IterM.mk {triple := xs, pos := .fst : TripleIterator α} |>.toIter
 ```
 
-There are two plausible steps: either the iterator's position has a successor, in which case the next iterator is one that points at the same triple with the successor position, or it does not, in which case iteration is complete.
+有两种合理步骤：若迭代器的位置存在后继，则下一个迭代器仍指向同一三元组，但位置变为后继位置；若不存在后继，则迭代完成。
 ```lean
 @[grind]
 inductive TripleIterator.IsPlausibleStep :
@@ -482,7 +494,7 @@ inductive TripleIterator.IsPlausibleStep :
     IsPlausibleStep it .done
 ```
 
-The corresponding step function yields the iterator and value describe by the relation:
+对应的步骤函数会产出该关系所描述的迭代器和值：
 ```lean
 instance [Pure m] : Iterator (TripleIterator α) m α where
   IsPlausibleStep := TripleIterator.IsPlausibleStep
@@ -498,7 +510,7 @@ where finally
   all_goals grind [Triple.get?]
 ```
 
-This iterator can now be converted to an array:
+现在可以将该迭代器转换为数组：
 ```lean
 def abc : Triple Char := ⟨'a', 'b', 'c'⟩
 ```
@@ -509,9 +521,9 @@ def abc : Triple Char := ⟨'a', 'b', 'c'⟩
 #['a', 'b', 'c']
 ```
 
-In general, `Iter.toArray` might run forever. One can prove that `abc` is finite, and the above example will terminate after finitely many steps, by
-constructing a `Finite (Triple Char) Id` instance.
-It's easiest to start at {name}`TriplePos.done` and work backwards toward {name}`TriplePos.fst`, showing that each position in turn has a finite chain of successors:
+一般而言，`Iter.toArray` 可能永远运行。可以通过构造 `Finite (Triple Char) Id` 实例来
+证明 `abc` 是有限的，并证明上例会在有限步后终止。
+最简单的做法是从 {name}`TriplePos.done` 开始，反向推至 {name}`TriplePos.fst`，依次证明每个位置都只有有限长的后继链：
 
 ```lean
 @[grind! .]
@@ -552,7 +564,7 @@ instance [Pure m] : Finite (TripleIterator α) m where
       cases pos <;> grind
 ```
 
-To enable the iterator in {keywordOf Lean.Parser.Term.doFor}`for` loops, an instance of {name}`IteratorLoop` are needed:
+要使该迭代器可用于 {keywordOf Lean.Parser.Term.doFor}`for` 循环，需要一个 {name}`IteratorLoop` 实例：
 ```lean
 instance [Monad m] [Monad n] :
     IteratorLoop (TripleIterator α) m n :=
@@ -570,22 +582,22 @@ c
 ```
 ::::
 
-::::example "Iterators and Effects"
+::::example "迭代器与效果" (file := "Iterators and Effects")
 ```imports -show
 import Std.Data.Iterators
 ```
 ```lean -show
 open Std
 ```
-One way to iterate over the contents of a file is to read a specified number of bytes from a {name IO.FS.Stream}`Stream` at each step.
-When EOF is reached, the iterator can close the file by letting its reference count drop to zero:
+遍历文件内容的一种方式，是在每一步从 {name IO.FS.Stream}`Stream` 读取指定数量的字节。
+到达文件末尾时，迭代器可以让引用计数降为零，从而关闭文件：
 ```lean
 structure FileIterator where
   stream? : Option IO.FS.Stream
   count : USize := 8192
 ```
 
-An iterator can be created by opening a file and converting its handle to a stream:
+可以打开文件并将其句柄转换为流，以创建迭代器：
 ```lean
 def iterFile
     (path : System.FilePath)
@@ -596,8 +608,8 @@ def iterFile
   return IterM.mk { stream?, count }
 ```
 
-For this iterator, a {name IterStep.yield}`yield` is plausible when the file is still open, and {name IterStep.done}`done` is plausible when the file is closed.
-The actual step function performs a read and closes the file if no bytes were returned:
+对于该迭代器，文件仍打开时 {name IterStep.yield}`yield` 是合理的，文件已关闭时 {name IterStep.done}`done` 是合理的。
+实际的步骤函数会执行读取；若没有返回任何字节，则关闭文件：
 ```lean
 instance : Iterator FileIterator IO ByteArray where
   IsPlausibleStep it
@@ -617,13 +629,13 @@ instance : Iterator FileIterator IO ByteArray where
       return .deflate <| .yield it' bytes (by simp [h])
 ```
 
-To use it in loops, an {name}`IteratorLoop` instance will be necessary.
+要在循环中使用它，需要 {name}`IteratorLoop` 实例。
 ```lean
 instance [Monad n] : IteratorLoop FileIterator IO n :=
   .defaultImplementation
 ```
 
-This is enough support code to use the iterator to calculate file sizes:
+这些辅助代码足以使用该迭代器计算文件大小：
 ```lean
 def fileSize (name : System.FilePath) : IO Nat := do
   let mut size := 0
@@ -635,16 +647,22 @@ def fileSize (name : System.FilePath) : IO Nat := do
 
 ::::
 
-## Accessing Elements
+## 访问元素
+%%%
+tag := "Lean-__________________--Iterators--Iterator-Definitions--Accessing-Elements"
+%%%
 
-Some iterators support efficient random access.
-For example, an array iterator can skip any number of elements in constant time by incrementing the index that it maintains into the array.
+某些迭代器支持高效的随机访问。
+例如，数组迭代器只需递增其维护的数组索引，即可在常数时间内跳过任意数量的元素。
 
 {docstring IteratorAccess +allowMissing}
 
 {docstring IterM.nextAtIdx?}
 
-## Loops
+## 循环
+%%%
+tag := "Lean-__________________--Iterators--Iterator-Definitions--Loops"
+%%%
 
 {docstring IteratorLoop +allowMissing}
 
@@ -652,11 +670,14 @@ For example, an array iterator can skip any number of elements in constant time 
 
 {docstring LawfulIteratorLoop +allowMissing}
 
-## Universe Levels
+## 宇宙层级
+%%%
+tag := "Lean-__________________--Iterators--Iterator-Definitions--Universe-Levels"
+%%%
 
-To make the {tech}[universe levels] of iterators more flexible, a wrapper type {name Std.Shrink}`Shrink` is applied around the result of {name}`Iterator.step`.
-This type is presently a placeholder.
-It is present to reduce the scope of the breaking change when the full implementation is available.
+为了让迭代器的{tech (key := "universe levels")}[宇宙层级]更加灵活，会在 {name}`Iterator.step` 的结果外应用包装类型 {name Std.Shrink}`Shrink`。
+该类型目前只是占位符。
+它的存在是为了在完整实现可用时缩小破坏性变更的范围。
 
 {docstring Std.Shrink}
 
@@ -665,11 +686,14 @@ It is present to reduce the scope of the breaking change when the full implement
 {docstring Std.Shrink.deflate}
 
 
-## Basic Iterators
+## 基本迭代器
+%%%
+tag := "Lean-__________________--Iterators--Iterator-Definitions--Basic-Iterators"
+%%%
 
-In addition to the iterators provided by collection types, there are two basic iterators that are not connected to any underlying data structure.
-{name}`Iter.empty` finishes iteration immediately after yielding no data, and {name}`Iter.repeat` yields the same element forever.
-These iterators are primarily useful as parts of larger iterators built with combinators.
+除了集合类型提供的迭代器，还有两种不与任何底层数据结构关联的基本迭代器。
+{name}`Iter.empty` 不产出任何数据并立即结束迭代，而 {name}`Iter.repeat` 会永远产出同一元素。
+这些迭代器主要用作通过组合子构建的更大迭代器的组成部分。
 
 {docstring Iter.empty}
 
@@ -678,37 +702,41 @@ These iterators are primarily useful as parts of larger iterators built with com
 {docstring Iter.repeat}
 
 
-# Consuming Iterators
+# 消费迭代器
+%%%
+file := "Consuming-Iterators"
+tag := "Lean-__________________--Iterators--Consuming-Iterators"
+%%%
 
 :::paragraph
-There are three primary ways to consume an iterator:
+消费迭代器主要有三种方式：
 
-: Converting it to a sequential data structure
+: 将其转换为顺序数据结构
 
-  The functions {name}`Iter.toList`, {name}`Iter.toArray`, and their monadic equivalents {name}`IterM.toList` and {name}`IterM.toArray`, construct a lists or arrays that contain the values from the iterator, in order.
-  Only {tech}[finite iterators] can be converted to sequential data structures.
+  函数 {name}`Iter.toList`、{name}`Iter.toArray` 及其单子式对应项 {name}`IterM.toList` 和 {name}`IterM.toArray`，会构造按顺序包含迭代器各值的列表或数组。
+  只有{tech (key := "finite iterators")}[有限迭代器]才能转换为顺序数据结构。
 
-: {keywordOf Lean.Parser.Term.doFor}`for` loops
+: {keywordOf Lean.Parser.Term.doFor}`for` 循环
 
-  A {keywordOf Lean.Parser.Term.doFor}`for` loop can consume an iterator, making each value available in its body.
-  This requires that the iterator have an instance of {name}`IteratorLoop` for the loop's monad.
+  {keywordOf Lean.Parser.Term.doFor}`for` 循环可以消费迭代器，让每个值在循环体中可用。
+  这要求迭代器具有针对该循环所用单子的 {name}`IteratorLoop` 实例。
 
-: Stepping through iterators
+: 逐步推进迭代器
 
-  Iterators can provide their values one-by-one, with client code explicitly requesting each new value in turn.
-  When stepped through, iterators perform only enough computation to yield the requested value.
+  迭代器可以逐个提供其值，由客户端代码依次显式请求每个新值。
+  逐步推进时，迭代器只执行足以产出所请求值的计算。
 :::
 
 
-:::example "Converting Iterators to Lists"
+:::example "将迭代器转换为列表" (file := "Converting Iterators to Lists")
 ```imports -show
 import Std.Data.Iterators
 ```
 ```lean -show
 open Std
 ```
-In {name}`countdown`, an iterator over a range is transformed into an iterator over strings using {name}`Iter.map`.
-This call to {name}`Iter.map` does not result in any iteration over the range until {name}`Iter.toList` is called, at which point each element of the range is produced and transformed into a string.
+在 {name}`countdown` 中，使用 {name}`Iter.map` 将遍历区间的迭代器转换为遍历字符串的迭代器。
+这次对 {name}`Iter.map` 的调用并不会遍历区间；直到调用 {name}`Iter.toList` 时，区间中的各个元素才会被产出并转换为字符串。
 ```lean (name := toListEx)
 def countdown : String :=
   let steps : Iter String := (0...10).iter.map (s!"{10 - ·}!\n")
@@ -730,27 +758,27 @@ def countdown : String :=
 ```
 :::
 
-:::example "Converting Infinite Iterators to Lists"
+:::example "将无限迭代器转换为列表" (file := "Converting Infinite Iterators to Lists")
 ```imports -show
 import Std.Data.Iterators
 ```
 ```lean -show
 open Std
 ```
-Attempting to construct a list of all the natural numbers from an iterator will produce an endless loop:
+尝试从迭代器构造包含所有自然数的列表会产生无限循环：
 ```lean (name := toListInf) -keep
 def allNats : List Nat :=
   let steps : Iter Nat := (0...*).iter
   steps.toList
 ```
-The combinator {lean}`Iter.ensureTermination` results in an iterator where non-termination is ruled out.
-These iterators are guaranteed to terminate after finitely many steps, and thus cannot be used when Lean cannot prove the iterator finite.
+组合子 {lean}`Iter.ensureTermination` 会产生排除了不终止情形的迭代器。
+这类迭代器保证在有限步后终止，因此当 Lean 无法证明迭代器有限时便不能使用。
 ```lean (name := toListInf) +error -keep
 def allNats : List Nat :=
   let steps := (0...*).iter.ensureTermination
   steps.toList
 ```
-The resulting error message states that there is no {name}`Finite` instance:
+所得错误消息指出不存在 {name}`Finite` 实例：
 ```leanOutput toListInf
 failed to synthesize instance of type class
   Finite (Rxi.Iterator Nat) Id
@@ -760,14 +788,14 @@ Hint: Type class instance resolution failures can be inspected with the `set_opt
 
 :::
 
-:::example "Consuming Iterators in Loops"
+:::example "在循环中消费迭代器" (file := "Consuming Iterators in Loops")
 ```imports -show
 import Std.Data.Iterators
 ```
 ```lean -show
 open Std
 ```
-This program creates an iterator of strings from a range, and then consumes the strings in a {keywordOf Lean.Parser.Term.doFor}`for` loop:
+该程序从区间创建一个字符串迭代器，然后在 {keywordOf Lean.Parser.Term.doFor}`for` 循环中消费这些字符串：
 ```lean (name := iterFor)
 def countdown (n : Nat) : IO Unit := do
   let steps : Iter String := (0...n).iter.map (s!"{n - ·}!")
@@ -787,14 +815,14 @@ Blastoff!
 ```
 :::
 
-:::example "Consuming Iterators Directly"
+:::example "直接消费迭代器" (file := "Consuming Iterators Directly")
 ```imports -show
 import Std.Data.Iterators
 ```
 ```lean -show
 open Std
 ```
-The function {name}`countdown` calls the range iterator's {name Iter.step}`step` function directly, handling each of the three possible cases.
+函数 {name}`countdown` 直接调用区间迭代器的 {name Iter.step}`step` 函数，并处理三种可能情形。
 ```lean
 def countdown (n : Nat) : IO Unit := do
   let steps : Iter Nat := (0...n).iter
@@ -813,20 +841,26 @@ where
 ```
 :::
 
-## Stepping Iterators
+## 逐步推进迭代器
+%%%
+tag := "Lean-__________________--Iterators--Consuming-Iterators--Stepping-Iterators"
+%%%
 
-Iterators are manually stepped using {name}`Iter.step` or {name}`IterM.step`.
+可以使用 {name}`Iter.step` 或 {name}`IterM.step` 手动推进迭代器。
 
 {docstring Iter.step}
 
 {docstring IterM.step}
 
-### Termination
+### 终止
+%%%
+tag := "Lean-__________________--Iterators--Consuming-Iterators--Stepping-Iterators--Termination"
+%%%
 
-When manually stepping an finite iterator, the termination measures {name Iter.finitelyManySteps}`finitelyManySteps` and {name Iter.finitelyManySkips}`finitelyManySkips` can be used to express that each step brings iteration closer to the end.
-The proof automation for {ref "well-founded-recursion"}[well-founded recursion] is pre-configured to prove that recursive calls after steps reduce these measures.
+手动推进有限迭代器时，可以使用终止度量 {name Iter.finitelyManySteps}`finitelyManySteps` 和 {name Iter.finitelyManySkips}`finitelyManySkips` 表明每一步都让迭代更接近结束。
+{ref "well-founded-recursion"}[良基递归]的证明自动化已预先配置，可证明步骤之后的递归调用会减小这些度量。
 
-:::example "Finitely Many Skips"
+:::example "有限次跳过" (file := "Finitely Many Skips")
 ```imports -show
 import Std.Data.Iterators
 ```
@@ -834,9 +868,9 @@ import Std.Data.Iterators
 open Std
 open Iterators (Productive)
 ```
-This function returns the first element of an iterator, if there is one, or {name}`none` otherwise.
-Because the iterator must be productive, it is guaranteed to return an element after at most a finite number of {name PlausibleIterStep.skip}`skip`s.
-This function terminates even for infinite iterators.
+该函数在迭代器存在首个元素时返回它，否则返回 {name}`none`。
+因为该迭代器必须能产，所以保证至多经过有限次 {name PlausibleIterStep.skip}`skip` 后返回一个元素。
+即使面对无限迭代器，该函数也会终止。
 ```lean
 def getFirst {α β} [Iterator α Id β] [Productive α Id]
     (it : @Iter α β) : Option β :=
@@ -860,7 +894,10 @@ termination_by it.finitelyManySkips
 
 {docstring IterM.TerminationMeasures.Productive +allowMissing}
 
-## Consuming Pure Iterators
+## 消费纯迭代器
+%%%
+tag := "Lean-__________________--Iterators--Consuming-Iterators--Consuming-Pure-Iterators"
+%%%
 
 {docstring Iter.fold}
 
@@ -888,7 +925,10 @@ termination_by it.finitelyManySkips
 
 {docstring Iter.atIdxSlow?}
 
-## Consuming Monadic Iterators
+## 消费单子式迭代器
+%%%
+tag := "Lean-__________________--Iterators--Consuming-Iterators--Consuming-Monadic-Iterators"
+%%%
 
 {docstring IterM.drain}
 
@@ -916,10 +956,13 @@ termination_by it.finitelyManySkips
 
 {docstring IterM.atIdx?}
 
-## Collectors
+## 收集器
+%%%
+tag := "Lean-__________________--Iterators--Consuming-Iterators--Collectors"
+%%%
 
-Collectors consume an iterator, returning all of its data in a list or array.
-To be collected, an iterator must be finite.
+收集器消费迭代器，并以列表或数组返回其全部数据。
+可被收集的迭代器必须是有限的。
 
 {docstring Iter.toArray}
 
@@ -934,59 +977,66 @@ To be collected, an iterator must be finite.
 {docstring IterM.toListRev}
 
 
-# Iterator Combinators
+# 迭代器组合子
+%%%
+file := "Iterator-Combinators"
+tag := "Lean-__________________--Iterators--Iterator-Combinators"
+%%%
 
-The documentation for iterator combinators often includes {deftech}_marble diagrams_ that show the relationship between the elements returned by the underlying iterators and the elements returned by the combinator's iterator.
-Marble diagrams provide examples, not full specifications.
-These diagrams consist of a number of rows.
-Each row shows an example of an iterator's output, where `-` indicates a {name PlausibleIterStep.skip}`skip`, a term indicates a value returned with {name PlausibleIterStep.yield}`yield`, and `⊥` indicates the end of iteration.
-Spaces indicate that iteration did not occur.
-Unbound identifiers in the marble diagram stand for arbitrary values of the iterator's element type.
+迭代器组合子的文档通常包含{deftech (key := "marble diagrams")}_弹珠图_，用来展示底层迭代器返回的元素与组合子迭代器返回的元素之间的关系。
+弹珠图提供的是示例，而非完整规约。
+这些图由若干行组成。
+每一行展示一个迭代器输出示例，其中 `-` 表示 {name PlausibleIterStep.skip}`skip`，项表示通过 {name PlausibleIterStep.yield}`yield` 返回的值，而 `⊥` 表示迭代结束。
+空格表示没有发生迭代。
+弹珠图中未绑定的标识符代表迭代器元素类型的任意值。
 
 
-Vertical alignment in the marble diagram indicates a causal relationship: when two elements are aligned, it means that consuming the iterator in the lower row results in the upper rows being consumed.
-In particular, consuming up to the $`n`th column of the lower iterator results in the consumption of the first $`n` columns from the upper iterator.
+弹珠图中的垂直对齐表示因果关系：两个元素对齐意味着消费下方一行的迭代器会导致上方各行被消费。
+特别地，将下方迭代器消费到第 $`n` 列，会导致上方迭代器的前 $`n` 列被消费。
 
 :::paragraph
-A marble diagram for an identity iterator combinator that returns each element from the underlying iterator looks like this:
+逐一返回底层迭代器各元素的恒等迭代器组合子，其弹珠图如下：
 ```
 it    ---a-----b---c----d⊥
 it.id ---a-----b---c----d⊥
 ```
 :::
 :::paragraph
-A marble diagram for an iterator combinator that duplicates each element of the underlying iterator looks like this:
+将底层迭代器的每个元素复制一份的迭代器组合子，其弹珠图如下：
 ```
 it           ---a  ---b  ---c  ---d⊥
 it.double    ---a-a---b-b---c-c---d-d⊥
 ```
 :::
 :::paragraph
-The marble diagram for {name}`Iter.filter` shows how some elements of the underlying iterator do not occur in the filtered iterator, but also that stepping the filtered iterator results in a {name PlausibleIterStep.skip}`skip` when the underlying iterator returns a value that doesn't satisfy the predicate:
+{name}`Iter.filter` 的弹珠图展示了底层迭代器的某些元素如何不出现在过滤后的迭代器中；它还展示了当底层迭代器返回不满足谓词的值时，推进过滤后的迭代器会得到 {name PlausibleIterStep.skip}`skip`：
 ```
 it            ---a--b--c--d-e--⊥
 it.filter     ---a-----c-------⊥
 ```
-The diagram requires an explanatory note:
-> (given that `f a = f c = true` and `f b = f d = d e = false`)
+该图需要一条说明：
+> （假定 `f a = f c = true` 且 `f b = f d = d e = false`）
 :::
 :::paragraph
-The diagram for {name}`Iter.zip` shows how consuming the combined iterator consumes the underlying iterators:
+{name}`Iter.zip` 的弹珠图展示了消费组合后的迭代器时如何消费底层迭代器：
 ```
 left               --a        ---b        --c
 right                 --x         --y        --⊥
 left.zip right     -----(a, x)------(b, y)-----⊥
 ```
-The zipped iterator emits {name PlausibleIterStep.skip}`skip`s so long as `left` does.
-When `left` emits `a`, the zipped iterator emits one more {name PlausibleIterStep.skip}`skip`.
-After this, the zipped iterator switches to consuming `right`, and it emits {name PlausibleIterStep.skip}`skip`s so long as `right` does.
-When `right` emits `x`, the zipped iterator emits the pair `(a, x)`.
-This interleaving of `left` and `right` continues until one of them stops, at which point the zipped iterator stops.
-Blank spaces in the upper rows of the marble diagram indicate that the iterator is not being consumed at that step.
+只要 `left` 发出 {name PlausibleIterStep.skip}`skip`，配对后的迭代器也会发出它。
+当 `left` 发出 `a` 时，配对后的迭代器会再发出一次 {name PlausibleIterStep.skip}`skip`。
+之后，配对后的迭代器转而消费 `right`；只要 `right` 发出 {name PlausibleIterStep.skip}`skip`，它也会发出该步骤。
+当 `right` 发出 `x` 时，配对后的迭代器会发出二元组 `(a, x)`。
+对 `left` 与 `right` 的这种交错消费会持续到其中一个停止，此时配对后的迭代器也会停止。
+弹珠图上方各行中的空白表示该步骤没有消费相应迭代器。
 :::
 
 
-## Pure Combinators
+## 纯组合子
+%%%
+tag := "Lean-__________________--Iterators--Iterator-Combinators--Pure-Combinators"
+%%%
 
 {docstring IterM.mk}
 
@@ -1037,7 +1087,10 @@ Blank spaces in the upper rows of the marble diagram indicate that the iterator 
 {docstring Iter.attachWith}
 
 
-## Monadic Combinators
+## 单子式组合子
+%%%
+tag := "Lean-__________________--Iterators--Iterator-Combinators--Monadic-Combinators"
+%%%
 
 {docstring IterM.toIter}
 
@@ -1093,36 +1146,43 @@ Blank spaces in the upper rows of the marble diagram indicate that the iterator 
 
 {docstring IterM.attachWith}
 
-# Reasoning About Iterators
+# 迭代器推理
+%%%
+file := "Reasoning-About-Iterators"
+tag := "Lean-__________________--Iterators--Reasoning-About-Iterators"
+%%%
 
-## Reasoning About Consumers
+## 消费者推理
+%%%
+tag := "Lean-__________________--Iterators--Reasoning-About-Iterators--Reasoning-About-Consumers"
+%%%
 
-The iterator library provides a large number of useful lemmas.
-Most theorems about finite iterators can be proven by rewriting the statement to one about lists, using the fact that the correspondence between iterator combinators and corresponding list operations has already been proved.
-In practice, many of these theorems are already registered as {tactic}`simp` lemmas.
+迭代器库提供了大量有用的引理。
+大多数关于有限迭代器的定理都可以通过将命题改写为关于列表的命题来证明，因为迭代器组合子与相应列表操作之间的对应关系已经得到证明。
+实践中，许多此类定理已经注册为 {tactic}`simp` 引理。
 
 :::paragraph
-The lemmas have a very predictable naming system, and many are in the {tech}[default simp set].
-Some of the most important include:
+这些引理的命名规则非常容易预测，其中许多位于{tech (key := "default simp set")}[默认化简集]中。
+其中最重要的包括：
 
- * Consumer lemmas such as {name}`Iter.all_toList`, {name}`Iter.any_toList`, and {name}`Iter.foldl_toList` that introduce lists as a model.
+ * {name}`Iter.all_toList`、{name}`Iter.any_toList` 和 {name}`Iter.foldl_toList` 等消费者引理，它们引入列表作为模型。
 
- * Simplification lemmas such as {name}`Iter.toList_map` that {name}`Iter.toList_filter` push the list model “inwards” in the goal.
+ * {name}`Iter.toList_map` 和 {name}`Iter.toList_filter` 等化简引理，它们把列表模型向目标内部推进。
 
- * Producer lemmas such as {name}`List.toList_iter` and {name}`Array.toList_iter` that replace a producer with a list model, removing iterators from the goal entirely.
+ * {name}`List.toList_iter` 和 {name}`Array.toList_iter` 等生产者引理，它们用列表模型替换生产者，从目标中彻底消除迭代器。
 
-The latter two categories are typically automatic with {tactic}`simp`.
+后两类通常可由 {tactic}`simp` 自动处理。
 :::
 
-:::example "Reasoning via Lists"
+:::example "通过列表推理" (file := "Reasoning via Lists")
 ```imports -show
 import Std.Data.Iterators
 ```
 ```lean -show
 open Std
 ```
-Every element returned by an iterator that multiplies the numbers consumed some other iterator by two is even.
-To prove this statement, {name}`Iter.all_toList`, {name}`Iter.toList_map`, and {name}`Array.toList_iter` are used to replace the statement about iterators with one about lists, after which {tactic}`simp` discharges the goal:
+一个迭代器若将从另一迭代器消费的数乘以二，则其返回的每个元素都是偶数。
+为证明该命题，可以使用 {name}`Iter.all_toList`、{name}`Iter.toList_map` 和 {name}`Array.toList_iter` 将关于迭代器的命题替换为关于列表的命题，随后由 {tactic}`simp` 完成目标：
 ```lean
 example (l : Array Nat) :
     (l.iter.map (· * 2)).all (· % 2 = 0) := by
@@ -1132,7 +1192,7 @@ example (l : Array Nat) :
   simp
 ```
 
-In fact, because most of the needed lemmas are in the {tech}[default simp set], the proof can be quite short:
+事实上，由于所需的大多数引理都位于{tech (key := "default simp set")}[默认化简集]中，证明可以相当简短：
 ```lean
 example (l : Array Nat) :
     (l.iter.map (· * 2)).all (· % 2 = 0) := by
@@ -1140,10 +1200,13 @@ example (l : Array Nat) :
 ```
 :::
 
-## Stepwise Reasoning
+## 逐步推理
+%%%
+tag := "Lean-__________________--Iterators--Reasoning-About-Iterators--Stepwise-Reasoning"
+%%%
 
-When there are not enough lemmas to prove a property by rewriting to a list model, it can be necessary to prove things about iterators by reasoning directly about their step functions.
-The induction principles in this section are useful for stepwise reasoning.
+当没有足够引理通过改写为列表模型来证明某个性质时，可能需要直接推理迭代器的步骤函数。
+本节的归纳原理适用于逐步推理。
 
 {docstring Iter.inductSkips}
 
@@ -1153,10 +1216,13 @@ The induction principles in this section are useful for stepwise reasoning.
 
 {docstring IterM.inductSteps}
 
-The standard library also includes lemmas for the stepwise behavior of all the producers and combinators.
-Examples include {name}`List.step_iter_nil`, {name}`List.step_iter_cons`, {name}`IterM.step_map`.
+标准库还包含描述所有生产者和组合子逐步行为的引理。
+例如 {name}`List.step_iter_nil`、{name}`List.step_iter_cons` 和 {name}`IterM.step_map`。
 
-## Monads for Reasoning
+## 用于推理的单子
+%%%
+tag := "Lean-__________________--Iterators--Reasoning-About-Iterators--Monads-for-Reasoning"
+%%%
 
 {docstring Std.Iterators.PostconditionT}
 
@@ -1186,10 +1252,13 @@ Examples include {name}`List.step_iter_nil`, {name}`List.step_iter_cons`, {name}
 
 {docstring HetT.pbind}
 
-## Equivalence
+## 等价性
+%%%
+tag := "Lean-__________________--Iterators--Reasoning-About-Iterators--Equivalence"
+%%%
 
-Iterator equivalence is defined in terms of the observable behavior of iterators, rather than their implementations.
-In particular, the internal state is ignored.
+迭代器等价性依据迭代器的可观察行为定义，而非依据其实现。
+尤其是，内部状态会被忽略。
 
 {docstring Iter.Equiv}
 
