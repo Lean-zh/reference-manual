@@ -115,7 +115,7 @@ info: 6
 
 该语法让人想起嵌套操作 `(← body)`，但与嵌套操作不同，`body` 在调用包装函数之前不会立即运行。包装函数决定何时运行 `body`，并插入代码以将 `body` 的效果转发到外部 `do` 块。
 
-嵌套操作中的 ### 任意 `doElem`
+### 嵌套操作中的任意 `doElem`
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___32___0-_LPAR_2026-07-13_RPAR_--Highlights--New--do--Elaborator-is-Now-the-Default--Arbitrary--doElem-s-in-Nested-Actions"
 %%%
@@ -274,7 +274,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___32___0-_LPAR_2026-0
 
 除了上述 `do` elaborator 和 linter 更改之外：
 
-- [#13305](https://github.com/leanprover/lean4/pull/13305)（新的 `do` 阐述器默认值）：`do` 表示法现在需要 `Pure` 实例，而不仅仅是 `Bind`。默认情况下，`do match` 的臂是非相关的 - 写入 `do match (dependent := true)` 以恢复旧的术语匹配扩展。 `try`/`catch` 不再接受结果类型仅通过强制与周围预期类型匹配的主体。无法访问的代码现在会触发警告而不是错误。语法 `let pat := rhs __FIX001__ otherwise` 现在的范围涵盖后面的 `doSeq`。
+- [#13305](https://github.com/leanprover/lean4/pull/13305)（新的 `do` 阐述器默认值）：`do` 表示法现在需要 `Pure` 实例，而不仅仅是 `Bind`。默认情况下，`do match` 的臂是非相关的 - 写入 `do match (dependent := true)` 以恢复旧的术语匹配扩展。 `try`/`catch` 不再接受结果类型仅通过强制与周围预期类型匹配的主体。无法访问的代码现在会触发警告而不是错误。语法 `let pat := rhs | otherwise` 现在的范围涵盖后面的 `doSeq`。
 - [#13912](https://github.com/leanprover/lean4/pull/13912)（嵌套操作）：`(← do …)` 或 `(← try … catch …)` 内的 `return e` 现在从*封闭* `do` 块提前返回。 *迁移：* 当需要从嵌套块返回值时替换为 `pure e`，或者用括号 `(← (do …))` 括起来。
 - [#13893](https://github.com/leanprover/lean4/pull/13893)（Lake lint）：删除 `--extra`、`--lint-all` 标志和 `@[builtin_nolint]` 属性。请改用 `lake lint --linters=linter.X,-linter.Y` 和 `set_option linter.X false in ...`。
 - [#13798](https://github.com/leanprover/lean4/pull/13798)（标准时间）：`DateTime (tz : TimeZone)` 已删除；使用 `DateTime` （以前的 `ZonedDateTime`）。 *迁移：*用新的 `DateTime` 替换带有显式时区参数的 `DateTime` 的使用，并将对旧 `ZonedDateTime` 的引用重命名为 `DateTime` 。

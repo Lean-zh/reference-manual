@@ -87,7 +87,7 @@ v4.30.0 引入了以下改进：
 
 - [#12597](https://github.com/leanprover/lean4/pull/12597)：`cbv_simproc` 系统镜像 {tactic}`simp` 的 `simproc` 基础设施。
 
-- [#12773](https://github.com/leanprover/lean4/pull/12773)：`at` 位置语法（`cbv at h`、`cbv at h __FIX001__-` 和 `cbv at *`）。
+- [#12773](https://github.com/leanprover/lean4/pull/12773)：`at` 位置语法（`cbv at h`、`cbv at h |-` 和 `cbv at *`）。
 
 - [#12788](https://github.com/leanprover/lean4/pull/12788)：`set_option cbv.maxSteps N` 用于用户可配置的步数限制。
 
@@ -164,7 +164,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___30___0-_LPAR_2026-0
 - [#12756](https://github.com/leanprover/lean4/pull/12756) 添加了 `deriving noncomputable instance Foo for Bar` 语法，以便可以将增量派生实例标记为不可计算。
 - [#13117](https://github.com/leanprover/lean4/pull/13117) 通过在 olean 序列化时计算公理依赖关系来重新启用模块系统下的 `#print axioms`。
 - [#12866](https://github.com/leanprover/lean4/pull/12866) 向 `doPatDecl` 解析器添加 `optType` 支持，允许在 do 表示法中使用 `let ⟨width, height⟩ : Nat × Nat ← action`。
-当类类型的 `def` 未声明适当的可归约性（例如 `@[reducible]` 或 `@[implicit_reducible]`）时，- [#12325](https://github.com/leanprover/lean4/pull/12325) 添加警告。
+- [#12325](https://github.com/leanprover/lean4/pull/12325) 在类类型的 `def` 未声明适当的可归约性（例如 `@[reducible]` 或 `@[implicit_reducible]`）时添加警告。
 - [#12233](https://github.com/leanprover/lean4/pull/12233) 使用两遍实现替换 `instantiateMVars`，该实现将二次复杂度从延迟分配元变量的长链降低为线性。
 
 ## 库亮点
@@ -351,7 +351,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___30___0-_LPAR_2026-0
 将全域级别计数检查从 `unfold_definition_core` 移至 `is_delta`，建立不变式：如果 `is_delta` 成功，则 `unfold_definition` 也会成功。这可以防止当 `lazy_delta_reduction_step` 中的调用站点无条件取消引用 `unfold_definition` 的结果时发生崩溃（SIGSEGV 或乱码错误），即使在级别参数计数不匹配的情况下也是如此。
 
 - [#12802](https://github.com/leanprover/lean4/pull/12802)
-  将 https://github.com/leanprover/lean4/pull/12757（在 https://github.com/leanprover/lean4/pull/12801 中恢复）与 `release-ci` 标签重新应用，以测试它是否会导致 v4.29.0-rc5 标记 CI 中出现的异步扩展 PANIC。
+  将 https://github.com/leanprover/lean4/pull/12757 （在 https://github.com/leanprover/lean4/pull/12801 中恢复）与 `release-ci` 标签重新应用，以测试它是否会导致 v4.29.0-rc5 标记 CI 中出现的异步扩展 PANIC。
 
 - [#12789](https://github.com/leanprover/lean4/pull/12789)
   当实例类型为 `Prop` 时，跳过 `processDefDeriving` 中的不可计算预检查。由于编译器会删除证明，因此可计算性与 `Prop` 值实例无关。

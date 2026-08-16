@@ -236,7 +236,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___28___0-_LPAR_2026-0
   迭代器 API 的常量从 `Std.Iterators` 到 `Std`
   namespace in order to make them more convenient to use. These
   常量包括但不限于 `Iter`、`IterM` 和
-  __修复000__。这是一个*重大变化*。如果有什么东西坏了，
+  `IteratorLoop`。这是一个*重大变更*。如果有内容失效，
   尝试添加 `open Std` 以使这些常量可用
   再次。如果 `Std.Iterators` 命名空间中的某些常量不能
   找到了，现在可以直接在`Std`中找到了。
@@ -293,9 +293,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___28___0-_LPAR_2026-0
 * [#11698](https://github.com/leanprover/lean4/pull/11698) 在简化判别式后使 `mvcgen` 提前返回，
   避免重写格式错误的 `match`。
 
-当用户尝试命名某个名称时，* [#11714](https://github.com/leanprover/lean4/pull/11714) 会给出一条重点错误消息
-  示例，并调整尝试定义多个的错误消息
-  立即不透明的名称。
+* [#11714](https://github.com/leanprover/lean4/pull/11714) 在用户尝试为立即不透明项命名时给出更聚焦的错误消息，并调整了尝试一次定义多个立即不透明名称时的错误消息。
 
 * [#11718](https://github.com/leanprover/lean4/pull/11718) 添加了针对问题 #11655 的测试，该问题似乎已由 #11695 修复
 
@@ -327,10 +325,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___28___0-_LPAR_2026-0
 * [#11780](https://github.com/leanprover/lean4/pull/11780) 确保统一提示的漂亮打印插入一个
   |- 后的空格。 ⊢。
 
-如果 `tac` 在其中一个 VC 上失败，则 * [#11871](https://github.com/leanprover/lean4/pull/11871) 会使 `mvcgen with tac` 失败，
-  就像 `induction ... with tac` 失败，如果 `tac` 在其中之一失败
-  目标。可以通过使用 try 编写 `mvcgen 来恢复旧的行为
-  tac` 代替。
+* [#11871](https://github.com/leanprover/lean4/pull/11871) 使 `mvcgen with tac` 在 `tac` 处理任一验证条件失败时整体失败，与 `induction ... with tac` 在 `tac` 处理任一目标失败时的行为一致。可改写为 `mvcgen with try tac` 来恢复旧行为。
 
 * [#11875](https://github.com/leanprover/lean4/pull/11875) 添加目录 `Meta/DiscrTree` 并重新组织代码
   到不同的文件中。动机：我们将为
@@ -402,7 +397,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___28___0-_LPAR_2026-0
 * [#11446](https://github.com/leanprover/lean4/pull/11446) 将迭代器 API 的许多常量从 `Std.Iterators` 移动到
   `Std` 命名空间，以便使它们更方便使用。这些
   常量包括但不限于 `Iter`、`IterM` 和
-  __修复000__。这是一个突破性的改变。如果出现问题，请尝试
+  `IteratorLoop`。这是一个重大变更。如果出现问题，请尝试
   添加 `open Std` 以使这些常量再次可用。如果
   无法找到 `Std.Iterators` 命名空间中的某些常量，它们
   现在可以直接在`Std`中找到。
@@ -484,8 +479,8 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___28___0-_LPAR_2026-0
 * [#11772](https://github.com/leanprover/lean4/pull/11772) 修复了优化和不安全实现中的错误
   `Array.foldlM`.
 
-* [#11774](https://github.com/leanprover/lean4/pull/11774) 修复了 `foldlM` 和 `foldlM` 的行为之间的不匹配
-  三个数组中的`foldlMUnsafe`
+* [#11774](https://github.com/leanprover/lean4/pull/11774) 修复了三个数组函数中 `foldlM` 与
+  `foldlMUnsafe` 之间的行为不一致
   类型。仅当手动指定 `stop` 时才会暴露这种不匹配
   值大于尺寸
   数组的并且只能通过 `native_decide` 来利用。
@@ -525,7 +520,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___28___0-_LPAR_2026-0
 公式 `(n ≠ 0) ∧ (n &&& (n - 1)) = 0`。
 
 * [#11907](https://github.com/leanprover/lean4/pull/11907) 实现 `PersistentHashMap.findKeyD` 和
-  __修复000__。动机是避免两次记忆
+  `PersistentHashSet.findD`。这样做是为了避免两次内存
   当集合包含时的分配（`Prod.mk` 和 `Option.some`）
   关键。
 
@@ -556,7 +551,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___28___0-_LPAR_2026-0
 %%%
 
 * [#11664](https://github.com/leanprover/lean4/pull/11664) 在 `grind linarith` 中添加了对 `Nat.cast` 的支持。现在它使用
-  __修复000__。示例：
+  `Grind.OrderedRing.natCast_nonneg`。示例：
   ```
   open Lean Grind Std
   attribute [instance] Semiring.natCast
@@ -574,7 +569,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___28___0-_LPAR_2026-0
   已经对平等传播有了更好的支持。
 
 * [#11678](https://github.com/leanprover/lean4/pull/11678) 修复了用于实现的 `registerNonlinearOccsAt` 中的错误
-  __修复000__。此问题最初报告于：
+  `grind lia`。此问题最初报告于：
   https://leanprover.zulipchat.com/#narrow/channel/113489-new-members/topic/Weirdness.20with.20cutsat/near/562099515
 
 * [#11691](https://github.com/leanprover/lean4/pull/11691) 修复 `grind` 以支持声明中的点符号
@@ -630,7 +625,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___28___0-_LPAR_2026-0
 实现默认的 `[grind]` 属性。
 
 * [#11770](https://github.com/leanprover/lean4/pull/11770) 实现对用户定义属性的支持
-  __修复000__。声明 `grind` 属性后
+  `grind_pattern`。声明 `grind` 属性后
   `register_grind_attr my_grind`，可以写：
   ```
   grind_pattern [my_grind] fg => g (f x)
@@ -640,13 +635,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___28___0-_LPAR_2026-0
   控制 `grind` 标准化器/预处理器。
 
 * [#11785](https://github.com/leanprover/lean4/pull/11785) 禁用反射项中使用的封闭项提取
-  __修复000__。这些条款做
+  `bv_decide`。这些项
   封闭式提取根本不会带来任何好处，但实际上可能会导致
   数千个新的封闭学期
   声明反过来又会减慢编译器的速度。
 
 * [#11787](https://github.com/leanprover/lean4/pull/11787) 添加了对增量处理本地声明的支持
-  __修复000__。而不是在目标过程中一次处理所有假设
+  `grind`。`grind` 不再在目标初始化过程中一次处理所有假设，
   初始化， `grind` 现在跟踪哪些本地声明已被
   通过 `Goal.nextDeclIdx` 处理并提供 API 来处理新的
   逐步提出假设。
@@ -812,9 +807,8 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___28___0-_LPAR_2026-0
   访问添加的 `TransparencyMode.none`
   https://github.com/leanprover/lean4/pull/11810.
 
-* [#11881](https://github.com/leanprover/lean4/pull/11881) 修复了 `grind` 无法从 `f * r 证明 `f ≠ 0` 的问题
-  ≠ 0` when using `Lean.Grind.CommSemiring`，但成功了
-  `Lean.Grind.Semiring`.
+* [#11881](https://github.com/leanprover/lean4/pull/11881) 修复了使用 `Lean.Grind.CommSemiring` 时，`grind` 无法从 `f * r
+  ≠ 0` 证明 `f ≠ 0`，但使用 `Lean.Grind.Semiring` 时可以成功的问题。
 
 * [#11884](https://github.com/leanprover/lean4/pull/11884) 添加了对符号模拟的判别树支持
   框架。
@@ -880,15 +874,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___28___0-_LPAR_2026-0
 
 * [#11932](https://github.com/leanprover/lean4/pull/11932) 消除了超线性内核类型检查开销
   简化 lambda 表达式。我改进了产生的证明项
-  __修复000__。该函数在 `Sym.simp` 中简化 lambda 时使用
+  `mkFunext`。该函数由 `Sym.simp` 用于简化 lambda
   表达式。
 
 * [#11946](https://github.com/leanprover/lean4/pull/11946) 在 `grind` 策略中添加了 `+locals` 配置选项，
   自动将当前文件中的所有定义添加为电子匹配
 定理。这提供了手动添加的便捷替代方法
-  每个定义的 `[local grind]` 属性。以“磨？”的形式
-  +locals`，它也有助于发现它的本地声明
-  添加 `[local grind]` 属性可能很有用。
+  每个定义的 `[local grind]` 属性。以 `grind? +locals` 的形式使用时，它也有助于找出值得添加 `[local grind]` 属性的本地声明。
 
 * [#11947](https://github.com/leanprover/lean4/pull/11947) 在 `simp`、`simp_all` 的基础上添加了 `+locals` 配置选项，
   和 `dsimp` 策略，自动添加来自
@@ -938,7 +930,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___28___0-_LPAR_2026-0
   `extract_lets ; exact foo`.
 
 * [#12012](https://github.com/leanprover/lean4/pull/12012) 实现了对过度应用术语重写的支持
-  __修复000__。示例：使用 `id_eq` 重写 `id f a`。
+  `Sym.simp`。示例：使用 `id_eq` 重写 `id f a`。
 
 * [#12031](https://github.com/leanprover/lean4/pull/12031) 添加了 `Sym.Simp.evalGround`，这是一个简化过程
   评估内置数字类型的基本术语。它是专为
@@ -1114,7 +1106,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___28___0-_LPAR_2026-0
   在其传递轨迹中。
 
 * [#11859](https://github.com/leanprover/lean4/pull/11859) 无需为数字选项编写 `.ofNat`
-  __修复000__。请注意 `lake translate-config` 错误地假设
+  `lakefile.lean`。请注意，`lake translate-config` 曾错误地假定
   这在早期的修订中已经是合法的。
 
 * [#11921](https://github.com/leanprover/lean4/pull/11921) 添加 `lake shake` 作为内置 Lake 命令，移动抖动

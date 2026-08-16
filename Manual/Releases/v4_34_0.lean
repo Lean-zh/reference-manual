@@ -41,7 +41,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___34___0-rc1-_LPAR_20
 ````markdown
 
 - [#14701](https://github.com/leanprover/lean4/pull/14701)
-  让 `def` 合约的 `ensures` 子句像 `fun` 一样编写，因此可以根据结果的形状来声明后置条件：`ensures __FIX000__ none => False __FIX001__ some v => 2 * v ≤ n`。现在，合同条款在打印精美时也以自己的行开始，就像在源代码中编写的那样。
+  让 `def` 契约的 `ensures` 子句可以像 `fun` 一样分情况书写，从而按结果的形状陈述后置条件：`ensures | none => False | some v => 2 * v ≤ n`。契约子句现在也会像源码中那样，在格式化输出时另起一行。
 
 - [#14686](https://github.com/leanprover/lean4/pull/14686)
   使 `requires`、`ensures` 和 `invariant` 子句接受其绑定器上的类型归属，就像 `fun` 所做的那样： `requires s : Nat => s = 0` 现在详细说明为绑定器形式，而不是被视为术语。覆盖 `invariant` 子句的所有绑定程序的归属将被报告为错误，因为它的前两个绑定程序是循环使用的前缀和剩余后缀。

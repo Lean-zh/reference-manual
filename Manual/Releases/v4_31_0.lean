@@ -194,8 +194,8 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___31___0-_LPAR_2026-0
 
 除了上述与透明度相关的更改外，请注意以下事项：
 
-- [#13807](https://github.com/leanprover/lean4/pull/13807) 使应用程序精译器 beta-reduce 参数，同时将它们替换为以后预期的类型，与 `inferType` 和 `instantiateMVars` 一致。 *重大更改：*一些策略证明可能需要删除不必要的步骤，例如`dsimp only` 以前仅存在的步骤用于执行这些 beta 减少。相关地， [#13528](https://github.com/leanprover/lean4/pull/13528) 更改元变量簿记，以便元程序不再仅仅因为分配了元变量而假设 `MVarId` 发生更改（例如，当 `change` 的唯一效果是偶然分配时，`change` 不再更改 `MVarId` ）；它还揭示了许多 `dsimp` 没有执行任何操作并且可以删除。
-在*以模式*阐述结构实例符号时，- [#13243](https://github.com/leanprover/lean4/pull/13243)不再应用结构的默认值（例如`s matches { x := 1 }`）。 *重大更改：*此类模式现在可能会报告“字段缺失”错误，并且需要提供缺失的字段或添加 `..` 。
+- [#13807](https://github.com/leanprover/lean4/pull/13807) 使应用程序精译器 beta-reduce 参数，同时将它们替换为以后预期的类型，与 `inferType` 和 `instantiateMVars` 一致。 *重大更改：*一些策略证明可能需要删除不必要的步骤，例如`dsimp only` 以前仅存在的步骤用于执行这些 beta 减少。相关地， [#13528](https://github.com/leanprover/lean4/pull/13528) 更改元变量簿记，以便元程序不再仅仅因为分配了元变量而假设 `MVarId` 发生更改（例如，当 `change` 的唯一效果是附带赋值时，该命令不再更改 `MVarId`）；它还揭示了许多 `dsimp` 没有执行任何操作并且可以删除。
+- [#13243](https://github.com/leanprover/lean4/pull/13243) 在*作为模式*精译结构实例表示法时，不再应用结构的默认值（例如 `s matches { x := 1 }`）。*重大变更：*此类模式现在可能报告“缺少字段”错误，需要提供缺失字段或添加 `..`。
 - [#13476](https://github.com/leanprover/lean4/pull/13476) 在计算 `apply`/`rewrite` 子目标标签之前过滤分配的元变量，因此单个剩余目标现在继承输入目标的标签。 *重大更改：*依赖先前标签名称的脚本（例如 `funext` 之后的 `case h => …`）可能需要更新。
 - [#13030](https://github.com/leanprover/lean4/pull/13030) 更改级别元变量漂亮打印以使用每个定义索引。 *破坏性元编程更改：*级别漂亮打印应使用 `delabLevel` 或 `MessageData.ofLevel`； `format`/`toString` 无法访问索引，并将原始内部标识符打印为 `?_mvar.nnn`。由于索引记录分配，一些测试需要 `maxHeartbeats` 提高 20-50%。
 - [#13627](https://github.com/leanprover/lean4/pull/13627) 将 `UInt8.ofNatTruncate` 重命名为 `UInt8.ofNatClamp` （以及其他宽度变体），以便与 `UIntX` API 的其余部分保持一致。
@@ -249,7 +249,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___31___0-_LPAR_2026-0
   强制 Verso 文档字符串扩展在属性应用程序时应始终是元的，从而提供更好的错误消息，并确保生成的参数解析器帮助程序也是元的并且具有相同的可见性。
 
 - [#13801](https://github.com/leanprover/lean4/pull/13801)
-  向 `DoOps`、`splitMonadApp?` 和 `mkMonadApp` 添加两个新字段，以便 `elabDoWith` 的调用者可以使用默认 `m α` 分解无法处理的索引 monad（其中 `Measure : (α : Type u) → [MeasureSpace α] → Type u` 携带实例参数）。现有行为移至 `DoOps.default`。
+  向 `DoOps`、`splitMonadApp?` 和 `mkMonadApp` 添加两个新字段，以便 `elabDoWith` 的调用者可以使用默认 `m α` 分解无法处理的索引单子 `Measure α`（其中 `Measure : (α : Type u) → [MeasureSpace α] → Type u` 携带实例参数）。现有行为移至 `DoOps.default`。
 
 - [#13800](https://github.com/leanprover/lean4/pull/13800)
   将 `do` 阐述器的 `mkMonadicType` 重命名为 `mkMonadApp`，使其与 `DoOps` 中现有的 `mkPureApp` / `mkBindApp` 命名约定保持一致。
@@ -264,10 +264,10 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___31___0-_LPAR_2026-0
   对函数应用程序阐述器进行了一些重构，并改进了 `trace.Elab.app` 跟踪。它还通过更仔细地将参数替换为函数的类型以及更改命名参数依赖抑制的实现方式来提高渐近复杂性。对于点表示法，它现在直接构建基本投影，而不是使用应用程序阐述器。它修复了 eta args 功能中的一个错误，即比预期更显式的参数将转换为隐式参数，并且它通过遵循主应用程序阐述器的规则来改进预期的类型传播。
 
 - [#13772](https://github.com/leanprover/lean4/pull/13772)
-通过在 `Config.toKey` 中包含 `Config.zetaUnused` 来关闭 https://github.com/leanprover/lean4/issues/13770。如果没有这个，两个仅在 `zetaUnused` 方面不同的配置共享 `WHNF`/`isDefEq` 缓存键，因此可以为另一种设置返回在一种设置下执行的减少。新位位于位置 22，紧邻 `zetaHave` 上方。
+通过在 `Config.toKey` 中包含 `Config.zetaUnused` 来关闭 https://github.com/leanprover/lean4/issues/13770 。此前，两个仅在 `zetaUnused` 方面不同的配置共享 `WHNF`/`isDefEq` 缓存键，因此可以为另一种设置返回在一种设置下执行的减少。新位位于位置 22，紧邻 `zetaHave` 上方。
 
 - [#13768](https://github.com/leanprover/lean4/pull/13768)
-  修复了 `Meta.Config.toKey` 和 `Context.setTransparency` 中长期存在的错误，其中 `TransparencyMode` 仅打包到缓存键的 2 位中，即使它有 5 个构造函数（`.all`、`.default`、`.reducible`、`.instances`、`.none`）。 `.none` 情况（值 `4`，即 `0b100`）与 `foApprox` 位重叠，因此仅透明度与 `foApprox` 不同的配置可能会在 `isDefEq`/`WHNF` 缓存中发生冲突，并且在切换到 `.none` 或从 `.none` 切换时，`Context.setTransparency` 会损坏相邻位。
+  修复了 `Meta.Config.toKey` 和 `Context.setTransparency` 中长期存在的错误，其中 `TransparencyMode` 仅打包到缓存键的 2 位中，即使它有 5 个构造函数（`.all`、`.default`、`.reducible`、`.instances`、`.none`）。 `.none` 情况（值 `4`，即 `0b100`）与 `foApprox` 位重叠，因此仅透明度与 `foApprox` 不同的配置可能会在 `isDefEq`/`WHNF` 缓存中发生冲突，并且在切换到或离开 `.none` 时，`Context.setTransparency` 会损坏相邻位。
 
 - [#13763](https://github.com/leanprover/lean4/pull/13763)
   添加 `MessageData.withExprHover`，用于创建在鼠标悬停时显示有关表达式的信息的消息。 `withExprHoverM` 变体捕获当前本地上下文。
@@ -321,7 +321,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___31___0-_LPAR_2026-0
 - [#13663](https://github.com/leanprover/lean4/pull/13663)
   取代了使用的 `check_cancel` 双向协调协议
   `tests/server_interactive/cancellation_par.lean` 使用单一策略
-  __修复000__。标签寄存器的第一次调用
+  `block_until_cancelled "<label>"`。标签的第一次调用
   一个承诺，打印 `<label>: blocked`，并在 `Core.checkInterrupted` 上循环
   直到取消令牌触发（然后 `finally` 解决承诺）。稍后
   对同一标签的调用等待该承诺 - 因此仅测试
@@ -421,7 +421,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___31___0-_LPAR_2026-0
   修复了 do-block `match` 的 `ControlInfo` 推论：匹配臂的折叠从 `ControlInfo.pure` 开始（默认为 `numRegularExits := 1`、`noFallthrough := false`），但 `alternative` 与 `numRegularExits` 和 `noFallthrough` 相加，因此折叠标识为 `{ numRegularExits := 0, noFallthrough := true }`。由于基地错误，一个手臂全部为 `break`/`continue`/`return` 的 `match` 报告了 `numRegularExits = 1` 和 `noFallthrough = false`，抑制了比赛后继续的死代码警告。该修复更正了 `InferControlInfo.lean` 中的推理处理程序和 `elabDoMatchCore` 中的折叠。
 
 - [#13502](https://github.com/leanprover/lean4/pull/13502)
-  将 `ControlInfo` 的死码信号一分为二。 `numRegularExits` 现在纯粹是语法上的：块将其延续连接到详细表达式中的次数，由 `withDuplicableCont` 作为连接点复制触发器 (`> 1`) 使用。新的 `noFallthrough : Bool` 断言封闭序列中的下一个 doElem 在语义上是不相关的； `false` 没有断言。不变式：`numRegularExits = 0 → noFallthrough`；反之则不成立。 `sequence` 派生 `noFallthrough := a.noFallthrough __FIX000____FIX001__ b.noFallthrough` （并无条件聚合语法字段）； `alternative` 将其派生为 `a.noFallthrough && b.noFallthrough`。 `withDuplicableCont` 和 `ControlLifter.ofCont` 中的死代码警告门现在读取 `noFallthrough`。
+  将 `ControlInfo` 的死码信号一分为二。 `numRegularExits` 现在纯粹是语法上的：块将其延续连接到详细表达式中的次数，由 `withDuplicableCont` 作为连接点复制触发器 (`> 1`) 使用。新的 `noFallthrough : Bool` 断言封闭序列中的下一个 doElem 在语义上是不相关的； `false` 没有断言。不变式：`numRegularExits = 0 → noFallthrough`；反之则不成立。 `sequence` 派生 `noFallthrough := a.noFallthrough || b.noFallthrough` （并无条件聚合语法字段）； `alternative` 将其派生为 `a.noFallthrough && b.noFallthrough`。 `withDuplicableCont` 和 `ControlLifter.ofCont` 中的死代码警告门现在读取 `noFallthrough`。
 
 - [#13494](https://github.com/leanprover/lean4/pull/13494)
 阻止 `repeat` 推理处理程序报告 `numRegularExits := 0` 对于无中断主体。对于无中断的 `repeat` ，循环永远不会正常终止，因此 `0` 在语义上看起来更准确，但循环表达式仍然具有类型 `m Unit` ，并且循环后的 do 块的延续是携带该类型的。报告 `0` 会使精译器将该延续标记为死代码，但用户无法删除类型正确的它 — 除非封闭的 do 块的单子结果类型恰好是 `Unit`。将 `numRegularExits` 固定在 `1` （匹配 `for ... in`）可以消除这些虚假警告。
@@ -532,7 +532,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___31___0-_LPAR_2026-0
   添加了对模块名称中操作系统禁止的名称和字符的检查。  这实现了 mathlib 的 `modulesOSForbidden` linter 的功能。
 
 - [#13262](https://github.com/leanprover/lean4/pull/13262)
-  扩展了 Lean 的语法，允许在表达式中使用显式的 Universe 级别，例如 `e.f.{u,v}`、`(f e).g.{u}` 和 `e __FIX000__>.f.{u,v} x y z`。它修复了宇宙级别会被归因于错误表达式的错误；例如 `x.f.{u}` 将被解释为 `x.{u}.f`。它还更改了顶级声明的语法，不允许标识符和 Universe 级别列表之间存在空格，并且修复了 `checkWsBefore` 解析器中的一个错误，该错误不会检测 `optional` 解析器中的空格。
+  扩展了 Lean 的语法，允许在表达式中使用显式的 Universe 级别，例如 `e.f.{u,v}`、`(f e).g.{u}` 和 `e |>.f.{u,v} x y z`。它修复了宇宙级别会被归因于错误表达式的错误；例如 `x.f.{u}` 将被解释为 `x.{u}.f`。它还更改了顶级声明的语法，不允许标识符和 Universe 级别列表之间存在空格，并且修复了 `checkWsBefore` 解析器中的一个错误，该错误不会检测 `optional` 解析器中的空格。
 
 - [#13332](https://github.com/leanprover/lean4/pull/13332)
   使用类型跨越多个隐式 Universe 的 `mut` 变量修复 `for` 循环的 Universe 统一。旧方法对每个变量使用 `ensureHasType (mkSort mi.u.succ)`，这会生成像 `max (?u+1) (?v+1) =?= ?u+1` 这样的约束，Universe 求解器无法分解。新方法在递减级别上使用 `getDecLevel`/`isLevelDefEq` ，生成 `max ?u ?v =?= ?u` ，由 `solveSelfMax` 直接处理。

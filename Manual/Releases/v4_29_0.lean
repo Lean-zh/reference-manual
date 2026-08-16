@@ -68,7 +68,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-0
 
 *重大变更：*
 
-- `let pat := rhs __FIX001__ otherwise` 的语法和类似的现在范围
+- `let pat := rhs | otherwise` 的语法和类似的现在范围
   在随后的 `doSeq` 之上。此外，`otherwise` 和
 接下来的序列现在是 `doSeqIndented` 为了不被窃取
   来自记录语法的语法。
@@ -195,9 +195,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-0
 准备将代码生成移动到单独的构建步骤中，而无需
 打破错误消息的立即生成。
 
-具体来说，现在每当公理或
-另一个 `noncomputable` def 由 def 使用，但以下情况除外
-特殊情况：
+具体而言，只要某个定义使用了公理或另一个 `noncomputable` 定义，现在就需要将其标记为 `noncomputable`，但以下特殊情况除外：
 
 - 使用内部证明、类型、类型形成器和构造函数参数
   对应于（固定）感应参数被忽略
@@ -410,8 +408,8 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-0
   可预测性以及准备将代码生成移至单独的
   构建步骤不会中断错误消息的立即生成。
 
-* [#12110](https://github.com/leanprover/lean4/pull/12110) 修复了评估 `(ISize.minValue 时 `x86_64` 上的 SIGFPE 崩溃
-  / -1 : ISize)`，填补了 #11624 中的遗漏。
+* [#12110](https://github.com/leanprover/lean4/pull/12110) 修复了在 `x86_64` 上求值 `(ISize.minValue
+  / -1 : ISize)` 时发生的 SIGFPE 崩溃，补上了 #11624 中遗漏的情况。
 
 * [#12159](https://github.com/leanprover/lean4/pull/12159) 使 Std.Do 的 `post` 宏宇宙通过扩展为多态
   `PUnit.unit` 而不是 `()`。
@@ -454,8 +452,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-0
 
 * [#12236](https://github.com/leanprover/lean4/pull/12236) 将 `orElse` 组合器添加到 `Sym.Simp` 的 simprocs 中。
 
-* [#12243](https://github.com/leanprover/lean4/pull/12243) 修复了 #12240，其中 `deriving Ord` 因“未知”而失败
-  标识符a✝`。
+* [#12243](https://github.com/leanprover/lean4/pull/12243) 修复了 #12240，其中 `deriving Ord` 因“未知标识符 `a✝`”而失败。
 
 * [#12247](https://github.com/leanprover/lean4/pull/12247) 添加了新的透明度设置 `@[instance_reducible]`。我们
   用于检查声明是否具有 `instance` 可还原性，方法是使用
@@ -501,7 +498,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-0
   使用为基础类型而不是别名类型合成的实例。
 
 * [#12340](https://github.com/leanprover/lean4/pull/12340) 实现了对标记为的展开类字段的更好支持
-  __修复000__。例如，我们想要标记以下类型的字段
+  `reducible`。例如，我们想要标记以下类型的字段
   ```
   MonadControlT.stM : Type u -> Type u
   ```
@@ -510,7 +507,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-0
   现在，假设我们想使用以下方法展开 `stM m (ExceptT ε m) α`
   `.reducible` 透明度设置，我们希望结果是`stM m m
   (MonadControl.stM m (ExceptT ε m) α)` 而不是
-  __修复000__。后者
+  `(instMonadControlTOfMonadControl m m (ExceptT ε m)).1 α`。后者
   将破坏将该字段标记为可约的意图，因为
   实例 `instMonadControlTOfMonadControl` 是 `[instance_reducible]` 并且
 使用 `.reducible` 透明度时，结果项将被卡住
@@ -665,7 +662,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-0
 
 * [#12650](https://github.com/leanprover/lean4/pull/12650) 修复了通过启用
   `backward.whnf.reducibleClassField`
-  （https://github.com/leanprover/lean4/pull/12538）。的
+  （https://github.com/leanprover/lean4/pull/12538 ）。
   `ExprDefEq` 中的 `isNonTrivialRegular` 函数正在对类进行分类
 在所有透明度级别上的预测都是不平凡的，但额外的
   `.instances` 减少 `unfoldDefault` 激发了这一点
@@ -735,7 +732,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-0
   存在于重复数据删除列表中，前提是它存在于原始列表中。
 
 * [#11832](https://github.com/leanprover/lean4/pull/11832) 使用 `Array` 而不是 `List` 将子句存储在
-  __修复000__。这减少了内存占用和压力
+  `Std.CNF`。这减少了内存占用和分配器压力
   分配器，导致巨大的 CNF 出现显着的性能变化。
 
 * [#11936](https://github.com/leanprover/lean4/pull/11936) 提供类似于 `List.min(?)` 的 `Array` 操作
@@ -743,7 +740,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-0
 
 * [#11938](https://github.com/leanprover/lean4/pull/11938) 引入投影最小值和最大值，也称为
   “argmin/argmax”，用于名称 `List.minOn` 下的列表和
-  __修复000__。它还介绍了`List.minIdxOn`和`List.maxIdxOn`，
+  `List.maxOn`。它还引入了 `List.minIdxOn` 和 `List.maxIdxOn`，
   返回最小或最大元素的索引。而且，
 有一些带有 `?` 后缀的变体返回 `Option`。改变
   进一步引入了相反顺序的新实例，例如
@@ -764,8 +761,8 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-0
   * 它添加了`List.isSome_min_iff`和`List.isSome_max_iff`。
   * 它将 `grind` 和 `simp` 注释添加到以前的各种注释中
   未注释的引理。
-  * 它添加了引理，用于使用索引作为`∃来表征`∃ x ∈ xs, P x`
-  (i : Nat), ∃ hi, P (xs[i])`，以及类似的通用量化引理：
+  * 它添加了用索引刻画 `∃ x ∈ xs, P x` 的引理，即 `∃
+  (i : Nat), ∃ hi, P (xs[i])`，以及类似的全称量化引理：
 `exists_mem_iff_exists_getElem` 和 `forall_mem_iff_forall_getElem`。
   * 它添加了`Vector.toList_zip`。
   * 它为列表/数组/向量添加了 `map_ofFn` 和 `ofFn_getElem` 。
@@ -837,12 +834,12 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-0
   无法删除 Windows 上的只读文件。
 
 * [#12290](https://github.com/leanprover/lean4/pull/12290) 将 `PredTrans.apply` 结构体字段移动到一个单独的
-  __修复000__。这样做可以提高内核缩减速度，因为内核是
+  `def`。这样做可以提高内核规约速度，因为内核
   与结构域相比，不太可能展开定义
   预测。这会导致 `simp` 正常形式发生微小变化。
 
-* [#12301](https://github.com/leanprover/lean4/pull/12301) 介绍了函数 `(String__FIX001__Slice).posGE` 和
-  `(String__FIX000__Slice).posGT` 将进行全面验证并弃用
+* [#12301](https://github.com/leanprover/lean4/pull/12301) 介绍了函数 `(String|Slice).posGE` 和
+  `(String|Slice).posGT` 将进行全面验证并弃用
   `Slice.findNextPos` 支持 `Slice.posGT`。
 
 * [#12305](https://github.com/leanprover/lean4/pull/12305) 添加了有关基本类型的各种无趣引理，提取
@@ -851,15 +848,15 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-0
 * [#12311](https://github.com/leanprover/lean4/pull/12311) 公开链和 `is_sup` 定义，以便其他模块
   可以声明自定义 CCPO 实例。
 
-* [#12312](https://github.com/leanprover/lean4/pull/12312) 颠倒了 `ForwardPattern` 和 `ForwardPattern` 之间的关系
-  `ToForwardSearcher` 类。
+* [#12312](https://github.com/leanprover/lean4/pull/12312) 颠倒了 `ForwardPattern` 与
+  `ToForwardSearcher` 类之间的关系。
 
 * [#12318](https://github.com/leanprover/lean4/pull/12318) 避免 `String.Slice.hash` 中未对齐时的未定义行为
   子串。
   这可能会在某些 Arm 平台上产生 SIGILL。
 
-* [#12322](https://github.com/leanprover/lean4/pull/12322) 添加了 `String.Slice.Subslice`，它是 `String.Slice.Subslice` 的非捆绑版本
-  `String.Slice`.
+* [#12322](https://github.com/leanprover/lean4/pull/12322) 添加了 `String.Slice.Subslice`，它是
+  `String.Slice` 的非捆绑版本。
 
 * [#12333](https://github.com/leanprover/lean4/pull/12333) 添加将在验证中使用的基本类型类
   我们的字符串搜索基础设施。
@@ -915,8 +912,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-0
   正确。
 
 * [#12426](https://github.com/leanprover/lean4/pull/12426) 添加了引理 `Acc.inv_of_transGen`，它是
-  __修复000__。虽然 `Acc.inv` 表明 `Acc r x` 暗示 `Acc r y` 给定
-  `r y x`，新引理表明，如果 `y` 仅是，则这也成立
+  `Acc.inv`。`Acc.inv` 表明给定 `r y x` 时，`Acc r x` 蕴含 `Acc r y`；新引理表明，如果 `y` 仅是，则这也成立
   *传递*与 `x` 相关。
 
 * [#12432](https://github.com/leanprover/lean4/pull/12432) 将引理 `isSome_find?` 和 `isSome_findSome?` 添加到 API
@@ -1128,7 +1124,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-0
   2. LRAT 检查器接收 `Array IntAction` 并将其分解为
   在将其传递到检查循环之前先添加 `Array DefaultClauseAction` 。
   与相比，`DefaultClauseAction` 的内存占用要大得多
-  __修复000__。因此将整个证明具体化为
+  `IntAction`。因此，预先将整个证明具体化为
   `DefaultClauseAction` 前期会消耗大量内存。在改编的
   LRAT 检查器我们接受 `Array IntAction` 并且只转换
   我们目前正在努力实现 `DefaultClauseAction`。在
@@ -1213,7 +1209,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-0
 
 * [#12568](https://github.com/leanprover/lean4/pull/12568) 从中删除 `tryMatchEquations` 和 `tryMatcher`
   `Lean.Meta.Tactic.Cbv.Main`，因为两者都已在中定义和使用
-  __修复000__。 `Main.lean` 中的副本是
+  `Lean.Meta.Tactic.Cbv.ControlFlow`。`Main.lean` 中的副本是
   无法访问的死代码。
 
 * [#12585](https://github.com/leanprover/lean4/pull/12585) 删除 `ite` 和 `dite` 中不必要的 `trySynthInstance `
@@ -1236,7 +1232,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-0
 
 * [#12615](https://github.com/leanprover/lean4/pull/12615) 修复了 `handleConst` 中阻止 `cbv` 的翻转条件
   从展开无效（非函数）常量定义，例如
-  __修复000__。支票 `unless eType matches .forallE` 是
+  `def myVal : Nat := 42`。检查 `unless eType matches .forallE` 的本意是
   旨在跳过裸函数常量（其展开定理期望
   参数），而是跳过值常量。该修复更改了
   防护到 `if eType matches .forallE`，匹配中使用的逻辑
@@ -1417,8 +1413,8 @@ IR转化为不纯的LCNF。
   通过uget。
 
 * [#12625](https://github.com/leanprover/lean4/pull/12625) 确保初始编译失败标记相关
-  定义为 `noncomputable`，内部和外部“不可计算”
-节`，以便检测到后续错误/不可计算的标记
+  定义标记为 `noncomputable`，无论位于 `noncomputable
+  section` 内部还是外部，以便检测后续错误或不可计算标记
   在初始编译中，而不是在管道的某个地方。
 
 * [#12644](https://github.com/leanprover/lean4/pull/12644) 将拓扑排序过程从 IR 移植到 LCNF。
@@ -1465,7 +1461,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-0
   通过输入）与不（所提出问题的一部分）
 
 * [#12616](https://github.com/leanprover/lean4/pull/12616) 将文档添加到下面的 Cbv 评估器文件中
-  __修复000__。模块文档字符串描述了评估策略，
+  `Meta/Tactic/Cbv/`。模块文档字符串描述了求值策略，
   限制、属性和展开顺序。函数文档字符串覆盖
   公共 API 和关键的内部 simprocs。
 

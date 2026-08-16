@@ -46,7 +46,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___33___0-_LPAR_2026-0
 
 几项独立的更改使交互式编辑明显更加流畅：
 
-当只有*后面*的空格发生变化时，- [#11958](https://github.com/leanprover/lean4/pull/11958) 会阻止精译器重新运行策略。在准备下一行的策略后按回车键不再放弃其后所有内容所取得的进度。
+- [#11958](https://github.com/leanprover/lean4/pull/11958) 防止精译器仅因策略*之后*的空白发生变化而重新运行该策略。在策略后按回车准备下一行时，不再丢弃其后全部内容已取得的进度。
 
 - [#13712](https://github.com/leanprover/lean4/pull/13712) 使 `exact?`、`apply?`、`rw?` 和 `grind +locals` 停止等待同一文件中的早期定理来完成内核检查。在编辑器会话中，这通常显示为 `try?` 和 `exact?` ，似乎挂在长文件的顶部附近。
 
@@ -291,7 +291,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___33___0-_LPAR_2026-0
   通过使用现有的 `maxRecDepth` 选项而不是物理堆栈大小来限制内核类型检查，使内核的 `(kernel) deep recursion detected` 错误具有确定性。以前的限制取决于本机堆栈，因此它会因平台、构建和优化级别而异，并且无法可靠地重现；它现在是 `maxRecDepth` 单独的函数，并通过 `set_option maxRecDepth <num>` 以通常的方式引发。
 
 - [#14297](https://github.com/leanprover/lean4/pull/14297)
-  使 `do` 块的 `match (dependent := true)` 分支内的裸 `return` 目标为依赖细化的分支类型，因此像 `__FIX000__ 0 => return 0` 这样的分支会针对细化的 `do` 块结果类型进行类型检查，而不将其包装在嵌套的 `(do …)` 中。
+  使 `do` 块的 `match (dependent := true)` 分支内的裸 `return` 以依赖精化后的分支类型为目标，因此像 `| 0 => return 0` 这样的分支会针对精化后的 `do` 块结果类型进行类型检查，而无需将其包装在嵌套的 `(do …)` 中。
 
 - [#13895](https://github.com/leanprover/lean4/pull/13895)
   默认情况下启用 `backward.isDefEq.respectTransparency.types` 选项。当以可简化、实例或隐式透明度分配元变量时，这意味着元变量及其分配值的类型以隐式、先前默认的透明度进行比较。它还使许多现有的声明可以隐式简化。这一变化增强了用户对正在展开的内容的控制，从而提高了大型项目的可扩展性。
@@ -472,7 +472,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___33___0-_LPAR_2026-0
 ````markdown
 
 - [#14618](https://github.com/leanprover/lean4/pull/14618)
-  修复使用在量词下使用 `#` 语法编写的位向量文字的目标的 `grind` 回归，例如 `example (f g : Nat → BitVec 2) (h : ∀ n, f n = g n __FIX000____FIX001____FIX002__ 1#2) : f 0 = g 0 __FIX003____FIX004____FIX005__ 1#2 := by grind`。该战术因内核错误而失败，而不是关闭目标。
+  修复了 `grind` 在处理量词下以 `#` 语法书写的位向量字面量时的回归，例如 `example (f g : Nat → BitVec 2) (h : ∀ n, f n = g n ||| 1#2) : f 0 = g 0 ||| 1#2 := by grind`。此前该策略会触发内核错误，而不是关闭目标。
 
 - [#14393](https://github.com/leanprover/lean4/pull/14393)
   实现 `grind` 传播器，用于评估文字上的 `BitVec` 操作
@@ -566,8 +566,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___33___0-_LPAR_2026-0
   * `autoTry.onSorry` — 建议 `sorry` 策略；该建议*替换* `sorry`。
 
 - [#14205](https://github.com/leanprover/lean4/pull/14205)
-  停止 `impossible` 策略组合器以在
-  否定之前的目标，因为这会破坏这一点。
+  使 `impossible` 策略组合器不再在否定目标前运行 `cleanup`，因为那会违背该组合器的用途。
 
 - [#13712](https://github.com/leanprover/lean4/pull/13712)
   使 `exact?`、`apply?`、`rw?` 和 `grind +locals` 不再等待先前的异步
