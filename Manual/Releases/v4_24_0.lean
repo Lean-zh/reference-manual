@@ -280,19 +280,11 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___24___0-_LPAR_2025-1
 
 * [#10038](https://github.com/leanprover/lean4/pull/10038) 确保 `grind` 错误消息在引用声明名时使用 `{.ofConstName declName}`。
 
-* [#10060](https://github.com/leanprover/lean4/pull/10060) 允许对由此产生的情况进行更多的精细控制
-模块系统下有曝光定义:操作者不应
-除非衍生项目或衍生项目
-以 `@[expose]` 标记周围区域。
-在更新第0阶段后更新。
+* [#10060](https://github.com/leanprover/lean4/pull/10060) 让模块系统下“哪些派生实例拥有暴露定义”可以被更细粒度地控制：处理器不应暴露其实现，除非派生项本身或外围的 `section` 之一被标记为 `@[expose]`。内建处理器会在 stage0 更新后跟进调整。
 
-* [#10069](https://github.com/leanprover/lean4/pull/10069) 在`grind linarith` 中添加辅助者定理以支持`NatModule`。
+* [#10069](https://github.com/leanprover/lean4/pull/10069) 为 `grind linarith` 添加了支持 `NatModule` 的辅助定理。
 
-* [#10071](https://github.com/leanprover/lean4/pull/10071) 改进`grind cutsat`中`a^n`]对`a^n`[的支持。
-`cutsat` 发现`a` 和`b`等于数字,现在
-宣传平等。
-与第9996号类似,但`a^b`。
-示例:
+* [#10071](https://github.com/leanprover/lean4/pull/10071) 改进了 `grind cutsat` 对 `a^n` 的支持。例如，如果 `cutsat` 发现 `a` 和 `b` 都等于某个数值字面量，它现在会传播相应的等式。这与 #9996 类似，不过处理的是 `a^b`。示例：
 
   ```lean
   example (n : Nat) : n = 2 → 2 ^ (n+1) = 8 := by
@@ -319,7 +311,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___24___0-_LPAR_2025-1
 
 * [#10135](https://github.com/leanprover/lean4/pull/10135) 让单构造器归纳类型的 `ctorIdx` 定义可以避开无意义的 `.casesOn`，并使用 `macro_inline` 以避免编译该函数并浪费符号。
 
-* [#10141](https://github.com/leanprover/lean4/pull/10141) 恢复第10135号`macro_inline`部分。
+* [#10141](https://github.com/leanprover/lean4/pull/10141) 回退了 #10135 中关于 `macro_inline` 的那部分改动。
 
 * [#10144](https://github.com/leanprover/lean4/pull/10144) 修改了 `coinductive_fixpoint`/`inductive_fixpoint` 机制中对谓词（即映到 `Prop` 的函数）构造 `CompleteLattice` 实例的方式。
 
@@ -339,7 +331,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___24___0-_LPAR_2025-1
 
 * [#10179](https://github.com/leanprover/lean4/pull/10179) 修复了 `grind` 的实例归一化过程。`grind` 中有些模块直接使用 core 里定义的内建实例（如 `cutsat`），而另一些模块则通过 `synthInstance` 合成实例（如 `ring`）。这种不一致会引入不匹配，并让同一项出现两种不同表示；该 PR 解决了这一问题。
 
-* [#10183](https://github.com/leanprover/lean4/pull/10183) 让 match 方程在可能时直接用 `rfl` 证明，而不是先显式展开左侧；这可能生成更小的证明。
+* [#10183](https://github.com/leanprover/lean4/pull/10183) 让匹配方程在可能时直接用 `rfl` 证明，而不是先显式展开左侧；这可能生成更小的证明。
 
 * [#10185](https://github.com/leanprover/lean4/pull/10185) 为 `grind` 的全部属性修饰符补充了文档（如 `=`、`usr`、`ext` 等）。
 
