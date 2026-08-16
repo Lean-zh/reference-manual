@@ -12,6 +12,8 @@ import Lake.DSL
 
 import Manual.Meta
 import Manual.BuildTools.Lake.CLI
+import Manual.ZhDocString.BuildTools.Config
+import Manual.ZhDocString.BuildTools.Lake
 
 
 open Manual
@@ -25,111 +27,114 @@ open Lean.Elab.Tactic.GuardMsgs.WhitespaceMode
 
 open Lake.DSL
 
-#doc (Manual) "Configuration File Format" =>
+#doc (Manual) "配置文件格式" =>
 %%%
 tag := "lake-config"
 %%%
 
 :::paragraph
-Lake offers two formats for {tech}[package configuration] files:
+Lake 为{tech (key := "package configuration")}[包配置]文件提供两种格式：
 
 : TOML
 
-  The TOML configuration format is fully declarative.
-  Projects that don't include custom targets, facets, or scripts can use the TOML format.
-  Because TOML parsers are available for a wide variety of languages, using this format facilitates integration with tools that are not written in Lean.
+  TOML 配置格式完全是声明式的。
+  不包含自定义目标、分面或脚本的项目可以使用 TOML 格式。
+  由于许多语言都有 TOML 解析器，使用这种格式便于和不是用 Lean 编写的工具集成。
 
 : Lean
 
-  The Lean configuration format is more flexible and allows for custom targets, facets, and scripts.
-  It features an embedded domain-specific language for describing the declarative subset of configuration options that is available from the TOML format.
-  Additionally, the Lake API can be used to express build configurations that are outside of the possibilities of the declarative options.
+  Lean 配置格式更灵活，允许自定义目标、分面和脚本。
+  它提供一种嵌入式领域特定语言，用于描述 TOML 格式所提供配置选项的声明式子集。
+  此外，Lake 接口还可用于表达声明式选项无法表达的构建配置。
 
-The command {lake}`translate-config` can be used to automatically convert between the two formats.
+{lake}`translate-config` 命令可用于在两种格式之间自动转换。
 :::
 
-Both formats are processed similarly by Lake, which extracts the {tech}[package configuration] from the configuration file in the form of internal structure types.
-When the package is {tech (key := "configure package")}[configured], the resulting data structures are written to `lakefile.olean` in the {tech}[build directory].
+Lake 以类似方式处理这两种格式，并以内部结构类型的形式从配置文件提取{tech (key := "package configuration")}[包配置]。
+{tech (key := "configure package")}[配置包]时，所得数据结构会写入{tech (key := "build directory")}[构建目录]中的 `lakefile.olean`。
 
 
-# Declarative TOML Format
+# 声明式 TOML 格式
 %%%
 tag := "lake-config-toml"
 %%%
 
 
-TOML{margin}[[_Tom's Obvious Minimal Language_](https://toml.io/en/) is a standardized format for configuration files.] configuration files describe the most-used, declarative subset of Lake {tech}[package configuration] files.
-TOML files denote _tables_, which map keys to values.
-Values may consist of strings, numbers, arrays of values, or further tables.
-Because TOML allows considerable flexibility in file structure, this reference documents the values that are expected rather than the specific syntax used to produce them.
+TOML{margin}[[_Tom's Obvious Minimal Language_](https://toml.io/en/) 是一种标准化的配置文件格式。] 配置文件描述 Lake {tech (key := "package configuration")}[包配置]文件中最常用的声明式子集。
+TOML 文件表示将键映射到值的_表_。
+值可以是字符串、数字、值数组或嵌套的表。
+由于 TOML 的文件结构非常灵活，本参考手册记录预期的值，而不是生成这些值的具体语法。
 
-The contents of {configFile}`lakefile.toml` should denote a TOML table that describes a Lean package.
-This configuration consists of both scalar fields that describe the entire package, as well as the following fields that contain arrays of further tables:
+{configFile}`lakefile.toml` 的内容应表示描述 Lean 包的 TOML 表。
+该配置既包含描述整个包的标量字段，也包含以下由更多表组成的数组字段：
  * `require`
  * `lean_lib`
  * `lean_exe`
 
-Fields that are not part of the configuration tables described here are presently ignored.
-To reduce the risk of typos, this is likely to change in the future.
-Field names not used by Lake should not be used to store metadata to be processed by other tools.
+目前，不属于此处所述配置表的字段会被忽略。
+为降低拼写错误的风险，这种行为将来可能会改变。
+不应使用 Lake 未使用的字段名来存储供其他工具处理的元数据。
 
 
-## Package Configuration
+## 包配置
+%%%
+tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Declarative-TOML-Format--Package-Configuration"
+%%%
 
-The top-level contents of `lakefile.toml` specify the options that apply to the package itself, including metadata such as the name and version, the locations of the files in the {tech}[workspace], compiler flags to be used for all {tech}[targets], and
-The only mandatory field is `name`, which declares the package's name.
+`lakefile.toml` 的顶层内容指定适用于包本身的选项，包括名称和版本等元数据、{tech (key := "workspace")}[工作区]中文件的位置，以及用于所有{tech (key := "targets")}[目标]的编译器标志等。
+唯一的必填字段是 `name`，它声明包的名称。
 
-:::::tomlTableDocs root "Package Configuration" Lake.PackageConfig (skip := backend) (skip := releaseRepo?) (skip := buildArchive?) (skip := manifestFile) (skip := moreServerArgs) (skip := dynlibs) (skip := plugins)
+:::::tomlTableDocs root "包配置" Lake.PackageConfig (docs := ZhDoc.BuildTools.Config.PackageConfig) (skip := backend) (skip := releaseRepo?) (skip := buildArchive?) (skip := manifestFile) (skip := moreServerArgs) (skip := dynlibs) (skip := plugins)
 
-::::tomlFieldCategory "Metadata" name version versionTags description keywords homepage license licenseFiles readmeFile reservoir
-These options describe the package.
-They are used by [Reservoir](https://reservoir.lean-lang.org/) to index and display packages.
-If a field is left out, Reservoir may use information from the package's GitHub repository to fill in details.
+::::tomlFieldCategory "元数据" name version versionTags description keywords homepage license licenseFiles readmeFile reservoir
+这些选项描述包。
+[Reservoir](https://reservoir.lean-lang.org/) 使用它们来索引和显示包。
+如果省略某个字段，Reservoir 可能使用包的 GitHub 仓库信息补全细节。
 
-:::tomlField Lake.PackageConfig name "The package name" "Package names" String
-The package's name.
+:::tomlField Lake.PackageConfig name "包名称" "包名称" String
+包的名称。
 :::
 ::::
 
-:::tomlFieldCategory "Layout" packagesDir srcDir buildDir leanLibDr nativeLibDir binDir irDir
-These options control the top-level directory layout of the package and its build directory.
-Further paths specified by libraries, executables, and targets within the package are relative to these directories.
+:::tomlFieldCategory "布局" packagesDir srcDir buildDir leanLibDr nativeLibDir binDir irDir
+这些选项控制包及其构建目录的顶层目录布局。
+包中库、可执行文件和目标指定的其他路径均相对于这些目录。
 :::
 
-:::tomlFieldCategory "Building and Running" defaultTargets leanLibDir platformIndependent precompileModules moreServerOptions moreGlobalServerArgs buildType leanOptions moreLeanArgs weakLeanArgs moreLeancArgs weakLeancArgs moreLinkArgs weakLinkArgs extraDepTargets
+:::tomlFieldCategory "构建与运行" defaultTargets leanLibDir platformIndependent precompileModules moreServerOptions moreGlobalServerArgs buildType leanOptions moreLeanArgs weakLeanArgs moreLeancArgs weakLeancArgs moreLinkArgs weakLinkArgs extraDepTargets
 
-These options configure how code is built and run in the package.
-Libraries, executables, and other {tech}[targets] within a package can further add to parts of this configuration.
-
-:::
-
-:::tomlFieldCategory "Testing and Linting" testDriver testDriverArgs lintDriver lintDriverArgs builtinLint
-
-The CLI commands {lake}`test` and {lake}`lint` use definitions configured by the {tech}[workspace]'s {tech}[root package] to perform testing and linting.
-The code that is run to perform tests and linting is referred to as the test or lint driver.
-In Lean configuration files, these can be specified by applying the `@[test_driver]` or `@[lint_driver]` attributes to a {tech}[Lake script] or an executable or library target.
-In both Lean and TOML configuration files, they can also be configured by setting these options.
-A target or script `TGT` from a dependency `PKG` can be specified as a test or lint driver using the string `"PKG/TGT"`
+这些选项配置如何在包中构建和运行代码。
+包中的库、可执行文件和其他{tech (key := "targets")}[目标]可以进一步扩充此配置的某些部分。
 
 :::
 
-:::tomlFieldCategory "Cloud Releases" releaseRepo buildArchive preferReleaseBuild
+:::tomlFieldCategory "测试与代码检查" testDriver testDriverArgs lintDriver lintDriverArgs builtinLint
 
-These options define a cloud release for the package, as described in the section on {ref "lake-github"}[GitHub release builds].
+命令行命令 {lake}`test` 和 {lake}`lint` 使用由{tech (key := "workspace")}[工作区]的{tech (key := "root package")}[根包]配置的定义来执行测试和代码检查。
+为执行测试和代码检查而运行的代码称为测试驱动或代码检查驱动。
+在 Lean 配置文件中，可以通过将 `@[test_driver]` 或 `@[lint_driver]` 属性应用于{tech (key := "Lake script")}[Lake 脚本]、可执行文件目标或库目标来指定它们。
+在 Lean 和 TOML 配置文件中，也可以通过设置这些选项来配置它们。
+可以使用字符串 `"PKG/TGT"` 将依赖项 `PKG` 中的目标或脚本 `TGT` 指定为测试或代码检查驱动。
 
 :::
 
-:::tomlField Lake.PackageConfig defaultTargets "default targets' names (array)" "default targets' names (array)" String (sort := 2)
+:::tomlFieldCategory "云端发行版" releaseRepo buildArchive preferReleaseBuild
 
-{includeDocstring Lake.Package.defaultTargets -elab}
+这些选项为包定义云端发行版，详见{ref "lake-github"}[GitHub 发行版构建]一节。
+
+:::
+
+:::tomlField Lake.PackageConfig defaultTargets "默认目标名称（数组）" "默认目标名称（数组）" String (sort := 2)
+
+{zhincludeDocstring Lake.Package.defaultTargets ZhDoc.BuildTools.Config.Package.defaultTargets}
 
 :::
 
 :::::
 
-:::::example "Minimal TOML Package Configuration"
-The minimal TOML configuration for a Lean {tech}[package] sets only the package's name, using the default values for all other fields.
-This package contains no {tech}[targets], so there is no code to be built.
+:::::example "最小 TOML 包配置" (file := "Minimal TOML Package Configuration")
+Lean {tech (key := "package")}[包]的最小 TOML 配置只设置包名，其他所有字段均使用默认值。
+此包不含{tech (key := "targets")}[目标]，因此没有需要构建的代码。
 
 ::::lakeToml Lake.PackageConfig _root_
 ```toml
@@ -215,9 +220,9 @@ name = "example-package"
 ::::
 :::::
 
-:::::example "Library TOML Package Configuration"
-The minimal TOML configuration for a Lean {tech}[package] sets the package's name and defines a library target.
-This library is named `Sorting`, and its modules are expected under the `Sorting.*` hierarchy.
+:::::example "库的 TOML 包配置" (file := "Library TOML Package Configuration")
+Lean {tech (key := "package")}[包]的最小 TOML 配置设置包名并定义一个库目标。
+此库名为 `Sorting`，其模块应位于 `Sorting.*` 层次结构下。
 ::::lakeToml Lake.PackageConfig _root_
 ```toml
 name = "example-package"
@@ -382,55 +387,58 @@ name = "Sorting"
 ::::
 :::::
 
-## Dependencies
+## 依赖项
+%%%
+tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Declarative-TOML-Format--Dependencies"
+%%%
 
-Dependencies are specified in the {toml}`[[require]]` field array of a package configuration, which specifies both the name and the source of each package.
-There are three kinds of sources:
- * [Reservoir](https://reservoir.lean-lang.org/), or an alternative package registry
- * Git repositories, which may be local paths or URLs
- * Local paths
+依赖项在包配置的 {toml}`[[require]]` 字段数组中指定，其中同时指定每个包的名称和来源。
+来源有三类：
+ * [Reservoir](https://reservoir.lean-lang.org/) 或其他包注册表
+ * Git 仓库，可以是本地路径或 URL
+ * 本地路径
 
-::::tomlTableDocs "require" "Requiring Packages" Lake.Dependency (skip := src?) (skip := opts) (skip := subdir) (skip := version)
+::::tomlTableDocs "require" "引入包" Lake.Dependency (docs := ZhDoc.BuildTools.Config.Dependency) (skip := src?) (skip := opts) (skip := subdir) (skip := version)
 
-The {tomlField Lake.Dependency}`path` and {tomlField Lake.Dependency}`git` fields specify an explicit source for a dependency.
-If neither are provided, then the dependency is fetched from [Reservoir](https://reservoir.lean-lang.org/), or an alternative registry if one has been configured.
-The {tomlField Lake.Dependency}`scope` field is required when fetching a package from Reservoir.
+{tomlField Lake.Dependency}`path` 和 {tomlField Lake.Dependency}`git` 字段为依赖项指定显式来源。
+如果两者均未提供，则从 [Reservoir](https://reservoir.lean-lang.org/) 获取依赖项；如果配置了其他注册表，则从该注册表获取。
+从 Reservoir 获取包时，必须提供 {tomlField Lake.Dependency}`scope` 字段。
 
-:::tomlField Lake.Dependency path "Path" "Paths" System.FilePath
-A dependency on the local filesystem, specified by its path.
+:::tomlField Lake.Dependency path "路径" "路径" System.FilePath
+本地文件系统中的依赖项，以其路径指定。
 :::
 
-:::tomlField Lake.Dependency git "Git specification" "Git specifications" Lake.DependencySrc
-A dependency in a Git repository, specified either by its URL as a string or by a table with the keys:
- * `url`: the repository URL
- * `subDir`: the subdirectory of the Git repository that contains the package's source code
+:::tomlField Lake.Dependency git "Git 规格" "Git 规格" Lake.DependencySrc
+Git 仓库中的依赖项，可以用 URL 字符串指定，也可以用包含以下键的表指定：
+ * `url`：仓库 URL
+ * `subDir`：Git 仓库中包含包源代码的子目录
 :::
 
-:::tomlField Lake.Dependency rev "Git revision" "Git revisions" String
-For Git or Reservoir dependencies, this field specifies the Git revision, which may be a branch name, a tag name, or a specific hash.
-On Reservoir, the `version` field takes precedence over this field.
+:::tomlField Lake.Dependency rev "Git 修订版本" "Git 修订版本" String
+对于 Git 或 Reservoir 依赖项，此字段指定 Git 修订版本，可以是分支名、标签名或特定哈希。
+在 Reservoir 上，`version` 字段优先于此字段。
 :::
 
-:::tomlField Lake.Dependency source "Package Source" "Package Sources" Lake.DependencySrc
-A dependency source, specified as a self-contained table, which is used when neither the `git` nor the `path` key is present.
-The key `type` should be either the string `"git"` or the string `"path"`.
-If the type is `"path"`, then there must be a further key `"path"` whose value is a string that provides the location of the package on disk.
-If the type is `"git"`, then the following keys should be present:
- * `url`: the repository URL
- * `rev`: the Git revision, which may be a branch name, a tag name, or a specific hash (optional)
- * `subDir`: the subdirectory of the Git repository that contains the package's source code
+:::tomlField Lake.Dependency source "包来源" "包来源" Lake.DependencySrc
+依赖项来源，以独立表指定，在既没有 `git` 键也没有 `path` 键时使用。
+键 `type` 应为字符串 `"git"` 或字符串 `"path"`。
+如果类型是 `"path"`，则还必须有一个 `"path"` 键，其字符串值给出包在磁盘上的位置。
+如果类型是 `"git"`，则应提供以下键：
+ * `url`：仓库 URL
+ * `rev`：Git 修订版本，可以是分支名、标签名或特定哈希（可选）
+ * `subDir`：Git 仓库中包含包源代码的子目录
 :::
 
-:::tomlField Lake.Dependency version "version as string" "versions as strings" String
+:::tomlField Lake.Dependency version "字符串形式的版本" "字符串形式的版本" String
 
-{includeDocstring Lake.Dependency.version}
+{zhincludeDocstring Lake.Dependency.version ZhDoc.BuildTools.Config.Dependency.version}
 
 :::
 
 ::::
 
-:::::example "Requiring Packages from Reservoir"
-The package `example` can be required from Reservoir using this TOML configuration:
+:::::example "从 Reservoir 引入包" (file := "Requiring Packages from Reservoir")
+可以使用以下 TOML 配置从 Reservoir 引入包 `example`：
 ::::lakeToml Lake.Dependency require
 ```toml
 [[require]]
@@ -453,8 +461,8 @@ scope = "exampleDev"
 ::::
 :::::
 
-:::::example "Requiring Packages from Git"
-The package `example` can be required from a Git repository using this TOML configuration:
+:::::example "从 Git 引入包" (file := "Requiring Packages from Git")
+可以使用以下 TOML 配置从 Git 仓库引入包 `example`：
 ::::lakeToml Lake.Dependency require
 ```toml
 [[require]]
@@ -477,11 +485,11 @@ version = "≥2.12.0"
 ```
 ::::
 
-In particular, the package will be checked out from the `main` branch, and the version number specified in the package's {tech (key := "package configuration")}[configuration] should be at least `2.12.0`.
+具体而言，该包会从 `main` 分支检出，且包的{tech (key := "package configuration")}[配置]中指定的版本号应不低于 `2.12.0`。
 :::::
 
-:::::example "Requiring Packages from a Git tag"
-The package `example` can be required from the tag `v2.12` in a Git repository using this TOML configuration:
+:::::example "从 Git 标签引入包" (file := "Requiring Packages from a Git tag")
+可以使用以下 TOML 配置从 Git 仓库的 `v2.12` 标签引入包 `example`：
 ::::lakeToml Lake.Dependency require
 ```toml
 [[require]]
@@ -497,11 +505,11 @@ rev = "v2.12"
     opts := {}}]
 ```
 ::::
-The version number specified in the package's {tech (key := "package configuration")}[configuration] is not used.
+不会使用包的{tech (key := "package configuration")}[配置]中指定的版本号。
 :::::
 
-:::::example "Requiring Reservoir Packages from a Git tag"
-The package `example`, found using Reservoir, can be required from the tag `v2.12` in its Git repository using this TOML configuration:
+:::::example "从 Git 标签引入 Reservoir 包" (file := "Requiring Reservoir Packages from a Git tag")
+可以使用以下 TOML 配置，从 Reservoir 找到包 `example`，并从其 Git 仓库的 `v2.12` 标签引入：
 ::::lakeToml Lake.Dependency require
 ```toml
 [[require]]
@@ -513,11 +521,11 @@ scope = "exampleDev"
 #[{name := `example, scope := "exampleDev", version := Lake.InputVer.git "v2.12", src? := none, opts := {}}]
 ```
 ::::
-The version number specified in the package's {tech (key := "package configuration")}[configuration] is not used.
+不会使用包的{tech (key := "package configuration")}[配置]中指定的版本号。
 :::::
 
-:::::example "Requiring Packages from Paths"
-The package `example` can be required from the local path `../example` using this TOML configuration:
+:::::example "从路径引入包" (file := "Requiring Packages from Paths")
+可以使用以下 TOML 配置从本地路径 `../example` 引入包 `example`：
 ::::lakeToml Lake.Dependency require
 ```toml
 [[require]]
@@ -532,11 +540,11 @@ path = "../example"
     opts := {}}]
 ```
 ::::
-Dependencies on local paths are useful when developing multiple packages in a single repository, or when testing whether a change to a dependency fixes a bug in a downstream package.
+在单个仓库中开发多个包，或测试依赖项的某项变更是否修复下游包中的错误时，本地路径依赖项很有用。
 :::::
 
-:::::example "Sources as Tables"
-The information about the package source can be written in an explicit table.
+:::::example "以表表示来源" (file := "Sources as Tables")
+包来源信息可以写在显式表中。
 ::::lakeToml Lake.Dependency require
 ```toml
 [[require]]
@@ -553,19 +561,22 @@ source = {type = "git", url = "https://example.com/example.git"}
 ::::
 :::::
 
-## Library Targets
+## 库目标
+%%%
+tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Declarative-TOML-Format--Library-Targets"
+%%%
 
-Library targets are expected in the `lean_lib` array of tables.
+库目标应写在 `lean_lib` 表数组中。
 
-::::tomlTableDocs "lean_lib" "Library Targets" Lake.LeanLibConfig (skip := backend) (skip := globs) (skip := nativeFacets)
-:::tomlField Lake.LeanLibConfig name "The library name" "Library names" String
-The library's name, which is typically the same as its single module root.
+::::tomlTableDocs "lean_lib" "库目标" Lake.LeanLibConfig (docs := ZhDoc.BuildTools.Config.LeanLibConfig) (skip := backend) (skip := globs) (skip := nativeFacets)
+:::tomlField Lake.LeanLibConfig name "库名称" "库名称" String
+库的名称，通常与其唯一模块根同名。
 :::
 
 ::::
 
-:::::example "Minimal Library Target"
-This library declaration supplies only a name:
+:::::example "最小库目标" (file := "Minimal Library Target")
+此库声明只提供名称：
 ::::lakeToml Lake.LeanLibConfig lean_lib
 ```toml
 [[lean_lib]]
@@ -604,11 +615,11 @@ name = "TacticTools"
       allowImportAll := false}}]
 ```
 ::::
-The library's source is located in the package's default source directory, in the module hierarchy rooted at `TacticTools`.
+该库的源代码位于包的默认源目录中，处于以 `TacticTools` 为根的模块层次结构下。
 :::::
 
-:::::example "Configured Library Target"
-This library declaration supplies more options:
+:::::example "已配置的库目标" (file := "Configured Library Target")
+此库声明提供更多选项：
 ::::lakeToml Lake.LeanLibConfig lean_lib
 ```toml
 [[lean_lib]]
@@ -649,21 +660,24 @@ precompileModules = true
       allowImportAll := false}}]
 ```
 ::::
-The library's source is located in the directory `src`, in the module hierarchy rooted at `TacticTools`.
-If its modules are accessed at elaboration time, they will be compiled to native code and linked in, rather than run in the interpreter.
+该库的源代码位于 `src` 目录中，处于以 `TacticTools` 为根的模块层次结构下。
+如果在精译时访问其模块，它们会编译为原生代码并链接进来，而不是在解释器中运行。
 :::::
 
-## Executable Targets
+## 可执行文件目标
+%%%
+tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Declarative-TOML-Format--Executable-Targets"
+%%%
 
-:::: tomlTableDocs "lean_exe" "Executable Targets" Lake.LeanExeConfig (skip := backend) (skip := globs) (skip := nativeFacets)
-:::tomlField Lake.LeanExeConfig name "The executable's name" "Executable names" String
-The executable's name.
+:::: tomlTableDocs "lean_exe" "可执行文件目标" Lake.LeanExeConfig (docs := ZhDoc.BuildTools.Config.LeanExeConfig) (skip := backend) (skip := globs) (skip := nativeFacets)
+:::tomlField Lake.LeanExeConfig name "可执行文件名称" "可执行文件名称" String
+可执行文件的名称。
 :::
 
 ::::
 
-:::::example "Minimal Executable Target"
-This executable declaration supplies only a name:
+:::::example "最小可执行文件目标" (file := "Minimal Executable Target")
+此可执行文件声明只提供名称：
 ::::lakeToml Lake.LeanExeConfig lean_exe
 ```toml
 [[lean_exe]]
@@ -703,14 +717,14 @@ name = "trustworthytool"
 def main : List String → IO UInt32 := fun _ => pure 0
 ```
 
-The executable's {lean}`main` function is expected in a module named `trustworthytool.lean` in the package's default source file path.
-The resulting executable is named `trustworthytool`.
+可执行文件的 {lean}`main` 函数应位于包默认源文件路径下名为 `trustworthytool.lean` 的模块中。
+生成的可执行文件名为 `trustworthytool`。
 :::::
 
-:::::example "Configured Executable Target"
-The name `trustworthy-tool` is not a valid Lean name due to the dash (`-`).
-To use this name for an executable target, an explicit module root must be supplied.
-Even though `trustworthy-tool` is a perfectly acceptable name for an executable, the target also specifies that the result of compilation and linking should be named `tt`.
+:::::example "已配置的可执行文件目标" (file := "Configured Executable Target")
+名称 `trustworthy-tool` 因包含连字符（`-`）而不是有效的 Lean 名称。
+要将此名称用于可执行文件目标，必须提供显式模块根。
+尽管 `trustworthy-tool` 完全可以作为可执行文件名，该目标还指定编译和链接的结果应命名为 `tt`。
 
 ::::lakeToml Lake.LeanExeConfig lean_exe
 ```toml
@@ -753,22 +767,22 @@ exeName = "tt"
 def main : List String → IO UInt32 := fun _ => pure 0
 ```
 
-The executable's {lean}`main` function is expected in a module named `TrustworthyTool.lean` in the package's default source file path.
+可执行文件的 {lean}`main` 函数应位于包默认源文件路径下名为 `TrustworthyTool.lean` 的模块中。
 :::::
 
-# Lean Format
+# Lean 格式
 %%%
 tag := "lake-config-lean"
 %%%
 
 
-The Lean format for Lake {tech}[package configuration] files provides a domain-specific language for the declarative features that are supported in the TOML format.
-Additionally, it provides the ability to write Lean code to implement any necessary build logic that is not expressible declaratively.
-The Lean configuration file is named {configFile}`lakefile.lean`.
+Lake {tech (key := "package configuration")}[包配置]文件的 Lean 格式为 TOML 格式支持的声明式功能提供了一种领域特定语言。
+此外，还可以编写 Lean 代码来实现任何无法以声明方式表达的必要构建逻辑。
+Lean 配置文件名为 {configFile}`lakefile.lean`。
 
-Because the Lean format is a Lean source file, it can be edited using all the features of the Lean language server.
-Additionally, Lean's metaprogramming framework allows elaboration-time side effects to be used to implement features such as configuration steps that are conditional on the current platform.
-However, a consequence of the Lean configuration format being a Lean file is that it is not feasible to process such files using tools that are not themselves written in Lean.
+由于 Lean 格式是 Lean 源文件，因此可以使用 Lean 语言服务器的全部功能进行编辑。
+此外，Lean 的元编程框架允许使用精译时副作用，实现依赖当前平台的配置步骤等功能。
+不过，Lean 配置格式是 Lean 文件，这意味着使用并非以 Lean 编写的工具处理此类文件并不可行。
 
 ```lean -show
 section
@@ -776,21 +790,27 @@ open Lake DSL
 open Lean (NameMap)
 ```
 
-## Declarative Fields
+## 声明式字段
+%%%
+tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Lean-Format--Declarative-Fields"
+%%%
 
-The declarative subset of the Lean configuration format uses sequences of declaration fields to specify configuration options.
+Lean 配置格式的声明式子集使用声明字段序列来指定配置选项。
 
-:::syntax Lake.DSL.declField (title := "Declarative Fields") -open
+:::syntax Lake.DSL.declField (title := "声明式字段") -open
 
-{includeDocstring Lake.DSL.declField}
+{zhincludeDocstring Lake.DSL.declField ZhDoc.BuildTools.Config.DSL.declField}
 
 ```grammar
 $_ := $_
 ```
 :::
 
-## Packages
-::::syntax command (title := "Package Configuration")
+## 包
+%%%
+tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Lean-Format--Packages"
+%%%
+::::syntax command (title := "包配置")
 ```grammar
 $[$_:docComment]?
 $[@[ $_,* ]]?
@@ -814,44 +834,47 @@ $[where
   $[$_:letRecDecl];*]?
 ```
 
-There can only be one {keywordOf Lake.DSL.packageCommand}`package` declaration per Lake configuration file.
-The defined package configuration will be available for reference as `_package`.
+每个 Lake 配置文件只能有一个 {keywordOf Lake.DSL.packageCommand}`package` 声明。
+已定义的包配置可通过 `_package` 引用。
 
 ::::
 
-::::syntax command (title := "Post-Update Hooks")
+::::syntax command (title := "更新后钩子")
 ```grammar
 post_update $[$name]? $v
 ```
 
-{includeDocstring Lake.DSL.postUpdateDecl}
+{zhincludeDocstring Lake.DSL.postUpdateDecl ZhDoc.BuildTools.Config.DSL.postUpdateDecl}
 
 ::::
 
 
-## Dependencies
+## 依赖项
+%%%
+tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Lean-Format--Dependencies"
+%%%
 
-Dependencies are specified using the {keywordOf Lake.DSL.requireDecl}`require` declaration.
+依赖项使用 {keywordOf Lake.DSL.requireDecl}`require` 声明指定。
 
-:::syntax command (title := "Requiring Packages")
+:::syntax command (title := "引入包")
 ```grammar
 $doc:docComment
 require $name:depName $[@ $[git]? $_:term]? $[$_:fromClause]? $[with $_:term]?
 ```
 
-The `@` clause specifies a package version, which is used when requiring a package from [Reservoir](https://reservoir.lean-lang.org/).
-The version may either be a string that specifies the version declared in the package's {name Lake.PackageConfig.version}`version` field, or a specific Git revision.
-Git revisions may be branch names, tag names, or commit hashes.
+`@` 子句指定包版本，用于从 [Reservoir](https://reservoir.lean-lang.org/) 引入包。
+版本可以是指定包的 {name Lake.PackageConfig.version}`version` 字段中所声明版本的字符串，也可以是具体的 Git 修订版本。
+Git 修订版本可以是分支名、标签名或提交哈希。
 
-The optional {syntaxKind}`fromClause` specifies a package source other than Reservoir, which may be either a Git repository or a local path.
+可选的 {syntaxKind}`fromClause` 指定 Reservoir 以外的包来源，可以是 Git 仓库或本地路径。
 
-The {keywordOf Lake.DSL.requireDecl}`with` clause specifies a {lean}`NameMap String` of Lake options that will be used to configure the dependency.
-This is equivalent to passing {lakeOpt}`-K` options to {lake}`build` when building the dependency on the command line.
+{keywordOf Lake.DSL.requireDecl}`with` 子句指定用于配置依赖项的 Lake 选项 {lean}`NameMap String`。
+这等价于在命令行构建依赖项时向 {lake}`build` 传递 {lakeOpt}`-K` 选项。
 :::
 
-:::syntax fromClause -open (title := "Package Sources")
+:::syntax fromClause -open (title := "包来源")
 
-{includeDocstring Lake.DSL.fromClause}
+{zhincludeDocstring Lake.DSL.fromClause ZhDoc.BuildTools.Config.DSL.fromClause}
 
 ```grammar
 from $t:term
@@ -864,29 +887,35 @@ from git $t $[@ $t]? $[/ $t]?
 :::
 
 
-## Targets
+## 目标
+%%%
+tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Lean-Format--Targets"
+%%%
 
 
 
-{tech}[Targets] are typically added to the set of default targets by applying the `default_target` attribute, rather than by explicitly listing them.
+通常通过应用 `default_target` 属性将{tech (key := "Targets")}[目标]加入默认目标集合，而不是显式列出它们。
 :::TODO
-Fix `default_target` above—it's not working on CI, but it is working locally, with the `attr` role.
+修复上面的 `default_target`——它在 CI 上不工作，但在本地配合 `attr` 角色可以工作。
 :::
 
-:::syntax attr (title := "Specifying Default Targets") (label := "attribute") (namespace := Lake.DSL)
+:::syntax attr (title := "指定默认目标") (label := "属性") (namespace := Lake.DSL)
 
 ```grammar
 default_target
 ```
-Marks a target as a default, to be built when no other target is specified.
+将目标标记为默认目标，在未指定其他目标时构建。
 :::
 
-### Libraries
+### 库
+%%%
+tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Lean-Format--Targets--Libraries"
+%%%
 
 
-:::syntax command (title := "Library Targets")
+:::syntax command (title := "库目标")
 
-To define a library in which all configurable fields have their default values, use {keywordOf Lake.DSL.leanLibCommand}`lean_lib` with no further fields.
+要定义所有可配置字段均使用默认值的库，请使用 {keywordOf Lake.DSL.leanLibCommand}`lean_lib`，不再添加字段。
 
 ```grammar
 $[$_:docComment]?
@@ -894,7 +923,7 @@ $[$_:attributes]?
 lean_lib $_:identOrStr
 ```
 
-The default configuration can be modified by providing the new values.
+可以通过提供新值来修改默认配置。
 
 ```grammar
 $[$_:docComment]?
@@ -915,22 +944,25 @@ $[where
 ```
 :::
 
-The fields of {keywordOf Lake.DSL.leanLibCommand}`lean_lib` are those of the {name Lake.LeanLibConfig}`LeanLibConfig` structure.
+{keywordOf Lake.DSL.leanLibCommand}`lean_lib` 的字段就是 {name Lake.LeanLibConfig}`LeanLibConfig` 结构的字段。
 
-{docstring Lake.LeanLibConfig}
+{zhdocstring Lake.LeanLibConfig ZhDoc.BuildTools.Config.LeanLibConfig}
 
-### Executables
+### 可执行文件
+%%%
+tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Lean-Format--Targets--Executables"
+%%%
 
-:::syntax command (title := "Executable Targets")
+:::syntax command (title := "可执行文件目标")
 
-To define an executable in which all configurable fields have their default values, use {keywordOf Lake.DSL.leanExeCommand}`lean_exe` with no further fields.
+要定义所有可配置字段均使用默认值的可执行文件，请使用 {keywordOf Lake.DSL.leanExeCommand}`lean_exe`，不再添加字段。
 
 ```grammar
 $[$_:docComment]? $[$_:attributes]?
 lean_exe $_:identOrStr
 ```
 
-The default configuration can be modified by providing the new values.
+可以通过提供新值来修改默认配置。
 
 ```grammar
 $[$_:docComment]? $[$_:attributes]?
@@ -948,18 +980,21 @@ $[where
 ```
 :::
 
-The fields of {keywordOf Lake.DSL.leanExeCommand}`lean_exe` are those of the {name Lake.LeanExeConfig}`LeanExeConfig` structure.
+{keywordOf Lake.DSL.leanExeCommand}`lean_exe` 的字段就是 {name Lake.LeanExeConfig}`LeanExeConfig` 结构的字段。
 
-{docstring Lake.LeanExeConfig}
+{zhdocstring Lake.LeanExeConfig ZhDoc.BuildTools.Config.LeanExeConfig}
 
-### External Libraries
+### 外部库
+%%%
+tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Lean-Format--Targets--External-Libraries"
+%%%
 
-Because external libraries may be written in any language and require arbitrary build steps, they are defined as programs written in the {name Lake.FetchM}`FetchM` monad that produce a {name Lake.Job}`Job`.
-External library targets should produce a build job that carries out the build and then returns the location of the resulting static library.
-For the external library to link properly when {name Lake.PackageConfig.precompileModules}`precompileModules` is on, the static library produced by an {keyword}`extern_lib` target must follow the platform's naming conventions for libraries (i.e., be named foo.a on Windows or libfoo.a on Unix-like systems).
-The utility function {name}`Lake.nameToStaticLib` converts a library name into its proper file name for current platform.
+由于外部库可以用任意语言编写并需要任意构建步骤，它们被定义为在 {name Lake.FetchM}`FetchM` 单子中编写、生成 {name Lake.Job}`Job` 的程序。
+外部库目标应生成一个执行构建并返回所得静态库位置的构建作业。
+要使外部库在启用 {name Lake.PackageConfig.precompileModules}`precompileModules` 时正确链接，{keyword}`extern_lib` 目标生成的静态库必须遵循平台的库命名约定（即在 Windows 上命名为 foo.a，在类 Unix 系统上命名为 libfoo.a）。
+实用函数 {name}`Lake.nameToStaticLib` 将库名称转换为适合当前平台的文件名。
 
-:::syntax command (title := "External Library Targets")
+:::syntax command (title := "外部库目标")
 
 ```grammar
 $[$_:docComment]?
@@ -968,15 +1003,18 @@ extern_lib $_:identOrStr $_? := $_:term
 $[where $_*]?
 ```
 
-{includeDocstring Lake.DSL.externLibCommand}
+{zhincludeDocstring Lake.DSL.externLibCommand ZhDoc.BuildTools.Config.DSL.externLibCommand}
 
 :::
 
-### Custom Targets
+### 自定义目标
+%%%
+tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Lean-Format--Targets--Custom-Targets"
+%%%
 
-Custom targets may be used to define any incrementally-built artifact whatsoever, using the Lake API.
+可以使用 Lake 接口，以自定义目标定义任意增量构建的产物。
 
-:::syntax command (title := "Custom Targets")
+:::syntax command (title := "自定义目标")
 
 ```grammar
 $[$_:docComment]?
@@ -985,19 +1023,22 @@ target $_:identOrStr $_? : $ty:term := $_:term
 $[where $_*]?
 ```
 
-{includeDocstring Lake.DSL.externLibCommand}
+{zhincludeDocstring Lake.DSL.targetCommand ZhDoc.BuildTools.Config.DSL.targetCommand}
 
 :::
 
-### Custom Facets
+### 自定义分面
+%%%
+tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Lean-Format--Targets--Custom-Facets"
+%%%
 
-Custom facets allow additional artifacts to be incrementally built from a module, library, or package.
+自定义分面允许从模块、库或包增量构建额外产物。
 
 
-:::syntax command (title := "Custom Package Facets")
+:::syntax command (title := "自定义包分面")
 
-Package facets allow the production of an artifact or set of artifacts from a whole package.
-The Lake API makes it possible to query a package for its libraries; thus, one common use for a package facet is to build a given facet of each library.
+包分面允许从整个包生成一个或一组产物。
+Lake 接口可查询包中的库；因此，包分面的一个常见用途是构建每个库的指定分面。
 
 ```grammar
 $[$_:docComment]?
@@ -1006,14 +1047,14 @@ package_facet $_:identOrStr $_? : $ty:term := $_:term
 $[where $_*]?
 ```
 
-{includeDocstring Lake.DSL.packageFacetDecl}
+{zhincludeDocstring Lake.DSL.packageFacetDecl ZhDoc.BuildTools.Config.DSL.packageFacetDecl}
 
 :::
 
-:::syntax command (title := "Custom Library Facets")
+:::syntax command (title := "自定义库分面")
 
-Library facets allow the production of an artifact or set of artifacts from a library.
-The Lake API makes it possible to query a library for its modules; thus, one common use for a library facet is to build a given facet of each module.
+库分面允许从库生成一个或一组产物。
+Lake 接口可查询库中的模块；因此，库分面的一个常见用途是构建每个模块的指定分面。
 
 ```grammar
 $[$_:docComment]?
@@ -1022,13 +1063,13 @@ library_facet $_:identOrStr $_? : $ty:term := $_:term
 $[where $_*]?
 ```
 
-{includeDocstring Lake.DSL.libraryFacetDecl}
+{zhincludeDocstring Lake.DSL.libraryFacetDecl ZhDoc.BuildTools.Config.DSL.libraryFacetDecl}
 
 :::
 
-:::syntax command (title := "Custom Module Facets")
+:::syntax command (title := "自定义模块分面")
 
-Module facets allow the production of an artifact or set of artifacts from a module, typically by invoking a command-line tool.
+模块分面允许从模块生成一个或一组产物，通常通过调用命令行工具来完成。
 
 ```grammar
 $[$_:docComment]?
@@ -1037,16 +1078,19 @@ module_facet $_:identOrStr $_? : $ty:term := $_:term
 $[where $_*]?
 ```
 
-{includeDocstring Lake.DSL.moduleFacetDecl}
+{zhincludeDocstring Lake.DSL.moduleFacetDecl ZhDoc.BuildTools.Config.DSL.moduleFacetDecl}
 
 :::
 
-## Configuration Value Types
+## 配置值类型
+%%%
+tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Lean-Format--Configuration-Value-Types"
+%%%
 
-{docstring Lake.BuildType}
+{zhdocstring Lake.BuildType ZhDoc.BuildTools.Config.BuildType}
 
-In Lake's DSL, {deftech}_globs_ are patterns that match sets of module names.
-There is a coercion from names to globs that match the name in question, and there are two postfix operators for constructing further globs.
+在 Lake 的 DSL 中，{deftech (key := "globs")}[通配模式]是匹配模块名称集合的模式。
+名称可以强制转换为匹配该名称的通配模式，另有两个后缀运算符用于构造更多通配模式。
 
 ```lean -show
 section
@@ -1068,45 +1112,48 @@ open Lake DSL
 
 end
 ```
-:::freeSyntax term (title := "Glob Syntax")
+:::freeSyntax term (title := "通配模式语法")
 
-The glob pattern `N.*` matches `N` or any submodule for which `N` is a prefix.
+通配模式 `N.*` 匹配 `N`，或以 `N` 为前缀的任意子模块。
 
 ```grammar
 $_:name".*"
 ```
 
-The glob pattern `N.+` matches any submodule for which `N` is a strict prefix, but not `N` itself.
+通配模式 `N.+` 匹配严格以 `N` 为前缀的任意子模块，但不匹配 `N` 本身。
 
 ```grammar
 $_:name".+"
 ```
 
-Whitespace is not permitted between the name and `.*` or `.+`.
+名称与 `.*` 或 `.+` 之间不允许有空白。
 
 :::
 
-{docstring Lake.Glob}
+{zhdocstring Lake.Glob ZhDoc.BuildTools.Config.Glob}
 
 
 
-{docstring Lake.LeanOption}
+{zhdocstring Lake.LeanOption ZhDoc.BuildTools.Config.LeanOption}
 
-{docstring Lake.Backend}
+{zhdocstring Lake.Backend ZhDoc.BuildTools.Config.Backend}
 
-## Scripts
+## 脚本
+%%%
+tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Lean-Format--Scripts"
+%%%
 
-Lake scripts are used to automate tasks that require access to a package configuration but do not participate in incremental builds of artifacts from code.
-Scripts run in the {name Lake.ScriptM}`ScriptM` monad, which is {name}`IO` with an additional {tech}[reader monad] {tech (key := "monad transformer")}[transformer] that provides access to the package configuration.
-In particular, a script should have the type {lean}`List String → ScriptM UInt32`.
-Workspace information in scripts is primarily accessed via the {inst}`MonadWorkspace ScriptM` instance.
+Lake 脚本用于自动化需要访问包配置、但不参与从代码增量构建产物的任务。
+脚本在 {name Lake.ScriptM}`ScriptM` 单子中运行；它是在 {name}`IO` 上叠加一个提供包配置访问能力的{tech (key := "reader monad")}[读取器单子]{tech (key := "monad transformer")}[变换器]。
+具体而言，脚本应具有类型 {lean}`List String → ScriptM UInt32`。
+脚本主要通过 {inst}`MonadWorkspace ScriptM` 实例访问工作区信息。
 
 
 ```lean -show
 example : ScriptFn = (List String → ScriptM UInt32) := rfl
 ```
 
-:::syntax command (title := "Script Declarations")
+:::syntax command (title := "脚本声明")
 ```grammar
 $[$_:docComment]?
 $[@[$_,*]]?
@@ -1116,45 +1163,48 @@ $[where
   $_*]?
 ```
 
-{includeDocstring Lake.DSL.scriptDecl}
+{zhincludeDocstring Lake.DSL.scriptDecl ZhDoc.BuildTools.Config.DSL.scriptDecl}
 
 :::
 
-{docstring Lake.ScriptM}
+{zhdocstring Lake.ScriptM ZhDoc.BuildTools.Lake.ScriptM}
 
 
-:::syntax attr (label := "attribute") (title := "Default Scripts")
+:::syntax attr (label := "属性") (title := "默认脚本")
 ```grammar
 default_script
 ```
 
-Marks a {tech}[Lake script] as the {tech}[package]'s default.
+将{tech (key := "Lake script")}[Lake 脚本]标记为{tech (key := "package")}[包]的默认脚本。
 
 :::
 
 
 
-## Utilities
+## 实用工具
+%%%
+tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Lean-Format--Utilities"
+%%%
 
-:::syntax term (title := "The Current Directory")
+:::syntax term (title := "当前目录")
 ```grammar
 __dir__
 ```
 
-{includeDocstring Lake.DSL.dirConst}
+{zhincludeDocstring Lake.DSL.dirConst ZhDoc.BuildTools.Config.DSL.dirConst}
 
 :::
 
-:::syntax term (title := "Configuration Options")
+:::syntax term (title := "配置选项")
 ```grammar
 get_config? $t
 ```
 
-{includeDocstring Lake.DSL.getConfig}
+{zhincludeDocstring Lake.DSL.getConfig ZhDoc.BuildTools.Config.DSL.getConfig}
 
 :::
 
-:::syntax command (title := "Compile-Time Conditionals")
+:::syntax command (title := "编译时条件")
 
 ```grammar
 meta if $_ then
@@ -1162,11 +1212,11 @@ meta if $_ then
 $[else $_]?
 ```
 
-{includeDocstring Lake.DSL.metaIf}
+{zhincludeDocstring Lake.DSL.metaIf ZhDoc.BuildTools.Config.DSL.metaIf}
 
 :::
 
-:::syntax cmdDo (title := "Command Sequences")
+:::syntax cmdDo (title := "命令序列")
 
 ```grammar
   $_:command
@@ -1178,15 +1228,15 @@ do
   $[$_:command]*
 ```
 
-{includeDocstring Lake.DSL.cmdDo}
+{zhincludeDocstring Lake.DSL.cmdDo ZhDoc.BuildTools.Config.DSL.cmdDo}
 
 :::
 
-:::syntax term (title := "Compile-Time Side Effects")
+:::syntax term (title := "编译时副作用")
 ```grammar
 run_io $t
 ```
 
-{includeDocstring Lake.DSL.runIO}
+{zhincludeDocstring Lake.DSL.runIO ZhDoc.BuildTools.Config.DSL.runIO}
 
 :::

@@ -13,6 +13,7 @@ import Lake.Build.Module
 
 
 import Manual.Meta
+import Manual.ZhDocString.BuildTools.Lake
 import Manual.BuildTools.Lake.CLI
 import Manual.BuildTools.Lake.Config
 
@@ -28,57 +29,58 @@ open Lean.Elab.Tactic.GuardMsgs.WhitespaceMode
 #doc (Manual) "Lake" =>
 %%%
 tag := "lake"
+file := "Lake"
 %%%
 
-Lake is the standard Lean build tool.
-It is responsible for:
- * Configuring builds and building Lean code
- * Fetching and building external dependencies
- * Integrating with Reservoir, the Lean package server
- * Running tests, linters, and other development workflows
+Lake 是标准的 Lean 构建工具。
+它负责：
+ * 配置构建并构建 Lean 代码
+ * 获取并构建外部依赖
+ * 与 Reservoir（Lean 包服务器）集成
+ * 运行测试、代码检查器及其它开发工作流
 
-Lake is extensible.
-It provides a rich API that can be used to define incremental build tasks for software artifacts that are not written in Lean, to automate administrative tasks, and to integrate with external workflows.
-For build configurations that do not need these features, Lake provides a declarative configuration language that can be written either in TOML or as a Lean file.
+Lake 是可扩展的。
+它提供了一组丰富的接口，可用于为非 Lean 编写的软件工件定义增量构建任务，以自动化管理任务并与外部工作流集成。
+对于不需要这些特性的构建配置，Lake 提供了一种声明式配置语言，可以写成 TOML 或 Lean 文件。
 
-This section describes Lake's {ref "lake-cli"}[command-line interface], {ref "lake-config"}[configuration files], and {ref "lake-api"}[internal API].
-All three share a set of concepts and terminology.
+本节介绍了 Lake 的 {ref "lake-cli"}[命令行界面]、{ref "lake-config"}[配置文件] 以及 {ref "lake-api"}[内部接口]。
+这三者共享了一套概念和术语。
 
 
-# Concepts and Terminology
+# 概念与术语
 %%%
 tag := "lake-vocab"
 %%%
 
-A {deftech}_package_ is the basic unit of Lean code distribution.
-A single package may contain multiple libraries or executable programs.
-A package consist of a directory that contains a {tech}[package configuration] file together with source code.
-Packages may {deftech}_require_ other packages, in which case those packages' code (more specifically, their {tech}[targets]) are made available.
-The {deftech}_direct dependencies_ of a package are those that it requires, and the {deftech}_transitive dependencies_ are the direct dependencies of a package together with their transitive dependencies.
-Packages may either be obtained from [Reservoir](https://reservoir.lean-lang.org/){TODO}[xref chapter], the Lean package repository, or from a manually-specified location.
-{deftech}_Git dependencies_ are specified by a Git repository URL along with a revision (branch, tag, or hash) and must be cloned locally prior to build, while local {deftech}_path dependencies_ are specified by a path relative to the package's directory.
+{deftech (key := "package")}_包_ 是 Lean 代码分发的基本单位。
+一个包可以包含多个库或可执行程序。
+一个包由一个目录组成，其中包含一个 {tech (key := "package configuration")}[包配置] 文件以及源代码。
+包可以 {deftech (key := "require")}_请求_ 其他包，在这种情况下，这些包的代码（更确切地说，它们的 {tech (key := "targets")}[目标]）将变为可用状态。
+一个包的 {deftech (key := "direct dependencies")}_直接依赖_ 是它所请求的包，而 {deftech (key := "transitive dependencies")}_传递依赖_ 则是包的直接依赖及其直接依赖的传递依赖。
+包可以从 Lean 包仓库 [Reservoir](https://reservoir.lean-lang.org/){TODO}[此处需添加章节交叉引用] 获取，或者从手动指定的位置获取。
+{deftech (key := "Git dependencies")}_Git 依赖_ 通过 Git 仓库 URL 及修订版本（分支、标签或哈希）指定，并在构建之前必须克隆到本地，而本地的 {deftech (key := "path dependencies")}_路径依赖_ 则通过相对于包目录的路径指定。
 
 :::paragraph
-A {deftech}_workspace_ is a directory on disk that contains a working copy of a {tech}[package]'s source code and the source code of all {tech}[transitive dependencies] that are not specified as local paths.
-The package for which the workspace was created is the {deftech}_root package_.
-The workspace also contains any built {tech}[artifacts] for the package, enabling {tech}[incremental builds].
-Dependencies and artifacts do not need to be present for a directory to be considered a workspace; commands such as {lake}`update` and {lake}`build` produce them if they are missing.
-Lake is typically used in a workspace.{margin}[{lake}`init` and {lake}`new`, which create workspaces, are exceptions.]
-Workspaces typically have the following layout:
+{deftech (key := "workspace")}_工作区_ 是磁盘上的一个目录，包含一个 {tech (key := "package")}[包] 的源代码工作副本，以及所有未指定为本地路径的 {tech (key := "transitive dependencies")}[传递依赖] 的源代码。
+为其创建工作区的包即为 {deftech (key := "root package")}_根包_。
+工作区还包含为该包构建的任何 {tech (key := "artifacts")}[工件]，从而支持 {tech (key := "incremental builds")}[增量构建]。
+一个目录要被视为工作区，并不需要预先存在依赖和工件；如果它们缺失，诸如 {lake}`update` 和 {lake}`build` 这样的命令会生成它们。
+Lake 通常在工作区中使用。{margin}[创建工作区的 {lake}`init` 和 {lake}`new` 是例外。]
+工作区通常具有以下布局：
 
- * `lean-toolchain`: The {tech}[toolchain file].
- * `lakefile.toml` or `lakefile.lean`: The {tech}[package configuration] file for the root package.
- * `lake-manifest.json`: The root package's {tech}[manifest].
- * `.lake/`: Intermediate state managed by Lake, such as built {tech}[artifacts] and dependency source code.
-   * `.lake/lakefile.olean`: The root package's configuration, cached.
-   * `.lake/packages/`: The workspace's {deftech}_package directory_, which contains copies of all non-local transitive dependencies of the root package, with their built artifacts in their own `.lake` directories.
-   * `.lake/build/`: The {deftech}_build directory_, which contains built artifacts for the root package:
-     * `.lake/build/bin`: The package's {deftech}_binary directory_, which contains built executables.
-     * `.lake/build/lib`: The package's _library directory_, which contains built libraries and {tech}[`.olean` files].
-     * `.lake/build/ir`: The package's intermediate result directory, which contains generated intermediate artifacts, primarily C code.
+ * `lean-toolchain`：{tech (key := "toolchain file")}[工具链文件]。
+ * `lakefile.toml` 或 `lakefile.lean`：根包的 {tech (key := "package configuration")}[包配置] 文件。
+ * `lake-manifest.json`：根包的 {tech (key := "manifest")}[清单]。
+ * `.lake/`：Lake 管理的中间状态，例如已构建的 {tech (key := "artifacts")}[工件] 和依赖源代码。
+   * `.lake/lakefile.olean`：根包的配置（已缓存）。
+   * `.lake/packages/`：工作区的 {deftech (key := "package directory")}_包目录_，其中包含根包的所有非本地传递依赖的副本，并在它们各自的 `.lake` 目录中包含已构建的工件。
+   * `.lake/build/`：{deftech (key := "build directory")}_构建目录_，其中包含根包的已构建工件：
+     * `.lake/build/bin`：包的 {deftech (key := "binary directory")}_二进制目录_，其中包含已构建的可执行文件。
+     * `.lake/build/lib`：包的 _库目录_，其中包含已构建的库和 {tech (key := ".olean files")}[`.olean` 文件]。
+     * `.lake/build/ir`：包的中间结果目录，其中包含生成的中间工件，主要是 C 代码。
 :::
 
-:::figure "Workspace Layout" (tag :="workspace-layout")
+:::figure "工作区布局" (tag :="workspace-layout")
 ```diagram
 open Illuminate in
   let txt (s : String) (size : Float := 10) : Diagram SVG :=
@@ -95,24 +97,24 @@ open Illuminate in
       |>.pad pad |>.frame (padding := 2) (cornerRadius := 4)
 
   let toolchain := mono "lean-toolchain"
-  let rootPkg := borderedBox "Root package" <|
+  let rootPkg := borderedBox "根包" <|
     items [
-      "Package configuration file (lakefile.lean)",
-      "Libraries",
-      "Executables",
-      "Manifest (lake-manifest.json)"
+      "包配置文件 (lakefile.lean)",
+      "库",
+      "可执行文件",
+      "清单 (lake-manifest.json)"
     ]
-  let depItems := items ["Package configuration file", "Libraries", "Executables", "Artifacts"] 8
-  let dep1 := borderedBox "Dependency 1" depItems 9 6
-  let dep2 := borderedBox "Dependency 2" depItems 9 6
+  let depItems := items ["包配置文件", "库", "可执行文件", "工件"] 8
+  let dep1 := borderedBox "依赖 1" depItems 9 6
+  let dep2 := borderedBox "依赖 2" depItems 9 6
   let dots : Diagram SVG := .text "⋯" { fontSize := 14 }
-  let packages := borderedBox "Packages" <|
+  let packages := borderedBox "包" <|
     Diagram.vsep 8 [Diagram.hsep 12 [dep1, dep2], dots] (align := .left)
-  let artifacts := borderedBox "Artifacts" <|
-    items ["Built libraries", "Built executables"]
-  let lakeDir := borderedBox "Lake Directory (.lake)" <|
+  let artifacts := borderedBox "工件" <|
+    items ["已构建的库", "已构建的可执行文件"]
+  let lakeDir := borderedBox "Lake 目录 (.lake)" <|
     Diagram.vsep 10 [packages, artifacts] (align := .left)
-  borderedBox "Workspace" <|
+  borderedBox "工作区" <|
     Diagram.vsep 10 [toolchain, rootPkg, lakeDir] (align := .left)
 
 
@@ -120,81 +122,81 @@ open Illuminate in
 :::
 
 :::paragraph
-A {deftech}_package configuration_ file specifies the dependencies, settings, and targets of a package.
-Packages can specify configuration options that apply to all their contained targets.
-They can be written in two formats:
- * The {ref "lake-config-toml"}[TOML format] (`lakefile.toml`) is used for fully declarative package configurations.
- * The {ref "lake-config-lean"}[Lean format] (`lakefile.lean`) additionally supports the use of Lean code to configure the package in ways not supported by the declarative options.
+{deftech (key := "package configuration")}_包配置_ 文件指定了一个包的依赖、设置和目标。
+包可以指定适用于其包含的所有目标的配置选项。
+它们可以用两种格式编写：
+ * {ref "lake-config-toml"}[TOML 格式]（`lakefile.toml`）用于完全声明式的包配置。
+ * {ref "lake-config-lean"}[Lean 格式]（`lakefile.lean`）另外支持使用 Lean 代码来以声明式选项不支持的方式配置包。
 :::
 
-A {deftech}_manifest_ tracks the specific versions of other packages that are used in a package.
-Together, a manifest and a {tech}[package configuration] file specify a unique set of transitive dependencies for the package.
-Before building, Lake synchronizes the local copy of each dependency with the version specified in the manifest.
-If no manifest is available, Lake fetches the latest matching versions of each dependency and creates a manifest.
-It is an error if the package names listed in the manifest do not match those used by the package; the manifest must be updated using {lake}`update` prior to building.
-Manifests should be considered part of the package's code and should normally be checked into source control.
+{deftech (key := "manifest")}_清单_ 追踪包中使用的其他包的特定版本。
+清单和 {tech (key := "package configuration")}[包配置] 文件共同为一个包指定了唯一的一组传递依赖。
+在构建之前，Lake 会将每个依赖的本地副本与清单中指定的版本同步。
+如果没有可用的清单，Lake 会获取每个依赖的最新匹配版本并创建一个清单。
+如果清单中列出的包名与包所使用的名称不匹配，则会报错；在构建之前必须使用 {lake}`update` 更新清单。
+清单应被视为包代码的一部分，通常应检入版本控制系统。
 
 :::paragraph
-A {deftech}_target_ represents an output that can be requested by a user.
-A persistent build output, such as object code, an executable binary, or an {tech}[`.olean` file], is called an {deftech}_artifact_.
-In the process of producing an artifact, Lake may need to produce further artifacts; for example, compiling a Lean program into an executable requires that it and its dependencies be compiled to object files, which are themselves produced from C source files, which result from elaborating Lean sourcefiles and producing {tech}[`.olean` files].
-Each link in this chain is a target, and Lake arranges for each to be built in turn.
-At the start of the chain are the {deftech}_initial targets_:
- * {tech}_Packages_ are units of Lean code that are distributed as a unit.
- * {deftech}_Libraries_ are collections of Lean {tech}[module]s, organized hierarchically under one or more {deftech}_module roots_.
- * {deftech}_Executables_ consist of a _single_ module that defines `main`.
- * {deftech}_External libraries_ are non-Lean *static* libraries that will be linked to the binaries of the package and its dependents, including both their shared libraries and executables.
- * {deftech}_Custom targets_ contain arbitrary code to run a build, written using Lake's internal API.
+{deftech (key := "target")}_目标_ 表示用户可以请求的输出。
+持久的构建输出，例如目标代码、可执行二进制文件或 {tech (key := ".olean file")}[`.olean` 文件]，被称为 {deftech (key := "artifact")}_工件_。
+在生成工件的过程中，Lake 可能需要生成进一步的工件；例如，将 Lean 程序编译为可执行文件要求它及其依赖被编译为目标文件，而这些文件本身是从 C 源文件生成的，C 源文件则是通过对 Lean 源文件进行精译并生成 {tech (key := ".olean files")}[`.olean` 文件] 得出的。
+该链条中的每个环节都是一个目标，Lake 会安排它们依次构建。
+处于链条起点的是 {deftech (key := "initial targets")}_初始目标_：
+ * {tech (key := "Packages")}_包_ 是作为一个单元分发的 Lean 代码单元。
+ * {deftech (key := "Libraries")}_库_ 是 Lean {tech (key := "module")}[模块] 的集合，在一个或多个 {deftech (key := "module roots")}_模块根_ 下按层次结构组织。
+ * {deftech (key := "Executables")}_可执行文件_ 由一个定义了 `main` 的_单个_模块组成。
+ * {deftech (key := "External libraries")}_外部库_ 是非 Lean 的*静态*库，它们将链接到包及依赖它的包的二进制文件，包括它们的共享库和可执行文件。
+ * {deftech (key := "Custom targets")}_自定义目标_ 包含运行构建的任意代码，使用 Lake 的内部接口编写。
 
-In addition to their Lean code, packages, libraries, and executables contain configuration settings that affect subsequent build steps.
-Packages may specify a set of {deftech}_default targets_.
-Default targets are the initial targets in the package that are to be built in contexts where a package is specified but specific targets are not.
+除了它们的 Lean 代码外，包、库和可执行文件还包含影响后续构建步骤的配置设置。
+包可以指定一组 {deftech (key := "default targets")}_默认目标_。
+默认目标是包中要在指定了包但未指定特定目标的上下文中构建的初始目标。
 :::
 
 :::paragraph
-The {deftech}_log_ contains information produced during a build.
-Logs are saved so they can be replayed during {tech}[incremental builds].
-Messages in the log have four levels, ordered by severity:
+{deftech (key := "log")}_日志_ 包含在构建期间生成的信息。
+保存日志是为了在 {tech (key := "incremental builds")}[增量构建] 期间进行重放。
+日志中的消息按严重程度分为四个级别：
 
- 1. _Trace messages_ contain internal build details that are often specific to the machine on which the build is running, including the specific invocations of Lean and other tools that are passed to the shell.
- 2. _Informational messages_ contain general informational output that is not expected to indicate a problem with the code, such as the results of a {keywordOf Lean.Parser.Command.eval}`#eval` command.
- 3. _Warnings_ indicate potential problems, such as unused variable bindings.
- 4. _Errors_ explain why parsing and elaboration could not complete.
+ 1. _追踪消息_包含通常特定于运行构建的机器的内部构建详细信息，包括传递给命令外壳的 Lean 及其他工具的具体调用。
+ 2. _信息性消息_包含通常不表示代码有问题的常规信息输出，例如 {keywordOf Lean.Parser.Command.eval}`#eval` 命令的结果。
+ 3. _警告_指出潜在问题，例如未使用的变量绑定。
+ 4. _错误_解释为什么解析和精译无法完成。
 
-By default, trace messages are hidden and the others are shown.
-The threshold can be adjusted using the {lakeOpt}`--log-level` option, the {lakeOpt}`--verbose` flag, or the {lakeOpt}`--quiet` flag.
+默认情况下，追踪消息被隐藏，其他的被显示。
+阈值可以通过 {lakeOpt}`--log-level` 选项、{lakeOpt}`--verbose` 标志或 {lakeOpt}`--quiet` 标志进行调整。
 :::
 
-## Package  Overrides
+## 包覆盖
 %%%
 tag := "package-overrides"
 %%%
 
-Together, the {tech}[package configuration] and {tech}[manifest] describe the exact manner by which Lake expects to acquire dependencies.
-Usually, this involves making a local copy of a remote Git repository over the network.
-Lake terminates with an error if the remote repository cannot be accessed.
-Because the sources of dependencies are predictable, builds are reproducible across systems; packages are retrieved in the same way from the same sources on all machines.
+{tech (key := "package configuration")}[包配置] 和 {tech (key := "manifest")}[清单] 共同描述了 Lake 获取依赖的精确方式。
+通常，这涉及通过网络从远程 Git 仓库获取本地副本。
+如果无法访问远程仓库，Lake 会终止并报错。
+因为依赖来源是可预测的，所以跨系统的构建是可重现的；在所有机器上都从相同来源以相同方式检索包。
 
-Nonetheless, there are situations where it is infeasible to acquire package dependencies the same way the original developers did.
-For example, some companies require that all dependencies are audited prior to use, and not everyone always has access to the Internet while working.
-In these situations, it is necessary to acquire packages in some other way.
+尽管如此，仍存在无法采用与原始开发者相同的方式获取包依赖的情况。
+例如，有些公司要求所有依赖在使用前都须经过审计，而且并不是每个人在工作时都能一直连接互联网。
+在这些情况下，就有必要通过其他方式获取包。
 
-Lake's {deftech}_package overrides_ allow a package dependency to be redirected from one source to another without modifying any {tech}[package configurations] or {tech}[manifests].
-They do not allow packages to be added to or removed from the {tech}[workspace].
-All transitive dependencies in the workspace respect the redirection.
-The package overrides file is a JSON file that contains an alternate list of package entries.
-These entries will take precedence over those in the package's {tech}[manifest].
-This file can be provided to Lake either via the {lakeOpt}`--packages` option or by placing it at a fixed path within the Lake workspace: `.lake/package-overrides.json`.
+Lake 的 {deftech (key := "package overrides")}_包覆盖_ 允许将包依赖从一个源重定向到另一个源，而无需修改任何 {tech (key := "package configurations")}[包配置] 或 {tech (key := "manifests")}[清单]。
+它们不允许在 {tech (key := "workspace")}[工作区] 中添加或移除包。
+工作区中所有的传递依赖都遵守重定向。
+包覆盖文件是一个 JSON 文件，包含包条目的备用列表。
+这些条目将优先于包的 {tech (key := "manifest")}[清单] 中的条目。
+可以通过 {lakeOpt}`--packages` 选项，或者将其放置在 Lake 工作区内的固定路径 `.lake/package-overrides.json`，来将此文件提供给 Lake。
 
-The syntax of package entries in the package overrides file mirrors that of the {tech}[manifest].
-Thus, it is possible to copy an entry from a manifest into a package overrides file (and vice versa).
-One way to determine the necessary syntax for a package entry is to add a temporary dependency to a {tech}[package configuration] that matches the desired configuration, run {lake}`update` to generate a manifest with that dependency, and then copy the entry from the manifest into the package overrides file.
+包覆盖文件中的包条目语法与 {tech (key := "manifest")}[清单] 的语法一致。
+因此，可以把清单中的条目复制到包覆盖文件中（反之亦然）。
+确定包条目所需语法的一种方法是：向 {tech (key := "package configuration")}[包配置] 中添加匹配所需配置的临时依赖，运行 {lake}`update` 以生成包含该依赖的清单，然后将清单中的条目复制到包覆盖文件中。
 
-:::example "Making Remote Dependencies Local"
+:::example "本地化远程依赖" (file := "Making Remote Dependencies Local")
 
-Consider a use case where programs are being developed in a restricted enviroment without network access (e.g., for security reasons).
-The team wishes to compile a small tool written in Lean that depends on the [`@leanprover/Cli`](https://reservoir.lean-lang.org/@leanprover/Cli) library to provide a simple command-line interface.
-That tool's {tech}[manifest] thus looks something like this:
+考虑这样一个用例：在受限环境（例如出于安全原因）中开发程序，且没有网络连接。
+团队希望编译一个用 Lean 编写的依赖于 [`@leanprover/Cli`](https://reservoir.lean-lang.org/@leanprover/Cli) 库来提供简单命令行界面的小工具。
+该工具的 {tech (key := "manifest")}[清单] 因此如下所示：
 
 ```lakeManifest
 {
@@ -218,9 +220,9 @@ That tool's {tech}[manifest] thus looks something like this:
 }
 ```
 
-This manifest would instruct Lake to download the `Cli` package from the indicated GitHub URL when building this tool.
-However, the restricted environment does not have network access, so the build will fail unless Lake uses a local copy instead.
-This can be done with the following {tech}[package overrides] file:
+该清单将指示 Lake 在构建此工具时从指定的 GitHub URL 下载 `Cli` 包。
+但是，由于受限环境没有网络连接，如果不使用本地副本，构建将会失败。
+这可以通过以下 {tech (key := "package overrides")}[包覆盖] 文件完成：
 
 ```lakePackageOverrides
 {
@@ -236,75 +238,78 @@ This can be done with the following {tech}[package overrides] file:
 }
 ```
 
-With this, Lake will instead resolve the `Cli` dependency to the local package located at the path `/etc/lean-packages/Cli`.
+有了这个文件，Lake 将把 `Cli` 依赖解析为位于路径 `/etc/lean-packages/Cli` 的本地包。
 
 :::
 
-## Builds
+## 构建
+%%%
+tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Concepts-and-Terminology--Builds"
+%%%
 
 :::paragraph
-Producing a desired {tech}[artifact], such as a {tech}[`.olean` file] or an executable binary, is called a {deftech}_build_.
-Builds are triggered by the {lake}`build` command or by other commands that require an artifact to be present, such as {lake}`exe`.
-A build consists of the following steps:
+生成所需的 {tech (key := "artifact")}[工件]，比如 {tech (key := ".olean file")}[`.olean` 文件] 或可执行二进制文件，被称为 {deftech (key := "build")}_构建_。
+构建由 {lake}`build` 命令或需要工件存在的其他命令（例如 {lake}`exe`）触发。
+构建包括以下步骤：
 
-: {deftech (key := "configure package")}[Configuring] the package
+: {deftech (key := "configure package")}[配置包]
 
-  If {tech}[package configuration] file is newer than the cached configuration file `lakefile.olean`, then the package configuration is re-elaborated.
-  This also occurs when the cached file is missing or when the {lakeOpt}`--reconfigure` or {lakeOpt}`-R` flag is provided.
-  Changes to options using {lakeOpt}`-K` do not trigger re-elaboration of the configuration file; {lakeOpt}`-R` is necessary in these cases.
+  如果 {tech (key := "package configuration")}[包配置] 文件比缓存的配置文件 `lakefile.olean` 更新，那么包配置就会被重新精译。
+  当缓存文件缺失或者提供了 {lakeOpt}`--reconfigure` 或 {lakeOpt}`-R` 标志时，也会发生这种情况。
+  使用 {lakeOpt}`-K` 对选项的更改不会触发配置文件的重新精译；在这些情况下，必须使用 {lakeOpt}`-R`。
 
-: Computing dependencies
+: 计算依赖
 
-  The set of artifacts that are required to produce the desired output are determined, along with the {tech}[targets] and {tech}[facets] that produce them.
-  This process is recursive, and the result is a _graph_ of dependencies.
-  The dependencies in this graph are distinct from those declared for a package: packages depend on other packages, while build targets depend on other build targets, which may be in the same package or in a different one.
-  One facet of a given target may depend on other facets of the same target.
-  Lake automatically analyzes the imports of Lean modules to discover their dependencies, and the {tomlField Lake.LeanLibConfig}`extraDepTargets` field can be used to add additional dependencies to a target.
+  确定产生所需输出所需的工件集，以及产生它们的 {tech (key := "targets")}[目标] 和 {tech (key := "facets")}[分面]。
+  该过程是递归的，结果是一个依赖_图_。
+  图中的依赖与为包声明的依赖不同：包依赖于其他包，而构建目标依赖于其他构建目标，它们可能位于同一个包中，也可能位于不同的包中。
+  给定目标的一个分面可能依赖于同一目标的其他分面。
+  Lake 会自动分析 Lean 模块的导入以发现它们的依赖，并且可使用 {tomlField Lake.LeanLibConfig}`extraDepTargets` 字段向目标添加额外的依赖。
 
-: Replaying traces
+: 重放追踪
 
-  Rather than rebuilding everything in the dependency graph from scratch, Lake uses saved {deftech}_trace files_ to determine which artifacts require building.
-  During a build, Lake records which source files or other artifacts were used to produce each artifact, saving a hash of each input; these {deftech}_traces_ are saved in the {tech}[build directory].{margin}[More specifically, each artifact's trace file contains a Merkle tree hash mixture of its inputs' hashes.]
-  If the inputs are all unmodified, then the corresponding artifact is not rebuilt.
-  Trace files additionally record the {tech}[log] from each build task; these outputs are replayed as if the artifact had been built anew.
-  Reusing prior build products when possible is called an {deftech}_incremental build_.
+  Lake 不会从头开始重建依赖图中的所有内容，而是使用保存的 {deftech (key := "trace files")}_追踪文件_ 来确定哪些工件需要构建。
+  在构建期间，Lake 会记录用于生成每个工件的源文件或其他工件，保存每个输入的哈希；这些 {deftech (key := "traces")}_追踪_ 保存在 {tech (key := "build directory")}[构建目录] 中。{margin}[更具体地说，每个工件的追踪文件包含其输入哈希值的 Merkle 树哈希混合。]
+  如果所有输入均未修改，则不再重新构建相应的工件。
+  追踪文件还额外记录了每个构建任务的 {tech (key := "log")}[日志]；这些输出会被重放，就好像工件被重新构建一样。
+  在可能的情况下重用先前的构建产物被称为 {deftech (key := "incremental build")}_增量构建_。
 
-: Building artifacts
+: 构建工件
 
-  When all unmodified dependencies in the dependency graph have been replayed from their trace files, Lake proceeds to build each artifact.
-  This involves running the appropriate build tool on the input files and saving the artifact and its trace file, as specified in the corresponding facet.
+  当依赖图中所有未修改的依赖都从它们的追踪文件中重放后，Lake 会继续构建每个工件。
+  这涉及在输入文件上运行适当的构建工具，并按对应分面的指定，保存工件及其追踪文件。
 :::
 
-Lake uses two separate hash algorithms.
-Text files are hashed after normalizing newlines, so that files that differ only by platform-specific newline conventions are hashed identically.
-Other files are hashed without any normalization.
+Lake 使用两种不同的哈希算法。
+文本文件在规范化换行符之后再进行哈希处理，以便仅因平台特定的换行约定不同而不同的文件也能生成相同的哈希值。
+其他文件在哈希时则不作任何规范化。
 
-Along with the trace files, Lean caches input hashes.
-Whenever an artifact is built, its hash is saved in a separate file that can be re-read instead of computing the hash from scratch.
-This is a performance optimization.
-This feature can be disabled, causing all hashes to be recomputed from their inputs, using the {lakeOpt}`--rehash` command-line option.
+与追踪文件一样，Lean 会缓存输入哈希。
+每当构建一个工件时，其哈希值都会保存在一个独立的文件中，这样可以直接读取该文件，而无需从头计算哈希值。
+这是一种性能优化。
+可以通过 {lakeOpt}`--rehash` 命令行选项禁用此功能，导致所有哈希值都由其输入重新计算。
 
 :::paragraph
-During a build, the following directories are provided to the underlying build tools:
- * The {deftech}_source directory_ contains Lean source code that is available for import.
- * The {deftech}_library directories_ contain {tech}[`.olean` files] along with the shared and static libraries that are available for linking; it normally consists of the {tech}[root package]'s library directory (found in `.lake/build/lib`), the library directories for the other packages in the workspace, the library directory for the current Lean toolchain, and the system library directory.
- * The {deftech}_Lake home_ is the directory in which Lake is installed, including binaries, source code, and libraries.
-   The libraries in the Lake home are needed to elaborate Lake configuration files, which have access to the full power of Lean.
+在构建期间，会向底层构建工具提供以下目录：
+ * {deftech (key := "source directory")}_源码目录_ 包含可供导入的 Lean 源代码。
+ * {deftech (key := "library directories")}_库目录_ 包含 {tech (key := ".olean files")}[`.olean` 文件] 以及可用于链接的共享库和静态库；它通常由 {tech (key := "root package")}[根包] 的库目录（在 `.lake/build/lib` 下）、工作区中其他包的库目录、当前 Lean 工具链的库目录以及系统库目录组成。
+ * {deftech (key := "Lake home")}_Lake 主目录_ 是安装 Lake 的目录，包含二进制文件、源代码和库。
+   Lake 目录中的库在精译 Lake 配置文件时不可或缺，这样配置文件就能访问 Lean 的全部功能。
 :::
 
-## Facets
+## 分面
 %%%
 tag := "lake-facets"
 %%%
 
-A {deftech}_facet_ describes the production of a target from another.
-Conceptually, any target may have facets.
-However, executables, external libraries, and custom targets provide only a single implicit facet.
-Packages, libraries, and modules have multiple facets that can be requested by name when invoking {lake}`build` to select the corresponding target.
+{deftech (key := "facet")}_分面_ 描述了一个目标从另一个目标的生产过程。
+从概念上讲，任何目标都可以拥有分面。
+然而，可执行文件、外部库和自定义目标只提供单一的隐式分面。
+包、库和模块拥有多个分面，调用 {lake}`build` 选定相应目标时，可以通过名称请求它们。
 
-When no facet is explicitly requested, but an initial target is designated, {lake}`build` produces the initial target's {deftech}_default facet_.
-Each type of initial target has a corresponding default facet (e.g. producing an executable binary from an executable target or building a package's {tech}[default targets]); other facets may be explicitly requested in the {tech}[package configuration] or via Lake's {ref "lake-cli"}[command-line interface].
-Lake's internal API may be used to write custom facets.
+当没有显式请求分面，但指定了初始目标时，{lake}`build` 将产生初始目标的 {deftech (key := "default facet")}_默认分面_。
+每种类型的初始目标都有相应的默认分面（例如从可执行文件目标生成可执行二进制文件或构建一个包的 {tech (key := "default targets")}[默认目标]）；可以在 {tech (key := "package configuration")}[包配置] 中或通过 Lake 的 {ref "lake-cli"}[命令行界面] 显式请求其他分面。
+可以使用 Lake 的内部接口来编写自定义分面。
 
 
 ```lakeHelp "build"
@@ -366,10 +371,10 @@ mappings can then be used to upload build artifacts to a remote cache with
 
 ::::paragraph
 
-The facets available for packages are:
+包可用的分面有：
 
 ```lean -show
--- Always keep this in sync with the description below. It ensures that the list is complete.
+-- 始终使之与下方描述保持同步。这确保了列表是完整的。
 /--
 info: #[`package.barrel, `package.cache, `package.deps, `package.extraDep, `package.optBarrel, `package.optCache,
   `package.optRelease, `package.release, `package.transDeps]
@@ -379,52 +384,52 @@ info: #[`package.barrel, `package.cache, `package.deps, `package.extraDep, `pack
 ```
 : `extraDep`
 
-  The default facets of the package's extra dependency targets, specified in the {tomlField Lake.PackageConfig}`extraDepTargets` field.
+  包在 {tomlField Lake.PackageConfig}`extraDepTargets` 字段中指定的额外依赖目标的默认分面。
 
 : `deps`
 
-  The package's {tech}[direct dependencies].
+  包的 {tech (key := "direct dependencies")}[直接依赖]。
 
 : `transDeps`
 
-  The package's {tech}[transitive dependencies], topologically sorted.
+  包经过拓扑排序的 {tech (key := "transitive dependencies")}[传递依赖]。
 
 
 : `optCache`
 
-  A package's optional cached build archive (e.g., from Reservoir or GitHub).
-  Will *not* cause the whole build to fail if the archive cannot be fetched.
+  包可选的缓存构建归档（例如，来自 Reservoir 或 GitHub）。
+  如果无法获取归档，*不会*导致整个构建失败。
 
 : `cache`
 
-  A package's cached build archive (e.g., from Reservoir or GitHub).
-  Will cause the whole build to fail if the archive cannot be fetched.
+  包的缓存构建归档（例如，来自 Reservoir 或 GitHub）。
+  如果无法获取归档，将导致整个构建失败。
 
 : `optBarrel`
 
-  A package's optional cached build archive (e.g., from Reservoir or GitHub).
-  Will *not* cause the whole build to fail if the archive cannot be fetched.
+  包可选的缓存构建归档（例如，来自 Reservoir 或 GitHub）。
+  如果无法获取归档，*不会*导致整个构建失败。
 
 : `barrel`
 
-  A package's cached build archive (e.g., from Reservoir or GitHub).
-  Will cause the whole build to fail if the archive cannot be fetched.
+  包的缓存构建归档（例如，来自 Reservoir 或 GitHub）。
+  如果无法获取归档，将导致整个构建失败。
 
 : `optRelease`
 
-  A package's optional build archive from a GitHub release.
-  Will *not* cause the whole build to fail if the release cannot be fetched.
+  来自 GitHub 发布版本的包可选构建归档。
+  如果无法获取发布版本，*不会*导致整个构建失败。
 
 : `release`
 
-  A package's build archive from a GitHub release.
-  Will cause the whole build to fail if the archive cannot be fetched.
+  来自 GitHub 发布版本的包构建归档。
+  如果无法获取归档，将导致整个构建失败。
 
 
 ::::
 
 ```lean -show
--- Always keep this in sync with the description below. It ensures that the list is complete.
+-- 始终使之与下方描述保持同步。这确保了列表是完整的。
 /--
 info: [`lean_lib.extraDep, `lean_lib.leanArts, `lean_lib.static.export, `lean_lib.shared, `lean_lib.modules, `lean_lib.static,
   `lean_lib.default]
@@ -435,38 +440,38 @@ info: [`lean_lib.extraDep, `lean_lib.leanArts, `lean_lib.static.export, `lean_li
 
 :::paragraph
 
-The facets available for libraries are:
+库可用的分面有：
 
 : `leanArts`
 
-  The artifacts that the Lean compiler produces for the library or executable ({tech (key := ".olean files")}`*.olean`, `*.ilean`, and `*.c` files).
+  Lean 编译器为库或可执行文件生成的工件（{tech (key := ".olean files")}`*.olean`、`*.ilean` 和 `*.c` 文件）。
 
 : `static`
 
-  The static library produced by the C compiler from the `leanArts` (that is, a `*.a` file).
+  由 C 编译器从 `leanArts` 生成的静态库（即 `*.a` 文件）。
 
 : `static.export`
 
-  The static library produced by the C compiler from the `leanArts` (that is, a `*.a` file), with exported symbols.
+  由 C 编译器从 `leanArts` 生成的具有导出符号的静态库（即 `*.a` 文件）。
 
 : `shared`
 
-  The shared library produced by the C compiler from the `leanArts` (that is, a `*.so`, `*.dll`, or `*.dylib` file, depending on the platform).
+  由 C 编译器从 `leanArts` 生成的共享库（取决于平台，即 `*.so`、`*.dll` 或 `*.dylib` 文件）。
 
 : `extraDep`
 
-  A Lean library's {tomlField Lake.LeanLibConfig}`extraDepTargets` and those of its package.
+  Lean 库及其所属包的 {tomlField Lake.LeanLibConfig}`extraDepTargets`。
 
 :::
 
 :::paragraph
 
-Executables have a single `exe` facet that consists of the executable binary.
+可执行文件只有一个由可执行二进制文件组成的 `exe` 分面。
 
 :::
 
 ```lean -show
--- Always keep this in sync with the description below. It ensures that the list is complete.
+-- 始终使之与下方描述保持同步。这确保了列表是完整的。
 /--
 info: module.bc
 module.bc.o
@@ -509,134 +514,134 @@ module.transImports
 ```
 
 :::paragraph
-The facets available for modules are:
+模块可用的分面有：
 
 : `lean`
 
-  The module's Lean source file.
+  模块的 Lean 源文件。
 
-: `leanArts` (default)
+: `leanArts`（默认）
 
- The module's Lean artifacts (`*.olean`, `*.ilean`, `*.c` files).
+  模块的 Lean 工件（`*.olean`、`*.ilean`、`*.c` 文件）。
 
 : `deps`
 
-  The module's dependencies (e.g., imports or shared libraries).
+  模块的依赖（例如导入或共享库）。
 
 : `depHash`
 
-  A hash of a module's build dependencies (e.g., imports, source, plugins).
+  模块的构建依赖（例如，导入、源码、插件）的哈希。
 
 : `depTrace`
 
-  A Lake build trace data structure (i.e., composite hash and modification time) of a module's build dependencies (e.g., imports, source, plugins).
+  包含模块的构建依赖（例如，导入、源码、插件）的 Lake 构建追踪数据结构（即复合哈希与修改时间）。
 
 : `olean`
 
- The module's {tech}[`.olean` file]. {TODO}[Once module system lands fully, add docs for `olean.private` and `olean.server`]
+  模块的 {tech (key := ".olean file")}[`.olean` 文件]。{TODO}[模块系统完全落地后，此处需添加 `olean.private` 和 `olean.server` 的文档。]
 
 : `ilean`
 
- The module's `.ilean` file, which is metadata used by the Lean language server.
+  模块的 `.ilean` 文件，即 Lean 语言服务器使用的元数据。
 
 : `header`
 
-  The parsed module header of the module's source file.
+  模块源文件中解析出的模块头部。
 
 : `input`
 
-  The module's processed Lean source file. Combines tracing the file with parsing its header.
+  模块处理过的 Lean 源文件。结合了对文件的追踪与头部的解析。
 
 : `imports`
 
-  The immediate imports of the Lean module, but not the full set of transitive imports. {TODO}[Once the module system lands fully, add docs here for `module.importAllArts`, `module.importArts`]
+  Lean 模块的直接导入，但不包含传递导入的全集。{TODO}[模块系统完全落地后，此处需添加 `module.importAllArts` 和 `module.importArts` 的文档。]
 
 : `precompileImports`
 
-  The transitive imports of the Lean module, compiled to object code.
+  Lean 模块的传递导入，编译为目标代码。
 
 : `transImports`
 
-  The transitive imports of the Lean module, as {tech}[`.olean` files].
+  作为 {tech (key := ".olean files")}[`.olean` 文件] 的 Lean 模块传递导入。
 
 : `allImports`
 
-  Both the immediate and transitive imports of the Lean module.
+  Lean 模块的直接导入和传递导入。
 
 : `setup`
 
-  All of a module's dependencies: transitive local imports and shared libraries to be loaded with `--load-dynlib`.
-  Returns the list of shared libraries to load along with their search path.
+  模块的所有依赖：使用 `--load-dynlib` 加载的传递本地导入和共享库。
+  返回要加载的共享库列表及其搜索路径。
 
 : `ir`
 
-  The `.ir` file produced for modules that use the {ref "module-structure"}[module system].
+  为使用 {ref "module-structure"}[模块系统] 的模块生成的 `.ir` 文件。
 
 
 : `ir.sig`
 
-  The `.ir.sig` file produced for modules that use the {ref "module-structure"}[module system].
+  为使用 {ref "module-structure"}[模块系统] 的模块生成的 `.ir.sig` 文件。
 
 : `c`
 
- The C file produced by the Lean compiler.
+  由 Lean 编译器生成的 C 文件。
 
 : `bc`
 
- LLVM bitcode file, produced by the Lean compiler.
+  由 Lean 编译器生成的 LLVM 位码文件。
 
 : `c.o`
 
- The compiled object file, produced from the C file. On Windows, this is equivalent to `.c.o.noexport`, while it is equivalent to `.c.o.export` on other platforms.
+  由 C 文件生成的编译目标文件。在 Windows 上它等同于 `.c.o.noexport`，而在其他平台上它等同于 `.c.o.export`。
 
 : `c.o.export`
 
- The compiled object file, produced from the C file, with Lean symbols exported.
+  由 C 文件生成的编译目标文件，其中导出了 Lean 符号。
 
 : `c.o.noexport`
 
- The compiled object file, produced from the C file, without Lean symbols exported.
+  由 C 文件生成的编译目标文件，其中未导出 Lean 符号。
 
 : `bc.o`
 
- The compiled object file, produced from the LLVM bitcode file.
+  由 LLVM 位码文件生成的编译目标文件。
 
 : `o`
 
- The compiled object file for the configured backend.
+  为配置的后端生成的编译目标文件。
 
 : `dynlib`
 
-  A shared library (e.g., for the Lean option `--load-dynlib`){TODO}[Document Lean command line options, and cross-reference from here].
+  共享库（例如，用于 Lean 选项 `--load-dynlib`）{TODO}[此处需记录 Lean 命令行选项的文档，并提供交叉引用]。
 
 : `ltar`
 
-  A compressed archive (produced via `leantar`) of the module's build artifacts. {TODO}[Document `leantar` in the manual as well]
+  包含模块构建工件的压缩包（通过 `leantar` 生成）。{TODO}[此处还需在手册中补充 `leantar` 的文档。]
 
 : `linkInfoExport`
 
-  A structured representation of the linker arguments, static objects, and dynamic libraries needed to link a module and its dependencies. Objects have Lean symbols exported.
+  要链接一个模块及其依赖所需的链接器参数、静态对象和动态库的结构化表示。这些对象会导出 Lean 符号。
 
 : `linkInfoNoExport`
 
-  A structured representation of the linker arguments, static objects, and dynamic libraries needed to link a module and its dependencies. Objects do not Lean symbols exported.
+  要链接一个模块及其依赖所需的链接器参数、静态对象和动态库的结构化表示。这些对象不导出 Lean 符号。
 
 :::
 
 
-## Scripts
+## 脚本
 %%%
 tag := "lake-scripts"
 %%%
 
-Lake {tech}[package configuration] files may include {deftech}_Lake scripts_, which are embedded programs that can be executed from the command line.
-Scripts are intended to be used for project-specific tasks that are not already well-served by Lake's other features.
-While ordinary executable programs are run in the {name}`IO` {tech}[monad], scripts are run in {name Lake.ScriptM}`ScriptM`, which extends {name}`IO` with information about the workspace.
-Because they are Lean definitions, Lake scripts can only be defined in the Lean configuration format.
+Lake {tech (key := "package configuration")}[包配置] 文件可包含 {deftech (key := "Lake scripts")}_Lake 脚本_，这些脚本是可从命令行执行的内嵌程序。
+脚本旨在用于特定于项目、且 Lake 的其他特性尚未能很好地处理的任务。
+普通的执行程序在 {name}`IO` {tech (key := "monad")}[单子] 中运行，而脚本在 {name Lake.ScriptM}`ScriptM` 中运行，后者在 {name}`IO` 的基础上扩展了有关工作区的信息。
+因为它们是 Lean 定义，Lake 脚本只能在 Lean 配置格式中定义。
 
 :::::TODO
 
-Restore the following once we can import enough of Lake to elaborate it
+能够导入足够多的 Lake 以完成精译后，请恢复以下内容：
 
 ````
 ```lean -show
@@ -644,10 +649,10 @@ section
 open Lake DSL
 ```
 
-:::example "Listing Dependencies"
+:::example "列出依赖" (file := "Listing Dependencies")
 
-This Lake script lists all the transitive dependencies of the root package, along with their Git URLs, in alphabetical order.
-Similar scripts could be used to check declared licenses, discover which dependencies have test drivers configured, or compute metrics about the transitive dependency set over time.
+此 Lake 脚本按字母顺序列出根包的所有传递依赖及其 Git URL。
+类似的脚本可以用于检查已声明的许可证、发现哪些依赖已配置测试驱动程序，或者随时间计算传递依赖集的各项指标。
 
 ```lean
 script "list-deps" := do
@@ -670,31 +675,31 @@ end
 
 :::::
 
-## Test and Lint Drivers
+## 测试和代码检查驱动程序
 %%%
 tag := "test-lint-drivers"
 %%%
 
-A {deftech}_test driver_ runs the tests for a package.
-It can be an executable target, a {tech}[Lake script], or a library.
-Lake itself isn't a test framework: the {lake}`test` command just locates the configured target, builds it, and (for executables and scripts) runs it.
-Library drivers are exercised purely by elaboration, so they aren't run as a separate step.
-Assertions, test discovery, and reporting are up to the target itself, whether that's a third-party testing library or hand-written checks.
+{deftech (key := "test driver")}_测试驱动程序_ 负责运行一个包的测试。
+它可以是可执行目标、{tech (key := "Lake script")}[Lake 脚本] 或库。
+Lake 本身并不是测试框架：{lake}`test` 命令只是定位已配置的目标，构建它，并且（针对可执行文件和脚本）运行它。
+库的驱动程序纯粹通过精译来执行，因此它们不会作为单独的步骤运行。
+断言、测试发现以及报告都由目标本身决定，这既可以是第三方测试库，也可以是手写的检查。
 
-For executables and scripts, Lake treats a nonzero exit code as a test failure.
-For libraries, any elaboration error counts as a test failure, including failures of {keyword}`#guard`-style commands.
+对于可执行文件和脚本，Lake 将非零退出代码视为测试失败。
+对于库，任何精译错误均算作测试失败，包括 {keyword}`#guard` 风格命令的失败。
 
-A {deftech}_lint driver_ is similar, but it's run by {lake}`lint` and checks the package for stylistic issues and other problems that aren't _errors_ but indicate likely problems.
-Lint drivers can only be executables or scripts, not libraries.
+{deftech (key := "lint driver")}_代码检查驱动程序_ 也是类似的，只是它由 {lake}`lint` 运行，负责检查包在风格及其他方面是否存在不是_错误_但预示存在潜在问题的状况。
+代码检查驱动程序只能是可执行文件或脚本，而不能是库。
 
-### Configuring a Test Driver
+### 配置测试驱动程序
 %%%
 tag := "lake-test-driver-config"
 %%%
 
-In a `lakefile.toml`, set {tomlField Lake.PackageConfig}`testDriver` to the name of an executable target, library target, or script defined in the same configuration:
+在 `lakefile.toml` 中，将 {tomlField Lake.PackageConfig}`testDriver` 设置为相同配置中定义的可执行文件目标、库目标或脚本的名称：
 
-:::::example "Test Driver (`lakefile.toml`)"
+:::::example "测试驱动（`lakefile.toml`）" (file := "Test Driver (lakefile.toml)")
 
 ::::lakeToml Lake.PackageConfig _root_
 ```toml
@@ -853,10 +858,10 @@ root = "Tests"
 ::::
 :::::
 
-In a `lakefile.lean`, either set the {name Lake.Package.testDriver}`testDriver` field on the {keyword}`package` declaration (as above), or tag a script, executable, or library declaration with the {attr}`test_driver` attribute.
-The attribute form is often convenient because it places the marker next to the target.
+在 `lakefile.lean` 中，可以在 {keyword}`package` 声明中设置 {name Lake.Package.testDriver}`testDriver` 字段（如上所述），也可以使用 {attr}`test_driver` 属性对脚本、可执行文件或库声明进行标记。
+属性标记的形式往往更方便，因为它将标记放在了目标旁边。
 
-:::::example "Test Driver (`lakefile.lean`)"
+:::::example "测试驱动（`lakefile.lean`）" (file := "Test Driver (lakefile.lean)")
 
 ::::lakeLean
 ```lean
@@ -1017,52 +1022,52 @@ lean_exe «my-package-tests» where
 ::::
 :::::
 
-Only one declaration per package can be tagged with {attr}`test_driver`.
-It is an error to use both the {attr}`test_driver` attribute and a non-empty {name Lake.Package.testDriver}`testDriver` field in the same Lake configuration file.
+每个包中只有一个声明可以被标记为 {attr}`test_driver`。
+如果在同一 Lake 配置文件中同时使用 {attr}`test_driver` 属性和非空的 {name Lake.Package.testDriver}`testDriver` 字段，则会引发错误。
 
-A test driver may also be a target in a package dependency that is transitively {tech (key:="require")}[required].
-To use a target from another package, use `<pkg>/<name>` as the value of `testDriver`, where `<pkg>` is the name of the package in which the target is found..
+测试驱动程序也可以是传递地 {tech (key:="require")}[请求] 的包依赖项中的目标。
+要使用其他包中的目标，请使用 `<pkg>/<name>` 作为 `testDriver` 的值，其中 `<pkg>` 是该目标所在的包的名称。
 
-### Running Tests
+### 运行测试
 %%%
 tag := "lake-test-running"
 %%%
 
-The {lake}`test` command runs the configured driver for the {tech}[root package] only.
-Test drivers for dependencies are not run.
+{lake}`test` 命令仅运行 {tech (key := "root package")}[根包] 已配置的驱动程序。
+不会运行依赖项的测试驱动程序。
 
 :::paragraph
-If the test driver is an executable or a script, Lake passes the arguments from {tomlField Lake.PackageConfig}`testDriverArgs` first, then anything after `--` on the command line.
-For example,
+如果测试驱动程序是可执行文件或脚本，Lake 会先传递 {tomlField Lake.PackageConfig}`testDriverArgs` 中的参数，然后传递命令行上 `--` 之后的所有内容。
+例如，
 
 ```
 lake test -- --filter Foo --verbose
 ```
 
-passes `--filter Foo --verbose` to the driver after whatever {tomlField Lake.PackageConfig}`testDriverArgs` is already configured.
-Lake builds executable drivers before running them.
+将在任何已配置好的 {tomlField Lake.PackageConfig}`testDriverArgs` 后，把 `--filter Foo --verbose` 传递给驱动程序。
+Lake 在运行可执行文件驱动程序前会先对其进行构建。
 :::
 
-If the test driver is a library, arguments are not accepted.
-Lake reports an error if {tomlField Lake.PackageConfig}`testDriverArgs` is non-empty or if any arguments follow `--`.
-To run the tests, the library is just {tech (key:="Lean elaborator")}[elaborated].
+如果测试驱动程序是库，则不接受参数。
+如果 {tomlField Lake.PackageConfig}`testDriverArgs` 不为空，或在 `--` 之后有任何参数，Lake 将报告错误。
+要运行测试，只需使用 {tech (key:="Lean elaborator")}[Lean 精译器] 对该库进行精译即可。
 
-{lake}`check-test` terminates with exit code 0 (that is, successfully) if a test driver is configured for the root package.
-It doesn't check that the named target actually exists.
+如果为根包配置了测试驱动程序，{lake}`check-test` 将以退出代码 0（即成功）终止。
+它不检查所命名的目标是否实际存在。
 
-### Lint Drivers
+### 代码检查驱动程序
 %%%
 tag := "lake-lint-drivers"
 %%%
 
-Lint drivers are configured and run similarly to {ref "lake-test-driver-config"}[test drivers].
-The Lake configuration file specifies a target that serves as the lint driver, and {lake}`lint` runs it.
-This target must be an executable or a script; unlike test drivers, lint drivers may not be libraries.
+代码检查驱动程序的配置和运行方式类似于 {ref "lake-test-driver-config"}[测试驱动程序]。
+Lake 配置文件指定一个目标作为代码检查驱动程序，然后由 {lake}`lint` 运行它。
+此目标必须是可执行文件或脚本；与测试驱动程序不同，代码检查驱动程序不能是库。
 
-In a TOML-format Lake configuration file, the package-level field {tomlField Lake.PackageConfig}`lintDriver` specifies the name of the lint driver target.
+在 TOML 格式的 Lake 配置文件中，包级别的 {tomlField Lake.PackageConfig}`lintDriver` 字段指定了代码检查驱动程序目标的名称。
 
-:::::example "Lint Driver (`lakefile.toml`)"
-This minimal `lakefile.toml` configures a lint driver:
+:::::example "代码检查驱动（`lakefile.toml`）" (file := "Lint Driver (lakefile.toml)")
+这个最小化的 `lakefile.toml` 配置了一个代码检查驱动程序：
 
 ::::lakeToml Lake.PackageConfig _root_
 ```toml
@@ -1222,10 +1227,10 @@ root = "Lint"
 :::::
 
 
-In a `lakefile.lean`, either set the {name Lake.Package.lintDriver}`lintDriver` field on the {keyword}`package` declaration, or tag a script or executable declaration with the {attr}`lint_driver` attribute.
-The attribute form is often convenient because it places the marker next to the target.
+在 `lakefile.lean` 中，可以在 {keyword}`package` 声明中设置 {name Lake.Package.lintDriver}`lintDriver` 字段，也可以使用 {attr}`lint_driver` 属性标记脚本或可执行文件声明。
+属性的形式往往更方便，因为它将标记放在了目标旁边。
 
-:::::example "Lint Driver (`lakefile.lean`)"
+:::::example "代码检查驱动（`lakefile.lean`）" (file := "Lint Driver (lakefile.lean)")
 
 ::::lakeLean
 ```lean
@@ -1386,8 +1391,8 @@ lean_exe «my-package-lint» where
 ::::
 :::::
 
-Only one declaration per package can be tagged with {attr}`lint_driver`.
-It is an error to use both the {attr}`lint_driver` attribute and a non-empty {name Lake.Package.lintDriver}`lintDriver` field in the same Lake configuration file.
+每个包中只有一个声明可以被标记为 {attr}`lint_driver`。
+如果在同一 Lake 配置文件中同时使用 {attr}`lint_driver` 属性和非空的 {name Lake.Package.lintDriver}`lintDriver` 字段，则会引发错误。
 
 :::lakeSession -show
 ```lean +lakefile
@@ -1406,90 +1411,102 @@ error: p: only one script or executable can be tagged @[lint_driver]
 ```
 :::
 
-A lint driver in a dependency package can be referenced with the same `<pkg>/<name>` syntax used for test drivers.
+依赖包中的代码检查驱动程序可以使用与测试驱动程序相同的 `<pkg>/<name>` 语法进行引用。
 
-{lake}`lint` runs the configured driver, passing {tomlField Lake.PackageConfig}`lintDriverArgs` first, then anything after `--` on the command line:
+{lake}`lint` 运行已配置的驱动程序，首先传递 {tomlField Lake.PackageConfig}`lintDriverArgs`，然后传递命令行上 `--` 之后的任何内容：
 
 ```
 lake lint -- --warnings-as-errors
 ```
 
-Lake also has a separate {deftech}_builtin linter_ that operates on Lean modules directly, independent of any configured driver.
-Builtin linting is enabled by the `--builtin-lint` and related flags (see {lake}`lint`), or by setting {tomlField Lake.PackageConfig}`builtinLint` to `true` in the package configuration.
-When builtin linting is active, positional `MODULE` arguments before `--` select which modules to lint, and they are _not_ passed to the configured driver.
-So `lake lint Mathlib` triggers builtin linting on `Mathlib`, whereas `lake lint -- Mathlib` passes `Mathlib` to the driver.
-The two mechanisms are independent and can run together: when both apply, Lake runs the builtin linter first and then the driver.
+Lake 还有单独的 {deftech (key := "builtin linter")}_内置检查器_，它直接在 Lean 模块上运行，独立于任何已配置的驱动程序。
+内置代码检查可以通过 `--builtin-lint` 及相关标志（见 {lake}`lint`）启用，或通过在包配置中将 {tomlField Lake.PackageConfig}`builtinLint` 设置为 `true` 来启用。
+当内置代码检查启用时，`--` 之前的位置参数 `MODULE` 用于选择要检查的模块，而且它们*不会*被传递给已配置的驱动程序。
+因此 `lake lint Mathlib` 会触发对 `Mathlib` 的内置代码检查，而 `lake lint -- Mathlib` 则会将 `Mathlib` 传递给驱动程序。
+这两种机制相互独立且可同时运行：当它们同时适用时，Lake 将先运行内置检查器，然后再运行驱动程序。
 
-{lake}`check-lint` exits with code 0 (that is, successfully) if a lint driver is configured for the root package or if {tomlField Lake.PackageConfig}`builtinLint` is set to `true` in its configuration.
+如果为根包配置了代码检查驱动程序，或者其配置中的 {tomlField Lake.PackageConfig}`builtinLint` 被设置为 `true`，{lake}`check-lint` 将以退出代码 0（即成功）退出。
 
 
-## GitHub Release Builds
+## GitHub 发布版本构建
 %%%
 tag := "lake-github"
 %%%
 
-Lake supports uploading and downloading build artifacts (i.e., the archived build directory) to/from the GitHub releases of packages.
-This enables end users to fetch pre-built artifacts from the cloud without needed to rebuild the package from source themselves.
-The {envVar}`LAKE_NO_CACHE` environment variable can be used to disable this feature.
+Lake 支持将构建工件（即归档后的构建目录）上传到包的 GitHub 发布版本中，或从其中下载。
+这使得最终用户能够从云端获取预构建的工件，而无需自己从源码重建整个包。
+可以使用 {envVar}`LAKE_NO_CACHE` 环境变量来禁用此功能。
 
-### Downloading
+### 下载
+%%%
+tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Concepts-and-Terminology--GitHub-Release-Builds--Downloading"
+%%%
 
-To download artifacts, one should configure the package options `releaseRepo` and `buildArchive` to point to the GitHub repository hosting the release and the correct artifact name within it (if the defaults are not sufficient).
-Then, set `preferReleaseBuild := true` to tell Lake to fetch and unpack it as an extra package dependency.
+要下载工件，应配置包选项 `releaseRepo` 和 `buildArchive`，使其指向托管发布版本的 GitHub 仓库以及其中正确的工件名称（如果默认设置不充分）。
+然后，设置 `preferReleaseBuild := true`，指示 Lake 将其作为额外的包依赖项获取并解包。
 
-Lake will only fetch release builds as part of its standard build process if the package wanting it is a dependency (as the root package is expected to modified and thus not often compatible with this scheme).
-However, should one wish to fetch a release for a root package (e.g., after cloning the release's source but before editing), one can manually do so via `lake build :release`.
+作为标准构建过程的一部分，Lake 仅当需要发布版本构建的包属于依赖时才会获取它（因为根包通常会被修改，所以它往往与此方案不兼容）。
+但是，如果希望为根包获取发布版本构建（例如，在克隆发布版本的源代码之后、编辑之前），可以通过 `lake build :release` 手动执行。
 
-Lake internally uses `curl` to download the release and `tar` to unpack it, so the end user must have both tools installed in order to use this feature.
-If Lake fails to fetch a release for any reason, it will move on to building from the source.
-This mechanism is not technically limited to GitHub: any Git host that uses the same URL scheme works as well.
+Lake 在内部使用 `curl` 下载发布版本，并使用 `tar` 将其解包，因此最终用户必须安装这两种工具才能使用此功能。
+如果 Lake 因任何原因未能获取发布版本，它将继续从源代码构建。
+该机制在技术上不仅限于 GitHub：任何使用相同 URL 方案的 Git 托管平台同样适用。
 
-### Uploading
+### 上传
+%%%
+tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Concepts-and-Terminology--GitHub-Release-Builds--Uploading"
+%%%
 
-To upload a built package as an artifact to a GitHub release, Lake provides the {lake}`upload` command as a convenient shorthand.
-This command uses `tar` to pack the package's build directory into an archive and uses `gh release upload` to attach it to a pre-existing GitHub release for the specified tag.
-Thus, in order to use it, the package uploader (but not the downloader) needs to have `gh`, the GitHub CLI, installed and in `PATH`.
+要将构建的包作为工件上传到 GitHub 发布版本，Lake 提供了 {lake}`upload` 命令作为便捷的简写。
+此命令使用 `tar` 将包的构建目录打包为归档，并使用 `gh release upload` 将其附加到指定标签下预先存在的 GitHub 发布版本中。
+因此，为了使用该命令，包的上传者（但不是下载者）需要安装 GitHub 命令行界面 `gh` 并将其包含在 `PATH` 中。
 
-## Artifact Caches
+## 工件缓存
 %%%
 tag := "lake-cache"
 %%%
 
-*This is an experimental feature that is still undergoing development.*
+*这是一项仍在开发中的实验性功能。*
 
-Lake supports a {deftech (key := "local cache")}_local artifact cache_ that stores individual build products, tracking the complete set of inputs that gave rise to them.
-Each {tech}[toolchain] has its own cache because intermediate build products are not compatible between toolchain versions.
-However, a toolchain's cache is shared between all local {tech}[workspaces] that use it, so common dependencies don't need to be rebuilt.
-If two separate workspaces with the same toolchain depend on the same package, then they can share each others' build products.
+Lake 支持 {deftech (key := "local cache")}_本地工件缓存_，该缓存会存储单个构建产物，并追踪生成它们的所有输入集。
+每个 {tech (key := "toolchain")}[工具链] 都有其自己的缓存，因为工具链版本之间的中间构建产物是不兼容的。
+不过，一个工具链的缓存在使用它的所有本地 {tech (key := "workspaces")}[工作区] 之间是共享的，因此常见的依赖不需要重新构建。
+如果两个具有相同工具链的独立工作区依赖于相同的包，则它们可以共享彼此的构建产物。
 
-Because it is an experimental feature, the local cache is disabled by default.
-It is only enabled when the {envVar}`LAKE_ARTIFACT_CACHE` environment variable is set to `true` or when the {TODO}[ref] `enableArtifactCache` field is set to `true` in the {ref "lake-config"}[configuration file].
+因为这是一项实验性功能，所以本地缓存默认处于禁用状态。
+只有当 {envVar}`LAKE_ARTIFACT_CACHE` 环境变量被设置为 `true`，或者当 {TODO}[交叉引用] `enableArtifactCache` 字段在 {ref "lake-config"}[配置文件] 中被设置为 `true` 时才会被启用。
 
 
-### Remote Artifact Caches
+### 远程工件缓存
 %%%
 tag := "lake-cache-remote"
 %%%
 
-Build products can be retrieved from remote cache servers and placed into the local cache.
-This makes it possible to completely avoid local builds.
-The {lake}`cache get` command is used to download artifacts into the local cache.
+构建产物可以从远程缓存服务器检索，并放入本地缓存中。
+这使得完全避免本地构建成为可能。
+{lake}`cache get` 命令用于将工件下载到本地缓存中。
 
-Compared to {ref "lake-github"}[GitHub release builds], the remote artifact cache is much more fine-grained.
-It tracks build products at the level of individual source files, {tech}[`.olean` files], and object code, rather than at the level of entire packages.
+与 {ref "lake-github"}[GitHub 发布版本构建] 相比，远程工件缓存的粒度要细得多。
+它追踪源代码文件级别、{tech (key := ".olean files")}[`.olean` 文件] 以及目标代码级别的构建产物，而不是整个包级别的。
 
-### Mappings
+### 映射
+%%%
+tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Concepts-and-Terminology--Artifact-Caches--Mappings"
+%%%
 
-When passed the `-o` option, {lake}`build` tracks the inputs used to generate each build product.
-These are stored to a {deftech}_mappings file_ in JSON lines format, where each line of the file must be a valid JSON object.
-A mappings file tracks a single build, and includes all intermediate and final build products for the workspace's {tech}[root package], but not for its dependencies.
-This includes build products that were already up to date and not regenerated.
-The {lake}`cache put` command uploads the build products in the mappings file to the remote from the local cache to the remote cache.
+当传递 `-o` 选项时，{lake}`build` 会追踪用于生成每个构建产物的输入。
+它们被存储为 JSON 行格式的 {deftech (key := "mappings file")}_映射文件_，文件中每一行都必须是一个有效的 JSON 对象。
+一个映射文件追踪单次构建，包括工作区 {tech (key := "root package")}[根包] 的所有中间和最终构建产物，但不包含其依赖。
+这包括那些已经处于最新状态且不需要重新生成的构建产物。
+{lake}`cache put` 命令从本地缓存把映射文件中的构建产物上传到远程缓存。
 
-### Configuration
+### 配置
+%%%
+tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Concepts-and-Terminology--Artifact-Caches--Configuration"
+%%%
 
 :::paragraph
-Remote artifact caches are configured using the following environment variables:
+使用以下环境变量配置远程工件缓存：
  * {envVar}`LAKE_CACHE_KEY`
  * {envVar}`LAKE_CACHE_ARTIFACT_ENDPOINT`
  * {envVar}`LAKE_CACHE_REVISION_ENDPOINT`
@@ -1499,91 +1516,109 @@ Remote artifact caches are configured using the following environment variables:
 
 {include 0 Manual.BuildTools.Lake.Config}
 
-# Script API Reference
+# 脚本接口参考
 %%%
 tag := "lake-api"
 %%%
 
-In addition to ordinary {lean}`IO` effects, Lake scripts have access to the Lake environment (which provides information about the current toolchain, such as the location of the Lean compiler) and the current workspace.
-This access is provided in {name Lake.ScriptM}`ScriptM`.
+除了普通的 {lean}`IO` 效应，Lake 脚本还能访问 Lake 环境（它提供了有关当前工具链的信息，例如 Lean 编译器的位置）以及当前的工作区。
+这一访问权限是在 {name Lake.ScriptM}`ScriptM` 中提供的。
 
-{docstring Lake.ScriptM}
+{zhdocstring Lake.ScriptM ZhDoc.BuildTools.Lake.ScriptM}
 
-## Accessing the Environment
+## 访问环境
+%%%
+tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Script-API-Reference--Accessing-the-Environment"
+%%%
 
-Monads that provide access to information about the current Lake environment (such as the locations of Lean, Lake, and other tools) have {name Lake.MonadLakeEnv}`MonadLakeEnv` instances.
-This is true for all of the monads in the Lake API, including {name Lake.ScriptM}`ScriptM`.
+提供对当前 Lake 环境信息（例如 Lean、Lake 以及其它工具的位置）访问权限的单子具备 {name Lake.MonadLakeEnv}`MonadLakeEnv` 实例。
+Lake 接口中的所有单子皆是如此，包括 {name Lake.ScriptM}`ScriptM`。
 
-{docstring Lake.MonadLakeEnv}
+{zhdocstring Lake.MonadLakeEnv ZhDoc.BuildTools.Lake.MonadLakeEnv}
 
-{docstring Lake.getLakeEnv}
+{zhdocstring Lake.getLakeEnv ZhDoc.BuildTools.Lake.getLakeEnv}
 
-{docstring Lake.getNoCache}
+{zhdocstring Lake.getNoCache ZhDoc.BuildTools.Lake.getNoCache}
 
-{docstring Lake.getTryCache}
+{zhdocstring Lake.getTryCache ZhDoc.BuildTools.Lake.getTryCache}
 
-{docstring Lake.getPkgUrlMap}
+{zhdocstring Lake.getPkgUrlMap ZhDoc.BuildTools.Lake.getPkgUrlMap}
 
-{docstring Lake.getElanToolchain}
+{zhdocstring Lake.getElanToolchain ZhDoc.BuildTools.Lake.getElanToolchain}
 
-### Search Path Helpers
+### 搜索路径辅助函数
+%%%
+tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Script-API-Reference--Accessing-the-Environment--Search-Path-Helpers"
+%%%
 
-{docstring Lake.getEnvLeanPath}
+{zhdocstring Lake.getEnvLeanPath ZhDoc.BuildTools.Lake.getEnvLeanPath}
 
-{docstring Lake.getEnvLeanSrcPath}
+{zhdocstring Lake.getEnvLeanSrcPath ZhDoc.BuildTools.Lake.getEnvLeanSrcPath}
 
-{docstring Lake.getEnvSharedLibPath}
+{zhdocstring Lake.getEnvSharedLibPath ZhDoc.BuildTools.Lake.getEnvSharedLibPath}
 
-### Elan Install Helpers
+### Elan 安装辅助函数
+%%%
+tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Script-API-Reference--Accessing-the-Environment--Elan-Install-Helpers"
+%%%
 
-{docstring Lake.getElanInstall?}
+{zhdocstring Lake.getElanInstall? ZhDoc.BuildTools.Lake.getElanInstall?}
 
-{docstring Lake.getElanHome?}
+{zhdocstring Lake.getElanHome? ZhDoc.BuildTools.Lake.getElanHome?}
 
-{docstring Lake.getElan?}
+{zhdocstring Lake.getElan? ZhDoc.BuildTools.Lake.getElan?}
 
-### Lean Install Helpers
+### Lean 安装辅助函数
+%%%
+tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Script-API-Reference--Accessing-the-Environment--Lean-Install-Helpers"
+%%%
 
-{docstring Lake.getLeanInstall}
+{zhdocstring Lake.getLeanInstall ZhDoc.BuildTools.Lake.getLeanInstall}
 
-{docstring Lake.getLeanSysroot}
+{zhdocstring Lake.getLeanSysroot ZhDoc.BuildTools.Lake.getLeanSysroot}
 
-{docstring Lake.getLeanSrcDir}
+{zhdocstring Lake.getLeanSrcDir ZhDoc.BuildTools.Lake.getLeanSrcDir}
 
-{docstring Lake.getLeanLibDir}
+{zhdocstring Lake.getLeanLibDir ZhDoc.BuildTools.Lake.getLeanLibDir}
 
-{docstring Lake.getLeanIncludeDir}
+{zhdocstring Lake.getLeanIncludeDir ZhDoc.BuildTools.Lake.getLeanIncludeDir}
 
-{docstring Lake.getLeanSystemLibDir}
+{zhdocstring Lake.getLeanSystemLibDir ZhDoc.BuildTools.Lake.getLeanSystemLibDir}
 
-{docstring Lake.getLean}
+{zhdocstring Lake.getLean ZhDoc.BuildTools.Lake.getLean}
 
-{docstring Lake.getLeanc}
+{zhdocstring Lake.getLeanc ZhDoc.BuildTools.Lake.getLeanc}
 
-{docstring Lake.getLeanSharedLib}
+{zhdocstring Lake.getLeanSharedLib ZhDoc.BuildTools.Lake.getLeanSharedLib}
 
-{docstring Lake.getLeanAr}
+{zhdocstring Lake.getLeanAr ZhDoc.BuildTools.Lake.getLeanAr}
 
-{docstring Lake.getLeanCc}
+{zhdocstring Lake.getLeanCc ZhDoc.BuildTools.Lake.getLeanCc}
 
-{docstring Lake.getLeanCc?}
+{zhdocstring Lake.getLeanCc? ZhDoc.BuildTools.Lake.getLeanCc?}
 
-### Lake Install Helpers
+### Lake 安装辅助函数
+%%%
+tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Script-API-Reference--Accessing-the-Environment--Lake-Install-Helpers"
+%%%
 
-{docstring Lake.getLakeInstall}
+{zhdocstring Lake.getLakeInstall ZhDoc.BuildTools.Lake.getLakeInstall}
 
-{docstring Lake.getLakeHome}
+{zhdocstring Lake.getLakeHome ZhDoc.BuildTools.Lake.getLakeHome}
 
-{docstring Lake.getLakeSrcDir}
+{zhdocstring Lake.getLakeSrcDir ZhDoc.BuildTools.Lake.getLakeSrcDir}
 
-{docstring Lake.getLakeLibDir}
+{zhdocstring Lake.getLakeLibDir ZhDoc.BuildTools.Lake.getLakeLibDir}
 
-{docstring Lake.getLake}
+{zhdocstring Lake.getLake ZhDoc.BuildTools.Lake.getLake}
 
-## Accessing the Workspace
+## 访问工作区
+%%%
+tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Script-API-Reference--Accessing-the-Workspace"
+%%%
 
-Monads that provide access to information about the current Lake workspace have {name Lake.MonadWorkspace}`MonadWorkspace` instances.
-In particular, there are instances for {name Lake.ScriptM}`ScriptM` and {name Lake.LakeM}`LakeM`.
+提供对当前 Lake 工作区信息访问权限的单子具备 {name Lake.MonadWorkspace}`MonadWorkspace` 实例。
+特别是，有针对 {name Lake.ScriptM}`ScriptM` 和 {name Lake.LakeM}`LakeM` 的实例。
 
 ```lean -show
 section
@@ -1593,32 +1628,32 @@ open Lake
 end
 ```
 
-{docstring Lake.MonadWorkspace}
+{zhdocstring Lake.MonadWorkspace ZhDoc.BuildTools.Lake.MonadWorkspace}
 
-{docstring Lake.getRootPackage}
+{zhdocstring Lake.getRootPackage ZhDoc.BuildTools.Lake.getRootPackage}
 
-{docstring Lake.findPackageByName?}
+{zhdocstring Lake.findPackageByName? ZhDoc.BuildTools.Lake.findPackageByName?}
 
-{docstring Lake.findPackageByKey?}
+{zhdocstring Lake.findPackageByKey? ZhDoc.BuildTools.Lake.findPackageByKey?}
 
-{docstring Lake.findModule?}
+{zhdocstring Lake.findModule? ZhDoc.BuildTools.Lake.findModule?}
 
-{docstring Lake.findLeanExe?}
+{zhdocstring Lake.findLeanExe? ZhDoc.BuildTools.Lake.findLeanExe?}
 
-{docstring Lake.findLeanLib?}
+{zhdocstring Lake.findLeanLib? ZhDoc.BuildTools.Lake.findLeanLib?}
 
-{docstring Lake.findExternLib?}
+{zhdocstring Lake.findExternLib? ZhDoc.BuildTools.Lake.findExternLib?}
 
-{docstring Lake.getLeanPath}
+{zhdocstring Lake.getLeanPath ZhDoc.BuildTools.Lake.getLeanPath}
 
-{docstring Lake.getLeanSrcPath}
+{zhdocstring Lake.getLeanSrcPath ZhDoc.BuildTools.Lake.getLeanSrcPath}
 
-{docstring Lake.getSharedLibPath}
+{zhdocstring Lake.getSharedLibPath ZhDoc.BuildTools.Lake.getSharedLibPath}
 
-{docstring Lake.getAugmentedLeanPath}
+{zhdocstring Lake.getAugmentedLeanPath ZhDoc.BuildTools.Lake.getAugmentedLeanPath}
 
-{docstring Lake.getAugmentedLeanSrcPath }
+{zhdocstring Lake.getAugmentedLeanSrcPath ZhDoc.BuildTools.Lake.getAugmentedLeanSrcPath}
 
-{docstring Lake.getAugmentedSharedLibPath}
+{zhdocstring Lake.getAugmentedSharedLibPath ZhDoc.BuildTools.Lake.getAugmentedSharedLibPath}
 
-{docstring Lake.getAugmentedEnv}
+{zhdocstring Lake.getAugmentedEnv ZhDoc.BuildTools.Lake.getAugmentedEnv}

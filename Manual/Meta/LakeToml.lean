@@ -69,22 +69,22 @@ where
 
 
 open Output Html in
-def FieldType.toHtml (plural : Bool := false) : FieldType → Html
-  | .string => if plural then "strings" else "String"
-  | .stringOf x => s!"{x} (as string{if plural then "s" else ""}"
-  | .version => if plural then "version strings" else "Version string"
-  | .path => if plural then "paths" else "Path"
-  | .array t => (if plural then "arrays of " else "Array of ") ++ t.toHtml true
-  | .other _ y none => if plural then y ++ "s" else y
-  | .other _ y (some z) => if plural then z else y
-  | .bool => if plural then "Booleans" else "Boolean"
-  | .target => if plural then "targets" else "target"
-  | .option t => t.toHtml ++ " (optional)"
+def FieldType.toHtml (_plural : Bool := false) : FieldType → Html
+  | .string => "字符串"
+  | .stringOf x => s!"{x}（字符串形式）"
+  | .version => "版本字符串"
+  | .path => "路径"
+  | .array t => "由" ++ t.toHtml true ++ "组成的数组"
+  | .other _ y none => y
+  | .other _ y (some _z) => y
+  | .bool => "布尔值"
+  | .target => "目标"
+  | .option t => t.toHtml ++ "（可选）"
   | .oneOf xs =>
     let opts := xs
       |>.map ({{<code>{{show Html from .text true s!"\"{·}\""}}</code>}})
       |>.intersperse {{", "}}
-    {{"one of " {{opts}} }}
+    {{"以下之一：" {{opts}} }}
 
 structure Field (α) where
   name : Name
@@ -166,7 +166,7 @@ def tomlField : DirectiveExpander
 
 open Verso.Search in
 def tomlTableDomainMapper := {
-  displayName := "Lake TOML Table",
+  displayName := "Lake TOML 表",
   className := "lake-toml-table-domain",
   dataToSearchables := "(domainData) =>
   Object.entries(domainData.contents).map(([key, value]) => {
@@ -183,14 +183,14 @@ def tomlTableDomainMapper := {
 
 open Verso.Search in
 def tomlFieldDomainMapper := {
-  displayName := "Lake TOML Field",
+  displayName := "Lake TOML 字段",
   className := "lake-toml-field-domain",
   dataToSearchables := "(domainData) =>
     Object.entries(domainData.contents).map(([key, value]) => {
       let tableArrayKey = value[0].data.tableArrayKey;
-      let arr = tableArrayKey ? `[[${tableArrayKey}]]` : 'package configuration';
+      let arr = tableArrayKey ? `[[${tableArrayKey}]]` : '包配置';
       return {
-        searchKey: `${value[0].data.field} in ${arr}`,
+        searchKey: `${arr}中的${value[0].data.field}`,
         address: `${value[0].address}#${value[0].id}`,
         domainId: 'Manual.lakeTomlField',
         ref: value,
@@ -237,7 +237,7 @@ def Block.tomlField.descr : BlockDescr where
           <code class="field-name">{{sig}}</code>
         </dt>
         <dd>
-            <p><strong>"Contains:"</strong>" " {{field.type.toHtml}}</p>
+            <p><strong>"包含："</strong>" " {{field.type.toHtml}}</p>
             {{← contents.mapM goB}}
         </dd>
       }}
@@ -412,7 +412,7 @@ dl.toml-table-field-spec {
       let fieldHeader := {{
         <p>
           <strong>
-            {{if categories.isEmpty then "Fields:" else "Other Fields:"}}
+            {{if categories.isEmpty then "字段：" else "其他字段："}}
           </strong>
         </p>
       }}
@@ -433,7 +433,7 @@ dl.toml-table-field-spec {
 
       return {{
         <div class="namedocs" {{idAttr}}>
-          <span class="label">"TOML table"</span>
+          <span class="label">"TOML 表"</span>
           <pre class="signature">{{sig}}</pre>
           <div class="text">
             {{← notFields.mapM goB}}
@@ -511,21 +511,22 @@ private def configKeyMap (n : Name) : MetaM (Std.HashMap Name Name) := do
       m := m.insert info.realName info.name
   return m
 
-def asTable (humanName : String) (n : Name) (skip : List Name := []) : DocElabM Term  := do
+def asTable (humanName : String) (n : Name) (docsName : Name := n)
+    (skip : List Name := []) : DocElabM Term  := do
   let env ← getEnv
   if let some (.inductInfo ii) := env.find? n then
     let allFields := getStructureFieldsFlattened env n (includeSubobjectFields := false) |>.filter (!skip.contains ·)
     let directFields := getStructureFields env n
     -- Sort the direct fields first, because that makes the ordering "more intuitive" in the docs
     let allFields := allFields.filter (directFields.contains ·) ++ allFields.filter (!directFields.contains ·)
-    let ancestry ← getStructureResolutionOrder n
+    let docsAncestry ← getStructureResolutionOrder docsName
     let keyMap ← configKeyMap n
     let tomlFields : Array (Field (Array Term)) ← forallTelescopeReducing ii.type fun params _ =>
       withLocalDeclD `self (mkAppN (mkConst n (ii.levelParams.map mkLevelParam)) params) fun s =>
         allFields.mapM fun fieldName => do
           let proj ← mkProjection s fieldName
           let type ← inferType proj >>= instantiateMVars
-          for struct in ancestry do
+          for struct in docsAncestry do
             if let some projFn := getProjFnInfoForField? env struct fieldName then
               let docs? ← findDocString? env projFn.1
               let docs? ← docs?.mapM fun mdDocs => do
@@ -539,11 +540,11 @@ def asTable (humanName : String) (n : Name) (skip : List Name := []) : DocElabM 
                 else if type.isConstOf ``Name then some .string
                 else if type.isConstOf ``Bool then some .bool
                 else if type.isConstOf ``System.FilePath then some .path
-                else if type.isConstOf ``Lake.WorkspaceConfig then some (.other ``Lake.WorkspaceConfig "Workspace configuration" none)
+                else if type.isConstOf ``Lake.WorkspaceConfig then some (.other ``Lake.WorkspaceConfig "工作区配置" none)
                 else if type.isConstOf ``Lake.BuildType then some (.oneOf buildTypes)
                 else if type.isConstOf ``Lake.StdVer then some .version
-                else if type.isConstOf ``Lake.StrPat then some (.other ``Lake.StrPat "String pattern" none)
-                else if type.isAppOfArity ``Array 1 && (type.getArg! 0).isConstOf ``Lean.LeanOption then some (.array (.other ``Lean.LeanOption "Lean option" none))
+                else if type.isConstOf ``Lake.StrPat then some (.other ``Lake.StrPat "字符串模式" none)
+                else if type.isAppOfArity ``Array 1 && (type.getArg! 0).isConstOf ``Lean.LeanOption then some (.array (.other ``Lean.LeanOption "Lean 选项" none))
                 else if type.isAppOfArity ``Array 1 && (type.getArg! 0).isConstOf ``String then some (.array .string)
                 else if type.isAppOfArity ``Array 1 && (type.getArg! 0).isConstOf ``Name then some (.array .string)
                 else if type.isAppOfArity ``Array 1 && (type.getArg! 0).isConstOf ``System.FilePath then some (.array .path)
@@ -552,7 +553,7 @@ def asTable (humanName : String) (n : Name) (skip : List Name := []) : DocElabM 
                 else if type.isAppOfArity ``Option 1 && (type.getArg! 0).isConstOf ``String then some (.option .string)
                 else if type.isAppOfArity ``Option 1 && (type.getArg! 0).isConstOf ``System.FilePath then some (.option .path)
                 else if type.isAppOfArity ``Lake.TargetArray 1 && (type.getArg! 0).isConstOf ``Lake.Dynlib then
-                  some (.array (.other ``Lake.Dynlib "dynamic library" "dynamic libraries"))
+                  some (.array (.other ``Lake.Dynlib "动态库" "动态库"))
                 else if type.isAppOfArity ``Lake.TargetArray 1 && (type.getArg! 0).isConstOf ``System.FilePath then
                   some (.array .path)
                 else none
@@ -586,10 +587,14 @@ structure TomlTableOpts where
   arrayKey : Option String
   description : String
   name : Name
+  /-- Optional shape-compatible structure from which translated documentation is read. -/
+  docs : Option Name
   skip : List Name
 
 def TomlTableOpts.parse [Monad m] [MonadError m] [MonadLiftT CoreM m] : ArgParse m TomlTableOpts :=
-  TomlTableOpts.mk <$> .positional `key arrayKey <*> .positional `description .string <*> .positional `name .resolvedName <*> many (.named `skip .name false)
+  TomlTableOpts.mk <$> .positional `key arrayKey <*> .positional `description .string <*>
+    .positional `name .resolvedName <*> .named `docs .resolvedName true <*>
+    many (.named `skip .name false)
 where
   arrayKey := {
     description := "'root' for the root table, or a string that contains a key for nested tables",
@@ -610,10 +615,11 @@ Interpret a structure type as a TOML table, and generate docs.
 @[directive_expander tomlTableDocs]
 def tomlTableDocs : DirectiveExpander
   | args, contents => do
-    let {arrayKey, description, name, skip} ← TomlTableOpts.parse.run args
+    let {arrayKey, description, name, docs, skip} ← TomlTableOpts.parse.run args
+    let docsName := docs.getD name
     let docsStx ←
-      match ← Lean.findDocString? (← getEnv) name with
-      | none => throwError m!"No docs found for '{name}'"; pure #[]
+      match ← Lean.findDocString? (← getEnv) docsName with
+      | none => throwError m!"No docs found for '{docsName}'"; pure #[]
       | some docs =>
         let some ast := MD4Lean.parse docs
           | throwError "Failed to parse docstring as Markdown"
@@ -623,7 +629,7 @@ def tomlTableDocs : DirectiveExpander
         -- TODO: detect and add xref to `lake` subcommands or other fields here.
         ast.blocks.mapM (blockFromMarkdown (handleHeaders := strongEmphHeaders))
 
-    let tableStx ← Toml.asTable description name skip
+    let tableStx ← Toml.asTable description name docsName skip
 
     let userContents ← contents.mapM elabBlock
 

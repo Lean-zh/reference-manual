@@ -19,120 +19,121 @@ open Verso.Genre.Manual.InlineLean
 
 open Lean.Elab.Tactic.GuardMsgs.WhitespaceMode
 
-#doc (Manual) "Managing Toolchains with Elan" =>
+#doc (Manual) "使用 Elan 管理工具链" =>
 %%%
 tag := "elan"
 shortContextTitle := "Elan"
+file := "Managing-Toolchains-with-Elan"
 %%%
 
-Elan is the Lean toolchain manager.
-It is responsible both for installing {tech}[toolchains] and for running their constituent programs.
-Elan makes it possible to seamlessly work on a variety of projects, each of which is designed to be built with a particular version of Lean, without having to manually install and select toolchain versions.
-Each project is typically configured to use a particular version, which is transparently installed as needed, and changes to the Lean version are tracked automatically.
+Elan 是 Lean 工具链管理器。
+它既负责安装{tech (key := "toolchains")}[工具链]，也负责运行工具链中的程序。
+借助 Elan，可以无缝处理各种项目；每个项目都针对特定 Lean 版本进行构建，而无需手动安装和选择工具链版本。
+每个项目通常配置为使用某个特定版本；该版本会按需透明地安装，而 Lean 版本的变更会自动受到跟踪。
 
-# Selecting Toolchains
+# 选择工具链
 %%%
 tag := "elan-toolchain-versions"
 %%%
 
-When using Elan, the version of each tool on the {envVar}`PATH` is a proxy that invokes the correct version.
-The proxy determines the appropriate toolchain version for the current context, ensures that it is installed, and then invokes the underlying tool in the appropriate toolchain installation.
-These proxies can be instructed to use a specific version by passing it as an argument prefixed with `+`, so `lake +4.0.0` invokes `lake` version `4.0.0`, after installing it if necessary.
+使用 Elan 时，{envVar}`PATH` 中每个工具的版本都是一个调用正确版本的代理。
+代理会为当前上下文确定适当的工具链版本，确保该版本已安装，然后调用相应工具链安装中的底层工具。
+可以传入以 `+` 为前缀的参数，指示这些代理使用特定版本；因此 `lake +4.0.0` 会调用 `4.0.0` 版的 `lake`，必要时先安装它。
 
 
-## Toolchain Identifiers
+## 工具链标识符
 %%%
 tag := "elan-channels"
 %%%
 
-Toolchains are specified by providing a toolchain identifier that is either a {deftech}_channel_, which identifies a particular type of Lean release, and optionally an origin, or a {deftech}_custom toolchain name_ established by {elan}`toolchain link`.
-Channels may be:
+工具链通过工具链标识符指定；标识符可以是标识某类 Lean 发行版并可选带有来源的{deftech (key := "channel")}[通道]，也可以是由 {elan}`toolchain link` 建立的{deftech (key := "custom toolchain name")}[自定义工具链名称]。
+通道可以是：
 
  : `stable`
 
-  The latest stable Lean release. Elan automatically tracks stable releases and offers to upgrade when a new one is released.
+  最新的 Lean 稳定发行版。Elan 会自动跟踪稳定发行版，并在新版本发布时提示升级。
 
  : `beta`
 
-  The latest release candidate. Release candidates are builds of Lean that are intended to become the next stable release. They are made available for widespread user testing.
+  最新的候选发行版。候选发行版是计划成为下一个稳定发行版的 Lean 构建，供广大用户测试。
 
  : `nightly`
 
-   The latest nightly build. Nightly builds are useful for experimenting with new Lean features to provide feedback to the developers.
+   最新的每夜构建。每夜构建适合试用 Lean 的新功能并向开发者提供反馈。
 
- : A version number or specific nightly release
+ : 版本号或特定的每夜发行版
 
-    Each Lean version number identifies a channel that contains only that release.
-    The version number may optionally be preceded with a `v`, so `v4.17.0` and `4.17.0` are equivalent.
-    Similarly, `nightly-YYYY-MM-DD` specifies the nightly release from the specified date.
-    A project's {tech}[toolchain file] should typically contain a specific version of Lean, rather than a general channel, to make it easier to coordinate between developers and to build and test older versions of the project.
-    An archive of Lean releases and nightly builds is maintained.
+    每个 Lean 版本号都标识一个仅包含该发行版的通道。
+    版本号前可以带有 `v`，因此 `v4.17.0` 与 `4.17.0` 等价。
+    类似地，`nightly-YYYY-MM-DD` 指定相应日期的每夜发行版。
+    项目的{tech (key := "toolchain file")}[工具链文件]通常应包含具体的 Lean 版本，而不是宽泛的通道，以便开发者相互协调，并构建和测试项目的旧版本。
+    Lean 发行版和每夜构建有一份持续维护的归档。
 
- : A custom local toolchain
+ : 自定义本地工具链
 
-    The command {elan}`toolchain link` can be used to establish a custom toolchain name in Elan for a local build of Lean.
-    This is especially useful when working on the Lean compiler itself.
+    可以使用 {elan}`toolchain link` 命令，在 Elan 中为 Lean 的本地构建建立自定义工具链名称。
+    这在开发 Lean 编译器本身时尤其有用。
 
-Specifying an {deftech}_origin_ instructs Elan to install Lean toolchains from a particular source.
-By default, this is the official project repository on GitHub, identified as [`leanprover/lean4`](https://github.com/leanprover/lean4/releases).
-If specified, an origin should precede the channel, with a colon, so `stable` is equivalent to `leanprover/lean4:stable`.
-When installing nightly releases, `-nightly` is appended to the origin, so `leanprover/lean4:nightly-2025-03-25` consults the [`leanprover/lean4-nightly`](https://github.com/leanprover/lean4-nightly/releases) repository to download releases.
-Origins are not used for custom toolchain names.
+指定{deftech (key := "origin")}[来源]会指示 Elan 从特定源安装 Lean 工具链。
+默认情况下，这是 GitHub 上标识为 [`leanprover/lean4`](https://github.com/leanprover/lean4/releases) 的官方项目仓库。
+如果指定来源，它应位于通道之前，并用冒号分隔，因此 `stable` 等价于 `leanprover/lean4:stable`。
+安装每夜发行版时，会向来源追加 `-nightly`，因此 `leanprover/lean4:nightly-2025-03-25` 会查询 [`leanprover/lean4-nightly`](https://github.com/leanprover/lean4-nightly/releases) 仓库以下载发行版。
+自定义工具链名称不使用来源。
 
-## Determining the Current Toolchain
+## 确定当前工具链
 %%%
 tag := "elan-toolchain-config"
 %%%
 
-Elan associates toolchains with directories, and uses the toolchain of the most recent parent directory of the current working directory that has a configured toolchain.
-A directory's toolchain may result from a toolchain file or from an override configured with {ref "elan-override"}[`elan override`].
+Elan 将工具链与目录关联，并使用当前工作目录向上最近的、已配置工具链的父目录所对应的工具链。
+目录的工具链可能来自工具链文件，也可能来自使用 {ref "elan-override"}[`elan override`] 配置的覆盖项。
 
-The current toolchain is determined by first searching for a configured toolchain for the current directory, walking up through parent directories until a toolchain version is found or there are no more parents.
-A directory has a configured toolchain if there is a configured {tech}[toolchain override] for the directory or if it contains a `lean-toolchain` file.
-More recent parents take precedence over their ancestors, and if a directory has both an override and a toolchain file, then the override takes precedence.
-If no directory toolchain is found, then Elan's configured {deftech}_default toolchain_ is used as a fallback.
+确定当前工具链时，首先查找为当前目录配置的工具链，然后逐级向上检查父目录，直到找到工具链版本或不再有父目录。
+若某目录配置了{tech (key := "toolchain override")}[工具链覆盖项]，或包含 `lean-toolchain` 文件，则该目录已配置工具链。
+较近的父目录优先于其祖先目录；如果一个目录同时有覆盖项和工具链文件，则覆盖项优先。
+如果没有找到目录工具链，则以 Elan 配置的{deftech (key := "default toolchain")}[默认工具链]作为后备。
 
-The most common way to configure a Lean toolchain is with a {deftech}_toolchain file_.
-The toolchain file is a text file named `lean-toolchain` that contains a single line with a valid {ref "elan-channels"}[toolchain identifier].
-This file is typically located in the root directory of a project and checked in to version control with the code, ensuring that everyone working on the project uses the same version.
-Updating to a new Lean toolchain requires only editing this file, and the new version is automatically downloaded and run the next time a Lean file is opened or built.
+配置 Lean 工具链最常见的方式是使用{deftech (key := "toolchain file")}[工具链文件]。
+工具链文件是名为 `lean-toolchain` 的文本文件，其中只有一行有效的{ref "elan-channels"}[工具链标识符]。
+该文件通常位于项目根目录，并与代码一同纳入版本控制，确保项目的所有开发者使用相同版本。
+更新到新的 Lean 工具链只需编辑此文件；下次打开或构建 Lean 文件时，新版本便会自动下载并运行。
 
-In certain advanced use cases where more flexibility is required, a {deftech}_toolchain override_ can be configured.
-Like toolchain files, overrides associate a toolchain version with a directory and its children.
-Unlike toolchain files, overrides are stored in Elan's configuration rather than in a local file.
-They are typically used when a specific local configuration is required that does not make sense for other developers, such as testing a project with a locally-built Lean compiler.
+在某些需要更大灵活性的高级用例中，可以配置{deftech (key := "toolchain override")}[工具链覆盖项]。
+与工具链文件一样，覆盖项将工具链版本与某个目录及其子目录关联。
+与工具链文件不同，覆盖项存储在 Elan 的配置中，而不是本地文件中。
+它们通常用于需要不适合其他开发者的特定本地配置时，例如使用本地构建的 Lean 编译器测试项目。
 
-# Toolchain Locations
+# 工具链位置
 %%%
 tag := "elan-dir"
 %%%
 
-By default, Elan stores installed toolchains in `.elan/toolchains` in the user's home directory, and its proxies are kept in `.elan/bin`, which is added to the path when Elan is installed.
-The environment variable {envVar +def}`ELAN_HOME` can be used to change this location.
-It should be set both prior to installing Elan and in all sessions that use Lean in order to ensure that Elan's files are found.
+默认情况下，Elan 将已安装的工具链存储在用户主目录的 `.elan/toolchains` 中，其代理则保存在 `.elan/bin` 中；安装 Elan 时会将后者添加到路径。
+可以使用环境变量 {envVar +def}`ELAN_HOME` 更改此位置。
+为确保能找到 Elan 的文件，应在安装 Elan 之前以及所有使用 Lean 的会话中设置它。
 
-# Command-Line Interface
+# 命令行界面
 %%%
 tag := "elan-cli"
 %%%
 
-In addition to the proxies that automatically select, install, and invoke the correct versions of Lean tools, Elan provides a command-line interface for querying and configuring its settings.
-This tool is called `elan`.
-Like {ref "lake"}[Lake], its command-line interface is structured around subcommands.
+除了自动选择、安装并调用正确版本 Lean 工具的代理外，Elan 还提供用于查询和配置其设置的命令行界面。
+该工具名为 `elan`。
+与 {ref "lake"}[Lake] 类似，其命令行界面围绕子命令组织。
 
-Elan can be invoked with following flags:
+调用 Elan 时可以使用以下标志：
 
- : {elanOptDef flag}`--help` or {elanOptDef flag}`-h`
+ : {elanOptDef flag}`--help` 或 {elanOptDef flag}`-h`
 
-  Describes the current subcommand in detail.
+  详细说明当前子命令。
 
- : {elanOptDef flag}`--verbose` or {elanOptDef flag}`-v`
+ : {elanOptDef flag}`--verbose` 或 {elanOptDef flag}`-v`
 
-  Enables verbose output.
+  启用详细输出。
 
- : {elanOptDef flag}`--version` or {elanOptDef flag}`-V`
+ : {elanOptDef flag}`--version` 或 {elanOptDef flag}`-V`
 
-  Displays the Elan version.
+  显示 Elan 版本。
 
 
 
@@ -167,12 +168,12 @@ DISCUSSION:
     executable.
 ```
 
-## Querying Toolchains
+## 查询工具链
 %%%
 tag := "elan-show"
 %%%
 
-The {elan}`show` command displays the current toolchain (as determined by the current directory) and lists all installed toolchains.
+{elan}`show` 命令显示当前工具链（由当前目录确定），并列出所有已安装的工具链。
 
 
 ```elanHelp "show"
@@ -193,12 +194,12 @@ DISCUSSION:
 ```
 
 :::elan show
-Shows the name of the active toolchain and the version of `lean`.
+显示活动工具链的名称和 `lean` 的版本。
 
-If there are multiple toolchains installed, then they are all listed.
+如果安装了多个工具链，则会全部列出。
 :::
 
-Here is typical output from {elan}`show` in a project with a `lean-toolchain` file:
+下面是在含有 `lean-toolchain` 文件的项目中运行 {elan}`show` 的典型输出：
 ```
 installed toolchains
 --------------------
@@ -214,18 +215,18 @@ active toolchain
 leanprover/lean4:v4.9.0 (overridden by '/PATH/TO/PROJECT/lean-toolchain')
 Lean (version 4.9.0, arm64-apple-darwin23.5.0, commit 8f9843a4a5fe, Release)
 ```
-The `installed toolchains` section lists all the toolchains currently available on the system.
-The `active toolchain` section identifies the current toolchain and describes how it was selected.
-In this case, the toolchain was selected due to a `lean-toolchain` file.
+`installed toolchains` 一节列出系统上当前可用的所有工具链。
+`active toolchain` 一节标识当前工具链，并说明其选择方式。
+在此例中，工具链是根据 `lean-toolchain` 文件选择的。
 
 
-## Setting the Default Toolchain
+## 设置默认工具链
 %%%
 tag := "elan-default"
 %%%
 
-Elan's configuration file specifies a {tech}[default toolchain] to be used when there is no `lean-toolchain` file or {tech}[toolchain override] for the current directory.
-Rather than manually editing the file, this value is typically changed using the {elan}`default` command.
+Elan 的配置文件指定一个{tech (key := "default toolchain")}[默认工具链]，在当前目录没有 `lean-toolchain` 文件或{tech (key := "toolchain override")}[工具链覆盖项]时使用。
+通常使用 {elan}`default` 命令更改此值，而不是手动编辑该文件。
 
 ```elanHelp "default"
 elan-default
@@ -246,20 +247,20 @@ DISCUSSION:
 ```
 
 :::elan default "toolchain"
-Sets the default toolchain to {elanMeta}`toolchain`, which should be a {ref "elan-channels"}[valid toolchain identifier] such as `stable`, `nightly`, or `4.17.0`.
+将默认工具链设置为 {elanMeta}`toolchain`；它应是{ref "elan-channels"}[有效的工具链标识符]，例如 `stable`、`nightly` 或 `4.17.0`。
 :::
 
-## Managing Installed Toolchains
+## 管理已安装的工具链
 %%%
 tag := "elan-toolchain"
 %%%
 
-The `elan toolchain` family of subcommands is used to manage the installed toolchains.
-Toolchains are stored in Elan's {ref "elan-dir"}[toolchain directory].
+`elan toolchain` 子命令族用于管理已安装的工具链。
+工具链存储在 Elan 的{ref "elan-dir"}[工具链目录]中。
 
-Installed toolchains can take up substantial disk space.
-Elan tracks the Lean projects in which it is invoked, saving a list.
-This list of projects can be used to determine which toolchains are in active use and automatically delete unused toolchain versions with {elan}`toolchain gc`.
+已安装的工具链可能占用大量磁盘空间。
+Elan 会跟踪曾在其中调用过它的 Lean 项目，并保存一份列表。
+这份项目列表可用于确定哪些工具链正在使用，并通过 {elan}`toolchain gc` 自动删除未使用的工具链版本。
 
 ```elanHelp "toolchain"
 elan-toolchain
@@ -318,7 +319,7 @@ FLAGS:
 ```
 
 :::elan toolchain list
-Lists the currently-installed toolchains. This is a subset of the output of {elan}`show`.
+列出当前已安装的工具链。这是 {elan}`show` 输出的一个子集。
 :::
 
 ```elanHelp "toolchain" "install"
@@ -337,8 +338,8 @@ ARGS:
 ```
 
 :::elan toolchain install "toolchain"
-Installs the indicated {elanMeta}`toolchain`.
-The toolchain's name should be {ref "elan-channels"}[an identifier that's suitable for inclusion in a `lean-toolchain` file].
+安装指定的 {elanMeta}`toolchain`。
+工具链名称应是{ref "elan-channels"}[适合写入 `lean-toolchain` 文件的标识符]。
 :::
 
 
@@ -358,9 +359,9 @@ ARGS:
 ```
 
 :::elan toolchain uninstall "toolchain"
-Uninstalls the indicated {elanMeta}`toolchain`.
-The toolchain's name should the name of an installed toolchain.
-Use {elan}`toolchain list` to see the installed toolchains with their names.
+卸载指定的 {elanMeta}`toolchain`。
+工具链名称应为某个已安装工具链的名称。
+使用 {elan}`toolchain list` 查看已安装工具链及其名称。
 :::
 
 ```elanHelp "toolchain" "link"
@@ -397,7 +398,7 @@ DISCUSSION:
 
 :::elan toolchain link "«local-name» path"
 
-Creates a new local toolchain named {elanMeta}`local-name`, using the Lean toolchain found at {elanMeta}`path`.
+使用在 {elanMeta}`path` 处找到的 Lean 工具链，创建名为 {elanMeta}`local-name` 的新本地工具链。
 
 :::
 
@@ -428,28 +429,28 @@ DISCUSSION:
 
 :::elan toolchain gc "[\"--delete\"] [\"--json\"]"
 
-This command is still considered experimental.
+此命令目前仍被视为实验性命令。
 
-Determines which of the installed toolchains are in use, offering to delete those that are not.
-All the installed toolchains are listed, separated into those that are in use and those that are not.
+确定已安装工具链中哪些正在使用，并提议删除未使用的工具链。
+所有已安装的工具链都会列出，并分成正在使用和未使用两类。
 
-A toolchain is classified as “in use” if
- * it is the default toolchain,
- * it is registered as an override, or
- * there is a directory with a `lean-toolchain` file referencing the toolchain and elan has been used in the directory before.
+如果满足以下条件，工具链会被归类为“正在使用”：
+ * 它是默认工具链；
+ * 它被注册为覆盖项；或者
+ * 某目录的 `lean-toolchain` 文件引用了该工具链，并且此前曾在该目录中使用过 elan。
 
-For safety reasons, {elan}`toolchain gc` will not actually delete any toolchains unless the {elanOptDef flag}`--delete` flag is passed.
-This may be relaxed in the future when the implementation is deemed sufficiently mature.
-The {elanOptDef flag}`--json` flag causes {elan}`toolchain gc` to emit the list of used and unused toolchains in a JSON format that's suitable for other tools.
+出于安全考虑，除非传入 {elanOptDef flag}`--delete` 标志，否则 {elan}`toolchain gc` 不会实际删除任何工具链。
+将来当实现被认为足够成熟时，可能会放宽这一要求。
+{elanOptDef flag}`--json` 标志使 {elan}`toolchain gc` 以适合其他工具处理的 JSON 格式输出已使用和未使用工具链的列表。
 :::
 
-## Managing Directory Overrides
+## 管理目录覆盖项
 %%%
 tag := "elan-override"
 %%%
 
-Directory-specific {tech}[toolchain overrides] are a local configuration that takes precedence over `lean-toolchain` files.
-The `elan override` commands manage overrides.
+目录专属的{tech (key := "toolchain overrides")}[工具链覆盖项]是一种优先于 `lean-toolchain` 文件的本地配置。
+`elan override` 命令用于管理覆盖项。
 
 ```elanHelp "override"
 elan-override
@@ -494,31 +495,31 @@ DISCUSSION:
 
 
 :::elan override list
-Lists all the currently configured directory overrides in two columns.
-The left column contains the directories in which the Lean version is overridden, and the right column lists the toolchain version.
+以两列列出当前配置的所有目录覆盖项。
+左列包含 Lean 版本被覆盖的目录，右列列出工具链版本。
 :::
 
 
 :::elan override set "toolchain"
-Sets {elanMeta}`toolchain` as an override for the current directory.
+将 {elanMeta}`toolchain` 设置为当前目录的覆盖项。
 :::
 
 
 
 
 :::elan override unset "[\"--nonexistent\"] [\"--path\" path]"
-If {elanOptDef flag}`--nonexistent` flag is provided, all overrides that are configured for directories that don't currently exist are removed.
-If {elanOptDef option}`--path` is provided, then the override set for {elanMeta}`path` is removed.
-Otherwise, the override for the current directory is removed.
+如果提供 {elanOptDef flag}`--nonexistent` 标志，则移除为当前不存在的目录配置的所有覆盖项。
+如果提供 {elanOptDef option}`--path`，则移除为 {elanMeta}`path` 设置的覆盖项。
+否则，移除当前目录的覆盖项。
 :::
 
-## Running Tools and Commands
+## 运行工具和命令
 %%%
 tag := "elan-run"
 %%%
 
-The commands in this section provide the ability to run a command in a specific toolchain and to locate a tool from a particular toolchain on disk.
-This can be useful when experimenting with different Lean versions, for cross-version testing, and for integrating Elan with other tools.
+本节中的命令可在指定工具链中运行命令，并可在磁盘上定位特定工具链中的工具。
+这适用于试验不同 Lean 版本、进行跨版本测试以及将 Elan 与其他工具集成。
 
 ```elanHelp "run"
 elan-run
@@ -553,10 +554,10 @@ DISCUSSION:
 ```
 
 :::elan run "[\"--install\"] toolchain command ..."
-Configures an environment to use the given toolchain and then runs the specified program.
-The toolchain will be installed if the {elanOptDef flag}`--install` flag is provided.
-The command may be any program; it does not need to be a command that's part of a toolchain such as `lean` or `lake`.
-This can be used for testing arbitrary toolchains without setting an override.
+配置环境以使用给定工具链，然后运行指定程序。
+如果提供 {elanOptDef flag}`--install` 标志，则会安装该工具链。
+该命令可以是任何程序，不必是 `lean` 或 `lake` 之类工具链中的命令。
+这样无需设置覆盖项即可测试任意工具链。
 :::
 
 ```elanHelp "which"
@@ -574,16 +575,16 @@ ARGS:
 ```
 
 :::elan which "command"
-Displays the full path to the toolchain-specific binary for {elanMeta}`command`.
+显示 {elanMeta}`command` 在该工具链中对应二进制文件的完整路径。
 :::
 
-## Managing Elan
+## 管理 Elan
 %%%
 tag := "elan-self"
 %%%
 
-Elan can manage its own installation.
-It can upgrade itself, remove itself, and help configure tab completion for many popular shells.
+Elan 可以管理自身的安装。
+它可以自行升级、自行卸载，并帮助为许多常用命令外壳配置制表符补全。
 
 ```elanHelp "self"
 elan-self
@@ -613,11 +614,11 @@ FLAGS:
     -h, --help    Prints help information
 ```
 :::elan self update
-Downloads and installs updates to Elan itself.
+下载并安装 Elan 自身的更新。
 :::
 
 :::elan self uninstall
-Uninstalls Elan.
+卸载 Elan。
 :::
 
 ```elanHelp "completions"
@@ -737,6 +738,6 @@ DISCUSSION:
 ```
 
 :::elan completions "shell"
-Generates shell completion scripts for Elan, enabling tab completion for Elan commands in a variety of shells.
-See the output of `elan help completions` for a description of how to install them.
+为 Elan 生成命令外壳补全脚本，从而在多种命令外壳中启用 Elan 命令的制表符补全。
+有关安装方法的说明，请参阅 `elan help completions` 的输出。
 :::
