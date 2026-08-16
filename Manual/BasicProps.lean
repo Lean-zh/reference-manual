@@ -101,7 +101,7 @@ tag := "Lean-__________________--Basic-Propositions--Logical-Connectives"
 由于 {name}`And` 是 {tech}[至多单元素类型]，{name}`And.elim` 也可参与数据计算。
 但它不应与 {name}`PProd` 混淆：使用选择公理等不可计算的推理原则定义数据（包括 {lean}`Prod`）会使 Lean 无法编译和运行所得程序，而在命题证明中使用它们则没有这个问题。
 
-在 {ref "tactics"}[策略]证明中，可以通过 {tactic}`apply` 显式使用 {name}`And.intro` 证明合取，但更常见的是使用 {tactic}`constructor`。
+在 {ref "tactics"}[策略]证明中，可以显式使用 {name}`And.intro`，并通过 {tactic}`apply` 证明合取，但更常见的是使用 {tactic}`constructor`。
 当证明目标中嵌套了多个合取时，可以使用 {tactic}`and_intros` 在各个相关位置应用 {name}`And.intro`。
 上下文中的合取假设可以用 {tactic}`cases`、使用 {tactic}`let` 或 {tactic (show := "match")}`Lean.Parser.Tactic.match` 进行模式匹配，或用 {tactic}`rcases` 化简。
 
@@ -116,7 +116,7 @@ tag := "Lean-__________________--Basic-Propositions--Logical-Connectives"
 另一方面，{lean}`Or` 构成命题：无法检查证明析取的项来确定哪一项为真。
 换言之，由于 {lean}`Or` 不是 {tech}[至多单元素类型]，其证明不能参与计算。
 
-在 {ref "tactics"}[策略]证明中，可以通过 {tactic}`apply` 显式使用任一构造器（{name}`Or.inl` 或 {name}`Or.inr`）证明析取。
+在 {ref "tactics"}[策略]证明中，可以显式使用任一构造器（{name}`Or.inl` 或 {name}`Or.inr`），并通过 {tactic}`apply` 证明析取。
 {tactic}`left` 和 {tactic}`right` 策略分别选择左、右析取项。
 上下文中的析取假设可以用 {tactic}`cases`、使用 {tactic (show := "match")}`Lean.Parser.Tactic.match` 进行模式匹配，或用 {tactic}`rcases` 化简。
 
@@ -156,7 +156,7 @@ section
 variable {A B : Prop}
 ```
 蕴含使用 {tech}[命题] {tech}[宇宙]中的{ref "function-types"}[函数类型]表示。
-要证明 {lean}`A → B`，只需假设 {lean}`A` 后证明 {lean}`B`。
+要证明 {lean}`A → B`，只需证明 {lean}`B`，同时假设 {lean}`A`。
 这对应于 {keywordOf Lean.Parser.Term.fun}`fun` 的类型规则。
 类似地，函数应用的类型规则对应于{deftech}_肯定前件_：给定 {lean}`A → B` 的证明和 {lean}`A` 的证明，就可以证明 {lean}`B`。
 

@@ -128,8 +128,8 @@ open A (x)
 example := x
 ```
 
-在此示例中，由于常量 `A.x` 是 {keyword}`protected`，即使打开了 `A` 命名空间，也不能通过后缀
-`x` 引用它。因此，标识符 `x` 解析失败。相反，要引用 {keyword}`protected` 常量，必须至少包含
+在此示例中，由于常量 `A.x` 是 {keyword}`protected`，不能通过后缀
+`x` 引用它，即使打开了 `A` 命名空间也是如此。因此，标识符 `x` 解析失败。相反，要引用 {keyword}`protected` 常量，必须至少包含
 其最内层命名空间——在本例中是 `A`。或者，第二个修正示例所展示的*受限打开*语法允许通过未限定
 名称引用 {keyword}`protected` 常量，而无需打开它所在命名空间的其余部分（详情请参阅手册中的
 {ref "namespaces-sections"}[命名空间和节]章节）。

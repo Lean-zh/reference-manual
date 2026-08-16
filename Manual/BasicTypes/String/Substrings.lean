@@ -14,7 +14,7 @@ open Verso.Genre.Manual.InlineLean
 
 set_option pp.rawOnError true
 
-#doc (Manual) "原生子字符串" =>
+#doc (Manual) "原始子字符串" =>
 %%%
 tag := "string-api-substring"
 %%%

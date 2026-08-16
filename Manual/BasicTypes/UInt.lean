@@ -70,7 +70,7 @@ tag := "Lean-__________________--Basic-Types--Fixed-Precision-Integers--Logical-
 tag := "fixed-int-runtime"
 %%%
 
-在需要{tech (key := "boxed")}[装箱]表示的上下文中，在编译后的代码里，适合在比平台指针大小少一位的空间内容纳的固定宽度整数类型总是被表示而无需额外的分配或间接寻址。
+在编译后的代码中，即使上下文要求采用{tech (key := "boxed")}[装箱]表示，只要某种固定宽度整数类型能装入比平台指针少一位的空间，就始终无需额外分配或间接寻址。
 这始终包含 {lean}`Int8`、{lean}`UInt8`、{lean}`Int16` 和 {lean}`UInt16`。
 在 64 位架构上，{lean}`Int32` 和 {lean}`UInt32` 也可以在没有指针的情况下表示。
 在 32 位架构上，{lean}`Int32` 和 {lean}`UInt32` 需要一个指向堆上对象的指针。
@@ -121,7 +121,7 @@ theorem Permissions.decode_encode (p : Permissions) : p = .decode (p.encode) := 
 :::
 
 溢出其类型精度的字面量将被解释为对精度取模。
-有符号类型，根据底层的二进制补码表示进行解释。
+对于有符号类型，则按底层的二进制补码表示来解释。
 
 :::example "溢出固定宽度字面量"
 以下声明均为真：

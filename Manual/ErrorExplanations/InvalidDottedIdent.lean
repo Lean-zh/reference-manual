@@ -65,7 +65,7 @@ variable (α : Type) (xs : List α)
 的类型，进而推断解析该标识符所需的命名空间（{name}`List`）。
 
 注意，这意味着改变 `reverseDuplicate` 的返回类型会改变 `.reverse` 的解析方式：如果返回类型是 `T`，
-Lean 会尝试将 `.reverse` 解析为返回类型为 `T` 的函数 `T.reverse`，即使 `T.reverse` 不接受类型为
+Lean 会尝试将 `.reverse` 解析为函数 `T.reverse`，其返回类型是 `T`——即使 `T.reverse` 不接受类型为
 `List α` 的参数。
 :::
 

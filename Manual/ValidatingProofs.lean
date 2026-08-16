@@ -202,7 +202,7 @@ tag := "Lean-__________________--Validating-a-Lean-Proof--Re-Checking-Proofs-wit
 %%%
 由于 `lean4checker` 读取 {tech}[`.olean` 文件]时不验证格式，此检查容易受到攻击者制作无效 `.olean` 文件的影响（例如无效指针、字符串中的无效数据）。
 Lean 策略和其他元代码运行时可以执行任意操作。
-导入决意{tech}[恶意]攻击者创建的库并在没有进一步保护的情况下构建它们，可能危及用户系统，此后就不再有有意义的检查可做。
+导入由决意实施{tech}[恶意]行为的攻击者创建的库，并在没有进一步保护的情况下构建它们，可能危及用户系统；此后就不再有有意义的检查可做。
 我们建议在 CI 中运行 `lean4checker`，以额外防范 Lean 处理声明时的缺陷，并遏制简单攻击。
 [lean-action](https://github.com/leanprover/lean-action) GitHub Action 可通过设置 `lean4checker: true` 提供此功能。
 
@@ -214,7 +214,7 @@ tag := "validating-comparator"
 %%%
 
 为了防止极其{tech}[恶意]的证明破坏 Lean 对定理陈述的解释或用户系统，还需要额外步骤。
-这只应在高风险场景（证明市场、高奖励证明竞赛、未对齐 AI）中必要。
+只有在高风险场景（证明市场、高奖励证明竞赛、未对齐 AI）中，才应需要这些额外步骤。
 
 ## 操作说明
 
@@ -288,7 +288,7 @@ Lean 支持通过本地求值进行证明。
 一般使用（{tactic}`decide`{keywordOf Lean.Parser.Tactic.decide}` +native` 或直接使用 {name}`Lean.ofReduceBool`）时，只要项的本地求值与内核求值不一致，就可能创建无效证明。
 特别地，对于库中的每个 {attr}`implemented_by`/{attr}`extern` 属性，替代实现与原实现语义等价这一点都会成为受信任代码库的一部分。
 
-所有这些用法都会在 {keywordOf Lean.Parser.Command.printAxioms}`#print axioms` 中显示为公理 {name}`Lean.trustCompiler`。
+所有这些用法都会以公理 {name}`Lean.trustCompiler` 的形式显示在 {keywordOf Lean.Parser.Command.printAxioms}`#print axioms` 中。
 外部检查器（`lean4checker`、`comparator`）无法检查此类证明，因为它们无法访问 Lean 编译器。
 需要这种级别的检查时，证明必须避免使用本地求值。
 

@@ -22,14 +22,14 @@ variable {t : Type} (x y : Int)
 ```
 
 {ref "type-classes"}[类型类] 是 Lean 及许多其他编程语言用来处理重载操作的机制。处理特定
-重载操作的代码是类型类的一个 {tech}_实例_；决定给定重载操作应使用哪个实例称为_合成_实例。
+重载操作的代码是类型类的一个 {tech}_实例_；为给定重载操作决定使用哪个实例的过程称为_实例合成_。
 
 例如，当 Lean 遇到表达式 {lean}`x + y`，且 {lean}`x` 和 {lean}`y` 都具有
-{name}`Int` 类型时，需要查找如何将两个整数相加，并查找结果类型。这被描述为合成类型类 {lean}`HAdd Int Int t` 的实例，其中 `t` 是某种类型。
+{name}`Int` 类型时，既需要查找两个整数的相加方式，也需要确定结果类型。这一过程就是合成类型类 {lean}`HAdd Int Int t` 的实例，其中 `t` 是某种类型。
 
-许多类型类实例合成失败是由于使用了错误的二元运算。成功和失败并不总是显而易见，因为有些实例
+许多实例合成失败都是由错误的二元运算导致的。成功和失败并不总是显而易见，因为有些实例
 是根据其他实例定义的，Lean 必须递归搜索才能找到合适的实例。可以
-{ref "instance-search"}[检查 Lean 的实例合成]，这有助于诊断棘手的类型类实例合成失败。
+{ref "instance-search"}[检查 Lean 的实例合成过程]，这有助于诊断棘手的实例合成失败。
 
 # 示例
 
@@ -51,7 +51,7 @@ Hint: Type class instance resolution failures can be inspected with the `set_opt
 #eval "A" ++ "3"
 ```
 
-二元运算 `+` 与 {name}`HAdd` 类型类相关联，而字符串无法进行相加。二元运算 `++` 与
+二元运算 `+` 与 {name}`HAdd` 类型类相关联，而字符串不支持加法。二元运算 `++` 与
 {name}`HAppend` 类型类相关联，是拼接字符串的正确方式。
 :::
 
@@ -73,7 +73,7 @@ def x : Int := 3
 ```
 
 Lean 不允许直接将整数和字符串相加。函数 {name}`ToString.toString` 使用类型类重载将值转换为
-字符串；通过成功搜索 {lean}`ToString Int` 的实例，第二个示例即可成功。
+字符串；第二个示例之所以成功，是因为找到了 {lean}`ToString Int` 的实例。
 :::
 
 :::errorExample "缺少类型类实例"
@@ -119,7 +119,7 @@ def forceColor (oc : Option MyColor) :=
   oc.get!
 ```
 
-类型类合成可能失败，因为只需提供该类型类的一个实例。这通常发生在 {name}`Repr`、{name}`BEq`、
+实例合成可能失败，仅仅是因为尚未提供该类型类的实例。这通常发生在 {name}`Repr`、{name}`BEq`、
 {name}`ToJson` 和 {name}`Inhabited` 等类型类上。Lean 通常可以在定义类型时，或使用独立的
 {keywordOf Lean.Parser.Command.deriving}`deriving` 命令，通过 `deriving` 关键字
 {ref "deriving-instances"}[自动生成类型类的实例]。

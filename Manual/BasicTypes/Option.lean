@@ -48,7 +48,7 @@ open Std (HashMap)
 variable {Coll} [BEq α] [Hashable α] (a : α) (b : β) {xs : Coll} [GetElem Coll α β fun _ _ => True] {i : α} {m : HashMap α β}
 ```
 
-函数 {name}`Std.HashMap.get?` 在指定的键 `a : α` 所属的 {lean}`HashMap α β` 中进行查找：
+函数 {name}`Std.HashMap.get?` 接受键 `a : α`，并在指定的 {lean}`HashMap α β` 中查找它：
 
 ```signature
 Std.HashMap.get?.{u, v} {α : Type u} {β : Type v}

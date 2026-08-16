@@ -68,7 +68,7 @@ Lean 包含一些由编译器提供特殊支持的内置类型。
 tag := "Lean-__________________--Basic-Types--The-Unit-Type"
 %%%
 单元类型是恰好具有一个元素的规范类型，该元素名为 {name Unit.unit}`unit`，并由空元组 {lean}`()` 表示。
-它只描述单个值，该值由上述构造子应用到零个参数组成。
+它只描述单个值，该值由上述不带参数的构造子构成。
 
 {lean}`Unit` 类似于 C 语言及其派生语言中的 `void`：尽管 `void` 没有任何可以被命名的元素，但它表示从函数返回的控制流，而不包含额外信息。
 在函数式编程中，{lean}`Unit` 是那些“什么都不返回”的事物的返回类型。
@@ -200,9 +200,9 @@ tag := "Lean-__________________--Basic-Types--Booleans--Booleans-and-Proposition
 %%%
 {lean}`Bool` 和 {lean}`Prop` 都表示真理的概念。
 从纯逻辑的角度来看，它们是等价的：{tech (key := "propositional extensionality")}[命题外延性]意味着从根本上只有两个命题，即 {lean}`True` 和 {lean}`False`。
-然而，这里有一个重要的实用差异：{lean}`Bool` 分类可以由程序计算的_值_，而 {lean}`Prop` 分类代码生成没有意义的陈述。
+然而，这里有一个重要的实用差异：{lean}`Bool` 划分程序可以计算的_值_，而 {lean}`Prop` 划分生成代码没有意义的陈述。
 换句话说，{lean}`Bool` 是适用于程序的真与假的概念，而 {lean}`Prop` 是适用于数学的概念。
-由于证明会从编译后的程序中被擦除，因此保持 {lean}`Bool` 和 {lean}`Prop` 区分清楚了 Lean 文件中哪些部分旨在用于计算。
+由于证明会从编译后的程序中被擦除，因此区分 {lean}`Bool` 和 {lean}`Prop` 可以明确 Lean 文件中的哪些部分旨在用于计算。
 
 ```lean -show
 section BoolProp
