@@ -344,7 +344,10 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___15___0-_LPAR_2025-0
 
 - [#6087](https://github.com/leanprover/lean4/pull/6087) 修复了旧代码生成器中 `Nat.ble` 和 `Nat.blt` 函数的常量折叠问题，该问题会导致错误编译。
 
-- [#6143](https://github.com/leanprover/lean4/pull/6143) 使 Lean 在 sanitizer 环境下表现得更合理，参见 https://github.com/google/sanitizers/issues/1688。就我所知，https://github.com/google/sanitizers/wiki/AddressSanitizerUseAfterReturn#algorithm 会用堆分配替换局部变量，因此获取局部变量地址不再适合作为单调的栈使用量度量方式。
+- [#6143](https://github.com/leanprover/lean4/pull/6143) 使 Lean 在 sanitizer 环境下表现得更合理，参见
+https://github.com/google/sanitizers/issues/1688。就我所知，
+https://github.com/google/sanitizers/wiki/AddressSanitizerUseAfterReturn#algorithm
+会用堆分配替换局部变量，因此获取局部变量地址不再适合作为单调的栈使用量度量方式。
 
 - [#6209](https://github.com/leanprover/lean4/pull/6209) 记录了 `Runtime.markPersistent` 在哪些条件下是不安全的，并据此调整了精化器。
 
