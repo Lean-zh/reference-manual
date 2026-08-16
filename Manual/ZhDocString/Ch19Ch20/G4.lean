@@ -217,8 +217,7 @@ def c016 := @List.head
 /--
 返回列表中的第一个元素（如果有）。如果列表为空，则返回 `none`。
 
-使用 `List.headD` 为空列表提供后备值，或使用 `List.head!` 来对空列表进行恐慌
-列表。
+使用 `List.headD` 可为空列表提供后备值；使用 `List.head!` 则会在空列表上触发 panic。
 
 示例：
  * `([] : List Nat).head? = none`
@@ -229,7 +228,7 @@ def c017 := @List.head?
 /--
 如果有，则返回列表中的第一个元素；如果列表为空，则返回 `fallback`。
 
-使用 `List.head?` 返回 `Option`，并使用 `List.head!` 对空列表进行恐慌。
+使用 `List.head?` 返回 `Option`，并使用 `List.head!` 对空列表触发 panic。
 
 示例：
 * `[].headD "empty" = "empty"`
@@ -239,7 +238,7 @@ def c017 := @List.head?
 def c018 := @List.headD
 
 /--
-返回列表中的第一个元素。如果列表为空，则会发生恐慌并返回 `default`。
+返回列表中的第一个元素。如果列表为空，则会触发 panic并返回 `default`。
 
 更安全的替代方案包括：
 * `List.head`，需要证明列表非空，
@@ -260,13 +259,12 @@ def c019 := @List.head!
 def c020 := @List.tail
 
 /--
-删除非空列表的第一个元素，返回尾部。如果列表为空，则此函数
-执行时发生恐慌并返回空列表。
+删除非空列表的第一个元素并返回尾部。如果列表为空，则此函数触发 panic 并返回空列表。
 
-更安全的替代方案包括
- * `tail`，返回空列表而不惊慌，
- * `tail?`，返回 `Option`，并且
- * `tailD`，当传递空列表时返回一个后备值。
+更安全的替代方案包括：
+ * `tail`，在输入为空时返回空列表而不触发 panic；
+ * `tail?`，返回 `Option`；
+ * `tailD`，在输入为空时返回后备值。
 
 示例：
  * `["apple", "banana", "grape"].tail! = ["banana", "grape"]`
@@ -275,11 +273,9 @@ def c020 := @List.tail
 def c021 := @List.tail!
 
 /--
-删除非空列表的第一个元素，返回尾部。当参数为 时，返回 `none`
-空的。
+删除非空列表的第一个元素并返回尾部。如果参数为空，则返回 `none`。
 
-替代方案包括 `List.tail`，它在失败时返回空列表，`List.tailD`，它
-返回一个显式后备值和 `List.tail!`，它会在空列表上发生恐慌。
+替代方案包括 `List.tail`（失败时返回空列表）、`List.tailD`（返回显式后备值）和 `List.tail!`（在空列表上触发 panic）。
 
 示例：
  * `["apple", "banana", "grape"].tail? = some ["banana", "grape"]`
@@ -289,11 +285,9 @@ def c021 := @List.tail!
 def c022 := @List.tail?
 
 /--
-删除非空列表的第一个元素，返回尾部。当参数为 时，返回 `none`
-空的。
+删除非空列表的第一个元素并返回尾部。如果参数为空，则返回后备值。
 
-替代方案包括 `List.tail`，它在失败时返回空列表，`List.tail?`，它
-返回 `Option` 和 `List.tail!`，这会在空列表上发生恐慌。
+替代方案包括 `List.tail`（失败时返回空列表）、`List.tail?`（返回 `Option`）和 `List.tail!`（在空列表上触发 panic）。
 
 示例：
  * `["apple", "banana", "grape"].tailD ["orange"] = ["banana", "grape"]`
@@ -315,11 +309,9 @@ def c023 := @List.tailD
 def c024 := @List.get
 
 /--
-返回提供的索引处的元素，从 `0` 开始计数。如果索引超出，则返回 `fallback`
-的界限。
+返回给定索引处的元素（从 `0` 开始计数）。如果索引越界，则返回 `fallback`。
 
-要根据索引是否在范围内返回 `Option`，请使用 `as[i]?`。恐慌，如果
-索引越界，使用`as[i]!`。
+要根据索引是否越界返回 `Option`，请使用 `as[i]?`。索引越界时，可使用 `as[i]!` 触发 panic。
 
 示例：
  * `["spring", "summer", "fall", "winter"].getD 2 "never" = "fall"`
@@ -338,10 +330,9 @@ def c025 := @List.getD
 def c026 := @List.getLast
 
 /--
-返回列表中的最后一个元素，如果列表为空，则返回 `none` 。
+返回列表中的最后一个元素；如果列表为空，则返回 `none`。
 
-替代方案包括 `List.getLastD`，它采用空列表的后备值，以及
-`List.getLast!`，在空列表上会出现恐慌。
+替代方案包括 `List.getLastD`（接受空列表的后备值）和 `List.getLast!`（在空列表上触发 panic）。
 
 示例：
  * `["circle", "rectangle"].getLast? = some "rectangle"`
@@ -351,10 +342,9 @@ def c026 := @List.getLast
 def c027 := @List.getLast?
 
 /--
-返回列表中的最后一个元素，如果列表为空，则返回 `fallback` 。
+返回列表中的最后一个元素；如果列表为空，则返回 `fallback`。
 
-替代方案包括 `List.getLast?`（它返回 `Option`）和 `List.getLast!`（它会出现恐慌）
-在空列表上。
+替代方案包括 `List.getLast?`（返回 `Option`）和 `List.getLast!`（在空列表上触发 panic）。
 
 示例：
  * `["circle", "rectangle"].getLastD "oval" = "rectangle"`
@@ -364,7 +354,7 @@ def c027 := @List.getLast?
 def c028 := @List.getLastD
 
 /--
-返回列表中的最后一个元素。如果列表为空，则发生恐慌并返回 `default`。
+返回列表中的最后一个元素。如果列表为空，则触发 panic并返回 `default`。
 
 更安全的替代方案包括：
 * `getLast?`，返回 `Option`，
@@ -1171,7 +1161,7 @@ def c089 := @String.isNat
 def c090 := @String.toNat?
 
 /--
-把字符串解释为自然数的十进制表示并返回该数；若不是十进制自然数则触发恐慌。
+把字符串解释为自然数的十进制表示并返回该数；若不是十进制自然数则触发 panic。
 
 此段说明该操作的行为、边界条件及推荐用法。
 
@@ -1252,7 +1242,7 @@ def c092 := @String.isInt
 def c093 := @String.toInt?
 
 /--
-把字符串解释为整数的十进制表示并返回该数；若不是十进制整数则触发恐慌。
+把字符串解释为整数的十进制表示并返回该数；若不是十进制整数则触发 panic。
 
 此段说明该操作的行为、边界条件及推荐用法。（相关项：`-`、`+`。）
 
@@ -1327,7 +1317,7 @@ def c101 := @String.pos
 def c102 := @String.pos?
 
 /--
-根据一个位置构造 `s` 上的有效位置；若该位置无效则触发恐慌。
+根据一个位置构造 `s` 上的有效位置；若该位置无效则触发 panic。
 -/
 def c103 := @String.pos!
 
@@ -1354,7 +1344,7 @@ def c104 := @String.extract
 def c105 := @String.Pos.get
 
 /--
-返回字符串位置 `pos` 处的字符；若该位置是越尾位置则触发恐慌。
+返回字符串位置 `pos` 处的字符；若该位置是越尾位置则触发 panic。
 
 运行时代码会用高效实现覆盖此函数。
 -/
@@ -1399,7 +1389,7 @@ def c110 := @String.Pos.byte
 def c111 := @String.Pos.prev
 
 /--
-返回给定位置之前的有效位置；若当前位置是起始位置则触发恐慌。
+返回给定位置之前的有效位置；若当前位置是起始位置则触发 panic。
 -/
 def c112 := @String.Pos.prev!
 
@@ -1414,7 +1404,7 @@ def c113 := @String.Pos.prev?
 def c114 := @String.Pos.next
 
 /--
-把字符串上的有效位置推进到下一个有效位置；若当前位置是越尾位置则触发恐慌。
+把字符串上的有效位置推进到下一个有效位置；若当前位置是越尾位置则触发 panic。
 -/
 def c115 := @String.Pos.next!
 
@@ -1675,7 +1665,7 @@ def c141 := @String.Pos.Raw.unoffsetBy
 def c142 := @String.Pos.Raw.extract
 
 /--
-返回字符串位置 `p` 处的字符；若 `p` 无效，则返回后备值 `(default : Char)`，即 `'A'`，且不触发恐慌。
+返回字符串位置 `p` 处的字符；若 `p` 无效，则返回后备值 `(default : Char)`，即 `'A'`，且不触发 panic。
 
 运行时代码会用高效实现覆盖此函数。（相关项：`String.Pos.Raw.utf8GetAux`。）
 
@@ -1689,7 +1679,7 @@ def c142 := @String.Pos.Raw.extract
 def c143 := @String.Pos.Raw.get
 
 /--
-返回字符串位置 `p` 处的字符；若 `p` 无效则触发恐慌。
+返回字符串位置 `p` 处的字符；若 `p` 无效则触发 panic。
 
 可使用所列 API 完成检查、转换或采用更安全的替代方式。（相关项：`String.pos?`、`String.Pos.get`。）
 
@@ -2642,7 +2632,7 @@ def c220 := @String.fromUTF8
 def c221 := @String.fromUTF8?
 
 /--
-把以 UTF-8 编码字符串的字节数组解码为相应字符串；若数组不是有效的 UTF-8 字符串编码则触发恐慌。（相关项：[相关说明](https://en.wikipedia.org/wiki/UTF-8)。）
+把以 UTF-8 编码字符串的字节数组解码为相应字符串；若数组不是有效的 UTF-8 字符串编码则触发 panic。（相关项：[相关说明](https://en.wikipedia.org/wiki/UTF-8)。）
 -/
 def c222 := @String.fromUTF8!
 
@@ -2675,7 +2665,7 @@ inductive c225 (α : Type u) where
 def c226 := @Option.get
 
 /--
-从 `Option` 中提取值；遇到 `none` 时触发恐慌。
+从 `Option` 中提取值；遇到 `none` 时触发 panic。
 -/
 def c227 := @Option.get!
 

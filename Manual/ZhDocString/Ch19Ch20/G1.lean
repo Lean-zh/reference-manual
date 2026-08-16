@@ -109,7 +109,7 @@ def c010 := @_root_.Std.HashMap.getD
 def c011 := @_root_.Std.HashMap.getKey
 
 /--
-检查给定键的映射是否存在，如果存在则返回该键，否则会触发 panic。如果没有发生恐慌，结果保证是等于映射中的键的指针。
+检查给定键的映射是否存在，如果存在则返回该键，否则会触发 panic。如果未触发 panic，结果保证是等于映射中的键的指针。
 -/
 def c012 := @_root_.Std.HashMap.getKey!
 
@@ -427,7 +427,7 @@ def c057 := @_root_.Std.DHashMap.getD
 def c058 := @_root_.Std.DHashMap.getKey
 
 /--
-检查给定键的映射是否存在，如果存在则返回该键，否则会触发 panic。如果没有发生恐慌，结果保证是等于映射中的键的指针。
+检查给定键的映射是否存在，如果存在则返回该键，否则会触发 panic。如果未触发 panic，结果保证是等于映射中的键的指针。
 -/
 def c059 := @_root_.Std.DHashMap.getKey!
 
@@ -770,7 +770,7 @@ def c100 := @_root_.Std.ExtHashMap.getD
 def c101 := @_root_.Std.ExtHashMap.getKey
 
 /--
-检查给定键的映射是否存在，如果存在则返回该键，否则会触发 panic。如果没有发生恐慌，结果保证是等于映射中的键的指针。
+检查给定键的映射是否存在，如果存在则返回该键，否则会触发 panic。如果未触发 panic，结果保证是等于映射中的键的指针。
 -/
 def c102 := @_root_.Std.ExtHashMap.getKey!
 
@@ -964,7 +964,7 @@ def c129 := @_root_.Std.ExtDHashMap.getD
 def c130 := @_root_.Std.ExtDHashMap.getKey
 
 /--
-检查给定键的映射是否存在，如果存在则返回该键，否则会触发 panic。如果没有发生恐慌，结果保证是等于映射中的键的指针。
+检查给定键的映射是否存在，如果存在则返回该键，否则会触发 panic。如果未触发 panic，结果保证是等于映射中的键的指针。
 -/
 def c131 := @_root_.Std.ExtDHashMap.getKey!
 
@@ -1116,7 +1116,7 @@ def c152 := @_root_.Std.HashSet.contains
 def c153 := @_root_.Std.HashSet.get
 
 /--
-检查是否包含给定的键，如果包含则返回该键，否则会触发 panic。如果没有发生恐慌，则结果保证是等于集合中的键的指针。
+检查是否包含给定的键，如果包含则返回该键，否则会触发 panic。如果未触发 panic，则结果保证是等于集合中的键的指针。
 -/
 def c154 := @_root_.Std.HashSet.get!
 
@@ -1301,7 +1301,7 @@ def c181 := @_root_.Std.ExtHashSet.contains
 def c182 := @_root_.Std.ExtHashSet.get
 
 /--
-检查是否包含给定的键，如果包含则返回该键，否则会触发 panic。如果没有发生恐慌，则结果保证是等于集合中的键的指针。
+检查是否包含给定的键，如果包含则返回该键，否则会触发 panic。如果未触发 panic，则结果保证是等于集合中的键的指针。
 -/
 def c183 := @_root_.Std.ExtHashSet.get!
 
@@ -1439,7 +1439,7 @@ def c201 := @_root_.Std.DTreeMap.getD
 def c202 := @_root_.Std.DTreeMap.getKey
 
 /--
-检查给定键的映射是否存在，如果存在则返回该键，否则会触发 panic。如果没有发生恐慌，结果保证是等于映射中的键的指针。
+检查给定键的映射是否存在，如果存在则返回该键，否则会触发 panic。如果未触发 panic，结果保证是等于映射中的键的指针。
 -/
 def c203 := @_root_.Std.DTreeMap.getKey!
 
