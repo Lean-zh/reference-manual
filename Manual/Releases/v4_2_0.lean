@@ -29,8 +29,8 @@ file := "v4.2.0"
 * [修复 macOS 上的链接器警告](https://github.com/leanprover/lean4/pull/2598)。
 * **Lake：**添加 `postUpdate?` 包配置选项。包可以用它指定一些代码，在该包或其某个下游依赖成功执行 `lake update` 之后运行。（[lake#185](https://github.com/leanprover/lake/issues/185)）
 * 改进 Lake 的启动时间（[#2572](https://github.com/leanprover/lean4/pull/2572), [#2573](https://github.com/leanprover/lean4/pull/2573)）
-* `refine e` 现在会用在精化 `e` 期间创建的元变量替换主目标，并且不再捕获 `e` 中已有的元变量（[#2502](https://github.com/leanprover/lean4/pull/2502)）。
-  * 这通过对 `withCollectingNewGoalsFrom` 的修改实现，同时也影响 `elabTermWithHoles`、`refine'`、`calc`（tactic）和 `specialize`。同样地，这些机制现在的输出都只包含新创建的元变量。
+* `refine e` 现在会用在精译 `e` 期间创建的元变量替换主目标，并且不再捕获 `e` 中已有的元变量（[#2502](https://github.com/leanprover/lean4/pull/2502)）。
+  * 这通过对 `withCollectingNewGoalsFrom` 的修改实现，同时也影响 `elabTermWithHoles`、`refine'`、`calc`（策略）和 `specialize`。同样地，这些机制现在的输出都只包含新创建的元变量。
   * 先前，`e` 中新创建的元变量和既有元变量会在不同边界情况下以不一致的方式被返回，从而导致信息视图中目标重复（问题 [#2495](https://github.com/leanprover/lean4/issues/2495)）、目标被错误关闭（问题 [#2434](https://github.com/leanprover/lean4/issues/2434)），以及由于 `refine e` 捕获了先前创建、却意外出现在 `e` 中的目标而产生不直观行为（无对应问题；见该 PR）。
 
 ```

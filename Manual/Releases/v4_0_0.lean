@@ -28,7 +28,7 @@ file := "v4.0.0"
 
   可以通过 `(config := { failIfUnchanged := false })` 选项覆盖此行为。
   这一改动旨在让手工使用 `simp` 更容易（目标复杂时，很难判断它是否真的起效），
-  也便于在内部使用 `simp` 的 tactic 中更轻松地控制流程。
+  也便于在内部使用 `simp` 的策略中更轻松地控制流程。
   更多细节可参见 Zulip 上的[总结讨论](https://leanprover.zulipchat.com/#narrow/stream/270676-lean4/topic/simp.20fails.20if.20no.20progress/near/380153295)。
 
 * [`simp_all` 现在会保留假设顺序](https://github.com/leanprover/lean4/pull/2334)。
@@ -46,9 +46,9 @@ file := "v4.0.0"
 
 * [新的 `have this` 实现](https://github.com/leanprover/lean4/pull/2247)。
 
-  `this` 现在再次成为普通标识符，它会在匿名 `have :=` 之后，隐式引入并在 tactic 块剩余部分可见。过去它是一个在所有作用域中都可见的关键字，因此在显式用作绑定器名时会导致意外行为。
+  `this` 现在再次成为普通标识符，它会在匿名 `have :=` 之后，隐式引入并在策略块剩余部分可见。过去它是一个在所有作用域中都可见的关键字，因此在显式用作绑定器名时会导致意外行为。
 
-* [在性能分析输出中显示类型类与 tactic 名称](https://github.com/leanprover/lean4/pull/2170)。
+* [在性能分析输出中显示类型类与策略名称](https://github.com/leanprover/lean4/pull/2170)。
 
 * [要求 `calc` 中关系列/证明列具有相同缩进](https://github.com/leanprover/lean4/pull/1844)，
   并且[为 `calc` 添加替代语法，允许在第一条关系中使用下划线 `_`](https://github.com/leanprover/lean4/pull/1844)。
@@ -105,17 +105,17 @@ file := "v4.0.0"
 
 * [在悬停信息中显示声明所在模块](https://github.com/leanprover/lean4/pull/1638)。
 
-* [新的 `conv` 模式结构化 tactic](https://github.com/leanprover/lean4/pull/1636)。
+* [新的 `conv` 模式结构化策略](https://github.com/leanprover/lean4/pull/1636)。
 
 * `simp` 现在可以跟踪信息，并打印等价的 `simp only`。 [PR #1626](https://github.com/leanprover/lean4/pull/1626)。
 
-* 强制 tactic 块 / do 块使用统一缩进。参见 issue [#1606](https://github.com/leanprover/lean4/issues/1606)。
+* 强制策略块 / do 块使用统一缩进。参见 issue [#1606](https://github.com/leanprover/lean4/issues/1606)。
 
 * 将 `AssocList`、`HashMap`、`HashSet`、`RBMap`、`RBSet`、`PersistentArray`、`PersistentHashMap`、`PersistentHashSet` 移入 Lean 包中。[标准库](https://github.com/leanprover/std4)中保留了会独立演进的版本，以简化自举过程。
 
 * 标准库已迁移到 [std4 GitHub 仓库](https://github.com/leanprover/std4)。
 
-* `InteractiveGoals` 现在携带了客户端信息视图可用的信息，以显示应用 tactic 后目标的哪些部分发生了变化。[PR #1610](https://github.com/leanprover/lean4/pull/1610)。
+* `InteractiveGoals` 现在携带了客户端信息视图可用的信息，以显示应用策略后目标的哪些部分发生了变化。[PR #1610](https://github.com/leanprover/lean4/pull/1610)。
 
 * 添加 `[inheritDoc]` 属性。[PR #1480](https://github.com/leanprover/lean4/pull/1480)。
 

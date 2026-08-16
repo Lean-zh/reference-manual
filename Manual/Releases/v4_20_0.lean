@@ -385,7 +385,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___20___0-_LPAR_2025-0
   后续还会再提交一个 PR 来减少分支拆分的数量。
 
 * [#7902](https://github.com/leanprover/lean4/pull/7902) 引入了一个专用选项，用于检查
-  精化器是否正运行在语言服务器中。
+  精译器是否正运行在语言服务器中。
 
 * [#7905](https://github.com/leanprover/lean4/pull/7905) 修复了由 #6125 引入的问题：当某个
   `inductive` 或 `structure` 具有带元变量类型的自动隐式参数时，
@@ -729,7 +729,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___20___0-_LPAR_2025-0
 
 * [#7761](https://github.com/leanprover/lean4/pull/7761) 实现了 Bitwuzla 重写
   [NORM_BV_NOT_OR_SHL](https://github.com/bitwuzla/bitwuzla/blob/e09c50818b798f990bd84bf61174553fef46d561/src/rewrite/rewrites_bv.cpp#L1495-L1510)
-  and
+  以及
   [BV_ADD_SHL](https://github.com/bitwuzla/bitwuzla/blob/e09c50818b798f990bd84bf61174553fef46d561/src/rewrite/rewrites_bv.cpp#L395-L401),
   所需的核心定理，它们会把布尔/算术混合表达式转换成纯算术表达式：
 
@@ -977,7 +977,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___20___0-_LPAR_2025-0
   对已擦除命题的依赖。
 
 * [#8010](https://github.com/leanprover/lean4/pull/8010) 修复了带有 `implemented_by` 的
-  `caseOn` 表达式与哈希共享的协作问题，即使精化器生成的是
+  `caseOn` 表达式与哈希共享的协作问题，即使精译器生成的是
   重构判别式的项，而非仅复用一个变量，也能正确工作。
 
 * [#8015](https://github.com/leanprover/lean4/pull/8015) 修复了 IR `elim_dead_branches` pass，
@@ -1085,7 +1085,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___20___0-_LPAR_2025-0
   还可能拥有冲突的模块名。
 
 * [#7882](https://github.com/leanprover/lean4/pull/7882) 修复了一个回归问题：
-  文档发生变化时，先前版本文档的精化不会被取消。
+  文档发生变化时，先前版本文档的精译不会被取消。
 
 * [#8242](https://github.com/leanprover/lean4/pull/8242) 修复了 `'goals accomplished'`
   诊断。它们在 #7902 中被意外破坏了。
@@ -1110,7 +1110,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___20___0-_LPAR_2025-0
   使其对各种文件和目录使用规范化后的绝对路径。
 
 * [#7860](https://github.com/leanprover/lean4/pull/7860) 恢复了 DSL 特性对内建项
-  （例如初始化器、精化器和宏）的使用，以及服务器中对
+  （例如初始化器、精译器和宏）的使用，以及服务器中对
   Lake 插件的使用。
 
 * [#7906](https://github.com/leanprover/lean4/pull/7906) 修改了 Lake 的构建跟踪，

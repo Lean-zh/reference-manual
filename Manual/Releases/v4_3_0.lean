@@ -21,12 +21,12 @@ file := "v4.3.0"
 ```markdown
 * `simp [f]` 不再展开 `f` 的部分应用。参见 issue [#2042](https://github.com/leanprover/lean4/issues/2042)。
   若要修复受此变更影响的证明，请使用 `unfold f` 或 `simp (config := { unfoldPartialApp := true }) [f]`。
-* 默认情况下，`simp` 将不再尝试使用 Decidable 实例来重写项。特别是，并非所有可判定目标都会被 `simp` 关闭，在这种情况下 `decide` tactic 可能会有帮助。可以使用 `decide` 这一 simp 配置选项在局部恢复旧版 `simp` 行为，例如 `simp (config := {decide := true})`；这也包括使用 Decidable 实例来验证数值不等式等辅助目标。
+* 默认情况下，`simp` 将不再尝试使用 Decidable 实例来重写项。特别是，并非所有可判定目标都会被 `simp` 关闭，在这种情况下 `decide` 策略可能会有帮助。可以使用 `decide` 这一 simp 配置选项在局部恢复旧版 `simp` 行为，例如 `simp (config := {decide := true})`；这也包括使用 Decidable 实例来验证数值不等式等辅助目标。
 
 * 许多缺陷修复：
-  * [为项树强制类型转换精化器添加左/右作用，并将 `^`` 设为右作用](https://github.com/leanprover/lean4/pull/2778)
+  * [为项树强制类型转换精译器添加左/右作用，并将 `^`` 设为右作用](https://github.com/leanprover/lean4/pull/2778)
   * [修复 #2775：不要捕获最大递归深度错误](https://github.com/leanprover/lean4/pull/2790)
-  * [`cases` tactic 下 `Decidable` 实例归约过慢](https://github.com/leanprover/lean4/issues/2552)
+  * [`cases` 策略下 `Decidable` 实例归约过慢](https://github.com/leanprover/lean4/issues/2552)
   * [`simp` 不会在绑定器中重写](https://github.com/leanprover/lean4/issues/1926)
   * [即使设置了 `zeta := false` 选项，`simp` 仍会展开 `let`](https://github.com/leanprover/lean4/issues/2669)
   * [禁用 beta/zeta 时的 `simp` 与判别树问题](https://github.com/leanprover/lean4/issues/2281)
@@ -34,7 +34,7 @@ file := "v4.3.0"
   * [`dsimp` 不使用由未应用常量构成的 `rfl` 定理](https://github.com/leanprover/lean4/issues/2685)
   * [若自反相等目标被元数据包裹，`dsimp` 不会将其关闭](https://github.com/leanprover/lean4/issues/2514)
   * [`rw [h]` 会优先使用环境中的 `h`，而非局部上下文中的 `h`](https://github.com/leanprover/lean4/issues/2729)
-  * [`assumption` tactic 缺少 `withAssignableSyntheticOpaque`](https://github.com/leanprover/lean4/issues/2361)
+  * [`assumption` 策略缺少 `withAssignableSyntheticOpaque`](https://github.com/leanprover/lean4/issues/2361)
   * [忽略字段默认值的警告](https://github.com/leanprover/lean4/issues/2178)
 * [在语言服务器中编辑文档时取消尚未完成的任务](https://github.com/leanprover/lean4/pull/2648)。
 * [移除 `Fin.mod` 和 `Fin.div` 中不必要的 `%` 运算](https://github.com/leanprover/lean4/pull/2688)

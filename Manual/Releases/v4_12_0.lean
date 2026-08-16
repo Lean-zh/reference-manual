@@ -27,7 +27,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___12___0-_LPAR_2024-1
 
 ````markdown
 
-* `bv_decide` tactic。本次发布引入了一个新 tactic，用于证明涉及 `BitVec` 和 `Bool` 的目标。它会将目标化简为一个 SAT 实例，由外部求解器将其驳倒，然后在 Lean 中检查生成的 LRAT 证明。接着通过反射合成该目标的证明。由于这一过程使用的是经过验证的算法，因此这个 tactic 生成的证明会用到 `Lean.ofReduceBool`，也就是说该 tactic 将 Lean 编译器纳入了可信计算基。外部求解器 CaDiCaL 已随 Lean 一起提供，使用 `bv_decide` 时无需另行安装。
+* `bv_decide` 策略。本次发布引入了一个新策略，用于证明涉及 `BitVec` 和 `Bool` 的目标。它会将目标化简为一个 SAT 实例，由外部求解器将其驳倒，然后在 Lean 中检查生成的 LRAT 证明。接着通过反射合成该目标的证明。由于这一过程使用的是经过验证的算法，因此这个策略生成的证明会用到 `Lean.ofReduceBool`，也就是说该策略将 Lean 编译器纳入了可信计算基。外部求解器 CaDiCaL 已随 Lean 一起提供，使用 `bv_decide` 时无需另行安装。
 
   例如，我们可以用 `bv_decide` 验证某个位运算公式至多只保留一个置位比特：
   ```lean
@@ -56,38 +56,38 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___12___0-_LPAR_2024-1
 
   [#5013](https://github.com/leanprover/lean4/pull/5013)、[#5074](https://github.com/leanprover/lean4/pull/5074)、[#5100](https://github.com/leanprover/lean4/pull/5100)、[#5113](https://github.com/leanprover/lean4/pull/5113)、[#5137](https://github.com/leanprover/lean4/pull/5137)、[#5203](https://github.com/leanprover/lean4/pull/5203)、[#5212](https://github.com/leanprover/lean4/pull/5212)、[#5220](https://github.com/leanprover/lean4/pull/5220)。
 
-* `simp` tactic
+* `simp` 策略
   * [#4988](https://github.com/leanprover/lean4/pull/4988) 修复了 `reducePow` simproc 中的 panic。
-  * [#5071](https://github.com/leanprover/lean4/pull/5071) 将在 [#4202](https://github.com/leanprover/lean4/pull/4202) 中为 `simp` 引入的 `index` 选项暴露给了 `dsimp` tactic。
+  * [#5071](https://github.com/leanprover/lean4/pull/5071) 将在 [#4202](https://github.com/leanprover/lean4/pull/4202) 中为 `simp` 引入的 `index` 选项暴露给了 `dsimp` 策略。
   * [#5159](https://github.com/leanprover/lean4/pull/5159) 修复了 `Fin.isValue` simproc 中的 panic。
   * [#5167](https://github.com/leanprover/lean4/pull/5167) 和 [#5175](https://github.com/leanprover/lean4/pull/5175) 将 `simpCtorEq` simproc 重命名为 `reduceCtorEq`，并让它变为可选项。（见破坏性变更。）
-  * [#5187](https://github.com/leanprover/lean4/pull/5187) 确保在 `norm_cast` tactic 中启用 `reduceCtorEq`。
+  * [#5187](https://github.com/leanprover/lean4/pull/5187) 确保在 `norm_cast` 策略中启用 `reduceCtorEq`。
   * [#5073](https://github.com/leanprover/lean4/pull/5073) 修改了 simp 调试 trace 消息：在定义性重写模式下，用 “dpre” 和 “dpost” 代替 “pre” 和 “post” 作为标签。[#5054](https://github.com/leanprover/lean4/pull/5054) 解释了 `trace.Debug.Meta.Tactic.simp` trace 消息中的 `reduce` 步骤。
-* `ext` tactic
+* `ext` 策略
   * [#4996](https://github.com/leanprover/lean4/pull/4996) 将默认最大迭代深度从 1000000 降到 100。
-* `induction` tactic
+* `induction` 策略
   * [#5117](https://github.com/leanprover/lean4/pull/5117) 修复了一个 bug：小前提中的 `let` 绑定此前不会被正确计数。
 
-* `omega` tactic
+* `omega` 策略
   * [#5157](https://github.com/leanprover/lean4/pull/5157) 修复了一个 panic。
 
-* `conv` tactic
+* `conv` 策略
   * [#5149](https://github.com/leanprover/lean4/pull/5149) 改进了 `arg n`，使其能够处理子单例实例参数。
 
 * [#5044](https://github.com/leanprover/lean4/pull/5044) 上游合入了 `#time` 命令。
-* [#5079](https://github.com/leanprover/lean4/pull/5079) 让 `#check` 和 `#reduce` 对精化后的项进行类型检查。
+* [#5079](https://github.com/leanprover/lean4/pull/5079) 让 `#check` 和 `#reduce` 对精译后的项进行类型检查。
 
 * **增量化**
-  * [#4974](https://github.com/leanprover/lean4/pull/4974) 修复了一个回归：此前不会中断旧文档版本的精化。
+  * [#4974](https://github.com/leanprover/lean4/pull/4974) 修复了一个回归：此前不会中断旧文档版本的精译。
   * [#5004](https://github.com/leanprover/lean4/pull/5004) 修复了一个性能回归。
-  * [#5001](https://github.com/leanprover/lean4/pull/5001) 在声明带有 `where` 子句时禁用增量化主体精化。
+  * [#5001](https://github.com/leanprover/lean4/pull/5001) 在声明带有 `where` 子句时禁用增量化主体精译。
   * [#5018](https://github.com/leanprover/lean4/pull/5018) 为 ilean 生成在命令行上启用了 infotree。
   * [#5040](https://github.com/leanprover/lean4/pull/5040) 和 [#5056](https://github.com/leanprover/lean4/pull/5056) 改进了信息树的性能。
-  * [#5090](https://github.com/leanprover/lean4/pull/5090) 在 `case .. | ..` tactic 中禁用增量化。
+  * [#5090](https://github.com/leanprover/lean4/pull/5090) 在 `case .. | ..` 策略中禁用增量化。
   * [#5312](https://github.com/leanprover/lean4/pull/5312) 修复了一个 bug：在模块头之后修改空白可能会破坏后续命令。
 
 * **定义**
-  * [#5016](https://github.com/leanprover/lean4/pull/5016) 和 [#5066](https://github.com/leanprover/lean4/pull/5066) 添加了 `clean_wf` tactic，用于在 `decreasing_by` 中清理 tactic 状态。可通过 `set_option debug.rawDecreasingByGoal false` 禁用。
+  * [#5016](https://github.com/leanprover/lean4/pull/5016) 和 [#5066](https://github.com/leanprover/lean4/pull/5066) 添加了 `clean_wf` 策略，用于在 `decreasing_by` 中清理策略状态。可通过 `set_option debug.rawDecreasingByGoal false` 禁用。
   * [#5055](https://github.com/leanprover/lean4/pull/5055) 统一了结构化递归与良基递归的等式定理。
   * [#5041](https://github.com/leanprover/lean4/pull/5041) 允许互递归函数在“固定参数前缀”中使用不同的参数名。
   * [#4154](https://github.com/leanprover/lean4/pull/4154) 和 [#5109](https://github.com/leanprover/lean4/pull/5109) 为非递归函数添加了细粒度等式引理。见破坏性变更。
@@ -105,11 +105,11 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___12___0-_LPAR_2024-1
 * **变量引入**
   * [#5206](https://github.com/leanprover/lean4/pull/5206) 记录了 `include` 目前只作用于定理。
 
-* **精化**
+* **精译**
   * [#4926](https://github.com/leanprover/lean4/pull/4926) 修复了一个 bug：autoparam 错误此前会关联到错误的源码位置。
   * [#4833](https://github.com/leanprover/lean4/pull/4833) 修复了 cdot 匿名函数（例如 `(· + ·)`）在处理歧义记法时的问题。它会为参数编号，因此该示例现在展开为 `fun x1 x2 => x1 + x2`，而不是 `fun x x_1 => x + x_1`。
-  * [#5037](https://github.com/leanprover/lean4/pull/5037) 增强了用于证明数组索引未越界的 tactic。
-  * [#5119](https://github.com/leanprover/lean4/pull/5119) 修复了用于证明索引未越界的 tactic 中的一个 bug：它在存在 mvar 时可能会陷入循环。
+  * [#5037](https://github.com/leanprover/lean4/pull/5037) 增强了用于证明数组索引未越界的策略。
+  * [#5119](https://github.com/leanprover/lean4/pull/5119) 修复了用于证明索引未越界的策略中的一个 bug：它在存在 mvar 时可能会陷入循环。
   * [#5072](https://github.com/leanprover/lean4/pull/5072) 让结构体实例记法的 “not a field of structure” 错误中的结构体类型可点击。
   * [#4717](https://github.com/leanprover/lean4/pull/4717) 修复了一个 bug：互递归 `inductive` 命令可能生成会被内核拒绝的项。
   * [#5142](https://github.com/leanprover/lean4/pull/5142) 修复了一个 bug：在混合 binder 更新与声明时，`variable` 可能失败。
@@ -143,7 +143,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___12___0-_LPAR_2024-1
 
 ````markdown
 
-* [#4976](https://github.com/leanprover/lean4/pull/4976) 引入了 `@[app_delab]`，这是一个用于为特定常量创建反精化器的宏。语法 `@[app_delab ident]` 会将 `ident` 解析为其常量名 `name`，然后展开为 `@[delab app.name]`。
+* [#4976](https://github.com/leanprover/lean4/pull/4976) 引入了 `@[app_delab]`，这是一个用于为特定常量创建反精译器的宏。语法 `@[app_delab ident]` 会将 `ident` 解析为其常量名 `name`，然后展开为 `@[delab app.name]`。
 * [#4982](https://github.com/leanprover/lean4/pull/4982) 修复了一个 bug：美观打印器此前假设结构体投影一定类型正确（这类项可能出现在类型不匹配错误中）。同时改进了结构体 `#print` 输出的可悬停性。
 * [#5218](https://github.com/leanprover/lean4/pull/5218) 和 [#5239](https://github.com/leanprover/lean4/pull/5239) 添加了调试选项 `pp.exprSizes`。当其为 true 时，每个美观打印表达式前都会带上 `[size a/b/c]`，其中 `a` 是不共享时的大小，`b` 是实际大小，`c` 是最大可能共享时的大小。
 
@@ -241,7 +241,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___12___0-_LPAR_2024-1
   * [#5180](https://github.com/leanprover/lean4/pull/5180) 禁用了部分 discrimination tree 键不佳的 simp 引理。
   * [#5189](https://github.com/leanprover/lean4/pull/5189) 清理了泄漏出来的内部 simp 引理。
   * [#5198](https://github.com/leanprover/lean4/pull/5198) 清理了 `allowUnsafeReducibility`。
-  * [#5229](https://github.com/leanprover/lean4/pull/5229) 从若干 `simp` tactic 中移除了未使用的引理。
+  * [#5229](https://github.com/leanprover/lean4/pull/5229) 从若干 `simp` 策略中移除了未使用的引理。
   * [#5199](https://github.com/leanprover/lean4/pull/5199) 移除了已弃用超过 6 个月的内容。
 
 ````
@@ -267,7 +267,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___12___0-_LPAR_2024-1
   * [#4897](https://github.com/leanprover/lean4/pull/4897) 改进了诊断结果的显示。
 * **其他修复或改进**
   * [#4921](https://github.com/leanprover/lean4/pull/4921) 清理了 `Expr.betaRev`。
-  * [#4940](https://github.com/leanprover/lean4/pull/4940) 通过避免直接写 stdout 修复了测试；在精化和报告分别由不同线程执行的情况下，直接写 stdout 现在并不可靠。
+  * [#4940](https://github.com/leanprover/lean4/pull/4940) 通过避免直接写 stdout 修复了测试；在精译和报告分别由不同线程执行的情况下，直接写 stdout 现在并不可靠。
   * [#4955](https://github.com/leanprover/lean4/pull/4955) 记录了 `stderrAsMessages` 现在在命令行上也默认开启。
   * [#4647](https://github.com/leanprover/lean4/pull/4647) 调整了 macOS 上构建的文档。
   * [#4987](https://github.com/leanprover/lean4/pull/4987) 让普通 mvar 赋值在 `instantiateMVars` 中优先于延迟赋值。通常延迟赋值元变量不会被直接赋值，但在出错时 Lean 会给未赋值的元变量赋上 `sorry`。

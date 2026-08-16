@@ -68,7 +68,7 @@ Lean v4.18 带来了多项令人振奋的新特性：
   fun_induction foo  x y z
   ```
 
-  会先精化 `foo x y z`，再查找 `foo.induct`，然后本质上执行
+  会先精译 `foo x y z`，再查找 `foo.induct`，然后本质上执行
 
   ```lean
   induction z using foo.induct y
@@ -135,7 +135,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___18___0-_LPAR_2025-0
 
 * [#6869](https://github.com/leanprover/lean4/pull/6869) 添加了 `recommended_spelling` 命令；详见上方亮点部分。
 
-* [#6891](https://github.com/leanprover/lean4/pull/6891) 修改了 `rewrite`/`rw`：如果精化后的引理存在任何即时精化错误（通过 synthetic sorry 的存在来检测），则中止重写。如果问题来自待解决的合成元变量（例如实例合成失败），则仍会继续重写。此改动的目的是避免在引理不存在等情况下出现晦涩的 “tactic 'rewrite' failed, equality or iff proof expected ?m.5” 错误。
+* [#6891](https://github.com/leanprover/lean4/pull/6891) 修改了 `rewrite`/`rw`：如果精译后的引理存在任何即时精译错误（通过 synthetic sorry 的存在来检测），则中止重写。如果问题来自待解决的合成元变量（例如实例合成失败），则仍会继续重写。此改动的目的是避免在引理不存在等情况下出现晦涩的 “tactic 'rewrite' failed, equality or iff proof expected ?m.5” 错误。
 
 * [#6893](https://github.com/leanprover/lean4/pull/6893) 为前端和服务器添加了插件支持。
 
@@ -145,13 +145,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___18___0-_LPAR_2025-0
 
 * [#6939](https://github.com/leanprover/lean4/pull/6939) 为 `inductive` 声明中构造子名称冲突以及 `mutual` 声明中名称冲突的情况添加了错误信息。
 
-* [#6947](https://github.com/leanprover/lean4/pull/6947) 添加了 `binderNameHint` 小工具。它可以在 rewrite 和 simp 规则中尽可能保留用户给出的名称。
+* [#6947](https://github.com/leanprover/lean4/pull/6947) 添加了 `binderNameHint` 辅助函数。它可以在 rewrite 和 simp 规则中尽可能保留用户给出的名称。
 
   表达式 `binderNameHint v binder e` 被定义为 `e`。
 
   如果它出现在某个方程右侧，而该方程又被 `rw` 或 `simp` 这类策略应用，并且 `v` 是局部变量、`binder` 是一个（经 beta 约简后）成为绑定器的表达式（即 `fun w => …` 或 `∀ w, …`），那么它会将 `v` 重命名为绑定器中使用的名字，并移除 `binderNameHint`。
 
-  这个小工具的典型用法如下；它确保重写之后局部变量仍然叫 `name`，而不是 `x`：
+  这个辅助函数的典型用法如下；它确保重写之后局部变量仍然叫 `name`，而不是 `x`：
 
   ```lean
   theorem all_eq_not_any_not (l : List α) (p : α → Bool) :
@@ -162,7 +162,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___18___0-_LPAR_2025-0
     -- ⊢ (!names.any fun name => !"Waldo".isPrefixOf name) = true
   ```
 
-  这个小工具在方程右侧受到 `simp`、`dsimp` 和 `rw` 支持，但不适用于假设，也不被其他策略支持。
+  这个辅助机制在方程右侧受到 `simp`、`dsimp` 和 `rw` 支持，但不适用于假设，也不被其他策略支持。
 
 * [#6951](https://github.com/leanprover/lean4/pull/6951) 为 simp 的 trace 消息添加了换行和缩进，使其更易阅读（至少我是这么觉得的）。
 
@@ -190,7 +190,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___18___0-_LPAR_2025-0
 
 * [#7191](https://github.com/leanprover/lean4/pull/7191) 修复了无 widget 的多行消息中 “Try this” 建议的缩进，使其在 `#guard_msgs` 输出中显示正确。
 
-* [#7192](https://github.com/leanprover/lean4/pull/7192) 防止 `exact?` 和 `apply?` 建议那些虽然对应正确证明、却无法精化的策略；同时也允许它们在需要时建议使用 `expose_names`。
+* [#7192](https://github.com/leanprover/lean4/pull/7192) 防止 `exact?` 和 `apply?` 建议那些虽然对应正确证明、却无法精译的策略；同时也允许它们在需要时建议使用 `expose_names`。
 
 * [#7200](https://github.com/leanprover/lean4/pull/7200) 允许 DiscrTree.Key 的调试形式自动换行。
 
@@ -312,18 +312,18 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___18___0-_LPAR_2025-0
 * [#7275](https://github.com/leanprover/lean4/pull/7275) 将 Bitwuzla 的所有 level 1 重写加入 bv_decide 的预处理器。
 
 ````
-## 精化并行化
+## 精译并行化
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___18___0-_LPAR_2025-04-02_RPAR_--Language--Parallelizing-Elaboration"
 %%%
 
 ````markdown
 
-* [#6770](https://github.com/leanprover/lean4/pull/6770) 让代码生成能够与后续精化并行进行。
+* [#6770](https://github.com/leanprover/lean4/pull/6770) 让代码生成能够与后续精译并行进行。
 
 * [#6988](https://github.com/leanprover/lean4/pull/6988) 确保中断内核不会在编辑器中留下错误且挥之不去的错误消息。
 
-* [#7047](https://github.com/leanprover/lean4/pull/7047) 移除了已被增量精化取代的 `save` 和 `checkpoint` 策略。
+* [#7047](https://github.com/leanprover/lean4/pull/7047) 移除了已被增量精译取代的 `save` 和 `checkpoint` 策略。
 
 * [#7076](https://github.com/leanprover/lean4/pull/7076) 引入了核心并行 API，以确保辅助声明可以惰性生成，同时不会重复工作，也不会在线程间产生冲突。
 
@@ -671,7 +671,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___18___0-_LPAR_2025-0
 
 ````markdown
 
-* [#6329](https://github.com/leanprover/lean4/pull/6329) 让语言服务器能够将多个互不相交的行区间显示为“正在处理”。即使在并行化尚未落地之前，我们也利用该特性在声明第一行显示诸如内核检查之类的后精化任务，以便将其与最后一步策略区分开来。
+* [#6329](https://github.com/leanprover/lean4/pull/6329) 让语言服务器能够将多个互不相交的行区间显示为“正在处理”。即使在并行化尚未落地之前，我们也利用该特性在声明第一行显示诸如内核检查之类的后精译任务，以便将其与最后一步策略区分开来。
 
 * [#6768](https://github.com/leanprover/lean4/pull/6768) 添加了对嵌入提示的初步支持，以及用于表示函数自动隐式参数的嵌入提示。悬停在自动隐式参数上会显示其类型，双击该自动隐式参数则会将其插入文本文件中。
 
@@ -693,7 +693,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___18___0-_LPAR_2025-0
 
 * [#7054](https://github.com/leanprover/lean4/pull/7054) 为以下高开销请求加入了语言服务器端的请求取消支持：代码操作、自动补全、文档符号、折叠区间和语义高亮。这意味着当客户端告知语言服务器某个请求已经过期（例如它属于文档的旧状态）时，语言服务器现在会提前取消该响应的计算，从而降低那些最终会被客户端丢弃的请求所带来的 CPU 负载。
 
-* [#7087](https://github.com/leanprover/lean4/pull/7087) 确保语言服务器中的所有任务要么使用专用任务，要么复用线程池中的已有线程。这保证了精化任务不会阻止语言服务器任务被调度。随着并行化即将到来，精化更有可能挤占语言服务器的计算资源，因此这一点尤其重要；否则在核心数较少的机器上，语言服务器延迟可能显著增加。
+* [#7087](https://github.com/leanprover/lean4/pull/7087) 确保语言服务器中的所有任务要么使用专用任务，要么复用线程池中的已有线程。这保证了精译任务不会阻止语言服务器任务被调度。随着并行化即将到来，精译更有可能挤占语言服务器的计算资源，因此这一点尤其重要；否则在核心数较少的机器上，语言服务器延迟可能显著增加。
 
 * [#7112](https://github.com/leanprover/lean4/pull/7112) 添加了一个工具提示，用于说明自动隐式嵌入提示表示的含义，并为实例也加入了自动隐式嵌入提示。
 
@@ -705,7 +705,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___18___0-_LPAR_2025-0
 
 * [#7153](https://github.com/leanprover/lean4/pull/7153) 修改服务器，使其会对 Lake 配置文件（例如 `lakefile.lean`）运行 `lake setup-file`。
 
-* [#7175](https://github.com/leanprover/lean4/pull/7175) 修复了一个 `Elab.async` 回归：精化任务会在文档编辑时被取消，即便其结果其实可以在文档新版本中复用，从而导致报告出不完整结果。
+* [#7175](https://github.com/leanprover/lean4/pull/7175) 修复了一个 `Elab.async` 回归：精译任务会在文档编辑时被取消，即便其结果其实可以在文档新版本中复用，从而导致报告出不完整结果。
 
 ````
 # Lake

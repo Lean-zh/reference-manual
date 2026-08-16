@@ -35,7 +35,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___17___0-_LPAR_2025-0
 
 Lean v4.17 带来了一系列新特性、性能改进和问题修复。用户可见的重点更新包括：
 
-* [#6368](https://github.com/leanprover/lean4/pull/6368) 实现了与精化并行执行的内核检查，这是精化本身实现并行化的前提。
+* [#6368](https://github.com/leanprover/lean4/pull/6368) 实现了与精译并行执行的内核检查，这是精译本身实现并行化的前提。
 
 * [#6711](https://github.com/leanprover/lean4/pull/6711) 通过加入一个预处理器，把 `UIntX` 和 `USize` 转换为对应位宽的 `BitVec`，从而为 `bv_decide` 增加了对它们的支持。
 
@@ -158,13 +158,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___17___0-_LPAR_2025-0
 
 ````markdown
 
-* [#5145](https://github.com/leanprover/lean4/pull/5145) 将内核使用的环境与精化器使用的环境分离开来，为跟踪异步精化的声明奠定了基础；后者中的这类声明只会作为概念存在于精化器一侧。
+* [#5145](https://github.com/leanprover/lean4/pull/5145) 将内核使用的环境与精译器使用的环境分离开来，为跟踪异步精译的声明奠定了基础；后者中的这类声明只会作为概念存在于精译器一侧。
 
 * [#6261](https://github.com/leanprover/lean4/pull/6261) 增加了 `foo.fun_cases`，这是一个自动生成的定理，会按照 `foo` 的分支结构拆分目标，类似函数归纳原理，但它适用于所有函数（不只是递归函数），并且不提供归纳假设。
 
 * [#6355](https://github.com/leanprover/lean4/pull/6355) 增加了定义可能不终止函数的能力，同时仍可对其进行等式推理，只要它们是尾递归的或是单子式的。
 
-* [#6368](https://github.com/leanprover/lean4/pull/6368) 实现了与精化并行执行的内核检查，这是精化本身实现并行化的前提。
+* [#6368](https://github.com/leanprover/lean4/pull/6368) 实现了与精译并行执行的内核检查，这是精译本身实现并行化的前提。
 
 * [#6427](https://github.com/leanprover/lean4/pull/6427) 为 Lean CLI 增加了 `--src-deps` 选项，对应于 `--deps`。它会解析 Lean 代码的头部，并打印（传递导入的）模块源码文件路径（根据 `LEAN_SRC_PATH` 推导）。
 
@@ -480,7 +480,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___17___0-_LPAR_2025-0
 
 * [#6851](https://github.com/leanprover/lean4/pull/6851) 让 bv_normalize 把以 `BitVec` 常量表示的移位重写为以 `Nat` 常量表示的移位。这是增强 bv_normalize 对常量移位化简支持这一更大工作的组成部分。
 
-* [#6852](https://github.com/leanprover/lean4/pull/6852) 允许环境扩展选择不会阻塞截至当前整个环境的访问模式，这是实现并行证明精化所必需的前提。
+* [#6852](https://github.com/leanprover/lean4/pull/6852) 允许环境扩展选择不会阻塞截至当前整个环境的访问模式，这是实现并行证明精译所必需的前提。
 
 * [#6854](https://github.com/leanprover/lean4/pull/6854) 为 `grind` 中的归纳谓词增加了一项便利功能。现在，给定归纳谓词 `C`，`grind [C]` 会把 `C` 项标记为可分情况拆分候选，**并且**把 `C` 的构造子标记为 E-匹配定理。示例如下：
   ```lean
@@ -684,7 +684,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___17___0-_LPAR_2025-0
 
 * [#6757](https://github.com/leanprover/lean4/pull/6757) 在 toLCNF 中增加了应用 crimp 定理的支持。
 
-* [#6758](https://github.com/leanprover/lean4/pull/6758) 防止了由非循环任务等待引发的死锁；这类死锁原本可能在小线程池规模下的并行精化中出现。
+* [#6758](https://github.com/leanprover/lean4/pull/6758) 防止了由非循环任务等待引发的死锁；这类死锁原本可能在小线程池规模下的并行精译中出现。
 
 * [#6837](https://github.com/leanprover/lean4/pull/6837) 将 Float32 加入 LCNF 的 builtinRuntimeTypes 列表。这在最初实现 Float32 时被遗漏了，而这一遗漏的副作用是会在 IR 中把 Float32 降级为 obj。
 

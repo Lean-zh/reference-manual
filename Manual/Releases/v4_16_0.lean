@@ -49,7 +49,7 @@ example : f 0 = f 1 := rfl -- succeeds
 def f : (n : Nat) → Nat := sorry
 example : f 0 = f 1 := rfl -- fails
 ```
-现在，大多数合成 sorry 的来源（回顾一下：即由精化器产生的 sorry）都会是唯一的；唯一的例外是精化错误，因为让这类 `sorry` 也唯一化往往会造成令人困惑的连锁报错。不过，总体而言，这些 `sorry` 现在都会带标签。这样一来，在 Infoview 中对 `sorry` 使用“转到定义”就会跳到它的来源。选项 `set_option pp.sorrySource true` 会让漂亮打印器在 `sorry` 上显示源位置。
+现在，大多数合成 sorry 的来源（回顾一下：即由精译器产生的 sorry）都会是唯一的；唯一的例外是精译错误，因为让这类 `sorry` 也唯一化往往会造成令人困惑的连锁报错。不过，总体而言，这些 `sorry` 现在都会带标签。这样一来，在 Infoview 中对 `sorry` 使用“转到定义”就会跳到它的来源。选项 `set_option pp.sorrySource true` 会让漂亮打印器在 `sorry` 上显示源位置。
 
 ````
 ## 数字字面量中的分隔符
@@ -116,7 +116,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___16___0-_LPAR_2025-0
 
 * [#3696](https://github.com/leanprover/lean4/pull/3696) 让所有消息构造器都能处理漂亮打印器错误。
 
-* [#4460](https://github.com/leanprover/lean4/pull/4460) 为单个命令一次性运行全部 linter（合并执行），并将其放到与后续精化分离的线程中，这是精化器并行化迈出的第一步。
+* [#4460](https://github.com/leanprover/lean4/pull/4460) 为单个命令一次性运行全部 linter（合并执行），并将其放到与后续精译分离的线程中，这是精译器并行化迈出的第一步。
 
 * [#5757](https://github.com/leanprover/lean4/pull/5757)，详见上文高亮部分。
 
@@ -173,7 +173,7 @@ tactic 'cases' failed, major premise type is not an inductive type
   - 新的 tracing 选项。
   - 新的预处理步骤：折叠投影并消除悬空的 `Expr.mdata`。
 
-* [#6414](https://github.com/leanprover/lean4/pull/6414) 修复了 `Lean.Meta.Closure` 中的一个问题。此前它会引入应用参数不足的延迟赋值元变量，使其永远无法被实例化。这个问题会影响 `match` 的精化，尤其是在期望类型中含有延迟处理的精化问题（例如策略块）时。
+* [#6414](https://github.com/leanprover/lean4/pull/6414) 修复了 `Lean.Meta.Closure` 中的一个问题。此前它会引入应用参数不足的延迟赋值元变量，使其永远无法被实例化。这个问题会影响 `match` 的精译，尤其是在期望类型中含有延迟处理的精译问题（例如策略块）时。
 
 * [#6419](https://github.com/leanprover/lean4/pull/6419) 修复了仍在开发中的 `grind` 策略中的多个问题，并新增了打印 `grind` 内部状态的支持。
 

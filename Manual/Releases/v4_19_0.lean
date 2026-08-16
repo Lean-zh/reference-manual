@@ -54,14 +54,14 @@ VS Code 中的视觉反馈得到了改进，扩展现在提供了：
 详情请参见 [leanprover/vscode-lean4#585](https://github.com/leanprover/vscode-lean4/pull/585)。
 
 ````
-## 并行精化
+## 并行精译
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___19___0-_LPAR_2025-05-01_RPAR_--Highlights--Parallel-Elaboration"
 %%%
 
 ````markdown
 
-* [#7084](https://github.com/leanprover/lean4/pull/7084) 允许定理体（即证明）的精化彼此并行，也可与其他精化任务并行进行。
+* [#7084](https://github.com/leanprover/lean4/pull/7084) 允许定理体（即证明）的精译彼此并行，也可与其他精译任务并行进行。
 
 ````
 ## 语言特性
@@ -116,7 +116,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___19___0-_LPAR_2025-0
 
 * [#7431](https://github.com/leanprover/lean4/pull/7431) 修改了 `simp`、`rw` 等策略的位置修饰符语法（例如 `simp at h ⊢`），使转门符 `⊢` 可以出现在位置序列中的任意位置。
 
-* [#7457](https://github.com/leanprover/lean4/pull/7457) 通过引入可为异步精化任务填补空洞的 API，确保检查器和请求处理器等信息树使用方能够访问由异步精化任务创建的信息子树。
+* [#7457](https://github.com/leanprover/lean4/pull/7457) 通过引入可为异步精译任务填补空洞的 API，确保检查器和请求处理器等信息树使用方能够访问由异步精译任务创建的信息子树。
 
   **破坏性变更：** `Command.State.infoState` 的其他元编程使用者，可能需要手动对其调用 `InfoState.substituteLazy` 以填补所有空洞。
 
@@ -128,11 +128,11 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___19___0-_LPAR_2025-0
 
 ````markdown
 
-* [#7302](https://github.com/leanprover/lean4/pull/7302) 修改了 `structure`/`class` 命令中字段的精化方式，并且在出现菱形继承时，让默认值遵循结构解析顺序。此前，子对象的细节会在精化期间暴露出来；在局部上下文中，任何来自子对象的字段都被定义为对子对象字段的投影。现在，每个字段都表示为局部变量。所有父项（而不只是子对象父项）现在都会出现在局部上下文中，并且被定义为将父构造子应用到字段变量后的局部变量（与此前的关系相反）。更多细节请参见 PR 描述。
+* [#7302](https://github.com/leanprover/lean4/pull/7302) 修改了 `structure`/`class` 命令中字段的精译方式，并且在出现菱形继承时，让默认值遵循结构解析顺序。此前，子对象的细节会在精译期间暴露出来；在局部上下文中，任何来自子对象的字段都被定义为对子对象字段的投影。现在，每个字段都表示为局部变量。所有父项（而不只是子对象父项）现在都会出现在局部上下文中，并且被定义为将父构造子应用到字段变量后的局部变量（与此前的关系相反）。更多细节请参见 PR 描述。
 
-* [#7640](https://github.com/leanprover/lean4/pull/7640) 实现了 `structure`/`class` 命令中继承与覆盖 autoParam 字段的主要逻辑，待结构体实例记法精化器启用。该 PR 还为被覆盖字段加入了术语信息，因此现在可以对它们使用悬停，且“跳转到定义”会跳到该字段最初定义所在的结构。
+* [#7640](https://github.com/leanprover/lean4/pull/7640) 实现了 `structure`/`class` 命令中继承与覆盖 autoParam 字段的主要逻辑，待结构体实例记法精译器启用。该 PR 还为被覆盖字段加入了术语信息，因此现在可以对它们使用悬停，且“跳转到定义”会跳到该字段最初定义所在的结构。
 
-* [#7717](https://github.com/leanprover/lean4/pull/7717) 修改了 `{...}`/`where` 记法（“结构体实例记法”）的精化方式。该记法现在会尽可能模拟一种扁平表示，而不暴露子对象的细节。
+* [#7717](https://github.com/leanprover/lean4/pull/7717) 修改了 `{...}`/`where` 记法（“结构体实例记法”）的精译方式。该记法现在会尽可能模拟一种扁平表示，而不暴露子对象的细节。
   这是一项 **破坏性变更**；更多细节及缓解策略请参见 PR 描述。
 
 * [#7742](https://github.com/leanprover/lean4/pull/7742) 为 `structure`/`class` 增加了一项特性：字段定义中没有类型的绑定器会被解释为覆盖该字段投影函数中类型参数的绑定器种类。更多细节请参见 PR 描述。
@@ -192,7 +192,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___19___0-_LPAR_2025-0
 
 * [#7333](https://github.com/leanprover/lean4/pull/7333) 允许 decreasing_by 策略生成辅助声明（例如由 `match` 生成的那些）。
 
-* [#7335](https://github.com/leanprover/lean4/pull/7335) 调整了 `elabTerminationByHints`：用于精化终止性度量的递归函数类型会去掉可选参数。这样可以避免为参数默认值引入依赖关系，因为这些依赖关系会导致终止性检查失败。
+* [#7335](https://github.com/leanprover/lean4/pull/7335) 调整了 `elabTerminationByHints`：用于精译终止性度量的递归函数类型会去掉可选参数。这样可以避免为参数默认值引入依赖关系，因为这些依赖关系会导致终止性检查失败。
 
 * [#7353](https://github.com/leanprover/lean4/pull/7353) 修改了 `abstractNestedProofs`，使其也会遍历应用头部中的子项。
 
@@ -230,29 +230,29 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___19___0-_LPAR_2025-0
 
 ````markdown
 
-* [#7302](https://github.com/leanprover/lean4/pull/7302) 修改了 `structure`/`class` 命令中字段的精化方式，并且在出现菱形继承时，让默认值遵循结构解析顺序。此前，子对象的细节会在精化期间暴露出来；在局部上下文中，任何来自子对象的字段都被定义为对子对象字段的投影。现在，每个字段都表示为局部变量。所有父项（而不只是子对象父项）现在都会出现在局部上下文中，并且被定义为将父构造子应用到字段变量后的局部变量（与此前的关系相反）。其他说明如下：
+* [#7302](https://github.com/leanprover/lean4/pull/7302) 修改了 `structure`/`class` 命令中字段的精译方式，并且在出现菱形继承时，让默认值遵循结构解析顺序。此前，子对象的细节会在精译期间暴露出来；在局部上下文中，任何来自子对象的字段都被定义为对子对象字段的投影。现在，每个字段都表示为局部变量。所有父项（而不只是子对象父项）现在都会出现在局部上下文中，并且被定义为将父构造子应用到字段变量后的局部变量（与此前的关系相反）。其他说明如下：
   - 现在会处理完整的父项集合，并检查所有父投影名称的一致性。每个父项现在都会出现在局部上下文中。
   - 对于类，每个父项现在都会贡献一个实例，而不只是那些表示为子对象的父项。
   - 默认值现在按父项解析顺序处理。默认值定义/覆盖的辅助定义存放在 `StructName.fieldName._default`，继承来的值存放在 `StructName.fieldName._inherited_default`。元程序在对默认值做计算时，不再需要查看父项。
   - 结构体实例记法美观打印中对默认值省略的处理也已相应更新。
-  - 现在精化器会生成一个 `_flat_ctor` 构造子，用于结构体实例精化。这个构造子中的所有类型都被放入“字段规范形”（父构造子的投影会被约简，投影的父构造子会被 eta 约简），并且所有带 autoParam 的字段都会被如此标注。它并非面向普通用户，但可能对元编程有用。
-  - 在精化字段时，任何类型为某个父项的元变量都会被赋值为该父项。其假设是：在精化结构字段时，父项是固定的——对于任意给定父项，当前只考虑 *一个* 实例。关于这一点为何必要，请参见 `Magma` 测试。若存在递归结构，该假设可能不成立，因为结构的不同值在父字段上可能并不一致。
+  - 现在精译器会生成一个 `_flat_ctor` 构造子，用于结构体实例精译。这个构造子中的所有类型都被放入“字段规范形”（父构造子的投影会被约简，投影的父构造子会被 eta 约简），并且所有带 autoParam 的字段都会被如此标注。它并非面向普通用户，但可能对元编程有用。
+  - 在精译字段时，任何类型为某个父项的元变量都会被赋值为该父项。其假设是：在精译结构字段时，父项是固定的——对于任意给定父项，当前只考虑 *一个* 实例。关于这一点为何必要，请参见 `Magma` 测试。若存在递归结构，该假设可能不成立，因为结构的不同值在父字段上可能并不一致。
 
-* [#7314](https://github.com/leanprover/lean4/pull/7314) 修改了 `structure` 父项的精化方式，要求每个父项都必须在处理下一个父项之前被完全精化。
+* [#7314](https://github.com/leanprover/lean4/pull/7314) 修改了 `structure` 父项的精译方式，要求每个父项都必须在处理下一个父项之前被完全精译。
 
-* [#7640](https://github.com/leanprover/lean4/pull/7640) 实现了 `structure`/`class` 命令中继承与覆盖 autoParam 字段的主要逻辑，待结构体实例记法精化器启用。该 PR 还为被覆盖字段加入了术语信息，因此现在可以对它们使用悬停，且“跳转到定义”会跳到该字段最初定义所在的结构。
+* [#7640](https://github.com/leanprover/lean4/pull/7640) 实现了 `structure`/`class` 命令中继承与覆盖 autoParam 字段的主要逻辑，待结构体实例记法精译器启用。该 PR 还为被覆盖字段加入了术语信息，因此现在可以对它们使用悬停，且“跳转到定义”会跳到该字段最初定义所在的结构。
 
 * [#7652](https://github.com/leanprover/lean4/pull/7652) 让结构上的 `#print` 能够显示字段的默认值和 auto-param 策略。
 
-* [#7717](https://github.com/leanprover/lean4/pull/7717) 修改了 `{...}`/`where` 记法（“结构体实例记法”）的精化方式。该记法现在会尽可能模拟一种扁平表示，而不暴露子对象的细节。其特性包括：
-  - 在精化字段时，其期望类型现在会自动做若干约简。对结构及其父项相关的所有投影和构造子，构造子的投影会被约简，投影上的构造子会被 eta 约简；此外，在命题中还会对实现细节局部变量做 zeta 约简（因此策略证明应当不再看到它们）。另外，连续字段类型中的字段值也会自动进行 beta 约简。 [mathlib4#12129](https://github.com/leanprover-community/mathlib4/issues/12129#issuecomment-2056134533) 中的例子现在会展示目标 `0 = 0`，而不是 `{ toFun := fun x => x }.toFun 0 = 0`。
+* [#7717](https://github.com/leanprover/lean4/pull/7717) 修改了 `{...}`/`where` 记法（“结构体实例记法”）的精译方式。该记法现在会尽可能模拟一种扁平表示，而不暴露子对象的细节。其特性包括：
+  - 在精译字段时，其期望类型现在会自动做若干约简。对结构及其父项相关的所有投影和构造子，构造子的投影会被约简，投影上的构造子会被 eta 约简；此外，在命题中还会对实现细节局部变量做 zeta 约简（因此策略证明应当不再看到它们）。另外，连续字段类型中的字段值也会自动进行 beta 约简。 [mathlib4#12129](https://github.com/leanprover-community/mathlib4/issues/12129#issuecomment-2056134533) 中的例子现在会展示目标 `0 = 0`，而不是 `{ toFun := fun x => x }.toFun 0 = 0`。
   - 现在所有父项都可以作为字段名使用，而不仅仅是子对象父项。它们类似于额外来源，但有三个限制：该值的每个字段都必须被使用，这些字段不得与其他已提供字段重叠，并且指定父项的每个字段都必须齐备。与这些额外来源类似，如果这些值本身还不是变量，就会先提升为 `let`，以避免重复求值。它们属于实现细节局部变量，因此在后续字段中会被展开。
-  - 现在所有类父项都会用于填补缺失字段，而不只是子对象父项。关闭了 #6046。规则如下：(1) 只考虑其字段集合是剩余字段子集的父项；(2) 只在开始精化任何字段之前考虑父项；(3) 只考虑那些类型可以计算出来的父项（如果一个父项依赖另一个父项，这种情况就可能发生，而 #7302 之后这是可能的）。
+  - 现在所有类父项都会用于填补缺失字段，而不只是子对象父项。关闭了 #6046。规则如下：(1) 只考虑其字段集合是剩余字段子集的父项；(2) 只在开始精译任何字段之前考虑父项；(3) 只考虑那些类型可以计算出来的父项（如果一个父项依赖另一个父项，这种情况就可能发生，而 #7302 之后这是可能的）。
   - 默认值和自动参数现在完全遵循解析顺序：每个字段至多只有一个默认值定义可为其提供值。此前那种通过沿子对象层级向上遍历来“解卡住”默认值的算法已经被移除。如果默认值优先级的应用场景足够多，我们也许会在未来版本中重新考虑。
-  - 最终生成的构造子现在都是完全打包的。这是通过对已精化表达式执行 structure eta reduction 实现的。
+  - 最终生成的构造子现在都是完全打包的。这是通过对已精译表达式执行 structure eta reduction 实现的。
   - “魔法字段定义”（如 [Zulip 上](https://leanprover.zulipchat.com/#narrow/channel/113489-new-members/topic/Where.20is.20sSup.20defined.20on.20submodules.3F/near/499578795) 报告的情况）已被移除。此前，某些字段会通过统一过程被求解，从而误导默认值系统，以为这些字段真的是用户显式提供的。现在默认值系统会跟踪它实际求解了哪些字段，以及用户没有提供哪些字段。没有任何显式值定义的显式结构字段（默认类别）会报错。如果该字段是通过统一过程求解出来的，错误消息还会包含推断出的值，例如 “field 'f' must be explicitly provided, its synthesized value is v”。
   - 当该记法用于模式时，现在不再通过类父项插入字段，也不再应用自动参数或默认值。其动机在于，人们通常期望模式只匹配给出的字段。这一点仍不完美，因为某些字段仍可能被间接求解。
-  - 现在精化过程会尝试进行错误恢复。多余字段会记录错误并被忽略，缺失字段则会用 `sorry` 补上。
+  - 现在精译过程会尝试进行错误恢复。多余字段会记录错误并被忽略，缺失字段则会用 `sorry` 补上。
 
 * [#7742](https://github.com/leanprover/lean4/pull/7742) 为 `structure`/`class` 增加了一项特性：字段定义中没有类型的绑定器会被解释为覆盖该字段投影函数中类型参数的绑定器种类。规则如下：(1) 只有绑定器的一个前缀会按此解释；(2) 允许多标识符绑定器，但它们都必须对应参数；(3) 只有声明自身中出现的参数（而不是来自 `variables` 的参数）可以被覆盖；(4) 更新会在参数绑定器种类推断完成后应用。默认值重定义中不允许做这类绑定器更新。示例应用如下：在下面的代码中，`(R p)` 会使 `R` 和 `p` 参数变为显式，而它们通常会是隐式的。
   ```
@@ -269,14 +269,14 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___19___0-_LPAR_2025-0
 * [#7746](https://github.com/leanprover/lean4/pull/7746) 为那些从未表示为子对象的父项复制而来的结构字段添加了声明范围，以支持“跳转到定义”。该声明范围对应 `extends` 子句中的父项。
 
 ````
-## 并行精化
+## 并行精译
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___19___0-_LPAR_2025-05-01_RPAR_--Language--Parallel-Elaboration"
 %%%
 
 ````markdown
 
-* [#7084](https://github.com/leanprover/lean4/pull/7084) 允许定理体（即证明）的精化彼此并行，也可与其他精化任务并行进行。
+* [#7084](https://github.com/leanprover/lean4/pull/7084) 允许定理体（即证明）的精译彼此并行，也可与其他精译任务并行进行。
 
 * [#7247](https://github.com/leanprover/lean4/pull/7247) 让 `match` 方程和分裂器的生成兼容并行化。
 
@@ -284,7 +284,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___19___0-_LPAR_2025-0
 
 * [#7348](https://github.com/leanprover/lean4/pull/7348) 确保核心中所有方程和 unfold 定理生成器都与并行化兼容。
 
-* [#7457](https://github.com/leanprover/lean4/pull/7457) 通过引入可为异步精化任务填补空洞的 API，确保检查器和请求处理器等信息树使用方能够访问由异步精化任务创建的信息子树。
+* [#7457](https://github.com/leanprover/lean4/pull/7457) 通过引入可为异步精译任务填补空洞的 API，确保检查器和请求处理器等信息树使用方能够访问由异步精译任务创建的信息子树。
 
 * [#8101](https://github.com/leanprover/lean4/pull/8101) 修复了一个并行化回归：诸如检查命令错误的检查器先前将无法再找到这类消息。
 
@@ -743,9 +743,9 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___19___0-_LPAR_2025-0
       else
         extractLsb' (start - w) len xhi
 
-* [#7493](https://github.com/leanprover/lean4/pull/7493) implements the Bitwuzla rewrite rule
-  [NORM_BV_ADD_MUL](https://github.com/bitwuzla/bitwuzla/blob/e09c50818b798f990bd84bf61174553fef46d561/src/rewrite/rewrites_bv_norm.cpp#L19-L23),
-  and the associated lemmas to allow for expedient rewriting:
+* [#7493](https://github.com/leanprover/lean4/pull/7493) 实现了 Bitwuzla 重写规则
+  [NORM_BV_ADD_MUL](https://github.com/bitwuzla/bitwuzla/blob/e09c50818b798f990bd84bf61174553fef46d561/src/rewrite/rewrites_bv_norm.cpp#L19-L23)，
+  并添加了便于快速重写的相关引理：
 
   ```lean
   theorem neg_add_mul_eq_mul_not {x y : BitVec w} : - (x + x * y) = x * ~~~ y
@@ -868,7 +868,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___19___0-_LPAR_2025-0
 
 * [#7376](https://github.com/leanprover/lean4/pull/7376) 确保 `weak` 选项不必同时在 Lake 的 `leanOptions` 和 `moreServerOptions` 中重复填写。
 
-* [#7882](https://github.com/leanprover/lean4/pull/7882) 修复了一个回归：当文档发生变化时，先前版本文档的精化不会被取消。
+* [#7882](https://github.com/leanprover/lean4/pull/7882) 修复了一个回归：当文档发生变化时，先前版本文档的精译不会被取消。
 
 ````
 # Lake

@@ -33,26 +33,26 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___13___0-_LPAR_2024-1
   * [#5511](https://github.com/leanprover/lean4/pull/5511) 允许结构体父类型是类型同义词。
   * [#5531](https://github.com/leanprover/lean4/pull/5531) 允许结构体字段的默认值是 noncomputable 的。
 
-* `rfl` 与 `apply_rfl` tactic
-  * [#3714](https://github.com/leanprover/lean4/pull/3714)、[#3718](https://github.com/leanprover/lean4/pull/3718) 改进了 `rfl` tactic，并提供了更好的错误消息。
+* `rfl` 与 `apply_rfl` 策略
+  * [#3714](https://github.com/leanprover/lean4/pull/3714)、[#3718](https://github.com/leanprover/lean4/pull/3718) 改进了 `rfl` 策略，并提供了更好的错误消息。
   * [#3772](https://github.com/leanprover/lean4/pull/3772) 让 `rfl` 不再对封闭项使用内核 defeq。
   * [#5329](https://github.com/leanprover/lean4/pull/5329) 为 `Iff.refl` 添加了 `@[refl]` 标记。（@Parcly-Taxel）
-  * [#5359](https://github.com/leanprover/lean4/pull/5359) 确保 `rfl` tactic 会尝试 `Iff.rfl`。（@Parcly-Taxel）
+  * [#5359](https://github.com/leanprover/lean4/pull/5359) 确保 `rfl` 策略会尝试 `Iff.rfl`。（@Parcly-Taxel）
 
-* `unfold` tactic
-  * [#4834](https://github.com/leanprover/lean4/pull/4834) 让 `unfold` 可以对局部定义执行 zeta-delta 规约，纳入了 Mathlib `unfold_let` tactic 的功能。
+* `unfold` 策略
+  * [#4834](https://github.com/leanprover/lean4/pull/4834) 让 `unfold` 可以对局部定义执行 zeta-delta 规约，纳入了 Mathlib `unfold_let` 策略的功能。
 
-* `omega` tactic
+* `omega` 策略
   * [#5382](https://github.com/leanprover/lean4/pull/5382) 修复了 [#5315](https://github.com/leanprover/lean4/issues/5315) 中的伪错误。
   * [#5523](https://github.com/leanprover/lean4/pull/5523) 支持 `Int.toNat`。
 
-* `simp` tactic
+* `simp` 策略
   * [#5479](https://github.com/leanprover/lean4/pull/5479) 让 `simp` 能应用带高阶模式的规则。
 
-* `induction` tactic
-  * [#5494](https://github.com/leanprover/lean4/pull/5494) 修复了 `induction` 的 “pre-tactic” 代码块，使其始终带有缩进，从而避免意外使用。
+* `induction` 策略
+  * [#5494](https://github.com/leanprover/lean4/pull/5494) 修复了 `induction` 的 “pre-策略” 代码块，使其始终带有缩进，从而避免意外使用。
 
-* `ac_nf` tactic
+* `ac_nf` 策略
   * [#5524](https://github.com/leanprover/lean4/pull/5524) 添加了 `ac_nf`，作为 `ac_rfl` 的对应物，用于按结合律与交换律规范化表达式。并用 BitVec 表达式对其进行了测试。
 
 * `bv_decide`
@@ -68,7 +68,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___13___0-_LPAR_2024-1
   * 清理工作：[#5408](https://github.com/leanprover/lean4/pull/5408)、[#5493](https://github.com/leanprover/lean4/pull/5493)、[#5578](https://github.com/leanprover/lean4/pull/5578)
 
 
-* 精化改进
+* 精译改进
   * [#5266](https://github.com/leanprover/lean4/pull/5266) 在 `elab_as_elim` 过程中保留过度应用参数的顺序。
   * [#5510](https://github.com/leanprover/lean4/pull/5510) 泛化了 `elab_as_elim`，允许任意 motive 应用。
   * [#5283](https://github.com/leanprover/lean4/pull/5283)、[#5512](https://github.com/leanprover/lean4/pull/5512) 改进了具名参数抑制显式参数的方式。破坏性变更：某些此前可省略的显式参数现在可能需要显式写出 `_`。
@@ -85,7 +85,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___13___0-_LPAR_2024-1
   * [#5364](https://github.com/leanprover/lean4/pull/5364) 在上下文中加入更多等式，并进行更谨慎的清理。
 
 * 代码检查器
-  * [#5335](https://github.com/leanprover/lean4/pull/5335) 修复了未使用变量 linter 会对 match/tactic 组合误报的问题。
+  * [#5335](https://github.com/leanprover/lean4/pull/5335) 修复了未使用变量 linter 会对 match/策略组合误报的问题。
   * [#5337](https://github.com/leanprover/lean4/pull/5337) 修复了未使用变量 linter 会对某些通配符模式误报的问题。
 
 * 其他修复
@@ -109,13 +109,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___13___0-_LPAR_2024-1
 
 ```markdown
 
-* [#5205](https://github.com/leanprover/lean4/pull/5205) 降低了 tactic 块中自动补全的延迟。
+* [#5205](https://github.com/leanprover/lean4/pull/5205) 降低了策略块中自动补全的延迟。
 * [#5237](https://github.com/leanprover/lean4/pull/5237) 修复了 VS Code 中的符号出现高亮：当从标识符右侧将光标移入时，不会高亮其出现位置的问题。
 * [#5257](https://github.com/leanprover/lean4/pull/5257) 修复了若干自动补全错误报告的情况。
-* [#5299](https://github.com/leanprover/lean4/pull/5299) 允许在精化器无法提供上下文相关补全时，自动补全回退报告全局标识符补全项。
+* [#5299](https://github.com/leanprover/lean4/pull/5299) 允许在精译器无法提供上下文相关补全时，自动补全回退报告全局标识符补全项。
 * [#5312](https://github.com/leanprover/lean4/pull/5312) 修复了模块头之后修改空白会导致服务器损坏的问题。
 * [#5322](https://github.com/leanprover/lean4/pull/5322) 修复了多处自动补全报告不存在命名空间的情况。
-* [#5428](https://github.com/leanprover/lean4/pull/5428) 确保在等待精化时，总会将某个最近的文件范围作为进度进行报告。
+* [#5428](https://github.com/leanprover/lean4/pull/5428) 确保在等待精译时，总会将某个最近的文件范围作为进度进行报告。
 
 
 ```
@@ -150,7 +150,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___13___0-_LPAR_2024-1
   * [#5268](https://github.com/leanprover/lean4/pull/5268) 修复了 `ite_eq_left_iff` 的 binder。
   * [#5284](https://github.com/leanprover/lean4/pull/5284) 关闭了 `Inhabited (Sum α β)` 实例。
   * [#5355](https://github.com/leanprover/lean4/pull/5355) 为 `LawfulBEq` 添加了 simp 引理。
-  * [#5374](https://github.com/leanprover/lean4/pull/5374) 为积类型添加了 `Nonempty` 实例，使更多 `partial` 函数能成功精化。
+  * [#5374](https://github.com/leanprover/lean4/pull/5374) 为积类型添加了 `Nonempty` 实例，使更多 `partial` 函数能成功精译。
   * [#5447](https://github.com/leanprover/lean4/pull/5447) 更新了 Pi 实例名称。
   * [#5454](https://github.com/leanprover/lean4/pull/5454) 让某些实例参数变为隐式。
   * [#5456](https://github.com/leanprover/lean4/pull/5456) 添加了 `heq_comm`。

@@ -103,7 +103,7 @@ $ git shortlog -s -n v4.0.0-m3..v4.0.0-m4
   #eval test 4
   ```
 
-* `rw` tactic 现在可以对给定定义应用自动生成的等式定理。例如：
+* `rw` 策略现在可以对给定定义应用自动生成的等式定理。例如：
   ```lean
   example (a : Nat) (h : n = 1) : [a].length = n := by
     rw [List.length]
@@ -139,7 +139,7 @@ $ git shortlog -s -n v4.0.0-m3..v4.0.0-m4
 
 * [部分应用的 congruence 定理。](https://github.com/leanprover/lean4/issues/988)
 
-* 在期望类型是元变量时，改进精化延后启发式。Lean 现在会先归约期望类型，再执行测试。
+* 在期望类型是元变量时，改进精译延后启发式。Lean 现在会先归约期望类型，再执行测试。
 
 * [移除已弃用的 leanpkg](https://github.com/leanprover/lean4/pull/985)，改用现已随 Lean 一起提供的 [Lake](https://github.com/leanprover/lake)。
 
@@ -151,9 +151,9 @@ $ git shortlog -s -n v4.0.0-m3..v4.0.0-m4
 
 * [放宽 auto-implicit 限制](https://github.com/leanprover/lean4/pull/1011)。命令 `set_option relaxedAutoImplicit false` 可关闭这些放宽规则。
 
-* 如果目标中存在 `False.elim` 应用，`contradiction` tactic 现在会直接关闭该目标。
+* 如果目标中存在 `False.elim` 应用，`contradiction` 策略现在会直接关闭该目标。
 
-* 将 tactic `byCases` 重命名为 `by_cases`（动机：统一命名约定）。
+* 将策略 `byCases` 重命名为 `by_cases`（动机：统一命名约定）。
 
 * 模式中出现的局部实例现在会被类型类解析过程纳入考虑。例如：
   ```lean
@@ -214,11 +214,11 @@ $ git shortlog -s -n v4.0.0-m3..v4.0.0-m4
     simp_arith
   ```
 
-* 添加 `fail <string>?` tactic，它总是失败。
+* 添加 `fail <string>?` 策略，它总是失败。
 
 * 在依赖消去中添加对无环性的支持。参见 [issue #1022](https://github.com/leanprover/lean4/issues/1022)。
 
-* 添加 `trace <string>` tactic，用于调试。
+* 添加 `trace <string>` 策略，用于调试。
 
 * 为 `Unit → α` 类型添加非平凡的 `SizeOf` 实例，并让用户自定义归纳类型自动生成的 `SizeOf` 实例也支持它们。例如，给定归纳数据类型
   ```lean

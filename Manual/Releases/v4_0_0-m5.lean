@@ -98,7 +98,7 @@ file := "v4.0.0-m5"
 * 允许用户为现有类型类安装自己的 `deriving` 处理器。
   示例见 [Simple.lean](https://github.com/leanprover/lean4/blob/master/tests/pkg/deriving/UserDeriving/Simple.lean)。
 
-* 添加 tactic `congr (num)?`。更多细节见文档字符串。
+* 添加策略 `congr (num)?`。更多细节见文档字符串。
 
 * [缺失文档检查器](https://github.com/leanprover/lean4/pull/1390)
 
@@ -153,7 +153,7 @@ file := "v4.0.0-m5"
   可使用 `set_option checkBinderAnnotations false` 关闭此检查。
 
 * 添加选项 `pp.showLetValues`。当其设为 `false` 时，信息视图会隐藏目标中 `let` 变量的值。
-  默认情况下，在显示 tactic 目标时它为 `true`，否则为 `false`。
+  默认情况下，在显示策略目标时它为 `true`，否则为 `false`。
   更多细节见 [问题 #1345](https://github.com/leanprover/lean4/issues/1345)。
 
 * 添加选项 `warningAsError`。设为 true 时，警告消息会被当作错误处理。
@@ -195,7 +195,7 @@ file := "v4.0.0-m5"
 * 为 universe level 元变量 id 添加类型 `LevelMVarId`（及缩写 `LMVarId`）。
   动机：防止元编程者混淆 universe 元变量 id 与表达式元变量 id。
 
-* 改进 `calc` 项与 tactic。参见 [问题 #1342](https://github.com/leanprover/lean4/issues/1342)。
+* 改进 `calc` 项与策略。参见 [问题 #1342](https://github.com/leanprover/lean4/issues/1342)。
 
 * [放宽 antiquotation 解析](https://github.com/leanprover/lean4/pull/1272)，进一步减少了显式 `$x:p` antiquotation 种类注解的需求。
 
@@ -221,7 +221,7 @@ file := "v4.0.0-m5"
   ```lean
   macro:max x:term noWs "[" i:term "]" : term => `(getElem $x $i (by get_elem_tactic))
   ```
-  `i` 是合法索引的证明由 tactic `get_elem_tactic` 自动合成。
+  `i` 是合法索引的证明由策略 `get_elem_tactic` 自动合成。
   例如，类型 `Array α` 具有如下实例
   ```lean
   instance : GetElem (Array α) Nat α fun xs i => LT.lt i xs.size where ...
@@ -280,7 +280,7 @@ file := "v4.0.0-m5"
       | fail "failed to prove index is valid, ..."
      )
   ```
-  辅助 tactic `get_elem_tactic_trivial` 可以通过 `macro_rules` 扩展。默认情况下，它会尝试 `trivial`、`simp_arith`，以及针对 `Fin` 的特殊情形。未来它还会尝试 `linarith`。
+  辅助策略 `get_elem_tactic_trivial` 可以通过 `macro_rules` 扩展。默认情况下，它会尝试 `trivial`、`simp_arith`，以及针对 `Fin` 的特殊情形。未来它还会尝试 `linarith`。
   你可以像下面这样用 `my_tactic` 扩展 `get_elem_tactic_trivial`
   ```lean
   macro_rules
@@ -291,7 +291,7 @@ file := "v4.0.0-m5"
   instance [GetElem cont Nat elem dom] : GetElem cont (Fin n) elem fun xs i => dom xs i where
     getElem xs i h := getElem xs i.1 h
   ```
-  以及辅助 tactic
+  以及辅助策略
   ```lean
   macro_rules
   | `(tactic| get_elem_tactic_trivial) => `(tactic| apply Fin.val_lt_of_le; get_elem_tactic_trivial; done)
@@ -327,7 +327,7 @@ file := "v4.0.0-m5"
   #eval foo -- 10
   ```
 
-* 即使期望类型不可用，也会尝试精化 `do` 记法。当期望类型不可用时，我们仍然会延后精化。
+* 即使期望类型不可用，也会尝试精译 `do` 记法。当期望类型不可用时，我们仍然会延后精译。
   这一变更在编写如下示例时尤其有用
   ```lean
   #eval do
@@ -375,7 +375,7 @@ file := "v4.0.0-m5"
     x.union y -- Works
   ```
 
-* `ext` 与 `enter` 这两个 conv tactic 现在可以进入 let 声明内部。例如：
+* `ext` 与 `enter` 这两个 conv 策略现在可以进入 let 声明内部。例如：
   ```lean
   example (g : Nat → Nat) (y : Nat) (h : let x := y + 1; g (0+x) = x) : g (y + 1) = y + 1 := by
     conv at h => enter [x, 1, 1]; rw [Nat.zero_add]
@@ -389,7 +389,7 @@ file := "v4.0.0-m5"
     exact h
   ```
 
-* 添加 `zeta` conv tactic，用于展开 let 声明。例如：
+* 添加 `zeta` conv 策略，用于展开 let 声明。例如：
   ```lean
   example (h : let x := y + 1; 0 + x = y) : False := by
     conv at h => zeta; rw [Nat.zero_add]
@@ -453,11 +453,11 @@ file := "v4.0.0-m5"
     aux ⟨⟩
   ```
 
-* 添加 `subst_vars` tactic。
+* 添加 `subst_vars` 策略。
 
 * [修复多重继承中结构体字段里的 `autoParam` 丢失问题。](https://github.com/leanprover/lean4/issues/1158)。
 
-* 添加 `[eliminator]` 属性。它允许用户为 `induction` 与 `cases` tactics 指定默认的递归子/消去子。
+* 添加 `[eliminator]` 属性。它允许用户为 `induction` 与 `cases` 策略指定默认的递归子/消去子。
   这是 `using` 记法的另一种替代方式。例如：
   ```lean
   @[eliminator] protected def recDiag {motive : Nat → Nat → Sort u}
@@ -487,7 +487,7 @@ file := "v4.0.0-m5"
   ```
 
 * 为结构递归与良基递归模块添加对 `casesOn` 应用的支持。
-  这一特性在使用 tactic 编写定义时非常有用。例如：
+  这一特性在使用策略编写定义时非常有用。例如：
   ```lean
   inductive Foo where
     | a | b | c
@@ -508,12 +508,12 @@ file := "v4.0.0-m5"
 
 * `Option` 再次成为 monad。辅助类型 `OptionM` 已被移除。参见 [Zulip 讨论串](https://leanprover.zulipchat.com/#narrow/stream/270676-lean4/topic/Do.20we.20still.20need.20OptionM.3F/near/279761084)。
 
-* 改进 `split` tactic。它过去会在形如 `match h : e with ...` 且 `e` 不是自由变量的 `match` 表达式上失败。
+* 改进 `split` 策略。它过去会在形如 `match h : e with ...` 且 `e` 不是自由变量的 `match` 表达式上失败。
   这种失败过去发生在泛化阶段。
 
 
-* 为在判别式中使用 `h :` 记法的 `match` 表达式引入新的编码。相关信息在反精化过程中不会丢失，
-  这也为更好的 `split` tactic 奠定了基础。例如：
+* 为在判别式中使用 `h :` 记法的 `match` 表达式引入新的编码。相关信息在反精译过程中不会丢失，
+  这也为更好的 `split` 策略奠定了基础。例如：
   ```lean
   #print Nat.decEq
   /-
@@ -525,9 +525,9 @@ file := "v4.0.0-m5"
   -/
   ```
 
-* `exists` tactic 现在接受以逗号分隔的项列表。
+* `exists` 策略现在接受以逗号分隔的项列表。
 
-* 添加 `dsimp` 与 `dsimp!` tactics。它们保证结果项在定义上相等，并且只应用
+* 添加 `dsimp` 与 `dsimp!` 策略。它们保证结果项在定义上相等，并且只应用
   `rfl` 定理。
 
 * 修复在 `match` 模式中使用带 `[matchPattern]` 标记的定义（例如 `Nat.add`）时的绑定器信息。
@@ -576,10 +576,10 @@ file := "v4.0.0-m5"
     | a::as => f a :: map f as -- `map` is not highlighted as a variable anymore
   ```
 * 为 `Lean.Meta.Simp.Config` 添加 `autoUnfold` 选项，以及以下宏
-  - `simp!` for `simp (config := { autoUnfold := true })`
-  - `simp_arith!` for `simp (config := { autoUnfold := true, arith := true })`
-  - `simp_all!` for `simp_all (config := { autoUnfold := true })`
-  - `simp_all_arith!` for `simp_all (config := { autoUnfold := true, arith := true })`
+  - `simp!` 对应 `simp (config := { autoUnfold := true })`
+  - `simp_arith!` 对应 `simp (config := { autoUnfold := true, arith := true })`
+  - `simp_all!` 对应 `simp_all (config := { autoUnfold := true })`
+  - `simp_all_arith!` 对应 `simp_all (config := { autoUnfold := true, arith := true })`
 
   当 `autoUnfold` 设为 true 时，`simp` 会尝试展开以下几类定义
   - 由结构递归定义的递归定义。
@@ -599,7 +599,7 @@ file := "v4.0.0-m5"
     induction as <;> simp_all!
   ```
 
-* 添加 `save` tactic，以更方便地创建 checkpoint。例如：
+* 添加 `save` 策略，以更方便地创建 checkpoint。例如：
   ```lean
   example : <some-proposition> := by
     tac_1
@@ -675,10 +675,10 @@ file := "v4.0.0-m5"
       return sz
   ```
 
-* 添加 tactic `case'`。它与 `case` 类似，但在失败时不会自动承认目标。
-  例如，当我们在 `first | ... | ...` 中需要使用 `case'`，并希望在 `case'` 失败时尝试下一个分支时，这个新 tactic 就很有用。
+* 添加策略 `case'`。它与 `case` 类似，但在失败时不会自动承认目标。
+  例如，当我们在 `first | ... | ...` 中需要使用 `case'`，并希望在 `case'` 失败时尝试下一个分支时，这个新策略就很有用。
 
-* 添加 tactic 宏
+* 添加策略宏
   ```lean
   macro "stop" s:tacticSeq : tactic => `(repeat sorry)
   ```
@@ -727,7 +727,7 @@ file := "v4.0.0-m5"
   ⊢ BST left
   ```
 
-* `by_cases` tactic 中的假设名现在是可选的。
+* `by_cases` 策略中的假设名现在是可选的。
 
 * [修复 `syntax` 与 kind 名称之间的不一致](https://github.com/leanprover/lean4/issues/1090)。
   节点种类 `numLit`、`charLit`、`nameLit`、`strLit` 和 `scientificLit` 现在分别改名为
@@ -740,15 +740,15 @@ file := "v4.0.0-m5"
   macro_rules | `($n:numLit) => `("hello")
   ```
 
-* （实验性）为大型交互式证明添加新的 `checkpoint <tactic-seq>` tactic。
+* （实验性）为大型交互式证明添加新的 `checkpoint <tactic-seq>` 策略。
 
-* 将 tactic `nativeDecide` 重命名为 `native_decide`。
+* 将策略 `nativeDecide` 重命名为 `native_decide`。
 
 * 现在任何语法中都接受 antiquotation。因此，`incQuotDepth` `syntax` 解析器已经过时并被移除。
 
-* 已将 tactic `nativeDecide` 重命名为 `native_decide`。
+* 已将策略 `nativeDecide` 重命名为 `native_decide`。
 
-* 在精化 `match` 分支右侧之前，先“清理”局部上下文。例如：
+* 在精译 `match` 分支右侧之前，先“清理”局部上下文。例如：
   ```lean
   example (x : Nat) : Nat :=
     match g x with

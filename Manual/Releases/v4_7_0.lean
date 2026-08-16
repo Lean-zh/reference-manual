@@ -22,7 +22,7 @@ file := "v4.7.0"
 * `simp` 和 `rw` 现在会使用通过合一找到的实例参数，
   而不再总是重新合成。为保持向后兼容，原有行为仍可通过
   `set_option tactic.skipAssignedInstances false` 使用。
-  [#3507](https://github.com/leanprover/lean4/pull/3507) and
+  [#3507](https://github.com/leanprover/lean4/pull/3507) 和
   [#3509](https://github.com/leanprover/lean4/pull/3509).
 
 * 当 `pp.proofs` 为 false 时，如今被省略的证明会显示为 `⋯` 而不是 `_`，
@@ -34,7 +34,7 @@ file := "v4.7.0"
 
 * 应用的漂亮打印器在应用反展开器时，
   现在会自行处理过量应用的情形。
-  特别是，``| `($_ $a $b $xs*) => `(($a + $b) $xs*)`` case of an `app_unexpander` 已不再必要。
+  特别是，``| `($_ $a $b $xs*) => `(($a + $b) $xs*)`` 这一 `app_unexpander` 分支已不再必要。
   [#3495](https://github.com/leanprover/lean4/pull/3495).
 
 * 新增 `simp`（以及 `dsimp`）配置选项：`zetaDelta`。其默认值为 `false`。

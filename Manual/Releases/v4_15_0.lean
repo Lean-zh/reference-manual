@@ -34,7 +34,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___15___0-_LPAR_2025-0
 
 - [#5501](https://github.com/leanprover/lean4/pull/5501) 确保 `instantiateMVarsProfiling` 会添加一个跟踪节点。
 
-- [#5856](https://github.com/leanprover/lean4/pull/5856) 为互递归 def 精化器新增一项特性：当类是 `Prop` 时，`instance` 命令会生成定理而不是定义。
+- [#5856](https://github.com/leanprover/lean4/pull/5856) 为互递归 def 精译器新增一项特性：当类是 `Prop` 时，`instance` 命令会生成定理而不是定义。
 
 - [#5907](https://github.com/leanprover/lean4/pull/5907) 去掉 `simpa?` 的 “try this” 建议中的 trailing 设置。
 
@@ -54,7 +54,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___15___0-_LPAR_2025-0
 
 - [#5992](https://github.com/leanprover/lean4/pull/5992) 修复 bv_decide normalizer 的样式问题。
 
-- [#5999](https://github.com/leanprover/lean4/pull/5999) 为 `decide`/`decide!`/`native_decide` 新增配置选项，并将这些策略重构为同一后端的前端。新增 `+revert` 选项，可清理局部上下文并回退目标所依赖的所有局部变量，以及间接的命题性假设。它还让 `native_decide` 在失败时于精化阶段报错，同时不牺牲性能（判定过程仍只执行一次）。现在 `native_decide` 还支持宇宙多态。
+- [#5999](https://github.com/leanprover/lean4/pull/5999) 为 `decide`/`decide!`/`native_decide` 新增配置选项，并将这些策略重构为同一后端的前端。新增 `+revert` 选项，可清理局部上下文并回退目标所依赖的所有局部变量，以及间接的命题性假设。它还让 `native_decide` 在失败时于精译阶段报错，同时不牺牲性能（判定过程仍只执行一次）。现在 `native_decide` 还支持宇宙多态。
 
 - [#6010](https://github.com/leanprover/lean4/pull/6010) 将 bv_decide 的配置方式从大量 `set_option` 改为类似 `simp` 或 `omega` 的 elaborated 配置。值得注意的例外是 `sat.solver`，它仍然是 `set_option`，以便用户能为整个项目或文件全局配置自定义 SAT 求解器。此外，还通过新配置引入了为 simp 预处理设置 `maxSteps` 的能力。
 
@@ -64,7 +64,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___15___0-_LPAR_2025-0
 
 - [#6019](https://github.com/leanprover/lean4/pull/6019) 从 `MkBinding.mkBinding` 中移除了 @[specilize]，因为这个函数无法被特化（它的参数里没有函数）。结果是，本可特化的函数 `Nat.foldRevM.loop` 也不再被特化，从而导致生成的代码性能更差。
 
-- [#6022](https://github.com/leanprover/lean4/pull/6022) 让 `change` 策略和 conv 策略使用相同的精化策略。它对目标和局部假设都一致生效。现在 `change` 可以为元变量赋值，例如：
+- [#6022](https://github.com/leanprover/lean4/pull/6022) 让 `change` 策略和 conv 策略使用相同的精译策略。它对目标和局部假设都一致生效。现在 `change` 可以为元变量赋值，例如：
 ```lean
 example (x y z : Nat) : x + y = z := by
   change ?a = _
@@ -72,7 +72,7 @@ example (x y z : Nat) : x + y = z := by
   -- now `w : Nat := x + y`
 ```
 
-- [#6024](https://github.com/leanprover/lean4/pull/6024) 修复了单子提升强制转换精化器的一个问题：此前即使表达式不是单子，它也会做部分统一。这个行为可能被利用来传播有助于精化推进的信息；例如，下面第一个 `change` 之所以能工作，就是因为单子提升强制转换精化器会把 `@Eq _ _` 与 `@Eq (Nat × Nat) p` 统一起来：
+- [#6024](https://github.com/leanprover/lean4/pull/6024) 修复了单子提升强制转换精译器的一个问题：此前即使表达式不是单子，它也会做部分统一。这个行为可能被利用来传播有助于精译推进的信息；例如，下面第一个 `change` 之所以能工作，就是因为单子提升强制转换精译器会把 `@Eq _ _` 与 `@Eq (Nat × Nat) p` 统一起来：
 ```lean
 example (p : Nat × Nat) : p = p := by
   change _ = ⟨_, _⟩ -- used to work (yielding `p = (p.fst, p.snd)`), now it doesn't
@@ -112,9 +112,9 @@ example (p : Nat × Nat) : p = p := by
 
 - [#6096](https://github.com/leanprover/lean4/pull/6096) 改进了结构体上的 `#print` 命令，使其显示全部字段，以及这些字段继承自哪些父级，同时隐藏哪些父级以子对象表示等内部细节。如果有需要，这些信息仍保留在构造子中。私有常量的漂亮打印器也得到改进；它现在会像处理其他名称一样处理来自当前模块的私有名称，而来自其他模块的私有名称会被做卫生化处理。
 
-- [#6098](https://github.com/leanprover/lean4/pull/6098) 修改 `Lean.MVarId.replaceTargetDefEq` 和 `Lean.MVarId.replaceLocalDeclDefEq`，在判断表达式是否改变时使用 `Expr.equal` 而不是 `Expr.eqv`。这样做的理由是绑定器名称和绑定器 info 对用户可见，并且会影响精化。
+- [#6098](https://github.com/leanprover/lean4/pull/6098) 修改 `Lean.MVarId.replaceTargetDefEq` 和 `Lean.MVarId.replaceLocalDeclDefEq`，在判断表达式是否改变时使用 `Expr.equal` 而不是 `Expr.eqv`。这样做的理由是绑定器名称和绑定器 info 对用户可见，并且会影响精译。
 
-- [#6105](https://github.com/leanprover/lean4/pull/6105) 修复了由元变量上下文中的循环赋值导致的栈溢出。该循环是由结构体实例精化器无意引入的。
+- [#6105](https://github.com/leanprover/lean4/pull/6105) 修复了由元变量上下文中的循环赋值导致的栈溢出。该循环是由结构体实例精译器无意引入的。
 
 - [#6108](https://github.com/leanprover/lean4/pull/6108) 在 apply? 结果中关闭 pp.mvars。
 
@@ -126,7 +126,7 @@ example (p : Nat × Nat) : p = p := by
 
 - [#6116](https://github.com/leanprover/lean4/pull/6116) 修复了一个问题：当递归参数的索引在函数参数中出现的顺序与其类型定义中的顺序不一致时，结构递归无法正常工作。
 
-- [#6125](https://github.com/leanprover/lean4/pull/6125) 为 `mutual` 代码块中的 `structure` 提供支持，使通过 `inductive` 和 `structure` 定义的归纳类型可以互递归。其限制为：（1）`extends` 子句中的父级必须在 `mutual` 块之前定义；（2）不允许互递归的类（这也是 `class inductive` 共有的限制）。此外，它还改进了归纳类型和结构体的宇宙层级推断。破坏性变更：结构体父级现在会在该结构体已进入作用域时精化（修复方式：使用限定名或重命名结构体以避免遮蔽），并且结构体父级不再在启用 autoimplicits 的情况下精化。
+- [#6125](https://github.com/leanprover/lean4/pull/6125) 为 `mutual` 代码块中的 `structure` 提供支持，使通过 `inductive` 和 `structure` 定义的归纳类型可以互递归。其限制为：（1）`extends` 子句中的父级必须在 `mutual` 块之前定义；（2）不允许互递归的类（这也是 `class inductive` 共有的限制）。此外，它还改进了归纳类型和结构体的宇宙层级推断。破坏性变更：结构体父级现在会在该结构体已进入作用域时精译（修复方式：使用限定名或重命名结构体以避免遮蔽），并且结构体父级不再在启用 autoimplicits 的情况下精译。
 
 - [#6128](https://github.com/leanprover/lean4/pull/6128) 做了与 #6104 相同的修复，但不会破坏 `Plausible` 中的测试/文件。做法是：不为 `elimMVar` 创建出的元变量类型生成未使用的 let 绑定器。（这对查看元变量类型的用户也有好处，例如在错误消息中。）
 
@@ -149,7 +149,7 @@ structure PosFun where
 
 - [#6168](https://github.com/leanprover/lean4/pull/6168) 扩展了 rewrite 策略中“动机类型不正确”的报错信息，解释其含义；同时还会漂亮打印出类型不正确的动机，并报告相应的类型错误。
 
-- [#6170](https://github.com/leanprover/lean4/pull/6170) 新增核心元编程函数，用于在精化中 fork 出后台任务，并使其结果对报告系统和语言服务器可见。
+- [#6170](https://github.com/leanprover/lean4/pull/6170) 新增核心元编程函数，用于在精译中 fork 出后台任务，并使其结果对报告系统和语言服务器可见。
 
 - [#6175](https://github.com/leanprover/lean4/pull/6175) 修复了 `structure`/`class` 命令中的一个问题：如果某些父级不是以子对象表示，但却使用了其他父级作为实例，那么会触发内核错误。关闭 #2611。
 
@@ -269,7 +269,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___15___0-_LPAR_2025-0
 
 - [#6132](https://github.com/leanprover/lean4/pull/6132) 将 `List.attach`/`attachWith`/`pmap` 的验证 API 复制到 `Array`。
 
-- [#6133](https://github.com/leanprover/lean4/pull/6133) 用 `Array.eraseIdx` 和 `Array.insertIdx` 替换 `Array.feraseIdx` 与 `Array.insertAt`；两者都接受一个 `Nat` 参数和一个由策略提供的越界证明。我们还提供了 `eraseIdxIfInBounds` 和 `insertIdxIfInBounds`，当索引越界时它们是 no-op。另有返回 `Fin` 值版本的 `Array.findIdx?`。这些改动共同以较为易用的方式提升了编译器/精化器中多处数组索引的安全性。
+- [#6133](https://github.com/leanprover/lean4/pull/6133) 用 `Array.eraseIdx` 和 `Array.insertIdx` 替换 `Array.feraseIdx` 与 `Array.insertAt`；两者都接受一个 `Nat` 参数和一个由策略提供的越界证明。我们还提供了 `eraseIdxIfInBounds` 和 `insertIdxIfInBounds`，当索引越界时它们是 no-op。另有返回 `Fin` 值版本的 `Array.findIdx?`。这些改动共同以较为易用的方式提升了编译器/精译器中多处数组索引的安全性。
 
 - [#6136](https://github.com/leanprover/lean4/pull/6136) 修复了 `(default : Float)` 的运行时求值。
 
@@ -358,7 +358,7 @@ https://github.com/google/sanitizers/issues/1688. 就我所知，
 https://github.com/google/sanitizers/wiki/AddressSanitizerUseAfterReturn#algorithm
 会用堆分配替换局部变量，因此获取局部变量地址不再适合作为单调的栈使用量度量方式。
 
-- [#6209](https://github.com/leanprover/lean4/pull/6209) 记录了 `Runtime.markPersistent` 在哪些条件下是不安全的，并据此调整了精化器。
+- [#6209](https://github.com/leanprover/lean4/pull/6209) 记录了 `Runtime.markPersistent` 在哪些条件下是不安全的，并据此调整了精译器。
 
 - [#6257](https://github.com/leanprover/lean4/pull/6257) 加固 `markPersistent` 的使用。
 
@@ -418,7 +418,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___15___0-_LPAR_2025-0
 
 - [#5835](https://github.com/leanprover/lean4/pull/5835) 为结构体实例记法的字段添加自动补全。具体来说，现在在结构体实例记法的空白处用 `Ctrl+Space` 查询补全时，会出现完整字段列表。对自定义语法，也可以通过把字段列表解析器包在 `structInstFields` 解析器中来启用空白处结构补全。
 
-- [#5837](https://github.com/leanprover/lean4/pull/5837) 修复了一个老的自动补全问题：当 `x.` 无法被精化为 dot 补全时，它此前会对 `x.` 给出毫无意义的补全项。
+- [#5837](https://github.com/leanprover/lean4/pull/5837) 修复了一个老的自动补全问题：当 `x.` 无法被精译为 dot 补全时，它此前会对 `x.` 给出毫无意义的补全项。
 
 - [#5996](https://github.com/leanprover/lean4/pull/5996) 避免补全过程中出现最大 heartbeat 错误。
 

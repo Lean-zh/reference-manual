@@ -94,17 +94,17 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___11___0-_LPAR_2024-0
   * [#4809](https://github.com/leanprover/lean4/pull/4809) 让不必要的 `termination_by` 子句产生警告而不是错误。
   * [#4831](https://github.com/leanprover/lean4/pull/4831) 改进了通过非递归类型进行嵌套结构化递归的处理。
   * [#4839](https://github.com/leanprover/lean4/pull/4839) 在存在自反参数时，改进了对归纳谓词进行结构化递归的支持。
-* `simp` tactic
+* `simp` 策略
   * [#4784](https://github.com/leanprover/lean4/pull/4784) 将配置 `Simp.Config.implicitDefEqProofs` 的默认值设为 `true`。
 
-* `omega` tactic
+* `omega` 策略
   * [#4612](https://github.com/leanprover/lean4/pull/4612) 规范化了错误消息中约束出现的顺序。
   * [#4695](https://github.com/leanprover/lean4/pull/4695) 除非能产生非平凡线性组合，否则不再将类型转换推进到乘法中。
   * [#4989](https://github.com/leanprover/lean4/pull/4989) 修复了一个回归。
 
-* `decide` tactic
+* `decide` 策略
   * [#4711](https://github.com/leanprover/lean4/pull/4711) 在规约 `Decidable` 实例时，从“默认透明度”切换为“至少默认透明度”。
-  * [#4674](https://github.com/leanprover/lean4/pull/4674) 为 `decide` tactic 失败提供详细反馈。它会告诉你展开了哪些 `Decidable` 实例；如果卡在 `Eq.rec`，则会提示定义 `Decidable` 实例时避免使用 tactic；如果卡在 `Classical.choice`，则会提示当前作用域中引入了经典实例。在此过程中，它会处理 `Decidable.rec` 和 match，以把责任定位到没有规约的实例上。
+  * [#4674](https://github.com/leanprover/lean4/pull/4674) 为 `decide` 策略失败提供详细反馈。它会告诉你展开了哪些 `Decidable` 实例；如果卡在 `Eq.rec`，则会提示定义 `Decidable` 实例时避免使用策略；如果卡在 `Classical.choice`，则会提示当前作用域中引入了经典实例。在此过程中，它会处理 `Decidable.rec` 和 match，以把责任定位到没有规约的实例上。
 
 * `@[ext]` attribute
   * [#4543](https://github.com/leanprover/lean4/pull/4543) 和 [#4762](https://github.com/leanprover/lean4/pull/4762) 让 `@[ext]` 能从用户自定义的 `ext` 定理生成 `ext_iff` 定理。同时修复了该 attribute，使 `@[local ext]` 和 `@[scoped ext]` 可用。可以使用 `@[ext (iff := false)]` 关闭 `ext_iff` 生成。
@@ -112,7 +112,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___11___0-_LPAR_2024-0
   * [#4710](https://github.com/leanprover/lean4/pull/4710) 让 `ext_iff` 定理保留实例隐式 binder 的类型，而不是把所有 binder 类型都变成隐式。
 
 * `#eval` 命令
-  * [#4810](https://github.com/leanprover/lean4/pull/4810) 引入了一个更安全的 `#eval` 命令，防止求值包含 `sorry` 的项。其动机在于：失败的 tactic 配合数组访问等操作可能导致 Lean 进程崩溃。用户可以使用新的 `#eval!` 命令来恢复之前的不安全行为。（[#4829](https://github.com/leanprover/lean4/pull/4829) 对一个测试做了调整。）
+  * [#4810](https://github.com/leanprover/lean4/pull/4810) 引入了一个更安全的 `#eval` 命令，防止求值包含 `sorry` 的项。其动机在于：失败的策略配合数组访问等操作可能导致 Lean 进程崩溃。用户可以使用新的 `#eval!` 命令来恢复之前的不安全行为。（[#4829](https://github.com/leanprover/lean4/pull/4829) 对一个测试做了调整。）
 
 * [#4447](https://github.com/leanprover/lean4/pull/4447) 添加了 `#discr_tree_key` 和 `#discr_tree_simp_key` 命令，用于辅助调试 discrimination tree 失败。`#discr_tree_key t` 会打印项 `t` 的 discrimination tree 键（如果它只是一个标识符，则打印该常量的类型）。它使用默认配置来生成键。`#discr_tree_simp_key` 与 `#discr_tree_key` 类似，但会将底层类型视作 simp 引理的类型，也就是说它会把该类型变换为一个等式，并生成其左侧的键。
 
@@ -137,7 +137,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___11___0-_LPAR_2024-0
   * [#4618](https://github.com/leanprover/lean4/pull/4618) 删除了 2022 年起已弃用的函数。
   * [#4642](https://github.com/leanprover/lean4/pull/4642) 添加了 `Meta.lambdaBoundedTelescope`。
   * [#4731](https://github.com/leanprover/lean4/pull/4731) 添加了 `Meta.withErasedFVars`，用于进入一个从局部上下文中擦除某些 fvar 的上下文。
-  * [#4777](https://github.com/leanprover/lean4/pull/4777) 在 `closeMainGoal` 中加入赋值验证，防止用户绕过 occurs check，例如通过 `exact` 之类的 tactic。
+  * [#4777](https://github.com/leanprover/lean4/pull/4777) 在 `closeMainGoal` 中加入赋值验证，防止用户绕过 occurs check，例如通过 `exact` 之类的策略。
   * [#4807](https://github.com/leanprover/lean4/pull/4807) 引入了 `Lean.Meta.PProdN` 模块，用于打包和投影嵌套的 `PProd`。
   * [#5170](https://github.com/leanprover/lean4/pull/5170) 修复了 `Syntax.unsetTrailing`。因此，在 `import` 块中最后一个模块名上，“跳转到定义”现在可以正常工作了（问题 [#4958](https://github.com/leanprover/lean4/issues/4958)）。
 
@@ -149,7 +149,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___11___0-_LPAR_2024-0
 
 ````markdown
 
-* [#4727](https://github.com/leanprover/lean4/pull/4727) 让信息视图请求的响应在相关 tactic 执行完成后立刻返回。
+* [#4727](https://github.com/leanprover/lean4/pull/4727) 让信息视图请求的响应在相关策略执行完成后立刻返回。
 * [#4580](https://github.com/leanprover/lean4/pull/4580) 让空白变动不再使导入失效，因此在导入后开始输入第一个声明也不应再触发重新加载。
 * [#4780](https://github.com/leanprover/lean4/pull/4780) 修复了一个问题：悬停在未导入的内建名称上可能导致 panic。
 
@@ -226,7 +226,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___11___0-_LPAR_2024-0
   * [#4607](https://github.com/leanprover/lean4/pull/4607) 添加了 `PartialEquivBEq`、`ReflBEq`、`EquivBEq` 和 `LawfulHashable` 类。
 * `IO`
   * [#4660](https://github.com/leanprover/lean4/pull/4660) 添加了 `IO.Process.Child.tryWait`。
-* [#4747](https://github.com/leanprover/lean4/pull/4747)、[#4730](https://github.com/leanprover/lean4/pull/4730) 和 [#4756](https://github.com/leanprover/lean4/pull/4756) 为 `PProd` 添加了 `×'` 语法。还为 `PProd` 和 `MProd` 值添加了反精化器，以便将其美观打印为扁平的尖括号元组。
+* [#4747](https://github.com/leanprover/lean4/pull/4747)、[#4730](https://github.com/leanprover/lean4/pull/4730) 和 [#4756](https://github.com/leanprover/lean4/pull/4756) 为 `PProd` 添加了 `×'` 语法。还为 `PProd` 和 `MProd` 值添加了反精译器，以便将其美观打印为扁平的尖括号元组。
 * **其他修复或改进**
   * [#4604](https://github.com/leanprover/lean4/pull/4604) 添加了关于 cond 的引理。
   * [#4619](https://github.com/leanprover/lean4/pull/4619) 将一些定义改成了定理。
@@ -254,17 +254,17 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___11___0-_LPAR_2024-0
 %%%
 
 ````markdown
-* **精化**
+* **精译**
   * [#4596](https://github.com/leanprover/lean4/pull/4596) 在 `unstuckMVar` 过程中强制执行 `isDefEqStuckEx`：如果元变量是在先前层级中创建的，isDefEq 会抛出 stuck defeq 异常。这会带来更好的错误消息，并有助于 `rw` 成功合成实例（见问题 [#2736](https://github.com/leanprover/lean4/issues/2736)）。
   * [#4713](https://github.com/leanprover/lean4/pull/4713) 修复了在存在重载符号时的弃用警告。
   * `elab_as_elim` 算法：
     * [#4722](https://github.com/leanprover/lean4/pull/4722) 增加了对推断出的 motive 是否类型正确的检查。
-    * [#4800](https://github.com/leanprover/lean4/pull/4800) 对出现在目标类型中的参数进行参数精化。
+    * [#4800](https://github.com/leanprover/lean4/pull/4800) 对出现在目标类型中的参数进行参数精译。
     * [#4817](https://github.com/leanprover/lean4/pull/4817) 让该算法正确处理具有显式 motive 参数的消去子。
-  * [#4792](https://github.com/leanprover/lean4/pull/4792) 为 `Lean.Parser.Term.namedPattern`（例如 `n@(n' + 1)`）添加了项精化器，以便在非模式匹配上下文中使用时报告错误。
+  * [#4792](https://github.com/leanprover/lean4/pull/4792) 为 `Lean.Parser.Term.namedPattern`（例如 `n@(n' + 1)`）添加了项精译器，以便在非模式匹配上下文中使用时报告错误。
   * [#4818](https://github.com/leanprover/lean4/pull/4818) 让匿名点记法在期望类型是值为 pi 类型的类型同义词时也能工作。
 * **类型类推断**
-  * [#4646](https://github.com/leanprover/lean4/pull/4646) 改进了 `synthAppInstances`，这是负责为 `rw` 和 `apply` tactic 合成实例的函数。它新增了一个合成循环，以处理实例需要按复杂顺序合成的函数。
+  * [#4646](https://github.com/leanprover/lean4/pull/4646) 改进了 `synthAppInstances`，这是负责为 `rw` 和 `apply` 策略合成实例的函数。它新增了一个合成循环，以处理实例需要按复杂顺序合成的函数。
 * **归纳类型**
   * [#4684](https://github.com/leanprover/lean4/pull/4684)（回移植为 [98ee78](https://github.com/leanprover/lean4/commit/98ee789990f91ff5935627787b537911ef8773c4)）将 `InductiveVal` 中的 `isNested : Bool` 字段重构为 `numNested : Nat` 字段。这修改了内核。
 * **定义**
@@ -291,7 +291,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___11___0-_LPAR_2024-0
 * **模块系统**
   * [#4652](https://github.com/leanprover/lean4/pull/4652) 修复了 `finalizeImport` 中对 `const2ModIdx` 的处理：当声明被重新声明时，它会优先为该声明选择原始模块。
 * **内核**
-  * [#4637](https://github.com/leanprover/lean4/pull/4637) 添加了检查以防止大 `Nat` 指数运算被求值。精化器规约由 `exponentiation.threshold` 选项控制。
+  * [#4637](https://github.com/leanprover/lean4/pull/4637) 添加了检查以防止大 `Nat` 指数运算被求值。精译器规约由 `exponentiation.threshold` 选项控制。
   * [#4683](https://github.com/leanprover/lean4/pull/4683) 更新了 `kernel/declaration.h` 中的注释，确保其反映当前 Lean 4 类型。
   * [#4796](https://github.com/leanprover/lean4/pull/4796) 通过使用带精确缓存的 `replace` 提升了性能。
   * [#4700](https://github.com/leanprover/lean4/pull/4700) 通过修复移动构造函数和移动赋值运算符的实现来提升性能。在某些工作负载中，表达式复制占总运行时间的 10%。见问题 [#4698](https://github.com/leanprover/lean4/issues/4698)。
@@ -391,8 +391,8 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___11___0-_LPAR_2024-0
 
 * `variable` 命令对 `theorem` 证明的影响已经改变。此类分节变量在证明中是否可访问，现在只取决于定理签名和其他顶层命令，而不再取决于证明本身。这一改变确保：
   * 定理的陈述独立于其证明。换言之，证明的变化不会改变定理陈述。
-  * `induction` 之类的 tactic 不会意外引入分节变量。
-  * 在未来版本的 Lean 中，证明可以与后续声明并行精化。
+  * `induction` 之类的策略不会意外引入分节变量。
+  * 在未来版本的 Lean 中，证明可以与后续声明并行精译。
 
   `variable` 对定理头部以及其他类型声明的影响保持不变。
 

@@ -220,8 +220,8 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___21___0-_LPAR_2025-0
   `sorry` 要求策略同时生成一条错误消息，而在这个场景下我们并不希望如此。）
   这一改动可防御 [#8212](https://github.com/leanprover/lean4/issues/8212) 中报告的问题。
 
-* [#8232](https://github.com/leanprover/lean4/pull/8232) 修复了 `rewrite` 策略中常量的精化。
-  此前，`rw [eq_self]` 会对 `eq_self` 做两次精化，并把它
+* [#8232](https://github.com/leanprover/lean4/pull/8232) 修复了 `rewrite` 策略中常量的精译。
+  此前，`rw [eq_self]` 会对 `eq_self` 做两次精译，并把它
   在信息树中加入两次。这会导致 “Expected type”
   在反展开时带着一个未知的宇宙元变量。
 
@@ -361,7 +361,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___21___0-_LPAR_2025-0
   参数索引会混乱。
 
 * [#8363](https://github.com/leanprover/lean4/pull/8363) 以无冲突的方式统一了各种辅助声明的命名方法，
-  并确保该方法兼容精化过程中的分叉分支，例如并行化或类似 Aesop 的
+  并确保该方法兼容精译过程中的分叉分支，例如并行化或类似 Aesop 的
   回溯加重放搜索。
 
 * [#8365](https://github.com/leanprover/lean4/pull/8365) 修复了基底模式的透明度模式。
@@ -372,7 +372,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___21___0-_LPAR_2025-0
     grind
 
 * [#8368](https://github.com/leanprover/lean4/pull/8368) 改进了无效模式匹配
-  分支产生的错误消息，并提升了模式匹配策略与精化器在错误位置上的一致性。
+  分支产生的错误消息，并提升了模式匹配策略与精译器在错误位置上的一致性。
 
 * [#8369](https://github.com/leanprover/lean4/pull/8369) 修复了 `grind` 使用的
   `instantiateTheorem` 函数中的一个类型错误。此前它无法实例化如下定理
@@ -495,7 +495,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___21___0-_LPAR_2025-0
   “unexpected kernel projection term during internalization” 问题。
 
 * [#8472](https://github.com/leanprover/lean4/pull/8472) 避免了在查找定理名称时，
-  名称解析被定理证明的精化阻塞。
+  名称解析被定理证明的精译阻塞。
 
 * [#8479](https://github.com/leanprover/lean4/pull/8479) 为 `grind` 实现了考虑 alpha 等价的
   hash-consing。
@@ -754,7 +754,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___21___0-_LPAR_2025-0
 
 * [#8620](https://github.com/leanprover/lean4/pull/8620) 移除了 `NatCast (Fin n)` 全局实例（包括
   直接实例，以及通过 `Lean.Grind.Semiring` 间接获得的实例），因为该实例会使
-  `x < n`（其中 `x : Fin k`、`n : Nat`）被精化为
+  `x < n`（其中 `x : Fin k`、`n : Nat`）被精译为
   `x < ↑n`，而不是 `↑x < n`，这并不理想。不过需要注意，
   在 Mathlib 中这仍然会发生！
 
@@ -924,7 +924,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___21___0-_LPAR_2025-0
 
 * [#8529](https://github.com/leanprover/lean4/pull/8529) 修改了 `lake lean` 和 `lake setup-file`，
   使其会使用 `import` 对应的整个库，来预编译非工作区文件的导入。
-  这样能确保额外的链接对象在精化期间已被链接并可用。
+  这样能确保额外的链接对象在精译期间已被链接并可用。
 
 * [#8539](https://github.com/leanprover/lean4/pull/8539) 修改了 Lake，使模块构建产出的 Lean 消息使用相对路径。
   这使这些消息能在不同机器之间可移植，这对 Mathlib 的缓存很有用。

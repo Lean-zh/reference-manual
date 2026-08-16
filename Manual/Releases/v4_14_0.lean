@@ -45,14 +45,14 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___14___0-_LPAR_2024-1
           s := s + (children ⟨i, h.2⟩).size
         pure s
     ```
-  * [#5814](https://github.com/leanprover/lean4/pull/5814) 修复了一个 bug：Mathlib 的 `Type*` 精化器可能导致 `inductive` 命令生成错误的宇宙参数。
+  * [#5814](https://github.com/leanprover/lean4/pull/5814) 修复了一个 bug：Mathlib 的 `Type*` 精译器可能导致 `inductive` 命令生成错误的宇宙参数。
   * [#3152](https://github.com/leanprover/lean4/pull/3152) 和 [#5844](https://github.com/leanprover/lean4/pull/5844) 修复了结构体实例记法中默认值处理的 bug。（与 @arthur-adjedj 合作）
   * [#5399](https://github.com/leanprover/lean4/pull/5399) 将实例合成顺序计算失败从软错误提升为硬错误。
   * [#5542](https://github.com/leanprover/lean4/pull/5542) 弃用了 `inductive` 和 `structure` 的 `:=` 变体（见破坏性变更）。
 
-* **应用精化改进**
-  * [#5671](https://github.com/leanprover/lean4/pull/5671) 令 `@[elab_as_elim]` 至少需要一个判别式，否则这种替代精化器就没有优势。
-  * [#5528](https://github.com/leanprover/lean4/pull/5528) 在显式模式下启用字段记法。语法 `@x.f` 会被精化为 `@S.f`，并将 `x` 提供给相应参数。
+* **应用精译改进**
+  * [#5671](https://github.com/leanprover/lean4/pull/5671) 令 `@[elab_as_elim]` 至少需要一个判别式，否则这种替代精译器就没有优势。
+  * [#5528](https://github.com/leanprover/lean4/pull/5528) 在显式模式下启用字段记法。语法 `@x.f` 会被精译为 `@S.f`，并将 `x` 提供给相应参数。
   * [#5692](https://github.com/leanprover/lean4/pull/5692) 修改了点记法解析算法，使其可以应用 `CoeFun` 实例。例如，Mathlib 中有 `Multiset.card : Multiset α →+ Nat`；现在若 `m : Multiset α`，记法 `m.card` 会解析为 `⇑Multiset.card m`。
   * [#5658](https://github.com/leanprover/lean4/pull/5658) 修复了一个 bug：启用 eta 参数特性时，'don't know how to synthesize implicit argument' 错误可能显示错误的局部上下文。
   * [#5933](https://github.com/leanprover/lean4/pull/5933) 修复了模式中的 `..` 省略号会使用 optparams 和 autoparams 的 bug。
@@ -94,18 +94,18 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___14___0-_LPAR_2024-1
   * [#5780](https://github.com/leanprover/lean4/pull/5780) 改进了 `partial` 无法证明某个类型可居住时的错误消息。加入 delta deriving。
   * [#5821](https://github.com/leanprover/lean4/pull/5821) 让 `partial` 的可居住性推导能够根据参数创建局部 `Inhabited` 实例。
 
-* **新的 tactic 配置语法。** 现在，所有核心 tactic 的配置语法都得到了升级。过去写作 `simp (config := { contextual := true, maxSteps := 22})`，现在可以写成 `simp +contextual (maxSteps := 22)`。tactic 作者可将 tactic 语法中的 `(config)?` 改为 `optConfig`，并且可能可以删除精化器中的 `mkOptionalNode`，以完成迁移。[#5883](https://github.com/leanprover/lean4/pull/5883)、[#5898](https://github.com/leanprover/lean4/pull/5898)、[#5928](https://github.com/leanprover/lean4/pull/5928) 和 [#5932](https://github.com/leanprover/lean4/pull/5932)。（tactic 作者请参见破坏性变更。）
+* **新的策略配置语法。** 现在，所有核心策略的配置语法都得到了升级。过去写作 `simp (config := { contextual := true, maxSteps := 22})`，现在可以写成 `simp +contextual (maxSteps := 22)`。策略作者可将策略语法中的 `(config)?` 改为 `optConfig`，并且可能可以删除精译器中的 `mkOptionalNode`，以完成迁移。[#5883](https://github.com/leanprover/lean4/pull/5883)、[#5898](https://github.com/leanprover/lean4/pull/5898)、[#5928](https://github.com/leanprover/lean4/pull/5928) 和 [#5932](https://github.com/leanprover/lean4/pull/5932)。（策略作者请参见破坏性变更。）
 
-* `simp` tactic
+* `simp` 策略
   * [#5632](https://github.com/leanprover/lean4/pull/5632) 修复了 `Fin` 字面量 simpproc，使其规约行为更加一致。
   * [#5648](https://github.com/leanprover/lean4/pull/5648) 修复了 `simpa ... using t` 中的一个 bug：`t` 里的元变量此前没有被正确处理；同时也改进了类型不匹配错误。
   * [#5838](https://github.com/leanprover/lean4/pull/5838) 修复了 `simp!` 的文档字符串，使其真正描述 `simp!`。
   * [#5870](https://github.com/leanprover/lean4/pull/5870) 增加了对 `attribute [simp ←]` 的支持（注意反向方向）。这会把定理的逆向形式加入全局 simp 定理集。
 
-* `decide` tactic
-  * [#5665](https://github.com/leanprover/lean4/pull/5665) 添加了 `decide!` tactic，用于使用内核规约（注意：在未来版本中它会重命名为 `decide +kernel`）。
+* `decide` 策略
+  * [#5665](https://github.com/leanprover/lean4/pull/5665) 添加了 `decide!` 策略，用于使用内核规约（注意：在未来版本中它会重命名为 `decide +kernel`）。
 
-* `bv_decide` tactic
+* `bv_decide` 策略
   * [#5714](https://github.com/leanprover/lean4/pull/5714) 增加了不等式回归测试。（@alexkeizer）
   * [#5608](https://github.com/leanprover/lean4/pull/5608) 为 `toNat_ofInt` 添加了 `bv_toNat` 标签。（@bollu）
   * [#5618](https://github.com/leanprover/lean4/pull/5618) 为 `ac_nf` 增加了 `at` 支持，并在 `bv_normalize` 中使用它。（@tobiasgrosser）
@@ -130,14 +130,14 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___14___0-_LPAR_2024-1
     * [#5636](https://github.com/leanprover/lean4/pull/5636) 增加了关于乘法的说明。
 
 * `conv` 模式
-  * [#5861](https://github.com/leanprover/lean4/pull/5861) 改进了 `congr` conv tactic，使其能够处理“过度应用”的函数。
-  * [#5894](https://github.com/leanprover/lean4/pull/5894) 改进了 `arg` conv tactic，使其可以访问更多参数，并能处理“过度应用”的函数（它会为相关参数生成专用的同余引理）。同时让 `arg 1` 和 `arg 2` 在更多情况下可用于 pi 类型。还增加了负索引，例如 `arg -2` 等价于 `lhs` tactic。`enter [...]` tactic 现在会像 `rw` 一样显示中间状态。
+  * [#5861](https://github.com/leanprover/lean4/pull/5861) 改进了 `congr` conv 策略，使其能够处理“过度应用”的函数。
+  * [#5894](https://github.com/leanprover/lean4/pull/5894) 改进了 `arg` conv 策略，使其可以访问更多参数，并能处理“过度应用”的函数（它会为相关参数生成专用的同余引理）。同时让 `arg 1` 和 `arg 2` 在更多情况下可用于 pi 类型。还增加了负索引，例如 `arg -2` 等价于 `lhs` 策略。`enter [...]` 策略现在会像 `rw` 一样显示中间状态。
 
-* **其他 tactic**
+* **其他策略**
   * [#4846](https://github.com/leanprover/lean4/pull/4846) 修复了 `generalize ... at *` 会作用于实现细节的 bug。（@ymherklotz）
-  * [#5730](https://github.com/leanprover/lean4/pull/5730) 上游合入了 `classical` tactic 组合子。
+  * [#5730](https://github.com/leanprover/lean4/pull/5730) 上游合入了 `classical` 策略组合子。
   * [#5815](https://github.com/leanprover/lean4/pull/5815) 改进了尝试展开一个并非局部定义的局部假设时的错误消息。
-  * [#5862](https://github.com/leanprover/lean4/pull/5862) 和 [#5863](https://github.com/leanprover/lean4/pull/5863) 修改了 `apply` 和 `simp` 的精化方式，使其不再禁用错误恢复。这提升了术语存在精化错误时的悬停和补全体验。
+  * [#5862](https://github.com/leanprover/lean4/pull/5862) 和 [#5863](https://github.com/leanprover/lean4/pull/5863) 修改了 `apply` 和 `simp` 的精译方式，使其不再禁用错误恢复。这提升了术语存在精译错误时的悬停和补全体验。
 
 * `deriving` 子句
   * [#5899](https://github.com/leanprover/lean4/pull/5899) 为 delta 派生的实例增加了声明范围。
@@ -146,7 +146,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___14___0-_LPAR_2024-1
 * [#5065](https://github.com/leanprover/lean4/pull/5065) 上游合入并更新了 `#where`，这是一个报告当前作用域信息的命令。
 
 * **代码检查器**
-  * [#5338](https://github.com/leanprover/lean4/pull/5338) 让未使用变量 linter 现在默认忽略 tactic 中定义的变量，从而避免性能瓶颈。
+  * [#5338](https://github.com/leanprover/lean4/pull/5338) 让未使用变量 linter 现在默认忽略策略中定义的变量，从而避免性能瓶颈。
   * [#5644](https://github.com/leanprover/lean4/pull/5644) 确保各类 linter 一般都不会在 `#guard_msgs` 自身上运行。
 
 * **元编程接口**
@@ -162,10 +162,10 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___14___0-_LPAR_2024-1
 
 * **其他修复或改进**
   * [#5566](https://github.com/leanprover/lean4/pull/5566) 修复了 [#4781](https://github.com/leanprover/lean4/pull/4781) 引入的一个 bug：heartbeat 异常不再被正确处理。现在这类异常会带上 `runtime.maxHeartbeats` 标签。（@eric-wieser）
-  * [#5708](https://github.com/leanprover/lean4/pull/5708) 修改了反射证明 tactic `ac_nf0` 和 `simp_arith` 生成的证明对象，使内核不那么容易规约昂贵的原子。
+  * [#5708](https://github.com/leanprover/lean4/pull/5708) 修改了反射证明策略 `ac_nf0` 和 `simp_arith` 生成的证明对象，使内核不那么容易规约昂贵的原子。
   * [#5768](https://github.com/leanprover/lean4/pull/5768) 添加了 `#version` 命令，用于打印 Lean 的版本信息。
-  * [#5822](https://github.com/leanprover/lean4/pull/5822) 修复了精化器算法，使其与内核对原始投影（`Expr.proj`）的算法保持一致。
-  * [#5811](https://github.com/leanprover/lean4/pull/5811) 改进了 `rwa` tactic 的文档字符串。
+  * [#5822](https://github.com/leanprover/lean4/pull/5822) 修复了精译器算法，使其与内核对原始投影（`Expr.proj`）的算法保持一致。
+  * [#5811](https://github.com/leanprover/lean4/pull/5811) 改进了 `rwa` 策略的文档字符串。
 
 
 ````
@@ -180,7 +180,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___14___0-_LPAR_2024-1
 * [#5340](https://github.com/leanprover/lean4/pull/5340) 修复了关闭语言服务器时的服务器死锁，以及文件 worker 崩溃后客户端与语言服务器不同步的问题。
 * [#5560](https://github.com/leanprover/lean4/pull/5560) 让 `initialize` 和 `builtin_initialize` 参与调用层次结构及其他请求。
 * [#5650](https://github.com/leanprover/lean4/pull/5650) 让 attribute 中的引用参与调用层次结构及其他请求。
-* [#5666](https://github.com/leanprover/lean4/pull/5666) 在 tactic 块中加入自动补全，无需先输入 tactic 的首字符；同时为 tactic 自动补全条目加入 tactic 补全文档。
+* [#5666](https://github.com/leanprover/lean4/pull/5666) 在策略块中加入自动补全，无需先输入策略的首字符；同时为策略自动补全条目加入策略补全文档。
 * [#5677](https://github.com/leanprover/lean4/pull/5677) 修复了若干在某些文本光标位置下不显示目标状态的情况。
 * [#5707](https://github.com/leanprover/lean4/pull/5707) 在自动补全条目中标示弃用信息。
 * [#5736](https://github.com/leanprover/lean4/pull/5736)、[#5752](https://github.com/leanprover/lean4/pull/5752)、[#5763](https://github.com/leanprover/lean4/pull/5763)、[#5802](https://github.com/leanprover/lean4/pull/5802) 和 [#5805](https://github.com/leanprover/lean4/pull/5805) 修复了语言服务器中的多项性能问题。
@@ -197,13 +197,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___14___0-_LPAR_2024-1
 * [#5640](https://github.com/leanprover/lean4/pull/5640) 修复了一个 bug：消息中的目标状态可能会把换行打印为空格。
 * [#5643](https://github.com/leanprover/lean4/pull/5643) 添加了选项 `pp.mvars.delayed`（默认 false）；当其为 false 时，延迟赋值元变量会被美观打印为它们已赋的内容。现在 `fun x : Nat => ?a` 会打印为 `fun x : Nat => ?a`，而不是 `fun x ↦ ?m.7 x`。
 * [#5711](https://github.com/leanprover/lean4/pull/5711) 添加了选项 `pp.mvars.anonymous` 和 `pp.mvars.levels`；当它们为 false 时，表达式元变量和层级元变量会分别被美观打印为 `?_`。
-* [#5710](https://github.com/leanprover/lean4/pull/5710) 调整了 `⋯` 精化警告，使其提到 `pp.maxSteps`。
+* [#5710](https://github.com/leanprover/lean4/pull/5710) 调整了 `⋯` 精译警告，使其提到 `pp.maxSteps`。
 
 * [#5759](https://github.com/leanprover/lean4/pull/5759) 修复了 `sorryAx` 的应用反展开器。
 * [#5827](https://github.com/leanprover/lean4/pull/5827) 提高了签名美观打印器（如 `#check` 输出）中 binder 名称的准确性。同时修复了连续 hygienic 名称打印时缺少空格分隔的问题，因此现在会得到 `(x✝ y✝ : Nat)`，而不是 `(x✝y✝ : Nat)`。
-* [#5830](https://github.com/leanprover/lean4/pull/5830) 确保所有核心反精化器在适当情况下都会响应 `pp.explicit`。
+* [#5830](https://github.com/leanprover/lean4/pull/5830) 确保所有核心反精译器在适当情况下都会响应 `pp.explicit`。
 * [#5639](https://github.com/leanprover/lean4/pull/5639) 确保名称字面量在美观打印时使用转义。
-* [#5854](https://github.com/leanprover/lean4/pull/5854) 为 `<|>`、`<*>`、`>>`、`<*` 和 `*>` 添加了反精化器。
+* [#5854](https://github.com/leanprover/lean4/pull/5854) 为 `<|>`、`<*>`、`>>`、`<*` 和 `*>` 添加了反精译器。
 
 ````
 # 库
@@ -346,5 +346,5 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___14___0-_LPAR_2024-1
 * 支持的最低 Windows 版本已提升到 Windows 10 1903（2019 年 5 月发布）。([#5753](https://github.com/leanprover/lean4/pull/5753))
 * `lake` 的 `--lean` CLI 选项已被移除。请改用 `LEAN` 环境变量。([#5684](https://github.com/leanprover/lean4/pull/5684))
 * `inductive ... :=`、`structure ... :=` 和 `class ... :=` 语法已弃用，推荐改用 `... where` 变体。旧语法会产生警告，由 `linter.deprecated` 选项控制。([#5542](https://github.com/leanprover/lean4/pull/5542))
-* 生成的 tactic 配置精化器现在落在 `TacticM` 中，以利用当前恢复状态。希望精化配置的命令现在应使用 `declare_command_config_elab` 而不是 `declare_config_elab`，以得到落在 `CommandElabM` 中的精化器。语法应从 `(config)?` 迁移到 `optConfig`，不过这些精化器保持反向兼容。([#5883](https://github.com/leanprover/lean4/pull/5883))
+* 生成的策略配置精译器现在落在 `TacticM` 中，以利用当前恢复状态。希望精译配置的命令现在应使用 `declare_command_config_elab` 而不是 `declare_config_elab`，以得到落在 `CommandElabM` 中的精译器。语法应从 `(config)?` 迁移到 `optConfig`，不过这些精译器保持反向兼容。([#5883](https://github.com/leanprover/lean4/pull/5883))
 ````

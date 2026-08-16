@@ -111,22 +111,22 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___22___0-_LPAR_2025-0
   转换为 `have` 的机制，从而使 `simp` 在不做 zeta 归约时也能工作得更好。
   可通过 `set_option cleanup.letToHave false` 禁用。
 
-* [#8804](https://github.com/leanprover/lean4/pull/8804) 在精化器中实现了对
+* [#8804](https://github.com/leanprover/lean4/pull/8804) 在精译器中实现了对
   非依赖 `let` 表达式的一等支持。这一能力已经在元编程接口与
-  精化器中得到完整支持。
+  精译器中得到完整支持。
 
 * [#8914](https://github.com/leanprover/lean4/pull/8914) 修改了 `let` 与 `have` 的项语法，
   使二者保持一致。新增了配置选项；例如，对于*非依赖* let，
   `have` 等价于 `let +nondep`。其他选项包括 `+usedOnly`
   （用于 `let_tmp`）、`+zeta`（用于 `letI`/`haveI`）和
   `+postponeValue`（用于 `let_delayed`）。此外还支持
-  `let (eq := h) x := v; b`，用于在精化 `b` 时引入
+  `let (eq := h) x := v; b`，用于在精译 `b` 时引入
   `h : x = v`。`eq` 选项同样适用于模式匹配，例如
   `let (eq := h) (x, y) := p; b`。
 
 * [#8935](https://github.com/leanprover/lean4/pull/8935) 为 `let` 与 `have` 语法增加了
   `+generalize` 选项。例如，`have +generalize n := a + b; body`
-  会在精化 `body` 时，把期望类型中所有 `a + b` 的出现都替换为 `n`。
+  会在精译 `body` 时，把期望类型中所有 `a + b` 的出现都替换为 `n`。
   这可以看作 `generalize` 策略的项级版本。还可以把它与 `eq` 结合，
   写成 `have +generalize (eq := h) n := a + b; body`，对应于
   `generalize h : n = a + b`。
@@ -320,7 +320,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___22___0-_LPAR_2025-0
   破坏性变更：为了实现 `$/lean/moduleHierarchy/importedBy` 请求，
   此 PR 在 `.ilean` 格式中加入了文件的直接导入，并提升了 `.ilean` 格式版本。
 
-* [#8804](https://github.com/leanprover/lean4/pull/8804) 在精化器中实现了对
+* [#8804](https://github.com/leanprover/lean4/pull/8804) 在精译器中实现了对
   非依赖 `let` 表达式的一等支持。
 
   破坏性变更：使用 `letLambdaTelescope`/`mkLetFVars` 时需要设置
@@ -371,7 +371,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___22___0-_LPAR_2025-0
   `Int` 中、供 `cutsat` 使用的类型类。例如，这使得 `Fin n` 或
   Mathlib 的 `ℕ+` 都能以统一且可扩展的方式处理。
 
-* [#8568](https://github.com/leanprover/lean4/pull/8568) 修改了 `structure` 精化器，
+* [#8568](https://github.com/leanprover/lean4/pull/8568) 修改了 `structure` 精译器，
   为结构字段和显式父投影增加局部 terminfo，从而在存在依赖字段时也能
   “跳转到定义”。
 
@@ -521,7 +521,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___22___0-_LPAR_2025-0
   `where` 而产生的辅助定义中那些尚未赋值的元变量。
 
 * [#8730](https://github.com/leanprover/lean4/pull/8730) 增加了抛出带有关联错误解释的
-  命名错误的支持。  具体来说，它为 #8649 定义的语法增加了精化器，
+  命名错误的支持。  具体来说，它为 #8649 定义的语法增加了精译器，
   并使用了 #8651 加入的错误解释基础设施。这还包括错误名的补全、
   悬停和跳转到定义。
 
@@ -534,11 +534,11 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___22___0-_LPAR_2025-0
   ```
 
 * [#8751](https://github.com/leanprover/lean4/pull/8751) 将 `Expr.letE` 的 `nondep`
-  字段加入了 C++ 数据模型。此前该字段一直未被使用，后续 PR 中精化器
+  字段加入了 C++ 数据模型。此前该字段一直未被使用，后续 PR 中精译器
   将利用它来编码 `have` 表达式（即非依赖 `let`）。
   内核在类型检查期间并不会验证 `nondep` 是否被正确应用。
   `letE` 的反展开器现在在 `nondep` 为 true 时会打印 `have`，
-  尽管目前 `have` 仍被精化为 `letFun`。
+  尽管目前 `have` 仍被精译为 `letFun`。
   破坏性变更：`Expr.updateLet!` 已重命名为 `Expr.updateLetE!`。
 
 * [#8753](https://github.com/leanprover/lean4/pull/8753) 修复了 `simp` 的一个缺陷：
@@ -654,12 +654,12 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___22___0-_LPAR_2025-0
   ```
   目的是确保我们的测试套件中不会进行不必要的分支拆分。
 
-* [#8804](https://github.com/leanprover/lean4/pull/8804) 在精化器中实现了对
+* [#8804](https://github.com/leanprover/lean4/pull/8804) 在精译器中实现了对
   非依赖 let 表达式的一等支持。回忆一下，若 `fun x : t => b` 能通过类型检查，
   则 let 表达式 `let x : t := v; b` 被称为*非依赖*，其对应记法是
   `have x := v; b`。此前我们用 `letFun` 函数来编码 `have`，
   现在则改用 `Expr.letE` 构造子中的 `nondep` 标志来编码。
-  这一能力已经在元编程接口与精化器中得到完整支持。元编程接口中的关键变化如下：
+  这一能力已经在元编程接口与精译器中得到完整支持。元编程接口中的关键变化如下：
   - 在局部上下文中，带 `nondep := true` 的 `ldecl` 通常会被当作
     `cdecl` 处理。这是因为在 `have` 表达式的函数体中，该变量是 opaque 的。
     像 `LocalDecl.isLet` 这样的函数，默认会对非依赖 `ldecl`
@@ -694,9 +694,9 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___22___0-_LPAR_2025-0
 * [#8813](https://github.com/leanprover/lean4/pull/8813) 增加了一些关于 `grind`
   内部模概念的基础引理。
 
-* [#8815](https://github.com/leanprover/lean4/pull/8815) 重构了 simp 参数的精化
+* [#8815](https://github.com/leanprover/lean4/pull/8815) 重构了 simp 参数的精译
   方式：不再是一边处理一边修改 `SimpTheorems` 结构，而是先把每个参数
-  精化成对其作用的更声明式描述，再统一应用。
+  精译成对其作用的更声明式描述，再统一应用。
   这使得一些更有意思的 simp 参数检查成为可能：既包括必须在最终构造出的
   simp 上下文中进行的检查（#8688），也包括 simp 运行后才能做的检查
   （如未使用参数检查器 #8901）。
@@ -788,7 +788,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___22___0-_LPAR_2025-0
   `have` 等价于 `let +nondep`。其他选项包括 `+usedOnly`
   （用于 `let_tmp`）、`+zeta`（用于 `letI`/`haveI`）和
   `+postponeValue`（用于 `let_delayed`）。此外还支持
-  `let (eq := h) x := v; b`，用于在精化 `b` 时引入
+  `let (eq := h) x := v; b`，用于在精译 `b` 时引入
   `h : x = v`。`eq` 选项同样适用于模式匹配，例如
   `let (eq := h) (x, y) := p; b`。
 
@@ -806,7 +806,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___22___0-_LPAR_2025-0
 
 * [#8935](https://github.com/leanprover/lean4/pull/8935) 为 `let` 与 `have` 语法增加了
   `+generalize` 选项。例如，`have +generalize n := a + b; body`
-  会在精化 `body` 时，把期望类型中所有 `a + b` 的出现都替换为 `n`。
+  会在精译 `body` 时，把期望类型中所有 `a + b` 的出现都替换为 `n`。
   这可以看作 `generalize` 策略的项级版本。还可以把它与 `eq` 结合，
   写成 `have +generalize (eq := h) n := a + b; body`，对应于
   `generalize h : n = a + b`。
@@ -816,7 +816,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___22___0-_LPAR_2025-0
 
 * [#8940](https://github.com/leanprover/lean4/pull/8940) 引入了反单调性引理，
   用于支持使用 `least_fixpoint` / `greatest_fixpoint` 构造定义的
-  混合归纳-余归纳谓词的精化。
+  混合归纳-余归纳谓词的精译。
 
 * [#8943](https://github.com/leanprover/lean4/pull/8943) 为不实现 `AddRightCancel`
   的 semiring 增加了规范化辅助定理。
@@ -997,7 +997,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___22___0-_LPAR_2025-0
   ```lean
   example [Field α] (a : α) : (2 * a)⁻¹ = a⁻¹ / 2 := by grind
 
-* [#9065](https://github.com/leanprover/lean4/pull/9065) 改进了在使用 `ToInt` 小工具时，
+* [#9065](https://github.com/leanprover/lean4/pull/9065) 改进了在使用 `ToInt` 辅助机制时，
   `grind` 中 `cutsat` 过程产生的反例。
 
 * [#9067](https://github.com/leanprover/lean4/pull/9067) 为 `grind` 策略增加了文档字符串。
@@ -1087,7 +1087,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___22___0-_LPAR_2025-0
   `toInt_dvd_toInt_iff_of_msb_true_msb_false`,
   `toInt_dvd_toInt_iff_of_msb_false_msb_true`,
   `neg_toInt_neg_umod_eq_of_msb_true_msb_true`, `toNat_pos_of_ne_zero`,
-  `toInt_umod_neg_add`, `toInt_sub_neg_umod` and
+  `toInt_umod_neg_add`、`toInt_sub_neg_umod` 以及
   `BitVec.[lt_of_msb_false_of_msb_true, msb_umod_of_msb_false_of_ne_zero`,
   `neg_toInt_neg]`)
 
@@ -1129,7 +1129,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___22___0-_LPAR_2025-0
 
 * [#8620](https://github.com/leanprover/lean4/pull/8620) 移除了 `NatCast (Fin n)` 的全局实例
   （包括直接实例以及经由 `Lean.Grind.Semiring` 的间接实例），因为该实例会使
-  `x < n`（其中 `x : Fin k`、`n : Nat`）被精化为
+  `x < n`（其中 `x : Fin k`、`n : Nat`）被精译为
   `x < ↑n` 而不是 `↑x < n`，这并不理想。不过需要注意，
   在 Mathlib 中这仍然会发生！
 
@@ -1555,7 +1555,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___22___0-_LPAR_2025-0
   的使用方式，为服务器增加了对新模块 setup 流程的支持。
 
 * [#8868](https://github.com/leanprover/lean4/pull/8868) 确保代码操作不必等整份文件
-  完成精化之后才能运行。这一回归是 #7665 中意外引入的。
+  完成精译之后才能运行。这一回归是 #7665 中意外引入的。
 
 * [#9019](https://github.com/leanprover/lean4/pull/9019) 修复了语义高亮的一个缺陷：
   它此前只会高亮以字母数字字符开头的关键字。现在它改用 `Lean.isIdFirst`。

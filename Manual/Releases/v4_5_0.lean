@@ -73,7 +73,7 @@ file := "v4.5.0"
 
 * [`simp?` 与 `simp_all?` 的输出](https://github.com/leanprover/lean4/pull/2923)[有多项改进](https://github.com/leanprover/lean4/pull/2969)。
 
-* 带有 `withLocation *` 的 tactic 在关闭主目标时[不再失败](https://github.com/leanprover/lean4/pull/2917)。
+* 带有 `withLocation *` 的策略在关闭主目标时[不再失败](https://github.com/leanprover/lean4/pull/2917)。
 
 * 实现了 `test_extern` 命令，用于为 `@[extern]` 和 `@[implemented_by]` 函数编写测试。
   用法如下
