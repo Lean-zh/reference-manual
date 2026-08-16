@@ -28,16 +28,17 @@ set_option linter.unusedVariables false
 #doc (Manual) "IO" =>
 %%%
 tag := "io"
+file := "IO"
 %%%
 
 
 
-Lean is a pure functional programming language.
-While Lean code is strictly evaluated at run time, the order of evaluation that is used during type checking, especially while checking {tech}[definitional equality], is formally unspecified and makes use of a number of heuristics that improve performance but are subject to change.
-This means that simply adding operations that perform side effects (such as file I/O, exceptions, or mutable references) would lead to programs in which the order of effects is unspecified.
-During type checking, even terms with free variables are reduced; this would make side effects even more difficult to predict.
-Finally, a basic principle of Lean's logic is that functions are _functions_ that map each element of the domain to a unique element of the range.
-Including side effects such as console I/O, arbitrary mutable state, or random number generation would violate this principle.
+Lean 是一种纯函数式编程语言。
+Lean 代码在运行时采用严格求值；然而，类型检查所用的求值顺序——尤其是检查{tech (key := "definitional equality")}[定义相等]时——在形式上并未指定，而是依赖多种可提升性能但可能变化的启发式方法。
+这意味着，如果直接加入执行副作用的操作（例如文件 I/O、异常或可变引用），程序中的副作用顺序将无法确定。
+类型检查期间，连含有自由变量的项也会被归约；这会使副作用更加难以预测。
+最后，Lean 逻辑的一项基本原则是：函数确实是_函数_，即把定义域中的每个元素映射到值域中的唯一元素。
+若纳入控制台 I/O、任意可变状态或随机数生成等副作用，就会违反这一原则。
 
 :::::keepEnv
 ```lean -show
@@ -45,71 +46,75 @@ Including side effects such as console I/O, arbitrary mutable state, or random n
 axiom α : Type
 ```
 
-Programs that may have side effects have a type (typically {lean}`IO α`) that distinguishes them from pure functions.
-Logically speaking, {lean}`IO` describes the sequencing and data dependencies of side effects.
-Many of the basic side effects, such as reading from files, are opaque constants from the perspective of Lean's logic.
-Others are specified by code that is logically equivalent to the run-time version.
-At run time, the compiler produces ordinary code.
+可能产生副作用的程序具有一种类型（通常为 {lean}`IO α`），以便与纯函数区分。
+从逻辑上说，{lean}`IO` 描述副作用的先后次序与数据依赖关系。
+从 Lean 逻辑的角度看，许多基本副作用（例如读取文件）是不透明常量。
+另一些则由逻辑上等价于运行时版本的代码来规定。
+在运行时，精译器会生成普通代码。
 
 :::::
 
-# Logical Model
+# 逻辑模型
+%%%
+tag := "Logical-Model"
+file := "Logical Model"
+%%%
 
 :::::keepEnv
 ```lean -show
 /-- A type -/
 axiom α : Type
 ```
-Conceptually, Lean distinguishes evaluation or reduction of terms from _execution_ of side effects.
-Term reduction is specified by rules such as {tech}[β] and {tech}[δ], which may occur anywhere at any time.
-Side effects, which must be executed in the correct order, are abstractly described in Lean's logic.
-When programs are run, the Lean runtime system is responsible for actually carrying out the described effects.
+在概念上，Lean 将项的求值或归约与副作用的_执行_区分开来。
+项归约由 {tech}[β]、{tech}[δ] 等规则规定，而这些归约随时可能在任意位置发生。
+必须按正确顺序执行的副作用，在 Lean 逻辑中以抽象方式描述。
+程序运行时，由 Lean 运行时系统负责真正实施所描述的副作用。
 
 
-The type {lean}`IO α` is a description of a process that, by performing side effects, should either return a value of type {lean}`α` or throw an error.
-It can be thought of as a {tech}[state monad] in which the state is the entire world.
-Just as a value of type {lean}`StateM Nat Bool` computes a {lean}`Bool` while having the ability to mutate a natural number, a value of type {lean}`IO Bool` computes a {lean}`Bool` while potentially changing the world.
-Error handling is accomplished by layering an appropriate exception monad transformer on top of this.
+类型 {lean}`IO α` 描述一个通过执行副作用而运行的过程；该过程要么返回 {lean}`α` 类型的值，要么抛出错误。
+可以把它看作一种以整个世界为状态的{tech (key := "state monad")}[状态单子]。
+正如 {lean}`StateM Nat Bool` 类型的值在计算 {lean}`Bool` 的同时能够修改一个自然数，{lean}`IO Bool` 类型的值在计算 {lean}`Bool` 的同时也可能改变世界。
+错误处理则通过在其上叠加适当的异常单子变换器来实现。
 
 :::::
 
-Because the entire world can't be represented in memory, the actual implementation uses an abstract token that stands for its state.
-The Lean runtime system is responsible for providing the initial token when the program is run, and each primitive action accepts a token that represents the world and returns another when finished.
-This ensures that effects occur in the proper order, and it clearly separates the execution of side effects from the reduction semantics of Lean terms.
+由于无法在内存中表示整个世界，实际实现使用一个抽象令牌来代表世界的状态。
+程序运行时，Lean 运行时系统负责提供初始令牌；每个原语动作接收一个代表世界的令牌，并在完成后返回另一个令牌。
+这既确保副作用按正确顺序发生，也明确区分了副作用的执行与 Lean 项的归约语义。
 
 
 
-Non-termination via general recursion is treated separately from the effects described by {name}`IO`.
-Programs that may not terminate due to infinite loops must be defined as {ref "partial-unsafe"}[`partial`] functions.
-From the logical perspective, they are treated as arbitrary constants; {name}`IO` is not needed.
+由一般递归导致的不终止，与 {name}`IO` 所描述的副作用分开处理。
+可能因无限循环而不终止的程序必须定义为 {ref "partial-unsafe"}[`partial` 函数]。
+从逻辑角度看，它们被视为任意常量，并不需要 {name}`IO`。
 
-A very important property of {lean}`IO` is that there is no way for values to “escape”.
-Without using one of a few clearly-marked unsafe operators, programs have no way to extract a pure {lean}`Nat` from an {lean}`IO Nat`.
-This ensures that the correct ordering of side effects is preserved, and it ensures that programs that have side effects are clearly marked as such.
+{lean}`IO` 的一项非常重要的性质是，其中的值无法“逃逸”。
+除非使用少数几个明确标记为不安全的运算符，否则程序无法从 {lean}`IO Nat` 中提取出纯的 {lean}`Nat`。
+这既保证了副作用的正确顺序，也保证了带副作用的程序会得到明确标记。
 
-## The `IO`, `EIO` and `BaseIO` Monads
+## `IO`、`EIO` 与 `BaseIO` 单子
 %%%
 tag := "io-monad"
 %%%
 
-There are two monads that are typically used for programs that interact with the real world:
+与现实世界交互的程序通常使用两种单子：
 
- * Actions in {lean}`IO` may throw exceptions of type {lean}`IO.Error` or modify the world.
- * Actions in {lean}`BaseIO` can't throw exceptions, but they can modify the world.
+ * {lean}`IO` 中的动作可以抛出 {lean}`IO.Error` 类型的异常，也可以修改世界。
+ * {lean}`BaseIO` 中的动作不能抛出异常，但可以修改世界。
 
-The distinction makes it possible to tell whether exceptions are possible by looking at an action's type signature.
-{lean}`BaseIO` actions are automatically promoted to {lean}`IO` as necessary.
+这一区分使人们只需查看动作的类型签名，就能判断它是否可能抛出异常。
+{lean}`BaseIO` 动作会在需要时自动提升为 {lean}`IO`。
 
 {docstring BaseIO}
 
 {docstring IO}
 
-{lean}`IO` is an instance of {lean}`EIO`, in which the type of errors is a parameter.
-In particular, {lean}`IO` is defined as {lean}`EIO IO.Error`.
-In some circumstances, such as bindings to non-Lean libraries, it can be convenient to use {lean}`EIO` with a custom error type, which ensures that errors are handled at the boundaries between these and other {lean}`IO` actions.
+{lean}`IO` 是 {lean}`EIO` 的一个实例，其中错误类型是一个参数。
+具体而言，{lean}`IO` 被定义为 {lean}`EIO IO.Error`。
+在某些场合（例如绑定非 Lean 库），为 {lean}`EIO` 使用自定义错误类型会很方便；这样可确保错误在这些动作与其他 {lean}`IO` 动作的边界处得到处理。
 
 ```lean -show
--- Check claim in preceding paragraph
+-- 检查上一段中的论断
 example : IO = EIO IO.Error := rfl
 ```
 
@@ -129,16 +134,16 @@ example : IO = EIO IO.Error := rfl
 
 {docstring IO.toEIO}
 
-## Errors and Error Handling in `IO`
+## `IO` 中的错误与错误处理
 %%%
 tag := "io-monad-errors"
 %%%
 
-Error handling in the {lean}`IO` monad uses the same facilities as any other {tech}[exception monad].
-In particular, throwing and catching exceptions uses the methods of the {name}`MonadExceptOf` {tech}[type class].
-The exceptions thrown in {lean}`IO` have the type {lean}`IO.Error`.
-The constructors of this type represent the low-level errors that occur on most operating systems, such as files not existing.
-The most-used constructor is {name IO.Error.userError}`userError`, which covers all other cases and includes a string that describes the problem.
+{lean}`IO` 单子使用的错误处理设施与其他{tech (key := "exception monad")}[异常单子]相同。
+具体来说，异常的抛出与捕获使用 {name}`MonadExceptOf` {tech (key := "type class")}[类型类]的方法。
+{lean}`IO` 中抛出的异常具有 {lean}`IO.Error` 类型。
+该类型的构造器表示多数操作系统中会发生的底层错误，例如文件不存在。
+最常用的构造器是 {name IO.Error.userError}`userError`；它涵盖其余所有情况，并包含一个描述问题的字符串。
 
 {docstring IO.Error}
 
@@ -150,12 +155,12 @@ The most-used constructor is {name IO.Error.userError}`userError`, which covers 
 
 {docstring IO.userError}
 
-::::example "Throwing and Catching Errors"
+::::example "抛出和捕获错误" (file := "Throwing and Catching Errors")
 :::ioExample
-This program repeatedly demands a password, using exceptions for control flow.
-The syntax used for exceptions is available in all exception monads, not just {lean}`IO`.
-When an incorrect password is provided, an exception is thrown, which is caught by the loop that repeats the password check.
-A correct password allows control to proceed past the check, terminating the loop, and any other exceptions are re-thrown.
+该程序反复要求输入密码，并使用异常控制流程。
+异常所用的语法适用于所有异常单子，而不只适用于 {lean}`IO`。
+输入错误密码时，程序会抛出异常；重复密码检查的循环会捕获该异常。
+正确的密码会让控制流通过检查并终止循环；其他异常则会被重新抛出。
 
 ```ioLean
 def accessControl : IO Unit := do
@@ -181,14 +186,14 @@ def main : IO Unit := do
   IO.println "Access granted!"
 ```
 
-When run with this input:
+使用以下输入运行时：
 ```stdin
 publicinfo
 secondtry
 secret
 ```
 
-the program emits:
+程序输出：
 ```stdout
 What is the password?
 What is the password?
@@ -198,13 +203,14 @@ Access granted!
 :::
 ::::
 
-# Control Structures
+# 控制结构
 %%%
 tag := "io-monad-control"
+file := "Control Structures"
 %%%
 
-Normally, programs written in {lean}`IO` use {ref "monads-and-do"}[the same control structures as those written in other monads].
-There is one specific {lean}`IO` helper.
+通常，使用 {lean}`IO` 编写的程序会使用{ref "monads-and-do"}[与其他单子程序相同的控制结构]。
+此外还有一个 {lean}`IO` 专用的辅助函数。
 
 {docstring IO.iterate}
 
@@ -214,9 +220,10 @@ There is one specific {lean}`IO` helper.
 
 {include 0 Manual.IO.Files}
 
-# System and Platform Information
+# 系统与平台信息
 %%%
 tag := "platform-info"
+file := "System and Platform Information"
 %%%
 
 {docstring System.Platform.numBits}
@@ -230,16 +237,18 @@ tag := "platform-info"
 {docstring System.Platform.isEmscripten}
 
 
-# Environment Variables
+# 环境变量
 %%%
 tag := "io-monad-getenv"
+file := "Environment Variables"
 %%%
 
 {docstring IO.getEnv}
 
-# Timing
+# 计时
 %%%
 tag := "io-timing"
+file := "Timing"
 %%%
 
 {docstring IO.sleep}
@@ -252,12 +261,16 @@ tag := "io-timing"
 
 {docstring IO.addHeartbeats}
 
-# Processes
+# 进程
 %%%
 tag := "io-processes"
+file := "Processes"
 %%%
 
-## Current Process
+## 当前进程
+%%%
+tag := "Lean-__________________--IO--Processes--Current-Process"
+%%%
 
 {docstring IO.Process.getCurrentDir}
 
@@ -267,18 +280,21 @@ tag := "io-processes"
 
 {docstring IO.Process.getPID}
 
-## Running Processes
+## 运行进程
+%%%
+tag := "Lean-__________________--IO--Processes--Running-Processes"
+%%%
 
-There are three primary ways to run other programs from Lean:
+在 Lean 中运行其他程序主要有三种方式：
 
- 1. {lean}`IO.Process.run` synchronously executes another program, returning its standard output as a string. It throws an error if the process exits with an error code other than `0`.
- 2. {lean}`IO.Process.output` synchronously executes another program with an empty standard input, capturing its standard output, standard error, and exit code. No error is thrown if the process terminates unsuccessfully.
- 3. {lean}`IO.Process.spawn` starts another program asynchronously and returns a data structure that can be used to access the process's standard input, output, and error streams.
+ 1. {lean}`IO.Process.run` 同步执行另一个程序，并以字符串形式返回其标准输出。若该进程以非 `0` 错误码退出，它会抛出错误。
+ 2. {lean}`IO.Process.output` 以空标准输入同步执行另一个程序，并捕获其标准输出、标准错误和退出码。即使进程执行失败，也不会抛出错误。
+ 3. {lean}`IO.Process.spawn` 异步启动另一个程序，并返回一个可访问该进程标准输入流、标准输出流和标准错误流的数据结构。
 
 {docstring IO.Process.run}
 
-::::example "Running a Program"
-When run, this program concatenates its own source code with itself twice using the Unix tool `cat`.
+::::example "运行程序" (file := "Running a Program")
+运行时，该程序使用 Unix 工具 `cat` 将自身源代码连续拼接两次。
 
 :::ioExample
 ```ioLean
@@ -289,7 +305,7 @@ def main : IO Unit := do
 -- Main.lean ends here
 ```
 
-Its output is:
+其输出为：
 ```stdout
 -- Main.lean begins here
 def main : IO Unit := do
@@ -305,15 +321,15 @@ def main : IO Unit := do
 :::
 ::::
 
-::::example "Running a Program on a File"
+::::example "对文件运行程序" (file := "Running a Program on a File")
 
-This program uses the Unix utility `grep` as a filter to find four-digit palindromes.
-It creates a file that contains all numbers from {lean}`0` through {lean}`9999`, and then invokes `grep` on it, reading the result from its standard output.
+该程序使用 Unix 实用工具 `grep` 作为过滤器，查找四位回文数。
+它创建一个包含从 {lean}`0` 到 {lean}`9999` 所有数字的文件，随后对该文件调用 `grep`，并从标准输出读取结果。
 
 :::ioExample
 ```ioLean
 def main : IO Unit := do
-  -- Feed the input to the subprocess
+  -- 向子进程提供输入
   IO.FS.withFile "numbers.txt" .write fun h =>
     for i in [0:10000] do
       h.putStrLn (toString i)
@@ -328,7 +344,7 @@ def main : IO Unit := do
   IO.println s!"There are {count} four-digit palindromes."
 ```
 
-Its output is:
+其输出为：
 ```stdout
 There are 90 four-digit palindromes.
 ```
@@ -338,9 +354,9 @@ There are 90 four-digit palindromes.
 
 {docstring IO.Process.output}
 
-::::example "Checking Exit Codes"
-When run, this program first invokes `cat` on a nonexistent file and displays the resulting error code.
-It then concatenates its own source code with itself twice using the Unix tool `cat`.
+::::example "检查退出码" (file := "Checking Exit Codes")
+运行时，该程序先对一个不存在的文件调用 `cat`，并显示由此得到的错误码。
+然后，它使用 Unix 工具 `cat` 将自身源代码连续拼接两次。
 
 :::ioExample
 ```ioLean
@@ -360,7 +376,7 @@ def main : IO UInt32 := do
 -- Main.lean ends here
 ```
 
-Its output is:
+其输出为：
 ```stdout
 Exit code from failed process: 1
 -- Main.lean begins here
@@ -399,11 +415,11 @@ def main : IO UInt32 := do
 
 {docstring IO.Process.spawn}
 
-::::example "Asynchronous Subprocesses"
+::::example "异步子进程" (file := "Asynchronous Subprocesses")
 
-This program uses the Unix utility `grep` as a filter to find four-digit palindromes.
-It feeds all numbers from {lean}`0` through {lean}`9999` to the `grep` process and then reads its result.
-This code is only correct when `grep` is sufficiently fast and when the output pipe is large enough to contain all 90 four-digit palindromes.
+该程序使用 Unix 实用工具 `grep` 作为过滤器，查找四位回文数。
+它把从 {lean}`0` 到 {lean}`9999` 的所有数字送入 `grep` 进程，然后读取结果。
+只有当 `grep` 足够快，且输出管道足以容纳全部 90 个四位回文数时，这段代码才是正确的。
 
 :::ioExample
 ```ioLean
@@ -416,18 +432,18 @@ def main : IO Unit := do
     stderr := .null
   }
 
-  -- Feed the input to the subprocess
+  -- 向子进程提供输入
   for i in [0:10000] do
     grep.stdin.putStrLn (toString i)
 
-  -- Consume its output, after waiting 100ms for grep to process the data.
+  -- 等待 100ms 让 grep 处理数据，然后读取其输出。
   IO.sleep 100
   let count := (← grep.stdout.readToEnd).trimAscii.split "\n" |>.length
 
   IO.println s!"There are {count} four-digit palindromes."
 ```
 
-Its output is:
+其输出为：
 ```stdout
 There are 90 four-digit palindromes.
 ```
@@ -452,11 +468,11 @@ There are 90 four-digit palindromes.
 
 {docstring IO.Process.Child.takeStdin}
 
-::::example "Closing a Subprocess's Standard Input"
+::::example "关闭子进程的标准输入" (file := "Closing a Subprocess's Standard Input")
 
-This program uses the Unix utility `grep` as a filter to find four-digit palindromes, ensuring that the subprocess terminates successfully.
-It feeds all numbers from {lean}`0` through {lean}`9999` to the `grep` process, then closes the process's standard input, which causes it to terminate.
-After checking `grep`'s exit code, the program extracts its result.
+该程序使用 Unix 实用工具 `grep` 作为过滤器来查找四位回文数，并确保子进程成功终止。
+它把从 {lean}`0` 到 {lean}`9999` 的所有数字送入 `grep` 进程，然后关闭该进程的标准输入，使其终止。
+检查 `grep` 的退出码后，程序提取其结果。
 
 :::ioExample
 ```ioLean
@@ -470,28 +486,28 @@ def main : IO UInt32 := do
       stderr := .null
     }).takeStdin
 
-    -- Feed the input to the subprocess
+    -- 向子进程提供输入
     for i in [0:10000] do
       stdin.putStrLn (toString i)
 
-    -- Return the child without its stdin handle.
-    -- This closes the handle, because there are
-    -- no more references to it.
+    -- 返回不含标准输入句柄的子进程。
+    -- 这会关闭句柄，因为已不再有
+    -- 指向它的引用。
     pure child
 
-  -- Wait for grep to terminate
+  -- 等待 grep 终止
   if (← grep.wait) != 0 then
     IO.eprintln s!"grep terminated unsuccessfully"
     return 1
 
-  -- Consume its output
+  -- 读取其输出
   let count := (← grep.stdout.readToEnd).trimAscii.split "\n" |>.length
 
   IO.println s!"There are {count} four-digit palindromes."
   return 0
 ```
 
-Its output is:
+其输出为：
 ```stdout
 There are 90 four-digit palindromes.
 ```
@@ -502,7 +518,11 @@ There are 90 four-digit palindromes.
 
 
 
-# Random Numbers
+# 随机数
+%%%
+tag := "Random-Numbers"
+file := "Random Numbers"
+%%%
 
 {docstring IO.setRandSeed}
 
@@ -512,7 +532,10 @@ There are 90 four-digit palindromes.
 
 {docstring randNat}
 
-## Random Generators
+## 随机数生成器
+%%%
+tag := "Lean-__________________--IO--Random-Numbers--Random-Generators"
+%%%
 
 {docstring RandomGen}
 
@@ -526,7 +549,10 @@ There are 90 four-digit palindromes.
 
 {docstring mkStdGen}
 
-## System Randomness
+## 系统随机性
+%%%
+tag := "Lean-__________________--IO--Random-Numbers--System-Randomness"
+%%%
 
 {docstring IO.getRandomBytes}
 

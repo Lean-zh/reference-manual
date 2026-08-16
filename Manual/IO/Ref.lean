@@ -20,12 +20,16 @@ set_option pp.rawOnError true
 
 set_option linter.unusedVariables false
 
-#doc (Manual) "Mutable References" =>
+#doc (Manual) "可变引用" =>
+%%%
+tag := "Mutable-References"
+file := "Mutable References"
+%%%
 
 
-While ordinary {tech}[state monads] encode stateful computations with tuples that track the contents of the state along with the computation's value, Lean's runtime system also provides mutable references that are always backed by mutable memory cells.
-Mutable references have a type {lean}`IO.Ref` that indicates that a cell is mutable, and reads and writes must be explicit.
-{lean}`IO.Ref` is implemented using {lean}`ST.Ref`, so the entire {ref "mutable-st-references"}[{lean}`ST.Ref` API] may also be used with {lean}`IO.Ref`.
+普通的{tech (key := "state monads")}[状态单子]使用元组编码有状态计算，元组同时跟踪状态内容与计算结果；Lean 运行时系统还提供始终由可变内存单元支撑的可变引用。
+可变引用的类型为 {lean}`IO.Ref`，它表明单元是可变的；读取和写入都必须显式进行。
+{lean}`IO.Ref` 使用 {lean}`ST.Ref` 实现，因此完整的 {ref "mutable-st-references"}[{lean}`ST.Ref` API] 也可用于 {lean}`IO.Ref`。
 
 {docstring IO.Ref}
 
@@ -33,27 +37,27 @@ Mutable references have a type {lean}`IO.Ref` that indicates that a cell is muta
 
 
 
-# State Transformers
+# 状态变换器
 %%%
 tag := "mutable-st-references"
 %%%
 
 
-Mutable references are often useful in contexts where arbitrary side effects are undesired.
-They can give a significant speedup when Lean is unable to optimize pure operations into mutation, and some algorithms are more easily expressed using mutable references than with state monads.
-Additionally, it has a property that other side effects do not have: if all of the mutable references used by a piece of code are created during its execution, and no mutable references from the code escape to other code, then the result of evaluation is deterministic.
+在不希望出现任意副作用的场合，可变引用往往很有用。
+当 Lean 无法把纯操作优化为原地修改时，可变引用能显著提速；有些算法用可变引用也比用状态单子更容易表达。
+此外，它还具有其他副作用所不具备的性质：若一段代码使用的所有可变引用都在执行期间创建，且没有可变引用从该代码逃逸到其他代码，那么求值结果就是确定的。
 
-The {lean}`ST` monad is a restricted version of {lean}`IO` in which mutable state is the only side effect, and mutable references cannot escape.{margin}[{lean}`ST` was first described by {citehere launchbury94}[].]
-{lean}`ST` takes a type parameter that is never used to classify any terms.
-The {lean}`runST` function, which allow escape from {lean}`ST`, requires that the {lean}`ST` action that is passed to it can instantiate this type parameter with _any_ type.
-This unknown type does not exist except as a parameter to a function, which means that values whose types are “marked” by it cannot escape its scope.
+{lean}`ST` 单子是 {lean}`IO` 的受限版本，其中可变状态是唯一的副作用，且可变引用不能逃逸。{margin}[{lean}`ST` 最早由 {citehere launchbury94}[] 描述。]
+{lean}`ST` 接受一个从不用于归类任何项的类型参数。
+允许从 {lean}`ST` 中逃逸的 {lean}`runST` 函数要求：传给它的 {lean}`ST` 动作必须能把该类型参数实例化为_任意_类型。
+这个未知类型只作为函数参数存在，因此类型被它“标记”的值无法逃出其作用域。
 
 {docstring ST}
 
 {docstring runST}
 
-As with {lean}`IO` and {lean}`EIO`, there is also a variation of {lean}`ST` that takes a custom error type as a parameter.
-Here, {lean}`ST` is analogous to {lean}`BaseIO` rather than {lean}`IO`, because {lean}`ST` cannot result in errors being thrown.
+与 {lean}`IO` 和 {lean}`EIO` 类似，{lean}`ST` 也有一个把自定义错误类型作为参数的变体。
+这里，{lean}`ST` 对应的是 {lean}`BaseIO` 而非 {lean}`IO`，因为 {lean}`ST` 不会导致错误被抛出。
 
 {docstring EST}
 
@@ -63,13 +67,16 @@ Here, {lean}`ST` is analogous to {lean}`BaseIO` rather than {lean}`IO`, because 
 
 {docstring ST.mkRef}
 
-## Reading and Writing
+## 读取与写入
+%%%
+tag := "Lean-__________________--IO--Mutable-References--State-Transformers--Reading-and-Writing"
+%%%
 
 {docstring ST.Ref.get}
 
 {docstring ST.Ref.set}
 
-::::example "Data races with {name ST.Ref.get}`get` and {name ST.Ref.set}`set`"
+::::example "{name ST.Ref.get}`get` 与 {name ST.Ref.set}`set` 引发的数据竞争" (file := "Data races with get and set")
 :::ioExample
 ```ioLean
 def main : IO Unit := do
@@ -86,7 +93,7 @@ def main : IO Unit := do
         balance.set ((← balance.get) - cost)
     orders := orders.push o
 
-  -- Wait until all orders are completed
+  -- 等待所有订单完成
   for o in orders do
     match o.get with
     | .ok () => pure ()
@@ -108,11 +115,11 @@ Final balance is negative!
 
 {docstring ST.Ref.modify}
 
-::::example "Avoiding data races with {name ST.Ref.modify}`modify`"
+::::example "使用 {name ST.Ref.modify}`modify` 避免数据竞争" (file := "Avoiding data races with modify")
 
-This program launches 100 threads.
-Each thread simulates a purchase attempt: it generates a random price, and if the account balance is sufficient, it decrements it by the price.
-The balance check and the computation of the new value occur in an atomic call to {name}`ST.Ref.modify`.
+该程序启动 100 个线程。
+每个线程模拟一次购买尝试：生成一个随机价格；若账户余额充足，就从余额中扣除该价格。
+余额检查与新值计算在一次对 {name}`ST.Ref.modify` 的原子调用中完成。
 
 :::ioExample
 ```ioLean
@@ -131,7 +138,7 @@ def main : IO Unit := do
         else b
     orders := orders.push o
 
-  -- Wait until all orders are completed
+  -- 等待所有订单完成
   for o in orders do
     match o.get with
     | .ok () => pure ()
@@ -155,33 +162,39 @@ Final balance is zero or positive.
 
 {docstring ST.Ref.swap}
 
-## Comparisons
+## 比较
+%%%
+tag := "Lean-__________________--IO--Mutable-References--State-Transformers--Comparisons"
+%%%
 
 {docstring ST.Ref.ptrEq}
 
-## `ST`-Backed State Monads
+## 由 `ST` 支撑的状态单子
+%%%
+tag := "Lean-__________________--IO--Mutable-References--State-Transformers--ST--Backed-State-Monads"
+%%%
 
 {docstring ST.Ref.toMonadStateOf}
 
-# Concurrency
+# 并发
 %%%
 tag := "ref-locks"
 %%%
 
-Mutable references can be used as a locking mechanism.
-_Taking_ the contents of the reference causes attempts to take it or to read from it to block until it is {name ST.Ref.set}`set` again.
-This is a low-level feature that can be used to implement other synchronization mechanisms; it's usually better to rely on higher-level abstractions when possible.
+可变引用可以用作锁机制。
+_取走_引用内容后，再次尝试取走或读取它的操作都会阻塞，直至通过 {name ST.Ref.set}`set` 重新设置其内容。
+这是一项可用于实现其他同步机制的底层功能；只要可能，通常应优先采用更高层的抽象。
 
 {docstring ST.Ref.take}
 
 
-::::example "Reference Cells as Locks"
-This program launches 100 threads.
-Each thread simulates a purchase attempt: it generates a random price, and if the account balance is sufficient, it decrements it by the price.
-If the balance is not sufficient, then it is not decremented.
-Because each thread {name ST.Ref.take}`take`s the balance cell prior to checking it and only returns it when it is finished, the cell acts as a lock.
-Unlike using {name}`ST.Ref.modify`, which atomically modifies the contents of the cell using a pure function, other {name}`IO` actions may occur in the critical section
-This program's `main` function is marked {keywordOf Lean.Parser.Command.declaration}`unsafe` because {name ST.Ref.take}`take` itself is unsafe.
+::::example "用引用单元充当锁" (file := "Reference Cells as Locks")
+该程序启动 100 个线程。
+每个线程模拟一次购买尝试：生成一个随机价格；若账户余额充足，就从余额中扣除该价格。
+若余额不足，则不作扣减。
+由于每个线程在检查前都会用 {name ST.Ref.take}`take` 取走余额单元，并在完成后才将其放回，因此该单元起到了锁的作用。
+与使用纯函数原子修改单元内容的 {name}`ST.Ref.modify` 不同，临界区中还可以发生其他 {name}`IO` 动作。
+该程序的 `main` 函数被标记为 {keywordOf Lean.Parser.Command.declaration}`unsafe`，因为 {name ST.Ref.take}`take` 本身并不安全。
 
 :::ioExample
 ```ioLean
@@ -204,7 +217,7 @@ unsafe def main : IO Unit := do
         validationUsed.set true
     orders := orders.push o
 
-  -- Wait until all orders are completed
+  -- 等待所有订单完成
   for o in orders do
     match o.get with
     | .ok () => pure ()
@@ -219,7 +232,7 @@ unsafe def main : IO Unit := do
     IO.println "Final balance is zero or positive."
 ```
 
-The program's output is:
+程序输出为：
 ```stdout
 Sending out orders...
 Validation prevented a negative balance.
