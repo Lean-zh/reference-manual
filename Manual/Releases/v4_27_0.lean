@@ -81,7 +81,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___27___0-_LPAR_2026-0
 [#11555](https://github.com/leanprover/lean4/pull/11555)、
 [#11621](https://github.com/leanprover/lean4/pull/11621)。
 
-## `grind` 的新特性
+## grind 的新特性
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___27___0-_LPAR_2026-01-24_RPAR_--Highlights--New-Features-in-Grind"
 %%%
@@ -169,12 +169,12 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___27___0-_LPAR_2026-0
 采用新的默认值后，{tactic}`grind` 产生的跟踪信息、反例和证明项都会不同。
 若要恢复旧的 `grind` 行为，请使用 `grind +revert`。
 
-### `grind` 的其他新特性
+### grind 的其他新特性
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___27___0-_LPAR_2026-01-24_RPAR_--Highlights--New-Features-in-Grind--Other-New-Features-in-Grind"
 %%%
 
-- 在 `grind ring` 中加入 `BitVec` 支持（[#11639](https://github.com/leanprover/lean4/pull/11639)），并在 `grind lia` 中加入 `BitVec` 支持（[#11640](https://github.com/leanprover/lean4/pull/11640)）；
+- 在 `grind ring` 中加入 BitVec 支持（[#11639](https://github.com/leanprover/lean4/pull/11639)），并在 `grind lia` 中加入 `BitVec` 支持（[#11640](https://github.com/leanprover/lean4/pull/11640)）；
 
 - 新增配置选项 `grind -reducible`，允许在定义相等性测试期间展开不可约声明（[#11480](https://github.com/leanprover/lean4/pull/11480)）；
 
@@ -316,10 +316,10 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___27___0-_LPAR_2026-0
 * [#11456](https://github.com/leanprover/lean4/pull/11456) 细化了若干错误消息，主要涉及字段记法、广义字段记法和数值投影的无效用法。
   同时还为字段记法提供了新的错误解释。
 
-* [#11463](https://github.com/leanprover/lean4/pull/11463) 修复了 `getEqnsFor?` 在作用于从定理类型中的 `match` 表达式生成的匹配器时发生的崩溃。
+* [#11463](https://github.com/leanprover/lean4/pull/11463) 修复了 `getEqnsFor?` 在作用于从定理类型中的 match 表达式生成的匹配器时发生的崩溃。
 
 * [#11474](https://github.com/leanprover/lean4/pull/11474) 将 `noConfusion` 构造推广到异构相等式（假设索引之间存在命题相等性）。
-  这为 `grind` 更好地支持把 injection 应用于异构相等式打下基础。
+  这为 grind 更好地支持把 injection 应用于异构相等式打下基础。
 
 * [#11476](https://github.com/leanprover/lean4/pull/11476) 新增 `` {givenInstance}`C` `` 文档 role，它会把 `C` 的一个实例加入文档的局部假设中。
 
@@ -349,8 +349,8 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___27___0-_LPAR_2026-0
 * [#11518](https://github.com/leanprover/lean4/pull/11518) 在自动绑定的隐式参数被要求具有函数类型或相等式类型时，额外给出一条提示。
   此时综合会失败，而现有错误消息没有指出：错误源头其实是一个被自动绑定的未知标识符。
 
-* [#11541](https://github.com/leanprover/lean4/pull/11541) 为 `String.toNat?`、`String.toInt?` 及相关解析函数添加了以下划线作为数字分隔符的支持。
-  这让字符串解析函数与 Lean 的数字字面量语法保持一致；后者早已支持用下划线提升可读性（例如 `100_000_000`）。
+* [#11541](https://github.com/leanprover/lean4/pull/11541) 为 String.toNat?、String.toInt? 及相关解析函数添加了以下划线作为数字分隔符的支持。
+  这让字符串解析函数与 Lean 的数字字面量语法保持一致；后者早已支持用下划线提升可读性（例如 100_000_000）。
 
 * [#11554](https://github.com/leanprover/lean4/pull/11554) 为 Lean 添加 `@[suggest_for]` 标注，使其能为多数默认导入类型（数组、列表、字符串、子串、子数组以及向量）把 `.all` 或 `.any` 方法纠正为 `.every` 或 `.some` 方法。
 
@@ -358,7 +358,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___27___0-_LPAR_2026-0
 
 * [#11562](https://github.com/leanprover/lean4/pull/11562) 让 `noConfusion` 原理变得更加异构，不仅允许索引不同，也允许参数不同。
 
-* [#11566](https://github.com/leanprover/lean4/pull/11566) 让编译器像处理通用 `noConfusion` 一样处理每个构造子的 `noConfusion`，并把更多逻辑移到 no confusion 生成附近。
+* [#11566](https://github.com/leanprover/lean4/pull/11566) 让编译器像处理通用 noConfusion 一样处理每个构造子的 `noConfusion`，并把更多逻辑移到 no confusion 生成附近。
 
 * [#11571](https://github.com/leanprover/lean4/pull/11571) 让 `whnf` 不再查询 `isNoConfusion`，以稍微加快这条热点路径。
 
@@ -377,7 +377,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___27___0-_LPAR_2026-0
 * [#11621](https://github.com/leanprover/lean4/pull/11621) 让 Lean 在某些看起来像是未知标识符被错误自动绑定的错误场景下，也会搜索 `@[suggest_for]` 标注。
   这样就能正确识别：类型为 `Maybe String` 的声明其实应写成 `Option String`。
 
-* [#11624](https://github.com/leanprover/lean4/pull/11624) 修复了在 `x86_64` 上求值有符号整数类型的 `INT_MIN / -1` 或 `INT_MIN % -1` 时发生的 SIGFPE 崩溃。
+* [#11624](https://github.com/leanprover/lean4/pull/11624) 修复了在 x86_64 上求值有符号整数类型的 `INT_MIN / -1` 或 `INT_MIN % -1` 时发生的 SIGFPE 崩溃。
 
 * [#11637](https://github.com/leanprover/lean4/pull/11637) 宣布模块系统不再是实验性功能，并把 `experimental.module` 选项变成待删除的空操作。
 
@@ -518,7 +518,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___27___0-_LPAR_2026-0
 
 * [#11399](https://github.com/leanprover/lean4/pull/11399) 为 `ExtDHashMap`/`ExtHashMap`/`ExtHashSet` 添加差集操作支持，并证明若干相关引理。
 
-* [#11404](https://github.com/leanprover/lean4/pull/11404) 为 `DTreeMap`/`TreeMap`/`TreeSet` 及其外延变体添加 `BEq` 实例，并证明若干引理，将其与哈希映射的等价性以及外延变体的相等性联系起来。
+* [#11404](https://github.com/leanprover/lean4/pull/11404) 为 `DTreeMap`/`TreeMap`/`TreeSet` 及其外延变体添加 BEq 实例，并证明若干引理，将其与哈希映射的等价性以及外延变体的相等性联系起来。
 
 * [#11407](https://github.com/leanprover/lean4/pull/11407) 为 `DTreeMap`/`TreeMap`/`TreeSet` 添加差集操作，并证明若干相关引理。
 
@@ -643,7 +643,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___27___0-_LPAR_2026-0
 * [#11332](https://github.com/leanprover/lean4/pull/11332) 添加了 `grind_annotated "YYYY-MM-DD"` 命令，用于把文件标记为已手动为 grind 添加标注。
 
 * [#11334](https://github.com/leanprover/lean4/pull/11334) 在 `grind linarith` 模块中加入显式的环约束归一化层。
-  例如，当环是一个 `Field` 时，它会被用来清理分母。
+  例如，当环是一个 field 时，它会被用来清理分母。
 
 * [#11335](https://github.com/leanprover/lean4/pull/11335) 在 `grind` 策略块中启用语法 `use [ns Foo]` 和 `instantiate only [ns Foo]`，其效果是激活该命名空间作用域下的全部 grind pattern。
   我们可以借此用 `grind` 实现专用策略，但只启用受控的定理子集。
@@ -863,7 +863,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___27___0-_LPAR_2026-0
 
 * [#11217](https://github.com/leanprover/lean4/pull/11217) 修复了 #10982 中闭包分配器修改的后续影响。
   据我们所知，这个错误只有在不使用 mimalloc 的非默认构建配置中才会明显出现，例如：
-  cmake --preset release -DUSE_MIMALLOC=OFF
+  `cmake --preset release -DUSE_MIMALLOC=OFF`
 
 * [#11310](https://github.com/leanprover/lean4/pull/11310) 让特化器（正确地）在多次调用之间共享更多缓存键，从而减少代码膨胀。
 
@@ -894,7 +894,8 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___27___0-_LPAR_2026-0
 
 * [#11517](https://github.com/leanprover/lean4/pull/11517) 为 Nat.mul 实现了常量折叠。
 
-* [#11525](https://github.com/leanprover/lean4/pull/11525) 让 LCNF 化简器在所有备选都为 `.unreach` 时，将其直接化简为一个 `.unreach`。
+* [#11525](https://github.com/leanprover/lean4/pull/11525) 让 LCNF 化简器在所有备选都为 `.unreach` 时，将其直接化简为一个 `.unreach`，
+  也就是一个额外的 `.unreach`。
 
 * [#11530](https://github.com/leanprover/lean4/pull/11530) 引入了新的 `tagged_return` 属性。
   它允许用户将 `extern` 声明标记为保证总是返回 `tagged` 返回值。
@@ -982,7 +983,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___27___0-_LPAR_2026-0
   >
   >   --keep-prefix
   > 若导入 `X` 会被它所蕴含的、更具体的导入 `X.Y...` 替换，
-  > 则改为保留原始导入。更一般地，只要 `X` 属于当前模块原始的传递导入闭包，
+  > 则改为保留原始导入。更一般地，只要 X 属于当前模块原始的传递导入闭包，
   > 即使它原本不在原始导入列表中，也优先插入 `import X`
   >
   >   --keep-public
@@ -996,8 +997,10 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___27___0-_LPAR_2026-0
   >
   > 标注：
   > 可以向 Lean 文件中加入下列标注来配置 `shake` 的行为。
-  > 只会检查直接跟在指令前的子串 `shake: `，因此多个指令可以混在同一行中，例如 `-- shake: keep-downstream, shake: keep-all`，
-  > 也可以被任意注释包围，例如 `-- shake: keep (元编程输出依赖)`。
+  > 只会检查直接跟在指令前的子串 `shake: `，因此多个指令可以混在同一行中，例如 `-- shake:
+  keep-downstream, shake: keep-all`，
+  > 也可以被任意注释包围，例如 `-- shake: keep
+  (metaprogram output dependency)`。
   >
   >   * `module -- shake: keep-downstream`:
   > 在所有（当前）下游模块中保留此模块，并在需要时新增对它的导入。
@@ -1013,7 +1016,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___27___0-_LPAR_2026-0
   > 那么 `shake` 无法自行检测到这一点，因此该定理所在模块应被 public 导入，
   > 并在该策略所在模块中用 `keep` 标注。
   >     ```
-  >     public import X  -- shake: keep (元编程输出依赖)
+  >     public import X  -- shake: keep (metaprogram output dependency)
   >
   >     ...
   >
