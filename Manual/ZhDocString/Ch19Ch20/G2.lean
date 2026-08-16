@@ -188,7 +188,7 @@ def c015 := @_root_.Float.Model.UnpackedFloat.neg
 def c016 := @_root_.Float.Model.UnpackedFloat.abs
 
 /--
-若该浮点数为 `NaN`，则返回 `true`。
+返回 `true`，当且仅当该浮点数为 `NaN`。
 -/
 def c017 := @_root_.Float.Model.UnpackedFloat.isNaN
 
@@ -198,7 +198,7 @@ def c017 := @_root_.Float.Model.UnpackedFloat.isNaN
 def c018 := @_root_.Float.Model.UnpackedFloat.isInf
 
 /--
-若该浮点数表示实数，即既非无穷也非 `NaN`，则返回 `true`。
+返回 `true`，当该浮点数表示实数，即它既非无穷也非 `NaN`。
 -/
 def c019 := @_root_.Float.Model.UnpackedFloat.isFinite
 
@@ -364,7 +364,7 @@ def c048 := @_root_.Float32.isInf
 
 `NaN` 值由原本可能成为错误的运算产生，例如零除以零。
 
-当且仅当输入在命题上等于 `Float.nan` 时，此函数返回 `true`。
+此函数返回 `true` 当且仅当输入在命题上等于 `Float.nan`。
 
 此函数具有基于 `Float.Model` 的逻辑模型，并被编译为 C 运算符 `isnan`。
 -/
@@ -375,7 +375,7 @@ def c049 := @_root_.Float.isNaN
 
 `NaN` 值由原本可能成为错误的运算产生，例如零除以零。
 
-当且仅当输入在命题上等于 `Float32.nan` 时，此函数返回 `true`。
+此函数返回 `true` 当且仅当输入在命题上等于 `Float32.nan`。
 
 此函数具有基于 `Float32.Model` 的逻辑模型，并被编译为 C 运算符 `isnan`。
 -/
@@ -463,7 +463,7 @@ def c060 := @_root_.Float32.toString
 /--
 把浮点数转换为8 位无符号整数。
 
-若给定的 `Float` 非负，则向下舍入，把值截断为正整数，并钳制到 `UInt8` 的范围。若 `Float` 为负数或 `NaN`，则返回 `0`；若浮点数大于该最大值，则返回最大的 `UInt8` 值（即 `UInt8.size - 1`）。
+若给定的 `Float` 非负，则向下舍入，把值截断为正整数，并钳制到 `UInt8` 的范围。返回 `0`，当 `Float` 为负数或 `NaN`；若浮点数大于该最大值，则返回最大的 `UInt8` 值（即 `UInt8.size - 1`）。
 
 此函数具有基于 `Float.Model` 的逻辑模型。
 -/
@@ -481,7 +481,7 @@ def c062 := @_root_.Float.toInt8
 /--
 把浮点数转换为8 位无符号整数。
 
-若给定的 `Float32` 非负，则向下舍入，把值截断为正整数，并钳制到 `UInt8` 的范围。若 `Float32` 为负数或 `NaN`，则返回 `0`；若浮点数大于该最大值，则返回最大的 `UInt8` 值（即 `UInt8.size - 1`）。
+若给定的 `Float32` 非负，则向下舍入，把值截断为正整数，并钳制到 `UInt8` 的范围。返回 `0`，当 `Float32` 为负数或 `NaN`；若浮点数大于该最大值，则返回最大的 `UInt8` 值（即 `UInt8.size - 1`）。
 
 此函数具有基于 `Float32.Model` 的逻辑模型。
 -/
@@ -499,7 +499,7 @@ def c064 := @_root_.Float32.toInt8
 /--
 把浮点数转换为16 位无符号整数。
 
-若给定的 `Float` 非负，则向下舍入，把值截断为正整数，并钳制到 `UInt16` 的范围。若 `Float` 为负数或 `NaN`，则返回 `0`；若浮点数大于该最大值，则返回最大的 `UInt16` 值（即 `UInt16.size - 1`）。
+若给定的 `Float` 非负，则向下舍入，把值截断为正整数，并钳制到 `UInt16` 的范围。返回 `0`，当 `Float` 为负数或 `NaN`；若浮点数大于该最大值，则返回最大的 `UInt16` 值（即 `UInt16.size - 1`）。
 
 此函数具有基于 `Float.Model` 的逻辑模型。
 -/
@@ -517,7 +517,7 @@ def c066 := @_root_.Float.toInt16
 /--
 把浮点数转换为16 位无符号整数。
 
-若给定的 `Float32` 非负，则向下舍入，把值截断为正整数，并钳制到 `UInt16` 的范围。若 `Float32` 为负数或 `NaN`，则返回 `0`；若浮点数大于该最大值，则返回最大的 `UInt16` 值（即 `UInt16.size - 1`）。
+若给定的 `Float32` 非负，则向下舍入，把值截断为正整数，并钳制到 `UInt16` 的范围。返回 `0`，当 `Float32` 为负数或 `NaN`；若浮点数大于该最大值，则返回最大的 `UInt16` 值（即 `UInt16.size - 1`）。
 
 此函数具有基于 `Float32.Model` 的逻辑模型。
 -/
@@ -535,7 +535,7 @@ def c068 := @_root_.Float32.toInt16
 /--
 把浮点数转换为32 位无符号整数。
 
-若给定的 `Float` 非负，则向下舍入，把值截断为正整数，并钳制到 `UInt32` 的范围。若 `Float` 为负数或 `NaN`，则返回 `0`；若浮点数大于该最大值，则返回最大的 `UInt32` 值（即 `UInt32.size - 1`）。
+若给定的 `Float` 非负，则向下舍入，把值截断为正整数，并钳制到 `UInt32` 的范围。返回 `0`，当 `Float` 为负数或 `NaN`；若浮点数大于该最大值，则返回最大的 `UInt32` 值（即 `UInt32.size - 1`）。
 
 此函数具有基于 `Float.Model` 的逻辑模型。
 -/
@@ -544,7 +544,7 @@ def c069 := @_root_.Float.toUInt32
 /--
 把浮点数转换为32 位无符号整数。
 
-若给定的 `Float32` 非负，则向下舍入，把值截断为正整数，并钳制到 `UInt32` 的范围。若 `Float32` 为负数或 `NaN`，则返回 `0`；若浮点数大于该最大值，则返回最大的 `UInt32` 值（即 `UInt32.size - 1`）。
+若给定的 `Float32` 非负，则向下舍入，把值截断为正整数，并钳制到 `UInt32` 的范围。返回 `0`，当 `Float32` 为负数或 `NaN`；若浮点数大于该最大值，则返回最大的 `UInt32` 值（即 `UInt32.size - 1`）。
 
 此函数具有基于 `Float32.Model` 的逻辑模型。
 -/
@@ -571,7 +571,7 @@ def c072 := @_root_.Float32.toInt32
 /--
 把浮点数转换为64 位无符号整数。
 
-若给定的 `Float` 非负，则向下舍入，把值截断为正整数，并钳制到 `UInt64` 的范围。若 `Float` 为负数或 `NaN`，则返回 `0`；若浮点数大于该最大值，则返回最大的 `UInt64` 值（即 `UInt64.size - 1`）。
+若给定的 `Float` 非负，则向下舍入，把值截断为正整数，并钳制到 `UInt64` 的范围。返回 `0`，当 `Float` 为负数或 `NaN`；若浮点数大于该最大值，则返回最大的 `UInt64` 值（即 `UInt64.size - 1`）。
 
 此函数具有基于 `Float.Model` 的逻辑模型。
 -/
@@ -589,7 +589,7 @@ def c074 := @_root_.Float.toInt64
 /--
 把浮点数转换为64 位无符号整数。
 
-若给定的 `Float32` 非负，则向下舍入，把值截断为正整数，并钳制到 `UInt64` 的范围。若 `Float32` 为负数或 `NaN`，则返回 `0`；若浮点数大于该最大值，则返回最大的 `UInt64` 值（即 `UInt64.size - 1`）。
+若给定的 `Float32` 非负，则向下舍入，把值截断为正整数，并钳制到 `UInt64` 的范围。返回 `0`，当 `Float32` 为负数或 `NaN`；若浮点数大于该最大值，则返回最大的 `UInt64` 值（即 `UInt64.size - 1`）。
 
 此函数具有基于 `Float32.Model` 的逻辑模型。
 -/
@@ -607,7 +607,7 @@ def c076 := @_root_.Float32.toInt64
 /--
 把浮点数转换为机器字长无符号整数。
 
-若给定的 `Float` 非负，则向下舍入，把值截断为正整数，并钳制到 `USize` 的范围。若 `Float` 为负数或 `NaN`，则返回 `0`；若浮点数大于该最大值，则返回最大的 `USize` 值（即 `USize.size - 1`）。
+若给定的 `Float` 非负，则向下舍入，把值截断为正整数，并钳制到 `USize` 的范围。返回 `0`，当 `Float` 为负数或 `NaN`；若浮点数大于该最大值，则返回最大的 `USize` 值（即 `USize.size - 1`）。
 
 此函数具有基于 `Float.Model` 的逻辑模型。
 -/
@@ -616,7 +616,7 @@ def c077 := @_root_.Float.toUSize
 /--
 把浮点数转换为机器字长无符号整数。
 
-若给定的 `Float32` 非负，则向下舍入，把值截断为正整数，并钳制到 `USize` 的范围。若 `Float32` 为负数或 `NaN`，则返回 `0`；若浮点数大于该最大值，则返回最大的 `USize` 值（即 `USize.size - 1`）。
+若给定的 `Float32` 非负，则向下舍入，把值截断为正整数，并钳制到 `USize` 的范围。返回 `0`，当 `Float32` 为负数或 `NaN`；若浮点数大于该最大值，则返回最大的 `USize` 值（即 `USize.size - 1`）。
 
 此函数具有基于 `Float32.Model` 的逻辑模型。
 -/
@@ -1214,9 +1214,9 @@ inductive c159 : Prop where
 inductive c160 : Prop
 
 /--
-`False.elim : False → C` 表示由假命题可推出任意所需命题 `C`。它也称为 *ex falso quodlibet*（EFQ）或爆炸原理。
+`False.elim : False → C` 表示由 `False` 可推出任意所需命题 `C`。它也称为 *ex falso quodlibet*（EFQ）或爆炸原理。
 
-目标类型实际上是 `C : Sort u`，因此它对命题和类型都适用。执行时，它类似于“不可达”指令：运行它属于**未定义行为**，但很可能打印“unreachable code”。（无论如何，必须先构造 `False` 的证明才能运行它，而这只能借助 `sorry` 或不可靠的公理做到。）
+目标类型实际上是 `C : Sort u`，因此它对命题和类型都适用。执行时，它类似于“不可达”指令：运行它属于**未定义行为**，但很可能打印“unreachable code”。（无论如何，必须先构造假命题的证明才能运行它，而这只能借助 `sorry` 或不可靠的公理做到。）
 -/
 def c161 := @_root_.False.elim
 
@@ -1335,21 +1335,21 @@ add_decl_doc c170.intro
 def c171 := @_root_.Iff.elim
 
 /--
-存在量化。若 `p : α → Prop` 是谓词，则 `∃ x : α, p x` 断言存在某个类型为 `α` 的 `x`，使 `p x` 成立。
+存在量化。若 `p : α → Prop` 是谓词，则 `∃ x : α, p x` 断言存在某个 `x`，其类型为 `α`，并且 `p x` 成立。
 要创建存在性证明，可使用 `exists` 策略，或匿名构造子记法 `⟨x, h⟩`。
-要解包存在量词，可在 `h` 是 `∃ x : α, p x` 的证明时使用 `cases h`，或使用 `let ⟨x, hx⟩ := h`。
+要解包存在量词，可使用 `cases h`，其中 `h` 是 `∃ x : α, p x` 的证明，或使用 `let ⟨x, hx⟩ := h`。
 
 由于 Lean 具有证明无关性，任意两个存在性证明都定义相等。其后果之一是，无法仅从见证存在这一事实恢复存在量词的见证。
 例如，以下代码无法编译：
 ```
 example (h : ∃ x : Nat, x = x) : Nat :=
-  let ⟨x, _⟩ := h  -- 失败，因为目标是 `Nat : Type`
+  let ⟨x, _⟩ := h  -- fail, because the goal is `Nat : Type`
   x
 ```
 错误消息 `recursor 'Exists.casesOn' can only eliminate into Prop` 表示，只有当前目标也是命题时，这样做才有效：
 ```
 example (h : ∃ x : Nat, x = x) : True :=
-  let ⟨x, _⟩ := h  -- 成功，因为目标是 `True : Prop`
+  let ⟨x, _⟩ := h  -- ok, because the goal is `True : Prop`
   trivial
 ```
 -/
@@ -1376,7 +1376,7 @@ example : a = d :=
   Eq.trans (Eq.trans hab (Eq.symm hcb)) hcd
 ```
 不过，等式远不只是一种等价关系。它还具有一项重要性质：每个断言都尊重这种等价，即可以替换相等的表达式而不改变真值。
-也就是说，给定 `h1 : a = b` 和 `h2 : p a`，可通过替换 `Eq.subst h1 h2` 构造 `p b` 的证明。
+也就是说，给定 `h1 : a = b` 和 `h2 : p a`，可构造 `p b` 的证明，所用替换为 `Eq.subst h1 h2`。
 示例：
 ```
 example (α : Type) (a b : α) (p : α → Prop)
@@ -1404,7 +1404,7 @@ inductive c174 : {α : Sort u} → α → α → Prop where
 /--
 `rfl : a = a` 是等式类型唯一的构造子。它与 `Eq.refl` 相同，只不过隐式而非显式地接受 `a`。
 
-这一定理比初看上去更强，因为尽管其陈述是 `a = a`，Lean 也会接受与该类型定义相等的任何类型。例如，在 Lean 中可用 `rfl` 证明 `2 + 2 = 4`，因为等式两边在定义等价意义下相同。
+这一定理比初看上去更强，因为尽管其陈述是 `a = a`，Lean 也会接受与该类型定义相等的任何类型。例如，在 Lean 中，`2 + 2 = 4` 可用 `rfl` 证明，因为等式两边在定义等价意义下相同。
 -/
 def c175 := @_root_.rfl
 
@@ -1436,7 +1436,7 @@ def c177 := @_root_.Eq.trans
 def c178 := @_root_.Eq.subst
 
 /--
-沿类型等式进行强制转换。若 `h : α = β` 是类型等式且 `a : α`，则直接写 `a : β` 通常无法通过类型检查；此函数可绕过这一限制，用 `cast h a : β` 把 `a` 嵌入类型 `β`。
+沿类型等式进行强制转换。若 `h : α = β` 是类型等式且 `a : α`，则直接写 `a : β` 通常无法通过类型检查；此函数可绕过这一限制，把 `a` 嵌入类型 `β`，写作 `cast h a : β`。
 
 最好尽可能避免使用此函数，因为含有强制转换的项更难推理；但当类型并非定义相等时，有时没有更好的做法。
 
@@ -1457,7 +1457,7 @@ def c180 := @_root_.congr
 def c181 := @_root_.congrFun
 
 /--
-函数实参的同余性：对任意（非依赖）函数 `f`，若 `a₁ = a₂`，则 `f a₁ = f a₂`。这比初看上去更强，因为还可以用 lambda 表达式作为 `f`，证明 `<something containing a₁> = <something containing a₂>`。`congr` 和 `simp` 等策略在子项内部应用等式时，会在内部使用此函数。
+函数实参的同余性：若 `a₁ = a₂`，则 `f a₁ = f a₂`，其中 `f` 为任意非依赖函数。这比初看上去更强，因为还可以用 lambda 表达式作为 `f`，证明 `<something containing a₁> = <something containing a₂>`。`congr` 和 `simp` 等策略在子项内部应用等式时，会在内部使用此函数。
 
 更多信息：[等式](https://lean-lang.org/theorem_proving_in_lean4/quantifiers_and_equality.html#equality)
 -/
@@ -1534,7 +1534,7 @@ def c192 := @_root_.heq_of_eq
 def c193 := @_root_.heq_of_eqRec_eq
 
 /--
-使用 `Eq.recOn` 在 `φ` 内重写所得的项，与原项异构相等。
+在 `φ` 内使用 `Eq.recOn` 重写所得的项，与原项异构相等。
 -/
 def c194 := @_root_.eqRec_heq
 

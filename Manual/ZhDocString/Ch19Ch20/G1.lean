@@ -35,7 +35,7 @@ universe u v w w'
 
 该哈希表由 `Array` 作为后备存储。用户应确保线性使用哈希映射以避免昂贵的复制。
 
-哈希映射使用 `==`（由 `BEq` 类型类提供）来比较键，并使用 `hash`（由 `Hashable` 类型类提供）来对它们进行哈希处理。为了确保操作按预期运行，`==` 应该是等价关系，而 `a == b` 应该蕴含 `hash a = hash b`（另请参见 `EquivBEq` 和 `LawfulHashable` 类型类）。如果 `BEq` 实例合法，即如果 `a == b` 蕴含 `a = b`，这两个条件都是自动的。
+哈希映射使用 `==`（由 `BEq` 类型类提供）来比较键，并使用 `hash`（由 `Hashable` 类型类提供）来对它们进行哈希处理。为了确保操作按预期运行，`==` 应该是等价关系，而 `a == b` 应该蕴含 `hash a = hash b`（另请参见 `EquivBEq` 和 `LawfulHashable` 类型类）。如果 BEq 实例合法，即如果 `a == b` 蕴含 `a = b`，这两个条件都是自动的。
 
 这些哈希映射包含内置的良构不变量，这意味着它们不能在嵌套归纳类型中使用。对于这些用例，`Std.Data.HashMap.Raw` 和 `Std.Data.HashMap.Raw.WF` 将不变量与哈希映射分开。如有疑问，请优先选择 `HashMap` 而不是 `HashMap.Raw`。
 
@@ -191,7 +191,7 @@ def c025 := @_root_.Std.HashMap.filterMap
 /--
 将给定的映射插入到映射中。如果给定键已经存在映射，则键和值都将被替换。
 
-注意：此替换行为适用于 `HashMap`、`DHashMap`、`HashMap.Raw` 和 `DHashMap.Raw`。 `HashSet` 和 `HashSet.Raw` 上的 `insert` 函数的行为不同：如果匹配的键已存在，它将返回未更改的集合。
+注意：此替换行为适用于 `HashMap`、`DHashMap`、`HashMap.Raw` 和 `DHashMap.Raw`。 `insert` 函数在 `HashSet` 和 `HashSet.Raw` 上的行为不同：如果匹配的键已存在，它将返回未更改的集合。
 -/
 def c026 := @_root_.Std.HashMap.insert
 
@@ -212,12 +212,12 @@ def c028 := @_root_.Std.HashMap.getThenInsertIfNew?
 /--
 通过迭代给定集合并调用 `insert`，将多个映射插入哈希映射。如果同一键出现多次，则最后一次出现的键优先。
 
-注意：此优先行为适用于 `HashMap`、`DHashMap`、`HashMap.Raw` 和 `DHashMap.Raw`。 `HashSet` 和 `HashSet.Raw` 上的 `insertMany` 函数的行为不同：它会更喜欢第一次出现。
+注意：此优先行为适用于 `HashMap`、`DHashMap`、`HashMap.Raw` 和 `DHashMap.Raw`。 `insertMany` 函数在 `HashSet` 和 `HashSet.Raw` 上的行为不同：它会更喜欢第一次出现。
 -/
 def c029 := @_root_.Std.HashMap.insertMany
 
 /--
-通过迭代给定集合并调用 `insertIfNew`，将多个值为 `()` 的键插入到哈希映射中。如果同一个键出现多次，则第一次出现的键优先。
+将多个值为 `()` 的键插入哈希映射：为此迭代给定集合并调用 `insertIfNew`。如果同一个键出现多次，则第一次出现的键优先。
 
 这主要用于实现 `HashSet.insertMany`，因此如果您正在考虑使用它，`HashSet` 或 `HashSet.Raw` 可能更适合您。
 -/
@@ -281,7 +281,7 @@ def c037 := @_root_.Std.HashMap.fold
 def c038 := @_root_.Std.HashMap.foldM
 
 /--
-支持 `do` 块中的 `for` 循环构造。
+支持 `for` 循环在 `do` 块中的构造形式。
 -/
 def c039 := @_root_.Std.HashMap.forIn
 
@@ -326,7 +326,7 @@ def c045 := @_root_.Std.HashMap.unitOfList
 
 该哈希表由 `Array` 作为后备存储。用户应确保线性使用哈希映射以避免昂贵的复制。
 
-哈希映射使用 `==`（由 `BEq` 类型类提供）来比较键，并使用 `hash`（由 `Hashable` 类型类提供）来对它们进行哈希处理。为了确保操作按预期运行，`==` 应该是等价关系，而 `a == b` 应该蕴含 `hash a = hash b`（另请参见 `EquivBEq` 和 `LawfulHashable` 类型类）。如果 `BEq` 实例合法，即如果 `a == b` 蕴含 `a = b`，这两个条件都是自动的。
+哈希映射使用 `==`（由 `BEq` 类型类提供）来比较键，并使用 `hash`（由 `Hashable` 类型类提供）来对它们进行哈希处理。为了确保操作按预期运行，`==` 应该是等价关系，而 `a == b` 应该蕴含 `hash a = hash b`（另请参见 `EquivBEq` 和 `LawfulHashable` 类型类）。如果 BEq 实例合法，即如果 `a == b` 蕴含 `a = b`，这两个条件都是自动的。
 
 依值哈希映射（其中键可能出现在其值的类型中）可用作 `Std.Data.Raw.DHashMap`。
 -/
@@ -349,11 +349,11 @@ structure c047 {α : Type u} {β : Type v} [BEq α] [Hashable α]
 
 该哈希表由 `Array` 作为后备存储。用户应确保线性使用哈希映射以避免昂贵的复制。
 
-哈希映射使用 `==`（由 `BEq` 类型类提供）来比较键，并使用 `hash`（由 `Hashable` 类型类提供）来对它们进行哈希处理。为了确保操作按预期运行，`==` 应该是等价关系，而 `a == b` 应该蕴含 `hash a = hash b`（另请参见 `EquivBEq` 和 `LawfulHashable` 类型类）。如果 `BEq` 实例合法，即如果 `a == b` 蕴含 `a = b`，这两个条件都是自动的。
+哈希映射使用 `==`（由 `BEq` 类型类提供）来比较键，并使用 `hash`（由 `Hashable` 类型类提供）来对它们进行哈希处理。为了确保操作按预期运行，`==` 应该是等价关系，而 `a == b` 应该蕴含 `hash a = hash b`（另请参见 `EquivBEq` 和 `LawfulHashable` 类型类）。如果 BEq 实例合法，即如果 `a == b` 蕴含 `a = b`，这两个条件都是自动的。
 
 这些哈希映射包含内置的良构不变量，这意味着它们不能在嵌套归纳类型中使用。对于这些用例，`Std.DHashMap.Raw` 和 `Std.DHashMap.Raw.WF` 将不变量与哈希映射分开。如有疑问，请优先选择 `DHashMap` 而不是 `DHashMap.Raw`。
 
-对于由于外延性而更方便在证明中使用的变体，请参阅模块 `Std.Data.ExtDHashMap` 中定义的 `Std.ExtDHashMap`。
+对于由于外延性而更方便在证明中使用的变体，请参阅 `Std.ExtDHashMap`，它定义于模块 `Std.Data.ExtDHashMap`。
 -/
 structure c048 (α : Type u) (β : α → Type v) [BEq α] [Hashable α] where
   /-- 哈希映射的内部实现细节。 -/
@@ -509,7 +509,7 @@ def c072 := @_root_.Std.DHashMap.filterMap
 /--
 将给定的映射插入到映射中。如果给定键已经存在映射，则键和值都将被替换。
 
-注意：此替换行为适用于 `HashMap`、`DHashMap`、`HashMap.Raw` 和 `DHashMap.Raw`。 `HashSet` 和 `HashSet.Raw` 上的 `insert` 函数的行为不同：如果匹配的键已存在，它将返回未更改的集合。
+注意：此替换行为适用于 `HashMap`、`DHashMap`、`HashMap.Raw` 和 `DHashMap.Raw`。 `insert` 函数在 `HashSet` 和 `HashSet.Raw` 上的行为不同：如果匹配的键已存在，它将返回未更改的集合。
 -/
 def c073 := @_root_.Std.DHashMap.insert
 
@@ -532,7 +532,7 @@ def c075 := @_root_.Std.DHashMap.getThenInsertIfNew?
 /--
 通过迭代给定集合并调用 `insert`，将多个映射插入哈希映射。如果同一键出现多次，则最后一次出现的键优先。
 
-注意：此优先行为适用于 `HashMap`、`DHashMap`、`HashMap.Raw` 和 `DHashMap.Raw`。 `HashSet` 和 `HashSet.Raw` 上的 `insertMany` 函数的行为不同：它会更喜欢第一次出现。
+注意：此优先行为适用于 `HashMap`、`DHashMap`、`HashMap.Raw` 和 `DHashMap.Raw`。 `insertMany` 函数在 `HashSet` 和 `HashSet.Raw` 上的行为不同：它会更喜欢第一次出现。
 -/
 def c076 := @_root_.Std.DHashMap.insertMany
 
@@ -598,7 +598,7 @@ def c083 := @_root_.Std.DHashMap.fold
 def c084 := @_root_.Std.DHashMap.foldM
 
 /--
-支持 `do` 块中的 `for` 循环构造。
+支持 `for` 循环在 `do` 块中的构造形式。
 -/
 def c085 := @_root_.Std.DHashMap.forIn
 
@@ -629,7 +629,7 @@ def c089 := @_root_.Std.DHashMap.toList
 
 这是一个简单的分离链接哈希表。哈希映射的数据由缓存的大小和桶数组组成，其中每个桶是键值对的链表。桶的数量始终是2的幂。哈希映射在插入元素时将其大小加倍，使得元素数量超过桶数量的 75%。
 
-哈希映射使用 `==`（由 `BEq` 类型类提供）来比较键，并使用 `hash`（由 `Hashable` 类型类提供）来对它们进行哈希处理。为了确保操作按预期运行，`==` 应该是等价关系，而 `a == b` 应该蕴含 `hash a = hash b`（另请参见 `EquivBEq` 和 `LawfulHashable` 类型类）。如果 `BEq` 实例合法，即如果 `a == b` 蕴含 `a = b`，这两个条件都是自动的。
+哈希映射使用 `==`（由 `BEq` 类型类提供）来比较键，并使用 `hash`（由 `Hashable` 类型类提供）来对它们进行哈希处理。为了确保操作按预期运行，`==` 应该是等价关系，而 `a == b` 应该蕴含 `hash a = hash b`（另请参见 `EquivBEq` 和 `LawfulHashable` 类型类）。如果 BEq 实例合法，即如果 `a == b` 蕴含 `a = b`，这两个条件都是自动的。
 -/
 structure c090 (α : Type u) (β : α → Type v) where
   /-- 哈希映射中的映射数量。 -/
@@ -702,13 +702,13 @@ inductive c091 : {α : Type u} → {β : α → Type v} → [BEq α] → [Hashab
 
 该哈希表由 `Array` 作为后备存储。用户应确保线性使用哈希映射以避免昂贵的复制。
 
-哈希映射使用 `==`（由 `BEq` 类型类提供）来比较键，并使用 `hash`（由 `Hashable` 类型类提供）来对它们进行哈希处理。为了确保操作按预期运行，`==` 应该是等价关系，而 `a == b` 应该蕴含 `hash a = hash b`（另请参见 `EquivBEq` 和 `LawfulHashable` 类型类）。如果 `BEq` 实例合法，即如果 `a == b` 蕴含 `a = b`，这两个条件都是自动的。
+哈希映射使用 `==`（由 `BEq` 类型类提供）来比较键，并使用 `hash`（由 `Hashable` 类型类提供）来对它们进行哈希处理。为了确保操作按预期运行，`==` 应该是等价关系，而 `a == b` 应该蕴含 `hash a = hash b`（另请参见 `EquivBEq` 和 `LawfulHashable` 类型类）。如果 BEq 实例合法，即如果 `a == b` 蕴含 `a = b`，这两个条件都是自动的。
 
 与常规哈希映射相比，`Std.ExtHashMap` 提供了多个外延引理，因此具有更多关于哈希映射相等性的引理。然而，这也使其失去了自由迭代哈希映射的能力。
 
 这些哈希映射包含内置的良构不变量，这意味着它们不能在嵌套归纳类型中使用。对于这些用例，`Std.HashMap.Raw` 和 `Std.HashMap.Raw.WF` 将不变量与哈希映射分开。如有疑问，请优先选择 `HashMap` 或 `ExtHashMap` 而不是 `HashMap.Raw`。
 
-依值哈希映射（其中键可能出现在其值的类型中）在模块 `Std.Data.ExtDHashMap` 中以 `Std.ExtDHashMap` 形式提供。
+依值哈希映射（其中键可能出现在其值的类型中）以 `Std.ExtDHashMap` 形式提供，定义于模块 `Std.Data.ExtDHashMap`。
 -/
 structure c092 (α : Type u) (β : Type v) [BEq α] [Hashable α] where
   /-- 哈希映射的内部实现细节。 -/
@@ -832,7 +832,7 @@ def c111 := @_root_.Std.ExtHashMap.filterMap
 /--
 将给定的映射插入到映射中。如果给定键已经存在映射，则键和值都将被替换。
 
-注意：此替换行为适用于 `HashMap`、`DHashMap`、`HashMap.Raw` 和 `DHashMap.Raw`。 `HashSet` 和 `HashSet.Raw` 上的 `insert` 函数的行为不同：如果匹配的键已存在，它将返回未更改的集合。
+注意：此替换行为适用于 `HashMap`、`DHashMap`、`HashMap.Raw` 和 `DHashMap.Raw`。 `insert` 函数在 `HashSet` 和 `HashSet.Raw` 上的行为不同：如果匹配的键已存在，它将返回未更改的集合。
 -/
 def c112 := @_root_.Std.ExtHashMap.insert
 
@@ -853,12 +853,12 @@ def c114 := @_root_.Std.ExtHashMap.getThenInsertIfNew?
 /--
 通过迭代给定集合并调用 `insert`，将多个映射插入哈希映射。如果同一键出现多次，则最后一次出现的键优先。
 
-注意：此优先行为适用于 `HashMap`、`DHashMap`、`HashMap.Raw` 和 `DHashMap.Raw`。 `HashSet` 和 `HashSet.Raw` 上的 `insertMany` 函数的行为不同：它会更喜欢第一次出现。
+注意：此优先行为适用于 `HashMap`、`DHashMap`、`HashMap.Raw` 和 `DHashMap.Raw`。 `insertMany` 函数在 `HashSet` 和 `HashSet.Raw` 上的行为不同：它会更喜欢第一次出现。
 -/
 def c115 := @_root_.Std.ExtHashMap.insertMany
 
 /--
-通过迭代给定集合并调用 `insertIfNew`，将多个值为 `()` 的键插入到哈希映射中。如果同一个键出现多次，则第一次出现的键优先。
+将多个值为 `()` 的键插入哈希映射：为此迭代给定集合并调用 `insertIfNew`。如果同一个键出现多次，则第一次出现的键优先。
 
 这主要用于实现 `HashSet.insertMany`，因此如果您正在考虑使用它，`HashSet` 或 `HashSet.Raw` 可能更适合您。
 -/
@@ -895,7 +895,7 @@ def c120 := @_root_.Std.ExtHashMap.unitOfList
 
 该哈希表由 `Array` 作为后备存储。用户应确保线性使用哈希映射以避免昂贵的复制。
 
-哈希映射使用 `==`（由 `BEq` 类型类提供）来比较键，并使用 `hash`（由 `Hashable` 类型类提供）来对它们进行哈希处理。为了确保操作按预期运行，`==` 必须是等价关系，并且 `a == b` 必须隐含 `hash a = hash b`（另请参见 `EquivBEq` 和 `LawfulHashable` 类型类）。如果 `BEq` 实例合法，即如果 `a == b` 蕴含 `a = b`，这两个条件都是自动的。
+哈希映射使用 `==`（由 `BEq` 类型类提供）来比较键，并使用 `hash`（由 `Hashable` 类型类提供）来对它们进行哈希处理。为了确保操作按预期运行，`==` 必须是等价关系，并且 `a == b` 必须隐含 `hash a = hash b`（另请参见 `EquivBEq` 和 `LawfulHashable` 类型类）。如果 BEq 实例合法，即如果 `a == b` 蕴含 `a = b`，这两个条件都是自动的。
 
 与常规依值哈希映射相比，`Std.ExtDHashMap` 提供了多个外延引理，因此具有更多关于哈希映射相等性的引理。然而，这也使其失去了自由迭代哈希映射的能力。
 
@@ -1026,7 +1026,7 @@ def c140 := @_root_.Std.ExtDHashMap.filterMap
 /--
 将给定的映射插入到映射中。如果给定键已经存在映射，则键和值都将被替换。
 
-注意：此替换行为适用于 `HashMap`、`DHashMap`、`HashMap.Raw` 和 `DHashMap.Raw`。 `HashSet` 和 `HashSet.Raw` 上的 `insert` 函数的行为不同：如果匹配的键已存在，它将返回未更改的集合。
+注意：此替换行为适用于 `HashMap`、`DHashMap`、`HashMap.Raw` 和 `DHashMap.Raw`。 `insert` 函数在 `HashSet` 和 `HashSet.Raw` 上的行为不同：如果匹配的键已存在，它将返回未更改的集合。
 -/
 def c141 := @_root_.Std.ExtDHashMap.insert
 
@@ -1049,7 +1049,7 @@ def c143 := @_root_.Std.ExtDHashMap.getThenInsertIfNew?
 /--
 通过迭代给定集合并调用 `insert`，将多个映射插入哈希映射。如果同一键出现多次，则最后一次出现的键优先。
 
-注意：此优先行为适用于 `HashMap`、`DHashMap`、`HashMap.Raw` 和 `DHashMap.Raw`。 `HashSet` 和 `HashSet.Raw` 上的 `insertMany` 函数的行为不同：它会更喜欢第一次出现。
+注意：此优先行为适用于 `HashMap`、`DHashMap`、`HashMap.Raw` 和 `DHashMap.Raw`。 `insertMany` 函数在 `HashSet` 和 `HashSet.Raw` 上的行为不同：它会更喜欢第一次出现。
 -/
 def c144 := @_root_.Std.ExtDHashMap.insertMany
 
@@ -1070,7 +1070,7 @@ def c146 := @_root_.Std.ExtDHashMap.ofList
 
 该哈希表由 `Array` 作为后备存储。用户应确保哈希集是线性使用的，以避免昂贵的复制。
 
-哈希集使用 `==`（由 `BEq` 类型类提供）来比较元素，并使用 `hash`（由 `Hashable` 类型类提供）对它们进行哈希处理。为了确保操作按预期运行，`==` 应该是等价关系，而 `a == b` 应该蕴含 `hash a = hash b`（另请参见 `EquivBEq` 和 `LawfulHashable` 类型类）。如果 `BEq` 实例合法，即如果 `a == b` 蕴含 `a = b`，这两个条件都是自动的。
+哈希集使用 `==`（由 `BEq` 类型类提供）来比较元素，并使用 `hash`（由 `Hashable` 类型类提供）对它们进行哈希处理。为了确保操作按预期运行，`==` 应该是等价关系，而 `a == b` 应该蕴含 `hash a = hash b`（另请参见 `EquivBEq` 和 `LawfulHashable` 类型类）。如果 BEq 实例合法，即如果 `a == b` 蕴含 `a = b`，这两个条件都是自动的。
 
 这些哈希集包含内置的良构不变量，这意味着它们不能在嵌套归纳类型中使用。对于这些用例，`Std.Data.HashSet.Raw` 和 `Std.Data.HashSet.Raw.WF` 将不变量与哈希集分开。如有疑问，请优先选择 `HashSet` 而不是 `HashSet.Raw`。
 -/
@@ -1086,7 +1086,7 @@ def c148 := @_root_.Std.HashSet.emptyWithCapacity
 /--
 如果哈希集不包含元素，则返回 `true`。
 
-请注意，如果您的 `BEq` 实例不是自反的，或者您的 `Hashable` 实例不合法，则该函数有可能返回 `false`，即使对于所有 `a` 来说都是 `m.contains a = false`。
+请注意，如果您的 `BEq` 实例不是自反的，或者您的 `Hashable` 实例不合法，则该函数有可能返回 `false`，即使 `m.contains a = false` 对所有 `a` 都成立。
 -/
 def c149 := @_root_.Std.HashSet.isEmpty
 
@@ -1133,14 +1133,14 @@ def c156 := @_root_.Std.HashSet.getD
 /--
 将给定元素插入集合中。如果哈希集已包含与给定元素相等（关于 `==`）的元素，则哈希集将原样返回。
 
-注意：这种非替换行为对于 `HashSet` 和 `HashSet.Raw` 来说是正确的。 `HashMap`、`DHashMap`、`HashMap.Raw` 和 `DHashMap.Raw` 上的 `insert` 函数的行为不同：它将覆盖现有映射。
+注意：这种非替换行为对于 `HashSet` 和 `HashSet.Raw` 来说是正确的。 `insert` 函数在 `HashMap`、`DHashMap`、`HashMap.Raw` 和 `DHashMap.Raw` 上的行为不同：它将改写现有映射。
 -/
 def c157 := @_root_.Std.HashSet.insert
 
 /--
 通过迭代给定集合并调用 `insert`，将多个映射插入到哈希集中。如果同一个键出现多次，则第一次出现的键优先。
 
-注意：此优先行为适用于 `HashSet` 和 `HashSet.Raw`。 `HashMap`、`DHashMap`、`HashMap.Raw` 和 `DHashMap.Raw` 上的 `insertMany` 函数的行为有所不同：它会更喜欢最后的外观。
+注意：此优先行为适用于 `HashSet` 和 `HashSet.Raw`。 `insertMany` 函数在 `HashMap`、`DHashMap`、`HashMap.Raw` 和 `DHashMap.Raw` 上的行为有所不同：它会优先采用最后一次出现。
 -/
 def c158 := @_root_.Std.HashSet.insertMany
 
@@ -1204,7 +1204,7 @@ def c167 := @_root_.Std.HashSet.fold
 def c168 := @_root_.Std.HashSet.foldM
 
 /--
-支持 `do` 块中的 `for` 循环构造。
+支持 `for` 循环在 `do` 块中的构造形式。
 -/
 def c169 := @_root_.Std.HashSet.forIn
 
@@ -1240,7 +1240,7 @@ def c174 := @_root_.Std.HashSet.toArray
 
 该哈希表由 `Array` 作为后备存储。用户应确保哈希集是线性使用的，以避免昂贵的复制。
 
-哈希集使用 `==`（由 `BEq` 类型类提供）来比较元素，并使用 `hash`（由 `Hashable` 类型类提供）对它们进行哈希处理。为了确保操作按预期运行，`==` 应该是等价关系，而 `a == b` 应该蕴含 `hash a = hash b`（另请参见 `EquivBEq` 和 `LawfulHashable` 类型类）。如果 `BEq` 实例合法，即如果 `a == b` 蕴含 `a = b`，这两个条件都是自动的。
+哈希集使用 `==`（由 `BEq` 类型类提供）来比较元素，并使用 `hash`（由 `Hashable` 类型类提供）对它们进行哈希处理。为了确保操作按预期运行，`==` 应该是等价关系，而 `a == b` 应该蕴含 `hash a = hash b`（另请参见 `EquivBEq` 和 `LawfulHashable` 类型类）。如果 BEq 实例合法，即如果 `a == b` 蕴含 `a = b`，这两个条件都是自动的。
 -/
 structure c175 (α : Type u) where
   /-- 哈希集合的内部实现细节。 -/
@@ -1261,7 +1261,7 @@ structure c176 {α : Type u} [BEq α] [Hashable α]
 
 该哈希表由 `Array` 作为后备存储。用户应确保哈希集是线性使用的，以避免昂贵的复制。
 
-哈希集使用 `==`（由 `BEq` 类型类提供）来比较元素，并使用 `hash`（由 `Hashable` 类型类提供）对它们进行哈希处理。为了确保操作按预期运行，`==` 应该是等价关系，而 `a == b` 应该蕴含 `hash a = hash b`（另请参见 `EquivBEq` 和 `LawfulHashable` 类型类）。如果 `BEq` 实例合法，即如果 `a == b` 蕴含 `a = b`，这两个条件都是自动的。
+哈希集使用 `==`（由 `BEq` 类型类提供）来比较元素，并使用 `hash`（由 `Hashable` 类型类提供）对它们进行哈希处理。为了确保操作按预期运行，`==` 应该是等价关系，而 `a == b` 应该蕴含 `hash a = hash b`（另请参见 `EquivBEq` 和 `LawfulHashable` 类型类）。如果 BEq 实例合法，即如果 `a == b` 蕴含 `a = b`，这两个条件都是自动的。
 
 与常规哈希集相比，`Std.ExtHashSet` 提供了多个外延引理，因此具有更多关于哈希映射相等性的引理。然而，这也使其失去了自由迭代哈希集的能力。
 
@@ -1279,7 +1279,7 @@ def c178 := @_root_.Std.ExtHashSet.emptyWithCapacity
 /--
 如果哈希集不包含元素，则返回 `true`。
 
-请注意，如果您的 `BEq` 实例不是自反的，或者您的 `Hashable` 实例不合法，则该函数有可能返回 `false`，即使对于所有 `a` 来说都是 `m.contains a = false`。
+请注意，如果您的 `BEq` 实例不是自反的，或者您的 `Hashable` 实例不合法，则该函数有可能返回 `false`，即使 `m.contains a = false` 对所有 `a` 都成立。
 -/
 def c179 := @_root_.Std.ExtHashSet.isEmpty
 
@@ -1318,14 +1318,14 @@ def c185 := @_root_.Std.ExtHashSet.getD
 /--
 将给定元素插入集合中。如果哈希集已包含与给定元素相等（关于 `==`）的元素，则哈希集将原样返回。
 
-注意：这种非替换行为对于 `ExtHashSet` 和 `ExtHashSet.Raw` 来说是正确的。 `ExtHashMap`、`DExtHashMap`、`ExtHashMap.Raw` 和 `DExtHashMap.Raw` 上的 `insert` 函数的行为不同：它将覆盖现有映射。
+注意：这种非替换行为对于 `ExtHashSet` 和 `ExtHashSet.Raw` 来说是正确的。 `insert` 函数在 `ExtHashMap`、`DExtHashMap`、`ExtHashMap.Raw` 和 `DExtHashMap.Raw` 上的行为不同：它将改写现有映射。
 -/
 def c186 := @_root_.Std.ExtHashSet.insert
 
 /--
 通过迭代给定集合并调用 `insert`，将多个映射插入到哈希集中。如果同一个键出现多次，则第一次出现的键优先。
 
-注意：此优先行为适用于 `ExtHashSet` 和 `ExtHashSet.Raw`。 `ExtHashMap`、`DExtHashMap`、`ExtHashMap.Raw` 和 `DExtHashMap.Raw` 上的 `insertMany` 函数的行为有所不同：它会更喜欢最后的外观。
+注意：此优先行为适用于 `ExtHashSet` 和 `ExtHashSet.Raw`。 `insertMany` 函数在 `ExtHashMap`、`DExtHashMap`、`ExtHashMap.Raw` 和 `DExtHashMap.Raw` 上的行为有所不同：它会优先采用最后一次出现。
 -/
 def c187 := @_root_.Std.ExtHashSet.insertMany
 
@@ -1399,7 +1399,7 @@ def c195 := @_root_.Std.DTreeMap.size
 def c196 := @_root_.Std.DTreeMap.isEmpty
 
 /--
-如果存在给定键 `a` 的映射或根据比较器 `cmp` 等于 `a` 的键，则返回 `true`。还有一个 `Prop` 值的版本：`a ∈ t` 相当于 `t.contains a = true`。
+返回值为 `true` 的条件是：存在给定键 `a` 的映射，或存在等于 `a`（按比较器 `cmp` 判断）的键。还有一个 `Prop` 值的版本：`a ∈ t` 相当于 `t.contains a = true`。
 
 请注意，这与列表的行为不同：对于列表，`∈` 使用 `=` 和 `contains` 使用 `==` 进行相等性检查，而对于树映射，两者都使用给定的比较器 `cmp`。
 -/
@@ -1540,7 +1540,7 @@ def c219 := @_root_.Std.DTreeMap.getThenInsertIfNew?
 /--
 通过迭代给定集合并调用 `insert` 将多个映射插入到树映射中。如果同一键出现多次，则最后一次出现的键优先。
 
-注意：此优先行为适用于 `TreeMap`、`DTreeMap`、`TreeMap.Raw` 和 `DTreeMap.Raw`。 `TreeSet` 和 `TreeSet.Raw` 上的 `insertMany` 函数的行为不同：它会更喜欢第一次出现。
+注意：此优先行为适用于 `TreeMap`、`DTreeMap`、`TreeMap.Raw` 和 `DTreeMap.Raw`。 `insertMany` 函数在 `TreeSet` 和 `TreeSet.Raw` 上的行为不同：它会更喜欢第一次出现。
 -/
 def c220 := @_root_.Std.DTreeMap.insertMany
 
@@ -1599,7 +1599,7 @@ def c226 := @_root_.Std.DTreeMap.foldl
 def c227 := @_root_.Std.DTreeMap.foldlM
 
 /--
-支持 `do` 块中的 `for` 循环构造。迭代按升序进行。
+支持 `for` 循环在 `do` 块中的构造形式。迭代按升序进行。
 -/
 def c228 := @_root_.Std.DTreeMap.forIn
 

@@ -285,9 +285,9 @@ def c021 := @List.tail!
 def c022 := @List.tail?
 
 /--
-删除非空列表的第一个元素并返回尾部。如果参数为空，则返回后备值。
+删除非空列表的第一个元素并返回尾部。如果参数为空，则返回 `none`。
 
-替代方案包括 `List.tail`（失败时返回空列表）、`List.tail?`（返回 `Option`）和 `List.tail!`（在空列表上触发 panic）。
+替代方案包括 `List.tail`（失败时返回空列表）、`List.tail?`（返回 `Option`）和 `List.tail!`（在空列表上触发错误）。
 
 示例：
  * `["apple", "banana", "grape"].tailD ["orange"] = ["banana", "grape"]`

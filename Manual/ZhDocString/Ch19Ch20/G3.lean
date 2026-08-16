@@ -108,7 +108,7 @@ def c007 := @Array.finRange
 def c008 := @Array.ofFn
 
 /--
-创建一个包含 `v` 的 `n` 重复项的数组。
+创建一个数组，其中 `n` 个元素均为 `v`。
 
 对应的`List`函数为`List.replicate`。
 
@@ -229,14 +229,14 @@ def c019 := @Array.uget
 /--
 给出数组不为空的证明，返回数组的最后一个元素。
 
-请参阅 `Array.back!` 了解如果数组为空则发生紧急情况的版本，或 `Array.back?` 了解返回选项的版本。
+请参阅 `Array.back!` 了解如果数组为空则触发 panic 的版本，或 `Array.back?` 了解返回选项的版本。
 -/
 def c020 := @Array.back
 
 /--
 返回数组的最后一个元素，如果数组为空，则返回 `none`。
 
-请参阅 `Array.back!` 了解如果数组为空则发生紧急情况的版本，或 `Array.back` 了解需要证明数组非空的版本。
+请参阅 `Array.back!` 了解如果数组为空则触发 panic 的版本，或 `Array.back` 了解需要证明数组非空的版本。
 -/
 def c021 := @Array.back?
 
@@ -289,7 +289,7 @@ def c025 := @Array.countP
 def c026 := @Array.idxOf
 
 /--
-返回等于 `a` 的第一个元素的索引，如果没有元素等于 `a`，则返回 `none`。
+返回等于 `a` 的第一个元素的索引，否则返回 `none`（如果没有元素等于 `a`）。
 
 示例：
 * `#["carrot", "potato", "broccoli"].idxOf? "carrot" = some 0`
@@ -300,7 +300,7 @@ def c026 := @Array.idxOf
 def c027 := @Array.idxOf?
 
 /--
-返回等于 `a` 的第一个元素的索引，如果没有元素等于 `a`，则返回 `none`。该索引以 `Fin` 形式返回，这保证它在范围内。
+返回等于 `a` 的第一个元素的索引，否则返回 `none`（如果没有元素等于 `a`）。该索引以 `Fin` 形式返回，这保证它在范围内。
 
 示例：
  * `#["carrot", "potato", "broccoli"].finIdxOf? "carrot" = some 0`
@@ -604,7 +604,7 @@ def c055 := @Array.modifyOp
 /--
 将元素插入到数组中指定索引处。如果索引大于数组的大小，则返回未修改的数组。
 
-换句话说，新元素被插入到数组 `as` 中 `as` 的第一个 `i` 元素之后。
+换句话说，新元素被插入到数组 `as` 中前 `i` 个元素之后；此数组即 `as`。
 
 此函数在最坏情况下需要 `O(n)` 时间，因为它必须将插入的元素交换到位。
 
@@ -618,7 +618,7 @@ def c056 := @Array.insertIdx
 /--
 将元素插入到数组中指定索引处。如果索引大于数组的大小，则会触发 panic。
 
-换句话说，新元素被插入到数组 `as` 中 `as` 的第一个 `i` 元素之后。
+换句话说，新元素被插入到数组 `as` 中前 `i` 个元素之后；此数组即 `as`。
 
 此函数在最坏情况下需要 `O(n)` 时间，因为它必须将插入的元素交换到位。 `Array.insertIdx` 和 `Array.insertIdxIfInBounds` 是更安全的替代品。
 
@@ -632,7 +632,7 @@ def c057 := @Array.insertIdx!
 /--
 将元素插入到数组中指定索引处。如果索引大于数组的大小，则返回未修改的数组。
 
-换句话说，新元素被插入到数组 `as` 中 `as` 的第一个 `i` 元素之后。
+换句话说，新元素被插入到数组 `as` 中前 `i` 个元素之后；此数组即 `as`。
 
 此函数在最坏情况下需要 `O(n)` 时间，因为它必须将插入的元素交换到位。
 
@@ -657,7 +657,7 @@ def c058 := @Array.insertIdxIfInBounds
 def c059 := @Array.reverse
 
 /--
-返回一个新数组，其中包含 `xs` 的前 `i` 元素。如果 `xs` 的元素少于 `i` 的元素，则新数组包含 `xs` 的所有元素。
+返回一个新数组，其中包含前 `i` 个元素，这些元素取自 `xs`。如果 `xs` 的元素少于 `i` 的元素，则新数组包含 `xs` 的所有元素。
 
 返回的数组始终是一个新数组，即使它包含与输入数组相同的元素。
 
@@ -679,7 +679,7 @@ def c060 := @Array.take
 def c061 := @Array.takeWhile
 
 /--
-删除 `xs` 的第一个 `i` 元素。如果 `xs` 的元素少于 `i` 的元素，则新数组为空。
+删除前 `i` 个元素，这些元素取自 `xs`。如果 `xs` 的元素少于 `i` 的元素，则新数组为空。
 
 返回的数组始终是一个新数组，即使它包含与输入数组相同的元素。
 
@@ -726,7 +726,7 @@ def c065 := @Array.getEvenElems
 /--
 就地快速排序。
 
-`qsort as lt lo hi` 使用 `lt` 来比较元素，对子数组 `as[lo...=hi]` 进行就地排序。
+`qsort as lt lo hi` 对子数组 `as[lo...=hi]` 进行就地排序，并使用 `lt` 比较元素。
 -/
 def c066 := @Array.qsort
 
@@ -766,7 +766,7 @@ def c069 := @Array.binInsert
 def c070 := @Array.binInsertM
 
 /--
-在排序数组 `as` 中二分查找与 `k` 等效的元素。如果找到，则返回数组中的元素，否则返回 `none`。
+二分查找与 `k` 等效的元素，搜索对象是排序数组 `as`。如果找到，则返回数组中的元素，否则返回 `none`。
 
 数组`as`必须根据比较运算符`lt`进行排序，这应该是全序。
 
@@ -775,7 +775,7 @@ def c070 := @Array.binInsertM
 def c071 := @Array.binSearch
 
 /--
-在排序数组 `as` 中二分查找与 `k` 等效的元素。如果找到该元素，则返回 `true`，否则返回 `false`。
+二分查找与 `k` 等效的元素，搜索对象是排序数组 `as`。如果找到该元素，则返回 `true`，否则返回 `false`。
 
 数组`as`必须根据比较运算符`lt`进行排序，这应该是全序。
 
@@ -912,14 +912,14 @@ def c080 := @Array.foldlM
 /--
 按顺序将一元操作 `f` 应用于数组的每个元素。
 
-可选参数 `start` 和 `stop` 控制应应用 `f` 的数组区域。迭代从`start`（包含）到`stop`（不包含）进行，因此除非`start < stop`，否则不会调用`f`。默认情况下，使用整个数组。
+可选参数 `start` 和 `stop` 控制应应用 `f` 的数组区域。迭代从`start`（包含）到`stop`（不包含）进行，因此不会调用`f`，除非`start < stop`。默认情况下，使用整个数组。
 -/
 def c081 := @Array.forM
 
 /--
 以相反的顺序从右到左将一元操作 `f` 应用于数组的每个元素。
 
-可选参数 `start` 和 `stop` 控制应应用 `f` 的数组区域。迭代从`start`（不包括）到`stop`（包括），因此除非`start > stop`，否则不会调用`f`。默认情况下，使用整个数组。
+可选参数 `start` 和 `stop` 控制应应用 `f` 的数组区域。迭代从`start`（不包括）到`stop`（包括），因此不会调用`f`，除非`start > stop`。默认情况下，使用整个数组。
 -/
 def c082 := @Array.forRevM
 
@@ -1172,7 +1172,7 @@ def c105 := @Array.filterMapM
 def c106 := @Array.filterSepElems
 
 /--
-过滤语法数组，将所有其他元素视为分隔符，而不是使用单子谓词 `p` 进行测试的元素。生成的数组包含 `p` 返回 `true` 的测试元素，并由相应的分隔符元素分隔。
+过滤语法数组，将所有其他元素视为分隔符，而不是使用一元谓词 `p` 进行测试的元素。生成的数组包含 `p` 返回 `true` 的测试元素，并由相应的分隔符元素分隔。
 -/
 def c107 := @Array.filterSepElemsM
 
@@ -1189,7 +1189,7 @@ def c107 := @Array.filterSepElemsM
 def c108 := @Array.partition
 
 /--
-根据函数 `key` 对数组 `xs` 的元素进行分组，返回一个哈希映射，其中每个组与其键相关联。组保留 `xs` 中元素的相对顺序。
+对数组 `xs` 的元素按函数 `key` 分组，返回一个哈希映射，其中每个组与其键相关联。组保留 `xs` 中元素的相对顺序。
 
 例子：
 ```lean example
@@ -1276,9 +1276,9 @@ def c116 := @Array.findIdxM?
 def c117 := @Array.findFinIdx?
 
 /--
-返回单子谓词 `p` 返回 `true` 的数组的第一个元素，如果未找到此类元素，则返回 `none`。按顺序检查数组的元素。
+返回一元谓词 `p` 返回 `true` 的数组的第一个元素，如果未找到此类元素，则返回 `none`。按顺序检查数组的元素。
 
-单子 `m` 仅限于 `Type → Type`，以避免需要在 `p` 的类型中使用 `ULift Bool`。
+单子 `m` 仅限于 `Type → Type`，以避免需要使用 `ULift Bool` 来表示 `p` 的类型。
 
 例子：
 ```lean example
@@ -1302,7 +1302,7 @@ def c118 := @Array.findM?
 /--
 返回数组的最后一个元素，对于该元素，一元谓词 `p` 返回 `true`，如果没有找到这样的元素，则返回 `none`。数组的元素从右到左反向检查。
 
-单子 `m` 仅限于 `Type → Type`，以避免需要在 `p` 的类型中使用 `ULift Bool`。
+单子 `m` 仅限于 `Type → Type`，以避免需要使用 `ULift Bool` 来表示 `p` 的类型。
 
 例子：
 ```lean example
@@ -1324,7 +1324,7 @@ some 2
 def c119 := @Array.findRevM?
 
 /--
-按顺序返回将函数 `f` 应用于数组的每个元素的第一个非 `none` 结果。如果 `f` 对所有元素返回 `none`，则返回 `none`。
+按顺序返回第一个非 `none` 结果，它来自把函数 `f` 应用于数组的各元素。返回值为 `none` 的条件是：`f` 对所有元素返回 `none`。
 
 例子：
 ```lean example
@@ -1341,7 +1341,7 @@ some 10
 def c120 := @Array.findSome?
 
 /--
-按顺序返回将函数 `f` 应用于数组的每个元素的第一个非 `none` 结果。如果 `f` 为所有元素返回 `none`，则发生紧急情况。
+按顺序返回第一个非 `none` 结果，它来自把函数 `f` 应用于数组的各元素。如果 `f` 为所有元素返回 `none`，则触发错误。
 
 例子：
 ```lean example
@@ -1358,7 +1358,7 @@ some 10
 def c121 := @Array.findSome!
 
 /--
-按顺序返回将一元函数 `f` 应用于数组的每个元素的第一个非 `none` 结果。如果 `f` 对所有元素返回 `none`，则返回 `none`。
+按顺序返回第一个非 `none` 结果，它来自把单子函数 `f` 应用于数组的各元素。返回值为 `none` 的条件是：`f` 对所有元素返回 `none`。
 
 例子：
 ```lean example
@@ -1380,7 +1380,7 @@ some 10
 def c122 := @Array.findSomeM?
 
 /--
-返回按从右到左的相反顺序将 `f` 应用于数组的每个元素的第一个非 `none` 结果。如果 `f` 对数组的所有元素返回 `none`，则返回 `none`。
+返回第一个非 `none` 结果，它来自按从右到左的相反顺序把 `f` 应用于数组的各元素。返回值为 `none` 的条件是：`f` 对数组的所有元素返回 `none`。
 
 示例：
  * `#[7, 6, 5, 8, 1, 2, 6].findSome? (fun x => if x < 5 then some (10 * x) else none) = some 10`
@@ -1389,7 +1389,7 @@ def c122 := @Array.findSomeM?
 def c123 := @Array.findSomeRev?
 
 /--
-返回将一元函数 `f` 按相反顺序（从右到左）应用于数组的每个元素的第一个非 `none` 结果。一旦找到非 `none` 结果，就不再检查其他元素。如果 `f` 对数组的所有元素返回 `none`，则返回 `none`。
+返回第一个非 `none` 结果，它来自将单子函数 `f` 按相反顺序（从右到左）应用于数组的各元素。一旦找到非 `none` 结果，就不再检查其他元素。返回 `none`，如果 `f` 对数组的所有元素都返回 `none`。
 
 示例：
 ```lean example
@@ -1414,7 +1414,7 @@ Except.error "Zero!"
 def c124 := @Array.findSomeRevM?
 
 /--
-如果 `p` 对于 `as` 的每个元素返回 `true`，则返回 `true`。
+返回值为 `true` 的条件是：`p` 对每个元素都返回 `true`，这些元素来自 `as`。
 
 遇到第一个 `false` 时短路。
 
@@ -1428,7 +1428,7 @@ def c124 := @Array.findSomeRevM?
 def c125 := @Array.all
 
 /--
-如果一元谓词 `p` 对 `as` 的每个元素返回 `true`，则返回 `true`。
+返回值为 `true` 的条件是：单子谓词 `p` 对每个元素都返回 `true`，这些元素来自 `as`。
 
 遇到第一个 `false` 时短路。按从左到右的顺序检查 `as` 中的元素。
 
@@ -1437,7 +1437,7 @@ def c125 := @Array.all
 def c126 := @Array.allM
 
 /--
-如果 `p` 对于 `as` 的任何元素返回 `true`，则返回 `true`。
+返回值为 `true` 的条件是：`p` 对任一元素返回 `true`，这些元素来自 `as`。
 
 遇到第一个 `true` 时短路。
 
@@ -1452,7 +1452,7 @@ def c126 := @Array.allM
 def c127 := @Array.any
 
 /--
-如果一元谓词 `p` 对于 `as` 的任何元素返回 `true`，则返回 `true`。
+返回值为 `true` 的条件是：单子谓词 `p` 对任一元素返回 `true`，这些元素来自 `as`。
 
 遇到第一个 `true` 时短路。按从左到右的顺序检查 `as` 中的元素。
 
@@ -1461,7 +1461,7 @@ def c127 := @Array.any
 def c128 := @Array.anyM
 
 /--
-如果根据 `==` 运算符，`as` 中没有两个元素相等，则返回 `true`。
+返回值为 `true` 的条件是：`as` 中没有两个元素按照 `==` 运算符相等。
 
 示例：
 * `#["red", "green", "blue"].allDiff = true`
@@ -1471,7 +1471,7 @@ def c128 := @Array.anyM
 def c129 := @Array.allDiff
 
 /--
-如果 `as` 和 `bs` 具有相同的长度并且它们通过 `eqv` 成对相关，则返回 `true`。
+返回值为 `true` 的条件是：`as` 和 `bs` 长度相同且由 `eqv` 成对关联。
 
 第一对不相关的元件发生短路。
 
@@ -1483,7 +1483,7 @@ def c129 := @Array.allDiff
 def c130 := @Array.isEqv
 
 /--
-如果 `as` 是 `bs` 的前缀，则返回 `true`，否则返回 `false`。
+返回值为 `true` 的条件是：`as` 是 `bs` 的前缀，否则返回 `false`。
 
 示例：
 * `#[0, 1, 2].isPrefixOf #[0, 1, 2, 3] = true`
@@ -1508,7 +1508,7 @@ def c132 := @Array.lex
 
 `O(1)`。
 
-此函数主要用于证明从数组中取出的值小于数组中的对应值，从而允许在良基递归定义中使用 `Array.map` 等高阶函数。这使良基递归机制能够证明函数终止。
+此函数主要用于证明从数组中取出的值小于数组中的对应值，从而允许在[良基递归](https://lean-lang.org/doc/reference/4.34.0-rc1/find/?domain=Verso.Genre.Manual.section&name=well-founded-recursion)定义中使用 `Array.map` 等高阶函数。这使良基递归机制能够证明函数终止。
 -/
 def c133 := @Array.attach
 
@@ -1526,12 +1526,12 @@ def c134 := @Array.attachWith
 
 大多数情况下，用户不需要这样做。它是由诸如 `map_subtype` 之类的引理作为中间步骤引入的，并且理想情况下随后由 `unattach_attach` 进行简化。
 
-该函数通常由 Lean 自动插入，作为证明终止性时的中间步骤，很少在代码中显式使用。精译良基递归定义时会引入它。如果在证明状态中遇到此函数，通常应使用策略 `simp [Array.unattach, -Array.map_subtype]`。
+该函数通常由 Lean 自动插入，作为证明终止性时的中间步骤，很少在代码中显式使用。精化[良基递归](https://lean-lang.org/doc/reference/4.34.0-rc1/find/?domain=Verso.Genre.Manual.section&name=well-founded-recursion)定义时会引入它。如果在证明状态中遇到此函数，通常应使用策略 `simp [Array.unattach, -Array.map_subtype]`。
 -/
 def c135 := @Array.unattach
 
 /--
-将部分定义的函数（根据满足谓词 `P` 的 `α` 的术语定义）映射到数组 `xs : Array α`，并给出 `xs` 的每个元素实际上满足 `P` 的证明。
+将部分定义的函数（定义于 `α` 中满足谓词 `P` 的项上）映射到数组 `xs : Array α`，并给出 `xs` 的每个元素实际上满足 `P` 的证明。
 
 `Array.pmap`，以“部分映射”命名，相当于此类部分函数的 `Array.map`。
 -/
@@ -1579,7 +1579,7 @@ def c139 := @Std.TreeSet.isEmpty
 def c140 := @Std.TreeSet.size
 
 /--
-如果集合中包含 `a` 或根据比较器 `cmp` 等于 `a` 的元素，则返回 `true`。还有一个 `Prop` 值的版本：`a ∈ t` 相当于 `t.contains a = true`。
+返回值为 `true` 的条件是：集合中包含 `a`，或包含等于 `a`（按比较器 `cmp` 判断）的元素。还有一个 `Prop` 值的版本：`a ∈ t` 相当于 `t.contains a = true`。
 
 请注意，这与列表的行为不同：对于列表，`∈` 使用 `=`，`contains` 使用 `==` 进行相等性检查，而对于树集，两者都使用给定的比较器 `cmp`。
 -/
@@ -1616,12 +1616,12 @@ def c146 := @Std.TreeSet.atIdx
 def c147 := @Std.TreeSet.atIdx!
 
 /--
-返回 `n` 第一个最小元素，如果 `n` 至少为 `t.size`，则返回 `none`。
+返回 `n` 第一个最小元素，否则返回 `none`，如果 `n` 至少为 `t.size`。
 -/
 def c148 := @Std.TreeSet.atIdx?
 
 /--
-返回 `n` 第一个最小元素，如果 `n` 至少为 `t.size`，则返回 `fallback`。
+返回 `n` 第一个最小元素，否则返回 `fallback`，如果 `n` 至少为 `t.size`。
 -/
 def c149 := @Std.TreeSet.atIdxD
 
@@ -1748,14 +1748,14 @@ def c173 := @Std.TreeSet.maxD
 /--
 将给定元素插入集合中。如果树集已经包含与给定元素相等（关于 `cmp`）的元素，则树集原封不动地返回。
 
-注意：此非替换行为适用于 `TreeSet` 和 `TreeSet.Raw`。 `TreeMap`、`DTreeMap`、`TreeMap.Raw` 和 `DTreeMap.Raw` 上的 `insert` 函数的行为不同：它将覆盖现有映射。
+注意：此非替换行为适用于 `TreeSet` 和 `TreeSet.Raw`。 `insert` 函数在 `TreeMap`、`DTreeMap`、`TreeMap.Raw` 和 `DTreeMap.Raw` 上的行为不同：它将改写现有映射。
 -/
 def c174 := @Std.TreeSet.insert
 
 /--
 通过迭代给定集合并调用 `insert` 将多个元素插入树集中。如果同一元素（相对于 `cmp`）出现多次，则第一次出现的元素优先。
 
-注意：此优先行为适用于 `TreeSet` 和 `TreeSet.Raw`。 `TreeMap`、`DTreeMap`、`TreeMap.Raw` 和 `DTreeMap.Raw` 上的 `insertMany` 函数的行为有所不同：它会更喜欢最后的外观。
+注意：此优先行为适用于 `TreeSet` 和 `TreeSet.Raw`。 `insertMany` 函数在 `TreeMap`、`DTreeMap`、`TreeMap.Raw` 和 `DTreeMap.Raw` 上的行为有所不同：它会优先采用最后一次出现。
 -/
 def c175 := @Std.TreeSet.insertMany
 
@@ -1786,7 +1786,7 @@ def c179 := @Std.TreeSet.filter
 
 该函数保证线性使用 `t₁`。因此，只要 `t₁` 未被共享，其性能特征就可用以下命令式过程描述：遍历 `t₂` 中的所有映射并将其插入 `t₁`。
 
-因此，只要 `t₁` 未共享，此方法的运行时间就以 `t₁` 的大小呈对数缩放，并以 `t₂` 的大小呈线性缩放。
+因此，只要 `t₁` 未共享，此方法的运行时间就以 `t₂` 的大小呈线性缩放，并以 `t₁` 的大小呈对数缩放。
 -/
 def c180 := @Std.TreeSet.merge
 
@@ -1836,7 +1836,7 @@ def c187 := @Std.TreeSet.foldr
 def c188 := @Std.TreeSet.foldrM
 
 /--
-支持 `do` 块中的 `for` 循环构造。迭代按升序进行。
+支持 `for` 循环在 `do` 块中的构造形式。迭代按升序进行。
 -/
 def c189 := @Std.TreeSet.forIn
 
@@ -1896,7 +1896,7 @@ structure c196 {α : Type u} {cmp : α → α → Ordering}
   out : t.inner.WF
 
 /--
-将 `l` 中（从零开始）索引 `n` 处的值替换为 `a`。如果索引越界，则列表将不加修改地返回。
+将（从零开始）索引 `n` 在 `l` 中所指的值替换为 `a`。如果索引越界，则列表将不加修改地返回。
 
 示例：
 * `["water", "coffee", "soda", "juice"].set 1 "tea" = ["water", "tea", "soda", "juice"]`
@@ -1905,7 +1905,7 @@ structure c196 {α : Type u} {cmp : α → α → Ordering}
 def c197 := @List.set
 
 /--
-将 `l` 中（从零开始）索引 `n` 处的值替换为 `a`。如果索引越界，则列表将不加修改地返回。
+将（从零开始）索引 `n` 在 `l` 中所指的值替换为 `a`。如果索引越界，则列表将不加修改地返回。
 
 这是在运行时使用的 `List.set` 的尾递归版本。
 
@@ -1947,7 +1947,7 @@ def c200 := @List.modifyTR
 def c201 := @List.modifyHead
 
 /--
-将 `l` 的第 `n` 尾部替换为对其应用 `f` 的结果。如果索引大于列表的长度，则返回输入而不使用 `f`。
+将第 `n` 个 `l` 的尾部替换为对其应用 `f` 的结果。如果索引大于列表的长度，则返回输入而不使用 `f`。
 
 示例：
 ```lean example
@@ -1978,7 +1978,7 @@ def c201 := @List.modifyHead
 def c202 := @List.modifyTailIdx
 
 /--
-从 `l` 中删除第一次出现的 `a`。如果 `a` 未出现在 `l` 中，则返回未修改的列表。
+删除第一次出现的 `a`，搜索范围为 `l`。如果 `a` 未出现在 `l` 中，则返回未修改的列表。
 
 `O(|l|)`。
 
@@ -1989,7 +1989,7 @@ def c202 := @List.modifyTailIdx
 def c203 := @List.erase
 
 /--
-从 `l` 中删除第一次出现的 `a`。如果 `a` 未出现在 `l` 中，则返回未修改的列表。
+删除第一次出现的 `a`，搜索范围为 `l`。如果 `a` 未出现在 `l` 中，则返回未修改的列表。
 
 `O(|l|)`。
 
@@ -2074,16 +2074,16 @@ def c210 := @List.eraseReps
 返回 `l` 从索引 `start`（包含）到 `stop`（不包含）的切片。
 
 示例：
-* [0, 1, 2, 3, 4, 5].提取 1 2 = [1]
-* [0, 1, 2, 3, 4, 5].提取 2 2 = []
-* [0, 1, 2, 3, 4, 5].提取 2 4 = [2, 3]
-* [0, 1, 2, 3, 4, 5].提取 2 = [2, 3, 4, 5]
+* [0, 1, 2, 3, 4, 5].extract 1 2 = [1]
+* [0, 1, 2, 3, 4, 5].extract 2 2 = []
+* [0, 1, 2, 3, 4, 5].extract 2 4 = [2, 3]
+* [0, 1, 2, 3, 4, 5].extract 2 = [2, 3, 4, 5]
 * [0, 1, 2, 3, 4, 5].extract (stop := 2) = [0, 1]
 -/
 def c211 := @List.extract
 
 /--
-删除 `ys` 中存在的 `xs` 的所有元素。
+删除 `xs` 中也存在于 `ys` 的所有元素。
 
 `O(|xs| * |ys|)`。
 
@@ -2225,7 +2225,7 @@ def c223 := @List.insert
 /--
 将元素插入列表中指定索引处。如果索引大于列表的长度，则列表将不加修改地返回。
 
-换句话说，新元素被插入到列表`l`中`l`的第一个`i`元素之后。
+换句话说，新元素被插入到列表 `l` 中前 `i` 个元素之后；此列表即 `l`。
 
 示例：
  * `["tues", "thur", "sat"].insertIdx 1 "wed" = ["tues", "wed", "thur", "sat"]`
@@ -2238,7 +2238,7 @@ def c224 := @List.insertIdx
 /--
 将元素插入列表中指定索引处。如果索引大于列表的长度，则列表将不加修改地返回。
 
-换句话说，新元素被插入到列表`l`中`l`的第一个`i`元素之后。
+换句话说，新元素被插入到列表 `l` 中前 `i` 个元素之后；此列表即 `l`。
 
 这是 `List.insertIdx` 的尾递归版本，在运行时使用。
 
@@ -2381,7 +2381,7 @@ def c234 := @Prod.swap
 /--
 检查谓词是否适用于范围内的所有自然数。
 
-特别是，如果 `f` 对于从 `start`（包含）到 `stop`（不包含）的所有自然数都为 true，则 `(start, stop).allI f` 返回 true。
+具体而言，`(start, stop).allI f` 返回 真，如果 `f` 对从 `start`（包含）到 `stop`（不包含）的所有自然数为 真。
 
 示例：
  * `(5, 8).allI (fun j _ _ => j < 10) = (5 < 10) && (6 < 10) && (7 < 10)`
@@ -2393,7 +2393,7 @@ def c235 := @Prod.allI
 /--
 检查谓词是否适用于范围内的任何自然数。
 
-特别是，如果 `f` 对于从 `start`（包含）到 `stop`（不包含）的任何自然数为 true，则 `(start, stop).allI f` 返回 true。
+具体而言，`(start, stop).allI f` 返回 真，如果 `f` 对从 `start`（包含）到 `stop`（不包含）的任一自然数为 真。
 
 示例：
  * `(5, 8).anyI (fun j _ _ => j == 6) = (5 == 6) || (6 == 6) || (7 == 6)`
