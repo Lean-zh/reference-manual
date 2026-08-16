@@ -7,6 +7,7 @@ Author: David Thrane Christiansen
 import VersoManual
 
 import Manual.Meta
+import Manual.ZhDocString.Ch19Ch20.G3
 
 open Verso.Genre Manual
 open Verso.Genre.Manual.InlineLean
@@ -105,7 +106,7 @@ $_ × $_
 ```
 :::
 
-{docstring Prod}
+{zhdocstring Prod Manual.ZhDocString.Ch19Ch20.G3.c230}
 
 ```lean -show
 section
@@ -128,9 +129,9 @@ $_ ×' $_
 :::
 
 
-{docstring PProd}
+{zhdocstring PProd Manual.ZhDocString.Ch19Ch20.G3.c231}
 
-{docstring MProd}
+{zhdocstring MProd Manual.ZhDocString.Ch19Ch20.G3.c232}
 
 ## 接口参考
 %%%
@@ -144,27 +145,27 @@ tag := "prod-api"
 %%%
 tag := "Lean-__________________--Basic-Types--Tuples--Ordered-Pairs--API-Reference--Transformation"
 %%%
-{docstring Prod.map}
+{zhdocstring Prod.map Manual.ZhDocString.Ch19Ch20.G3.c233}
 
-{docstring Prod.swap}
+{zhdocstring Prod.swap Manual.ZhDocString.Ch19Ch20.G3.c234}
 
 ### 自然数范围
 
 %%%
 tag := "Lean-__________________--Basic-Types--Tuples--Ordered-Pairs--API-Reference--Natural-Number-Ranges"
 %%%
-{docstring Prod.allI}
+{zhdocstring Prod.allI Manual.ZhDocString.Ch19Ch20.G3.c235}
 
-{docstring Prod.anyI}
+{zhdocstring Prod.anyI Manual.ZhDocString.Ch19Ch20.G3.c236}
 
-{docstring Prod.foldI}
+{zhdocstring Prod.foldI Manual.ZhDocString.Ch19Ch20.G3.c237}
 
 ### 排序
 
 %%%
 tag := "Lean-__________________--Basic-Types--Tuples--Ordered-Pairs--API-Reference--Ordering"
 %%%
-{docstring Prod.lexLt}
+{zhdocstring Prod.lexLt Manual.ZhDocString.Ch19Ch20.G3.c238}
 
 
 # 依值有序对
@@ -270,7 +271,7 @@ variable {α : Type} (x : α)
 end
 ```
 
-{docstring Sigma}
+{zhdocstring Sigma Manual.ZhDocString.Ch19Ch20.G3.c239}
 
 :::::example "带数据的依值有序对"
 
@@ -375,4 +376,4 @@ def Sum'.swap : Sum' α β → Sum' β α
 {keyword}`Σ'` 的嵌套规则以及其绑定结构规则，都与 {keywordOf «termΣ_,_»}`Σ` 相同。
 :::
 
-{docstring PSigma}
+{zhdocstring PSigma Manual.ZhDocString.Ch19Ch20.G3.c240}

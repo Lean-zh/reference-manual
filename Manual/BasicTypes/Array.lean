@@ -7,6 +7,7 @@ Author: David Thrane Christiansen
 import VersoManual
 
 import Manual.Meta
+import Manual.ZhDocString.Ch19Ch20.G3
 
 import Manual.BasicTypes.Array.Subarray
 import Manual.BasicTypes.Array.FFI
@@ -42,7 +43,7 @@ Lean 对数组提供了专门支持：
 %%%
 tag := "Lean-__________________--Basic-Types--Arrays--Logical-Model"
 %%%
-{docstring Array}
+{zhdocstring Array Manual.ZhDocString.Ch19Ch20.G3.c001}
 
 数组的逻辑模型是一个只有单个字段的结构体，该字段是元素列表。
 这使得在较低层次上规定和证明数组处理函数的性质时更加方便。
@@ -193,91 +194,91 @@ tag := "array-api"
 %%%
 tag := "Lean-__________________--Basic-Types--Arrays--API-Reference--Constructing-Arrays"
 %%%
-{docstring Array.empty}
+{zhdocstring Array.empty Manual.ZhDocString.Ch19Ch20.G3.c002}
 
-{docstring Array.emptyWithCapacity}
+{zhdocstring Array.emptyWithCapacity Manual.ZhDocString.Ch19Ch20.G3.c003}
 
-{docstring Array.singleton}
+{zhdocstring Array.singleton Manual.ZhDocString.Ch19Ch20.G3.c004}
 
-{docstring Array.range}
+{zhdocstring Array.range Manual.ZhDocString.Ch19Ch20.G3.c005}
 
-{docstring Array.range'}
+{zhdocstring Array.range' Manual.ZhDocString.Ch19Ch20.G3.c006}
 
-{docstring Array.finRange}
+{zhdocstring Array.finRange Manual.ZhDocString.Ch19Ch20.G3.c007}
 
-{docstring Array.ofFn}
+{zhdocstring Array.ofFn Manual.ZhDocString.Ch19Ch20.G3.c008}
 
-{docstring Array.replicate}
+{zhdocstring Array.replicate Manual.ZhDocString.Ch19Ch20.G3.c009}
 
-{docstring Array.append}
+{zhdocstring Array.append Manual.ZhDocString.Ch19Ch20.G3.c010}
 
-{docstring Array.appendList}
+{zhdocstring Array.appendList Manual.ZhDocString.Ch19Ch20.G3.c011}
 
-{docstring Array.leftpad}
+{zhdocstring Array.leftpad Manual.ZhDocString.Ch19Ch20.G3.c012}
 
-{docstring Array.rightpad}
+{zhdocstring Array.rightpad Manual.ZhDocString.Ch19Ch20.G3.c013}
 
 ## 大小
 
 %%%
 tag := "Lean-__________________--Basic-Types--Arrays--API-Reference--Size"
 %%%
-{docstring Array.size}
+{zhdocstring Array.size Manual.ZhDocString.Ch19Ch20.G3.c014}
 
-{docstring Array.usize}
+{zhdocstring Array.usize Manual.ZhDocString.Ch19Ch20.G3.c015}
 
-{docstring Array.isEmpty}
+{zhdocstring Array.isEmpty Manual.ZhDocString.Ch19Ch20.G3.c016}
 
 ## 查找
 
 %%%
 tag := "Lean-__________________--Basic-Types--Arrays--API-Reference--Lookups"
 %%%
-{docstring Array.extract}
+{zhdocstring Array.extract Manual.ZhDocString.Ch19Ch20.G3.c017}
 
-{docstring Array.getD}
+{zhdocstring Array.getD Manual.ZhDocString.Ch19Ch20.G3.c018}
 
-{docstring Array.uget}
+{zhdocstring Array.uget Manual.ZhDocString.Ch19Ch20.G3.c019}
 
-{docstring Array.back}
+{zhdocstring Array.back Manual.ZhDocString.Ch19Ch20.G3.c020}
 
-{docstring Array.back?}
+{zhdocstring Array.back? Manual.ZhDocString.Ch19Ch20.G3.c021}
 
-{docstring Array.back!}
+{zhdocstring Array.back! Manual.ZhDocString.Ch19Ch20.G3.c022}
 
-{docstring Array.getMax?}
+{zhdocstring Array.getMax? Manual.ZhDocString.Ch19Ch20.G3.c023}
 
 ## 查询
 
 %%%
 tag := "Lean-__________________--Basic-Types--Arrays--API-Reference--Queries"
 %%%
-{docstring Array.count}
+{zhdocstring Array.count Manual.ZhDocString.Ch19Ch20.G3.c024}
 
-{docstring Array.countP}
+{zhdocstring Array.countP Manual.ZhDocString.Ch19Ch20.G3.c025}
 
-{docstring Array.idxOf}
+{zhdocstring Array.idxOf Manual.ZhDocString.Ch19Ch20.G3.c026}
 
-{docstring Array.idxOf?}
+{zhdocstring Array.idxOf? Manual.ZhDocString.Ch19Ch20.G3.c027}
 
-{docstring Array.finIdxOf?}
+{zhdocstring Array.finIdxOf? Manual.ZhDocString.Ch19Ch20.G3.c028}
 
 ## 转换
 
 %%%
 tag := "Lean-__________________--Basic-Types--Arrays--API-Reference--Conversions"
 %%%
-{docstring Array.toList}
+{zhdocstring Array.toList Manual.ZhDocString.Ch19Ch20.G3.c029}
 
-{docstring Array.toListRev}
+{zhdocstring Array.toListRev Manual.ZhDocString.Ch19Ch20.G3.c030}
 
-{docstring Array.toListAppend}
+{zhdocstring Array.toListAppend Manual.ZhDocString.Ch19Ch20.G3.c031}
 
-{docstring Array.toVector}
+{zhdocstring Array.toVector Manual.ZhDocString.Ch19Ch20.G3.c032}
 
-{docstring Array.toSubarray}
+{zhdocstring Array.toSubarray Manual.ZhDocString.Ch19Ch20.G3.c033}
 
-{docstring Array.ofSubarray}
+{zhdocstring Array.ofSubarray Manual.ZhDocString.Ch19Ch20.G3.c034}
 
 
 ## 修改
@@ -285,86 +286,86 @@ tag := "Lean-__________________--Basic-Types--Arrays--API-Reference--Conversions
 %%%
 tag := "Lean-__________________--Basic-Types--Arrays--API-Reference--Modification"
 %%%
-{docstring Array.push}
+{zhdocstring Array.push Manual.ZhDocString.Ch19Ch20.G3.c035}
 
-{docstring Array.pop}
+{zhdocstring Array.pop Manual.ZhDocString.Ch19Ch20.G3.c036}
 
-{docstring Array.popWhile}
+{zhdocstring Array.popWhile Manual.ZhDocString.Ch19Ch20.G3.c037}
 
-{docstring Array.erase}
+{zhdocstring Array.erase Manual.ZhDocString.Ch19Ch20.G3.c038}
 
-{docstring Array.eraseP}
+{zhdocstring Array.eraseP Manual.ZhDocString.Ch19Ch20.G3.c039}
 
-{docstring Array.eraseIdx}
+{zhdocstring Array.eraseIdx Manual.ZhDocString.Ch19Ch20.G3.c040}
 
-{docstring Array.eraseIdx!}
+{zhdocstring Array.eraseIdx! Manual.ZhDocString.Ch19Ch20.G3.c041}
 
-{docstring Array.eraseIdxIfInBounds}
+{zhdocstring Array.eraseIdxIfInBounds Manual.ZhDocString.Ch19Ch20.G3.c042}
 
-{docstring Array.eraseReps}
+{zhdocstring Array.eraseReps Manual.ZhDocString.Ch19Ch20.G3.c043}
 
-{docstring Array.swap}
+{zhdocstring Array.swap Manual.ZhDocString.Ch19Ch20.G3.c044}
 
-{docstring Array.swapIfInBounds}
+{zhdocstring Array.swapIfInBounds Manual.ZhDocString.Ch19Ch20.G3.c045}
 
-{docstring Array.swapAt}
+{zhdocstring Array.swapAt Manual.ZhDocString.Ch19Ch20.G3.c046}
 
-{docstring Array.swapAt!}
+{zhdocstring Array.swapAt! Manual.ZhDocString.Ch19Ch20.G3.c047}
 
-{docstring Array.replace}
+{zhdocstring Array.replace Manual.ZhDocString.Ch19Ch20.G3.c048}
 
-{docstring Array.set}
+{zhdocstring Array.set Manual.ZhDocString.Ch19Ch20.G3.c049}
 
-{docstring Array.set!}
+{zhdocstring Array.set! Manual.ZhDocString.Ch19Ch20.G3.c050}
 
-{docstring Array.setIfInBounds}
+{zhdocstring Array.setIfInBounds Manual.ZhDocString.Ch19Ch20.G3.c051}
 
-{docstring Array.uset}
+{zhdocstring Array.uset Manual.ZhDocString.Ch19Ch20.G3.c052}
 
-{docstring Array.modify}
+{zhdocstring Array.modify Manual.ZhDocString.Ch19Ch20.G3.c053}
 
-{docstring Array.modifyM}
+{zhdocstring Array.modifyM Manual.ZhDocString.Ch19Ch20.G3.c054}
 
-{docstring Array.modifyOp}
+{zhdocstring Array.modifyOp Manual.ZhDocString.Ch19Ch20.G3.c055}
 
-{docstring Array.insertIdx}
+{zhdocstring Array.insertIdx Manual.ZhDocString.Ch19Ch20.G3.c056}
 
-{docstring Array.insertIdx!}
+{zhdocstring Array.insertIdx! Manual.ZhDocString.Ch19Ch20.G3.c057}
 
-{docstring Array.insertIdxIfInBounds}
+{zhdocstring Array.insertIdxIfInBounds Manual.ZhDocString.Ch19Ch20.G3.c058}
 
-{docstring Array.reverse}
+{zhdocstring Array.reverse Manual.ZhDocString.Ch19Ch20.G3.c059}
 
-{docstring Array.take}
+{zhdocstring Array.take Manual.ZhDocString.Ch19Ch20.G3.c060}
 
-{docstring Array.takeWhile}
+{zhdocstring Array.takeWhile Manual.ZhDocString.Ch19Ch20.G3.c061}
 
-{docstring Array.drop}
+{zhdocstring Array.drop Manual.ZhDocString.Ch19Ch20.G3.c062}
 
-{docstring Array.shrink}
+{zhdocstring Array.shrink Manual.ZhDocString.Ch19Ch20.G3.c063}
 
-{docstring Array.flatten}
+{zhdocstring Array.flatten Manual.ZhDocString.Ch19Ch20.G3.c064}
 
-{docstring Array.getEvenElems}
+{zhdocstring Array.getEvenElems Manual.ZhDocString.Ch19Ch20.G3.c065}
 
 ## 有序数组
 
 %%%
 tag := "Lean-__________________--Basic-Types--Arrays--API-Reference--Sorted-Arrays"
 %%%
-{docstring Array.qsort}
+{zhdocstring Array.qsort Manual.ZhDocString.Ch19Ch20.G3.c066}
 
-{docstring Array.qsortOrd}
+{zhdocstring Array.qsortOrd Manual.ZhDocString.Ch19Ch20.G3.c067}
 
-{docstring Array.insertionSort}
+{zhdocstring Array.insertionSort Manual.ZhDocString.Ch19Ch20.G3.c068}
 
-{docstring Array.binInsert}
+{zhdocstring Array.binInsert Manual.ZhDocString.Ch19Ch20.G3.c069}
 
-{docstring Array.binInsertM}
+{zhdocstring Array.binInsertM Manual.ZhDocString.Ch19Ch20.G3.c070}
 
-{docstring Array.binSearch}
+{zhdocstring Array.binSearch Manual.ZhDocString.Ch19Ch20.G3.c071}
 
-{docstring Array.binSearchContains}
+{zhdocstring Array.binSearchContains Manual.ZhDocString.Ch19Ch20.G3.c072}
 
 
 
@@ -373,66 +374,66 @@ tag := "Lean-__________________--Basic-Types--Arrays--API-Reference--Sorted-Arra
 %%%
 tag := "Lean-__________________--Basic-Types--Arrays--API-Reference--Iteration"
 %%%
-{docstring Array.iter}
+{zhdocstring Array.iter Manual.ZhDocString.Ch19Ch20.G3.c073}
 
-{docstring Array.iterFromIdx}
+{zhdocstring Array.iterFromIdx Manual.ZhDocString.Ch19Ch20.G3.c074}
 
-{docstring Array.iterM}
+{zhdocstring Array.iterM Manual.ZhDocString.Ch19Ch20.G3.c075}
 
-{docstring Array.iterFromIdxM}
+{zhdocstring Array.iterFromIdxM Manual.ZhDocString.Ch19Ch20.G3.c076}
 
-{docstring Array.foldr}
+{zhdocstring Array.foldr Manual.ZhDocString.Ch19Ch20.G3.c077}
 
-{docstring Array.foldrM}
+{zhdocstring Array.foldrM Manual.ZhDocString.Ch19Ch20.G3.c078}
 
-{docstring Array.foldl}
+{zhdocstring Array.foldl Manual.ZhDocString.Ch19Ch20.G3.c079}
 
-{docstring Array.foldlM}
+{zhdocstring Array.foldlM Manual.ZhDocString.Ch19Ch20.G3.c080}
 
-{docstring Array.forM}
+{zhdocstring Array.forM Manual.ZhDocString.Ch19Ch20.G3.c081}
 
-{docstring Array.forRevM}
+{zhdocstring Array.forRevM Manual.ZhDocString.Ch19Ch20.G3.c082}
 
-{docstring Array.firstM}
+{zhdocstring Array.firstM Manual.ZhDocString.Ch19Ch20.G3.c083}
 
-{docstring Array.sum}
+{zhdocstring Array.sum Manual.ZhDocString.Ch19Ch20.G3.c084}
 
 ## 变换
 
 %%%
 tag := "Lean-__________________--Basic-Types--Arrays--API-Reference--Transformation"
 %%%
-{docstring Array.map}
+{zhdocstring Array.map Manual.ZhDocString.Ch19Ch20.G3.c085}
 
-{docstring Array.mapMono}
+{zhdocstring Array.mapMono Manual.ZhDocString.Ch19Ch20.G3.c086}
 
-{docstring Array.mapM}
+{zhdocstring Array.mapM Manual.ZhDocString.Ch19Ch20.G3.c087}
 
-{docstring Array.mapM'}
+{zhdocstring Array.mapM' Manual.ZhDocString.Ch19Ch20.G3.c088}
 
-{docstring Array.mapMonoM}
+{zhdocstring Array.mapMonoM Manual.ZhDocString.Ch19Ch20.G3.c089}
 
-{docstring Array.mapIdx}
+{zhdocstring Array.mapIdx Manual.ZhDocString.Ch19Ch20.G3.c090}
 
-{docstring Array.mapIdxM}
+{zhdocstring Array.mapIdxM Manual.ZhDocString.Ch19Ch20.G3.c091}
 
-{docstring Array.mapFinIdx}
+{zhdocstring Array.mapFinIdx Manual.ZhDocString.Ch19Ch20.G3.c092}
 
-{docstring Array.mapFinIdxM}
+{zhdocstring Array.mapFinIdxM Manual.ZhDocString.Ch19Ch20.G3.c093}
 
-{docstring Array.flatMap}
+{zhdocstring Array.flatMap Manual.ZhDocString.Ch19Ch20.G3.c094}
 
-{docstring Array.flatMapM}
+{zhdocstring Array.flatMapM Manual.ZhDocString.Ch19Ch20.G3.c095}
 
-{docstring Array.zip}
+{zhdocstring Array.zip Manual.ZhDocString.Ch19Ch20.G3.c096}
 
-{docstring Array.zipWith}
+{zhdocstring Array.zipWith Manual.ZhDocString.Ch19Ch20.G3.c097}
 
-{docstring Array.zipWithAll}
+{zhdocstring Array.zipWithAll Manual.ZhDocString.Ch19Ch20.G3.c098}
 
-{docstring Array.zipIdx}
+{zhdocstring Array.zipIdx Manual.ZhDocString.Ch19Ch20.G3.c099}
 
-{docstring Array.unzip}
+{zhdocstring Array.unzip Manual.ZhDocString.Ch19Ch20.G3.c100}
 
 
 ## 过滤
@@ -440,28 +441,28 @@ tag := "Lean-__________________--Basic-Types--Arrays--API-Reference--Transformat
 %%%
 tag := "Lean-__________________--Basic-Types--Arrays--API-Reference--Filtering"
 %%%
-{docstring Array.filter}
+{zhdocstring Array.filter Manual.ZhDocString.Ch19Ch20.G3.c101}
 
-{docstring Array.filterM}
+{zhdocstring Array.filterM Manual.ZhDocString.Ch19Ch20.G3.c102}
 
-{docstring Array.filterRevM}
+{zhdocstring Array.filterRevM Manual.ZhDocString.Ch19Ch20.G3.c103}
 
-{docstring Array.filterMap}
+{zhdocstring Array.filterMap Manual.ZhDocString.Ch19Ch20.G3.c104}
 
-{docstring Array.filterMapM}
+{zhdocstring Array.filterMapM Manual.ZhDocString.Ch19Ch20.G3.c105}
 
-{docstring Array.filterSepElems}
+{zhdocstring Array.filterSepElems Manual.ZhDocString.Ch19Ch20.G3.c106}
 
-{docstring Array.filterSepElemsM}
+{zhdocstring Array.filterSepElemsM Manual.ZhDocString.Ch19Ch20.G3.c107}
 
 ## 分割
 
 %%%
 tag := "Lean-__________________--Basic-Types--Arrays--API-Reference--Partitioning"
 %%%
-{docstring Array.partition}
+{zhdocstring Array.partition Manual.ZhDocString.Ch19Ch20.G3.c108}
 
-{docstring Array.groupByKey}
+{zhdocstring Array.groupByKey Manual.ZhDocString.Ch19Ch20.G3.c109}
 
 
 ## 元素判定
@@ -469,69 +470,69 @@ tag := "Lean-__________________--Basic-Types--Arrays--API-Reference--Partitionin
 %%%
 tag := "Lean-__________________--Basic-Types--Arrays--API-Reference--Element-Predicates"
 %%%
-{docstring Array.contains}
+{zhdocstring Array.contains Manual.ZhDocString.Ch19Ch20.G3.c110}
 
-{docstring Array.elem}
+{zhdocstring Array.elem Manual.ZhDocString.Ch19Ch20.G3.c111}
 
-{docstring Array.find?}
+{zhdocstring Array.find? Manual.ZhDocString.Ch19Ch20.G3.c112}
 
-{docstring Array.findRev?}
+{zhdocstring Array.findRev? Manual.ZhDocString.Ch19Ch20.G3.c113}
 
-{docstring Array.findIdx}
+{zhdocstring Array.findIdx Manual.ZhDocString.Ch19Ch20.G3.c114}
 
-{docstring Array.findIdx?}
+{zhdocstring Array.findIdx? Manual.ZhDocString.Ch19Ch20.G3.c115}
 
-{docstring Array.findIdxM?}
+{zhdocstring Array.findIdxM? Manual.ZhDocString.Ch19Ch20.G3.c116}
 
-{docstring Array.findFinIdx?}
+{zhdocstring Array.findFinIdx? Manual.ZhDocString.Ch19Ch20.G3.c117}
 
-{docstring Array.findM?}
+{zhdocstring Array.findM? Manual.ZhDocString.Ch19Ch20.G3.c118}
 
-{docstring Array.findRevM?}
+{zhdocstring Array.findRevM? Manual.ZhDocString.Ch19Ch20.G3.c119}
 
-{docstring Array.findSome?}
+{zhdocstring Array.findSome? Manual.ZhDocString.Ch19Ch20.G3.c120}
 
-{docstring Array.findSome!}
+{zhdocstring Array.findSome! Manual.ZhDocString.Ch19Ch20.G3.c121}
 
-{docstring Array.findSomeM?}
+{zhdocstring Array.findSomeM? Manual.ZhDocString.Ch19Ch20.G3.c122}
 
-{docstring Array.findSomeRev?}
+{zhdocstring Array.findSomeRev? Manual.ZhDocString.Ch19Ch20.G3.c123}
 
-{docstring Array.findSomeRevM?}
+{zhdocstring Array.findSomeRevM? Manual.ZhDocString.Ch19Ch20.G3.c124}
 
-{docstring Array.all}
+{zhdocstring Array.all Manual.ZhDocString.Ch19Ch20.G3.c125}
 
-{docstring Array.allM}
+{zhdocstring Array.allM Manual.ZhDocString.Ch19Ch20.G3.c126}
 
-{docstring Array.any}
+{zhdocstring Array.any Manual.ZhDocString.Ch19Ch20.G3.c127}
 
-{docstring Array.anyM}
+{zhdocstring Array.anyM Manual.ZhDocString.Ch19Ch20.G3.c128}
 
-{docstring Array.allDiff}
+{zhdocstring Array.allDiff Manual.ZhDocString.Ch19Ch20.G3.c129}
 
-{docstring Array.isEqv}
+{zhdocstring Array.isEqv Manual.ZhDocString.Ch19Ch20.G3.c130}
 
 ## 比较
 
 %%%
 tag := "Lean-__________________--Basic-Types--Arrays--API-Reference--Comparisons"
 %%%
-{docstring Array.isPrefixOf}
+{zhdocstring Array.isPrefixOf Manual.ZhDocString.Ch19Ch20.G3.c131}
 
-{docstring Array.lex}
+{zhdocstring Array.lex Manual.ZhDocString.Ch19Ch20.G3.c132}
 
 ## 终止辅助
 
 %%%
 tag := "Lean-__________________--Basic-Types--Arrays--API-Reference--Termination-Helpers"
 %%%
-{docstring Array.attach}
+{zhdocstring Array.attach Manual.ZhDocString.Ch19Ch20.G3.c133}
 
-{docstring Array.attachWith}
+{zhdocstring Array.attachWith Manual.ZhDocString.Ch19Ch20.G3.c134}
 
-{docstring Array.unattach}
+{zhdocstring Array.unattach Manual.ZhDocString.Ch19Ch20.G3.c135}
 
-{docstring Array.pmap}
+{zhdocstring Array.pmap Manual.ZhDocString.Ch19Ch20.G3.c136}
 
 {include 1 Manual.BasicTypes.Array.Subarray}
 
