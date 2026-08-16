@@ -55,60 +55,60 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___17___0-_LPAR_2025-0
 
  典型示例如下：
 
- ```lean
- def ack : (n m : Nat) → Option Nat
-   | 0,   y   => some (y+1)
-   | x+1, 0   => ack x 1
-   | x+1, y+1 => do ack x (← ack (x+1) y)
- partial_fixpoint
+  ```lean
+  def ack : (n m : Nat) → Option Nat
+    | 0,   y   => some (y+1)
+    | x+1, 0   => ack x 1
+    | x+1, y+1 => do ack x (← ack (x+1) y)
+  partial_fixpoint
 
- def whileSome (f : α → Option α) (x : α) : α :=
-   match f x with
-   | none => x
-   | some x' => whileSome f x'
- partial_fixpoint
+  def whileSome (f : α → Option α) (x : α) : α :=
+    match f x with
+    | none => x
+    | some x' => whileSome f x'
+  partial_fixpoint
 
- def computeLfp {α : Type u} [DecidableEq α] (f : α → α) (x : α) : α :=
-   let next := f x
-   if x ≠ next then
-     computeLfp f next
-   else
-     x
- partial_fixpoint
- ```
+  def computeLfp {α : Type u} [DecidableEq α] (f : α → α) (x : α) : α :=
+    let next := f x
+    if x ≠ next then
+      computeLfp f next
+    else
+      x
+  partial_fixpoint
+  ```
 
  更多细节请参阅[参考手册](https://lean-lang.org/doc/reference/latest/Recursive-Definitions/Partial-Fixpoint-Recursion/#partial-fixpoint)。
 
 * [#6905](https://github.com/leanprover/lean4/pull/6905) 增加了 `try`? 交互式策略的首个草案，它会尝试多种策略，包括归纳：
- ```lean
- @[simp] def revAppend : List Nat → List Nat → List Nat
- | [],    ys => ys
- | x::xs, ys => revAppend xs (x::ys)
+  ```lean
+  @[simp] def revAppend : List Nat → List Nat → List Nat
+  | [],    ys => ys
+  | x::xs, ys => revAppend xs (x::ys)
 
- example : (revAppend xs ys).length = xs.length + ys.length := by
-   try?
-   /-
-   Try these:
-   • · induction xs, ys using revAppend.induct
-       · simp
-       · simp +arith [*]
-   • · induction xs, ys using revAppend.induct
-       · simp only [revAppend, List.length_nil, Nat.zero_add]
-       · simp +arith only [revAppend, List.length_cons, *]
-   -/
- ```
+  example : (revAppend xs ys).length = xs.length + ys.length := by
+    try?
+    /-
+    Try these:
+    • · induction xs, ys using revAppend.induct
+        · simp
+        · simp +arith [*]
+    • · induction xs, ys using revAppend.induct
+        · simp only [revAppend, List.length_nil, Nat.zero_add]
+        · simp +arith only [revAppend, List.length_cons, *]
+    -/
+  ```
 
 * **零分支的 `induction`**
 
  [#6486](https://github.com/leanprover/lean4/pull/6486) 修改了 `induction`/`cases` 语法，使 `with` 子句后面不再必须跟任何分支。这提升了这些策略的易用性，因为它们现在可以直接显示缺失分支的名称：
- ```lean
- example (n : Nat) : True := by
-   induction n with
- /-            ~~~~
- alternative 'zero' has not been provided
- alternative 'succ' has not been provided
- -/
- ```
+  ```lean
+  example (n : Nat) : True := by
+    induction n with
+  /-            ~~~~
+  alternative 'zero' has not been provided
+  alternative 'succ' has not been provided
+  -/
+  ```
 
 * **转换模式中的 `simp?` 与 `dsimp?` 策略**
 
@@ -154,14 +154,14 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___17___0-_LPAR_2025-0
 * [#6427](https://github.com/leanprover/lean4/pull/6427) 为 Lean CLI 增加了 `--src-deps` 选项，对应于 `--deps`。它会解析 Lean 代码的头部，并打印（传递导入的）模块源码文件路径（根据 `LEAN_SRC_PATH` 推导）。
 
 * [#6486](https://github.com/leanprover/lean4/pull/6486) 修改了 `induction`/`cases` 语法，使 `with` 子句后面不再必须跟任何分支。这提升了这些策略的易用性，因为它们现在可以直接显示缺失分支的名称：
- ```lean
- example (n : Nat) : True := by
-   induction n with
- /-            ~~~~
- alternative 'zero' has not been provided
- alternative 'succ' has not been provided
- -/
- ```
+  ```lean
+  example (n : Nat) : True := by
+    induction n with
+  /-            ~~~~
+  alternative 'zero' has not been provided
+  alternative 'succ' has not been provided
+  -/
+  ```
 
 * [#6505](https://github.com/leanprover/lean4/pull/6505) 实现了基础异步框架，以及基于 libuv 的异步定时器运行机制。
 
