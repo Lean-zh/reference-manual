@@ -7,6 +7,7 @@ Author: David Thrane Christiansen
 import VersoManual
 
 import Manual.Meta
+import Manual.ZhDocString.Ch19Ch20.G2
 import Manual.Papers
 
 
@@ -47,11 +48,11 @@ tag := "true-false"
 对于 {lean}`True`，这相当于忽略证明，因为证明并不携带信息。
 对于 {lean}`False`，这表示当前代码不可达，因此无需完成。
 
-{docstring True}
+{zhdocstring True Manual.ZhDocString.Ch19Ch20.G2.c159}
 
-{docstring False}
+{zhdocstring False Manual.ZhDocString.Ch19Ch20.G2.c160}
 
-{docstring False.elim}
+{zhdocstring False.elim Manual.ZhDocString.Ch19Ch20.G2.c161}
 
 :::example "死代码与至多单元素消去"
 
@@ -104,9 +105,9 @@ tag := "Lean-__________________--Basic-Propositions--Logical-Connectives"
 当证明目标中嵌套了多个合取时，可以使用 {tactic}`and_intros` 在各个相关位置应用 {name}`And.intro`。
 上下文中的合取假设可以用 {tactic}`cases`、使用 {tactic}`let` 或 {tactic (show := "match")}`Lean.Parser.Tactic.match` 进行模式匹配，或用 {tactic}`rcases` 化简。
 
-{docstring And}
+{zhdocstring And Manual.ZhDocString.Ch19Ch20.G2.c162}
 
-{docstring And.elim}
+{zhdocstring And.elim Manual.ZhDocString.Ch19Ch20.G2.c163}
 
 析取实现为归纳定义的命题 {name}`Or`。
 它有两个构造器，分别对应两个引入规则：证明任一析取项即可证明析取。
@@ -119,14 +120,14 @@ tag := "Lean-__________________--Basic-Propositions--Logical-Connectives"
 {tactic}`left` 和 {tactic}`right` 策略分别选择左、右析取项。
 上下文中的析取假设可以用 {tactic}`cases`、使用 {tactic (show := "match")}`Lean.Parser.Tactic.match` 进行模式匹配，或用 {tactic}`rcases` 化简。
 
-{docstring Or}
+{zhdocstring Or Manual.ZhDocString.Ch19Ch20.G2.c164}
 
 当任一析取项是 {tech}[可判定的]时，就可以使用 {lean}`Or` 计算数据。
 这是因为判定过程的结果提供了合适的分支条件。
 
-{docstring Or.by_cases}
+{zhdocstring Or.by_cases Manual.ZhDocString.Ch19Ch20.G2.c165}
 
-{docstring Or.by_cases'}
+{zhdocstring Or.by_cases' Manual.ZhDocString.Ch19Ch20.G2.c166}
 
 
 ```lean -show
@@ -141,11 +142,11 @@ end
 ```
 
 
-{docstring Not}
+{zhdocstring Not Manual.ZhDocString.Ch19Ch20.G2.c167}
 
-{docstring absurd}
+{zhdocstring absurd Manual.ZhDocString.Ch19Ch20.G2.c168}
 
-{docstring Not.elim}
+{zhdocstring Not.elim Manual.ZhDocString.Ch19Ch20.G2.c169}
 
 
 
@@ -182,9 +183,9 @@ end
 
 逻辑等价（即“当且仅当”）使用一个结构表示，该结构等价于两个方向蕴含的合取。
 
-{docstring Iff}
+{zhdocstring Iff Manual.ZhDocString.Ch19Ch20.G2.c170}
 
-{docstring Iff.elim}
+{zhdocstring Iff.elim Manual.ZhDocString.Ch19Ch20.G2.c171}
 
 :::syntax term (title := "命题连接词")
 除蕴含外，逻辑连接词通常使用专用语法，而不是使用它们的定义名称：
@@ -269,7 +270,7 @@ theorem ex_four_plus_five' : ∃ n, 4 + 5 = n := by
 
 :::
 
-{docstring Exists}
+{zhdocstring Exists Manual.ZhDocString.Ch19Ch20.G2.c172}
 
 :::syntax term (title := "存在量化")
 
@@ -294,7 +295,7 @@ exists $_ $[$_]*, $_
 如果绑定了多个变量，结果就是多个向右嵌套的 {name}`Exists` 实例。
 :::
 
-{docstring Exists.choose}
+{zhdocstring Exists.choose Manual.ZhDocString.Ch19Ch20.G2.c173}
 
 # 命题等式
 %%%
@@ -313,7 +314,7 @@ tag := "propositional-equality"
 除 {name}`Eq.refl` 外，等式证明还由 {name}`propext` 和 {name}`Quot.sound` 公理生成。
 
 
-{docstring Eq}
+{zhdocstring Eq Manual.ZhDocString.Ch19Ch20.G2.c174}
 
 :::syntax term (title := "命题等式")
 ```grammar
@@ -322,25 +323,25 @@ $_ = $_
 命题等式通常用中缀运算符 `=` 表示。
 :::
 
-{docstring rfl}
+{zhdocstring rfl Manual.ZhDocString.Ch19Ch20.G2.c175}
 
-{docstring Eq.symm}
+{zhdocstring Eq.symm Manual.ZhDocString.Ch19Ch20.G2.c176}
 
-{docstring Eq.trans}
+{zhdocstring Eq.trans Manual.ZhDocString.Ch19Ch20.G2.c177}
 
-{docstring Eq.subst}
+{zhdocstring Eq.subst Manual.ZhDocString.Ch19Ch20.G2.c178}
 
-{docstring cast}
+{zhdocstring cast Manual.ZhDocString.Ch19Ch20.G2.c179}
 
-{docstring congr}
+{zhdocstring congr Manual.ZhDocString.Ch19Ch20.G2.c180}
 
-{docstring congrFun}
+{zhdocstring congrFun Manual.ZhDocString.Ch19Ch20.G2.c181}
 
-{docstring congrArg}
+{zhdocstring congrArg Manual.ZhDocString.Ch19Ch20.G2.c182}
 
-{docstring Eq.mp}
+{zhdocstring Eq.mp Manual.ZhDocString.Ch19Ch20.G2.c183}
 
-{docstring Eq.mpr}
+{zhdocstring Eq.mpr Manual.ZhDocString.Ch19Ch20.G2.c184}
 
 :::syntax term (title := "强制转换")
 ```grammar
@@ -401,7 +402,7 @@ tag := "HEq"
 在这些情况下，内置自动化只能使用异构等式。
 
 
-{docstring HEq}
+{zhdocstring HEq Manual.ZhDocString.Ch19Ch20.G2.c185}
 
 :::syntax term (title := "异构等式")
 ```grammar
@@ -419,7 +420,7 @@ end
 
 :::
 
-{docstring HEq.rfl}
+{zhdocstring HEq.rfl Manual.ZhDocString.Ch19Ch20.G2.c186}
 
 
 :::::leanSection
@@ -485,24 +486,24 @@ theorem Vector.append_associative :
 ::::
 :::::
 
-{docstring HEq.elim}
+{zhdocstring HEq.elim Manual.ZhDocString.Ch19Ch20.G2.c187}
 
-{docstring HEq.ndrec}
+{zhdocstring HEq.ndrec Manual.ZhDocString.Ch19Ch20.G2.c188}
 
-{docstring HEq.ndrecOn}
+{zhdocstring HEq.ndrecOn Manual.ZhDocString.Ch19Ch20.G2.c189}
 
-{docstring HEq.subst}
+{zhdocstring HEq.subst Manual.ZhDocString.Ch19Ch20.G2.c190}
 
-{docstring eq_of_heq}
+{zhdocstring eq_of_heq Manual.ZhDocString.Ch19Ch20.G2.c191}
 
-{docstring heq_of_eq}
+{zhdocstring heq_of_eq Manual.ZhDocString.Ch19Ch20.G2.c192}
 
-{docstring heq_of_eqRec_eq}
+{zhdocstring heq_of_eqRec_eq Manual.ZhDocString.Ch19Ch20.G2.c193}
 
-{docstring eqRec_heq}
+{zhdocstring eqRec_heq Manual.ZhDocString.Ch19Ch20.G2.c194}
 
-{docstring cast_heq}
+{zhdocstring cast_heq Manual.ZhDocString.Ch19Ch20.G2.c195}
 
-{docstring heq_of_heq_of_eq}
+{zhdocstring heq_of_heq_of_eq Manual.ZhDocString.Ch19Ch20.G2.c196}
 
-{docstring type_eq_of_heq}
+{zhdocstring type_eq_of_heq Manual.ZhDocString.Ch19Ch20.G2.c197}

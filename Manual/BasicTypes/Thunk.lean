@@ -7,6 +7,7 @@ Author: David Thrane Christiansen
 import VersoManual
 
 import Manual.Meta
+import Manual.ZhDocString.Ch19Ch20.G2
 
 open Verso.Genre Manual
 open Verso.Genre.Manual.InlineLean
@@ -35,7 +36,7 @@ tag := "Thunk-model"
 取而代之，应使用 {name}`Thunk.get`。
 从逻辑的角度看，它们是等价的；之所以提供 {name}`Thunk.get`，是为了让编译器能够用实现惰性求值的平台原语来覆盖它。
 
-{docstring Thunk}
+{zhdocstring Thunk Manual.ZhDocString.Ch19Ch20.G2.c198}
 
 # 运行时表示
 %%%
@@ -202,10 +203,10 @@ ys: 0
 tag := "Thunk-api"
 %%%
 
-{docstring Thunk.get}
+{zhdocstring Thunk.get Manual.ZhDocString.Ch19Ch20.G2.c199}
 
-{docstring Thunk.map}
+{zhdocstring Thunk.map Manual.ZhDocString.Ch19Ch20.G2.c200}
 
-{docstring Thunk.pure}
+{zhdocstring Thunk.pure Manual.ZhDocString.Ch19Ch20.G2.c201}
 
-{docstring Thunk.bind}
+{zhdocstring Thunk.bind Manual.ZhDocString.Ch19Ch20.G2.c202}
