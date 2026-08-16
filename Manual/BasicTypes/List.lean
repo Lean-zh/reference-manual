@@ -7,6 +7,7 @@ Author: David Thrane Christiansen
 import VersoManual
 
 import Manual.Meta
+import Manual.ZhDocString.Ch19Ch20.G4
 
 import Manual.BasicTypes.List.Predicates
 import Manual.BasicTypes.List.Comparisons
@@ -32,7 +33,7 @@ tag := "List"
 不同于 {ref "Array"}[数组]，Lean 会按照归纳类型的通常规则来编译列表；不过，借助 {attr}`csimp` 机制，某些列表操作在编译后的代码中会被替换为尾递归的等价实现。{TODO}[从此处继续撰写并添加交叉引用]
 Lean 同时为列表字面量和构造子 {name}`List.cons` 提供了语法。
 
-{docstring List}
+{zhdocstring List Manual.ZhDocString.Ch19Ch20.G4.c001}
 
 # 语法
 %%%
@@ -139,59 +140,59 @@ tag := "list-api-reference"
 %%%
 tag := "Lean-__________________--Basic-Types--Linked-Lists--API-Reference--Constructing-Lists"
 %%%
-{docstring List.singleton}
+{zhdocstring List.singleton Manual.ZhDocString.Ch19Ch20.G4.c002}
 
-{docstring List.concat}
+{zhdocstring List.concat Manual.ZhDocString.Ch19Ch20.G4.c003}
 
-{docstring List.replicate}
+{zhdocstring List.replicate Manual.ZhDocString.Ch19Ch20.G4.c004}
 
-{docstring List.replicateTR}
+{zhdocstring List.replicateTR Manual.ZhDocString.Ch19Ch20.G4.c005}
 
-{docstring List.ofFn}
+{zhdocstring List.ofFn Manual.ZhDocString.Ch19Ch20.G4.c006}
 
-{docstring List.append}
+{zhdocstring List.append Manual.ZhDocString.Ch19Ch20.G4.c007}
 
-{docstring List.appendTR}
+{zhdocstring List.appendTR Manual.ZhDocString.Ch19Ch20.G4.c008}
 
-{docstring List.range}
+{zhdocstring List.range Manual.ZhDocString.Ch19Ch20.G4.c009}
 
-{docstring List.range'}
+{zhdocstring List.range' Manual.ZhDocString.Ch19Ch20.G4.c010}
 
-{docstring List.range'TR}
+{zhdocstring List.range'TR Manual.ZhDocString.Ch19Ch20.G4.c011}
 
-{docstring List.finRange}
+{zhdocstring List.finRange Manual.ZhDocString.Ch19Ch20.G4.c012}
 
 ## 长度
 
 %%%
 tag := "Lean-__________________--Basic-Types--Linked-Lists--API-Reference--Length"
 %%%
-{docstring List.length}
+{zhdocstring List.length Manual.ZhDocString.Ch19Ch20.G4.c013}
 
-{docstring List.lengthTR}
+{zhdocstring List.lengthTR Manual.ZhDocString.Ch19Ch20.G4.c014}
 
-{docstring List.isEmpty}
+{zhdocstring List.isEmpty Manual.ZhDocString.Ch19Ch20.G4.c015}
 
 ## 头与尾
 
 %%%
 tag := "Lean-__________________--Basic-Types--Linked-Lists--API-Reference--Head-and-Tail"
 %%%
-{docstring List.head}
+{zhdocstring List.head Manual.ZhDocString.Ch19Ch20.G4.c016}
 
-{docstring List.head?}
+{zhdocstring List.head? Manual.ZhDocString.Ch19Ch20.G4.c017}
 
-{docstring List.headD}
+{zhdocstring List.headD Manual.ZhDocString.Ch19Ch20.G4.c018}
 
-{docstring List.head!}
+{zhdocstring List.head! Manual.ZhDocString.Ch19Ch20.G4.c019}
 
-{docstring List.tail}
+{zhdocstring List.tail Manual.ZhDocString.Ch19Ch20.G4.c020}
 
-{docstring List.tail!}
+{zhdocstring List.tail! Manual.ZhDocString.Ch19Ch20.G4.c021}
 
-{docstring List.tail?}
+{zhdocstring List.tail? Manual.ZhDocString.Ch19Ch20.G4.c022}
 
-{docstring List.tailD}
+{zhdocstring List.tailD Manual.ZhDocString.Ch19Ch20.G4.c023}
 
 
 ## 查找
@@ -199,67 +200,67 @@ tag := "Lean-__________________--Basic-Types--Linked-Lists--API-Reference--Head-
 %%%
 tag := "Lean-__________________--Basic-Types--Linked-Lists--API-Reference--Lookups"
 %%%
-{docstring List.get}
+{zhdocstring List.get Manual.ZhDocString.Ch19Ch20.G4.c024}
 
-{docstring List.getD}
+{zhdocstring List.getD Manual.ZhDocString.Ch19Ch20.G4.c025}
 
-{docstring List.getLast}
+{zhdocstring List.getLast Manual.ZhDocString.Ch19Ch20.G4.c026}
 
-{docstring List.getLast?}
+{zhdocstring List.getLast? Manual.ZhDocString.Ch19Ch20.G4.c027}
 
-{docstring List.getLastD}
+{zhdocstring List.getLastD Manual.ZhDocString.Ch19Ch20.G4.c028}
 
-{docstring List.getLast!}
+{zhdocstring List.getLast! Manual.ZhDocString.Ch19Ch20.G4.c029}
 
-{docstring List.lookup}
+{zhdocstring List.lookup Manual.ZhDocString.Ch19Ch20.G4.c030}
 
-{docstring List.max?}
+{zhdocstring List.max? Manual.ZhDocString.Ch19Ch20.G4.c031}
 
-{docstring List.min?}
+{zhdocstring List.min? Manual.ZhDocString.Ch19Ch20.G4.c032}
 
 ## 查询
 
 %%%
 tag := "Lean-__________________--Basic-Types--Linked-Lists--API-Reference--Queries"
 %%%
-{docstring List.count}
+{zhdocstring List.count Manual.ZhDocString.Ch19Ch20.G4.c033}
 
-{docstring List.countP}
+{zhdocstring List.countP Manual.ZhDocString.Ch19Ch20.G4.c034}
 
-{docstring List.idxOf}
+{zhdocstring List.idxOf Manual.ZhDocString.Ch19Ch20.G4.c035}
 
-{docstring List.idxOf?}
+{zhdocstring List.idxOf? Manual.ZhDocString.Ch19Ch20.G4.c036}
 
-{docstring List.finIdxOf?}
+{zhdocstring List.finIdxOf? Manual.ZhDocString.Ch19Ch20.G4.c037}
 
-{docstring List.find?}
+{zhdocstring List.find? Manual.ZhDocString.Ch19Ch20.G4.c038}
 
-{docstring List.findFinIdx?}
+{zhdocstring List.findFinIdx? Manual.ZhDocString.Ch19Ch20.G4.c039}
 
-{docstring List.findIdx}
+{zhdocstring List.findIdx Manual.ZhDocString.Ch19Ch20.G4.c040}
 
-{docstring List.findIdx?}
+{zhdocstring List.findIdx? Manual.ZhDocString.Ch19Ch20.G4.c041}
 
-{docstring List.findM?}
+{zhdocstring List.findM? Manual.ZhDocString.Ch19Ch20.G4.c042}
 
-{docstring List.findSome?}
+{zhdocstring List.findSome? Manual.ZhDocString.Ch19Ch20.G4.c043}
 
-{docstring List.findSomeM?}
+{zhdocstring List.findSomeM? Manual.ZhDocString.Ch19Ch20.G4.c044}
 
 ## 转换
 
 %%%
 tag := "Lean-__________________--Basic-Types--Linked-Lists--API-Reference--Conversions"
 %%%
-{docstring List.toArray}
+{zhdocstring List.toArray Manual.ZhDocString.Ch19Ch20.G4.c045}
 
-{docstring List.toArrayImpl}
+{zhdocstring List.toArrayImpl Manual.ZhDocString.Ch19Ch20.G4.c046}
 
-{docstring List.toByteArray}
+{zhdocstring List.toByteArray Manual.ZhDocString.Ch19Ch20.G4.c047}
 
-{docstring List.toFloatArray}
+{zhdocstring List.toFloatArray Manual.ZhDocString.Ch19Ch20.G4.c048}
 
-{docstring List.toString}
+{zhdocstring List.toString Manual.ZhDocString.Ch19Ch20.G4.c049}
 
 
 {include 2 Manual.BasicTypes.List.Modification}
@@ -269,26 +270,26 @@ tag := "Lean-__________________--Basic-Types--Linked-Lists--API-Reference--Conve
 %%%
 tag := "Lean-__________________--Basic-Types--Linked-Lists--API-Reference--Sorting"
 %%%
-{docstring List.mergeSort}
+{zhdocstring List.mergeSort Manual.ZhDocString.Ch19Ch20.G4.c050}
 
-{docstring List.merge}
+{zhdocstring List.merge Manual.ZhDocString.Ch19Ch20.G4.c051}
 
 ## 迭代
 
 %%%
 tag := "Lean-__________________--Basic-Types--Linked-Lists--API-Reference--Iteration"
 %%%
-{docstring List.iter}
+{zhdocstring List.iter Manual.ZhDocString.Ch19Ch20.G4.c052}
 
-{docstring List.iterM}
+{zhdocstring List.iterM Manual.ZhDocString.Ch19Ch20.G4.c053}
 
-{docstring List.forA}
+{zhdocstring List.forA Manual.ZhDocString.Ch19Ch20.G4.c054}
 
-{docstring List.forM}
+{zhdocstring List.forM Manual.ZhDocString.Ch19Ch20.G4.c055}
 
-{docstring List.firstM}
+{zhdocstring List.firstM Manual.ZhDocString.Ch19Ch20.G4.c056}
 
-{docstring List.sum}
+{zhdocstring List.sum Manual.ZhDocString.Ch19Ch20.G4.c057}
 
 ### 折叠
 
@@ -311,19 +312,19 @@ tag := "Lean-__________________--Basic-Types--Linked-Lists--API-Reference--Itera
 带 `-M` 后缀的单子折叠允许组合函数使用某个 {tech (key := "monad")}[单子] 中的效应，这也可能包括提前终止折叠。
 :::
 
-{docstring List.foldl}
+{zhdocstring List.foldl Manual.ZhDocString.Ch19Ch20.G4.c058}
 
-{docstring List.foldlM}
+{zhdocstring List.foldlM Manual.ZhDocString.Ch19Ch20.G4.c059}
 
-{docstring List.foldlRecOn}
+{zhdocstring List.foldlRecOn Manual.ZhDocString.Ch19Ch20.G4.c060}
 
-{docstring List.foldr}
+{zhdocstring List.foldr Manual.ZhDocString.Ch19Ch20.G4.c061}
 
-{docstring List.foldrM}
+{zhdocstring List.foldrM Manual.ZhDocString.Ch19Ch20.G4.c062}
 
-{docstring List.foldrRecOn}
+{zhdocstring List.foldrRecOn Manual.ZhDocString.Ch19Ch20.G4.c063}
 
-{docstring List.foldrTR}
+{zhdocstring List.foldrTR Manual.ZhDocString.Ch19Ch20.G4.c064}
 
 {include 2 Manual.BasicTypes.List.Transformation}
 
@@ -332,19 +333,19 @@ tag := "Lean-__________________--Basic-Types--Linked-Lists--API-Reference--Itera
 %%%
 tag := "Lean-__________________--Basic-Types--Linked-Lists--API-Reference--Filtering"
 %%%
-{docstring List.filter}
+{zhdocstring List.filter Manual.ZhDocString.Ch19Ch20.G4.c065}
 
-{docstring List.filterTR}
+{zhdocstring List.filterTR Manual.ZhDocString.Ch19Ch20.G4.c066}
 
-{docstring List.filterM}
+{zhdocstring List.filterM Manual.ZhDocString.Ch19Ch20.G4.c067}
 
-{docstring List.filterRevM}
+{zhdocstring List.filterRevM Manual.ZhDocString.Ch19Ch20.G4.c068}
 
-{docstring List.filterMap}
+{zhdocstring List.filterMap Manual.ZhDocString.Ch19Ch20.G4.c069}
 
-{docstring List.filterMapTR}
+{zhdocstring List.filterMapTR Manual.ZhDocString.Ch19Ch20.G4.c070}
 
-{docstring List.filterMapM}
+{zhdocstring List.filterMapM Manual.ZhDocString.Ch19Ch20.G4.c071}
 
 {include Manual.BasicTypes.List.Partitioning}
 
@@ -353,21 +354,21 @@ tag := "Lean-__________________--Basic-Types--Linked-Lists--API-Reference--Filte
 %%%
 tag := "Lean-__________________--Basic-Types--Linked-Lists--API-Reference--Element-Predicates"
 %%%
-{docstring List.contains}
+{zhdocstring List.contains Manual.ZhDocString.Ch19Ch20.G4.c072}
 
-{docstring List.elem}
+{zhdocstring List.elem Manual.ZhDocString.Ch19Ch20.G4.c073}
 
-{docstring List.all}
+{zhdocstring List.all Manual.ZhDocString.Ch19Ch20.G4.c074}
 
-{docstring List.allM}
+{zhdocstring List.allM Manual.ZhDocString.Ch19Ch20.G4.c075}
 
-{docstring List.any}
+{zhdocstring List.any Manual.ZhDocString.Ch19Ch20.G4.c076}
 
-{docstring List.anyM}
+{zhdocstring List.anyM Manual.ZhDocString.Ch19Ch20.G4.c077}
 
-{docstring List.and}
+{zhdocstring List.and Manual.ZhDocString.Ch19Ch20.G4.c078}
 
-{docstring List.or}
+{zhdocstring List.or Manual.ZhDocString.Ch19Ch20.G4.c079}
 
 {include 2 Manual.BasicTypes.List.Comparisons}
 
@@ -376,10 +377,10 @@ tag := "Lean-__________________--Basic-Types--Linked-Lists--API-Reference--Eleme
 %%%
 tag := "Lean-__________________--Basic-Types--Linked-Lists--API-Reference--Termination-Helpers"
 %%%
-{docstring List.attach}
+{zhdocstring List.attach Manual.ZhDocString.Ch19Ch20.G4.c080}
 
-{docstring List.attachWith}
+{zhdocstring List.attachWith Manual.ZhDocString.Ch19Ch20.G4.c081}
 
-{docstring List.unattach}
+{zhdocstring List.unattach Manual.ZhDocString.Ch19Ch20.G4.c082}
 
-{docstring List.pmap}
+{zhdocstring List.pmap Manual.ZhDocString.Ch19Ch20.G4.c083}

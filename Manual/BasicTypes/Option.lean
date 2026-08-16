@@ -7,6 +7,7 @@ Author: David Thrane Christiansen
 import VersoManual
 
 import Manual.Meta
+import Manual.ZhDocString.Ch19Ch20.G4
 
 
 open Verso.Genre Manual
@@ -109,7 +110,7 @@ def postalCodes : Std.HashMap Nat String :=
 
 :::::
 
-{docstring Option}
+{zhdocstring Option Manual.ZhDocString.Ch19Ch20.G4.c225}
 
 
 # 强制转换
@@ -158,21 +159,21 @@ tag := "Lean-__________________--Basic-Types--Optional-Values--API-Reference"
 %%%
 tag := "Lean-__________________--Basic-Types--Optional-Values--API-Reference--Extracting-Values"
 %%%
-{docstring Option.get}
+{zhdocstring Option.get Manual.ZhDocString.Ch19Ch20.G4.c226}
 
-{docstring Option.get!}
+{zhdocstring Option.get! Manual.ZhDocString.Ch19Ch20.G4.c227}
 
-{docstring Option.getD}
+{zhdocstring Option.getD Manual.ZhDocString.Ch19Ch20.G4.c228}
 
-{docstring Option.getDM}
+{zhdocstring Option.getDM Manual.ZhDocString.Ch19Ch20.G4.c229}
 
-{docstring Option.getM}
+{zhdocstring Option.getM Manual.ZhDocString.Ch19Ch20.G4.c230}
 
-{docstring Option.elim}
+{zhdocstring Option.elim Manual.ZhDocString.Ch19Ch20.G4.c231}
 
-{docstring Option.elimM}
+{zhdocstring Option.elimM Manual.ZhDocString.Ch19Ch20.G4.c232}
 
-{docstring Option.merge}
+{zhdocstring Option.merge Manual.ZhDocString.Ch19Ch20.G4.c233}
 
 
 ## 属性和比较
@@ -180,11 +181,11 @@ tag := "Lean-__________________--Basic-Types--Optional-Values--API-Reference--Ex
 %%%
 tag := "Lean-__________________--Basic-Types--Optional-Values--API-Reference--Properties-and-Comparisons"
 %%%
-{docstring Option.isNone}
+{zhdocstring Option.isNone Manual.ZhDocString.Ch19Ch20.G4.c234}
 
-{docstring Option.isSome}
+{zhdocstring Option.isSome Manual.ZhDocString.Ch19Ch20.G4.c235}
 
-{docstring Option.isEqSome}
+{zhdocstring Option.isEqSome Manual.ZhDocString.Ch19Ch20.G4.c236}
 
 :::leanSection
 ```lean -show
@@ -193,26 +194,26 @@ variable {α} [DecidableEq α] [LT α] [Min α] [Max α]
 可选值的排序通常使用 {inst}`DecidableEq (Option α)`、{inst}`LT (Option α)`、{inst}`Min (Option α)` 和 {inst}`Max (Option α)` 实例。
 :::
 
-{docstring Option.min}
+{zhdocstring Option.min Manual.ZhDocString.Ch19Ch20.G4.c237}
 
-{docstring Option.max}
+{zhdocstring Option.max Manual.ZhDocString.Ch19Ch20.G4.c238}
 
-{docstring Option.lt}
+{zhdocstring Option.lt Manual.ZhDocString.Ch19Ch20.G4.c239}
 
-{docstring Option.decidableEqNone}
+{zhdocstring Option.decidableEqNone Manual.ZhDocString.Ch19Ch20.G4.c240}
 
 ## 转换
 
 %%%
 tag := "Lean-__________________--Basic-Types--Optional-Values--API-Reference--Conversion"
 %%%
-{docstring Option.toArray}
+{zhdocstring Option.toArray Manual.ZhDocString.Ch19Ch20.G4.c241}
 
-{docstring Option.toList}
+{zhdocstring Option.toList Manual.ZhDocString.Ch19Ch20.G4.c242}
 
-{docstring Option.repr}
+{zhdocstring Option.repr Manual.ZhDocString.Ch19Ch20.G4.c243}
 
-{docstring Option.format}
+{zhdocstring Option.format Manual.ZhDocString.Ch19Ch20.G4.c244}
 
 ## 控制
 
@@ -223,21 +224,21 @@ tag := "Lean-__________________--Basic-Types--Optional-Values--API-Reference--Co
 {inst}`Monad Option` 实例以及 {inst}`Alternative Option` 正是基于这种理解。
 返回 {name}`none` 也可以被认为是抛出了一个不包含任何有用信息的异常，这被体现在 {inst}`MonadExcept Unit Option` 实例中。
 
-{docstring Option.guard}
+{zhdocstring Option.guard Manual.ZhDocString.Ch19Ch20.G4.c245}
 
-{docstring Option.bind}
+{zhdocstring Option.bind Manual.ZhDocString.Ch19Ch20.G4.c246}
 
-{docstring Option.bindM}
+{zhdocstring Option.bindM Manual.ZhDocString.Ch19Ch20.G4.c247}
 
-{docstring Option.join}
+{zhdocstring Option.join Manual.ZhDocString.Ch19Ch20.G4.c248}
 
-{docstring Option.sequence}
+{zhdocstring Option.sequence Manual.ZhDocString.Ch19Ch20.G4.c249}
 
-{docstring Option.tryCatch}
+{zhdocstring Option.tryCatch Manual.ZhDocString.Ch19Ch20.G4.c250}
 
-{docstring Option.or}
+{zhdocstring Option.or Manual.ZhDocString.Ch19Ch20.G4.c251}
 
-{docstring Option.orElse}
+{zhdocstring Option.orElse Manual.ZhDocString.Ch19Ch20.G4.c252}
 
 
 ## 迭代
@@ -248,42 +249,42 @@ tag := "Lean-__________________--Basic-Types--Optional-Values--API-Reference--It
 {name}`Option` 可以被认为是一个最多包含一个值的集合。
 从这个角度来看，迭代运算符可以理解为对包含的值（如果存在）执行某些操作，如果不存在则什么也不做。
 
-{docstring Option.all}
+{zhdocstring Option.all Manual.ZhDocString.Ch19Ch20.G4.c253}
 
-{docstring Option.any}
+{zhdocstring Option.any Manual.ZhDocString.Ch19Ch20.G4.c254}
 
-{docstring Option.filter}
+{zhdocstring Option.filter Manual.ZhDocString.Ch19Ch20.G4.c255}
 
-{docstring Option.filterM}
+{zhdocstring Option.filterM Manual.ZhDocString.Ch19Ch20.G4.c256}
 
-{docstring Option.forM}
+{zhdocstring Option.forM Manual.ZhDocString.Ch19Ch20.G4.c257}
 
-{docstring Option.map}
+{zhdocstring Option.map Manual.ZhDocString.Ch19Ch20.G4.c258}
 
-{docstring Option.mapA}
+{zhdocstring Option.mapA Manual.ZhDocString.Ch19Ch20.G4.c259}
 
-{docstring Option.mapM}
+{zhdocstring Option.mapM Manual.ZhDocString.Ch19Ch20.G4.c260}
 
 ## 递归辅助
 
 %%%
 tag := "Lean-__________________--Basic-Types--Optional-Values--API-Reference--Recursion-Helpers"
 %%%
-{docstring Option.attach}
+{zhdocstring Option.attach Manual.ZhDocString.Ch19Ch20.G4.c261}
 
-{docstring Option.attachWith}
+{zhdocstring Option.attachWith Manual.ZhDocString.Ch19Ch20.G4.c262}
 
-{docstring Option.unattach}
+{zhdocstring Option.unattach Manual.ZhDocString.Ch19Ch20.G4.c263}
 
 ## 推理
 
 %%%
 tag := "Lean-__________________--Basic-Types--Optional-Values--API-Reference--Reasoning"
 %%%
-{docstring Option.choice}
+{zhdocstring Option.choice Manual.ZhDocString.Ch19Ch20.G4.c264}
 
-{docstring Option.pbind}
+{zhdocstring Option.pbind Manual.ZhDocString.Ch19Ch20.G4.c265}
 
-{docstring Option.pelim}
+{zhdocstring Option.pelim Manual.ZhDocString.Ch19Ch20.G4.c266}
 
-{docstring Option.pmap}
+{zhdocstring Option.pmap Manual.ZhDocString.Ch19Ch20.G4.c267}
