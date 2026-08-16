@@ -12,6 +12,7 @@ open Verso.Genre Manual InlineLean
 #doc (Manual) "关于：`invalidField`" =>
 %%%
 shortTitle := "invalidField"
+tag := "Lean-__________________--Error-Explanations--About___--invalidField"
 %%%
 
 {errorExplanationHeader lean.invalidField}
@@ -25,6 +26,9 @@ Lean 的字段表示法非常强大，但这也可能令人困惑：表达式
 
 # 示例
 
+%%%
+tag := "Lean-__________________--Error-Explanations--About___--invalidField--Examples"
+%%%
 :::errorExample "错误的字段名称"
 
 ```broken

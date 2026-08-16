@@ -77,6 +77,9 @@ tag := "char-api"
 
 ## 转换
 
+%%%
+tag := "Lean-__________________--Basic-Types--Characters--API-Reference--Conversions"
+%%%
 {docstring Char.ofNat}
 
 {docstring Char.toNat}
@@ -167,16 +170,25 @@ tag := "char-api-classes"
 
 ## 大小写转换
 
+%%%
+tag := "Lean-__________________--Basic-Types--Characters--API-Reference--Case-Conversion"
+%%%
 {docstring Char.toUpper}
 
 {docstring Char.toLower}
 
 ## 比较
 
+%%%
+tag := "Lean-__________________--Basic-Types--Characters--API-Reference--Comparisons"
+%%%
 {docstring Char.le}
 
 {docstring Char.lt}
 
 ## Unicode
 
+%%%
+tag := "Lean-__________________--Basic-Types--Characters--API-Reference--Unicode"
+%%%
 {docstring Char.utf8Size}

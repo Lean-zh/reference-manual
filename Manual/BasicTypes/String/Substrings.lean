@@ -30,12 +30,18 @@ tag := "string-api-substring"
 
 # 属性
 
+%%%
+tag := "Lean-__________________--Basic-Types--Strings--API-Reference--Raw-Substrings--Properties"
+%%%
 {docstring Substring.Raw.isEmpty}
 
 {docstring Substring.Raw.bsize}
 
 # 位置
 
+%%%
+tag := "Lean-__________________--Basic-Types--Strings--API-Reference--Raw-Substrings--Positions"
+%%%
 {docstring Substring.Raw.atEnd}
 
 {docstring Substring.Raw.posOf}
@@ -51,6 +57,9 @@ tag := "string-api-substring"
 
 # 归折与聚合
 
+%%%
+tag := "Lean-__________________--Basic-Types--Strings--API-Reference--Raw-Substrings--Folds-and-Aggregation"
+%%%
 {docstring Substring.Raw.foldl}
 
 {docstring Substring.Raw.foldr}
@@ -61,12 +70,18 @@ tag := "string-api-substring"
 
 # 比较
 
+%%%
+tag := "Lean-__________________--Basic-Types--Strings--API-Reference--Raw-Substrings--Comparisons"
+%%%
 {docstring Substring.Raw.beq}
 
 {docstring Substring.Raw.sameAs}
 
 # 前缀与后缀
 
+%%%
+tag := "Lean-__________________--Basic-Types--Strings--API-Reference--Raw-Substrings--Prefix-and-Suffix"
+%%%
 {docstring Substring.Raw.commonPrefix}
 
 {docstring Substring.Raw.commonSuffix}
@@ -77,6 +92,9 @@ tag := "string-api-substring"
 
 # 查找
 
+%%%
+tag := "Lean-__________________--Basic-Types--Strings--API-Reference--Raw-Substrings--Lookups"
+%%%
 {docstring Substring.Raw.get}
 
 {docstring Substring.Raw.contains}
@@ -86,6 +104,9 @@ tag := "string-api-substring"
 
 # 修改
 
+%%%
+tag := "Lean-__________________--Basic-Types--Strings--API-Reference--Raw-Substrings--Modifications"
+%%%
 {docstring Substring.Raw.drop}
 
 {docstring Substring.Raw.dropWhile}
@@ -117,6 +138,9 @@ tag := "string-api-substring"
 
 # 转换
 
+%%%
+tag := "Lean-__________________--Basic-Types--Strings--API-Reference--Raw-Substrings--Conversions"
+%%%
 {docstring Substring.Raw.toString}
 
 {docstring Substring.Raw.isNat}

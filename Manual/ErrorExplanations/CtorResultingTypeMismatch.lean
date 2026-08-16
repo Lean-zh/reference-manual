@@ -13,6 +13,7 @@ open Verso.Genre Manual InlineLean
 #doc (Manual) "关于：`ctorResultingTypeMismatch`" =>
 %%%
 shortTitle := "ctorResultingTypeMismatch"
+tag := "Lean-__________________--Error-Explanations--About___--ctorResultingTypeMismatch"
 %%%
 
 {errorExplanationHeader lean.ctorResultingTypeMismatch}
@@ -23,6 +24,9 @@ shortTitle := "ctorResultingTypeMismatch"
 
 # 示例
 
+%%%
+tag := "Lean-__________________--Error-Explanations--About___--ctorResultingTypeMismatch--Examples"
+%%%
 :::errorExample "结果类型中的拼写错误"
 ```broken
 inductive Tree (α : Type) where

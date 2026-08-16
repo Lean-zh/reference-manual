@@ -20,6 +20,9 @@ htmlSplit := .never
 
 # 第一层级
 
+%%%
+tag := "Lean-__________________--Supported-Platforms--Tier-1"
+%%%
 :::paragraph
 第一层级平台是 Lean 由 CI 基础设施构建并测试的平台。
 这些平台的 Lean 二进制发行版可通过 {ref "elan"}[`elan`] 获取。
@@ -33,6 +36,9 @@ htmlSplit := .never
 
 # 第二层级
 
+%%%
+tag := "Lean-__________________--Supported-Platforms--Tier-2"
+%%%
 第二层级平台是 Lean 为其交叉编译但未由 CI 测试的平台。
 这些平台也提供二进制发行版。
 

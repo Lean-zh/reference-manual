@@ -102,12 +102,18 @@ tag := "sum-api"
 
 ## 分情况讨论
 
+%%%
+tag := "Lean-__________________--Basic-Types--Sum-Types--API-Reference--Case-Distinction"
+%%%
 {docstring Sum.isLeft}
 
 {docstring Sum.isRight}
 
 ## 提取值
 
+%%%
+tag := "Lean-__________________--Basic-Types--Sum-Types--API-Reference--Extracting-Values"
+%%%
 {docstring Sum.elim}
 
 {docstring Sum.getLeft}
@@ -120,12 +126,18 @@ tag := "sum-api"
 
 ## 转换
 
+%%%
+tag := "Lean-__________________--Basic-Types--Sum-Types--API-Reference--Transformations"
+%%%
 {docstring Sum.map}
 
 {docstring Sum.swap}
 
 ## 居留性
 
+%%%
+tag := "Lean-__________________--Basic-Types--Sum-Types--API-Reference--Inhabited"
+%%%
 {name}`Inhabited` 对 {name}`Sum` 和 {name}`PSum` 的定义没有被注册为实例。
 这是因为有两种不同的方法来构造默认值（通过 {name Sum.inl}`inl` 或 {name Sum.inr}`inr`），而实例合成可能会导致任一选择。
 结果可能是两种写法完全相同的项却精译出不同的结果，并且它们不是{tech (key := "definitional equality")}[定义等价]的。

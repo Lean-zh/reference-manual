@@ -12,6 +12,7 @@ open Verso.Genre Manual InlineLean
 #doc (Manual) "关于：`invalidDottedIdent`" =>
 %%%
 shortTitle := "invalidDottedIdent"
+tag := "Lean-__________________--Error-Explanations--About___--invalidDottedIdent"
 %%%
 
 {errorExplanationHeader lean.invalidDottedIdent}
@@ -25,6 +26,9 @@ shortTitle := "invalidDottedIdent"
 
 # 示例
 
+%%%
+tag := "Lean-__________________--Error-Explanations--About___--invalidDottedIdent--Examples"
+%%%
 :::errorExample "类型信息不足"
 ```broken
 def reverseDuplicate (xs : List α) :=

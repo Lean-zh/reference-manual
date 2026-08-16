@@ -26,6 +26,9 @@ Lean 的标准库包含通常的各种固定宽度整数类型。
 
 # 逻辑模型
 
+%%%
+tag := "Lean-__________________--Basic-Types--Fixed-Precision-Integers--Logical-Model"
+%%%
 固定宽度整数可以是无符号的或有符号的。
 此外，它们有五种大小：8 位、16 位、32 位和 64 位，以及当前架构的字长。
 在它们的逻辑模型中，无符号整数是包装了适当宽度的 {name}`BitVec` 的结构体。
@@ -33,6 +36,9 @@ Lean 的标准库包含通常的各种固定宽度整数类型。
 
 ## 无符号
 
+%%%
+tag := "Lean-__________________--Basic-Types--Fixed-Precision-Integers--Logical-Model--Unsigned"
+%%%
 {docstring USize}
 
 {docstring UInt8}
@@ -45,6 +51,9 @@ Lean 的标准库包含通常的各种固定宽度整数类型。
 
 ## 有符号
 
+%%%
+tag := "Lean-__________________--Basic-Types--Fixed-Precision-Integers--Logical-Model--Signed"
+%%%
 {docstring ISize}
 
 {docstring Int8}
@@ -75,6 +84,9 @@ Lean 不特化归纳类型或数组的表示。
 
 # 语法
 
+%%%
+tag := "Lean-__________________--Basic-Types--Fixed-Precision-Integers--Syntax"
+%%%
 所有的固定宽度整数类型都有 {name}`OfNat` 实例，这允许在表达式和模式上下文中将数字用作字面量。
 有符号类型另外还有 {lean}`Neg` 实例，允许应用求负操作。
 
@@ -125,8 +137,14 @@ example : (0xff : Int8) = -1   := by rfl
 
 # API 参考
 
+%%%
+tag := "Lean-__________________--Basic-Types--Fixed-Precision-Integers--API-Reference"
+%%%
 ## 大小
 
+%%%
+tag := "Lean-__________________--Basic-Types--Fixed-Precision-Integers--API-Reference--Sizes"
+%%%
 每个固定宽度整数都有一个_大小_，这是该类型可以表示的不同值的数量。
 这不等同于 C 语言的 `sizeof` 运算符，后者是用来确定该类型占用多少字节的。
 
@@ -152,6 +170,9 @@ example : (0xff : Int8) = -1   := by rfl
 
 ## 范围
 
+%%%
+tag := "Lean-__________________--Basic-Types--Fixed-Precision-Integers--API-Reference--Ranges"
+%%%
 {docstring ISize.minValue}
 
 {docstring ISize.maxValue}
@@ -174,8 +195,14 @@ example : (0xff : Int8) = -1   := by rfl
 
 ## 转换
 
+%%%
+tag := "Lean-__________________--Basic-Types--Fixed-Precision-Integers--API-Reference--Conversions"
+%%%
 ### 到/从 `Int` 转换
 
+%%%
+tag := "Lean-__________________--Basic-Types--Fixed-Precision-Integers--API-Reference--Conversions--To-and-From--Int"
+%%%
 {docstring ISize.toInt}
 
 {docstring Int8.toInt}
@@ -222,6 +249,9 @@ example : (0xff : Int8) = -1   := by rfl
 
 ### 到/从 `Nat` 转换
 
+%%%
+tag := "Lean-__________________--Basic-Types--Fixed-Precision-Integers--API-Reference--Conversions--To-and-From--Nat"
+%%%
 {docstring USize.ofNat}
 
 {docstring ISize.ofNat}
@@ -287,6 +317,9 @@ example : (0xff : Int8) = -1   := by rfl
 
 ### 到其他固定宽度整数转换
 
+%%%
+tag := "Lean-__________________--Basic-Types--Fixed-Precision-Integers--API-Reference--Conversions--To-Other-Fixed-Width-Integers"
+%%%
 {docstring USize.toUInt8}
 
 {docstring USize.toUInt16}
@@ -390,6 +423,9 @@ example : (0xff : Int8) = -1   := by rfl
 
 ### 到浮点数转换
 
+%%%
+tag := "Lean-__________________--Basic-Types--Fixed-Precision-Integers--API-Reference--Conversions--To-Floating-Point-Numbers"
+%%%
 {docstring ISize.toFloat}
 
 {docstring ISize.toFloat32}
@@ -432,6 +468,9 @@ example : (0xff : Int8) = -1   := by rfl
 
 ### 到/从位向量转换
 
+%%%
+tag := "Lean-__________________--Basic-Types--Fixed-Precision-Integers--API-Reference--Conversions--To-and-From-Bitvectors"
+%%%
 {docstring ISize.toBitVec}
 
 {docstring ISize.ofBitVec}
@@ -454,6 +493,9 @@ example : (0xff : Int8) = -1   := by rfl
 
 ### 到/从有限数转换
 
+%%%
+tag := "Lean-__________________--Basic-Types--Fixed-Precision-Integers--API-Reference--Conversions--To-and-From-Finite-Numbers"
+%%%
 {docstring USize.toFin}
 
 {docstring UInt8.toFin}
@@ -478,6 +520,9 @@ example : (0xff : Int8) = -1   := by rfl
 
 ### 到字符转换
 
+%%%
+tag := "Lean-__________________--Basic-Types--Fixed-Precision-Integers--API-Reference--Conversions--To-Characters"
+%%%
 {name}`Char` 类型是对 {name}`UInt32` 的包装器，它需要一个证明，证明所包装的整数表示一个 Unicode 代码点。
 该谓词是 {name}`UInt32` API 的一部分。
 
@@ -489,6 +534,9 @@ example : (0xff : Int8) = -1   := by rfl
 
 ## 按位操作
 
+%%%
+tag := "Lean-__________________--Basic-Types--Fixed-Precision-Integers--API-Reference--Bitwise-Operations"
+%%%
 通常，对固定宽度整数的按位操作应该使用 Lean 的重载运算符来访问，特别是它们对 {name}`ShiftLeft`、{name}`ShiftRight`、{name}`AndOp`、{name}`OrOp` 和 {name}`XorOp` 的实例。
 
 ```lean -show

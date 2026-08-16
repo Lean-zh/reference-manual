@@ -133,6 +133,9 @@ open Std
 
 # 库设计
 
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Library-Design"
+%%%
 映射与集合上的所有基本操作都经过了完整验证。
 相对于使用列表实现的更简单模型，它们都已被证明是正确的。
 与此同时，映射与集合也具有可预测的性能。
@@ -143,6 +146,9 @@ open Std
 
 ## 融合操作
 
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Library-Design--Fused-Operations"
+%%%
 根据表中原有内容来修改表是很常见的。
 为了避免对同一数据结构遍历两次，许多“查询/修改”操作对都提供了“融合”变体，可以在修改映射或集合的同时完成查询。
 在某些情况下，查询结果还会影响修改行为。
@@ -303,6 +309,9 @@ def Maze.go? (maze : Maze) (dir : String) : Option Maze :=
 
 ## 保持唯一引用的合适运算
 
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Library-Design--Suitable-Operators-for-Uniqueness"
+%%%
 在使用数据结构时，应尽量确保尽可能多的引用保持唯一；这能让 Lean 在维持纯函数接口的同时，在幕后使用破坏性更新。
 映射与集合库提供了一些可用于保持引用唯一性的运算。
 特别是，在可能的情况下，应优先使用 {name Std.HashMap.alter}`alter` 或 {name Std.HashMap.modify}`modify` 之类的操作，而不是显式取出某个值、修改它、再将其重新插入。
@@ -369,10 +378,16 @@ tag := "HashMap"
 
 ## 创建
 
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Hash-Maps--Creation"
+%%%
 {docstring Std.HashMap.emptyWithCapacity}
 
 ## 性质
 
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Hash-Maps--Properties"
+%%%
 {docstring Std.HashMap.size}
 
 {docstring Std.HashMap.isEmpty}
@@ -391,6 +406,9 @@ $_ ~m $_
 
 ## 查询
 
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Hash-Maps--Queries"
+%%%
 {docstring Std.HashMap.contains}
 
 {docstring Std.HashMap.get}
@@ -419,6 +437,9 @@ $_ ~m $_
 
 ## 修改
 
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Hash-Maps--Modification"
+%%%
 {docstring Std.HashMap.alter}
 
 {docstring Std.HashMap.modify}
@@ -449,6 +470,9 @@ $_ ~m $_
 
 ## 迭代
 
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Hash-Maps--Iteration"
+%%%
 {docstring Std.HashMap.iter}
 
 {docstring Std.HashMap.keysIter}
@@ -467,6 +491,9 @@ $_ ~m $_
 
 ## 转换
 
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Hash-Maps--Conversion"
+%%%
 {docstring Std.HashMap.ofList}
 
 {docstring Std.HashMap.toArray}
@@ -479,6 +506,9 @@ $_ ~m $_
 
 ## 分离式变体
 
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Hash-Maps--Unbundled-Variants"
+%%%
 分离式映射会将良构性证明与数据本身分开。
 这主要在定义 {ref "raw-data"}[嵌套归纳类型] 时有用。
 要使用这些变体，请导入模块 `Std.HashMap.Raw` 与 `Std.HashMap.RawLemmas`。
@@ -498,10 +528,16 @@ tag := "DHashMap"
 
 ## 创建
 
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Dependent-Hash-Maps--Creation"
+%%%
 {docstring Std.DHashMap.emptyWithCapacity}
 
 ## 性质
 
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Dependent-Hash-Maps--Properties"
+%%%
 {docstring Std.DHashMap.size}
 
 {docstring Std.DHashMap.isEmpty}
@@ -520,6 +556,9 @@ $_ ~m $_
 
 ## 查询
 
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Dependent-Hash-Maps--Queries"
+%%%
 {docstring Std.DHashMap.contains}
 
 {docstring Std.DHashMap.get}
@@ -549,6 +588,9 @@ $_ ~m $_
 
 ## 修改
 
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Dependent-Hash-Maps--Modification"
+%%%
 {docstring Std.DHashMap.alter}
 
 {docstring Std.DHashMap.modify}
@@ -577,6 +619,9 @@ $_ ~m $_
 
 ## 迭代
 
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Dependent-Hash-Maps--Iteration"
+%%%
 {docstring Std.DHashMap.iter}
 
 {docstring Std.DHashMap.keysIter}
@@ -595,6 +640,9 @@ $_ ~m $_
 
 ## 转换
 
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Dependent-Hash-Maps--Conversion"
+%%%
 {docstring Std.DHashMap.ofList}
 
 {docstring Std.DHashMap.toArray}
@@ -603,6 +651,9 @@ $_ ~m $_
 
 ## 分离式变体
 
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Dependent-Hash-Maps--Unbundled-Variants"
+%%%
 分离式映射会将良构性证明与数据本身分开。
 这主要在定义 {ref "raw-data"}[嵌套归纳类型] 时有用。
 要使用这些变体，请导入模块 `Std.DHashMap.Raw` 与 `Std.DHashMap.RawLemmas`。
@@ -622,16 +673,25 @@ tag := "ExtHashMap"
 
 ## 创建
 
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Extensional-Hash-Maps--Creation"
+%%%
 {docstring Std.ExtHashMap.emptyWithCapacity}
 
 ## 性质
 
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Extensional-Hash-Maps--Properties"
+%%%
 {docstring Std.ExtHashMap.size}
 
 {docstring Std.ExtHashMap.isEmpty}
 
 ## 查询
 
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Extensional-Hash-Maps--Queries"
+%%%
 {docstring Std.ExtHashMap.contains}
 
 {docstring Std.ExtHashMap.get}
@@ -652,6 +712,9 @@ tag := "ExtHashMap"
 
 ## 修改
 
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Extensional-Hash-Maps--Modification"
+%%%
 {docstring Std.ExtHashMap.alter}
 
 {docstring Std.ExtHashMap.modify}
@@ -678,10 +741,16 @@ tag := "ExtHashMap"
 
 ## 迭代
 
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Extensional-Hash-Maps--Iteration"
+%%%
 {docstring Std.ExtHashMap.map}
 
 ## 转换
 
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Extensional-Hash-Maps--Conversion"
+%%%
 {docstring Std.ExtHashMap.ofList}
 
 {docstring Std.ExtHashMap.unitOfArray}
@@ -699,10 +768,16 @@ tag := "ExtDHashMap"
 
 ## 创建
 
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Extensional-Dependent-Hash-Maps--Creation"
+%%%
 {docstring Std.ExtDHashMap.emptyWithCapacity}
 
 ## 性质
 
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Extensional-Dependent-Hash-Maps--Properties"
+%%%
 {docstring Std.ExtDHashMap.size}
 
 {docstring Std.ExtDHashMap.isEmpty}
@@ -710,6 +785,9 @@ tag := "ExtDHashMap"
 
 ## 查询
 
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Extensional-Dependent-Hash-Maps--Queries"
+%%%
 {docstring Std.ExtDHashMap.contains}
 
 {docstring Std.ExtDHashMap.get}
@@ -730,6 +808,9 @@ tag := "ExtDHashMap"
 
 ## 修改
 
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Extensional-Dependent-Hash-Maps--Modification"
+%%%
 {docstring Std.ExtDHashMap.alter}
 
 {docstring Std.ExtDHashMap.modify}
@@ -755,10 +836,16 @@ tag := "ExtDHashMap"
 
 ## 迭代
 
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Extensional-Dependent-Hash-Maps--Iteration"
+%%%
 {docstring Std.ExtDHashMap.map}
 
 ## 转换
 
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Extensional-Dependent-Hash-Maps--Conversion"
+%%%
 {docstring Std.ExtDHashMap.ofList}
 
 
@@ -771,10 +858,16 @@ tag := "HashSet"
 
 ## 创建
 
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Hash-Sets--Creation"
+%%%
 {docstring Std.HashSet.emptyWithCapacity}
 
 ## 性质
 
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Hash-Sets--Properties"
+%%%
 {docstring Std.HashSet.isEmpty}
 
 {docstring Std.HashSet.size}
@@ -795,6 +888,9 @@ $_ ~m $_
 ## 查询
 
 
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Hash-Sets--Queries"
+%%%
 {docstring Std.HashSet.contains}
 
 {docstring Std.HashSet.get}
@@ -808,6 +904,9 @@ $_ ~m $_
 
 ## 修改
 
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Hash-Sets--Modification"
+%%%
 {docstring Std.HashSet.insert}
 
 {docstring Std.HashSet.insertMany}
@@ -824,6 +923,9 @@ $_ ~m $_
 
 ## 迭代
 
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Hash-Sets--Iteration"
+%%%
 {docstring Std.HashSet.iter}
 
 {docstring Std.HashSet.all}
@@ -840,6 +942,9 @@ $_ ~m $_
 
 ## 转换
 
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Hash-Sets--Conversion"
+%%%
 {docstring Std.HashSet.ofList}
 
 {docstring Std.HashSet.toList}
@@ -850,6 +955,9 @@ $_ ~m $_
 
 ## 分离式变体
 
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Hash-Sets--Unbundled-Variants"
+%%%
 分离式集合会将良构性证明与数据本身分开。
 这主要在定义 {ref "raw-data"}[嵌套归纳类型] 时有用。
 要使用这些变体，请导入模块 `Std.HashSet.Raw` 与 `Std.HashSet.RawLemmas`。
@@ -868,10 +976,16 @@ tag := "ExtHashSet"
 
 ## 创建
 
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Extensional-Hash-Sets--Creation"
+%%%
 {docstring Std.ExtHashSet.emptyWithCapacity}
 
 ## 性质
 
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Extensional-Hash-Sets--Properties"
+%%%
 {docstring Std.ExtHashSet.isEmpty}
 
 {docstring Std.ExtHashSet.size}
@@ -879,6 +993,9 @@ tag := "ExtHashSet"
 
 ## 查询
 
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Extensional-Hash-Sets--Queries"
+%%%
 {docstring Std.ExtHashSet.contains}
 
 {docstring Std.ExtHashSet.get}
@@ -892,6 +1009,9 @@ tag := "ExtHashSet"
 
 ## 修改
 
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Extensional-Hash-Sets--Modification"
+%%%
 {docstring Std.ExtHashSet.insert}
 
 {docstring Std.ExtHashSet.insertMany}
@@ -904,6 +1024,9 @@ tag := "ExtHashSet"
 
 ## 转换
 
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Extensional-Hash-Sets--Conversion"
+%%%
 {docstring Std.ExtHashSet.ofList}
 
 {docstring Std.ExtHashSet.ofArray}
@@ -922,16 +1045,25 @@ tag := "DTreeMap"
 
 ## 创建
 
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Dependent-Tree-Based-Maps--Creation"
+%%%
 {docstring Std.DTreeMap.empty}
 
 ## 性质
 
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Dependent-Tree-Based-Maps--Properties"
+%%%
 {docstring Std.DTreeMap.size}
 
 {docstring Std.DTreeMap.isEmpty}
 
 ## 查询
 
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Dependent-Tree-Based-Maps--Queries"
+%%%
 {docstring Std.DTreeMap.contains}
 
 {docstring Std.DTreeMap.get}
@@ -960,6 +1092,9 @@ tag := "DTreeMap"
 
 ## 修改
 
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Dependent-Tree-Based-Maps--Modification"
+%%%
 {docstring Std.DTreeMap.alter}
 
 {docstring Std.DTreeMap.modify}
@@ -986,6 +1121,9 @@ tag := "DTreeMap"
 
 ## 迭代
 
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Dependent-Tree-Based-Maps--Iteration"
+%%%
 {docstring Std.DTreeMap.iter}
 
 {docstring Std.DTreeMap.keysIter}
@@ -1004,6 +1142,9 @@ tag := "DTreeMap"
 
 ## 转换
 
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Dependent-Tree-Based-Maps--Conversion"
+%%%
 {docstring Std.DTreeMap.ofList}
 
 {docstring Std.DTreeMap.toArray}
@@ -1012,6 +1153,9 @@ tag := "DTreeMap"
 
 ## 分离式变体
 
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Dependent-Tree-Based-Maps--Unbundled-Variants"
+%%%
 分离式映射会将良构性证明与数据本身分开。
 这主要在定义 {ref "raw-data"}[嵌套归纳类型] 时有用。
 要使用这些变体，请导入模块 `Std.DTreeMap.Raw`。

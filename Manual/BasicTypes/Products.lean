@@ -141,12 +141,18 @@ tag := "prod-api"
 
 ### 变换
 
+%%%
+tag := "Lean-__________________--Basic-Types--Tuples--Ordered-Pairs--API-Reference--Transformation"
+%%%
 {docstring Prod.map}
 
 {docstring Prod.swap}
 
 ### 自然数范围
 
+%%%
+tag := "Lean-__________________--Basic-Types--Tuples--Ordered-Pairs--API-Reference--Natural-Number-Ranges"
+%%%
 {docstring Prod.allI}
 
 {docstring Prod.anyI}
@@ -155,6 +161,9 @@ tag := "prod-api"
 
 ### 排序
 
+%%%
+tag := "Lean-__________________--Basic-Types--Tuples--Ordered-Pairs--API-Reference--Ordering"
+%%%
 {docstring Prod.lexLt}
 
 

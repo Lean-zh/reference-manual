@@ -56,6 +56,9 @@ def g (n : Nat) : Nat :=
 
 # API 参考
 
+%%%
+tag := "Lean-__________________--Basic-Types--The-Empty-Type--API-Reference"
+%%%
 {docstring Empty.elim}
 
 {docstring PEmpty.elim}

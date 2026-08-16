@@ -36,11 +36,17 @@ variable (n : Nat)
 
 # 运行时特征
 
+%%%
+tag := "Lean-__________________--Basic-Types--Finite-Natural-Numbers--Run-Time-Characteristics"
+%%%
 因为 {lean}`Fin n` 是一种只有一个字段不是证明的结构体，所以它是一个{ref "inductive-types-trivial-wrappers"}[平凡包装器]。
 这意味着它在编译代码中的表示与底层的自然数相同。
 
 # 强制转换和字面量
 
+%%%
+tag := "Lean-__________________--Basic-Types--Finite-Natural-Numbers--Coercions-and-Literals"
+%%%
 从 {lean}`Fin n` 到 {lean}`Nat` 有一个{tech (key := "coercion")}[强制转换]，它会丢弃该数字小于边界的证明。
 具体来说，这个强制转换正是投影 {name}`Fin.val`。
 这带来的一个后果是，{name}`Fin.val` 的使用在证明状态中会显示为强制转换，而不是显式的投影。
@@ -122,8 +128,14 @@ Hint: Type class instance resolution failures can be inspected with the `set_opt
 
 # API 参考
 
+%%%
+tag := "Lean-__________________--Basic-Types--Finite-Natural-Numbers--API-Reference"
+%%%
 ## 构造
 
+%%%
+tag := "Lean-__________________--Basic-Types--Finite-Natural-Numbers--API-Reference--Construction"
+%%%
 {docstring Fin.last}
 
 {docstring Fin.succ}
@@ -132,6 +144,9 @@ Hint: Type class instance resolution failures can be inspected with the `set_opt
 
 ## 算术
 
+%%%
+tag := "Lean-__________________--Basic-Types--Finite-Natural-Numbers--API-Reference--Arithmetic"
+%%%
 通常，对 {name}`Fin` 的算术运算应该使用 Lean 的重载算术符号来访问，特别是通过实例 {inst}`Add (Fin n)`、{inst}`Sub (Fin n)`、{inst}`Mul (Fin n)`、{inst}`Div (Fin n)` 和 {inst}`Mod (Fin n)`。
 异质运算符（例如 {lean}`Fin.natAdd`）没有对应的异质实例（例如 {name}`HAdd`），以避免产生令人困惑的类型推断行为。
 
@@ -157,6 +172,9 @@ Hint: Type class instance resolution failures can be inspected with the `set_opt
 
 ## 按位运算
 
+%%%
+tag := "Lean-__________________--Basic-Types--Finite-Natural-Numbers--API-Reference--Bitwise-Operations"
+%%%
 通常，对 {name}`Fin` 的按位运算应该使用 Lean 的重载按位运算符来访问，特别是通过实例 {inst}`ShiftLeft (Fin n)`、{inst}`ShiftRight (Fin n)`、{inst}`AndOp (Fin n)`、{inst}`OrOp (Fin n)`、{inst}`Xor (Fin n)`
 
 {docstring Fin.shiftLeft}
@@ -172,6 +190,9 @@ Hint: Type class instance resolution failures can be inspected with the `set_opt
 
 ## 转换
 
+%%%
+tag := "Lean-__________________--Basic-Types--Finite-Natural-Numbers--API-Reference--Conversions"
+%%%
 {docstring Fin.toNat}
 
 {docstring Fin.ofNat}
@@ -192,6 +213,9 @@ Hint: Type class instance resolution failures can be inspected with the `set_opt
 
 ## 迭代
 
+%%%
+tag := "Lean-__________________--Basic-Types--Finite-Natural-Numbers--API-Reference--Iteration"
+%%%
 {docstring Fin.foldr}
 
 {docstring Fin.foldrM}
@@ -206,6 +230,9 @@ Hint: Type class instance resolution failures can be inspected with the `set_opt
 
 ## 推理
 
+%%%
+tag := "Lean-__________________--Basic-Types--Finite-Natural-Numbers--API-Reference--Reasoning"
+%%%
 {docstring Fin.induction}
 
 {docstring Fin.inductionOn}

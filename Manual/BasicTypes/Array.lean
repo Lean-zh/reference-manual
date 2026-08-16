@@ -39,6 +39,9 @@ Lean 对数组提供了专门支持：
 
 # 逻辑模型
 
+%%%
+tag := "Lean-__________________--Basic-Types--Arrays--Logical-Model"
+%%%
 {docstring Array}
 
 数组的逻辑模型是一个只有单个字段的结构体，该字段是元素列表。
@@ -187,6 +190,9 @@ tag := "array-api"
 
 ## 构造数组
 
+%%%
+tag := "Lean-__________________--Basic-Types--Arrays--API-Reference--Constructing-Arrays"
+%%%
 {docstring Array.empty}
 
 {docstring Array.emptyWithCapacity}
@@ -213,6 +219,9 @@ tag := "array-api"
 
 ## 大小
 
+%%%
+tag := "Lean-__________________--Basic-Types--Arrays--API-Reference--Size"
+%%%
 {docstring Array.size}
 
 {docstring Array.usize}
@@ -221,6 +230,9 @@ tag := "array-api"
 
 ## 查找
 
+%%%
+tag := "Lean-__________________--Basic-Types--Arrays--API-Reference--Lookups"
+%%%
 {docstring Array.extract}
 
 {docstring Array.getD}
@@ -237,6 +249,9 @@ tag := "array-api"
 
 ## 查询
 
+%%%
+tag := "Lean-__________________--Basic-Types--Arrays--API-Reference--Queries"
+%%%
 {docstring Array.count}
 
 {docstring Array.countP}
@@ -249,6 +264,9 @@ tag := "array-api"
 
 ## 转换
 
+%%%
+tag := "Lean-__________________--Basic-Types--Arrays--API-Reference--Conversions"
+%%%
 {docstring Array.toList}
 
 {docstring Array.toListRev}
@@ -264,6 +282,9 @@ tag := "array-api"
 
 ## 修改
 
+%%%
+tag := "Lean-__________________--Basic-Types--Arrays--API-Reference--Modification"
+%%%
 {docstring Array.push}
 
 {docstring Array.pop}
@@ -328,6 +349,9 @@ tag := "array-api"
 
 ## 有序数组
 
+%%%
+tag := "Lean-__________________--Basic-Types--Arrays--API-Reference--Sorted-Arrays"
+%%%
 {docstring Array.qsort}
 
 {docstring Array.qsortOrd}
@@ -346,6 +370,9 @@ tag := "array-api"
 
 ## 迭代
 
+%%%
+tag := "Lean-__________________--Basic-Types--Arrays--API-Reference--Iteration"
+%%%
 {docstring Array.iter}
 
 {docstring Array.iterFromIdx}
@@ -372,6 +399,9 @@ tag := "array-api"
 
 ## 变换
 
+%%%
+tag := "Lean-__________________--Basic-Types--Arrays--API-Reference--Transformation"
+%%%
 {docstring Array.map}
 
 {docstring Array.mapMono}
@@ -407,6 +437,9 @@ tag := "array-api"
 
 ## 过滤
 
+%%%
+tag := "Lean-__________________--Basic-Types--Arrays--API-Reference--Filtering"
+%%%
 {docstring Array.filter}
 
 {docstring Array.filterM}
@@ -423,6 +456,9 @@ tag := "array-api"
 
 ## 分割
 
+%%%
+tag := "Lean-__________________--Basic-Types--Arrays--API-Reference--Partitioning"
+%%%
 {docstring Array.partition}
 
 {docstring Array.groupByKey}
@@ -430,6 +466,9 @@ tag := "array-api"
 
 ## 元素判定
 
+%%%
+tag := "Lean-__________________--Basic-Types--Arrays--API-Reference--Element-Predicates"
+%%%
 {docstring Array.contains}
 
 {docstring Array.elem}
@@ -474,12 +513,18 @@ tag := "array-api"
 
 ## 比较
 
+%%%
+tag := "Lean-__________________--Basic-Types--Arrays--API-Reference--Comparisons"
+%%%
 {docstring Array.isPrefixOf}
 
 {docstring Array.lex}
 
 ## 终止辅助
 
+%%%
+tag := "Lean-__________________--Basic-Types--Arrays--API-Reference--Termination-Helpers"
+%%%
 {docstring Array.attach}
 
 {docstring Array.attachWith}

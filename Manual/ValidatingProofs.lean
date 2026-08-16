@@ -52,6 +52,9 @@ tag := "validating-blue-check-marks"
 
 ## 操作说明
 
+%%%
+tag := "Lean-__________________--Validating-a-Lean-Proof--The-Blue-Double-Check-Marks--Instructions"
+%%%
 在 Lean 交互工作时，定理证明完成后，代码左侧的槽中会出现蓝色双勾。
 
 :::figure "蓝色双勾"
@@ -60,14 +63,23 @@ tag := "validating-blue-check-marks"
 
 ## 含义
 
+%%%
+tag := "Lean-__________________--Validating-a-Lean-Proof--The-Blue-Double-Check-Marks--Significance"
+%%%
 蓝色勾号表示定理陈述已依据当前文件及其导入文件中定义的语法和类型类实例成功精译，并且 Lean 内核已接受一个由当前文件及其导入文件中声明的定义、定理和公理推出的该定理证明。
 
 ## 信任
 
+%%%
+tag := "Lean-__________________--Validating-a-Lean-Proof--The-Blue-Double-Check-Marks--Trust"
+%%%
 如果相信形式化定理陈述符合其预期的非形式含义，相信导入库的作者是{tech}[诚实]的、已检查库中定理表达了预期含义，且没有声明和使用不健全的公理，则此检查有意义。
 
 ## 防护
 
+%%%
+tag := "Lean-__________________--Validating-a-Lean-Proof--The-Blue-Double-Check-Marks--Protection"
+%%%
 :::listBullet "🛡️"
 此检查可防范：
 
@@ -79,6 +91,9 @@ tag := "validating-blue-check-marks"
 
 ## 备注
 
+%%%
+tag := "Lean-__________________--Validating-a-Lean-Proof--The-Blue-Double-Check-Marks--Comments"
+%%%
 可以在 Visual Studio Code 扩展设置中更改该符号。
 非 VS Code 编辑器可能使用不同的指示方式。
 
@@ -94,6 +109,9 @@ tag := "validating-printing-axioms"
 
 ## 操作说明
 
+%%%
+tag := "Lean-__________________--Validating-a-Lean-Proof--Printing-Axioms--Instructions"
+%%%
 :::keepEnv
 ```lean -show
 inductive TheoremStatement : Prop where | intro
@@ -106,6 +124,9 @@ theorem thmName : TheoremStatement := .intro
 
 ## 含义
 
+%%%
+tag := "Lean-__________________--Validating-a-Lean-Proof--Printing-Axioms--Significance"
+%%%
 该命令打印定理及其依赖定理所使用的公理集合。
 上面的三个公理是 Lean 逻辑的标准公理，没有危害。
 
@@ -115,10 +136,16 @@ theorem thmName : TheoremStatement := .intro
 
 ## 信任
 
+%%%
+tag := "Lean-__________________--Validating-a-Lean-Proof--Printing-Axioms--Trust"
+%%%
 如果相信形式化定理陈述符合其预期的非形式含义，并相信导入库的作者是{tech}[诚实]的，则此检查有意义。
 
 ## 防护
 
+%%%
+tag := "Lean-__________________--Validating-a-Lean-Proof--Printing-Axioms--Protection"
+%%%
 :::listBullet "🛡️"
 （除上述列表外）
 
@@ -136,19 +163,31 @@ tag := "validating-lean4checker"
 
 ## 操作说明
 
+%%%
+tag := "Lean-__________________--Validating-a-Lean-Proof--Re-Checking-Proofs-with--lean4checker--Instructions"
+%%%
 使用 {lake}`build` 构建项目，在包含目标定理的模块上运行 `lean4checker --fresh`，并确认没有报告错误。
 
 ## 含义
 
+%%%
+tag := "Lean-__________________--Validating-a-Lean-Proof--Re-Checking-Proofs-with--lean4checker--Significance"
+%%%
 `lean4checker` 工具读取 `lean` 构建时存储的声明和证明（即 {tech}[`.olean` 文件]），并通过内核重放它们。
 它信任 {tech}[`.olean` 文件]在结构上是正确的。
 
 ## 信任
 
+%%%
+tag := "Lean-__________________--Validating-a-Lean-Proof--Re-Checking-Proofs-with--lean4checker--Trust"
+%%%
 如果相信形式化定理陈述符合其预期的非形式含义，并相信导入库的作者不会非常狡猾地{tech}[恶意]行事、不会破坏用户系统，也不会利用 Lean 的可扩展性改变定理陈述的解释，则此检查有意义。
 
 ## 防护
 
+%%%
+tag := "Lean-__________________--Validating-a-Lean-Proof--Re-Checking-Proofs-with--lean4checker--Protection"
+%%%
 :::listBullet "🛡️"
 （除上述列表外）
 
@@ -158,6 +197,9 @@ tag := "validating-lean4checker"
 
 ## 备注
 
+%%%
+tag := "Lean-__________________--Validating-a-Lean-Proof--Re-Checking-Proofs-with--lean4checker--Comments"
+%%%
 由于 `lean4checker` 读取 {tech}[`.olean` 文件]时不验证格式，此检查容易受到攻击者制作无效 `.olean` 文件的影响（例如无效指针、字符串中的无效数据）。
 Lean 策略和其他元代码运行时可以执行任意操作。
 导入决意{tech}[恶意]攻击者创建的库并在没有进一步保护的情况下构建它们，可能危及用户系统，此后就不再有有意义的检查可做。
@@ -176,20 +218,32 @@ tag := "validating-comparator"
 
 ## 操作说明
 
+%%%
+tag := "Lean-__________________--Validating-a-Lean-Proof--Gold-Standard___--comparator--and-external-checkers--Instructions"
+%%%
 在受信任环境中写下定理*陈述*（即“挑战”），然后按其文档启用外部检查器，将挑战和拟议证明一并交给 [`comparator`](https://github.com/leanprover/comparator) 工具。
 
 ## 含义
 
+%%%
+tag := "Lean-__________________--Validating-a-Lean-Proof--Gold-Standard___--comparator--and-external-checkers--Significance"
+%%%
 Comparator 会在沙箱环境中构建证明，以防范构建步骤中的{tech}[恶意]代码。
 证明项会导出为序列化格式。
 在沙箱外、远离可能的恶意代码时，它验证导出格式，使用 Lean 内核和/或外部检查器重放证明，并确保已证明的定理陈述与受信任挑战文件中的陈述一致。
 
 ## 信任
 
+%%%
+tag := "Lean-__________________--Validating-a-Lean-Proof--Gold-Standard___--comparator--and-external-checkers--Trust"
+%%%
 如果受信任挑战文件中的定理陈述正确，且用于构建可能{tech}[恶意]代码的沙箱安全，则此检查有意义。
 
 ## 防护
 
+%%%
+tag := "Lean-__________________--Validating-a-Lean-Proof--Gold-Standard___--comparator--and-external-checkers--Protection"
+%%%
 :::listBullet "🛡️"
 （除上述列表外）
 
@@ -199,10 +253,16 @@ Comparator 会在沙箱环境中构建证明，以防范构建步骤中的{tech}
 
 ## 备注
 
+%%%
+tag := "Lean-__________________--Validating-a-Lean-Proof--Gold-Standard___--comparator--and-external-checkers--Comments"
+%%%
 在本文撰写时，`comparator` 支持使用官方 Lean 内核和独立开发、以 Rust 实现的外部检查器 [`nanoda`](https://github.com/ammkrn/nanoda_lib)。[Lean Kernel Arena](https://arena.lean-lang.org/) 提供更多外部检查器，可手动使用以获得更高信心。
 
 # 遗留问题
 
+%%%
+tag := "Lean-__________________--Validating-a-Lean-Proof--Remaining-Issues"
+%%%
 即使遵循使用 comparator 检查证明的黄金标准，仍有一些假设：
 
 * Lean 逻辑是可靠的。

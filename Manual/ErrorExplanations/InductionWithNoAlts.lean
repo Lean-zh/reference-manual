@@ -13,6 +13,7 @@ open Verso.Genre Manual InlineLean
 #doc (Manual) "关于：`inductionWithNoAlts`" =>
 %%%
 shortTitle := "inductionWithNoAlts"
+tag := "Lean-__________________--Error-Explanations--About___--inductionWithNoAlts"
 %%%
 
 {errorExplanationHeader lean.inductionWithNoAlts}
@@ -22,6 +23,9 @@ shortTitle := "inductionWithNoAlts"
 
 # 示例
 
+%%%
+tag := "Lean-__________________--Error-Explanations--About___--inductionWithNoAlts--Examples"
+%%%
 :::errorExample "为归纳证明添加显式情形"
 ```broken
 theorem zero_mul (m : Nat) : 0 * m = 0 := by

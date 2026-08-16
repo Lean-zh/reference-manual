@@ -31,18 +31,30 @@ tag := "string-api-slice"
 
 # 接口参考
 
+%%%
+tag := "Lean-__________________--Basic-Types--Strings--API-Reference--String-Slices--API-Reference"
+%%%
 ## 复制
 
+%%%
+tag := "Lean-__________________--Basic-Types--Strings--API-Reference--String-Slices--API-Reference--Copying"
+%%%
 {docstring String.Slice.copy}
 
 ## 大小
 
+%%%
+tag := "Lean-__________________--Basic-Types--Strings--API-Reference--String-Slices--API-Reference--Size"
+%%%
 {docstring String.Slice.isEmpty}
 
 {docstring String.Slice.utf8ByteSize}
 
 ## 边界
 
+%%%
+tag := "Lean-__________________--Basic-Types--Strings--API-Reference--String-Slices--API-Reference--Boundaries"
+%%%
 {docstring String.Slice.pos}
 
 {docstring String.Slice.pos!}
@@ -58,6 +70,9 @@ tag := "string-api-slice"
 
 ### 调整
 
+%%%
+tag := "Lean-__________________--Basic-Types--Strings--API-Reference--String-Slices--API-Reference--Boundaries--Adjustment"
+%%%
 {docstring String.Slice.sliceFrom}
 
 {docstring String.Slice.sliceTo}
@@ -92,6 +107,9 @@ tag := "string-api-slice"
 
 ## 字符
 
+%%%
+tag := "Lean-__________________--Basic-Types--Strings--API-Reference--String-Slices--API-Reference--Characters"
+%%%
 {docstring String.Slice.front}
 
 {docstring String.Slice.front?}
@@ -102,18 +120,27 @@ tag := "string-api-slice"
 
 ## 字节
 
+%%%
+tag := "Lean-__________________--Basic-Types--Strings--API-Reference--String-Slices--API-Reference--Bytes"
+%%%
 {docstring String.Slice.getUTF8Byte}
 
 {docstring String.Slice.getUTF8Byte!}
 
 ## 位置
 
+%%%
+tag := "Lean-__________________--Basic-Types--Strings--API-Reference--String-Slices--API-Reference--Positions"
+%%%
 {docstring String.Slice.posGE}
 
 {docstring String.Slice.posGT}
 
 ## 搜索
 
+%%%
+tag := "Lean-__________________--Basic-Types--Strings--API-Reference--String-Slices--API-Reference--Searching"
+%%%
 {docstring String.Slice.contains}
 
 {docstring String.Slice.startsWith}
@@ -128,6 +155,9 @@ tag := "string-api-slice"
 
 ## 操作
 
+%%%
+tag := "Lean-__________________--Basic-Types--Strings--API-Reference--String-Slices--API-Reference--Manipulation"
+%%%
 {docstring String.Slice.split}
 
 {docstring String.Slice.splitInclusive}
@@ -142,6 +172,9 @@ tag := "string-api-slice"
 
 ## 迭代
 
+%%%
+tag := "Lean-__________________--Basic-Types--Strings--API-Reference--String-Slices--API-Reference--Iteration"
+%%%
 {docstring String.Slice.chars}
 
 {docstring String.Slice.revChars}
@@ -162,6 +195,9 @@ tag := "string-api-slice"
 
 ## 转换
 
+%%%
+tag := "Lean-__________________--Basic-Types--Strings--API-Reference--String-Slices--API-Reference--Conversions"
+%%%
 {docstring String.Slice.isNat}
 
 {docstring String.Slice.toNat!}
@@ -171,6 +207,9 @@ tag := "string-api-slice"
 
 ## 相等性
 
+%%%
+tag := "Lean-__________________--Basic-Types--Strings--API-Reference--String-Slices--API-Reference--Equality"
+%%%
 {docstring String.Slice.beq}
 
 {docstring String.Slice.eqIgnoreAsciiCase}
@@ -178,6 +217,9 @@ tag := "string-api-slice"
 
 # 模式
 
+%%%
+tag := "Lean-__________________--Basic-Types--Strings--API-Reference--String-Slices--Patterns"
+%%%
 字符串切片支持广义的搜索模式。
 许多切片操作并不只针对字符或字符串定义，而是接受任意模式。
 通过为本节中的类定义实例，可以让新的类型也成为模式。
@@ -207,8 +249,14 @@ Lean 标准库提供了实例，使下列类型既可用于向前搜索，也可
 
 # 位置
 
+%%%
+tag := "Lean-__________________--Basic-Types--Strings--API-Reference--String-Slices--Positions"
+%%%
 ## 查找
 
+%%%
+tag := "Lean-__________________--Basic-Types--Strings--API-Reference--String-Slices--Positions--Lookups"
+%%%
 由于切片位置保留了对其来源切片的引用，因此可以借助它们查找单个字符或字节。
 
 {docstring String.Slice.Pos.byte}
@@ -221,6 +269,9 @@ Lean 标准库提供了实例，使下列类型既可用于向前搜索，也可
 
 ## 递增与递减
 
+%%%
+tag := "Lean-__________________--Basic-Types--Strings--API-Reference--String-Slices--Positions--Incrementing-and-Decrementing"
+%%%
 {docstring String.Slice.Pos.prev}
 
 {docstring String.Slice.Pos.prev!}
@@ -239,6 +290,9 @@ Lean 标准库提供了实例，使下列类型既可用于向前搜索，也可
 
 ## 其他字符串或切片
 
+%%%
+tag := "Lean-__________________--Basic-Types--Strings--API-Reference--String-Slices--Positions--Other-Strings-or-Slices"
+%%%
 {docstring String.Slice.Pos.cast}
 
 {docstring String.Slice.Pos.ofSlice}

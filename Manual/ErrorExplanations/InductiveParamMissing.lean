@@ -13,6 +13,7 @@ open Verso.Genre Manual InlineLean
 #doc (Manual) "关于：`inductiveParamMissing`" =>
 %%%
 shortTitle := "inductiveParamMissing"
+tag := "Lean-__________________--Error-Explanations--About___--inductiveParamMissing"
 %%%
 
 {errorExplanationHeader lean.inductiveParamMissing}
@@ -25,6 +26,9 @@ shortTitle := "inductiveParamMissing"
 
 # 示例
 
+%%%
+tag := "Lean-__________________--Error-Explanations--About___--inductiveParamMissing--Examples"
+%%%
 :::errorExample "高阶谓词参数中省略参数"
 ```broken
 inductive List.All {α : Type u} (P : α → Prop) : List α → Prop

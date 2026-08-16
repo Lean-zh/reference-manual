@@ -13,6 +13,7 @@ open Verso.Genre Manual InlineLean
 #doc (Manual) "关于：`dependsOnNoncomputable`" =>
 %%%
 shortTitle := "dependsOnNoncomputable"
+tag := "Lean-__________________--Error-Explanations--About___--dependsOnNoncomputable"
 %%%
 
 {errorExplanationHeader lean.dependsOnNoncomputable}
@@ -27,6 +28,9 @@ shortTitle := "dependsOnNoncomputable"
 
 # 示例
 
+%%%
+tag := "Lean-__________________--Error-Explanations--About___--dependsOnNoncomputable--Examples"
+%%%
 :::errorExample "必然不可计算的函数未正确标记"
 ```broken
 axiom transform : Nat → Nat

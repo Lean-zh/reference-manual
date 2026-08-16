@@ -84,3 +84,74 @@ set_option pp.rawOnError true
 {docstring List.intercalate}
 
 {docstring List.intercalateTR}
+
+{docstring List.set}
+
+{docstring List.setTR}
+
+{docstring List.modify}
+
+{docstring List.modifyTR}
+
+{docstring List.modifyHead}
+
+{docstring List.modifyTailIdx}
+
+{docstring List.erase}
+
+{docstring List.eraseTR}
+
+{docstring List.eraseDups}
+
+{docstring List.eraseIdx}
+
+{docstring List.eraseIdxTR}
+
+{docstring List.eraseP}
+
+{docstring List.erasePTR}
+
+{docstring List.eraseReps}
+
+{docstring List.extract}
+
+{docstring List.removeAll}
+
+{docstring List.replace}
+
+{docstring List.replaceTR}
+
+{docstring List.reverse}
+
+{docstring List.flatten}
+
+{docstring List.flattenTR}
+
+{docstring List.rotateLeft}
+
+{docstring List.rotateRight}
+
+{docstring List.leftpad}
+
+{docstring List.leftpadTR}
+
+{docstring List.rightpad}
+
+# 插入
+
+%%%
+tag := "Lean-__________________--Basic-Types--Linked-Lists--API-Reference--Modification--Insertion"
+%%%
+{docstring List.insert}
+
+{docstring List.insertIdx}
+
+{docstring List.insertIdxTR}
+
+{docstring List.intersperse}
+
+{docstring List.intersperseTR}
+
+{docstring List.intercalate}
+
+{docstring List.intercalateTR}

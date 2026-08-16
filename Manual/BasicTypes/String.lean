@@ -163,6 +163,9 @@ tag := "string-api-valid-pos"
 
 ### 字符串内
 
+%%%
+tag := "Lean-__________________--Basic-Types--Strings--API-Reference--Positions--In-Strings"
+%%%
 {docstring String.startPos}
 
 {docstring String.endPos}
@@ -177,6 +180,9 @@ tag := "string-api-valid-pos"
 
 ### 查找
 
+%%%
+tag := "Lean-__________________--Basic-Types--Strings--API-Reference--Positions--Lookups"
+%%%
 {docstring String.Pos.get}
 
 {docstring String.Pos.get!}
@@ -187,12 +193,18 @@ tag := "string-api-valid-pos"
 
 ### 修改
 
+%%%
+tag := "Lean-__________________--Basic-Types--Strings--API-Reference--Positions--Modifications"
+%%%
 {docstring String.Pos.modify}
 
 {docstring String.Pos.byte}
 
 ### 调整
 
+%%%
+tag := "Lean-__________________--Basic-Types--Strings--API-Reference--Positions--Adjustment"
+%%%
 {docstring String.Pos.prev}
 
 {docstring String.Pos.prev!}
@@ -207,6 +219,9 @@ tag := "string-api-valid-pos"
 
 ### 其他字符串
 
+%%%
+tag := "Lean-__________________--Basic-Types--Strings--API-Reference--Positions--Other-Strings"
+%%%
 {docstring String.Pos.cast}
 
 {docstring String.Pos.ofCopy}
@@ -226,22 +241,34 @@ tag := "string-api-pos"
 
 ### 字节位置
 
+%%%
+tag := "Lean-__________________--Basic-Types--Strings--API-Reference--Raw-Positions--Byte-Position"
+%%%
 {docstring String.Pos.Raw.offsetOfPos}
 
 ### 有效性
 
+%%%
+tag := "Lean-__________________--Basic-Types--Strings--API-Reference--Raw-Positions--Validity"
+%%%
 {docstring String.Pos.Raw.isValid}
 
 {docstring String.Pos.Raw.isValidForSlice}
 
 ### 边界
 
+%%%
+tag := "Lean-__________________--Basic-Types--Strings--API-Reference--Raw-Positions--Boundaries"
+%%%
 {docstring String.rawEndPos}
 
 {docstring String.Pos.Raw.atEnd}
 
 ### 比较
 
+%%%
+tag := "Lean-__________________--Basic-Types--Strings--API-Reference--Raw-Positions--Comparisons"
+%%%
 {docstring String.Pos.Raw.min}
 
 {docstring String.Pos.Raw.byteDistance}
@@ -250,6 +277,9 @@ tag := "string-api-pos"
 
 ### 调整
 
+%%%
+tag := "Lean-__________________--Basic-Types--Strings--API-Reference--Raw-Positions--Adjustment"
+%%%
 {docstring String.Pos.Raw.prev}
 
 {docstring String.Pos.Raw.next}
@@ -274,6 +304,9 @@ tag := "string-api-pos"
 
 ### 字符串查找
 
+%%%
+tag := "Lean-__________________--Basic-Types--Strings--API-Reference--Raw-Positions--String-Lookups"
+%%%
 {docstring String.Pos.Raw.extract}
 
 {docstring String.Pos.Raw.get}
@@ -286,6 +319,9 @@ tag := "string-api-pos"
 
 ### 字符串修改
 
+%%%
+tag := "Lean-__________________--Basic-Types--Strings--API-Reference--Raw-Positions--String-Modifications"
+%%%
 {docstring String.Pos.Raw.set}
 
 {docstring String.Pos.Raw.modify}

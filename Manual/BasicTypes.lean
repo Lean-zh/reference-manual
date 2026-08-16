@@ -63,6 +63,9 @@ Lean 包含一些由编译器提供特殊支持的内置类型。
 
 # 单元类型
 
+%%%
+tag := "Lean-__________________--Basic-Types--The-Unit-Type"
+%%%
 单元类型是恰好具有一个元素的规范类型，该元素名为 {name Unit.unit}`unit`，并由空元组 {lean}`()` 表示。
 它只描述单个值，该值由上述构造子应用到零个参数组成。
 
@@ -101,6 +104,9 @@ variable {m : Type → Type} [Monad m] {α : Type}
 
 ## 定义等价
 
+%%%
+tag := "Lean-__________________--Basic-Types--The-Unit-Type--Definitional-Equality"
+%%%
 {deftech (key := "Unit-like types")}_类单元类型_ 是一种只有一个构造子的归纳类型，且该构造子不接受非证明参数。
 {lean}`PUnit` 就是这样一种类型。
 类单元类型的所有元素都与所有其他元素 {tech (key := "definitional equality")}[定义等价]。
@@ -172,16 +178,25 @@ example (e1 e2 : ProofUnitLike) : e1 = e2 := rfl
 
 # 布尔值
 
+%%%
+tag := "Lean-__________________--Basic-Types--Booleans"
+%%%
 {docstring Bool}
 
 构造子 {lean}`Bool.true` 和 {lean}`Bool.false` 是从 {lean}`Bool` 命名空间导出的，因此它们可以被写成 {lean}`true` 和 {lean}`false`。
 
 ## 运行时表示
 
+%%%
+tag := "Lean-__________________--Basic-Types--Booleans--Run-Time-Representation"
+%%%
 因为 {lean}`Bool` 是一个 {tech (key := "enum inductive")}[枚举归纳]类型，所以它在编译后的代码中由单字节表示。
 
 ## 布尔值和命题
 
+%%%
+tag := "Lean-__________________--Basic-Types--Booleans--Booleans-and-Propositions"
+%%%
 {lean}`Bool` 和 {lean}`Prop` 都表示真理的概念。
 从纯逻辑的角度来看，它们是等价的：{tech (key := "propositional extensionality")}[命题外延性]意味着从根本上只有两个命题，即 {lean}`True` 和 {lean}`False`。
 然而，这里有一个重要的实用差异：{lean}`Bool` 分类可以由程序计算的_值_，而 {lean}`Prop` 分类代码生成没有意义的陈述。
@@ -222,6 +237,9 @@ end BoolProp
 
 ## 语法
 
+%%%
+tag := "Lean-__________________--Basic-Types--Booleans--Syntax"
+%%%
 :::syntax term (title := "布尔中缀运算符")
 中缀运算符 `&&`、`||` 和 `^^` 分别是 {lean}`Bool.and`、{lean}`Bool.or` 和 {lean}`Bool.xor` 的记号。
 
@@ -246,8 +264,14 @@ $_:term ^^ $_:term
 
 ## API 参考
 
+%%%
+tag := "Lean-__________________--Basic-Types--Booleans--API-Reference"
+%%%
 ### 逻辑运算
 
+%%%
+tag := "Lean-__________________--Basic-Types--Booleans--API-Reference--Logical-Operations"
+%%%
 ```lean -show
 section ShortCircuit
 
@@ -277,12 +301,18 @@ end ShortCircuit
 
 ### 比较
 
+%%%
+tag := "Lean-__________________--Basic-Types--Booleans--API-Reference--Comparisons"
+%%%
 大多数关于布尔值的比较应该使用 {inst}`DecidableEq Bool`、{inst}`LT Bool` 和 {inst}`LE Bool` 实例来执行。
 
 {docstring Bool.decEq}
 
 ### 转换
 
+%%%
+tag := "Lean-__________________--Basic-Types--Booleans--API-Reference--Conversions"
+%%%
 {docstring Bool.toISize}
 
 {docstring Bool.toUInt8}

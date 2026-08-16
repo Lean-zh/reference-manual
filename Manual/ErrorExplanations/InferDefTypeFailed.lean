@@ -12,6 +12,7 @@ open Verso.Genre Manual InlineLean
 #doc (Manual) "关于：`inferDefTypeFailed`" =>
 %%%
 shortTitle := "inferDefTypeFailed"
+tag := "Lean-__________________--Error-Explanations--About___--inferDefTypeFailed"
 %%%
 
 {errorExplanationHeader lean.inferDefTypeFailed}
@@ -32,6 +33,9 @@ shortTitle := "inferDefTypeFailed"
 
 # 示例
 
+%%%
+tag := "Lean-__________________--Error-Explanations--About___--inferDefTypeFailed--Examples"
+%%%
 :::errorExample "无法推断隐式参数"
 ```broken
 def emptyNats :=

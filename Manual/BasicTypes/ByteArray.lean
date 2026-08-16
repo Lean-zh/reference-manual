@@ -39,8 +39,14 @@ tag := "ByteArray"
 
 # 接口参考
 
+%%%
+tag := "Lean-__________________--Basic-Types--Byte-Arrays--API-Reference"
+%%%
 ## 构造字节数组
 
+%%%
+tag := "Lean-__________________--Basic-Types--Byte-Arrays--API-Reference--Constructing-Byte-Arrays"
+%%%
 {docstring ByteArray.empty}
 
 {docstring ByteArray.emptyWithCapacity}
@@ -53,6 +59,9 @@ tag := "ByteArray"
 
 ## 大小
 
+%%%
+tag := "Lean-__________________--Basic-Types--Byte-Arrays--API-Reference--Size"
+%%%
 {docstring ByteArray.size}
 
 {docstring ByteArray.usize}
@@ -61,6 +70,9 @@ tag := "ByteArray"
 
 ## 查找
 
+%%%
+tag := "Lean-__________________--Basic-Types--Byte-Arrays--API-Reference--Lookups"
+%%%
 {docstring ByteArray.get}
 
 {docstring ByteArray.uget}
@@ -71,6 +83,9 @@ tag := "ByteArray"
 
 ## 转换
 
+%%%
+tag := "Lean-__________________--Basic-Types--Byte-Arrays--API-Reference--Conversions"
+%%%
 {docstring ByteArray.toList}
 
 {docstring ByteArray.toUInt64BE!}
@@ -79,6 +94,9 @@ tag := "ByteArray"
 
 ### UTF-8
 
+%%%
+tag := "Lean-__________________--Basic-Types--Byte-Arrays--API-Reference--Conversions--UTF-8"
+%%%
 {docstring ByteArray.utf8Decode?}
 
 {docstring ByteArray.utf8DecodeChar?}
@@ -87,6 +105,9 @@ tag := "ByteArray"
 
 ## 修改
 
+%%%
+tag := "Lean-__________________--Basic-Types--Byte-Arrays--API-Reference--Modification"
+%%%
 {docstring ByteArray.push}
 
 {docstring ByteArray.set}
@@ -97,6 +118,9 @@ tag := "ByteArray"
 
 ## 迭代
 
+%%%
+tag := "Lean-__________________--Basic-Types--Byte-Arrays--API-Reference--Iteration"
+%%%
 {docstring ByteArray.foldl}
 
 {docstring ByteArray.foldlM}
@@ -105,6 +129,9 @@ tag := "ByteArray"
 
 ## 迭代器
 
+%%%
+tag := "Lean-__________________--Basic-Types--Byte-Arrays--API-Reference--Iterators"
+%%%
 {docstring ByteArray.iter}
 
 {docstring ByteArray.Iterator}
@@ -139,6 +166,9 @@ tag := "ByteArray"
 
 ## 切片
 
+%%%
+tag := "Lean-__________________--Basic-Types--Byte-Arrays--API-Reference--Slices"
+%%%
 {docstring ByteArray.toByteSlice}
 
 {docstring ByteSlice}
@@ -178,6 +208,9 @@ tag := "ByteArray"
 
 ## 元素判定
 
+%%%
+tag := "Lean-__________________--Basic-Types--Byte-Arrays--API-Reference--Element-Predicates"
+%%%
 {docstring ByteArray.findIdx?}
 
 {docstring ByteArray.findFinIdx?}

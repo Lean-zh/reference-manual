@@ -12,6 +12,7 @@ open Verso.Genre Manual InlineLean
 #doc (Manual) "关于：`unknownIdentifier`" =>
 %%%
 shortTitle := "unknownIdentifier"
+tag := "Lean-__________________--Error-Explanations--About___--unknownIdentifier"
 %%%
 
 {errorExplanationHeader lean.unknownIdentifier}
@@ -34,6 +35,9 @@ shortTitle := "unknownIdentifier"
 
 # 示例
 
+%%%
+tag := "Lean-__________________--Error-Explanations--About___--unknownIdentifier--Examples"
+%%%
 :::errorExample "变量不在作用域内"
 ```broken
 example (s : IO.FS.Stream) := do

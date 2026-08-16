@@ -86,12 +86,21 @@ end
 
 # API 参考
 
+%%%
+tag := "Lean-__________________--Basic-Types--Integers--API-Reference"
+%%%
 ## 属性
 
+%%%
+tag := "Lean-__________________--Basic-Types--Integers--API-Reference--Properties"
+%%%
 {docstring Int.sign}
 
 ## 转换
 
+%%%
+tag := "Lean-__________________--Basic-Types--Integers--API-Reference--Conversions"
+%%%
 {docstring Int.natAbs}
 
 {docstring Int.toNat}
@@ -112,6 +121,9 @@ end
 
 ## 算术
 
+%%%
+tag := "Lean-__________________--Basic-Types--Integers--API-Reference--Arithmetic"
+%%%
 通常，使用 Lean 的重载算术记号来访问整数上的算术操作。
 特别是，{inst}`Add Int`、{inst}`Neg Int`、{inst}`Sub Int` 和 {inst}`Mul Int` 实例允许使用普通的插缀运算符。
 {ref "int-div"}[除法]稍微复杂一些，因为整数上有多种合理的除法概念。
@@ -183,6 +195,9 @@ tag := "int-div"
 
 ## 按位运算符
 
+%%%
+tag := "Lean-__________________--Basic-Types--Integers--API-Reference--Bitwise-Operators"
+%%%
 {name}`Int` 上的按位运算符可以理解为对整数的二进制补码表示的无限位流进行按位操作。
 
 {docstring Int.not}
@@ -191,6 +206,9 @@ tag := "int-div"
 
 ## 比较
 
+%%%
+tag := "Lean-__________________--Basic-Types--Integers--API-Reference--Comparisons"
+%%%
 {lean}`Int` 上的相等和不等测试通常使用其相等和排序关系的可判定性，或者使用 {inst}`BEq Int` 和 {inst}`Ord Int` 实例来执行。
 
 ```lean -show

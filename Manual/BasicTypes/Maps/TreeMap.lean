@@ -32,10 +32,16 @@ tag := "TreeMap"
 
 # 创建
 
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Tree-Based-Maps--Creation"
+%%%
 {docstring Std.TreeMap.empty}
 
 # 性质
 
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Tree-Based-Maps--Properties"
+%%%
 {docstring Std.TreeMap.size}
 
 {docstring Std.TreeMap.isEmpty}
@@ -43,6 +49,9 @@ tag := "TreeMap"
 
 # 查询
 
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Tree-Based-Maps--Queries"
+%%%
 {docstring Std.TreeMap.contains}
 
 {docstring Std.TreeMap.get}
@@ -71,6 +80,9 @@ tag := "TreeMap"
 
 ## 基于顺序的查询
 
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Tree-Based-Maps--Queries--Ordering-Based-Queries"
+%%%
 {docstring Std.TreeMap.entryAtIdx}
 
 {docstring Std.TreeMap.entryAtIdx!}
@@ -186,6 +198,9 @@ tag := "TreeMap"
 
 # 修改
 
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Tree-Based-Maps--Modification"
+%%%
 {docstring Std.TreeMap.alter}
 
 {docstring Std.TreeMap.modify}
@@ -219,6 +234,9 @@ tag := "TreeMap"
 
 # 迭代
 
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Tree-Based-Maps--Iteration"
+%%%
 {docstring Std.TreeMap.iter}
 
 {docstring Std.TreeMap.keysIter}
@@ -245,6 +263,9 @@ tag := "TreeMap"
 
 # 转换
 
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Tree-Based-Maps--Conversion"
+%%%
 {docstring Std.TreeMap.ofList}
 
 {docstring Std.TreeMap.toList}
@@ -259,6 +280,9 @@ tag := "TreeMap"
 
 ## 分离式变体
 
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Tree-Based-Maps--Conversion--Unbundled-Variants"
+%%%
 分离式映射会将良构性证明与数据本身分开。
 这主要在定义 {ref "raw-data"}[嵌套归纳类型] 时有用。
 要使用这些变体，请导入模块 `Std.TreeMap.Raw`。

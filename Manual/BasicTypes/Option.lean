@@ -114,6 +114,9 @@ def postalCodes : Std.HashMap Nat String :=
 
 # 强制转换
 
+%%%
+tag := "Lean-__________________--Basic-Types--Optional-Values--Coercions"
+%%%
 ```lean -show
 section
 variable {α : Type u} (line : String)
@@ -147,8 +150,14 @@ end
 
 # API 参考
 
+%%%
+tag := "Lean-__________________--Basic-Types--Optional-Values--API-Reference"
+%%%
 ## 提取值
 
+%%%
+tag := "Lean-__________________--Basic-Types--Optional-Values--API-Reference--Extracting-Values"
+%%%
 {docstring Option.get}
 
 {docstring Option.get!}
@@ -168,6 +177,9 @@ end
 
 ## 属性和比较
 
+%%%
+tag := "Lean-__________________--Basic-Types--Optional-Values--API-Reference--Properties-and-Comparisons"
+%%%
 {docstring Option.isNone}
 
 {docstring Option.isSome}
@@ -191,6 +203,9 @@ variable {α} [DecidableEq α] [LT α] [Min α] [Max α]
 
 ## 转换
 
+%%%
+tag := "Lean-__________________--Basic-Types--Optional-Values--API-Reference--Conversion"
+%%%
 {docstring Option.toArray}
 
 {docstring Option.toList}
@@ -201,6 +216,9 @@ variable {α} [DecidableEq α] [LT α] [Min α] [Max α]
 
 ## 控制
 
+%%%
+tag := "Lean-__________________--Basic-Types--Optional-Values--API-Reference--Control"
+%%%
 {name}`Option` 可以被认为是描述一个可能无法返回值的计算。
 {inst}`Monad Option` 实例以及 {inst}`Alternative Option` 正是基于这种理解。
 返回 {name}`none` 也可以被认为是抛出了一个不包含任何有用信息的异常，这被体现在 {inst}`MonadExcept Unit Option` 实例中。
@@ -224,6 +242,9 @@ variable {α} [DecidableEq α] [LT α] [Min α] [Max α]
 
 ## 迭代
 
+%%%
+tag := "Lean-__________________--Basic-Types--Optional-Values--API-Reference--Iteration"
+%%%
 {name}`Option` 可以被认为是一个最多包含一个值的集合。
 从这个角度来看，迭代运算符可以理解为对包含的值（如果存在）执行某些操作，如果不存在则什么也不做。
 
@@ -245,6 +266,9 @@ variable {α} [DecidableEq α] [LT α] [Min α] [Max α]
 
 ## 递归辅助
 
+%%%
+tag := "Lean-__________________--Basic-Types--Optional-Values--API-Reference--Recursion-Helpers"
+%%%
 {docstring Option.attach}
 
 {docstring Option.attachWith}
@@ -253,6 +277,9 @@ variable {α} [DecidableEq α] [LT α] [Min α] [Max α]
 
 ## 推理
 
+%%%
+tag := "Lean-__________________--Basic-Types--Optional-Values--API-Reference--Reasoning"
+%%%
 {docstring Option.choice}
 
 {docstring Option.pbind}

@@ -26,16 +26,25 @@ tag := "TreeSet"
 
 # 创建
 
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Tree-Based-Sets--Creation"
+%%%
 {docstring Std.TreeSet.empty}
 
 # 性质
 
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Tree-Based-Sets--Properties"
+%%%
 {docstring Std.TreeSet.isEmpty}
 
 {docstring Std.TreeSet.size}
 
 # 查询
 
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Tree-Based-Sets--Queries"
+%%%
 {docstring Std.TreeSet.contains}
 
 {docstring Std.TreeSet.get}
@@ -48,6 +57,9 @@ tag := "TreeSet"
 
 ## 基于顺序的查询
 
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Tree-Based-Sets--Queries--Ordering-Based-Queries"
+%%%
 {docstring Std.TreeSet.atIdx}
 
 {docstring Std.TreeSet.atIdx!}
@@ -108,6 +120,9 @@ tag := "TreeSet"
 # 修改
 
 
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Tree-Based-Sets--Modification"
+%%%
 {docstring Std.TreeSet.insert}
 
 {docstring Std.TreeSet.insertMany}
@@ -127,6 +142,9 @@ tag := "TreeSet"
 
 # 迭代
 
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Tree-Based-Sets--Iteration"
+%%%
 {docstring Std.TreeSet.iter}
 
 {docstring Std.TreeSet.all}
@@ -148,6 +166,9 @@ tag := "TreeSet"
 
 # 转换
 
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Tree-Based-Sets--Conversion"
+%%%
 {docstring Std.TreeSet.toList}
 
 {docstring Std.TreeSet.ofList}
@@ -158,6 +179,9 @@ tag := "TreeSet"
 
 ## 分离式变体
 
+%%%
+tag := "Lean-__________________--Basic-Types--Maps-and-Sets--Tree-Based-Sets--Conversion--Unbundled-Variants"
+%%%
 分离式集合会将良构性证明与数据本身分开。
 这主要在定义 {ref "raw-data"}[嵌套归纳类型] 时有用。
 要使用这些变体，请导入模块 `Std.TreeSet.Raw`。

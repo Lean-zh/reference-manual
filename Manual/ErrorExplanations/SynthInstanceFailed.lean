@@ -12,6 +12,7 @@ open Verso.Genre Manual InlineLean
 #doc (Manual) "关于：`synthInstanceFailed`" =>
 %%%
 shortTitle := "synthInstanceFailed"
+tag := "Lean-__________________--Error-Explanations--About___--synthInstanceFailed"
 %%%
 
 {errorExplanationHeader lean.synthInstanceFailed}
@@ -34,6 +35,9 @@ variable {t : Type} (x y : Int)
 
 # 示例
 
+%%%
+tag := "Lean-__________________--Error-Explanations--About___--synthInstanceFailed--Examples"
+%%%
 :::errorExample "使用错误的二元运算"
 
 ```broken

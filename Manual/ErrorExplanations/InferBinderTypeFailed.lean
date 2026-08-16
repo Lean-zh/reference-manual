@@ -12,6 +12,7 @@ open Verso.Genre Manual InlineLean
 #doc (Manual) "关于：`inferBinderTypeFailed`" =>
 %%%
 shortTitle := "inferBinderTypeFailed"
+tag := "Lean-__________________--Error-Explanations--About___--inferBinderTypeFailed"
 %%%
 
 {errorExplanationHeader lean.inferBinderTypeFailed}
@@ -39,6 +40,9 @@ shortTitle := "inferBinderTypeFailed"
 
 # 示例
 
+%%%
+tag := "Lean-__________________--Error-Explanations--About___--inferBinderTypeFailed--Examples"
+%%%
 :::errorExample "绑定项类型需要新的类型变量"
 ```broken
 def identity x :=

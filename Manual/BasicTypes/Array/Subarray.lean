@@ -35,6 +35,9 @@ variable {α : Type u}
 
 # 数组数据
 
+%%%
+tag := "Lean-__________________--Basic-Types--Arrays--Subarrays--Array-Data"
+%%%
 {docstring Subarray.array}
 
 {docstring Subarray.start}
@@ -47,6 +50,9 @@ variable {α : Type u}
 
 # 调整大小
 
+%%%
+tag := "Lean-__________________--Basic-Types--Arrays--Subarrays--Resizing"
+%%%
 {docstring Subarray.drop}
 
 {docstring Subarray.take}
@@ -57,6 +63,9 @@ variable {α : Type u}
 
 # 查找
 
+%%%
+tag := "Lean-__________________--Basic-Types--Arrays--Subarrays--Lookups"
+%%%
 {docstring Subarray.get}
 
 {docstring Subarray.get!}
@@ -65,6 +74,9 @@ variable {α : Type u}
 
 # 迭代
 
+%%%
+tag := "Lean-__________________--Basic-Types--Arrays--Subarrays--Iteration"
+%%%
 {docstring Subarray.foldr}
 
 {docstring Subarray.foldrM}
@@ -77,6 +89,9 @@ variable {α : Type u}
 
 # 元素谓词
 
+%%%
+tag := "Lean-__________________--Basic-Types--Arrays--Subarrays--Element-Predicates"
+%%%
 {docstring Subarray.findRev?}
 
 {docstring Subarray.findRevM?}

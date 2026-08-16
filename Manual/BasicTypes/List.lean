@@ -136,6 +136,9 @@ tag := "list-api-reference"
 
 ## 构造列表
 
+%%%
+tag := "Lean-__________________--Basic-Types--Linked-Lists--API-Reference--Constructing-Lists"
+%%%
 {docstring List.singleton}
 
 {docstring List.concat}
@@ -160,6 +163,9 @@ tag := "list-api-reference"
 
 ## 长度
 
+%%%
+tag := "Lean-__________________--Basic-Types--Linked-Lists--API-Reference--Length"
+%%%
 {docstring List.length}
 
 {docstring List.lengthTR}
@@ -168,6 +174,9 @@ tag := "list-api-reference"
 
 ## 头与尾
 
+%%%
+tag := "Lean-__________________--Basic-Types--Linked-Lists--API-Reference--Head-and-Tail"
+%%%
 {docstring List.head}
 
 {docstring List.head?}
@@ -187,6 +196,9 @@ tag := "list-api-reference"
 
 ## 查找
 
+%%%
+tag := "Lean-__________________--Basic-Types--Linked-Lists--API-Reference--Lookups"
+%%%
 {docstring List.get}
 
 {docstring List.getD}
@@ -207,6 +219,9 @@ tag := "list-api-reference"
 
 ## 查询
 
+%%%
+tag := "Lean-__________________--Basic-Types--Linked-Lists--API-Reference--Queries"
+%%%
 {docstring List.count}
 
 {docstring List.countP}
@@ -233,6 +248,9 @@ tag := "list-api-reference"
 
 ## 转换
 
+%%%
+tag := "Lean-__________________--Basic-Types--Linked-Lists--API-Reference--Conversions"
+%%%
 {docstring List.toArray}
 
 {docstring List.toArrayImpl}
@@ -248,12 +266,18 @@ tag := "list-api-reference"
 
 ## 排序
 
+%%%
+tag := "Lean-__________________--Basic-Types--Linked-Lists--API-Reference--Sorting"
+%%%
 {docstring List.mergeSort}
 
 {docstring List.merge}
 
 ## 迭代
 
+%%%
+tag := "Lean-__________________--Basic-Types--Linked-Lists--API-Reference--Iteration"
+%%%
 {docstring List.iter}
 
 {docstring List.iterM}
@@ -268,6 +292,9 @@ tag := "list-api-reference"
 
 ### 折叠
 
+%%%
+tag := "Lean-__________________--Basic-Types--Linked-Lists--API-Reference--Iteration--Folds"
+%%%
 :::paragraph
 折叠是使用某个函数将列表元素组合起来的运算。
 根据函数调用的嵌套方式，它们分为两类：
@@ -302,6 +329,9 @@ tag := "list-api-reference"
 
 ## 过滤
 
+%%%
+tag := "Lean-__________________--Basic-Types--Linked-Lists--API-Reference--Filtering"
+%%%
 {docstring List.filter}
 
 {docstring List.filterTR}
@@ -320,6 +350,9 @@ tag := "list-api-reference"
 
 ## 元素判定
 
+%%%
+tag := "Lean-__________________--Basic-Types--Linked-Lists--API-Reference--Element-Predicates"
+%%%
 {docstring List.contains}
 
 {docstring List.elem}
@@ -340,6 +373,9 @@ tag := "list-api-reference"
 
 ## 终止辅助
 
+%%%
+tag := "Lean-__________________--Basic-Types--Linked-Lists--API-Reference--Termination-Helpers"
+%%%
 {docstring List.attach}
 
 {docstring List.attachWith}

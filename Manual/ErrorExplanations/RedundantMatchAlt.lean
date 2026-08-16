@@ -12,6 +12,7 @@ open Verso.Genre Manual InlineLean
 #doc (Manual) "关于：`redundantMatchAlt`" =>
 %%%
 shortTitle := "redundantMatchAlt"
+tag := "Lean-__________________--Error-Explanations--About___--redundantMatchAlt"
 %%%
 
 {errorExplanationHeader lean.redundantMatchAlt}
@@ -40,6 +41,9 @@ shortTitle := "redundantMatchAlt"
 
 # 示例
 
+%%%
+tag := "Lean-__________________--Error-Explanations--About___--redundantMatchAlt--Examples"
+%%%
 :::errorExample "模式匹配顺序错误"
 ```broken
 def seconds : List (List α) → List α

@@ -159,6 +159,9 @@ $a<...*
 
 # 范围类型
 
+%%%
+tag := "Lean-__________________--Basic-Types--Ranges--Range-Types"
+%%%
 {docstring Std.Rco +allowMissing}
 
 {docstring Std.Rco.iter}
@@ -269,6 +272,9 @@ $a<...*
 
 # 范围相关类型类
 
+%%%
+tag := "Lean-__________________--Basic-Types--Ranges--Range-Related-Type-Classes"
+%%%
 {docstring Std.PRange.UpwardEnumerable}
 
 {docstring Std.PRange.UpwardEnumerable.LE}
@@ -293,6 +299,9 @@ $a<...*
 
 # 实现范围
 
+%%%
+tag := "Lean-__________________--Basic-Types--Ranges--Implementing-Ranges"
+%%%
 内置范围类型可以与任何类型一起使用，但它们的实用性取决于某些类型类实例的存在。
 一般来说，范围要么被检查成员资格，要么被枚举或迭代。
 为了检查一个值是否包含在范围内，使用 {name}`DecidableLT` 和 {name}`DecidableLE` 实例来将该值与范围各自的开、闭端点进行比较。
@@ -572,6 +581,9 @@ It's Day.we
 
 # 范围与切片
 
+%%%
+tag := "Lean-__________________--Basic-Types--Ranges--Ranges-and-Slices"
+%%%
 范围语法可与支持切片的数据结构结合使用，以选择结构的一个切片。
 
 :::example "列表切片"

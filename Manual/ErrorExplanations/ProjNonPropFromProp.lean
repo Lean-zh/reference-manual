@@ -12,6 +12,7 @@ open Verso.Genre Manual InlineLean
 #doc (Manual) "关于：`projNonPropFromProp`" =>
 %%%
 shortTitle := "projNonPropFromProp"
+tag := "Lean-__________________--Error-Explanations--About___--projNonPropFromProp"
 %%%
 
 {errorExplanationHeader lean.projNonPropFromProp}
@@ -28,6 +29,9 @@ shortTitle := "projNonPropFromProp"
 
 # 示例
 
+%%%
+tag := "Lean-__________________--Error-Explanations--About___--projNonPropFromProp--Examples"
+%%%
 :::errorExample "尝试对存在性证明使用索引投影"
 
 ```broken

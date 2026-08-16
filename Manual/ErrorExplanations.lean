@@ -71,6 +71,7 @@ def error_explanation_table : BlockCommandOf Unit
 %%%
 number := false
 htmlToc := false
+tag := "Lean-__________________--Error-Explanations"
 %%%
 
 本节说明 Lean 处理源文件时可能生成的错误和警告。下面列出的所有错误名称都带有

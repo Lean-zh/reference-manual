@@ -44,11 +44,17 @@ IEEE 754 标准定义了现代计算机使用的浮点格式，它允许硬件�
 
 # 逻辑模型
 
+%%%
+tag := "Lean-__________________--Basic-Types--Floating-Point-Numbers--Logical-Model"
+%%%
 Lean 提供两种浮点类型：{name}`Float` 表示 64 位浮点值，而 {name}`Float32` 表示 32 位浮点值。
 {name}`Float` 的精度不会随着 Lean 所运行的平台而变化。
 
 ## 模型细节
 
+%%%
+tag := "Lean-__________________--Basic-Types--Floating-Point-Numbers--Logical-Model--Model-Details"
+%%%
 {lean}`Float` 与 {lean}`Float32` 的逻辑模型由带有有效性谓词的无符号整数组成。
 每个已定义的运算都会先把该整数解释为 {lean}`Float.Model.UnpackedFloat`，这是一个不依赖具体位宽的更高层模型。
 然后，用 {name Float.Model.UnpackedFloat}`UnpackedFloat` 来实现该运算，并将结果重新打包。
@@ -77,6 +83,9 @@ Lean 提供两种浮点类型：{name}`Float` 表示 64 位浮点值，而 {name
 
 ## 模型运算
 
+%%%
+tag := "Lean-__________________--Basic-Types--Floating-Point-Numbers--Logical-Model--Model-Operations"
+%%%
 下列运算为浮点值提供了规约。
 其他运算符则表示为不透明函数，不能在内核中规约。
 
@@ -224,6 +233,9 @@ def pos0 : Float := 0.0
 
 # 语法
 
+%%%
+tag := "Lean-__________________--Basic-Types--Floating-Point-Numbers--Syntax"
+%%%
 Lean 没有专门的浮点数字面量。
 相反，浮点数字面量是通过 {name}`OfScientific` 与 {name}`Neg` 类型类的相应实例来解析的。
 
@@ -259,6 +271,9 @@ tag := "Float-api"
 
 ## 性质
 
+%%%
+tag := "Lean-__________________--Basic-Types--Floating-Point-Numbers--API-Reference--Properties"
+%%%
 浮点数属于以下三类之一：
 
  * 有限数是普通的浮点值。
@@ -282,6 +297,9 @@ tag := "Float-api"
 
 ## 转换
 
+%%%
+tag := "Lean-__________________--Basic-Types--Floating-Point-Numbers--API-Reference--Conversions"
+%%%
 {docstring Float.toBits}
 
 {docstring Float32.toBits}
@@ -352,12 +370,18 @@ tag := "Float-api"
 
 ## 比较
 
+%%%
+tag := "Lean-__________________--Basic-Types--Floating-Point-Numbers--API-Reference--Comparisons"
+%%%
 {docstring Float.beq}
 
 {docstring Float32.beq}
 
 ### 不等关系
 
+%%%
+tag := "Lean-__________________--Basic-Types--Floating-Point-Numbers--API-Reference--Comparisons--Inequalities"
+%%%
 不等关系的判定过程在逻辑中是不透明常量。
 它们只能借助 {name}`Lean.ofReduceBool` 公理来使用，例如通过 {tactic}`native_decide` 策略。
 
@@ -379,6 +403,9 @@ tag := "Float-api"
 
 ## 算术
 
+%%%
+tag := "Lean-__________________--Basic-Types--Floating-Point-Numbers--API-Reference--Arithmetic"
+%%%
 浮点值上的算术运算通常通过 {inst}`Add Float`、{inst}`Sub Float`、{inst}`Mul Float`、{inst}`Div Float` 和 {inst}`HomogeneousPow Float` 实例来调用，{name}`Float32` 也有对应实例。
 
 {docstring Float.add}
@@ -411,6 +438,9 @@ tag := "Float-api"
 
 ### 根
 
+%%%
+tag := "Lean-__________________--Basic-Types--Floating-Point-Numbers--API-Reference--Arithmetic--Roots"
+%%%
 对负数计算平方根会得到 `NaN`。
 
 {docstring Float.sqrt}
@@ -423,6 +453,9 @@ tag := "Float-api"
 
 ## 对数
 
+%%%
+tag := "Lean-__________________--Basic-Types--Floating-Point-Numbers--API-Reference--Logarithms"
+%%%
 {docstring Float.log}
 
 {docstring Float32.log}
@@ -437,12 +470,18 @@ tag := "Float-api"
 
 ## 缩放
 
+%%%
+tag := "Lean-__________________--Basic-Types--Floating-Point-Numbers--API-Reference--Scaling"
+%%%
 {docstring Float.scaleB}
 
 {docstring Float32.scaleB}
 
 ## 取整
 
+%%%
+tag := "Lean-__________________--Basic-Types--Floating-Point-Numbers--API-Reference--Rounding"
+%%%
 {docstring Float.round}
 
 {docstring Float32.round}
@@ -457,8 +496,14 @@ tag := "Float-api"
 
 ## 三角函数
 
+%%%
+tag := "Lean-__________________--Basic-Types--Floating-Point-Numbers--API-Reference--Trigonometry"
+%%%
 ### 正弦
 
+%%%
+tag := "Lean-__________________--Basic-Types--Floating-Point-Numbers--API-Reference--Trigonometry--Sine"
+%%%
 {docstring Float.sin}
 
 {docstring Float32.sin}
@@ -477,6 +522,9 @@ tag := "Float-api"
 
 ### 余弦
 
+%%%
+tag := "Lean-__________________--Basic-Types--Floating-Point-Numbers--API-Reference--Trigonometry--Cosine"
+%%%
 {docstring Float.cos}
 
 {docstring Float32.cos}
@@ -495,6 +543,9 @@ tag := "Float-api"
 
 ### 正切
 
+%%%
+tag := "Lean-__________________--Basic-Types--Floating-Point-Numbers--API-Reference--Trigonometry--Tangent"
+%%%
 {docstring Float.tan}
 
 {docstring Float32.tan}
@@ -517,6 +568,9 @@ tag := "Float-api"
 
 ## 取负与绝对值
 
+%%%
+tag := "Lean-__________________--Basic-Types--Floating-Point-Numbers--API-Reference--Negation-and-Absolute-Value"
+%%%
 {docstring Float.abs}
 
 {docstring Float32.abs}

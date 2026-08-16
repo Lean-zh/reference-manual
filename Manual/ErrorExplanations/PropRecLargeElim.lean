@@ -12,6 +12,7 @@ open Verso.Genre Manual InlineLean
 #doc (Manual) "关于：`propRecLargeElim`" =>
 %%%
 shortTitle := "propRecLargeElim"
+tag := "Lean-__________________--Error-Explanations--About___--propRecLargeElim"
 %%%
 
 {errorExplanationHeader lean.propRecLargeElim}
@@ -31,6 +32,9 @@ shortTitle := "propRecLargeElim"
 
 # 示例
 
+%%%
+tag := "Lean-__________________--Error-Explanations--About___--propRecLargeElim--Examples"
+%%%
 :::errorExample "在证明中定义中间数据值"
 ```broken
 example {α : Type} [inst : Nonempty α] (p : α → Prop) :

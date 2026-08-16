@@ -29,6 +29,9 @@ tag := "BitVec"
 
 # 逻辑模型
 
+%%%
+tag := "Lean-__________________--Basic-Types--Bitvectors--Logical-Model"
+%%%
 位向量表示为对具有适当界限的 {name}`Fin` 的包装。
 由于 {name}`Fin` 本身是对 {name}`Nat` 的包装，位向量能够利用内核对自然数高效计算的特殊支持。
 
@@ -36,10 +39,16 @@ tag := "BitVec"
 
 # 运行时表示
 
+%%%
+tag := "Lean-__________________--Basic-Types--Bitvectors--Runtime-Representation"
+%%%
 位向量表示为具有相应范围的 {lean}`Fin`。
 由于 {name}`BitVec` 是对 {name}`Fin` 的{ref "inductive-types-trivial-wrappers"}[平凡包装]，而 {name}`Fin` 又是对 {name}`Nat` 的平凡包装，因此在编译后的代码中，位向量与 {name}`Nat` 使用相同的运行时表示。
 
 # 语法
+%%%
+tag := "Lean-__________________--Basic-Types--Bitvectors--Syntax"
+%%%
 :::leanSection
 ```lean -show
 variable {w n : Nat}
@@ -215,12 +224,18 @@ tag := "BitVec-api"
 
 ## 界限
 
+%%%
+tag := "Lean-__________________--Basic-Types--Bitvectors--API-Reference--Bounds"
+%%%
 {docstring BitVec.intMax}
 
 {docstring BitVec.intMin}
 
 ## 构造
 
+%%%
+tag := "Lean-__________________--Basic-Types--Bitvectors--API-Reference--Construction"
+%%%
 {docstring BitVec.fill}
 
 {docstring BitVec.zero}
@@ -232,6 +247,9 @@ tag := "BitVec-api"
 ## 转换
 
 
+%%%
+tag := "Lean-__________________--Basic-Types--Bitvectors--API-Reference--Conversion"
+%%%
 {docstring BitVec.toHex}
 
 {docstring BitVec.toInt}
@@ -254,6 +272,9 @@ tag := "BitVec-api"
 
 ## 比较
 
+%%%
+tag := "Lean-__________________--Basic-Types--Bitvectors--API-Reference--Comparisons"
+%%%
 {docstring BitVec.ule}
 
 {docstring BitVec.sle}
@@ -266,10 +287,16 @@ tag := "BitVec-api"
 
 ## 哈希
 
+%%%
+tag := "Lean-__________________--Basic-Types--Bitvectors--API-Reference--Hashing"
+%%%
 {docstring BitVec.hash}
 
 ## 序列操作
 
+%%%
+tag := "Lean-__________________--Basic-Types--Bitvectors--API-Reference--Sequence-Operations"
+%%%
 这些操作将位向量视为位的序列，而非数的编码。
 
 {docstring BitVec.nil}
@@ -298,6 +325,9 @@ tag := "BitVec-api"
 
 ### 位提取
 
+%%%
+tag := "Lean-__________________--Basic-Types--Bitvectors--API-Reference--Sequence-Operations--Bit-Extraction"
+%%%
 {docstring BitVec.msb}
 
 {docstring BitVec.getMsbD}
@@ -318,6 +348,9 @@ tag := "BitVec-api"
 
 ## 位运算符
 
+%%%
+tag := "Lean-__________________--Basic-Types--Bitvectors--API-Reference--Bitwise-Operators"
+%%%
 这些运算符修改一个或多个位向量中的各个位。
 
 {docstring BitVec.and}
@@ -345,6 +378,9 @@ tag := "BitVec-api"
 
 ## 算术
 
+%%%
+tag := "Lean-__________________--Basic-Types--Bitvectors--API-Reference--Arithmetic"
+%%%
 这些运算符将位向量视为数。
 有些操作按有符号方式进行，另一些则按无符号方式进行。
 由于位向量被解释为二进制补码数，因此加法、减法和乘法在有符号与无符号解释下是一致的。
@@ -359,6 +395,9 @@ tag := "BitVec-api"
 
 ### 无符号操作
 
+%%%
+tag := "Lean-__________________--Basic-Types--Bitvectors--API-Reference--Arithmetic--Unsigned-Operations"
+%%%
 {docstring BitVec.udiv}
 
 {docstring BitVec.smtUDiv}
@@ -371,6 +410,9 @@ tag := "BitVec-api"
 
 ### 有符号操作
 
+%%%
+tag := "Lean-__________________--Basic-Types--Bitvectors--API-Reference--Arithmetic--Signed-Operations"
+%%%
 {docstring BitVec.abs}
 
 {docstring BitVec.neg}
@@ -389,14 +431,23 @@ tag := "BitVec-api"
 
 ## 迭代
 
+%%%
+tag := "Lean-__________________--Basic-Types--Bitvectors--API-Reference--Iteration"
+%%%
 {docstring BitVec.iunfoldr}
 
 {docstring BitVec.iunfoldr_replace}
 
 ## 证明自动化
 
+%%%
+tag := "Lean-__________________--Basic-Types--Bitvectors--API-Reference--Proof-Automation"
+%%%
 ### 位爆破
 
+%%%
+tag := "Lean-__________________--Basic-Types--Bitvectors--API-Reference--Proof-Automation--Bit-Blasting"
+%%%
 标准库包含许多有助于实现位爆破的辅助实现；位爆破是 {tactic}`bv_decide` 用来将命题编码为供外部求解器处理的布尔可满足性问题的技术。
 
 {docstring BitVec.adc}

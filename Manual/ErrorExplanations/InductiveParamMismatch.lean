@@ -12,6 +12,7 @@ open Verso.Genre Manual InlineLean
 #doc (Manual) "关于：`inductiveParamMismatch`" =>
 %%%
 shortTitle := "inductiveParamMismatch"
+tag := "Lean-__________________--Error-Explanations--About___--inductiveParamMismatch"
 %%%
 
 {errorExplanationHeader lean.inductiveParamMismatch}
@@ -26,6 +27,9 @@ shortTitle := "inductiveParamMismatch"
 
 # 示例
 
+%%%
+tag := "Lean-__________________--Error-Explanations--About___--inductiveParamMismatch--Examples"
+%%%
 :::errorExample "作为参数的向量长度索引"
 ```broken
 inductive Vec (α : Type) (n : Nat) : Type where

@@ -91,6 +91,9 @@ termination_by n
 
 # 逻辑连接词
 
+%%%
+tag := "Lean-__________________--Basic-Propositions--Logical-Connectives"
+%%%
 合取实现为归纳定义的命题 {name}`And`。
 构造器 {name}`And.intro` 表示合取的引入规则：要证明合取，只需分别证明两个合取项。
 类似地，{name}`And.elim` 表示消去规则：给定合取的证明，以及一个假设两个合取项成立的其他命题的证明，就可以证明该命题。
@@ -202,6 +205,9 @@ $_ ↔ $_
 
 # 量词
 
+%%%
+tag := "Lean-__________________--Basic-Propositions--Quantifiers"
+%%%
 正如蕴含在 {lean}`Prop` 中实现为普通函数类型，全称量化在 {lean}`Prop` 中实现为依赖函数类型。
 由于 {lean}`Prop` 是{tech}[非直谓的]，任何{tech}[陪域]为 {lean}`Prop` 的函数类型本身也是 {lean}`Prop`，即使{tech}[定义域]是 {lean}`Type`。
 依赖函数的类型规则与全称量化的引入、消去规则完全对应：若谓词对类型中任意选取的元素都成立，则它对所有元素成立。
