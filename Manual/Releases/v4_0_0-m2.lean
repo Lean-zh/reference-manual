@@ -19,5 +19,5 @@ file := "v4.0.0-m2"
 %%%
 
 ```markdown
-This is the second milestone release of Lean 4. With too many improvements and bug fixes in almost all parts of the system to list, we would like to single out major improvements to `simp` and other built-in tactics as well as support for a goal view that make the proving experience more comfortable.
+这是 Lean 4 的第二个里程碑版本。系统几乎各个部分都有大量改进与缺陷修复，多到难以尽列；其中尤其值得一提的是 `simp` 与其他内建 tactic 的重大增强，以及对目标视图的支持，这些都让证明体验更加舒适。
 ```

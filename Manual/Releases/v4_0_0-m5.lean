@@ -19,10 +19,10 @@ file := "v4.0.0-m5"
 %%%
 
 ````markdown
-This is the fifth milestone release of Lean 4. It contains many improvements and many new features.
- We had  1495 commits since the last milestone.
+这是 Lean 4 的第五个里程碑版本。它包含许多改进和许多新特性。
+自上一个里程碑以来，我们已有 1495 次提交。
 
-Contributors:
+贡献者：
 ```
    885  Leonardo de Moura
    310  Sebastian Ullrich
@@ -62,9 +62,9 @@ Contributors:
 
 
 
-* Update Lake to v4.0.0. See the [v4.0.0 release notes](https://github.com/leanprover/lake/releases/tag/v4.0.0) for detailed changes.
+* 将 Lake 更新到 v4.0.0。详细变更请参见 [v4.0.0 发布说明](https://github.com/leanprover/lake/releases/tag/v4.0.0)。
 
-* Mutual declarations in different namespaces are now supported. Example:
+* 现在支持位于不同命名空间中的互递归声明。例如：
   ```lean
   mutual
     def Foo.boo (x : Nat) :=
@@ -78,14 +78,14 @@ Contributors:
       | x+1 => 3*Foo.boo x
   end
   ```
-  A `namespace` is automatically created for the common prefix. Example:
+  系统会为公共前缀自动创建一个 `namespace`。例如：
   ```lean
   mutual
     def Tst.Foo.boo (x : Nat) := ...
     def Tst.Boo.bla (x : Nat) := ...
   end
   ```
-  expands to
+  会展开为
   ```lean
   namespace Tst
   mutual
@@ -95,31 +95,31 @@ Contributors:
   end Tst
   ```
 
-* Allow users to install their own `deriving` handlers for existing type classes.
-  See example at [Simple.lean](https://github.com/leanprover/lean4/blob/master/tests/pkg/deriving/UserDeriving/Simple.lean).
+* 允许用户为现有类型类安装自己的 `deriving` 处理器。
+  示例见 [Simple.lean](https://github.com/leanprover/lean4/blob/master/tests/pkg/deriving/UserDeriving/Simple.lean)。
 
-* Add tactic `congr (num)?`. See doc string for additional details.
+* 添加 tactic `congr (num)?`。更多细节见文档字符串。
 
-* [Missing doc linter](https://github.com/leanprover/lean4/pull/1390)
+* [缺失文档检查器](https://github.com/leanprover/lean4/pull/1390)
 
-* `match`-syntax notation now checks for unused alternatives. See issue [#1371](https://github.com/leanprover/lean4/issues/1371).
+* `match` 语法记法现在会检查未使用的分支。参见 issue [#1371](https://github.com/leanprover/lean4/issues/1371)。
 
-* Auto-completion for structure instance fields. Example:
+* 为结构体实例字段提供自动补全。例如：
   ```lean
   example : Nat × Nat := {
     f -- HERE
   }
   ```
-  `fst` now appears in the list of auto-completion suggestions.
+  `fst` 现在会出现在自动补全建议列表中。
 
-* Auto-completion for dotted identifier notation. Example:
+* 为点式标识符记法提供自动补全。例如：
   ```lean
   example : Nat :=
     .su -- HERE
   ```
-  `succ` now appears in the list of auto-completion suggestions.
+  `succ` 现在会出现在自动补全建议列表中。
 
-* `nat_lit` is not needed anymore when declaring `OfNat` instances. See issues [#1389](https://github.com/leanprover/lean4/issues/1389) and [#875](https://github.com/leanprover/lean4/issues/875). Example:
+* 声明 `OfNat` 实例时不再需要 `nat_lit`。参见 issues [#1389](https://github.com/leanprover/lean4/issues/1389) 和 [#875](https://github.com/leanprover/lean4/issues/875)。例如：
   ```lean
   inductive Bit where
     | zero
@@ -135,11 +135,11 @@ Contributors:
   example : Bit := 1
   ```
 
-* Add `[elabAsElim]` attribute (it is called `elab_as_eliminator` in Lean 3). Motivation: simplify the Mathlib port to Lean 4.
+* 添加 `[elabAsElim]` 属性（在 Lean 3 中名为 `elab_as_eliminator`）。动机：简化 Mathlib 向 Lean 4 的移植。
 
-* `Trans` type class now accepts relations in `Type u`. See this [Zulip issue](https://leanprover.zulipchat.com/#narrow/stream/270676-lean4/topic/Calc.20mode/near/291214574).
+* `Trans` 类型类现在接受位于 `Type u` 中的关系。参见这条 [Zulip 讨论](https://leanprover.zulipchat.com/#narrow/stream/270676-lean4/topic/Calc.20mode/near/291214574)。
 
-* Accept unescaped keywords as inductive constructor names. Escaping can often be avoided at use sites via dot notation.
+* 接受未经转义的关键字作为归纳类型构造子名称。在使用处通常可以通过点记法避免转义。
   ```lean
   inductive MyExpr
     | let : ...
@@ -148,17 +148,17 @@ Contributors:
     | .let ... => .let ...
   ```
 
-* Throw an error message at parametric local instances such as `[Nat -> Decidable p]`. The type class resolution procedure
-  cannot use this kind of local instance because the parameter does not have a forward dependency.
-  This check can be disabled using `set_option checkBinderAnnotations false`.
+* 对形如 `[Nat -> Decidable p]` 的参数化局部实例报错。类型类解析过程
+  无法使用这类局部实例，因为该参数不具有前向依赖。
+  可使用 `set_option checkBinderAnnotations false` 关闭此检查。
 
-* Add option `pp.showLetValues`. When set to `false`, the info view hides the value of `let`-variables in a goal.
-  By default, it is `true` when visualizing tactic goals, and `false` otherwise.
-  See [issue #1345](https://github.com/leanprover/lean4/issues/1345) for additional details.
+* 添加选项 `pp.showLetValues`。当其设为 `false` 时，信息视图会隐藏目标中 `let` 变量的值。
+  默认情况下，在显示 tactic 目标时它为 `true`，否则为 `false`。
+  更多细节见 [问题 #1345](https://github.com/leanprover/lean4/issues/1345)。
 
-* Add option `warningAsError`. When set to true, warning messages are treated as errors.
+* 添加选项 `warningAsError`。设为 true 时，警告消息会被当作错误处理。
 
-* Support dotted notation and named arguments in patterns. Example:
+* 在模式中支持点记法与具名参数。例如：
   ```lean
   def getForallBinderType (e : Expr) : Expr :=
     match e with
@@ -166,16 +166,16 @@ Contributors:
     | _ => panic! "forall expected"
   ```
 
-* "jump-to-definition" now works for function names embedded in the following attributes
-  `@[implementedBy funName]`, `@[tactic parserName]`, `@[termElab parserName]`, `@[commandElab parserName]`,
-  `@[builtinTactic parserName]`, `@[builtinTermElab parserName]`, and `@[builtinCommandElab parserName]`.
-   See [issue #1350](https://github.com/leanprover/lean4/issues/1350).
+* “跳转到定义”现在可用于以下属性中嵌入的函数名：
+  `@[implementedBy funName]`、`@[tactic parserName]`、`@[termElab parserName]`、`@[commandElab parserName]`、
+  `@[builtinTactic parserName]`、`@[builtinTermElab parserName]` 和 `@[builtinCommandElab parserName]`。
+   参见 [问题 #1350](https://github.com/leanprover/lean4/issues/1350)。
 
-* Improve `MVarId` methods discoverability. See [issue #1346](https://github.com/leanprover/lean4/issues/1346).
-  We still have to add similar methods for `FVarId`, `LVarId`, `Expr`, and other objects.
-  Many existing methods have been marked as deprecated.
+* 提升 `MVarId` 方法的可发现性。参见 [问题 #1346](https://github.com/leanprover/lean4/issues/1346)。
+  我们仍需为 `FVarId`、`LVarId`、`Expr` 以及其他对象添加类似的方法。
+  许多现有方法已被标记为弃用。
 
-* Add attribute `[deprecated]` for marking deprecated declarations. Examples:
+* 添加属性 `[deprecated]`，用于标记已弃用的声明。例如：
   ```lean
   def g (x : Nat) := x + 1
 
@@ -192,14 +192,14 @@ Contributors:
   #check h 0 -- warning: `h` has been deprecated
   ```
 
-* Add type `LevelMVarId` (and abbreviation `LMVarId`) for universe level metavariable ids.
-  Motivation: prevent meta-programmers from mixing up universe and expression metavariable ids.
+* 为 universe level 元变量 id 添加类型 `LevelMVarId`（及缩写 `LMVarId`）。
+  动机：防止元编程者混淆 universe 元变量 id 与表达式元变量 id。
 
-* Improve `calc` term and tactic. See [issue #1342](https://github.com/leanprover/lean4/issues/1342).
+* 改进 `calc` 项与 tactic。参见 [问题 #1342](https://github.com/leanprover/lean4/issues/1342)。
 
-* [Relaxed antiquotation parsing](https://github.com/leanprover/lean4/pull/1272) further reduces the need for explicit `$x:p` antiquotation kind annotations.
+* [放宽 antiquotation 解析](https://github.com/leanprover/lean4/pull/1272)，进一步减少了显式 `$x:p` antiquotation 种类注解的需求。
 
-* Add support for computed fields in inductives. Example:
+* 为归纳类型中的计算字段添加支持。例如：
   ```lean
   inductive Exp
     | var (i : Nat)
@@ -209,29 +209,29 @@ Contributors:
       | .var i => i
       | .app a b => a.hash * b.hash + 1
   ```
-  The result of the `Exp.hash` function is then stored as an extra "computed" field in the `.var` and `.app` constructors;
-  `Exp.hash` accesses this field and thus runs in constant time (even on dag-like values).
+  随后，`Exp.hash` 函数的结果会作为额外的“计算”字段存储在 `.var` 和 `.app` 构造子中；
+  `Exp.hash` 直接访问该字段，因此可在常数时间内运行（即使面对 DAG 风格的值也是如此）。
 
-* Update `a[i]` notation. It is now based on the type class
+* 更新 `a[i]` 记法。它现在基于如下类型类
   ```lean
   class GetElem (cont : Type u) (idx : Type v) (elem : outParam (Type w)) (dom : outParam (cont → idx → Prop)) where
     getElem (xs : cont) (i : idx) (h : dom xs i) : Elem
   ```
-  The notation `a[i]` is now defined as follows
+  记法 `a[i]` 现在定义如下
   ```lean
   macro:max x:term noWs "[" i:term "]" : term => `(getElem $x $i (by get_elem_tactic))
   ```
-  The proof that `i` is a valid index is synthesized using the tactic `get_elem_tactic`.
-  For example, the type `Array α` has the following instances
+  `i` 是合法索引的证明由 tactic `get_elem_tactic` 自动合成。
+  例如，类型 `Array α` 具有如下实例
   ```lean
   instance : GetElem (Array α) Nat α fun xs i => LT.lt i xs.size where ...
   instance : GetElem (Array α) USize α fun xs i => LT.lt i.toNat xs.size where ...
   ```
-  You can use the notation `a[i]'h` to provide the proof manually.
-  Two other notations were introduced: `a[i]!` and `a[i]?`, For `a[i]!`, a panic error message is produced at
-  runtime if `i` is not a valid index. `a[i]?` has type `Option α`, and `a[i]?` evaluates to `none` if the
-  index `i` is not valid.
-  The three new notations are defined as follows:
+  你可以使用记法 `a[i]'h` 手动给出该证明。
+  此外还引入了另外两种记法：`a[i]!` 与 `a[i]?`。对于 `a[i]!`，若 `i` 不是合法索引，则会在
+  运行时产生 panic 报错消息。`a[i]?` 的类型是 `Option α`，如果索引 `i` 非法，
+  `a[i]?` 会求值为 `none`。
+  这三种新记法定义如下：
   ```lean
   @[inline] def getElem' [GetElem cont idx elem dom] (xs : cont) (i : idx) (h : dom xs i) : elem :=
   getElem xs i h
@@ -246,8 +246,8 @@ Contributors:
   macro:max x:term noWs "[" i:term "]" noWs "!" : term => `(getElem! $x $i)
   macro x:term noWs "[" i:term "]'" h:term:max : term => `(getElem' $x $i $h)
   ```
-  See discussion on [Zulip](https://leanprover.zulipchat.com/#narrow/stream/270676-lean4/topic/String.2EgetOp/near/287855425).
-  Examples:
+  参见 [Zulip](https://leanprover.zulipchat.com/#narrow/stream/270676-lean4/topic/String.2EgetOp/near/287855425) 上的讨论。
+  示例：
   ```lean
   example (a : Array Int) (i : Nat) : Int :=
     a[i] -- Error: failed to prove index is valid ...
@@ -272,7 +272,7 @@ Contributors:
   example (a : Array Int) (i : USize) (h : i.toNat < a.size) : Int :=
     a[i] -- Ok
   ```
-  The `get_elem_tactic` is defined as
+  `get_elem_tactic` 定义如下
   ```lean
   macro "get_elem_tactic" : tactic =>
     `(first
@@ -280,23 +280,23 @@ Contributors:
       | fail "failed to prove index is valid, ..."
      )
   ```
-  The `get_elem_tactic_trivial` auxiliary tactic can be extended using `macro_rules`. By default, it tries `trivial`, `simp_arith`, and a special case for `Fin`. In the future, it will also try `linarith`.
-  You can extend `get_elem_tactic_trivial` using `my_tactic` as follows
+  辅助 tactic `get_elem_tactic_trivial` 可以通过 `macro_rules` 扩展。默认情况下，它会尝试 `trivial`、`simp_arith`，以及针对 `Fin` 的特殊情形。未来它还会尝试 `linarith`。
+  你可以像下面这样用 `my_tactic` 扩展 `get_elem_tactic_trivial`
   ```lean
   macro_rules
   | `(tactic| get_elem_tactic_trivial) => `(tactic| my_tactic)
   ```
-  Note that `Idx`'s type in `GetElem` does not depend on `Cont`. So, you cannot write the instance `instance : GetElem (Array α) (Fin ??) α fun xs i => ...`, but the Lean library comes equipped with the following auxiliary instance:
+  请注意，`GetElem` 中 `Idx` 的类型并不依赖于 `Cont`。因此，你不能写出这样的实例 `instance : GetElem (Array α) (Fin ??) α fun xs i => ...`，不过 Lean 库提供了如下辅助实例：
   ```lean
   instance [GetElem cont Nat elem dom] : GetElem cont (Fin n) elem fun xs i => dom xs i where
     getElem xs i h := getElem xs i.1 h
   ```
-  and helper tactic
+  以及辅助 tactic
   ```lean
   macro_rules
   | `(tactic| get_elem_tactic_trivial) => `(tactic| apply Fin.val_lt_of_le; get_elem_tactic_trivial; done)
   ```
-  Example:
+  例如：
   ```lean
   example (a : Array Nat) (i : Fin a.size) :=
     a[i] -- Ok
@@ -305,7 +305,7 @@ Contributors:
     a[i] -- Ok
   ```
 
-* Better support for qualified names in recursive declarations. The following is now supported:
+* 更好地支持递归声明中的限定名。现在支持如下写法：
   ```lean
   namespace Nat
     def fact : Nat → Nat
@@ -314,7 +314,7 @@ Contributors:
   end Nat
   ```
 
-* Add support for `CommandElabM` monad at `#eval`. Example:
+* 在 `#eval` 中添加对 `CommandElabM` monad 的支持。例如：
   ```lean
   import Lean
 
@@ -327,25 +327,25 @@ Contributors:
   #eval foo -- 10
   ```
 
-* Try to elaborate `do` notation even if the expected type is not available. We still delay elaboration when the expected type
-  is not available. This change is particularly useful when writing examples such as
+* 即使期望类型不可用，也会尝试精化 `do` 记法。当期望类型不可用时，我们仍然会延后精化。
+  这一变更在编写如下示例时尤其有用
   ```lean
   #eval do
     IO.println "hello"
     IO.println "world"
   ```
-  That is, we don't have to use the idiom `#eval show IO _ from do ...` anymore.
-  Note that auto monadic lifting is less effective when the expected type is not available.
-  Monadic polymorphic functions (e.g., `ST.Ref.get`) also require the expected type.
+  也就是说，我们不再需要使用 `#eval show IO _ from do ...` 这种写法。
+  需要注意的是，当期望类型不可用时，自动单子提升的效果会变差。
+  单子多态函数（例如 `ST.Ref.get`）同样需要期望类型。
 
-* On Linux, panics now print a backtrace by default, which can be disabled by setting the environment variable `LEAN_BACKTRACE` to `0`.
-  Other platforms are TBD.
+* 在 Linux 上，panic 现在默认会打印回溯；可通过将环境变量 `LEAN_BACKTRACE` 设为 `0` 来禁用。
+  其他平台尚待确定。
 
-* The `group(·)` `syntax` combinator is now introduced automatically where necessary, such as when using multiple parsers inside `(...)+`.
+* 现在会在需要时自动引入 `group(·)` `syntax` 组合子，例如在 `(...)+` 中使用多个解析器时。
 
-* Add ["Typed Macros"](https://github.com/leanprover/lean4/pull/1251): syntax trees produced and accepted by syntax antiquotations now remember their syntax kinds, preventing accidental production of ill-formed syntax trees and reducing the need for explicit `:kind` antiquotation annotations. See PR for details.
+* 添加[“类型化宏”](https://github.com/leanprover/lean4/pull/1251)：syntax antiquotation 产生和接受的语法树现在会记住其语法种类，从而避免意外生成格式错误的语法树，并减少对显式 `:kind` antiquotation 注解的需求。详情见该 PR。
 
-* Aliases of protected definitions are protected too. Example:
+* 受保护定义的别名现在也同样受保护。例如：
   ```lean
   protected def Nat.double (x : Nat) := 2*x
 
@@ -358,10 +358,10 @@ Contributors:
   #check double -- Error, `Ex.double` is alias for `Nat.double` which is protected
   ```
 
-* Use `IO.getRandomBytes` to initialize random seed for `IO.rand`. See discussion at [this PR](https://github.com/leanprover/lean4-samples/pull/2).
+* 使用 `IO.getRandomBytes` 为 `IO.rand` 初始化随机种子。参见[该 PR](https://github.com/leanprover/lean4-samples/pull/2)中的讨论。
 
-* Improve dot notation and aliases interaction. See discussion on [Zulip](https://leanprover.zulipchat.com/#narrow/stream/270676-lean4/topic/Namespace-based.20overloading.20does.20not.20find.20exports/near/282946185) for additional details.
-  Example:
+* 改进点记法与别名之间的交互。更多细节参见 [Zulip](https://leanprover.zulipchat.com/#narrow/stream/270676-lean4/topic/Namespace-based.20overloading.20does.20not.20find.20exports/near/282946185) 上的讨论。
+  例如：
   ```lean
   def Set (α : Type) := α → Prop
   def Set.union (s₁ s₂ : Set α) : Set α := fun a => s₁ a ∨ s₂ a
@@ -375,7 +375,7 @@ Contributors:
     x.union y -- Works
   ```
 
-* `ext` and `enter` conv tactics can now go inside let-declarations. Example:
+* `ext` 与 `enter` 这两个 conv tactic 现在可以进入 let 声明内部。例如：
   ```lean
   example (g : Nat → Nat) (y : Nat) (h : let x := y + 1; g (0+x) = x) : g (y + 1) = y + 1 := by
     conv at h => enter [x, 1, 1]; rw [Nat.zero_add]
@@ -389,7 +389,7 @@ Contributors:
     exact h
   ```
 
-* Add `zeta` conv tactic to expand let-declarations. Example:
+* 添加 `zeta` conv tactic，用于展开 let 声明。例如：
   ```lean
   example (h : let x := y + 1; 0 + x = y) : False := by
     conv at h => zeta; rw [Nat.zero_add]
@@ -401,16 +401,16 @@ Contributors:
     simp_arith at h
   ```
 
-* Improve namespace resolution. See issue [#1224](https://github.com/leanprover/lean4/issues/1224). Example:
+* 改进命名空间解析。参见问题 [#1224](https://github.com/leanprover/lean4/issues/1224)。例如：
   ```lean
   import Lean
   open Lean Parser Elab
   open Tactic -- now opens both `Lean.Parser.Tactic` and `Lean.Elab.Tactic`
   ```
 
-* Rename `constant` command to `opaque`. See discussion at [Zulip](https://leanprover.zulipchat.com/#narrow/stream/270676-lean4/topic/What.20is.20.60opaque.60.3F/near/284926171).
+* 将 `constant` 命令重命名为 `opaque`。参见 [Zulip](https://leanprover.zulipchat.com/#narrow/stream/270676-lean4/topic/What.20is.20.60opaque.60.3F/near/284926171) 上的讨论。
 
-* Extend `induction` and `cases` syntax: multiple left-hand-sides in a single alternative. This extension is very similar to the one implemented for `match` expressions. Examples:
+* 扩展 `induction` 与 `cases` 语法：单个分支中可包含多个左侧模式。这一扩展与 `match` 表达式上的实现非常相似。例如：
   ```lean
   inductive Foo where
     | mk1 (x : Nat) | mk2 (x : Nat) | mk3
@@ -427,14 +427,14 @@ Contributors:
     | mk3 => decide
   ```
 
-* [`let/if` indentation in `do` blocks in now supported.](https://github.com/leanprover/lean4/issues/1120)
+* [现在支持 `do` 块中的 `let/if` 缩进。](https://github.com/leanprover/lean4/issues/1120)
 
-* Add unnamed antiquotation `$_` for use in syntax quotation patterns.
+* 添加无名 antiquotation `$_`，用于语法 quotation 模式。
 
-* [Add unused variables linter](https://github.com/leanprover/lean4/pull/1159). Feedback welcome!
+* [添加未使用变量检查器](https://github.com/leanprover/lean4/pull/1159)。欢迎反馈！
 
-* Lean now generates an error if the body of a declaration body contains a universe parameter that does not occur in the declaration type, nor is an explicit parameter.
-  Examples:
+* 如果声明体中包含一个既未出现在声明类型中、也不是显式参数的 universe 参数，Lean 现在会报错。
+  例如：
   ```lean
   /-
   The following declaration now produces an error because `PUnit` is universe polymorphic,
@@ -453,12 +453,12 @@ Contributors:
     aux ⟨⟩
   ```
 
-* Add `subst_vars` tactic.
+* 添加 `subst_vars` tactic。
 
-* [Fix `autoParam` in structure fields lost in multiple inheritance.](https://github.com/leanprover/lean4/issues/1158).
+* [修复多重继承中结构体字段里的 `autoParam` 丢失问题。](https://github.com/leanprover/lean4/issues/1158)。
 
-* Add `[eliminator]` attribute. It allows users to specify default recursor/eliminators for the `induction` and `cases` tactics.
-  It is an alternative for the `using` notation. Example:
+* 添加 `[eliminator]` 属性。它允许用户为 `induction` 与 `cases` tactics 指定默认的递归子/消去子。
+  这是 `using` 记法的另一种替代方式。例如：
   ```lean
   @[eliminator] protected def recDiag {motive : Nat → Nat → Sort u}
       (zero_zero : motive 0 0)
@@ -486,8 +486,8 @@ Contributors:
     induction x, y <;> simp [f, *]
   ```
 
-* Add support for `casesOn` applications to structural and well-founded recursion modules.
-  This feature is useful when writing definitions using tactics. Example:
+* 为结构递归与良基递归模块添加对 `casesOn` 应用的支持。
+  这一特性在使用 tactic 编写定义时非常有用。例如：
   ```lean
   inductive Foo where
     | a | b | c
@@ -506,14 +506,14 @@ Contributors:
       | _, isFalse h₂ => isFalse (fun h => by cases h; cases (h₂ rfl))
   ```
 
-* `Option` is again a monad. The auxiliary type `OptionM` has been removed. See [Zulip thread](https://leanprover.zulipchat.com/#narrow/stream/270676-lean4/topic/Do.20we.20still.20need.20OptionM.3F/near/279761084).
+* `Option` 再次成为 monad。辅助类型 `OptionM` 已被移除。参见 [Zulip 讨论串](https://leanprover.zulipchat.com/#narrow/stream/270676-lean4/topic/Do.20we.20still.20need.20OptionM.3F/near/279761084)。
 
-* Improve `split` tactic. It used to fail on `match` expressions of the form `match h : e with ...` where `e` is not a free variable.
-  The failure used to occur during generalization.
+* 改进 `split` tactic。它过去会在形如 `match h : e with ...` 且 `e` 不是自由变量的 `match` 表达式上失败。
+  这种失败过去发生在泛化阶段。
 
 
-* New encoding for `match`-expressions that use the `h :` notation for discriminants. The information is not lost during delaboration,
-  and it is the foundation for a better `split` tactic. at delaboration time. Example:
+* 为在判别式中使用 `h :` 记法的 `match` 表达式引入新的编码。相关信息在反精化过程中不会丢失，
+  这也为更好的 `split` tactic 奠定了基础。例如：
   ```lean
   #print Nat.decEq
   /-
@@ -525,13 +525,13 @@ Contributors:
   -/
   ```
 
-* `exists` tactic is now takes a comma separated list of terms.
+* `exists` tactic 现在接受以逗号分隔的项列表。
 
-* Add `dsimp` and `dsimp!` tactics. They guarantee the result term is definitionally equal, and only apply
-  `rfl`-theorems.
+* 添加 `dsimp` 与 `dsimp!` tactics。它们保证结果项在定义上相等，并且只应用
+  `rfl` 定理。
 
-* Fix binder information for `match` patterns that use definitions tagged with `[matchPattern]` (e.g., `Nat.add`).
-  We now have proper binder information for the variable `y` in the following example.
+* 修复在 `match` 模式中使用带 `[matchPattern]` 标记的定义（例如 `Nat.add`）时的绑定器信息。
+  现在，下面示例中的变量 `y` 会具有正确的绑定器信息。
   ```lean
   def f (x : Nat) : Nat :=
     match x with
@@ -539,7 +539,7 @@ Contributors:
     | y + 1 => y
   ```
 
-* (Fix) the default value for structure fields may now depend on the structure parameters. Example:
+* （修复）结构体字段的默认值现在可以依赖结构体参数。例如：
   ```lean
   structure Something (i: Nat) where
   n1: Nat := 1
@@ -549,11 +549,10 @@ Contributors:
   example : s.n2 = 11 := rfl
   ```
 
-* Apply `rfl` theorems at the `dsimp` auxiliary method used by `simp`. `dsimp` can be used anywhere in an expression
-  because it preserves definitional equality.
+* 在 `simp` 所使用的 `dsimp` 辅助方法中应用 `rfl` 定理。`dsimp` 可以在表达式中的任意位置使用，
+  因为它保持定义相等。
 
-* Refine auto bound implicit feature. It does not consider anymore unbound variables that have the same
-  name of a declaration being defined. Example:
+* 细化 auto bound implicit 特性。它不再把与当前正在定义的声明同名的未绑定变量纳入考虑。例如：
   ```lean
   def f : f → Bool := -- Error at second `f`
     fun _ => true
@@ -561,13 +560,12 @@ Contributors:
   inductive Foo : List Foo → Type -- Error at second `Foo`
     | x : Foo []
   ```
-  Before this refinement, the declarations above would be accepted and the
-  second `f` and `Foo` would be treated as auto implicit variables. That is,
-  `f : {f : Sort u} → f → Bool`, and
-  `Foo : {Foo : Type u} → List Foo → Type`.
+  在这一细化之前，上述声明会被接受，而第二个 `f` 与 `Foo` 会被视作 auto implicit 变量。也就是说，
+  `f : {f : Sort u} → f → Bool`，以及
+  `Foo : {Foo : Type u} → List Foo → Type`。
 
 
-* Fix syntax highlighting for recursive declarations. Example
+* 修复递归声明的语法高亮。例如
   ```lean
   inductive List (α : Type u) where
     | nil : List α  -- `List` is not highlighted as a variable anymore
@@ -577,17 +575,17 @@ Contributors:
     | []    => []
     | a::as => f a :: map f as -- `map` is not highlighted as a variable anymore
   ```
-* Add `autoUnfold` option to `Lean.Meta.Simp.Config`, and the following macros
+* 为 `Lean.Meta.Simp.Config` 添加 `autoUnfold` 选项，以及以下宏
   - `simp!` for `simp (config := { autoUnfold := true })`
   - `simp_arith!` for `simp (config := { autoUnfold := true, arith := true })`
   - `simp_all!` for `simp_all (config := { autoUnfold := true })`
   - `simp_all_arith!` for `simp_all (config := { autoUnfold := true, arith := true })`
 
-  When the `autoUnfold` is set to true, `simp` tries to unfold the following kinds of definition
-  - Recursive definitions defined by structural recursion.
-  - Non-recursive definitions where the body is a `match`-expression. This
-    kind of definition is only unfolded if the `match` can be reduced.
-  Example:
+  当 `autoUnfold` 设为 true 时，`simp` 会尝试展开以下几类定义
+  - 由结构递归定义的递归定义。
+  - 函数体为 `match` 表达式的非递归定义。此类定义
+    仅在 `match` 可归约时才会被展开。
+  例如：
   ```lean
   def append (as bs : List α) : List α :=
     match as with
@@ -601,7 +599,7 @@ Contributors:
     induction as <;> simp_all!
   ```
 
-* Add `save` tactic for creating checkpoints more conveniently. Example:
+* 添加 `save` tactic，以更方便地创建 checkpoint。例如：
   ```lean
   example : <some-proposition> := by
     tac_1
@@ -610,7 +608,7 @@ Contributors:
     tac_3
     ...
   ```
-  is equivalent to
+  等价于
   ```lean
   example : <some-proposition> := by
     checkpoint
@@ -620,50 +618,49 @@ Contributors:
     ...
   ```
 
-* Remove support for `{}` annotation from inductive datatype constructors. This annotation was barely used, and we can control the binder information for parameter bindings using the new inductive family indices to parameter promotion. Example: the following declaration using `{}`
+* 移除对归纳数据类型构造子中 `{}` 注解的支持。这一注解几乎无人使用，而参数绑定的绑定器信息现在可通过新的“归纳族索引提升为参数”机制来控制。例如，下面这个使用 `{}` 的声明
   ```lean
   inductive LE' (n : Nat) : Nat → Prop where
     | refl {} : LE' n n -- Want `n` to be explicit
     | succ  : LE' n m → LE' n (m+1)
   ```
-  can now be written as
+  现在可以写成
   ```lean
   inductive LE' : Nat → Nat → Prop where
     | refl (n : Nat) : LE' n n
     | succ : LE' n m → LE' n (m+1)
   ```
-  In both cases, the inductive family has one parameter and one index.
-  Recall that the actual number of parameters can be retrieved using the command `#print`.
+  在这两种写法中，该归纳族都有一个参数和一个索引。
+  请记住，实际参数个数可通过命令 `#print` 查看。
 
-* Remove support for `{}` annotation in the `structure` command.
+* 移除 `structure` 命令中对 `{}` 注解的支持。
 
-* Several improvements to LSP server. Examples: "jump to definition" in mutually recursive sections, fixed incorrect hover information in "match"-expression patterns, "jump to definition" for pattern variables, fixed auto-completion in function headers, etc.
+* 对 LSP 服务器做了多项改进。例如：在互递归片段中支持“跳转到定义”、修复 match 表达式模式中的错误悬停信息、支持模式变量的“跳转到定义”、修复函数头中的自动补全，等等。
 
-* In `macro ... xs:p* ...` and similar macro bindings of combinators, `xs` now has the correct type `Array Syntax`
+* 在 `macro ... xs:p* ...` 及类似的组合子宏绑定中，`xs` 现在具有正确的类型 `Array Syntax`
 
-* Identifiers in syntax patterns now ignore macro scopes during matching.
+* 语法模式中的标识符在匹配时现在会忽略宏作用域。
 
-* Improve binder names for constructor auto implicit parameters. Example, given the inductive datatype
+* 改进构造子 auto implicit 参数的绑定器名称。例如，给定归纳数据类型
   ```lean
   inductive Member : α → List α → Type u
     | head : Member a (a::as)
     | tail : Member a bs → Member a (b::bs)
   ```
-  before:
+  之前：
   ```lean
   #check @Member.head
   -- @Member.head : {x : Type u_1} → {a : x} → {as : List x} → Member a (a :: as)
   ```
-  now:
+  现在：
   ```lean
   #check @Member.head
   -- @Member.head : {α : Type u_1} → {a : α} → {as : List α} → Member a (a :: as)
   ```
 
-* Improve error message when constructor parameter universe level is too big.
+* 改进当构造子参数 universe level 过大时的错误消息。
 
-* Add support for `for h : i in [start:stop] do .. ` where `h : i ∈ [start:stop]`. This feature is useful for proving
-  termination of functions such as:
+* 添加对 `for h : i in [start:stop] do .. ` 的支持，其中 `h : i ∈ [start:stop]`。这一特性有助于证明如下函数的终止性：
   ```lean
   inductive Expr where
     | app (f : String) (args : Array Expr)
@@ -678,19 +675,18 @@ Contributors:
       return sz
   ```
 
-* Add tactic `case'`. It is similar to `case`, but does not admit the goal on failure.
-  For example, the new tactic is useful when writing tactic scripts where we need to use `case'`
-  at `first | ... | ...`, and we want to take the next alternative when `case'` fails.
+* 添加 tactic `case'`。它与 `case` 类似，但在失败时不会自动承认目标。
+  例如，当我们在 `first | ... | ...` 中需要使用 `case'`，并希望在 `case'` 失败时尝试下一个分支时，这个新 tactic 就很有用。
 
-* Add tactic macro
+* 添加 tactic 宏
   ```lean
   macro "stop" s:tacticSeq : tactic => `(repeat sorry)
   ```
-  See discussion on [Zulip](https://leanprover.zulipchat.com/#narrow/stream/270676-lean4/topic/Partial.20evaluation.20of.20a.20file).
+  参见 [Zulip](https://leanprover.zulipchat.com/#narrow/stream/270676-lean4/topic/Partial.20evaluation.20of.20a.20file) 上的讨论。
 
-* When displaying goals, we do not display inaccessible proposition names
-if they do not have forward dependencies. We still display their types.
-For example, the goal
+* 显示目标时，如果不可访问的命题名没有前向依赖，我们就不再显示它们的名称，
+但仍会显示它们的类型。
+例如，目标
   ```lean
   case node.inl.node
   β : Type u_1
@@ -710,7 +706,7 @@ For example, the goal
   a✝ : ForallTree (fun k v => key < k) right
   ⊢ BST left
   ```
-  is now displayed as
+  现在会显示为
   ```lean
   case node.inl.node
   β : Type u_1
@@ -731,28 +727,28 @@ For example, the goal
   ⊢ BST left
   ```
 
-* The hypothesis name is now optional in the `by_cases` tactic.
+* `by_cases` tactic 中的假设名现在是可选的。
 
-* [Fix inconsistency between `syntax` and kind names](https://github.com/leanprover/lean4/issues/1090).
-  The node kinds `numLit`, `charLit`, `nameLit`, `strLit`, and `scientificLit` are now called
-  `num`, `char`, `name`, `str`, and `scientific` respectively. Example: we now write
+* [修复 `syntax` 与 kind 名称之间的不一致](https://github.com/leanprover/lean4/issues/1090)。
+  节点种类 `numLit`、`charLit`、`nameLit`、`strLit` 和 `scientificLit` 现在分别改名为
+  `num`、`char`、`name`、`str` 与 `scientific`。例如，我们现在写作
   ```lean
   macro_rules | `($n:num) => `("hello")
   ```
-  instead of
+  而不是
   ```lean
   macro_rules | `($n:numLit) => `("hello")
   ```
 
-* (Experimental) New `checkpoint <tactic-seq>` tactic for big interactive proofs.
+* （实验性）为大型交互式证明添加新的 `checkpoint <tactic-seq>` tactic。
 
-* Rename tactic `nativeDecide` => `native_decide`.
+* 将 tactic `nativeDecide` 重命名为 `native_decide`。
 
-* Antiquotations are now accepted in any syntax. The `incQuotDepth` `syntax` parser is therefore obsolete and has been removed.
+* 现在任何语法中都接受 antiquotation。因此，`incQuotDepth` `syntax` 解析器已经过时并被移除。
 
-* Renamed tactic `nativeDecide` => `native_decide`.
+* 已将 tactic `nativeDecide` 重命名为 `native_decide`。
 
-* "Cleanup" local context before elaborating a `match` alternative right-hand-side. Examples:
+* 在精化 `match` 分支右侧之前，先“清理”局部上下文。例如：
   ```lean
   example (x : Nat) : Nat :=
     match g x with
@@ -763,16 +759,16 @@ For example, the goal
     | (a, b) => _ -- Local context does not contain the `h✝ : x.fst > 0` anymore
   ```
 
-* Improve `let`-pattern (and `have`-pattern) macro expansion. In the following example,
+* 改进 `let` 模式（以及 `have` 模式）的宏展开。在下面的例子中，
   ```lean
   example (x : Nat × Nat) : f x > 0 := by
     let (a, b) := x
     done
   ```
-  The resulting goal is now `... |- f (a, b) > 0` instead of `... |- f x > 0`.
+  生成的目标现在是 `... |- f (a, b) > 0`，而不是 `... |- f x > 0`。
 
-* Add cross-compiled [aarch64 Linux](https://github.com/leanprover/lean4/pull/1066) and [aarch64 macOS](https://github.com/leanprover/lean4/pull/1076) releases.
+* 添加交叉编译的 [aarch64 Linux](https://github.com/leanprover/lean4/pull/1066) 与 [aarch64 macOS](https://github.com/leanprover/lean4/pull/1076) 发布版本。
 
-* [Add tutorial-like examples to our documentation](https://github.com/leanprover/lean4/tree/master/doc/examples), rendered using LeanInk+Alectryon.
+* [在文档中加入教程风格的示例](https://github.com/leanprover/lean4/tree/master/doc/examples)，使用 LeanInk+Alectryon 渲染。
 
 ````

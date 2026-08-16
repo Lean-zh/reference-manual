@@ -19,22 +19,21 @@ file := "v4.1.0"
 %%%
 
 ```markdown
-* The error positioning on missing tokens has been [improved](https://github.com/leanprover/lean4/pull/2393). In particular, this should make it easier to spot errors in incomplete tactic proofs.
+* 缺失 token 时的错误定位已得到[改进](https://github.com/leanprover/lean4/pull/2393)。特别是，这应能让不完整 tactic 证明中的错误更容易发现。
 
-* After elaborating a configuration file, Lake will now cache the configuration to a `lakefile.olean`. Subsequent runs of Lake will import this OLean instead of elaborating the configuration file. This provides a significant performance improvement (benchmarks indicate that using the OLean cuts Lake's startup time in half), but there are some important details to keep in mind:
-  + Lake will regenerate this OLean after each modification to the `lakefile.lean` or `lean-toolchain`. You can also force a reconfigure by passing the new `--reconfigure` / `-R` option to `lake`.
-  + Lake configuration options (i.e., `-K`) will be fixed at the moment of elaboration. Setting these options when `lake` is using the cached configuration will have no effect. To change options, run `lake` with `-R` / `--reconfigure`.
-  + **The `lakefile.olean` is a local configuration and should not be committed to Git. Therefore, existing Lake packages need to add it to their `.gitignore`.**
+* 在完成配置文件的精化后，Lake 现在会将配置缓存到 `lakefile.olean` 中。后续运行 Lake 时将导入这个 OLean，而不是重新精化配置文件。这带来了显著的性能提升（基准测试表明，使用 OLean 可将 Lake 的启动时间减半），但有一些重要细节需要注意：
+  + 每次修改 `lakefile.lean` 或 `lean-toolchain` 后，Lake 都会重新生成这个 OLean。你也可以向 `lake` 传入新的 `--reconfigure` / `-R` 选项来强制重新配置。
+  + Lake 配置选项（即 `-K`）会固定在精化当时。若 `lake` 正在使用缓存配置，此时设置这些选项将不起作用。要更改选项，请用 `-R` / `--reconfigure` 运行 `lake`。
+  + **`lakefile.olean` 是本地配置，不应提交到 Git。因此，现有 Lake 包需要把它加入各自的 `.gitignore`。**
 
-* The signature of `Lake.buildO` has changed, `args` has been split into `weakArgs` and `traceArgs`. `traceArgs` are included in the input trace and `weakArgs` are not. See Lake's [FFI example](https://github.com/leanprover/lean4/blob/releases/v4.1.0/src/lake/examples/ffi/lib/lakefile.lean) for a demonstration of how to adapt to this change.
+* `Lake.buildO` 的签名已更改，`args` 被拆分为 `weakArgs` 和 `traceArgs`。`traceArgs` 会包含在输入跟踪中，而 `weakArgs` 不会。有关如何适配此变更的示例，请参见 Lake 的 [FFI 示例](https://github.com/leanprover/lean4/blob/releases/v4.1.0/src/lake/examples/ffi/lib/lakefile.lean)。
 
-* The signatures of `Lean.importModules`, `Lean.Elab.headerToImports`, and `Lean.Elab.parseImports`
+* `Lean.importModules`、`Lean.Elab.headerToImports` 和 `Lean.Elab.parseImports` 的签名
 
-* There is now [an `occs` field](https://github.com/leanprover/lean4/pull/2470)
-  in the configuration object for the `rewrite` tactic,
-  allowing control of which occurrences of a pattern should be rewritten.
-  This was previously a separate argument for `Lean.MVarId.rewrite`,
-  and this has been removed in favour of an additional field of `Rewrite.Config`.
-  It was not previously accessible from user tactics.
+* `rewrite` tactic 的配置对象中现已加入[`occs` 字段](https://github.com/leanprover/lean4/pull/2470)，
+  以便控制模式的哪些出现位置会被重写。
+  这原先是 `Lean.MVarId.rewrite` 的一个单独参数，
+  现在已改为 `Rewrite.Config` 的一个额外字段。
+  过去用户 tactic 无法访问它。
 
 ```

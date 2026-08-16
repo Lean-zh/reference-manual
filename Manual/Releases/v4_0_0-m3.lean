@@ -20,11 +20,11 @@ file := "v4.0.0-m3"
 %%%
 
 ````markdown
-This is the third milestone release of Lean 4, and the last planned milestone before an official
-release. With almost 3000 commits improving and extending many parts of the system since the last
-milestone, we are now close to completing all main features we have envisioned for Lean 4.
+这是 Lean 4 的第三个里程碑版本，也是正式发布前计划中的最后一个里程碑版本。
+自上一个里程碑以来，近 3000 次提交对系统的许多部分进行了改进和扩展，
+我们如今已经接近完成为 Lean 4 设想的所有主要特性。
 
-Contributors:
+贡献者：
 ```
 $ git shortlog -s -n v4.0.0-m2..v4.0.0-m3
   1719  Leonardo de Moura
