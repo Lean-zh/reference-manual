@@ -20,33 +20,33 @@ universe u v w u₁ u₂ w₁ w₂
 因此不会重新实现运行时行为。结构体、类型类与归纳类型在后续形状审计中按真实声明镜像。
 -/
 
-/-- 不会抛出异常的 `IO` monad。 -/
+/-- 不会抛出异常的 `IO` 单子。 -/
 def c001 := @_root_.BaseIO
 
-/-- 支持任意副作用并可抛出 `IO.Error` 类型异常的 monad。 -/
+/-- 支持任意副作用并可抛出 `IO.Error` 类型异常的单子。 -/
 def c002 := @_root_.IO
 
 /--
-一个可以对外部世界产生副作用，或抛出 `ε` 类型异常的 monad。
+一个可以对外部世界产生副作用，或抛出 `ε` 类型异常的单子。
 
-`BaseIO` 是此 monad 的不抛异常版本。`IO` 则将异常类型设为 `IO.Error`。
+`BaseIO` 是此单子的不抛异常版本。`IO` 则将异常类型设为 `IO.Error`。
 -/
 def c003 := @_root_.EIO
 
-/-- 创建一个 `IO` 动作；当且仅当它被执行时，才会调用 `fn`，并返回其结果。 -/
+/-- 创建一个 IO 动作；当且仅当它被执行时，才会调用 `fn`，并返回其结果。 -/
 def c004 := @_root_.IO.lazyPure
 
 /--
 将一个不会抛出异常的 `BaseIO` 动作作为 `IO` 动作运行。
 
-此函数通常通过[自动 monad 提升](https://lean-lang.org/doc/reference/4.34.0-rc1/find/?domain=Verso.Genre.Manual.section&name=lifting-monads)隐式使用，而不是显式调用。
+此函数通常通过[自动单子提升](https://lean-lang.org/doc/reference/4.34.0-rc1/find/?domain=Verso.Genre.Manual.section&name=lifting-monads)隐式使用，而不是显式调用。
 -/
 def c005 := @_root_.BaseIO.toIO
 
 /--
-在任意其他 `EIO` monad 中运行一个不会抛出异常的 `BaseIO` 动作。
+在任意其他 `EIO` 单子 中运行一个不会抛出异常的 `BaseIO` 动作。
 
-此函数通常通过[自动 monad 提升](https://lean-lang.org/doc/reference/4.34.0-rc1/find/?domain=Verso.Genre.Manual.section&name=lifting-monads)隐式使用，而不是显式调用。
+此函数通常通过[自动单子提升](https://lean-lang.org/doc/reference/4.34.0-rc1/find/?domain=Verso.Genre.Manual.section&name=lifting-monads)隐式使用，而不是显式调用。
 -/
 def c006 := @_root_.BaseIO.toEIO
 
@@ -67,11 +67,11 @@ def c008 := @_root_.EIO.toIO
 -/
 def c009 := @_root_.EIO.toIO'
 
-/-- 在某个其他 `EIO` monad 中运行一个 `IO` 动作，并用 `f` 翻译 `IO` 异常。 -/
+/-- 在某个其他 `EIO` 单子 中运行一个 `IO` 动作，并用 `f` 转换 `IO` 异常。 -/
 def c010 := @_root_.IO.toEIO
 
 /--
-可在 `IO` monad 中抛出的异常。
+可在 `IO` 单子 中抛出的异常。
 
 `IO.Error` 的许多构造子都对应 POSIX 错误号。在这些情况下，文档字符串会列出与该错误相对应的
 POSIX 标准错误宏。该列表不一定穷尽全部情况，并且这些构造子还包含一个字段，用于保存底层错误号。
@@ -213,7 +213,7 @@ def c014 := @_root_.EIO.catchExceptions
 /--
 从字符串构造一个 `IO.Error`。
 
-`IO.Error` 是 `IO` monad 所抛出异常的类型。
+`IO.Error` 是 `IO` 单子 所抛出异常的类型。
 -/
 def c015 := @_root_.IO.userError
 
@@ -226,7 +226,7 @@ def c016 := @_root_.IO.iterate
 /-- 当前平台的字长，可能为 64 位或 32 位。 -/
 def c017 := @_root_.System.Platform.numBits
 
-/-- 当前平台的 LLVM target triple。若 Lean 编译时缺失，则为空。 -/
+/-- 当前平台的 LLVM 目标三元组。若 Lean 编译时缺失，则为空。 -/
 def c018 := @_root_.System.Platform.target
 
 /-- 当前平台是 Windows 吗？ -/
@@ -257,16 +257,16 @@ def c024 := @_root_.IO.monoNanosNow
 def c025 := @_root_.IO.monoMsNow
 
 /--
-返回当前线程执行期间已经发生的 _heartbeats_ 数量。heartbeat 计数是线程执行的“小型”内存分配次数。
+返回当前线程执行期间已经发生的 _心跳_ 数量。心跳 计数是线程执行的“小型”内存分配次数。
 
-heartbeats 用于实现跨不同硬件更具确定性的超时。
+心跳 用于实现跨不同硬件更具确定性的超时。
 -/
 def c026 := @_root_.IO.getNumHeartbeats
 
 /--
-按给定数量调整当前线程的 heartbeat 计数器。这可用于为避免分配的代码增加额外“权重”，也可在从快照恢复后用来调整计数器。
+按给定数量调整当前线程的 心跳 计数器。这可用于为避免分配的代码增加额外“权重”，也可在从快照恢复后用来调整计数器。
 
-heartbeats 是实现“确定性”超时的一种方式。heartbeat 计数器是当前执行线程上进行的“小型”内存分配次数。
+心跳 是实现“确定性”超时的一种方式。心跳 计数器是当前执行线程上进行的“小型”内存分配次数。
 -/
 def c027 := @_root_.IO.addHeartbeats
 
@@ -348,11 +348,11 @@ structure c035 extends StdioConfig where
 
 /-- 子进程的标准输入、输出与错误句柄的配置。 -/
 structure c036 where
-  /-- 进程 `stdin` 句柄的配置。 -/
+  /-- 进程标准输入句柄的配置。 -/
   stdin : _root_.IO.Process.Stdio := .inherit
-  /-- 进程 `stdout` 句柄的配置。 -/
+  /-- 进程标准输出句柄的配置。 -/
   stdout : _root_.IO.Process.Stdio := .inherit
-  /-- 进程 `stderr` 句柄的配置。 -/
+  /-- 进程标准错误句柄的配置。 -/
   stderr : _root_.IO.Process.Stdio := .inherit
 
 /--
@@ -455,7 +455,7 @@ class c049 (g : Type u) where
   -/
   next : g → Nat × g
   /--
-  `split` 操作允许获得两个不同的随机数生成器。这在函数式程序中非常有用（例如将随机数生成器传递给递归调用时）。
+  split 操作允许获得两个不同的随机数生成器。这在函数式程序中非常有用（例如将随机数生成器传递给递归调用时）。
   -/
   split : g → g × g
 
@@ -531,7 +531,7 @@ def c061 := @_root_.IO.FS.Handle.mk
 
 此数据类型表示的所有模式都不会转换行结束符（即 Windows 上的 `O_BINARY`）。此外，这些模式不会在进程创建时被继承（即 Windows 上的 `O_NOINHERIT`，以及其他平台上的 `O_CLOEXEC`）。
 
-**Operating System Specifics:**
+**操作系统特有信息：**
 * Windows:
   [`_open`](https://learn.microsoft.com/en-us/cpp/c-runtime-library/reference/open-wopen?view=msvc-170),
   [`_fdopen`](https://learn.microsoft.com/en-us/cpp/c-runtime-library/reference/fdopen-wfdopen?view=msvc-170)
@@ -543,8 +543,8 @@ inductive c062 where
 
   读/写光标会定位到文件开头。如果文件不存在，则会报错。
 
-  * `open` flags: `O_RDONLY`
-  * `fdopen` mode: `r`
+  * `open` 标志： `O_RDONLY`
+  * `fdopen` 模式： `r`
   -/
   | read
   /--
@@ -552,8 +552,8 @@ inductive c062 where
 
   如果文件已存在，则会被截断为零长度。否则会创建一个新文件。读/写光标会定位到文件开头。
 
-  * `open` flags: `O_WRONLY | O_CREAT | O_TRUNC`
-  * `fdopen` mode: `w`
+  * `open` 标志： `O_WRONLY | O_CREAT | O_TRUNC`
+  * `fdopen` 模式： `w`
   -/
   | write
   /--
@@ -561,8 +561,8 @@ inductive c062 where
 
   如果文件已经存在，则会报错。会创建一个新文件，并将读/写光标定位到开头。
 
-  * `open` flags: `O_WRONLY | O_CREAT | O_TRUNC | O_EXCL`
-  * `fdopen` mode: `w`
+  * `open` 标志： `O_WRONLY | O_CREAT | O_TRUNC | O_EXCL`
+  * `fdopen` 模式： `w`
   -/
   | writeNew
   /--
@@ -570,8 +570,8 @@ inductive c062 where
 
   如果文件尚不存在，则会报错。读/写光标会定位到文件开头。
 
-  * `open` flags: `O_RDWR`
-  * `fdopen` mode: `r+`
+  * `open` 标志： `O_RDWR`
+  * `fdopen` 模式： `r+`
   -/
   | readWrite
   /--
@@ -579,8 +579,8 @@ inductive c062 where
 
   如果文件尚不存在，则会创建它。如果文件已存在，则会打开它，并将读/写光标定位到文件末尾。
 
-  * `open` flags: `O_WRONLY | O_CREAT | O_APPEND`
-  * `fdopen` mode: `a`
+  * `open` 标志： `O_WRONLY | O_CREAT | O_APPEND`
+  * `fdopen` 模式： `a`
   -/
   | append
 
@@ -789,7 +789,7 @@ def c090 := @_root_.System.FilePath.components
 def c091 := @_root_.System.FilePath.fileName
 
 /--
-提取 `p.fileName` 的 stem（不含扩展名的部分）。
+提取 `p.fileName` 的主干（不含扩展名的部分）。
 
 如果文件名包含多个扩展名，则只移除最后一个。如果路径末尾没有文件名，则返回 `none`。
 
