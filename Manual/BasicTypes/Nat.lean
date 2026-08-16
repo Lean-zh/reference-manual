@@ -7,6 +7,7 @@ Author: David Thrane Christiansen
 import VersoManual
 
 import Manual.Meta
+import Manual.ZhDocString.Ch19Ch20.G5
 
 open Manual.FFIDocType
 
@@ -34,7 +35,7 @@ tag := "nat-model"
 %%%
 
 
-{docstring Nat}
+{zhdocstring Nat Manual.ZhDocString.Ch19Ch20.G5.c001}
 
 ::::leanSection
 ```lean -show
@@ -147,42 +148,42 @@ tag := "nat-api"
 tag := "nat-api-arithmetic"
 %%%
 
-{docstring Nat.pred}
+{zhdocstring Nat.pred Manual.ZhDocString.Ch19Ch20.G5.c002}
 
-{docstring Nat.add}
+{zhdocstring Nat.add Manual.ZhDocString.Ch19Ch20.G5.c003}
 
-{docstring Nat.sub}
+{zhdocstring Nat.sub Manual.ZhDocString.Ch19Ch20.G5.c004}
 
-{docstring Nat.mul}
+{zhdocstring Nat.mul Manual.ZhDocString.Ch19Ch20.G5.c005}
 
-{docstring Nat.div}
+{zhdocstring Nat.div Manual.ZhDocString.Ch19Ch20.G5.c006}
 
-{docstring Nat.mod}
+{zhdocstring Nat.mod Manual.ZhDocString.Ch19Ch20.G5.c007}
 
-{docstring Nat.modCore}
+{zhdocstring Nat.modCore Manual.ZhDocString.Ch19Ch20.G5.c008}
 
-{docstring Nat.pow}
+{zhdocstring Nat.pow Manual.ZhDocString.Ch19Ch20.G5.c009}
 
-{docstring Nat.log2}
+{zhdocstring Nat.log2 Manual.ZhDocString.Ch19Ch20.G5.c010}
 
 ### 按位运算
 %%%
 tag := "nat-api-bitwise"
 %%%
 
-{docstring Nat.shiftLeft}
+{zhdocstring Nat.shiftLeft Manual.ZhDocString.Ch19Ch20.G5.c011}
 
-{docstring Nat.shiftRight}
+{zhdocstring Nat.shiftRight Manual.ZhDocString.Ch19Ch20.G5.c012}
 
-{docstring Nat.xor}
+{zhdocstring Nat.xor Manual.ZhDocString.Ch19Ch20.G5.c013}
 
-{docstring Nat.lor}
+{zhdocstring Nat.lor Manual.ZhDocString.Ch19Ch20.G5.c014}
 
-{docstring Nat.land}
+{zhdocstring Nat.land Manual.ZhDocString.Ch19Ch20.G5.c015}
 
-{docstring Nat.bitwise}
+{zhdocstring Nat.bitwise Manual.ZhDocString.Ch19Ch20.G5.c016}
 
-{docstring Nat.testBit}
+{zhdocstring Nat.testBit Manual.ZhDocString.Ch19Ch20.G5.c017}
 
 ## 最小值和最大值
 %%%
@@ -190,9 +191,9 @@ tag := "nat-api-minmax"
 %%%
 
 
-{docstring Nat.min}
+{zhdocstring Nat.min Manual.ZhDocString.Ch19Ch20.G5.c018}
 
-{docstring Nat.max}
+{zhdocstring Nat.max Manual.ZhDocString.Ch19Ch20.G5.c019}
 
 ## 最大公约数和最小公倍数
 %%%
@@ -200,9 +201,9 @@ tag := "nat-api-gcd-lcm"
 %%%
 
 
-{docstring Nat.gcd}
+{zhdocstring Nat.gcd Manual.ZhDocString.Ch19Ch20.G5.c020}
 
-{docstring Nat.lcm}
+{zhdocstring Nat.lcm Manual.ZhDocString.Ch19Ch20.G5.c021}
 
 ## 2 的幂
 %%%
@@ -210,9 +211,9 @@ tag := "nat-api-pow2"
 %%%
 
 
-{docstring Nat.isPowerOfTwo}
+{zhdocstring Nat.isPowerOfTwo Manual.ZhDocString.Ch19Ch20.G5.c022}
 
-{docstring Nat.nextPowerOfTwo}
+{zhdocstring Nat.nextPowerOfTwo Manual.ZhDocString.Ch19Ch20.G5.c023}
 
 ## 比较
 %%%
@@ -226,31 +227,31 @@ tag := "nat-api-comparison-bool"
 %%%
 
 
-{docstring Nat.beq}
+{zhdocstring Nat.beq Manual.ZhDocString.Ch19Ch20.G5.c024}
 
-{docstring Nat.ble}
+{zhdocstring Nat.ble Manual.ZhDocString.Ch19Ch20.G5.c025}
 
-{docstring Nat.blt}
+{zhdocstring Nat.blt Manual.ZhDocString.Ch19Ch20.G5.c026}
 
 ### 可判定相等
 %%%
 tag := "nat-api-deceq"
 %%%
 
-{docstring Nat.decEq}
+{zhdocstring Nat.decEq Manual.ZhDocString.Ch19Ch20.G5.c027}
 
-{docstring Nat.decLe}
+{zhdocstring Nat.decLe Manual.ZhDocString.Ch19Ch20.G5.c028}
 
-{docstring Nat.decLt}
+{zhdocstring Nat.decLt Manual.ZhDocString.Ch19Ch20.G5.c029}
 
 ### 谓词
 %%%
 tag := "nat-api-predicates"
 %%%
 
-{docstring Nat.le}
+{zhdocstring Nat.le Manual.ZhDocString.Ch19Ch20.G5.c030}
 
-{docstring Nat.lt}
+{zhdocstring Nat.lt Manual.ZhDocString.Ch19Ch20.G5.c031}
 
 ## 迭代
 %%%
@@ -260,84 +261,84 @@ tag := "nat-api-iteration"
 许多迭代运算符有两个版本：结构递归版本和尾递归版本。
 结构递归版本通常在定义等价重要的上下文中更容易使用，因为当只知道自然数的某些前缀时它就可以进行计算。
 
-{docstring Nat.repeat}
+{zhdocstring Nat.repeat Manual.ZhDocString.Ch19Ch20.G5.c032}
 
-{docstring Nat.repeatTR}
+{zhdocstring Nat.repeatTR Manual.ZhDocString.Ch19Ch20.G5.c033}
 
-{docstring Nat.fold}
+{zhdocstring Nat.fold Manual.ZhDocString.Ch19Ch20.G5.c034}
 
-{docstring Nat.foldTR}
+{zhdocstring Nat.foldTR Manual.ZhDocString.Ch19Ch20.G5.c035}
 
-{docstring Nat.foldM}
+{zhdocstring Nat.foldM Manual.ZhDocString.Ch19Ch20.G5.c036}
 
-{docstring Nat.foldRev}
+{zhdocstring Nat.foldRev Manual.ZhDocString.Ch19Ch20.G5.c037}
 
-{docstring Nat.foldRevM}
+{zhdocstring Nat.foldRevM Manual.ZhDocString.Ch19Ch20.G5.c038}
 
-{docstring Nat.forM}
+{zhdocstring Nat.forM Manual.ZhDocString.Ch19Ch20.G5.c039}
 
-{docstring Nat.forRevM}
+{zhdocstring Nat.forRevM Manual.ZhDocString.Ch19Ch20.G5.c040}
 
-{docstring Nat.all}
+{zhdocstring Nat.all Manual.ZhDocString.Ch19Ch20.G5.c041}
 
-{docstring Nat.allTR}
+{zhdocstring Nat.allTR Manual.ZhDocString.Ch19Ch20.G5.c042}
 
-{docstring Nat.any}
+{zhdocstring Nat.any Manual.ZhDocString.Ch19Ch20.G5.c043}
 
-{docstring Nat.anyTR}
+{zhdocstring Nat.anyTR Manual.ZhDocString.Ch19Ch20.G5.c044}
 
-{docstring Nat.allM}
+{zhdocstring Nat.allM Manual.ZhDocString.Ch19Ch20.G5.c045}
 
-{docstring Nat.anyM}
+{zhdocstring Nat.anyM Manual.ZhDocString.Ch19Ch20.G5.c046}
 
 ## 转换
 %%%
 tag := "nat-api-conversion"
 %%%
 
-{docstring Nat.toUInt8}
+{zhdocstring Nat.toUInt8 Manual.ZhDocString.Ch19Ch20.G5.c047}
 
-{docstring Nat.toUInt16}
+{zhdocstring Nat.toUInt16 Manual.ZhDocString.Ch19Ch20.G5.c048}
 
-{docstring Nat.toUInt32}
+{zhdocstring Nat.toUInt32 Manual.ZhDocString.Ch19Ch20.G5.c049}
 
-{docstring Nat.toUInt64}
+{zhdocstring Nat.toUInt64 Manual.ZhDocString.Ch19Ch20.G5.c050}
 
-{docstring Nat.toUSize}
+{zhdocstring Nat.toUSize Manual.ZhDocString.Ch19Ch20.G5.c051}
 
-{docstring Nat.toInt8}
+{zhdocstring Nat.toInt8 Manual.ZhDocString.Ch19Ch20.G5.c052}
 
-{docstring Nat.toInt16}
+{zhdocstring Nat.toInt16 Manual.ZhDocString.Ch19Ch20.G5.c053}
 
-{docstring Nat.toInt32}
+{zhdocstring Nat.toInt32 Manual.ZhDocString.Ch19Ch20.G5.c054}
 
-{docstring Nat.toInt64}
+{zhdocstring Nat.toInt64 Manual.ZhDocString.Ch19Ch20.G5.c055}
 
-{docstring Nat.toISize}
+{zhdocstring Nat.toISize Manual.ZhDocString.Ch19Ch20.G5.c056}
 
-{docstring Nat.toFloat}
+{zhdocstring Nat.toFloat Manual.ZhDocString.Ch19Ch20.G5.c057}
 
-{docstring Nat.toFloat32}
+{zhdocstring Nat.toFloat32 Manual.ZhDocString.Ch19Ch20.G5.c058}
 
-{docstring Nat.isValidChar}
+{zhdocstring Nat.isValidChar Manual.ZhDocString.Ch19Ch20.G5.c059}
 
-{docstring Nat.repr}
+{zhdocstring Nat.repr Manual.ZhDocString.Ch19Ch20.G5.c060}
 
-{docstring Nat.toDigits}
+{zhdocstring Nat.toDigits Manual.ZhDocString.Ch19Ch20.G5.c061}
 
-{docstring Nat.digitChar}
+{zhdocstring Nat.digitChar Manual.ZhDocString.Ch19Ch20.G5.c062}
 
-{docstring Nat.toSubscriptString}
+{zhdocstring Nat.toSubscriptString Manual.ZhDocString.Ch19Ch20.G5.c063}
 
-{docstring Nat.toSuperscriptString}
+{zhdocstring Nat.toSuperscriptString Manual.ZhDocString.Ch19Ch20.G5.c064}
 
-{docstring Nat.toSuperDigits}
+{zhdocstring Nat.toSuperDigits Manual.ZhDocString.Ch19Ch20.G5.c065}
 
-{docstring Nat.toSubDigits}
+{zhdocstring Nat.toSubDigits Manual.ZhDocString.Ch19Ch20.G5.c066}
 
-{docstring Nat.subDigitChar}
+{zhdocstring Nat.subDigitChar Manual.ZhDocString.Ch19Ch20.G5.c067}
 
-{docstring Nat.superDigitChar}
+{zhdocstring Nat.superDigitChar Manual.ZhDocString.Ch19Ch20.G5.c068}
 
 ## 消除
 %%%
@@ -349,21 +350,21 @@ tag := "nat-api-elim"
 这并不是特别友好，因此提供了一个逻辑上等价的替代递归原理，其结果是目标以 {lean}`0` 和 `n + 1` 的形式表达。
 {tech (key := "Custom eliminators")}[自定义消除器]可提供给 {tactic}`induction` 和 {tactic}`cases` 策略，方法是使用 {attr}`induction_eliminator` 和 {attr}`cases_eliminator` 属性。
 
-{docstring Nat.recAux}
+{zhdocstring Nat.recAux Manual.ZhDocString.Ch19Ch20.G5.c069}
 
-{docstring Nat.casesAuxOn}
+{zhdocstring Nat.casesAuxOn Manual.ZhDocString.Ch19Ch20.G5.c070}
 
 ### 替代归纳原理
 %%%
 tag := "nat-api-induction"
 %%%
 
-{docstring Nat.strongRecOn}
+{zhdocstring Nat.strongRecOn Manual.ZhDocString.Ch19Ch20.G5.c071}
 
-{docstring Nat.caseStrongRecOn}
+{zhdocstring Nat.caseStrongRecOn Manual.ZhDocString.Ch19Ch20.G5.c072}
 
-{docstring Nat.div.inductionOn}
+{zhdocstring Nat.div.inductionOn Manual.ZhDocString.Ch19Ch20.G5.c073}
 
-{docstring Nat.div2Induction}
+{zhdocstring Nat.div2Induction Manual.ZhDocString.Ch19Ch20.G5.c074}
 
-{docstring Nat.mod.inductionOn}
+{zhdocstring Nat.mod.inductionOn Manual.ZhDocString.Ch19Ch20.G5.c075}

@@ -7,6 +7,7 @@ Author: David Thrane Christiansen
 import VersoManual
 
 import Manual.Meta
+import Manual.ZhDocString.Ch19Ch20.G5
 
 open Manual.FFIDocType
 
@@ -34,7 +35,7 @@ tag := "int-model"
 %%%
 整数既可以表示为一个自然数，也可以表示为一个自然数后继的否定。
 
-{docstring Int}
+{zhdocstring Int Manual.ZhDocString.Ch19Ch20.G5.c076}
 
 整数的这种表示方式具有许多有用的属性。
 它使用和理解起来相对简单。
@@ -94,30 +95,30 @@ tag := "Lean-__________________--Basic-Types--Integers--API-Reference"
 %%%
 tag := "Lean-__________________--Basic-Types--Integers--API-Reference--Properties"
 %%%
-{docstring Int.sign}
+{zhdocstring Int.sign Manual.ZhDocString.Ch19Ch20.G5.c077}
 
 ## 转换
 
 %%%
 tag := "Lean-__________________--Basic-Types--Integers--API-Reference--Conversions"
 %%%
-{docstring Int.natAbs}
+{zhdocstring Int.natAbs Manual.ZhDocString.Ch19Ch20.G5.c078}
 
-{docstring Int.toNat}
+{zhdocstring Int.toNat Manual.ZhDocString.Ch19Ch20.G5.c079}
 
-{docstring Int.toNat?}
+{zhdocstring Int.toNat? Manual.ZhDocString.Ch19Ch20.G5.c080}
 
-{docstring Int.toISize}
+{zhdocstring Int.toISize Manual.ZhDocString.Ch19Ch20.G5.c081}
 
-{docstring Int.toInt8}
+{zhdocstring Int.toInt8 Manual.ZhDocString.Ch19Ch20.G5.c082}
 
-{docstring Int.toInt16}
+{zhdocstring Int.toInt16 Manual.ZhDocString.Ch19Ch20.G5.c083}
 
-{docstring Int.toInt32}
+{zhdocstring Int.toInt32 Manual.ZhDocString.Ch19Ch20.G5.c084}
 
-{docstring Int.toInt64}
+{zhdocstring Int.toInt64 Manual.ZhDocString.Ch19Ch20.G5.c085}
 
-{docstring Int.repr}
+{zhdocstring Int.repr Manual.ZhDocString.Ch19Ch20.G5.c086}
 
 ## 算术
 
@@ -128,23 +129,23 @@ tag := "Lean-__________________--Basic-Types--Integers--API-Reference--Arithmeti
 特别是，{inst}`Add Int`、{inst}`Neg Int`、{inst}`Sub Int` 和 {inst}`Mul Int` 实例允许使用普通的插缀运算符。
 {ref "int-div"}[除法]稍微复杂一些，因为整数上有多种合理的除法概念。
 
-{docstring Int.add}
+{zhdocstring Int.add Manual.ZhDocString.Ch19Ch20.G5.c087}
 
-{docstring Int.sub}
+{zhdocstring Int.sub Manual.ZhDocString.Ch19Ch20.G5.c088}
 
-{docstring Int.subNatNat}
+{zhdocstring Int.subNatNat Manual.ZhDocString.Ch19Ch20.G5.c089}
 
-{docstring Int.neg}
+{zhdocstring Int.neg Manual.ZhDocString.Ch19Ch20.G5.c090}
 
-{docstring Int.negOfNat}
+{zhdocstring Int.negOfNat Manual.ZhDocString.Ch19Ch20.G5.c091}
 
-{docstring Int.mul}
+{zhdocstring Int.mul Manual.ZhDocString.Ch19Ch20.G5.c092}
 
-{docstring Int.pow}
+{zhdocstring Int.pow Manual.ZhDocString.Ch19Ch20.G5.c093}
 
-{docstring Int.gcd}
+{zhdocstring Int.gcd Manual.ZhDocString.Ch19Ch20.G5.c094}
 
-{docstring Int.lcm}
+{zhdocstring Int.lcm Manual.ZhDocString.Ch19Ch20.G5.c095}
 
 ### 除法
 %%%
@@ -177,21 +178,21 @@ tag := "int-div"
 ```
 :::
 
-{docstring Int.ediv}
+{zhdocstring Int.ediv Manual.ZhDocString.Ch19Ch20.G5.c096}
 
-{docstring Int.emod}
+{zhdocstring Int.emod Manual.ZhDocString.Ch19Ch20.G5.c097}
 
-{docstring Int.tdiv}
+{zhdocstring Int.tdiv Manual.ZhDocString.Ch19Ch20.G5.c098}
 
-{docstring Int.tmod}
+{zhdocstring Int.tmod Manual.ZhDocString.Ch19Ch20.G5.c099}
 
-{docstring Int.bdiv}
+{zhdocstring Int.bdiv Manual.ZhDocString.Ch19Ch20.G5.c100}
 
-{docstring Int.bmod}
+{zhdocstring Int.bmod Manual.ZhDocString.Ch19Ch20.G5.c101}
 
-{docstring Int.fdiv}
+{zhdocstring Int.fdiv Manual.ZhDocString.Ch19Ch20.G5.c102}
 
-{docstring Int.fmod}
+{zhdocstring Int.fmod Manual.ZhDocString.Ch19Ch20.G5.c103}
 
 ## 按位运算符
 
@@ -200,9 +201,9 @@ tag := "Lean-__________________--Basic-Types--Integers--API-Reference--Bitwise-O
 %%%
 {name}`Int` 上的按位运算符可以理解为对整数的二进制补码表示的无限位流进行按位操作。
 
-{docstring Int.not}
+{zhdocstring Int.not Manual.ZhDocString.Ch19Ch20.G5.c104}
 
-{docstring Int.shiftRight}
+{zhdocstring Int.shiftRight Manual.ZhDocString.Ch19Ch20.G5.c105}
 
 ## 比较
 
@@ -217,8 +218,8 @@ example (i j : Int) : Decidable (i < j) := inferInstance
 example (i j : Int) : Decidable (i = j) := inferInstance
 ```
 
-{docstring Int.le}
+{zhdocstring Int.le Manual.ZhDocString.Ch19Ch20.G5.c106}
 
-{docstring Int.lt}
+{zhdocstring Int.lt Manual.ZhDocString.Ch19Ch20.G5.c107}
 
-{docstring Int.decEq}
+{zhdocstring Int.decEq Manual.ZhDocString.Ch19Ch20.G5.c108}

@@ -7,6 +7,7 @@ Author: David Thrane Christiansen
 import VersoManual
 
 import Manual.Meta
+import Manual.ZhDocString.Ch19Ch20.G5
 
 open Manual.FFIDocType
 
@@ -27,7 +28,7 @@ variable (n : Nat)
 换句话说，{lean}`Fin n` 恰好有 {lean}`n` 个元素。
 它可用于表示列表或数组的有效索引，或者可用作规范的 {lean}`n` 元素类型。
 
-{docstring Fin}
+{zhdocstring Fin Manual.ZhDocString.Ch19Ch20.G5.c109}
 
 {lean}`Fin` 与 {name}`UInt8`、{name}`UInt16`、{name}`UInt32`、{name}`UInt64` 和 {name}`USize` 密切相关，它们也表示有限的非负整数类型。
 然而，这些类型是由位向量而不是由自然数支持的，并且它们具有固定的边界。
@@ -136,11 +137,11 @@ tag := "Lean-__________________--Basic-Types--Finite-Natural-Numbers--API-Refere
 %%%
 tag := "Lean-__________________--Basic-Types--Finite-Natural-Numbers--API-Reference--Construction"
 %%%
-{docstring Fin.last}
+{zhdocstring Fin.last Manual.ZhDocString.Ch19Ch20.G5.c110}
 
-{docstring Fin.succ}
+{zhdocstring Fin.succ Manual.ZhDocString.Ch19Ch20.G5.c111}
 
-{docstring Fin.pred}
+{zhdocstring Fin.pred Manual.ZhDocString.Ch19Ch20.G5.c112}
 
 ## 算术
 
@@ -150,25 +151,25 @@ tag := "Lean-__________________--Basic-Types--Finite-Natural-Numbers--API-Refere
 通常，对 {name}`Fin` 的算术运算应该使用 Lean 的重载算术符号来访问，特别是通过实例 {inst}`Add (Fin n)`、{inst}`Sub (Fin n)`、{inst}`Mul (Fin n)`、{inst}`Div (Fin n)` 和 {inst}`Mod (Fin n)`。
 异质运算符（例如 {lean}`Fin.natAdd`）没有对应的异质实例（例如 {name}`HAdd`），以避免产生令人困惑的类型推断行为。
 
-{docstring Fin.add}
+{zhdocstring Fin.add Manual.ZhDocString.Ch19Ch20.G5.c113}
 
-{docstring Fin.natAdd}
+{zhdocstring Fin.natAdd Manual.ZhDocString.Ch19Ch20.G5.c114}
 
-{docstring Fin.addNat}
+{zhdocstring Fin.addNat Manual.ZhDocString.Ch19Ch20.G5.c115}
 
-{docstring Fin.mul}
+{zhdocstring Fin.mul Manual.ZhDocString.Ch19Ch20.G5.c116}
 
-{docstring Fin.sub}
+{zhdocstring Fin.sub Manual.ZhDocString.Ch19Ch20.G5.c117}
 
-{docstring Fin.subNat}
+{zhdocstring Fin.subNat Manual.ZhDocString.Ch19Ch20.G5.c118}
 
-{docstring Fin.div}
+{zhdocstring Fin.div Manual.ZhDocString.Ch19Ch20.G5.c119}
 
-{docstring Fin.mod}
+{zhdocstring Fin.mod Manual.ZhDocString.Ch19Ch20.G5.c120}
 
-{docstring Fin.modn}
+{zhdocstring Fin.modn Manual.ZhDocString.Ch19Ch20.G5.c121}
 
-{docstring Fin.log2}
+{zhdocstring Fin.log2 Manual.ZhDocString.Ch19Ch20.G5.c122}
 
 ## 按位运算
 
@@ -177,15 +178,15 @@ tag := "Lean-__________________--Basic-Types--Finite-Natural-Numbers--API-Refere
 %%%
 通常，对 {name}`Fin` 的按位运算应该使用 Lean 的重载按位运算符来访问，特别是通过实例 {inst}`ShiftLeft (Fin n)`、{inst}`ShiftRight (Fin n)`、{inst}`AndOp (Fin n)`、{inst}`OrOp (Fin n)`、{inst}`Xor (Fin n)`
 
-{docstring Fin.shiftLeft}
+{zhdocstring Fin.shiftLeft Manual.ZhDocString.Ch19Ch20.G5.c123}
 
-{docstring Fin.shiftRight}
+{zhdocstring Fin.shiftRight Manual.ZhDocString.Ch19Ch20.G5.c124}
 
-{docstring Fin.land}
+{zhdocstring Fin.land Manual.ZhDocString.Ch19Ch20.G5.c125}
 
-{docstring Fin.lor}
+{zhdocstring Fin.lor Manual.ZhDocString.Ch19Ch20.G5.c126}
 
-{docstring Fin.xor}
+{zhdocstring Fin.xor Manual.ZhDocString.Ch19Ch20.G5.c127}
 
 
 ## 转换
@@ -193,58 +194,58 @@ tag := "Lean-__________________--Basic-Types--Finite-Natural-Numbers--API-Refere
 %%%
 tag := "Lean-__________________--Basic-Types--Finite-Natural-Numbers--API-Reference--Conversions"
 %%%
-{docstring Fin.toNat}
+{zhdocstring Fin.toNat Manual.ZhDocString.Ch19Ch20.G5.c128}
 
-{docstring Fin.ofNat}
+{zhdocstring Fin.ofNat Manual.ZhDocString.Ch19Ch20.G5.c129}
 
-{docstring Fin.cast}
+{zhdocstring Fin.cast Manual.ZhDocString.Ch19Ch20.G5.c130}
 
-{docstring Fin.castLT}
+{zhdocstring Fin.castLT Manual.ZhDocString.Ch19Ch20.G5.c131}
 
-{docstring Fin.castLE}
+{zhdocstring Fin.castLE Manual.ZhDocString.Ch19Ch20.G5.c132}
 
-{docstring Fin.castAdd}
+{zhdocstring Fin.castAdd Manual.ZhDocString.Ch19Ch20.G5.c133}
 
-{docstring Fin.castSucc}
+{zhdocstring Fin.castSucc Manual.ZhDocString.Ch19Ch20.G5.c134}
 
-{docstring Fin.rev}
+{zhdocstring Fin.rev Manual.ZhDocString.Ch19Ch20.G5.c135}
 
-{docstring Fin.elim0}
+{zhdocstring Fin.elim0 Manual.ZhDocString.Ch19Ch20.G5.c136}
 
 ## 迭代
 
 %%%
 tag := "Lean-__________________--Basic-Types--Finite-Natural-Numbers--API-Reference--Iteration"
 %%%
-{docstring Fin.foldr}
+{zhdocstring Fin.foldr Manual.ZhDocString.Ch19Ch20.G5.c137}
 
-{docstring Fin.foldrM}
+{zhdocstring Fin.foldrM Manual.ZhDocString.Ch19Ch20.G5.c138}
 
-{docstring Fin.foldl}
+{zhdocstring Fin.foldl Manual.ZhDocString.Ch19Ch20.G5.c139}
 
-{docstring Fin.foldlM}
+{zhdocstring Fin.foldlM Manual.ZhDocString.Ch19Ch20.G5.c140}
 
-{docstring Fin.hIterate}
+{zhdocstring Fin.hIterate Manual.ZhDocString.Ch19Ch20.G5.c141}
 
-{docstring Fin.hIterateFrom}
+{zhdocstring Fin.hIterateFrom Manual.ZhDocString.Ch19Ch20.G5.c142}
 
 ## 推理
 
 %%%
 tag := "Lean-__________________--Basic-Types--Finite-Natural-Numbers--API-Reference--Reasoning"
 %%%
-{docstring Fin.induction}
+{zhdocstring Fin.induction Manual.ZhDocString.Ch19Ch20.G5.c143}
 
-{docstring Fin.inductionOn}
+{zhdocstring Fin.inductionOn Manual.ZhDocString.Ch19Ch20.G5.c144}
 
-{docstring Fin.reverseInduction}
+{zhdocstring Fin.reverseInduction Manual.ZhDocString.Ch19Ch20.G5.c145}
 
-{docstring Fin.cases}
+{zhdocstring Fin.cases Manual.ZhDocString.Ch19Ch20.G5.c146}
 
-{docstring Fin.lastCases}
+{zhdocstring Fin.lastCases Manual.ZhDocString.Ch19Ch20.G5.c147}
 
-{docstring Fin.addCases}
+{zhdocstring Fin.addCases Manual.ZhDocString.Ch19Ch20.G5.c148}
 
-{docstring Fin.succRec}
+{zhdocstring Fin.succRec Manual.ZhDocString.Ch19Ch20.G5.c149}
 
-{docstring Fin.succRecOn}
+{zhdocstring Fin.succRecOn Manual.ZhDocString.Ch19Ch20.G5.c150}
