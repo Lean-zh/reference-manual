@@ -7,6 +7,7 @@ Author: David Thrane Christiansen
 import VersoManual
 
 import Manual.Meta
+import Manual.ZhDocString.Ch19Ch20.G6
 
 open Manual.FFIDocType
 
@@ -20,24 +21,24 @@ set_option pp.rawOnError true
 tag := "Lean-__________________--Basic-Types--Linked-Lists--API-Reference--Comparisons"
 %%%
 
-{docstring List.beq}
+{zhdocstring List.beq Manual.ZhDocString.Ch19Ch20.G6.c241}
 
-{docstring List.isEqv}
+{zhdocstring List.isEqv Manual.ZhDocString.Ch19Ch20.G6.c242}
 
-{docstring List.isPerm}
+{zhdocstring List.isPerm Manual.ZhDocString.Ch19Ch20.G6.c243}
 
-{docstring List.isPrefixOf}
+{zhdocstring List.isPrefixOf Manual.ZhDocString.Ch19Ch20.G6.c244}
 
-{docstring List.isPrefixOf?}
+{zhdocstring List.isPrefixOf? Manual.ZhDocString.Ch19Ch20.G6.c245}
 
-{docstring List.isSublist}
+{zhdocstring List.isSublist Manual.ZhDocString.Ch19Ch20.G6.c246}
 
-{docstring List.isSuffixOf}
+{zhdocstring List.isSuffixOf Manual.ZhDocString.Ch19Ch20.G6.c247}
 
-{docstring List.isSuffixOf?}
+{zhdocstring List.isSuffixOf? Manual.ZhDocString.Ch19Ch20.G6.c248}
 
-{docstring List.le}
+{zhdocstring List.le Manual.ZhDocString.Ch19Ch20.G6.c249}
 
-{docstring List.lt}
+{zhdocstring List.lt Manual.ZhDocString.Ch19Ch20.G6.c250}
 
-{docstring List.lex}
+{zhdocstring List.lex Manual.ZhDocString.Ch19Ch20.G6.c251}

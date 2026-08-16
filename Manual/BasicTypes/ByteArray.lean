@@ -7,6 +7,7 @@ Author: David Thrane Christiansen
 import VersoManual
 
 import Manual.Meta
+import Manual.ZhDocString.Ch19Ch20.G6
 
 import Manual.BasicTypes.Array.Subarray
 import Manual.BasicTypes.Array.FFI
@@ -35,7 +36,7 @@ tag := "ByteArray"
 字节数组没有字面量语法。
 可以使用 {name}`List.toByteArray` 从列表字面量构造字节数组。
 
-{docstring ByteArray}
+{zhdocstring ByteArray Manual.ZhDocString.Ch19Ch20.G6.c109}
 
 # 接口参考
 
@@ -47,163 +48,163 @@ tag := "Lean-__________________--Basic-Types--Byte-Arrays--API-Reference"
 %%%
 tag := "Lean-__________________--Basic-Types--Byte-Arrays--API-Reference--Constructing-Byte-Arrays"
 %%%
-{docstring ByteArray.empty}
+{zhdocstring ByteArray.empty Manual.ZhDocString.Ch19Ch20.G6.c110}
 
-{docstring ByteArray.emptyWithCapacity}
+{zhdocstring ByteArray.emptyWithCapacity Manual.ZhDocString.Ch19Ch20.G6.c111}
 
-{docstring ByteArray.append}
+{zhdocstring ByteArray.append Manual.ZhDocString.Ch19Ch20.G6.c112}
 
-{docstring ByteArray.fastAppend}
+{zhdocstring ByteArray.fastAppend Manual.ZhDocString.Ch19Ch20.G6.c113}
 
-{docstring ByteArray.copySlice}
+{zhdocstring ByteArray.copySlice Manual.ZhDocString.Ch19Ch20.G6.c114}
 
 ## 大小
 
 %%%
 tag := "Lean-__________________--Basic-Types--Byte-Arrays--API-Reference--Size"
 %%%
-{docstring ByteArray.size}
+{zhdocstring ByteArray.size Manual.ZhDocString.Ch19Ch20.G6.c115}
 
-{docstring ByteArray.usize}
+{zhdocstring ByteArray.usize Manual.ZhDocString.Ch19Ch20.G6.c116}
 
-{docstring ByteArray.isEmpty}
+{zhdocstring ByteArray.isEmpty Manual.ZhDocString.Ch19Ch20.G6.c117}
 
 ## 查找
 
 %%%
 tag := "Lean-__________________--Basic-Types--Byte-Arrays--API-Reference--Lookups"
 %%%
-{docstring ByteArray.get}
+{zhdocstring ByteArray.get Manual.ZhDocString.Ch19Ch20.G6.c118}
 
-{docstring ByteArray.uget}
+{zhdocstring ByteArray.uget Manual.ZhDocString.Ch19Ch20.G6.c119}
 
-{docstring ByteArray.get!}
+{zhdocstring ByteArray.get! Manual.ZhDocString.Ch19Ch20.G6.c120}
 
-{docstring ByteArray.extract}
+{zhdocstring ByteArray.extract Manual.ZhDocString.Ch19Ch20.G6.c121}
 
 ## 转换
 
 %%%
 tag := "Lean-__________________--Basic-Types--Byte-Arrays--API-Reference--Conversions"
 %%%
-{docstring ByteArray.toList}
+{zhdocstring ByteArray.toList Manual.ZhDocString.Ch19Ch20.G6.c122}
 
-{docstring ByteArray.toUInt64BE!}
+{zhdocstring ByteArray.toUInt64BE! Manual.ZhDocString.Ch19Ch20.G6.c123}
 
-{docstring ByteArray.toUInt64LE!}
+{zhdocstring ByteArray.toUInt64LE! Manual.ZhDocString.Ch19Ch20.G6.c124}
 
 ### UTF-8
 
 %%%
 tag := "Lean-__________________--Basic-Types--Byte-Arrays--API-Reference--Conversions--UTF-8"
 %%%
-{docstring ByteArray.utf8Decode?}
+{zhdocstring ByteArray.utf8Decode? Manual.ZhDocString.Ch19Ch20.G6.c125}
 
-{docstring ByteArray.utf8DecodeChar?}
+{zhdocstring ByteArray.utf8DecodeChar? Manual.ZhDocString.Ch19Ch20.G6.c126}
 
-{docstring ByteArray.utf8DecodeChar}
+{zhdocstring ByteArray.utf8DecodeChar Manual.ZhDocString.Ch19Ch20.G6.c127}
 
 ## 修改
 
 %%%
 tag := "Lean-__________________--Basic-Types--Byte-Arrays--API-Reference--Modification"
 %%%
-{docstring ByteArray.push}
+{zhdocstring ByteArray.push Manual.ZhDocString.Ch19Ch20.G6.c128}
 
-{docstring ByteArray.set}
+{zhdocstring ByteArray.set Manual.ZhDocString.Ch19Ch20.G6.c129}
 
-{docstring ByteArray.uset}
+{zhdocstring ByteArray.uset Manual.ZhDocString.Ch19Ch20.G6.c130}
 
-{docstring ByteArray.set!}
+{zhdocstring ByteArray.set! Manual.ZhDocString.Ch19Ch20.G6.c131}
 
 ## 迭代
 
 %%%
 tag := "Lean-__________________--Basic-Types--Byte-Arrays--API-Reference--Iteration"
 %%%
-{docstring ByteArray.foldl}
+{zhdocstring ByteArray.foldl Manual.ZhDocString.Ch19Ch20.G6.c132}
 
-{docstring ByteArray.foldlM}
+{zhdocstring ByteArray.foldlM Manual.ZhDocString.Ch19Ch20.G6.c133}
 
-{docstring ByteArray.forIn}
+{zhdocstring ByteArray.forIn Manual.ZhDocString.Ch19Ch20.G6.c134}
 
 ## 迭代器
 
 %%%
 tag := "Lean-__________________--Basic-Types--Byte-Arrays--API-Reference--Iterators"
 %%%
-{docstring ByteArray.iter}
+{zhdocstring ByteArray.iter Manual.ZhDocString.Ch19Ch20.G6.c135}
 
-{docstring ByteArray.Iterator}
+{zhdocstring ByteArray.Iterator Manual.ZhDocString.Ch19Ch20.G6.c136}
 
-{docstring ByteArray.Iterator.pos}
+{zhdocstring ByteArray.Iterator.pos Manual.ZhDocString.Ch19Ch20.G6.c137}
 
-{docstring ByteArray.Iterator.atEnd}
+{zhdocstring ByteArray.Iterator.atEnd Manual.ZhDocString.Ch19Ch20.G6.c138}
 
-{docstring ByteArray.Iterator.hasNext}
+{zhdocstring ByteArray.Iterator.hasNext Manual.ZhDocString.Ch19Ch20.G6.c139}
 
-{docstring ByteArray.Iterator.hasPrev}
+{zhdocstring ByteArray.Iterator.hasPrev Manual.ZhDocString.Ch19Ch20.G6.c140}
 
-{docstring ByteArray.Iterator.curr}
+{zhdocstring ByteArray.Iterator.curr Manual.ZhDocString.Ch19Ch20.G6.c141}
 
-{docstring ByteArray.Iterator.curr'}
+{zhdocstring ByteArray.Iterator.curr' Manual.ZhDocString.Ch19Ch20.G6.c142}
 
-{docstring ByteArray.Iterator.next}
+{zhdocstring ByteArray.Iterator.next Manual.ZhDocString.Ch19Ch20.G6.c143}
 
-{docstring ByteArray.Iterator.next'}
+{zhdocstring ByteArray.Iterator.next' Manual.ZhDocString.Ch19Ch20.G6.c144}
 
-{docstring ByteArray.Iterator.forward}
+{zhdocstring ByteArray.Iterator.forward Manual.ZhDocString.Ch19Ch20.G6.c145}
 
-{docstring ByteArray.Iterator.nextn}
+{zhdocstring ByteArray.Iterator.nextn Manual.ZhDocString.Ch19Ch20.G6.c146}
 
-{docstring ByteArray.Iterator.prev}
+{zhdocstring ByteArray.Iterator.prev Manual.ZhDocString.Ch19Ch20.G6.c147}
 
-{docstring ByteArray.Iterator.prevn}
+{zhdocstring ByteArray.Iterator.prevn Manual.ZhDocString.Ch19Ch20.G6.c148}
 
-{docstring ByteArray.Iterator.remainingBytes}
+{zhdocstring ByteArray.Iterator.remainingBytes Manual.ZhDocString.Ch19Ch20.G6.c149}
 
-{docstring ByteArray.Iterator.toEnd}
+{zhdocstring ByteArray.Iterator.toEnd Manual.ZhDocString.Ch19Ch20.G6.c150}
 
 ## 切片
 
 %%%
 tag := "Lean-__________________--Basic-Types--Byte-Arrays--API-Reference--Slices"
 %%%
-{docstring ByteArray.toByteSlice}
+{zhdocstring ByteArray.toByteSlice Manual.ZhDocString.Ch19Ch20.G6.c151}
 
-{docstring ByteSlice}
+{zhdocstring ByteSlice Manual.ZhDocString.Ch19Ch20.G6.c152}
 
-{docstring ByteSlice.beq}
+{zhdocstring ByteSlice.beq Manual.ZhDocString.Ch19Ch20.G6.c153}
 
-{docstring ByteSlice.byteArray}
+{zhdocstring ByteSlice.byteArray Manual.ZhDocString.Ch19Ch20.G6.c154}
 
-{docstring ByteSlice.contains}
+{zhdocstring ByteSlice.contains Manual.ZhDocString.Ch19Ch20.G6.c155}
 
-{docstring ByteSlice.empty}
+{zhdocstring ByteSlice.empty Manual.ZhDocString.Ch19Ch20.G6.c156}
 
-{docstring ByteSlice.foldr}
+{zhdocstring ByteSlice.foldr Manual.ZhDocString.Ch19Ch20.G6.c157}
 
-{docstring ByteSlice.foldrM}
+{zhdocstring ByteSlice.foldrM Manual.ZhDocString.Ch19Ch20.G6.c158}
 
-{docstring ByteSlice.forM}
+{zhdocstring ByteSlice.forM Manual.ZhDocString.Ch19Ch20.G6.c159}
 
-{docstring ByteSlice.get}
+{zhdocstring ByteSlice.get Manual.ZhDocString.Ch19Ch20.G6.c160}
 
-{docstring ByteSlice.get!}
+{zhdocstring ByteSlice.get! Manual.ZhDocString.Ch19Ch20.G6.c161}
 
-{docstring ByteSlice.getD}
+{zhdocstring ByteSlice.getD Manual.ZhDocString.Ch19Ch20.G6.c162}
 
-{docstring ByteSlice.ofByteArray}
+{zhdocstring ByteSlice.ofByteArray Manual.ZhDocString.Ch19Ch20.G6.c163}
 
-{docstring ByteSlice.size}
+{zhdocstring ByteSlice.size Manual.ZhDocString.Ch19Ch20.G6.c164}
 
-{docstring ByteSlice.slice}
+{zhdocstring ByteSlice.slice Manual.ZhDocString.Ch19Ch20.G6.c165}
 
-{docstring ByteSlice.start}
+{zhdocstring ByteSlice.start Manual.ZhDocString.Ch19Ch20.G6.c166}
 
-{docstring ByteSlice.stop}
+{zhdocstring ByteSlice.stop Manual.ZhDocString.Ch19Ch20.G6.c167}
 
-{docstring ByteSlice.toByteArray}
+{zhdocstring ByteSlice.toByteArray Manual.ZhDocString.Ch19Ch20.G6.c168}
 
 
 ## 元素判定
@@ -211,6 +212,6 @@ tag := "Lean-__________________--Basic-Types--Byte-Arrays--API-Reference--Slices
 %%%
 tag := "Lean-__________________--Basic-Types--Byte-Arrays--API-Reference--Element-Predicates"
 %%%
-{docstring ByteArray.findIdx?}
+{zhdocstring ByteArray.findIdx? Manual.ZhDocString.Ch19Ch20.G6.c169}
 
-{docstring ByteArray.findFinIdx?}
+{zhdocstring ByteArray.findFinIdx? Manual.ZhDocString.Ch19Ch20.G6.c170}

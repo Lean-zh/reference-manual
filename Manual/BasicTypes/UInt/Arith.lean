@@ -7,6 +7,7 @@ Author: David Thrane Christiansen
 import VersoManual
 
 import Manual.Meta
+import Manual.ZhDocString.Ch19Ch20.G6
 
 open Manual.FFIDocType
 
@@ -35,142 +36,142 @@ open Lean Elab Command in
     elabCommand <| ← `(example : Neg $(mkIdent t) := inferInstance)
 ```
 
-{docstring ISize.neg}
+{zhdocstring ISize.neg Manual.ZhDocString.Ch19Ch20.G6.c171}
 
-{docstring Int8.neg}
+{zhdocstring Int8.neg Manual.ZhDocString.Ch19Ch20.G6.c172}
 
-{docstring Int16.neg}
+{zhdocstring Int16.neg Manual.ZhDocString.Ch19Ch20.G6.c173}
 
-{docstring Int32.neg}
+{zhdocstring Int32.neg Manual.ZhDocString.Ch19Ch20.G6.c174}
 
-{docstring Int64.neg}
+{zhdocstring Int64.neg Manual.ZhDocString.Ch19Ch20.G6.c175}
 
-{docstring USize.neg}
+{zhdocstring USize.neg Manual.ZhDocString.Ch19Ch20.G6.c176}
 
-{docstring UInt8.neg}
+{zhdocstring UInt8.neg Manual.ZhDocString.Ch19Ch20.G6.c177}
 
-{docstring UInt16.neg}
+{zhdocstring UInt16.neg Manual.ZhDocString.Ch19Ch20.G6.c178}
 
-{docstring UInt32.neg}
+{zhdocstring UInt32.neg Manual.ZhDocString.Ch19Ch20.G6.c179}
 
-{docstring UInt64.neg}
+{zhdocstring UInt64.neg Manual.ZhDocString.Ch19Ch20.G6.c180}
 
-{docstring USize.add}
+{zhdocstring USize.add Manual.ZhDocString.Ch19Ch20.G6.c181}
 
-{docstring ISize.add}
+{zhdocstring ISize.add Manual.ZhDocString.Ch19Ch20.G6.c182}
 
-{docstring UInt8.add}
+{zhdocstring UInt8.add Manual.ZhDocString.Ch19Ch20.G6.c183}
 
-{docstring Int8.add}
+{zhdocstring Int8.add Manual.ZhDocString.Ch19Ch20.G6.c184}
 
-{docstring UInt16.add}
+{zhdocstring UInt16.add Manual.ZhDocString.Ch19Ch20.G6.c185}
 
-{docstring Int16.add}
+{zhdocstring Int16.add Manual.ZhDocString.Ch19Ch20.G6.c186}
 
-{docstring UInt32.add}
+{zhdocstring UInt32.add Manual.ZhDocString.Ch19Ch20.G6.c187}
 
-{docstring Int32.add}
+{zhdocstring Int32.add Manual.ZhDocString.Ch19Ch20.G6.c188}
 
-{docstring UInt64.add}
+{zhdocstring UInt64.add Manual.ZhDocString.Ch19Ch20.G6.c189}
 
-{docstring Int64.add}
+{zhdocstring Int64.add Manual.ZhDocString.Ch19Ch20.G6.c190}
 
-{docstring USize.sub}
+{zhdocstring USize.sub Manual.ZhDocString.Ch19Ch20.G6.c191}
 
-{docstring ISize.sub}
+{zhdocstring ISize.sub Manual.ZhDocString.Ch19Ch20.G6.c192}
 
-{docstring UInt8.sub}
+{zhdocstring UInt8.sub Manual.ZhDocString.Ch19Ch20.G6.c193}
 
-{docstring Int8.sub}
+{zhdocstring Int8.sub Manual.ZhDocString.Ch19Ch20.G6.c194}
 
-{docstring UInt16.sub}
+{zhdocstring UInt16.sub Manual.ZhDocString.Ch19Ch20.G6.c195}
 
-{docstring Int16.sub}
+{zhdocstring Int16.sub Manual.ZhDocString.Ch19Ch20.G6.c196}
 
-{docstring UInt32.sub}
+{zhdocstring UInt32.sub Manual.ZhDocString.Ch19Ch20.G6.c197}
 
-{docstring Int32.sub}
+{zhdocstring Int32.sub Manual.ZhDocString.Ch19Ch20.G6.c198}
 
-{docstring UInt64.sub}
+{zhdocstring UInt64.sub Manual.ZhDocString.Ch19Ch20.G6.c199}
 
-{docstring Int64.sub}
+{zhdocstring Int64.sub Manual.ZhDocString.Ch19Ch20.G6.c200}
 
-{docstring USize.mul}
+{zhdocstring USize.mul Manual.ZhDocString.Ch19Ch20.G6.c201}
 
-{docstring ISize.mul}
+{zhdocstring ISize.mul Manual.ZhDocString.Ch19Ch20.G6.c202}
 
-{docstring UInt8.mul}
+{zhdocstring UInt8.mul Manual.ZhDocString.Ch19Ch20.G6.c203}
 
-{docstring Int8.mul}
+{zhdocstring Int8.mul Manual.ZhDocString.Ch19Ch20.G6.c204}
 
-{docstring UInt16.mul}
+{zhdocstring UInt16.mul Manual.ZhDocString.Ch19Ch20.G6.c205}
 
-{docstring Int16.mul}
+{zhdocstring Int16.mul Manual.ZhDocString.Ch19Ch20.G6.c206}
 
-{docstring UInt32.mul}
+{zhdocstring UInt32.mul Manual.ZhDocString.Ch19Ch20.G6.c207}
 
-{docstring Int32.mul}
+{zhdocstring Int32.mul Manual.ZhDocString.Ch19Ch20.G6.c208}
 
-{docstring UInt64.mul}
+{zhdocstring UInt64.mul Manual.ZhDocString.Ch19Ch20.G6.c209}
 
-{docstring Int64.mul}
+{zhdocstring Int64.mul Manual.ZhDocString.Ch19Ch20.G6.c210}
 
-{docstring USize.div}
+{zhdocstring USize.div Manual.ZhDocString.Ch19Ch20.G6.c211}
 
-{docstring ISize.div}
+{zhdocstring ISize.div Manual.ZhDocString.Ch19Ch20.G6.c212}
 
-{docstring UInt8.div}
+{zhdocstring UInt8.div Manual.ZhDocString.Ch19Ch20.G6.c213}
 
-{docstring Int8.div}
+{zhdocstring Int8.div Manual.ZhDocString.Ch19Ch20.G6.c214}
 
-{docstring UInt16.div}
+{zhdocstring UInt16.div Manual.ZhDocString.Ch19Ch20.G6.c215}
 
-{docstring Int16.div}
+{zhdocstring Int16.div Manual.ZhDocString.Ch19Ch20.G6.c216}
 
-{docstring UInt32.div}
+{zhdocstring UInt32.div Manual.ZhDocString.Ch19Ch20.G6.c217}
 
-{docstring Int32.div}
+{zhdocstring Int32.div Manual.ZhDocString.Ch19Ch20.G6.c218}
 
-{docstring UInt64.div}
+{zhdocstring UInt64.div Manual.ZhDocString.Ch19Ch20.G6.c219}
 
-{docstring Int64.div}
+{zhdocstring Int64.div Manual.ZhDocString.Ch19Ch20.G6.c220}
 
-{docstring USize.mod}
+{zhdocstring USize.mod Manual.ZhDocString.Ch19Ch20.G6.c221}
 
-{docstring ISize.mod}
+{zhdocstring ISize.mod Manual.ZhDocString.Ch19Ch20.G6.c222}
 
-{docstring UInt8.mod}
+{zhdocstring UInt8.mod Manual.ZhDocString.Ch19Ch20.G6.c223}
 
-{docstring Int8.mod}
+{zhdocstring Int8.mod Manual.ZhDocString.Ch19Ch20.G6.c224}
 
-{docstring UInt16.mod}
+{zhdocstring UInt16.mod Manual.ZhDocString.Ch19Ch20.G6.c225}
 
-{docstring Int16.mod}
+{zhdocstring Int16.mod Manual.ZhDocString.Ch19Ch20.G6.c226}
 
-{docstring UInt32.mod}
+{zhdocstring UInt32.mod Manual.ZhDocString.Ch19Ch20.G6.c227}
 
-{docstring Int32.mod}
+{zhdocstring Int32.mod Manual.ZhDocString.Ch19Ch20.G6.c228}
 
-{docstring UInt64.mod}
+{zhdocstring UInt64.mod Manual.ZhDocString.Ch19Ch20.G6.c229}
 
-{docstring Int64.mod}
+{zhdocstring Int64.mod Manual.ZhDocString.Ch19Ch20.G6.c230}
 
-{docstring USize.log2}
+{zhdocstring USize.log2 Manual.ZhDocString.Ch19Ch20.G6.c231}
 
-{docstring UInt8.log2}
+{zhdocstring UInt8.log2 Manual.ZhDocString.Ch19Ch20.G6.c232}
 
-{docstring UInt16.log2}
+{zhdocstring UInt16.log2 Manual.ZhDocString.Ch19Ch20.G6.c233}
 
-{docstring UInt32.log2}
+{zhdocstring UInt32.log2 Manual.ZhDocString.Ch19Ch20.G6.c234}
 
-{docstring UInt64.log2}
+{zhdocstring UInt64.log2 Manual.ZhDocString.Ch19Ch20.G6.c235}
 
-{docstring ISize.abs}
+{zhdocstring ISize.abs Manual.ZhDocString.Ch19Ch20.G6.c236}
 
-{docstring Int8.abs}
+{zhdocstring Int8.abs Manual.ZhDocString.Ch19Ch20.G6.c237}
 
-{docstring Int16.abs}
+{zhdocstring Int16.abs Manual.ZhDocString.Ch19Ch20.G6.c238}
 
-{docstring Int32.abs}
+{zhdocstring Int32.abs Manual.ZhDocString.Ch19Ch20.G6.c239}
 
-{docstring Int64.abs}
+{zhdocstring Int64.abs Manual.ZhDocString.Ch19Ch20.G6.c240}
