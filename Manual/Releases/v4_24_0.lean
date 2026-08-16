@@ -175,7 +175,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___24___0-_LPAR_2025-1
 
 * [#9930](https://github.com/leanprover/lean4/pull/9930) 回退了 `grind cutsat` 将 `Nat.sub` 嵌入 `Int` 的方式。它修复了 David Renshaw 在 Zulip 上报告的一个回归。
 
-* [#9938](https://github.com/leanprover/lean4/pull/9938)删除了重复的`mpure_intro` 战术定义。
+* [#9938](https://github.com/leanprover/lean4/pull/9938)删除了重复的`mpure_intro` 策略定义。
 
 * [#9939](https://github.com/leanprover/lean4/pull/9939) 将 `mvcgen using invariants | $n => $t` 展开为 `mvcgen; case inv<$n> => exact $t`，以避免在 #9581 的测试用例中可观察到的 MVar 实例化失误。
 
