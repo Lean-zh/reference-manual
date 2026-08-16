@@ -11,7 +11,7 @@ import Manual.Meta.Markdown
 open Manual
 open Verso.Genre
 
--- TODO: figure out why this is needed with the new codegen
+-- TODO: 搞清楚为什么在新的代码生成器下需要这个
 set_option maxRecDepth 9000
 
 #doc (Manual) "Lean 4.20.0 (2025-06-02)" =>
@@ -23,11 +23,17 @@ file := "v4.20.0"
 ````markdown
 For this release, 346 changes landed. In addition to the 108 feature additions and 85 fixes listed below there were 6 refactoring changes, 7 documentation improvements, 8 performance improvements, 4 improvements to the test suite and 126 other changes.
 
-## Highlights
+## 亮点
+%%%
+tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___20___0-_LPAR_2025-06-02_RPAR_--Highlights"
+%%%
 
 The Lean v4.20.0 release brings multiple new features, bug fixes, improvements to Lake, and groundwork for the module system.
 
-### Language Features
+### 语言特性
+%%%
+tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___20___0-_LPAR_2025-06-02_RPAR_--Highlights--Language-Features"
+%%%
 
 * [#6432](https://github.com/leanprover/lean4/pull/6432) implements tactics called `extract_lets` and `lift_lets` that
   manipulate `let`/`let_fun` expressions. The `extract_lets` tactic
@@ -148,7 +154,10 @@ The Lean v4.20.0 release brings multiple new features, bug fixes, improvements t
   monotone. For non-mutually recursive predicates, an appropriate
   (co)induction proof principle (given by Park induction) is generated.
 
-### Library Highlights
+### 库亮点
+%%%
+tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___20___0-_LPAR_2025-06-02_RPAR_--Highlights--Library-Highlights"
+%%%
 
 [#8004](https://github.com/leanprover/lean4/pull/8004) adds extensional hash maps and hash sets under the names
   `Std.ExtDHashMap`, `Std.ExtHashMap` and `Std.ExtHashSet`. Extensional
@@ -167,11 +176,17 @@ Other notable library developments in this release include:
 - Additional lemmas for `Array`/`List`/`Vector`.
 
 ### Lake
+%%%
+tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___20___0-_LPAR_2025-06-02_RPAR_--Highlights--Lake"
+%%%
 
 * [#7909](https://github.com/leanprover/lean4/pull/7909) adds Lake support for building modules given their source file
   path. This is made use of in both the CLI and the server.
 
-### Breaking Changes
+### 破坏性变更
+%%%
+tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___20___0-_LPAR_2025-06-02_RPAR_--Highlights--Breaking-Changes"
+%%%
 
 * [#7474](https://github.com/leanprover/lean4/pull/7474) updates `rw?`, `show_term`, and other tactic-suggesting tactics
   to suggest `expose_names` when necessary and validate tactics prior to
@@ -241,7 +256,10 @@ Other notable library developments in this release include:
   separately when linking to Lean (e.g.. via `s!"-L{(←getLeanLibDir).toString}"`).
   See the FFI example for a demonstration.
 
-## Language
+## 语言
+%%%
+tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___20___0-_LPAR_2025-06-02_RPAR_--Language"
+%%%
 
 * [#6325](https://github.com/leanprover/lean4/pull/6325) ensures that environments can be loaded, repeatedly, without
   executing arbitrary code
@@ -648,9 +666,9 @@ Other notable library developments in this release include:
   * `import all`: Makes non-exported information such as proofs of the
   imported module available in non-exported contexts in the current
   module. Main purpose is to allow for reasoning about imported
-  definitions when they would otherwise be opaque. TODO: adjust name
-  resolution so that imported `private` decls are accessible through
-  syntax.
+  definitions when they would otherwise be opaque. TODO: 调整名称
+  解析，使导入的 `private` 声明能够通过
+  语法访问。
 
 * [#8161](https://github.com/leanprover/lean4/pull/8161) changes `Lean.Grind.CommRing` to inline the `NatCast` instance
   (i.e. to be provided by the user) rather than constructing one from the
@@ -687,7 +705,10 @@ Other notable library developments in this release include:
   instances, which was causing exponential compilation times in `deriving`
   clauses for large structures.
 
-## Library
+## 库
+%%%
+tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___20___0-_LPAR_2025-06-02_RPAR_--Library"
+%%%
 
 * [#6081](https://github.com/leanprover/lean4/pull/6081) adds an `inheritEnv` field to `IO.Process.SpawnArgs`. If
   `false`, the spawned process does not inherit its parent's environment.
@@ -916,7 +937,10 @@ Other notable library developments in this release include:
 
 * [#8184](https://github.com/leanprover/lean4/pull/8184) adds the `insertMany_append` lemma for all map variants.
 
-## Compiler
+## 编译器
+%%%
+tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___20___0-_LPAR_2025-06-02_RPAR_--Compiler"
+%%%
 
 * [#6063](https://github.com/leanprover/lean4/pull/6063) updates the version of LLVM and clang used by and shipped with
   Lean to 19.1.2
@@ -1008,7 +1032,10 @@ Other notable library developments in this release include:
 * [#8236](https://github.com/leanprover/lean4/pull/8236) fixes an issue where the combination of `extern_lib` and
   `precompileModules` would lead to "symbol not found" errors.
 
-## Pretty Printing
+## 美观打印
+%%%
+tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___20___0-_LPAR_2025-06-02_RPAR_--Pretty-Printing"
+%%%
 
 * [#7805](https://github.com/leanprover/lean4/pull/7805) modifies the pretty printing of raw natural number literals; now
   both `pp.explicit` and `pp.natLit` enable the `nat_lit` prefix. An
@@ -1044,7 +1071,10 @@ Other notable library developments in this release include:
   is valid since the modification to the local context only affects user
   names.
 
-## Documentation
+## 文档
+%%%
+tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___20___0-_LPAR_2025-06-02_RPAR_--Documentation"
+%%%
 
 * [#7947](https://github.com/leanprover/lean4/pull/7947) adds some docstrings to clarify the functions of
   `Lean.mkFreshId`, `Lean.Core.mkFreshUserName`,
@@ -1053,7 +1083,10 @@ Other notable library developments in this release include:
 
 * [#8018](https://github.com/leanprover/lean4/pull/8018) adjusts the RArray docstring to the new reality from #8014.
 
-## Server
+## 服务器
+%%%
+tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___20___0-_LPAR_2025-06-02_RPAR_--Server"
+%%%
 
 * [#7610](https://github.com/leanprover/lean4/pull/7610) adjusts the `TryThis` widget to also work in widget messages
   rather than only as a panel widget. It also adds additional
@@ -1071,6 +1104,9 @@ Other notable library developments in this release include:
   accidentally broken in #7902.
 
 ## Lake
+%%%
+tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___20___0-_LPAR_2025-06-02_RPAR_--Lake"
+%%%
 
 * [#7796](https://github.com/leanprover/lean4/pull/7796) moves Lean's shared library path before the workspace's in
   Lake's augmented environment (e.g., `lake env`).
@@ -1127,7 +1163,10 @@ Other notable library developments in this release include:
   README. It is also includes information about specifying targets on the
   Lake CLI and in Lean and TOML configuration files.
 
-## Other
+## 其他
+%%%
+tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___20___0-_LPAR_2025-06-02_RPAR_--Other"
+%%%
 
 * [#7785](https://github.com/leanprover/lean4/pull/7785) adds further automation to the release process, taking care of
   tagging, and creating new `bump/v4.X.0` branches automatically, and
