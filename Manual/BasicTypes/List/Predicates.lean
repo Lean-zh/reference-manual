@@ -7,6 +7,7 @@ Author: David Thrane Christiansen
 import VersoManual
 
 import Manual.Meta
+import Manual.ZhDocString.Ch19Ch20.G9
 
 open Manual.FFIDocType
 
@@ -20,7 +21,7 @@ set_option pp.rawOnError true
 tag := "Lean-__________________--Basic-Types--Linked-Lists--API-Reference--Predicates-and-Relations"
 %%%
 
-{docstring List.IsPrefix}
+{zhdocstring List.IsPrefix Manual.ZhDocString.Ch19Ch20.G9.c191}
 
 :::syntax term (title := "列表前缀")
 ```grammar
@@ -31,7 +32,7 @@ $_ <+: $_
 
 :::
 
-{docstring List.IsSuffix}
+{zhdocstring List.IsSuffix Manual.ZhDocString.Ch19Ch20.G9.c192}
 
 :::syntax term (title := "列表后缀")
 ```grammar
@@ -42,7 +43,7 @@ $_ <:+ $_
 
 :::
 
-{docstring List.IsInfix}
+{zhdocstring List.IsInfix Manual.ZhDocString.Ch19Ch20.G9.c193}
 
 :::syntax term (title := "列表中缀")
 ```grammar
@@ -53,7 +54,7 @@ $_ <:+: $_
 
 :::
 
-{docstring List.Sublist}
+{zhdocstring List.Sublist Manual.ZhDocString.Ch19Ch20.G9.c194}
 
 ::: syntax term (title := "子列表") (namespace := List)
 ```grammar
@@ -65,7 +66,7 @@ $_ <+ $_
 只有在打开 `List` 命名空间时，此语法才可用。
 :::
 
-{docstring List.Perm}
+{zhdocstring List.Perm Manual.ZhDocString.Ch19Ch20.G9.c195}
 
 :::syntax term (title := "列表置换") (namespace := List)
 ```grammar
@@ -77,10 +78,10 @@ $_ ~ $_
 只有在打开 `List` 命名空间时，此语法才可用。
 :::
 
-{docstring List.Pairwise}
+{zhdocstring List.Pairwise Manual.ZhDocString.Ch19Ch20.G9.c196}
 
-{docstring List.Nodup}
+{zhdocstring List.Nodup Manual.ZhDocString.Ch19Ch20.G9.c197}
 
-{docstring List.Lex}
+{zhdocstring List.Lex Manual.ZhDocString.Ch19Ch20.G9.c198}
 
-{docstring List.Mem}
+{zhdocstring List.Mem Manual.ZhDocString.Ch19Ch20.G9.c199}

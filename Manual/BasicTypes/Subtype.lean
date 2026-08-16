@@ -7,6 +7,7 @@ Author: David Thrane Christiansen
 import VersoManual
 
 import Manual.Meta
+import Manual.ZhDocString.Ch19Ch20.G9
 
 import Manual.BasicTypes.Array.Subarray
 import Manual.BasicTypes.Array.FFI
@@ -35,7 +36,7 @@ tag := "Subtype"
 因此，在编译后的代码中，它们与底层类型具有完全相同的表示。
 
 
-{docstring Subtype}
+{zhdocstring Subtype Manual.ZhDocString.Ch19Ch20.G9.c207}
 
 ::::leanSection
 ```lean -show

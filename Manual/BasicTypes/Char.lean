@@ -7,6 +7,7 @@ Author: David Thrane Christiansen
 import VersoManual
 
 import Manual.Meta
+import Manual.ZhDocString.Ch19Ch20.G9
 
 import Manual.BasicTypes.Array.Subarray
 import Manual.BasicTypes.Array.FFI
@@ -34,7 +35,7 @@ tag := "char-model"
 
 从 Lean 的逻辑角度来看，字符由一个 32 位无符号整数和一个证明它是有效 Unicode 标量值的证明组成。
 
-{docstring Char}
+{zhdocstring Char Manual.ZhDocString.Ch19Ch20.G9.c142}
 
 # 运行时表示
 %%%
@@ -80,23 +81,23 @@ tag := "char-api"
 %%%
 tag := "Lean-__________________--Basic-Types--Characters--API-Reference--Conversions"
 %%%
-{docstring Char.ofNat}
+{zhdocstring Char.ofNat Manual.ZhDocString.Ch19Ch20.G9.c143}
 
-{docstring Char.toNat}
+{zhdocstring Char.toNat Manual.ZhDocString.Ch19Ch20.G9.c144}
 
-{docstring Char.isValidCharNat}
+{zhdocstring Char.isValidCharNat Manual.ZhDocString.Ch19Ch20.G9.c145}
 
-{docstring Char.ofUInt8}
+{zhdocstring Char.ofUInt8 Manual.ZhDocString.Ch19Ch20.G9.c146}
 
-{docstring Char.toUInt8}
+{zhdocstring Char.toUInt8 Manual.ZhDocString.Ch19Ch20.G9.c147}
 
 
 有两种方法可以将字符转换为字符串。
 {name}`Char.toString` 将字符转换为仅包含该字符的单字符字符串，而 {name}`Char.quote` 将字符转换为相应字符字面量的字符串表示。
 
-{docstring Char.toString}
+{zhdocstring Char.toString Manual.ZhDocString.Ch19Ch20.G9.c148}
 
-{docstring Char.quote}
+{zhdocstring Char.quote Manual.ZhDocString.Ch19Ch20.G9.c149}
 
 :::example "从字符到字符串"
 
@@ -156,39 +157,39 @@ tag := "Lean-__________________--Basic-Types--Characters--API-Reference--Convers
 tag := "char-api-classes"
 %%%
 
-{docstring Char.isAlpha}
+{zhdocstring Char.isAlpha Manual.ZhDocString.Ch19Ch20.G9.c150}
 
-{docstring Char.isAlphanum}
+{zhdocstring Char.isAlphanum Manual.ZhDocString.Ch19Ch20.G9.c151}
 
-{docstring Char.isDigit}
+{zhdocstring Char.isDigit Manual.ZhDocString.Ch19Ch20.G9.c152}
 
-{docstring Char.isLower}
+{zhdocstring Char.isLower Manual.ZhDocString.Ch19Ch20.G9.c153}
 
-{docstring Char.isUpper}
+{zhdocstring Char.isUpper Manual.ZhDocString.Ch19Ch20.G9.c154}
 
-{docstring Char.isWhitespace}
+{zhdocstring Char.isWhitespace Manual.ZhDocString.Ch19Ch20.G9.c155}
 
 ## 大小写转换
 
 %%%
 tag := "Lean-__________________--Basic-Types--Characters--API-Reference--Case-Conversion"
 %%%
-{docstring Char.toUpper}
+{zhdocstring Char.toUpper Manual.ZhDocString.Ch19Ch20.G9.c156}
 
-{docstring Char.toLower}
+{zhdocstring Char.toLower Manual.ZhDocString.Ch19Ch20.G9.c157}
 
 ## 比较
 
 %%%
 tag := "Lean-__________________--Basic-Types--Characters--API-Reference--Comparisons"
 %%%
-{docstring Char.le}
+{zhdocstring Char.le Manual.ZhDocString.Ch19Ch20.G9.c158}
 
-{docstring Char.lt}
+{zhdocstring Char.lt Manual.ZhDocString.Ch19Ch20.G9.c159}
 
 ## Unicode
 
 %%%
 tag := "Lean-__________________--Basic-Types--Characters--API-Reference--Unicode"
 %%%
-{docstring Char.utf8Size}
+{zhdocstring Char.utf8Size Manual.ZhDocString.Ch19Ch20.G9.c160}

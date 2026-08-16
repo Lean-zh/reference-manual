@@ -7,6 +7,7 @@ Author: David Thrane Christiansen
 import VersoManual
 
 import Manual.Meta
+import Manual.ZhDocString.Ch19Ch20.G9
 open Manual.FFIDocType
 
 open Verso.Genre Manual
@@ -20,7 +21,7 @@ set_option pp.rawOnError true
 tag := "Lean-__________________--Basic-Types--Strings--Logical-Model"
 %%%
 
-{docstring String}
+{zhdocstring String Manual.ZhDocString.Ch19Ch20.G9.c204}
 
 :::paragraph
 Lean 中字符串的逻辑模型是一个包含两个字段的结构体：
@@ -42,6 +43,6 @@ tag := "Lean-__________________--Basic-Types--Strings--Logical-Model--Backwards-
 该模型仍然有用。
 它仍然可以使用 {name}`String.ofList`（将字符列表转换为 {name}`String`）以及 {name}`String.toList`（将 {name}`String` 转换为字符列表）来访问。
 
-{docstring String.ofList}
+{zhdocstring String.ofList Manual.ZhDocString.Ch19Ch20.G9.c205}
 
-{docstring String.toList}
+{zhdocstring String.toList Manual.ZhDocString.Ch19Ch20.G9.c206}

@@ -7,6 +7,7 @@ Author: David Thrane Christiansen
 import VersoManual
 
 import Manual.Meta
+import Manual.ZhDocString.Ch19Ch20.G9
 open Manual.FFIDocType
 
 open Verso.Genre Manual
@@ -22,37 +23,37 @@ tag := "string-api-substring"
 原生子字符串是一种底层类型，它将字符串与其内部限定某个区域的字节位置组合在一起。
 大多数代码应该改用{ref "string-api-slice"}[切片]，因为它们更安全也更方便。
 
-{docstring String.toRawSubstring}
+{zhdocstring String.toRawSubstring Manual.ZhDocString.Ch19Ch20.G9.c051}
 
-{docstring String.toRawSubstring'}
+{zhdocstring String.toRawSubstring' Manual.ZhDocString.Ch19Ch20.G9.c052}
 
-{docstring Substring.Raw}
+{zhdocstring Substring.Raw Manual.ZhDocString.Ch19Ch20.G9.c053}
 
 # 属性
 
 %%%
 tag := "Lean-__________________--Basic-Types--Strings--API-Reference--Raw-Substrings--Properties"
 %%%
-{docstring Substring.Raw.isEmpty}
+{zhdocstring Substring.Raw.isEmpty Manual.ZhDocString.Ch19Ch20.G9.c054}
 
-{docstring Substring.Raw.bsize}
+{zhdocstring Substring.Raw.bsize Manual.ZhDocString.Ch19Ch20.G9.c055}
 
 # 位置
 
 %%%
 tag := "Lean-__________________--Basic-Types--Strings--API-Reference--Raw-Substrings--Positions"
 %%%
-{docstring Substring.Raw.atEnd}
+{zhdocstring Substring.Raw.atEnd Manual.ZhDocString.Ch19Ch20.G9.c056}
 
-{docstring Substring.Raw.posOf}
+{zhdocstring Substring.Raw.posOf Manual.ZhDocString.Ch19Ch20.G9.c057}
 
-{docstring Substring.Raw.next}
+{zhdocstring Substring.Raw.next Manual.ZhDocString.Ch19Ch20.G9.c058}
 
-{docstring Substring.Raw.nextn}
+{zhdocstring Substring.Raw.nextn Manual.ZhDocString.Ch19Ch20.G9.c059}
 
-{docstring Substring.Raw.prev}
+{zhdocstring Substring.Raw.prev Manual.ZhDocString.Ch19Ch20.G9.c060}
 
-{docstring Substring.Raw.prevn}
+{zhdocstring Substring.Raw.prevn Manual.ZhDocString.Ch19Ch20.G9.c061}
 
 
 # 归折与聚合
@@ -60,46 +61,46 @@ tag := "Lean-__________________--Basic-Types--Strings--API-Reference--Raw-Substr
 %%%
 tag := "Lean-__________________--Basic-Types--Strings--API-Reference--Raw-Substrings--Folds-and-Aggregation"
 %%%
-{docstring Substring.Raw.foldl}
+{zhdocstring Substring.Raw.foldl Manual.ZhDocString.Ch19Ch20.G9.c062}
 
-{docstring Substring.Raw.foldr}
+{zhdocstring Substring.Raw.foldr Manual.ZhDocString.Ch19Ch20.G9.c063}
 
-{docstring Substring.Raw.all}
+{zhdocstring Substring.Raw.all Manual.ZhDocString.Ch19Ch20.G9.c064}
 
-{docstring Substring.Raw.any}
+{zhdocstring Substring.Raw.any Manual.ZhDocString.Ch19Ch20.G9.c065}
 
 # 比较
 
 %%%
 tag := "Lean-__________________--Basic-Types--Strings--API-Reference--Raw-Substrings--Comparisons"
 %%%
-{docstring Substring.Raw.beq}
+{zhdocstring Substring.Raw.beq Manual.ZhDocString.Ch19Ch20.G9.c066}
 
-{docstring Substring.Raw.sameAs}
+{zhdocstring Substring.Raw.sameAs Manual.ZhDocString.Ch19Ch20.G9.c067}
 
 # 前缀与后缀
 
 %%%
 tag := "Lean-__________________--Basic-Types--Strings--API-Reference--Raw-Substrings--Prefix-and-Suffix"
 %%%
-{docstring Substring.Raw.commonPrefix}
+{zhdocstring Substring.Raw.commonPrefix Manual.ZhDocString.Ch19Ch20.G9.c068}
 
-{docstring Substring.Raw.commonSuffix}
+{zhdocstring Substring.Raw.commonSuffix Manual.ZhDocString.Ch19Ch20.G9.c069}
 
-{docstring Substring.Raw.dropPrefix?}
+{zhdocstring Substring.Raw.dropPrefix? Manual.ZhDocString.Ch19Ch20.G9.c070}
 
-{docstring Substring.Raw.dropSuffix?}
+{zhdocstring Substring.Raw.dropSuffix? Manual.ZhDocString.Ch19Ch20.G9.c071}
 
 # 查找
 
 %%%
 tag := "Lean-__________________--Basic-Types--Strings--API-Reference--Raw-Substrings--Lookups"
 %%%
-{docstring Substring.Raw.get}
+{zhdocstring Substring.Raw.get Manual.ZhDocString.Ch19Ch20.G9.c072}
 
-{docstring Substring.Raw.contains}
+{zhdocstring Substring.Raw.contains Manual.ZhDocString.Ch19Ch20.G9.c073}
 
-{docstring Substring.Raw.front}
+{zhdocstring Substring.Raw.front Manual.ZhDocString.Ch19Ch20.G9.c074}
 
 
 # 修改
@@ -107,46 +108,46 @@ tag := "Lean-__________________--Basic-Types--Strings--API-Reference--Raw-Substr
 %%%
 tag := "Lean-__________________--Basic-Types--Strings--API-Reference--Raw-Substrings--Modifications"
 %%%
-{docstring Substring.Raw.drop}
+{zhdocstring Substring.Raw.drop Manual.ZhDocString.Ch19Ch20.G9.c075}
 
-{docstring Substring.Raw.dropWhile}
+{zhdocstring Substring.Raw.dropWhile Manual.ZhDocString.Ch19Ch20.G9.c076}
 
-{docstring Substring.Raw.dropRight}
+{zhdocstring Substring.Raw.dropRight Manual.ZhDocString.Ch19Ch20.G9.c077}
 
-{docstring Substring.Raw.dropRightWhile}
+{zhdocstring Substring.Raw.dropRightWhile Manual.ZhDocString.Ch19Ch20.G9.c078}
 
 
-{docstring Substring.Raw.take}
+{zhdocstring Substring.Raw.take Manual.ZhDocString.Ch19Ch20.G9.c079}
 
-{docstring Substring.Raw.takeWhile}
+{zhdocstring Substring.Raw.takeWhile Manual.ZhDocString.Ch19Ch20.G9.c080}
 
-{docstring Substring.Raw.takeRight}
+{zhdocstring Substring.Raw.takeRight Manual.ZhDocString.Ch19Ch20.G9.c081}
 
-{docstring Substring.Raw.takeRightWhile}
+{zhdocstring Substring.Raw.takeRightWhile Manual.ZhDocString.Ch19Ch20.G9.c082}
 
-{docstring Substring.Raw.extract}
+{zhdocstring Substring.Raw.extract Manual.ZhDocString.Ch19Ch20.G9.c083}
 
-{docstring Substring.Raw.trim}
+{zhdocstring Substring.Raw.trim Manual.ZhDocString.Ch19Ch20.G9.c084}
 
-{docstring Substring.Raw.trimLeft}
+{zhdocstring Substring.Raw.trimLeft Manual.ZhDocString.Ch19Ch20.G9.c085}
 
-{docstring Substring.Raw.trimRight}
+{zhdocstring Substring.Raw.trimRight Manual.ZhDocString.Ch19Ch20.G9.c086}
 
-{docstring Substring.Raw.splitOn}
+{zhdocstring Substring.Raw.splitOn Manual.ZhDocString.Ch19Ch20.G9.c087}
 
-{docstring Substring.Raw.repair}
+{zhdocstring Substring.Raw.repair Manual.ZhDocString.Ch19Ch20.G9.c088}
 
 # 转换
 
 %%%
 tag := "Lean-__________________--Basic-Types--Strings--API-Reference--Raw-Substrings--Conversions"
 %%%
-{docstring Substring.Raw.toString}
+{zhdocstring Substring.Raw.toString Manual.ZhDocString.Ch19Ch20.G9.c089}
 
-{docstring Substring.Raw.isNat}
+{zhdocstring Substring.Raw.isNat Manual.ZhDocString.Ch19Ch20.G9.c090}
 
-{docstring Substring.Raw.toNat? +allowMissing}
+{zhdocstring Substring.Raw.toNat? Manual.ZhDocString.Ch19Ch20.G9.c091 +allowMissing}
 
-{docstring Substring.Raw.toLegacyIterator}
+{zhdocstring Substring.Raw.toLegacyIterator Manual.ZhDocString.Ch19Ch20.G9.c092}
 
-{docstring Substring.Raw.toName}
+{zhdocstring Substring.Raw.toName Manual.ZhDocString.Ch19Ch20.G9.c093}

@@ -7,6 +7,7 @@ Author: David Thrane Christiansen
 import VersoManual
 
 import Manual.Meta
+import Manual.ZhDocString.Ch19Ch20.G9
 
 open Verso.Genre Manual
 open Verso.Genre.Manual.InlineLean
@@ -42,9 +43,9 @@ universe u v
 :::
 ::::
 
-{docstring Sum}
+{zhdocstring Sum Manual.ZhDocString.Ch19Ch20.G9.c176}
 
-{docstring PSum}
+{zhdocstring PSum Manual.ZhDocString.Ch19Ch20.G9.c177}
 
 
 
@@ -105,33 +106,33 @@ tag := "sum-api"
 %%%
 tag := "Lean-__________________--Basic-Types--Sum-Types--API-Reference--Case-Distinction"
 %%%
-{docstring Sum.isLeft}
+{zhdocstring Sum.isLeft Manual.ZhDocString.Ch19Ch20.G9.c178}
 
-{docstring Sum.isRight}
+{zhdocstring Sum.isRight Manual.ZhDocString.Ch19Ch20.G9.c179}
 
 ## 提取值
 
 %%%
 tag := "Lean-__________________--Basic-Types--Sum-Types--API-Reference--Extracting-Values"
 %%%
-{docstring Sum.elim}
+{zhdocstring Sum.elim Manual.ZhDocString.Ch19Ch20.G9.c180}
 
-{docstring Sum.getLeft}
+{zhdocstring Sum.getLeft Manual.ZhDocString.Ch19Ch20.G9.c181}
 
-{docstring Sum.getLeft?}
+{zhdocstring Sum.getLeft? Manual.ZhDocString.Ch19Ch20.G9.c182}
 
-{docstring Sum.getRight}
+{zhdocstring Sum.getRight Manual.ZhDocString.Ch19Ch20.G9.c183}
 
-{docstring Sum.getRight?}
+{zhdocstring Sum.getRight? Manual.ZhDocString.Ch19Ch20.G9.c184}
 
 ## 转换
 
 %%%
 tag := "Lean-__________________--Basic-Types--Sum-Types--API-Reference--Transformations"
 %%%
-{docstring Sum.map}
+{zhdocstring Sum.map Manual.ZhDocString.Ch19Ch20.G9.c185}
 
-{docstring Sum.swap}
+{zhdocstring Sum.swap Manual.ZhDocString.Ch19Ch20.G9.c186}
 
 ## 居留性
 
@@ -175,10 +176,10 @@ example : Nat ⊕ String :=
 ```
 :::
 
-{docstring Sum.inhabitedLeft}
+{zhdocstring Sum.inhabitedLeft Manual.ZhDocString.Ch19Ch20.G9.c187}
 
-{docstring Sum.inhabitedRight}
+{zhdocstring Sum.inhabitedRight Manual.ZhDocString.Ch19Ch20.G9.c188}
 
-{docstring PSum.inhabitedLeft}
+{zhdocstring PSum.inhabitedLeft Manual.ZhDocString.Ch19Ch20.G9.c189}
 
-{docstring PSum.inhabitedRight}
+{zhdocstring PSum.inhabitedRight Manual.ZhDocString.Ch19Ch20.G9.c190}

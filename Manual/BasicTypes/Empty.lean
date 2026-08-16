@@ -7,6 +7,7 @@ Author: David Thrane Christiansen
 import VersoManual
 
 import Manual.Meta
+import Manual.ZhDocString.Ch19Ch20.G9
 
 open Verso.Genre Manual
 open Verso.Genre.Manual.InlineLean
@@ -30,9 +31,9 @@ tag := "empty"
 
 {name}`Empty` 的宇宙多态对应物是 {name}`PEmpty`。
 
-{docstring Empty}
+{zhdocstring Empty Manual.ZhDocString.Ch19Ch20.G9.c200}
 
-{docstring PEmpty}
+{zhdocstring PEmpty Manual.ZhDocString.Ch19Ch20.G9.c201}
 
 
 :::example "不可能的代码路径"
@@ -59,6 +60,6 @@ def g (n : Nat) : Nat :=
 %%%
 tag := "Lean-__________________--Basic-Types--The-Empty-Type--API-Reference"
 %%%
-{docstring Empty.elim}
+{zhdocstring Empty.elim Manual.ZhDocString.Ch19Ch20.G9.c202}
 
-{docstring PEmpty.elim}
+{zhdocstring PEmpty.elim Manual.ZhDocString.Ch19Ch20.G9.c203}
