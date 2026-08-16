@@ -16,6 +16,9 @@ open Verso.Genre.Manual.InlineLean
 set_option pp.rawOnError true
 
 #doc (Manual) "谓词与关系" =>
+%%%
+tag := "Lean-__________________--Basic-Types--Linked-Lists--API-Reference--Predicates-and-Relations"
+%%%
 
 {docstring List.IsPrefix}
 

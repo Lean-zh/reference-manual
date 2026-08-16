@@ -16,6 +16,9 @@ open Verso.Genre.Manual.InlineLean
 set_option pp.rawOnError true
 
 #doc (Manual) "比较" =>
+%%%
+tag := "Lean-__________________--Basic-Types--Linked-Lists--API-Reference--Comparisons"
+%%%
 
 {docstring List.beq}
 
