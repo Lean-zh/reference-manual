@@ -2045,7 +2045,8 @@ class c231 (α : Type u) where
   size : α → Nat
 
 /--
-此类型类确保 `UpwardEnumerable α` 实例与 `≤` 兼容。在这种情况下，`UpwardEnumerable α` 完全刻画 `LE α` 实例。
+此类型类确保右闭区间（即，对边界 `a` 和 `b` 而言，`a...=b`、`a<...=b` 与 `*...=b`）总是有限。
+这是 `Rcc.toList`、`ForIn'` 等许多函数和实例的前提。
 -/
 class c232 (α : Type u) [Std.PRange.UpwardEnumerable α] [LE α] : Prop where
   /--
@@ -2065,7 +2066,7 @@ class c233 (α : Type u) where
   size : α → α → Nat
 
 /--
-此类型类说明如何按索引类型中的左闭右开区间取得元素切片。
+此类型类说明如何取得 `α` 中元素；这些切片由索引类型 `β` 中的左闭右开区间指定。
 
 结果切片的类型为 `γ`。
 -/
@@ -2087,7 +2088,7 @@ class c235 (α : Type u) (β : outParam (Type v)) (γ : outParam (Type w)) where
   mkSlice : α → Std.Rcc β → γ
 
 /--
-此类型类说明如何按索引类型中左闭、右端无界的区间取得元素切片。
+此类型类说明如何取得 `α` 中元素；这些切片由索引类型 `β` 中左闭、右端无界的区间指定。
 
 结果切片的类型为 `γ`。
 -/
@@ -2098,7 +2099,7 @@ class c236 (α : Type u) (β : outParam (Type v)) (γ : outParam (Type w)) where
   mkSlice : α → Std.Rci β → γ
 
 /--
-此类型类说明如何按索引类型中的开区间取得元素切片。
+此类型类说明如何取得 `α` 中元素；这些切片由索引类型 `β` 中的开区间指定。
 
 结果切片的类型为 `γ`。
 -/
@@ -2109,7 +2110,7 @@ class c237 (α : Type u) (β : outParam (Type v)) (γ : outParam (Type w)) where
   mkSlice : α → Std.Roo β → γ
 
 /--
-此类型类说明如何按索引类型中的左开右闭区间取得元素切片。
+此类型类说明如何取得 `α` 中元素；这些切片由索引类型 `β` 中的左开右闭区间指定。
 
 结果切片的类型为 `γ`。
 -/
@@ -2120,7 +2121,7 @@ class c238 (α : Type u) (β : outParam (Type v)) (γ : outParam (Type w)) where
   mkSlice : α → Std.Roc β → γ
 
 /--
-此类型类说明如何按索引类型中左开、右端无界的区间取得元素切片。
+此类型类说明如何取得 `α` 中元素；这些切片由索引类型 `β` 中左开、右端无界的区间指定。
 
 结果切片的类型为 `γ`。
 -/
@@ -2131,7 +2132,7 @@ class c239 (α : Type u) (β : outParam (Type v)) (γ : outParam (Type w)) where
   mkSlice : α → Std.Roi β → γ
 
 /--
-此类型类说明如何按索引类型中左端无界、右开的区间取得元素切片。
+此类型类说明如何取得 `α` 中元素；这些切片由索引类型 `β` 中左端无界、右开的区间指定。
 
 结果切片的类型为 `γ`。
 -/
@@ -2142,7 +2143,7 @@ class c240 (α : Type u) (β : outParam (Type v)) (γ : outParam (Type w)) where
   mkSlice : α → Std.Rio β → γ
 
 /--
-此类型类说明如何按索引类型中左端无界、右闭的区间取得元素切片。
+此类型类说明如何取得 `α` 中元素；这些切片由索引类型 `β` 中左端无界、右闭的区间指定。
 
 结果切片的类型为 `γ`。
 -/
@@ -2153,7 +2154,7 @@ class c241 (α : Type u) (β : outParam (Type v)) (γ : outParam (Type w)) where
   mkSlice : α → Std.Ric β → γ
 
 /--
-此类型类说明如何按索引类型中的全区间取得元素切片。
+此类型类说明如何取得 `α` 中元素；这些切片由索引类型 `β` 中的全区间指定。
 
 结果切片的类型为 `γ`。
 -/
