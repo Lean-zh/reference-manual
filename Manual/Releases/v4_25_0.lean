@@ -29,7 +29,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___25___0-_LPAR_2025-1
 
 ````markdown
 
-Lean v4.25.0 带来了多项令人兴奋的新特性。编辑器集成为 “try this” 建议增加了交互性，Lake 增加了远程缓存支持。新的语言特性包括：自动为类型类方法生成规格定理、余归纳谓词，以及 `mvcgen` 中的不变式建议。`grind` 获得了一个交互模式，允许用户控制证明搜索，并可建议可复现的证明脚本。其推理能力还扩展到了单射函数、非交换（半）环，以及预序和有序环结构。标准库则带来了重新设计的 `String` 类型和更丰富的异步原语。请继续阅读下文了解详情！
+Lean v4.25.0 带来了多项令人兴奋的新特性。编辑器集成为 “try this” 建议增加了交互性，Lake 增加了远程缓存支持。新的语言特性包括：自动为类型类方法生成规格定理、余归纳谓词，以及 `mvcgen` 中的不变式建议。grind 获得了一个交互模式，允许用户控制证明搜索，并可建议可复现的证明脚本。其推理能力还扩展到了单射函数、非交换（半）环，以及预序和有序环结构。标准库则带来了重新设计的 `String` 类型和更丰富的异步原语。请继续阅读下文了解详情！
 
 ````
 ## 应用 “try this” 建议
@@ -189,7 +189,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___25___0-_LPAR_2025-1
 
 ````markdown
 
-`grind` 已扩展出交互模式 `grind => …`
+grind 已扩展出交互模式 `grind => …`
 （[#10607](https://github.com/leanprover/lean4/pull/10607)、[#10677](https://github.com/leanprover/lean4/pull/10677)、……）。
 
 ```lean
@@ -197,7 +197,7 @@ example (x y : Nat) : x ≥ y + 1 → x > 0 := by
   grind => skip; lia; done
 ```
 
-交互模式还配备了 _锚点_（也称稳定哈希码），用于引用 `grind` 目标中出现的项
+交互模式还配备了 _锚点_（也称稳定哈希码），用于引用 grind 目标中出现的项
 （[#10709](https://github.com/leanprover/lean4/pull/10709)）。
 
 在交互模式下，可以进行以下操作：
@@ -227,10 +227,10 @@ example (x y : Nat) : x ≥ y + 1 → x > 0 := by
 - 使用 `cases?` 选择锚点
   （[#10824](https://github.com/leanprover/lean4/pull/10824)；PR 描述中附有截图）；
 
-- 将 `ac`、`linarith`、`lia`、`ring` 等 `grind` 求解器用作动作
+- 将 `ac`、`linarith`、`lia`、`ring` 等 grind 求解器用作动作
   （[#10812](https://github.com/leanprover/lean4/pull/10812) 和 [#10834](https://github.com/leanprover/lean4/pull/10834)）；
 
-- 在可能时，利用显式的 `grind` 策略步骤生成一个能够关闭目标的具体 `grind` 脚本，
+- 在可能时，利用显式的 grind 策略步骤生成一个能够关闭目标的具体 `grind` 脚本，
   也就是完全不依赖搜索；可通过 `finish?` 实现（[#10837](https://github.com/leanprover/lean4/pull/10837)）：
 
   ```lean
@@ -338,7 +338,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___25___0-_LPAR_2025-1
 
 ````markdown
 
-`grind` 现在可以求解预序与有序环问题
+grind 现在可以求解预序与有序环问题
 （[#10562](https://github.com/leanprover/lean4/pull/10562)、[#10598](https://github.com/leanprover/lean4/pull/10598) 和 [#10600](https://github.com/leanprover/lean4/pull/10600)）。
 新的求解器 `grind order` 支持 `Nat`，并且能够处理正约束与负约束。
 
@@ -475,7 +475,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___25___0-_LPAR_2025-1
   更多信息请参见 PR 描述。
 
 - [#10735](https://github.com/leanprover/lean4/pull/10735) 将许多涉及 `String.Pos.Raw` 的操作移入
-  `String.Pos.Raw` 命名空间。
+  `String.Pos.Raw` 命名空间，以便把 `String.Pos.Raw` 相关操作集中到同一命名空间下。
 
   **破坏性变更：** 自此 PR 起，`String.pos_lt_eq` 不再是 `simp` 引理。
   如果你的证明因此失效，请将 `String.Pos.Raw.lt_iff` 添加为 `simp` 引理。
@@ -542,7 +542,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___25___0-_LPAR_2025-1
 ````markdown
 
 [#10807](https://github.com/leanprover/lean4/pull/10807) 引入了 `backward.privateInPublic` 选项，
-以帮助项目迁移到模块系统：它会临时允许从公共作用域访问 `private` 声明，
+以帮助项目迁移到模块系统：`backward.privateInPublic` 会临时允许从公共作用域访问 private 声明，
 即使跨模块也可以。除非禁用 `backward.privateInPublic.warn`，
 否则这类访问会产生警告。
 
@@ -631,7 +631,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___25___0-_LPAR_2025-1
 * [#10388](https://github.com/leanprover/lean4/pull/10388) 修复了一个错误：如果某个定义中的嵌套证明含有 `sorry`，且该证明与前一个声明中的另一个嵌套证明具有相同类型，则它可能不会报告 “warning: declaration uses 'sorry'”。该错误只影响日志消息；`#print axioms` 仍会正确报告 `sorryAx` 的使用。
 
 * [#10391](https://github.com/leanprover/lean4/pull/10391) 为匿名构造子记号（`⟨x,y⟩`）加入了错误恢复机制：
-  如果参数不足，就会为缺失参数插入合成的 `sorry` 并记录一条错误，而不是直接失败。
+  如果参数不足，就会为缺失参数插入合成的 sorry 并记录一条错误，而不是直接失败。
 
 * [#10392](https://github.com/leanprover/lean4/pull/10392) 修复了 `if` 策略中的一个问题：错误不会放到正确的源码范围上。它还加入了一些错误恢复，以避免在策略语法不完整时，在 `if` 标记上额外报出关于未解决目标的错误。
 
@@ -641,7 +641,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___25___0-_LPAR_2025-1
   和 `Ord.compare _ _` 的出现位置。
 
 * [#10406](https://github.com/leanprover/lean4/pull/10406) 在 #10302 的基础上进一步改进：
-  当实现函数未暴露时，能正确地将规格定理设为 `private`。
+  当实现函数未暴露时，能正确地将规格定理设为 private。
 
 * [#10415](https://github.com/leanprover/lean4/pull/10415) 修改了为结构递归证明方程定理时尝试的步骤顺序。
   为了避免产生 `split` 无法处理的目标，在方程右侧尚未拆成最终分支前，
@@ -665,7 +665,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___25___0-_LPAR_2025-1
 * [#10422](https://github.com/leanprover/lean4/pull/10422) 为 `grind` 实现了新的 E-matching 模式推断启发式。它目前尚未启用。你可以使用 `set_option backward.grind.inferPattern false` 来启用这一新行为。下面是对新行为的摘要。
 
 * [#10425](https://github.com/leanprover/lean4/pull/10425) 允许 `split` 策略用 `generalize`
-  来泛化那些既不是自由变量、也不是证明的判别式。若唯一的非 `fvar` 判别式都是证明，
+  来泛化那些既不是自由变量、也不是证明的判别式。若唯一的非 fvar 判别式都是证明，
   那么这样可以避免 `split` 更复杂的泛化策略；后者在依赖动机下可能失败，从而缓解了 #10424。
 
 * [#10428](https://github.com/leanprover/lean4/pull/10428) 使缺失的 `grind` 修饰符显式化，并确保 `grind` 对局部定理使用 “minIndexable”。
@@ -680,24 +680,25 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___25___0-_LPAR_2025-1
   set_option backward.grind.inferPattern true
   ```
 
-* [#10434](https://github.com/leanprover/lean4/pull/10434) 新增了 `reprove N by T`，
-  其效果相当于精译 `example type_of% N := by T`。它支持多个标识符，
+* [#10434](https://github.com/leanprover/lean4/pull/10434) 新增了 `reprove N by T`；
+  `reprove N by T` 的效果相当于精译 example type_of% N := by T。它支持多个标识符，
   因而对测试策略很有用。
 
 * [#10438](https://github.com/leanprover/lean4/pull/10438) 修复了一个问题：
   记号和其他重载即使存在成功解释，也会报出内核错误。
 
 * [#10440](https://github.com/leanprover/lean4/pull/10440) 添加了 `reduceCtorIdx` 化简过程，
+  `reduceCtorIdx`
   它能够识别并约化 `ctorIdx` 应用。由于它（目前）还没有使用判别树，
   因此默认仍未启用。
 
-* [#10453](https://github.com/leanprover/lean4/pull/10453) 让 `mvcgen` 能穿过 `let`
-  进行约化，因此它在处理 `(have t := 42; fun _ => foo t) 23` 时，
-  会先将其约化为 `have t := 42; foo t`，然后再引入 `t`。
+* [#10453](https://github.com/leanprover/lean4/pull/10453) 让 `mvcgen` 能穿过 let
+  进行约化，因此 `mvcgen` 在处理 `(have t := 42; fun _ => foo t) 23` 时，
+  会先将其约化为 have t := 42; foo t，再执行 ` and then introducing ` 这一步。
 
 * [#10456](https://github.com/leanprover/lean4/pull/10456) 实现了 `mvcgen invariants?`，
   用于为用户提供可进一步补全的初始不变式骨架。当循环体中存在提前返回时，
-  它还会贴心地建议使用 `Invariant.withEarlyReturn ...` 作为骨架。
+  它还会贴心地建议使用 Invariant.withEarlyReturn ... 作为骨架。
 
 * [#10479](https://github.com/leanprover/lean4/pull/10479) 实现了使用 Verso 语法书写的模块文档字符串，
   并为 Verso 文档字符串整体加入了多项改进和修复。特别是，它们现在获得了语言服务器支持，
@@ -718,7 +719,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___25___0-_LPAR_2025-1
 * [#10533](https://github.com/leanprover/lean4/pull/10533) 为模块名新增了一个文档字符串角色，
   名为 `module`。它还改进了为代码元素提供的建议，使其更相关，并加入了 `lit` 建议。
 
-* [#10535](https://github.com/leanprover/lean4/pull/10535) 确保 `#guard` 可以在模块系统下正常调用。
+* [#10535](https://github.com/leanprover/lean4/pull/10535) 确保 `#guard` 可以在模块系统下作为 `#guard` 命令正常调用。
 
 * [#10536](https://github.com/leanprover/lean4/pull/10536) 修复了 `simp` 在 `-zeta -zetaUnused`
   模式下可能产生错误证明的问题：当 `have` 望远镜中的变量只以传递方式出现在主体的类型里时，
@@ -759,7 +760,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___25___0-_LPAR_2025-1
 * [#10567](https://github.com/leanprover/lean4/pull/10567) 修复了 `Lean.Expr.getArg!'` 中的参数索引计算。
 
 * [#10570](https://github.com/leanprover/lean4/pull/10570) 在 `mvcgen invariants` 中加入了类似个案标签的语法，
-  以便引用不可访问的名称。例如：
+  以便在 `mvcgen invariants` 中引用不可访问的名称。例如：
 
   ```lean
   def copy (l : List Nat) : Id (Array Nat) := do
@@ -785,7 +786,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___25___0-_LPAR_2025-1
 * [#10618](https://github.com/leanprover/lean4/pull/10618) 从 `MonadExceptOf` 提升框架的规格引理中移除了多余的 `Monad` 实例。
 
 * [#10638](https://github.com/leanprover/lean4/pull/10638) 通过修改默认值，关闭了 `mvcgen`
-  的“实验性”警告。
+  的“实验性”警告，也就是关闭 `mvcgen` 默认发出的该警告。
 
 * [#10639](https://github.com/leanprover/lean4/pull/10639) 修复了 `mvcgen` 为**所有**生成目标维护局部上下文卫生性的问题，
   而不再只限于像 #9781 那样获得新 MVar 的目标。
@@ -810,7 +811,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___25___0-_LPAR_2025-1
 * [#10697](https://github.com/leanprover/lean4/pull/10697) 让 `induction` 在 `using`
   子句中出现的变量被泛化时输出警告。修复了 #10683。
 
-* [#10712](https://github.com/leanprover/lean4/pull/10712) 让 `MVarId.cleanup`
+* [#10712](https://github.com/leanprover/lean4/pull/10712) 让 MVarId.cleanup
   会跟踪局部声明（有点像把它们当作等式来处理）。修复了 #10710。
 
 * [#10714](https://github.com/leanprover/lean4/pull/10714) 删除了对可约良基递归的支持，这是一个破坏性变更。在通过良基递归定义的定义上使用 `@[semireducible]` 会打印警告，提示它已不再生效。
@@ -842,7 +843,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___25___0-_LPAR_2025-1
   现在会拒绝某些此前因不可访问模式有时被当成可访问模式而被接受的匹配。修复了 #10794。
 
 * [#10807](https://github.com/leanprover/lean4/pull/10807) 引入了 `backward.privateInPublic` 选项，
-  以帮助项目迁移到模块系统：它会临时允许从公共作用域访问 `private` 声明，
+  以帮助项目迁移到模块系统：该选项会临时允许从公共作用域访问 private 声明，
   甚至允许跨模块访问。除非禁用 `backward.privateInPublic.warn`，否则此类访问会产生警告。
 
 * [#10839](https://github.com/leanprover/lean4/pull/10839) 暴露了用于实现 `set_option` 记号的 `optionValue` 解析器。
@@ -925,7 +926,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___25___0-_LPAR_2025-1
 
 * [#10653](https://github.com/leanprover/lean4/pull/10653) 为（过滤）映射后再折叠的迭代器添加了方程引理。
 
-* [#10667](https://github.com/leanprover/lean4/pull/10667) 为 TCP 和 `Signals` 添加了更多选择器。
+* [#10667](https://github.com/leanprover/lean4/pull/10667) 为 TCP 和 Signals 添加了更多选择器。
 
 * [#10676](https://github.com/leanprover/lean4/pull/10676) 添加了 `IO.FS.hardLink` 函数，可用于创建硬链接。
 
@@ -1162,7 +1163,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___25___0-_LPAR_2025-1
   - `cases <anchor>`
   - `tactic => <tac_seq>`
 
-* [#10737](https://github.com/leanprover/lean4/pull/10737) 为 `grind` 交互模式加入了 `linarith`、`ac`、`fail`、`first`、`try`、`fail_if_success` 和 `admit` 策略。
+* [#10737](https://github.com/leanprover/lean4/pull/10737) 为 `grind` 交互模式加入了 linarith、`ac`、`fail`、`first`、`try`、`fail_if_success` 和 `admit` 策略。
 
 * [#10740](https://github.com/leanprover/lean4/pull/10740) 改进了 `grind` 交互模式中的 `ac`、`linarith`、`lia`、`ring` 策略。如果没有取得进展，它们现在会失败；如果目标未关闭，还会生成带有反例/基的提示信息。
 
@@ -1186,7 +1187,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___25___0-_LPAR_2025-1
       instantiate Array.getElem_set
   ```
 
-* [#10747](https://github.com/leanprover/lean4/pull/10747) 实现了 `finish?` 和 `grind?` 策略的基础设施。
+* [#10747](https://github.com/leanprover/lean4/pull/10747) 实现了 finish? 和 `grind?` 策略的基础设施。
 
 * [#10748](https://github.com/leanprover/lean4/pull/10748) 为 `grind` 交互模式实现了 `repeat` 策略组合子。
 
@@ -1252,14 +1253,14 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___25___0-_LPAR_2025-1
 * [#10488](https://github.com/leanprover/lean4/pull/10488) 更改了科学记数数字的解析方式，
   以便对诸如 `32.succ` 这样的（无效）语法给出更好的错误信息。
 
-* [#10495](https://github.com/leanprover/lean4/pull/10495) 修复了代码生成器中对 `UIntX`
+* [#10495](https://github.com/leanprover/lean4/pull/10495) 修复了代码生成器中对 UIntX
   的常量折叠。由于无符号整数文字的编码方式，这项优化此前实际上只是死代码。
 
 * [#10610](https://github.com/leanprover/lean4/pull/10610) 确保即使某个类型被标记为 `irreducible`，
   编译器仍能看穿它，从而发现隐藏在类型别名背后的函数。
 
 * [#10626](https://github.com/leanprover/lean4/pull/10626) 降低了来自 lambda RC 的
-  死 `let` 消去器的激进程度。
+  死 let 消去器的激进程度。
 
 * [#10689](https://github.com/leanprover/lean4/pull/10689) 修复了代码生成器中 RC 插入阶段的一处疏漏。
 
@@ -1285,7 +1286,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___25___0-_LPAR_2025-1
 
 ````markdown
 
-* [#10632](https://github.com/leanprover/lean4/pull/10632) 为 `ByteArray` 添加了缺失的文档字符串，
+* [#10632](https://github.com/leanprover/lean4/pull/10632) 为 ByteArray 添加了缺失的文档字符串，
   并使已有文档字符串与我们的风格保持一致。
 
 * [#10640](https://github.com/leanprover/lean4/pull/10640) 添加了一个缺失的文档字符串，并将我们的风格指南应用到 `String` API 的一部分上。
@@ -1352,7 +1353,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___25___0-_LPAR_2025-1
   以便更好地与新的远程支持协同工作。
 
 * [#10452](https://github.com/leanprover/lean4/pull/10452) 重构了 Lake 的包命名流程，
-  使消费者可以为包重新命名。这样一来，用户现在可以用不同于包定义时的名称来 `require` 它。
+  使消费者可以为包重新命名。这样一来，用户现在可以用不同于包定义时的名称来 require 它。
 
 * [#10459](https://github.com/leanprover/lean4/pull/10459) 修复了 Lake 生成的 GitHub Action
   模板中的一个条件检查。
@@ -1371,7 +1372,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___25___0-_LPAR_2025-1
 * [#10578](https://github.com/leanprover/lean4/pull/10578) 为 Lake 的 `buildType` 配置选项增加了对 CMake 风格构建类型拼写（即首字母大写形式）的支持。
 
 * [#10579](https://github.com/leanprover/lean4/pull/10579) 修改了 `libPrefixOnWindows`
-  的行为：它会把 `lib` 前缀加到库的 `libName` 上，而不只是加到文件路径上。
+  的行为：它会把 `lib` 前缀加到库的 `libName` 上，也就是加上 `lib` 前缀，而不只是加到文件路径上。
   这意味着 Lake 的 `-l` 在 Windows 上现在也会带此前缀。虽然这对 MSYS2 构建
   （它既接受带 `lib` 前缀的形式，也接受不带前缀的形式）应当没有影响，
   但如果将来需要的话，它可以确保与 MSVC 兼容。
@@ -1393,7 +1394,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___25___0-_LPAR_2025-1
 ````markdown
 
 * [#10383](https://github.com/leanprover/lean4/pull/10383) 包含了发布流程方面的一些改进，
-  使 `stable` 分支的更新更加稳健，并将 `cslib` 纳入发布检查清单。
+  使 `stable` 分支的更新更加稳健，并将 `cslib` 纳入 `cslib` 发布检查清单。
 
 * [#10389](https://github.com/leanprover/lean4/pull/10389) 修复了一个错误：
   字符串字面量解析会忽略其尾随空白设置。
