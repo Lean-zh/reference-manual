@@ -300,7 +300,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___28___0-_LPAR_2026-0
   - 如果 `Module` 被传递导入，`assert_not_imported Module` 就会发出警告
   - `#check_assertions` 验证所有待处理的断言最终都得到满足
 
-* [#11731](https://github.com/leanprover/lean4/pull/11731) 让 `expr_eq_fn` 中的缓存使用 mimalloc，在各类场景中都获得小幅性能提升。
+* [#11731](https://github.com/leanprover/lean4/pull/11731) 让 expr_eq_fn 中的缓存使用 mimalloc，在各类场景中都获得小幅性能提升。
 
 * [#11748](https://github.com/leanprover/lean4/pull/11748) 修复了某些策略不允许访问的边缘情况
   模块系统下私有证明内的私有声明
@@ -429,7 +429,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___28___0-_LPAR_2026-0
 * [#11761](https://github.com/leanprover/lean4/pull/11761) 添加了一些 `grind_pattern` `guard` 条件
   昂贵的定理。
 
-* [#11762](https://github.com/leanprover/lean4/pull/11762) 将`grind` 模式从 `Sublist.eq_of_length` 移动到
+* [#11762](https://github.com/leanprover/lean4/pull/11762) 将 grind 模式从 `Sublist.eq_of_length` 移动到
   稍微更通用 `Sublist.eq_of_length_le`，并增加了磨砺
 模式保护，因此只有当我们有假设的证明时它才会激活。
 
@@ -952,7 +952,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___28___0-_LPAR_2026-0
 * [#11479](https://github.com/leanprover/lean4/pull/11479) 使专门化器也能够递归地专门化于某些
   非平凡的高阶情况。
 
-* [#11729](https://github.com/leanprover/lean4/pull/11729) 在 LCNF 转换期间内化 `Quot.lift` 的所有参数，防止某些使用商类型的非平凡程序发生崩溃。
+* [#11729](https://github.com/leanprover/lean4/pull/11729) 在 LCNF 转换期间内化 Quot.lift 的所有参数，防止某些使用商类型的非平凡程序发生崩溃。
 
 * [#11874](https://github.com/leanprover/lean4/pull/11874) 通过合并锁定来提高 `getLine` 的性能
   底层 `FILE*` 的。

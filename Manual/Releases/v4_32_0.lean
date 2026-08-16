@@ -426,7 +426,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___32___0-_LPAR_2026-0
 添加`mvcgen' until $t`，其中`$t`是一个转换样式模式（允许有孔`_`）；一旦程序匹配模式，验证条件生成就会停止，将其保留为 VC 而不是应用规范，类似于现有的 `stepLimit` 选项。
 
 - [#13925](https://github.com/leanprover/lean4/pull/13925)
-巩固了`mvcgen'`跨策略和磨练（`sym =>`）模式的语法。`grind` 模式`with`子句已删除（使用`<;>`代替），并且策略级别`with`现在采用与`mvcgen'`共享E图的单个研磨步骤。 `mvcgen' invariants?`（建议模式）也适用于`sym => …`块。
+统一了 `mvcgen'` 在策略模式和研磨（`sym =>`）模式中的语法。研磨模式的 `with` 子句已删除（改用 `<;>`），而策略级 `with` 现在接受一个与 `mvcgen'` 共享 E 图的研磨步骤。`mvcgen' invariants?`（建议模式）也适用于 `sym => …` 块。
 
 - [#13944](https://github.com/leanprover/lean4/pull/13944)
 将`CNF.convertLRAT'`中的`filterMap`更改为`map`，以便同义反复子句在数组中变为`none`而不是被删除。
@@ -441,7 +441,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___32___0-_LPAR_2026-0
 使`intersperse`库建议组合器在端点尊重`ratio`，因此`ratio = 0`完全从`selector₂`提取，`ratio = 1`完全从`selector₁`提取，而两个选择器仍然有结果。以前，每个元素的选择都是通过将`selector₁`贡献与`ratio`的贡献分数与严格的`<`（空时播种到`0`）进行比较，这使得`ratio = 1`在稳定之前从`selector₂`提取一个杂散元素。组合器现在选择下一个状态中保持运行分数最接近`ratio`的候选者，并与`selector₁`保持联系。
 
 - [#13907](https://github.com/leanprover/lean4/pull/13907)
-使`intersperse`库建议组合器请求`maxSuggestions`从其两个选择器中的每一个选择器得到`maxSuggestions`结果，而不是按`ratio`分割预算，这样，如果一个选择器返回的建议少于其分配的建议，则另一个选择器可以补偿以仍然满足请求。散布比例和最终组合结果的`maxSuggestions`上限不变。
+使 `intersperse` 库建议组合器从两个选择器各请求 `maxSuggestions` 条结果，而不是按 `ratio` 分割预算。这样，如果一个选择器返回的建议少于其配额，另一个选择器便可补足，仍然满足请求。交错比例和最终组合结果的 `maxSuggestions` 上限不变。
 
 - [#13896](https://github.com/leanprover/lean4/pull/13896)
 改进了对 `SymM` 模式匹配器/统一器中的宇宙约束的支持。支持两个新案例

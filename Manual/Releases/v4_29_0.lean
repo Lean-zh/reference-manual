@@ -613,7 +613,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-0
   ```
   axiom P : Prop
   axiom Q : P → Prop
-  -- 先前给出：（内核）声明具有元变量“Foo”
+  -- Previously gave: (kernel) declaration has metavariables 'Foo'
   inductive Foo : (h : P) → (Q (by exact h)) → Prop
   ```
 
@@ -760,7 +760,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-0
 * [#12162](https://github.com/leanprover/lean4/pull/12162) 添加函数 `Std.Iter.first?` 并证明规范
   引理 `Std.Iter.first?_eq_match_step` 如果迭代器是高效的。
 
-* [#12170](https://github.com/leanprover/lean4/pull/12170) 调整了List.take/drop的`grind` 注解，并添加了两个
+* [#12170](https://github.com/leanprover/lean4/pull/12170) 调整了 List.take/drop 的 grind 注解，并添加了两个
   定理。
 
 * [#12181](https://github.com/leanprover/lean4/pull/12181) 为 `Int` 添加两个缺失的订单实例。

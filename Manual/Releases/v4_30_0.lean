@@ -488,7 +488,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___30___0-_LPAR_2026-0
 添加函数 `Std.Iter.joinString` 和 `Std.Iter.intercalateString`。
 
 - [#13054](https://github.com/leanprover/lean4/pull/13054)
-添加默认禁用的简化过程 String.reduceToSingleton`，它会将 `"c"` 转换为 `String.singleton 'c'`。
+添加简化过程 String.reduceToSingleton`, which is disabled by default and turns `"c"` into `String.singleton 'c'`。
 
 - [#13003](https://github.com/leanprover/lean4/pull/13003)
 重新组织实例 `ToString Int` 和 `Repr Int`，以便它们都指向公共定义 `Int.repr`（`Nat` 使用相同的设置）。然后它验证函数`Int.repr`、`String.isInt`和`String.toInt`。
@@ -687,7 +687,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___30___0-_LPAR_2026-0
   `SymM.run`.
 
 - [#13048](https://github.com/leanprover/lean4/pull/13048)
-添加了两个新的 `sym_simproc` DSL 原语和辅助`grind` 模式
+添加了两个新的 `sym_simproc` DSL 原语和辅助 grind 模式
   策略。
 
 - [#13046](https://github.com/leanprover/lean4/pull/13046)
@@ -1130,8 +1130,8 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___30___0-_LPAR_2026-0
 修复了存储库使用时 release_checklist.py 中的崩溃
 `leanprover/lean4-nightly:` 工具链前缀（例如leansqlite）。这
 `is_version_gte` 函数仅检查 `leanprover/lean4:nightly-` 但
-不是`leanprover/lean4-nightly:`，导致“ValueError：无效文字”
-int() 以 10 为基数： 'nightly'` 尝试解析版本时。
+不是 `leanprover/lean4-nightly:`，导致在尝试解析版本时出现
+`ValueError: invalid literal for int() with base 10: 'nightly'`。
 
 - [#12963](https://github.com/leanprover/lean4/pull/12963)
 修复了应用于仅标头文件且不带尾随换行符时 `lake shake` 中的崩溃

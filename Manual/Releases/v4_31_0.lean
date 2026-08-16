@@ -103,10 +103,10 @@ def x : Nat := 5
 -- `rfl` checks defeq at `.default` transparency, so it closes the goal:
 example : x = 5 := rfl
 
--- 但 `with_reducible` （其中 `simp`/`dsimp` 运行）不会展开它：
+-- but `with_reducible` (where `simp`/`dsimp` run) won't unfold it:
 example : x = 5 := by with_reducible refl
 
--- 并且 `simp`/`dsimp` 也不起作用：
+-- and `simp`/`dsimp` does not work either:
 example : x = 5 := by simp
 ```
 
@@ -373,7 +373,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___31___0-_LPAR_2026-0
 - [#13359](https://github.com/leanprover/lean4/pull/13359)
   添加 `linter.redundantExpose` 选项（默认 `true`），当 `@[expose]` 或 `@[no_expose]` 属性无效时发出警告：
 
-  - `@[expose]` 用于 `abbrev`（始终公开）或非 `Prop` 的 `instance`（始终公开）
+  - `@[expose]` 用于 `abbrev`（始终公开）或非 Prop 的 `instance`（始终公开）
   - `@[expose]` 用于 `@[expose] section` 内的 `def`（已由该 section 公开）
   - `@[expose]`/`@[no_expose]` 用于非 `module` 文件（没有模块系统）
   - `@[no_expose]` 位于默认情况下不会公开的声明上
@@ -619,7 +619,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___31___0-_LPAR_2026-0
 2. 引入`grind_pattern getMsbD_eq_getLsbD => x.getMsbD i, x.getLsbD _`，这样每当我们在范围内的相同值上同时拥有`getMsbD`和`getLsbD`时，我们就会尝试将它们匹配。我们预计这个注释*通常*不会触发太多，因为大多数 `get*D` 可能可以转换为 `getElem` 并从那里开始工作。
 
 - [#13850](https://github.com/leanprover/lean4/pull/13850)
-删除了每当`c[i]`出现在 E 图中时就会触发`getElem?_pos`的`grind` 注解。我们这样做是为了避免仅仅因为 `c[i]` 可用而对 `c[i]?` 进行推理。每当`c[i]?`在范围内时，实例化`getElem?_pos`的触发器仍然存在，以便推动`grind` 证明或反驳边界检查。
+删除了每当 `c[i]` 出现在 E 图中时就会触发 `getElem?_pos` 的 grind 注解。我们这样做是为了避免仅仅因为 `c[i]` 可用而对 `c[i]?` 进行推理。每当 `c[i]?` 在范围内时，实例化 `getElem?_pos` 的触发器仍然存在，以便推动 grind 证明或反驳边界检查。
 
 - [#13689](https://github.com/leanprover/lean4/pull/13689)
 使得 `whileM` 的展开引理可以从 `Lean.Order.MonadTail` 实例导出。公共入口点是`Init.Internal.Order.While`中的`whileM_eq_of_monadTail`；底层固定谓词`whileM.Pred`和`Init.While`中的条件`whileM_eq`引理保留在模块内部。
@@ -697,7 +697,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___31___0-_LPAR_2026-0
 基于对 core 中默认容器上的所有只读操作的系统审查。在合理的情况下，它会对缺乏注释的高阶操作应用专门注释，或者在道德上应该借用的参数上借用注释（例如，迭代容器时的容器）。
 
 - [#13200](https://github.com/leanprover/lean4/pull/13200)
-为 `List`、`Array` 和 `Vector` 添加`prod`（乘法折叠），镜像现有的 `sum` 接口。包括基本的 simpl 引理（`prod_nil`、`prod_cons`、`prod_append`、`prod_singleton`、`prod_reverse`、`prod_push`、`prod_eq_foldl`）、Nat 专用引理(`prod_pos_iff_forall_pos_nat`、`prod_eq_zero_iff_exists_zero_nat`、`prod_replicate_nat`)、Int专用引理(`prod_replicate_int`)、十字型引理(`prod_toArray`、`prod_toList`)、以及带有`grind` 模式的`Perm.prod_nat`。
+为 `List`、`Array` 和 `Vector` 添加 `prod`（乘法折叠），镜像现有的 `sum` 接口。包括基本的 simp 引理（`prod_nil`、`prod_cons`、`prod_append`、`prod_singleton`、`prod_reverse`、`prod_push`、`prod_eq_foldl`）、Nat 专用引理（`prod_pos_iff_forall_pos_nat`、`prod_eq_zero_iff_exists_zero_nat`、`prod_replicate_nat`）、Int 专用引理（`prod_replicate_int`）、跨类型引理（`prod_toArray`、`prod_toList`），以及带有 grind 模式的 `Perm.prod_nat`。
 
 - [#13273](https://github.com/leanprover/lean4/pull/13273)
 添加了全面的公共接口，用于构建最大程度的共享

@@ -252,8 +252,8 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___33___0-_LPAR_2026-0
   ```lean
   module
   meta import Lean.PostprocessTraces
-  -- 展开 `synthInstance` 跟踪节点的所有祖先
-  -- 为了更好地发现大型跟踪树
+  -- Expand all ancestors of `synthInstance` trace nodes
+  -- for better discoverability in large trace trees
   postprocess_traces exposeSubtrees (ofClass `Meta.synthInstance) in
   set_option trace.Meta.isDefEq true in
   set_option trace.Meta.synthInstance true in
@@ -579,7 +579,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___33___0-_LPAR_2026-0
   在 `vcgen` 策略中添加一个 `frames` 子句，该策略将状态断言（框架）附加到匹配的程序，因此有关程序的状态的事实保持不变，即使在注册规范删除它们的调用中仍然存在。
 
 - [#14146](https://github.com/leanprover/lean4/pull/14146)
-将实验性的基于 Sym 的 `mvcgen'` 策略重命名为 `vcgen`，包括其`grind` 模式步骤、`with` 放电子句和 `simplifying_assumptions`/`until`/`invariants` 语法。原来的 `mvcgen` 策略没有改变。
+将实验性的基于 Sym 的 `mvcgen'` 策略重命名为 `vcgen`，包括其 grind 模式步骤、`with` 放电子句和 `simplifying_assumptions`/`until`/`invariants` 语法。原来的 `mvcgen` 策略没有改变。
 
 - [#14142](https://github.com/leanprover/lean4/pull/14142)
   通过在第一次查找时将每个匹配的规范模式内部化到 `SymM` 共享表中来加速 `mvcgen'` 规范查找，因此其实例参数变得与程序的指针相等，并且不需要在以后的每次查找时重新内部化。

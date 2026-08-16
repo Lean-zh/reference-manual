@@ -347,7 +347,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___34___0-rc1-_LPAR_20
 拒绝作为条件重写规则的`[grind homo]`定理。条件定理被拒绝，并出现指向 E 匹配属性的错误。 `reset_grind_attrs%` 命令现在还清除 `[grind homo]` 和 `[grind homo_pred]` 扩展。
 
 - [#14451](https://github.com/leanprover/lean4/pull/14451)
-  添加属性 `[grind homo_pred]`。该属性提供一套独立机制来补充 `[grind homo]`：它不是重写集，而是按头符号索引的急切事实注入器。`[grind homo]`` 规则用于转换项，而 `[grind homo_pred]` 定理会在项进入 E 图时立即生成关于它的新事实。
+  添加属性 `[grind homo_pred]`。该属性提供一套独立机制来补充 `[grind homo]`：它不是重写集，而是按头符号索引的急切事实注入器。`[grind homo]`` rules translate terms, `[grind homo_pred]` 定理会在项进入 E 图时立即生成关于它的新事实。
 
 - [#14446](https://github.com/leanprover/lean4/pull/14446)
 添加属性`[grind homo]`。这只是第一步。我们将使用它来实现描述的方法
