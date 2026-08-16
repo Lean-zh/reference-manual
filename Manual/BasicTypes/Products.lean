@@ -175,7 +175,7 @@ tag := "sigma-types"
 
 
 {deftech (key := "Dependent pairs")}_依值有序对_ 也称为 {deftech (key := "dependent sums")}_依值和_ 或 {deftech (key := "Σ-types")}_Σ-类型_，{see "Σ-types"}[Sigma 类型]{index}[Σ-types] 是这样一种有序对：第二个项的类型可以依赖于第一个项的_值_。
-它与存在量词{TODO}[xref]以及 {name}`Subtype` 关系密切。
+它与存在量词{TODO}[待补交叉引用]以及 {name}`Subtype` 关系密切。
 不同于存在量化语句，依值有序对位于 {lean}`Type` 宇宙中，是与计算相关的数据。
 不同于子类型，这里的第二个项也同样是与计算相关的数据。
 与普通有序对一样，依值有序对也可以嵌套；这种嵌套是右结合的。
