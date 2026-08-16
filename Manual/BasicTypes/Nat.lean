@@ -17,6 +17,7 @@ open Verso.Genre.Manual.InlineLean
 #doc (Manual) "自然数" =>
 %%%
 tag := "Nat"
+file := "Natural-Numbers"
 %%%
 
 {deftech (key := "natural numbers")}[自然数]是非负整数。

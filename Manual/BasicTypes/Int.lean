@@ -17,6 +17,7 @@ open Verso.Genre.Manual.InlineLean
 #doc (Manual) "整数" =>
 %%%
 tag := "Int"
+file := "Integers"
 %%%
 
 整数是包含正负的完整数字。

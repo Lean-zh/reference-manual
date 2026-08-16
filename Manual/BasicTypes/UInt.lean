@@ -19,6 +19,7 @@ open Verso.Genre.Manual.InlineLean
 #doc (Manual) "定精度整数" =>
 %%%
 tag := "fixed-ints"
+file := "Fixed-Precision-Integers"
 %%%
 
 Lean 的标准库包含通常的各种固定宽度整数类型。

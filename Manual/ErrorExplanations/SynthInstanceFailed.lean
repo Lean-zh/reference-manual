@@ -13,6 +13,7 @@ open Verso.Genre Manual InlineLean
 %%%
 shortTitle := "synthInstanceFailed"
 tag := "Lean-__________________--Error-Explanations--About___--synthInstanceFailed"
+file := "About___--synthInstanceFailed"
 %%%
 
 {errorExplanationHeader lean.synthInstanceFailed}

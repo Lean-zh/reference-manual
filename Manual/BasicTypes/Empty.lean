@@ -17,6 +17,7 @@ set_option pp.rawOnError true
 #doc (Manual) "空类型" =>
 %%%
 tag := "empty"
+file := "The-Empty-Type"
 %%%
 
 空类型 {name}`Empty` 表示不可能的值。

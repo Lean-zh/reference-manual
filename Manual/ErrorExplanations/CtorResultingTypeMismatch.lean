@@ -14,6 +14,7 @@ open Verso.Genre Manual InlineLean
 %%%
 shortTitle := "ctorResultingTypeMismatch"
 tag := "Lean-__________________--Error-Explanations--About___--ctorResultingTypeMismatch"
+file := "About___--ctorResultingTypeMismatch"
 %%%
 
 {errorExplanationHeader lean.ctorResultingTypeMismatch}

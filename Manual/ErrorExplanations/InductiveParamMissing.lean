@@ -14,6 +14,7 @@ open Verso.Genre Manual InlineLean
 %%%
 shortTitle := "inductiveParamMissing"
 tag := "Lean-__________________--Error-Explanations--About___--inductiveParamMissing"
+file := "About___--inductiveParamMissing"
 %%%
 
 {errorExplanationHeader lean.inductiveParamMissing}

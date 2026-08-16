@@ -14,6 +14,7 @@ open Verso.Genre Manual InlineLean
 %%%
 shortTitle := "dependsOnNoncomputable"
 tag := "Lean-__________________--Error-Explanations--About___--dependsOnNoncomputable"
+file := "About___--dependsOnNoncomputable"
 %%%
 
 {errorExplanationHeader lean.dependsOnNoncomputable}

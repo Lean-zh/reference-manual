@@ -21,6 +21,7 @@ set_option format.width 60
 #doc (Manual) "范围" =>
 %%%
 tag := "ranges"
+file := "Ranges"
 %%%
 
 {deftech (key := "range")}_范围_表示某种类型的连续元素序列，从下界到上界。

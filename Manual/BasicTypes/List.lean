@@ -27,6 +27,7 @@ set_option maxHeartbeats 250000
 #doc (Manual) "链表" =>
 %%%
 tag := "List"
+file := "Linked-Lists"
 %%%
 
 链表由 {tech (key := "inductive type")}[归纳类型] {name}`List` 实现，包含一个有序的元素序列。

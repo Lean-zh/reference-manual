@@ -22,6 +22,7 @@ set_option pp.rawOnError true
 #doc (Manual) "基本命题" =>
 %%%
 tag := "basic-props"
+file := "Basic-Propositions"
 %%%
 
 除了蕴含和全称量词外，逻辑连接词和量词都在 {lean}`Prop` 宇宙中实现为 {tech}[归纳类型]。
@@ -33,6 +34,7 @@ tag := "basic-props"
 # 真与假
 %%%
 tag := "true-false"
+file := "Truth"
 %%%
 
 从根本上说，Lean 中只有两个命题：{lean}`True` 和 {lean}`False`。
@@ -94,6 +96,7 @@ termination_by n
 
 %%%
 tag := "Lean-__________________--Basic-Propositions--Logical-Connectives"
+file := "Logical-Connectives"
 %%%
 合取实现为归纳定义的命题 {name}`And`。
 构造器 {name}`And.intro` 表示合取的引入规则：要证明合取，只需分别证明两个合取项。
@@ -208,6 +211,7 @@ $_ ↔ $_
 
 %%%
 tag := "Lean-__________________--Basic-Propositions--Quantifiers"
+file := "Quantifiers"
 %%%
 正如蕴含在 {lean}`Prop` 中实现为普通函数类型，全称量化在 {lean}`Prop` 中实现为依赖函数类型。
 由于 {lean}`Prop` 是{tech}[非直谓的]，任何{tech}[陪域]为 {lean}`Prop` 的函数类型本身也是 {lean}`Prop`，即使{tech}[定义域]是 {lean}`Type`。
@@ -300,6 +304,7 @@ exists $_ $[$_]*, $_
 # 命题等式
 %%%
 tag := "propositional-equality"
+file := "Propositional-Equality"
 %%%
 
 {deftech}_命题等式_是允许将两个项相等表述为命题的运算符。

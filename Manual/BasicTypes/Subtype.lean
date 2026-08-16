@@ -23,6 +23,7 @@ set_option pp.rawOnError true
 #doc (Manual) "子类型" =>
 %%%
 tag := "Subtype"
+file := "Subtypes"
 %%%
 
 结构体 {name}`Subtype` 表示某个类型中满足某个谓词的元素。

@@ -17,6 +17,7 @@ set_option pp.rawOnError true
 #doc (Manual) "惰性计算" =>
 %%%
 tag := "Thunk"
+file := "Lazy-Computations"
 %%%
 
 {deftech (key := "thunk")}_惰性计算_会延迟某个值的计算。

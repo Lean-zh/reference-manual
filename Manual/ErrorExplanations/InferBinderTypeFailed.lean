@@ -13,6 +13,7 @@ open Verso.Genre Manual InlineLean
 %%%
 shortTitle := "inferBinderTypeFailed"
 tag := "Lean-__________________--Error-Explanations--About___--inferBinderTypeFailed"
+file := "About___--inferBinderTypeFailed"
 %%%
 
 {errorExplanationHeader lean.inferBinderTypeFailed}

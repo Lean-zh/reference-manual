@@ -17,6 +17,7 @@ set_option pp.rawOnError true
 #doc (Manual) "和类型" =>
 %%%
 tag := "sum-types"
+file := "Sum-Types"
 %%%
 
 

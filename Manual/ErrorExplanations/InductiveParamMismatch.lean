@@ -13,6 +13,7 @@ open Verso.Genre Manual InlineLean
 %%%
 shortTitle := "inductiveParamMismatch"
 tag := "Lean-__________________--Error-Explanations--About___--inductiveParamMismatch"
+file := "About___--inductiveParamMismatch"
 %%%
 
 {errorExplanationHeader lean.inductiveParamMismatch}

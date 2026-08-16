@@ -13,6 +13,7 @@ open Verso.Genre Manual InlineLean
 %%%
 shortTitle := "invalidField"
 tag := "Lean-__________________--Error-Explanations--About___--invalidField"
+file := "About___--invalidField"
 %%%
 
 {errorExplanationHeader lean.invalidField}

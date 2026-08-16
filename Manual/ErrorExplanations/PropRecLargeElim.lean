@@ -13,6 +13,7 @@ open Verso.Genre Manual InlineLean
 %%%
 shortTitle := "propRecLargeElim"
 tag := "Lean-__________________--Error-Explanations--About___--propRecLargeElim"
+file := "About___--propRecLargeElim"
 %%%
 
 {errorExplanationHeader lean.propRecLargeElim}

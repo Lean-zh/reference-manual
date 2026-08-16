@@ -38,6 +38,7 @@ set_option pp.rawOnError true
 #doc (Manual) "基本类型" =>
 %%%
 tag := "basic-types"
+file := "Basic-Types"
 %%%
 
 
@@ -66,6 +67,7 @@ Lean 包含一些由编译器提供特殊支持的内置类型。
 
 %%%
 tag := "Lean-__________________--Basic-Types--The-Unit-Type"
+file := "The-Unit-Type"
 %%%
 单元类型是恰好具有一个元素的规范类型，该元素名为 {name Unit.unit}`unit`，并由空元组 {lean}`()` 表示。
 它只描述单个值，该值由上述不带参数的构造子构成。
@@ -181,6 +183,7 @@ example (e1 e2 : ProofUnitLike) : e1 = e2 := rfl
 
 %%%
 tag := "Lean-__________________--Basic-Types--Booleans"
+file := "Booleans"
 %%%
 {zhdocstring Bool Manual.ZhDocString.Ch19Ch20.G7.c232}
 

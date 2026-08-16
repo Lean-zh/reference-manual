@@ -20,6 +20,7 @@ set_option maxRecDepth 768
 #doc (Manual) "位向量" =>
 %%%
 tag := "BitVec"
+file := "Bitvectors"
 %%%
 
 位向量是固定宽度的二进制数字序列。

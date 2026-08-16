@@ -26,6 +26,7 @@ example := Char
 #doc (Manual) "字节数组" =>
 %%%
 tag := "ByteArray"
+file := "Byte-Arrays"
 %%%
 
 字节数组是一种专门化的数组类型，只能包含类型为 {name}`UInt8` 的元素。

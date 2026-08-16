@@ -13,6 +13,7 @@ open Verso.Genre Manual InlineLean
 %%%
 shortTitle := "projNonPropFromProp"
 tag := "Lean-__________________--Error-Explanations--About___--projNonPropFromProp"
+file := "About___--projNonPropFromProp"
 %%%
 
 {errorExplanationHeader lean.projNonPropFromProp}

@@ -22,6 +22,7 @@ set_option pp.rawOnError true
 #doc (Manual) "浮点数" =>
 %%%
 tag := "Float"
+file := "Floating-Point-Numbers"
 %%%
 
 浮点数是对实数的一种近似，并且能在计算机硬件中高效实现。

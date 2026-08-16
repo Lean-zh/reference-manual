@@ -13,6 +13,7 @@ open Verso.Genre Manual InlineLean
 %%%
 shortTitle := "invalidDottedIdent"
 tag := "Lean-__________________--Error-Explanations--About___--invalidDottedIdent"
+file := "About___--invalidDottedIdent"
 %%%
 
 {errorExplanationHeader lean.invalidDottedIdent}

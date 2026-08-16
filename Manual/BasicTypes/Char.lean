@@ -22,6 +22,7 @@ set_option pp.rawOnError true
 #doc (Manual) "字符" =>
 %%%
 tag := "Char"
+file := "Characters"
 %%%
 
 字符由 {name}`Char` 类型表示，它可以是任何 Unicode [标量值](http://www.unicode.org/glossary/#unicode_scalar_value)。

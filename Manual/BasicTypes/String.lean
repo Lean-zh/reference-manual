@@ -27,6 +27,7 @@ set_option maxHeartbeats 250000
 #doc (Manual) "字符串" =>
 %%%
 tag := "String"
+file := "Strings"
 %%%
 
 

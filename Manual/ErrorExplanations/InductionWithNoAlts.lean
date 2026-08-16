@@ -14,6 +14,7 @@ open Verso.Genre Manual InlineLean
 %%%
 shortTitle := "inductionWithNoAlts"
 tag := "Lean-__________________--Error-Explanations--About___--inductionWithNoAlts"
+file := "About___--inductionWithNoAlts"
 %%%
 
 {errorExplanationHeader lean.inductionWithNoAlts}

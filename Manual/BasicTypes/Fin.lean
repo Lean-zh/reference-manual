@@ -17,6 +17,7 @@ open Verso.Genre.Manual.InlineLean
 #doc (Manual) "有限自然数" =>
 %%%
 tag := "Fin"
+file := "Finite-Natural-Numbers"
 %%%
 
 ```lean -show

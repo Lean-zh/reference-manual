@@ -38,6 +38,7 @@ set_option maxHeartbeats 1000000
 #doc (Manual) "映射与集合" =>
 %%%
 tag := "maps"
+file := "Maps-and-Sets"
 %%%
 
 {deftech (key := "map")}_映射_是一种将键关联到值的数据结构。

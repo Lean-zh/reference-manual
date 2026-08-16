@@ -25,6 +25,7 @@ example := Char
 #doc (Manual) "数组" =>
 %%%
 tag := "Array"
+file := "Arrays"
 %%%
 
 {lean}`Array` 类型表示元素序列，可以通过其在序列中的位置进行访问。

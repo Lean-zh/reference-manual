@@ -13,6 +13,7 @@ open Verso.Genre Manual InlineLean
 %%%
 shortTitle := "unknownIdentifier"
 tag := "Lean-__________________--Error-Explanations--About___--unknownIdentifier"
+file := "About___--unknownIdentifier"
 %%%
 
 {errorExplanationHeader lean.unknownIdentifier}

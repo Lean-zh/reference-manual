@@ -13,6 +13,7 @@ open Verso.Genre Manual InlineLean
 %%%
 shortTitle := "redundantMatchAlt"
 tag := "Lean-__________________--Error-Explanations--About___--redundantMatchAlt"
+file := "About___--redundantMatchAlt"
 %%%
 
 {errorExplanationHeader lean.redundantMatchAlt}
