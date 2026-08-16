@@ -15,6 +15,7 @@ import Manual.IO.Console
 import Manual.IO.Files
 import Manual.IO.Threads
 import Manual.IO.Ref
+import Manual.ZhDocString.IO
 
 open Manual
 open Verso.Genre
@@ -105,9 +106,9 @@ tag := "io-monad"
 这一区分使人们只需查看动作的类型签名，就能判断它是否可能抛出异常。
 {lean}`BaseIO` 动作会在需要时自动提升为 {lean}`IO`。
 
-{docstring BaseIO}
+{zhdocstring BaseIO Manual.ZhDocString.IO.c001}
 
-{docstring IO}
+{zhdocstring IO Manual.ZhDocString.IO.c002}
 
 {lean}`IO` 是 {lean}`EIO` 的一个实例，其中错误类型是一个参数。
 具体而言，{lean}`IO` 被定义为 {lean}`EIO IO.Error`。
@@ -118,21 +119,21 @@ tag := "io-monad"
 example : IO = EIO IO.Error := rfl
 ```
 
-{docstring EIO}
+{zhdocstring EIO Manual.ZhDocString.IO.c003}
 
-{docstring IO.lazyPure}
+{zhdocstring IO.lazyPure Manual.ZhDocString.IO.c004}
 
-{docstring BaseIO.toIO}
+{zhdocstring BaseIO.toIO Manual.ZhDocString.IO.c005}
 
-{docstring BaseIO.toEIO}
+{zhdocstring BaseIO.toEIO Manual.ZhDocString.IO.c006}
 
-{docstring EIO.toBaseIO}
+{zhdocstring EIO.toBaseIO Manual.ZhDocString.IO.c007}
 
-{docstring EIO.toIO}
+{zhdocstring EIO.toIO Manual.ZhDocString.IO.c008}
 
-{docstring EIO.toIO'}
+{zhdocstring EIO.toIO' Manual.ZhDocString.IO.c009}
 
-{docstring IO.toEIO}
+{zhdocstring IO.toEIO Manual.ZhDocString.IO.c010}
 
 ## `IO` 中的错误与错误处理
 %%%
@@ -145,15 +146,15 @@ tag := "io-monad-errors"
 该类型的构造器表示多数操作系统中会发生的底层错误，例如文件不存在。
 最常用的构造器是 {name IO.Error.userError}`userError`；它涵盖其余所有情况，并包含一个描述问题的字符串。
 
-{docstring IO.Error}
+{zhdocstring IO.Error Manual.ZhDocString.IO.c011}
 
-{docstring IO.Error.toString}
+{zhdocstring IO.Error.toString Manual.ZhDocString.IO.c012}
 
-{docstring IO.ofExcept}
+{zhdocstring IO.ofExcept Manual.ZhDocString.IO.c013}
 
-{docstring EIO.catchExceptions}
+{zhdocstring EIO.catchExceptions Manual.ZhDocString.IO.c014}
 
-{docstring IO.userError}
+{zhdocstring IO.userError Manual.ZhDocString.IO.c015}
 
 ::::example "抛出和捕获错误" (file := "Throwing and Catching Errors")
 :::ioExample
@@ -212,7 +213,7 @@ file := "Control Structures"
 通常，使用 {lean}`IO` 编写的程序会使用{ref "monads-and-do"}[与其他单子程序相同的控制结构]。
 此外还有一个 {lean}`IO` 专用的辅助函数。
 
-{docstring IO.iterate}
+{zhdocstring IO.iterate Manual.ZhDocString.IO.c016}
 
 {include 0 Manual.IO.Console}
 
@@ -226,15 +227,15 @@ tag := "platform-info"
 file := "System and Platform Information"
 %%%
 
-{docstring System.Platform.numBits}
+{zhdocstring System.Platform.numBits Manual.ZhDocString.IO.c017}
 
-{docstring System.Platform.target}
+{zhdocstring System.Platform.target Manual.ZhDocString.IO.c018}
 
-{docstring System.Platform.isWindows}
+{zhdocstring System.Platform.isWindows Manual.ZhDocString.IO.c019}
 
-{docstring System.Platform.isOSX}
+{zhdocstring System.Platform.isOSX Manual.ZhDocString.IO.c020}
 
-{docstring System.Platform.isEmscripten}
+{zhdocstring System.Platform.isEmscripten Manual.ZhDocString.IO.c021}
 
 
 # 环境变量
@@ -243,7 +244,7 @@ tag := "io-monad-getenv"
 file := "Environment Variables"
 %%%
 
-{docstring IO.getEnv}
+{zhdocstring IO.getEnv Manual.ZhDocString.IO.c022}
 
 # 计时
 %%%
@@ -251,15 +252,15 @@ tag := "io-timing"
 file := "Timing"
 %%%
 
-{docstring IO.sleep}
+{zhdocstring IO.sleep Manual.ZhDocString.IO.c023}
 
-{docstring IO.monoNanosNow}
+{zhdocstring IO.monoNanosNow Manual.ZhDocString.IO.c024}
 
-{docstring IO.monoMsNow}
+{zhdocstring IO.monoMsNow Manual.ZhDocString.IO.c025}
 
-{docstring IO.getNumHeartbeats}
+{zhdocstring IO.getNumHeartbeats Manual.ZhDocString.IO.c026}
 
-{docstring IO.addHeartbeats}
+{zhdocstring IO.addHeartbeats Manual.ZhDocString.IO.c027}
 
 # 进程
 %%%
@@ -272,13 +273,13 @@ file := "Processes"
 tag := "Lean-__________________--IO--Processes--Current-Process"
 %%%
 
-{docstring IO.Process.getCurrentDir}
+{zhdocstring IO.Process.getCurrentDir Manual.ZhDocString.IO.c028}
 
-{docstring IO.Process.setCurrentDir}
+{zhdocstring IO.Process.setCurrentDir Manual.ZhDocString.IO.c029}
 
-{docstring IO.Process.exit}
+{zhdocstring IO.Process.exit Manual.ZhDocString.IO.c030}
 
-{docstring IO.Process.getPID}
+{zhdocstring IO.Process.getPID Manual.ZhDocString.IO.c031}
 
 ## 运行进程
 %%%
@@ -291,7 +292,7 @@ tag := "Lean-__________________--IO--Processes--Running-Processes"
  2. {lean}`IO.Process.output` 以空标准输入同步执行另一个程序，并捕获其标准输出、标准错误和退出码。即使进程执行失败，也不会抛出错误。
  3. {lean}`IO.Process.spawn` 异步启动另一个程序，并返回一个可访问该进程标准输入流、标准输出流和标准错误流的数据结构。
 
-{docstring IO.Process.run}
+{zhdocstring IO.Process.run Manual.ZhDocString.IO.c032}
 
 ::::example "运行程序" (file := "Running a Program")
 运行时，该程序使用 Unix 工具 `cat` 将自身源代码连续拼接两次。
@@ -352,7 +353,7 @@ There are 90 four-digit palindromes.
 ::::
 
 
-{docstring IO.Process.output}
+{zhdocstring IO.Process.output Manual.ZhDocString.IO.c033}
 
 ::::example "检查退出码" (file := "Checking Exit Codes")
 运行时，该程序先对一个不存在的文件调用 `cat`，并显示由此得到的错误码。
@@ -413,7 +414,7 @@ def main : IO UInt32 := do
 ::::
 
 
-{docstring IO.Process.spawn}
+{zhdocstring IO.Process.spawn Manual.ZhDocString.IO.c034}
 
 ::::example "异步子进程" (file := "Asynchronous Subprocesses")
 
@@ -450,23 +451,23 @@ There are 90 four-digit palindromes.
 :::
 ::::
 
-{docstring IO.Process.SpawnArgs}
+{zhdocstring IO.Process.SpawnArgs Manual.ZhDocString.IO.c035}
 
-{docstring IO.Process.StdioConfig}
+{zhdocstring IO.Process.StdioConfig Manual.ZhDocString.IO.c036}
 
-{docstring IO.Process.Stdio}
+{zhdocstring IO.Process.Stdio Manual.ZhDocString.IO.c037}
 
-{docstring IO.Process.Stdio.toHandleType}
+{zhdocstring IO.Process.Stdio.toHandleType Manual.ZhDocString.IO.c038}
 
-{docstring IO.Process.Child}
+{zhdocstring IO.Process.Child Manual.ZhDocString.IO.c039}
 
-{docstring IO.Process.Child.wait}
+{zhdocstring IO.Process.Child.wait Manual.ZhDocString.IO.c040}
 
-{docstring IO.Process.Child.tryWait}
+{zhdocstring IO.Process.Child.tryWait Manual.ZhDocString.IO.c041}
 
-{docstring IO.Process.Child.kill}
+{zhdocstring IO.Process.Child.kill Manual.ZhDocString.IO.c042}
 
-{docstring IO.Process.Child.takeStdin}
+{zhdocstring IO.Process.Child.takeStdin Manual.ZhDocString.IO.c043}
 
 ::::example "关闭子进程的标准输入" (file := "Closing a Subprocess's Standard Input")
 
@@ -514,7 +515,7 @@ There are 90 four-digit palindromes.
 :::
 ::::
 
-{docstring IO.Process.Output}
+{zhdocstring IO.Process.Output Manual.ZhDocString.IO.c044}
 
 
 
@@ -524,36 +525,36 @@ tag := "Random-Numbers"
 file := "Random Numbers"
 %%%
 
-{docstring IO.setRandSeed}
+{zhdocstring IO.setRandSeed Manual.ZhDocString.IO.c045}
 
-{docstring IO.rand}
+{zhdocstring IO.rand Manual.ZhDocString.IO.c046}
 
-{docstring randBool}
+{zhdocstring randBool Manual.ZhDocString.IO.c047}
 
-{docstring randNat}
+{zhdocstring randNat Manual.ZhDocString.IO.c048}
 
 ## 随机数生成器
 %%%
 tag := "Lean-__________________--IO--Random-Numbers--Random-Generators"
 %%%
 
-{docstring RandomGen}
+{zhdocstring RandomGen Manual.ZhDocString.IO.c049}
 
-{docstring StdGen +hideStructureConstructor +hideFields}
+{zhdocstring StdGen Manual.ZhDocString.IO.c050 +hideStructureConstructor +hideFields}
 
-{docstring stdRange}
+{zhdocstring stdRange Manual.ZhDocString.IO.c051}
 
-{docstring stdNext}
+{zhdocstring stdNext Manual.ZhDocString.IO.c052}
 
-{docstring stdSplit}
+{zhdocstring stdSplit Manual.ZhDocString.IO.c053}
 
-{docstring mkStdGen}
+{zhdocstring mkStdGen Manual.ZhDocString.IO.c054}
 
 ## 系统随机性
 %%%
 tag := "Lean-__________________--IO--Random-Numbers--System-Randomness"
 %%%
 
-{docstring IO.getRandomBytes}
+{zhdocstring IO.getRandomBytes Manual.ZhDocString.IO.c055}
 
 {include 0 Manual.IO.Threads}

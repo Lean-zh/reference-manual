@@ -10,6 +10,7 @@ import Std.Data.TreeMap
 
 import Manual.Meta
 import Manual.Interaction.FormatRepr
+import Manual.ZhDocString.Iterators
 
 open Lean.MessageSeverity
 
@@ -152,9 +153,9 @@ tag := "Lean-__________________--Iterators--Iterator-Definitions"
 例如，迭代目录中的所有文件需要 {name}`IO` 单子。
 纯迭代器的类型为 {name}`Iter`，单子式迭代器则由 {name}`IterM` 表示。
 
-{docstring Iter}
+{zhdocstring Iter Manual.ZhDocString.Iterators.c001}
 
-{docstring IterM}
+{zhdocstring IterM Manual.ZhDocString.Iterators.c002}
 
 类型 {name}`Iter` 和 {name}`IterM` 只是内部状态的包装。
 该内部状态类型是迭代器类型的隐式参数。
@@ -216,19 +217,19 @@ example :=
 借助 {name IterStep.skip}`skip`，{name Iter.filter}`filter` 的实现无需为了成为良定义函数而考虑底层迭代器是否{tech (key:="finite iterator")}[有限]；关于其有限性的推理可以在单独的证明中完成。
 此外，否则 {name Iter.filter}`filter` 还需要一个内层循环，而编译器很难将其内联。
 
-{docstring IterStep}
+{zhdocstring IterStep Manual.ZhDocString.Iterators.c003}
 
 {name}`Iter` 和 {name}`IterM` 所执行的步骤分别由类型 {name}`Iter.Step` 和 {name}`IterM.Step` 表示。
 这两种步骤类型都是 {name}`IterStep` 的包装，其中包含用于跟踪终止行为的{ref "iterator-plausibility"}[额外证明]。
 
-{docstring Iter.Step}
+{zhdocstring Iter.Step Manual.ZhDocString.Iterators.c004}
 
-{docstring IterM.Step}
+{zhdocstring IterM.Step Manual.ZhDocString.Iterators.c005}
 
 迭代器通过 {name}`Iterator.step` 产生步骤；它是 {name}`Iterator` 类型类的方法。
 {name}`Iterator` 同时用于纯迭代器和单子式迭代器；纯迭代器可以对单子的选择完全多态，因此调用方可以用 {name}`Id` 将其实例化。
 
-{docstring Iterator +allowMissing}
+{zhdocstring Iterator Manual.ZhDocString.Iterators.c006 +allowMissing}
 
 ## 合理性
 %%%
@@ -246,13 +247,13 @@ tag := "iterator-plausibility"
 可以使用三个{ref "match_pattern-functions"}[匹配模式函数] {name}`PlausibleIterStep.yield`、{name}`PlausibleIterStep.skip` 和 {name}`PlausibleIterStep.done` 分析 {name}`Iter.Step` 或 {name}`IterM.Step`。
 这些函数把底层 {name}`IterStep` 中的信息与其外围证明对象配对。
 
-{docstring PlausibleIterStep}
+{zhdocstring PlausibleIterStep Manual.ZhDocString.Iterators.c007}
 
-{docstring PlausibleIterStep.yield}
+{zhdocstring PlausibleIterStep.yield Manual.ZhDocString.Iterators.c008}
 
-{docstring PlausibleIterStep.skip}
+{zhdocstring PlausibleIterStep.skip Manual.ZhDocString.Iterators.c009}
 
-{docstring PlausibleIterStep.done}
+{zhdocstring PlausibleIterStep.done Manual.ZhDocString.Iterators.c010}
 
 ## 有限且能产的迭代器
 %%%
@@ -270,9 +271,9 @@ tag := "Lean-__________________--Iterators--Iterator-Definitions--Finite-and-Pro
 所有有限迭代器必然都是能产的。
 :::
 
-{docstring Finite}
+{zhdocstring Finite Manual.ZhDocString.Iterators.c011}
 
-{docstring Productive}
+{zhdocstring Productive Manual.ZhDocString.Iterators.c012}
 
 Lean 标准库提供了许多遍历迭代器的函数。这些消费者函数通常不会
 对底层迭代器作任何假设。尤其是，对某些迭代器而言，这类函数可能永远运行下去。
@@ -281,9 +282,9 @@ Lean 标准库提供了许多遍历迭代器的函数。这些消费者函数通
 在这些情况下，组合子 {name}`Iter.ensureTermination` 会得到一种迭代器，它提供保证终止的消费者变体。
 这些变体通常要求证明所涉及的迭代器是有限的。
 
-{docstring Iter.ensureTermination}
+{zhdocstring Iter.ensureTermination Manual.ZhDocString.Iterators.c013}
 
-{docstring IterM.ensureTermination}
+{zhdocstring IterM.ensureTermination Manual.ZhDocString.Iterators.c014}
 
 ::::example "迭代 `Nat`" (file := "Iterating Over Nat")
 ```imports -show
@@ -655,20 +656,20 @@ tag := "Lean-__________________--Iterators--Iterator-Definitions--Accessing-Elem
 某些迭代器支持高效的随机访问。
 例如，数组迭代器只需递增其维护的数组索引，即可在常数时间内跳过任意数量的元素。
 
-{docstring IteratorAccess +allowMissing}
+{zhdocstring IteratorAccess Manual.ZhDocString.Iterators.c015 +allowMissing}
 
-{docstring IterM.nextAtIdx?}
+{zhdocstring IterM.nextAtIdx? Manual.ZhDocString.Iterators.c016}
 
 ## 循环
 %%%
 tag := "Lean-__________________--Iterators--Iterator-Definitions--Loops"
 %%%
 
-{docstring IteratorLoop +allowMissing}
+{zhdocstring IteratorLoop Manual.ZhDocString.Iterators.c017 +allowMissing}
 
-{docstring IteratorLoop.defaultImplementation}
+{zhdocstring IteratorLoop.defaultImplementation Manual.ZhDocString.Iterators.c018}
 
-{docstring LawfulIteratorLoop +allowMissing}
+{zhdocstring LawfulIteratorLoop Manual.ZhDocString.Iterators.c019 +allowMissing}
 
 ## 宇宙层级
 %%%
@@ -679,11 +680,11 @@ tag := "Lean-__________________--Iterators--Iterator-Definitions--Universe-Level
 该类型目前只是占位符。
 它的存在是为了在完整实现可用时缩小破坏性变更的范围。
 
-{docstring Std.Shrink}
+{zhdocstring Std.Shrink Manual.ZhDocString.Iterators.c020}
 
-{docstring Std.Shrink.inflate}
+{zhdocstring Std.Shrink.inflate Manual.ZhDocString.Iterators.c021}
 
-{docstring Std.Shrink.deflate}
+{zhdocstring Std.Shrink.deflate Manual.ZhDocString.Iterators.c022}
 
 
 ## 基本迭代器
@@ -695,11 +696,11 @@ tag := "Lean-__________________--Iterators--Iterator-Definitions--Basic-Iterator
 {name}`Iter.empty` 不产出任何数据并立即结束迭代，而 {name}`Iter.repeat` 会永远产出同一元素。
 这些迭代器主要用作通过组合子构建的更大迭代器的组成部分。
 
-{docstring Iter.empty}
+{zhdocstring Iter.empty Manual.ZhDocString.Iterators.c023}
 
-{docstring IterM.empty}
+{zhdocstring IterM.empty Manual.ZhDocString.Iterators.c024}
 
-{docstring Iter.repeat}
+{zhdocstring Iter.repeat Manual.ZhDocString.Iterators.c025}
 
 
 # 消费迭代器
@@ -848,9 +849,9 @@ tag := "Lean-__________________--Iterators--Consuming-Iterators--Stepping-Iterat
 
 可以使用 {name}`Iter.step` 或 {name}`IterM.step` 手动推进迭代器。
 
-{docstring Iter.step}
+{zhdocstring Iter.step Manual.ZhDocString.Iterators.c026}
 
-{docstring IterM.step}
+{zhdocstring IterM.step Manual.ZhDocString.Iterators.c027}
 
 ### 终止
 %%%
@@ -882,79 +883,79 @@ termination_by it.finitelyManySkips
 ```
 :::
 
-{docstring Iter.finitelyManySteps}
+{zhdocstring Iter.finitelyManySteps Manual.ZhDocString.Iterators.c028}
 
-{docstring IterM.finitelyManySteps}
+{zhdocstring IterM.finitelyManySteps Manual.ZhDocString.Iterators.c029}
 
-{docstring IterM.TerminationMeasures.Finite +allowMissing}
+{zhdocstring IterM.TerminationMeasures.Finite Manual.ZhDocString.Iterators.c030 +allowMissing}
 
-{docstring Iter.finitelyManySkips}
+{zhdocstring Iter.finitelyManySkips Manual.ZhDocString.Iterators.c031}
 
-{docstring IterM.finitelyManySkips}
+{zhdocstring IterM.finitelyManySkips Manual.ZhDocString.Iterators.c032}
 
-{docstring IterM.TerminationMeasures.Productive +allowMissing}
+{zhdocstring IterM.TerminationMeasures.Productive Manual.ZhDocString.Iterators.c033 +allowMissing}
 
 ## 消费纯迭代器
 %%%
 tag := "Lean-__________________--Iterators--Consuming-Iterators--Consuming-Pure-Iterators"
 %%%
 
-{docstring Iter.fold}
+{zhdocstring Iter.fold Manual.ZhDocString.Iterators.c034}
 
-{docstring Iter.foldM}
+{zhdocstring Iter.foldM Manual.ZhDocString.Iterators.c035}
 
-{docstring Iter.length}
+{zhdocstring Iter.length Manual.ZhDocString.Iterators.c036}
 
-{docstring Iter.any}
+{zhdocstring Iter.any Manual.ZhDocString.Iterators.c037}
 
-{docstring Iter.anyM}
+{zhdocstring Iter.anyM Manual.ZhDocString.Iterators.c038}
 
-{docstring Iter.all}
+{zhdocstring Iter.all Manual.ZhDocString.Iterators.c039}
 
-{docstring Iter.allM}
+{zhdocstring Iter.allM Manual.ZhDocString.Iterators.c040}
 
-{docstring Iter.find? +allowMissing}
+{zhdocstring Iter.find? Manual.ZhDocString.Iterators.c041 +allowMissing}
 
-{docstring Iter.findM? +allowMissing}
+{zhdocstring Iter.findM? Manual.ZhDocString.Iterators.c042 +allowMissing}
 
-{docstring Iter.findSome? +allowMissing}
+{zhdocstring Iter.findSome? Manual.ZhDocString.Iterators.c043 +allowMissing}
 
-{docstring Iter.findSomeM? +allowMissing}
+{zhdocstring Iter.findSomeM? Manual.ZhDocString.Iterators.c044 +allowMissing}
 
-{docstring Iter.atIdx?}
+{zhdocstring Iter.atIdx? Manual.ZhDocString.Iterators.c045}
 
-{docstring Iter.atIdxSlow?}
+{zhdocstring Iter.atIdxSlow? Manual.ZhDocString.Iterators.c046}
 
 ## 消费单子式迭代器
 %%%
 tag := "Lean-__________________--Iterators--Consuming-Iterators--Consuming-Monadic-Iterators"
 %%%
 
-{docstring IterM.drain}
+{zhdocstring IterM.drain Manual.ZhDocString.Iterators.c047}
 
-{docstring IterM.fold}
+{zhdocstring IterM.fold Manual.ZhDocString.Iterators.c048}
 
-{docstring IterM.foldM}
+{zhdocstring IterM.foldM Manual.ZhDocString.Iterators.c049}
 
-{docstring IterM.length}
+{zhdocstring IterM.length Manual.ZhDocString.Iterators.c050}
 
-{docstring IterM.any}
+{zhdocstring IterM.any Manual.ZhDocString.Iterators.c051}
 
-{docstring IterM.anyM}
+{zhdocstring IterM.anyM Manual.ZhDocString.Iterators.c052}
 
-{docstring IterM.all}
+{zhdocstring IterM.all Manual.ZhDocString.Iterators.c053}
 
-{docstring IterM.allM}
+{zhdocstring IterM.allM Manual.ZhDocString.Iterators.c054}
 
-{docstring IterM.find? +allowMissing}
+{zhdocstring IterM.find? Manual.ZhDocString.Iterators.c055 +allowMissing}
 
-{docstring IterM.findM? +allowMissing}
+{zhdocstring IterM.findM? Manual.ZhDocString.Iterators.c056 +allowMissing}
 
-{docstring IterM.findSome? +allowMissing}
+{zhdocstring IterM.findSome? Manual.ZhDocString.Iterators.c057 +allowMissing}
 
-{docstring IterM.findSomeM? +allowMissing}
+{zhdocstring IterM.findSomeM? Manual.ZhDocString.Iterators.c058 +allowMissing}
 
-{docstring IterM.atIdx?}
+{zhdocstring IterM.atIdx? Manual.ZhDocString.Iterators.c059}
 
 ## 收集器
 %%%
@@ -964,17 +965,17 @@ tag := "Lean-__________________--Iterators--Consuming-Iterators--Collectors"
 收集器消费迭代器，并以列表或数组返回其全部数据。
 可被收集的迭代器必须是有限的。
 
-{docstring Iter.toArray}
+{zhdocstring Iter.toArray Manual.ZhDocString.Iterators.c060}
 
-{docstring IterM.toArray}
+{zhdocstring IterM.toArray Manual.ZhDocString.Iterators.c061}
 
-{docstring Iter.toList}
+{zhdocstring Iter.toList Manual.ZhDocString.Iterators.c062}
 
-{docstring IterM.toList}
+{zhdocstring IterM.toList Manual.ZhDocString.Iterators.c063}
 
-{docstring Iter.toListRev}
+{zhdocstring Iter.toListRev Manual.ZhDocString.Iterators.c064}
 
-{docstring IterM.toListRev}
+{zhdocstring IterM.toListRev Manual.ZhDocString.Iterators.c065}
 
 
 # 迭代器组合子
@@ -1038,53 +1039,53 @@ left.zip right     -----(a, x)------(b, y)-----⊥
 tag := "Lean-__________________--Iterators--Iterator-Combinators--Pure-Combinators"
 %%%
 
-{docstring IterM.mk}
+{zhdocstring IterM.mk Manual.ZhDocString.Iterators.c066}
 
-{docstring Iter.toIterM}
+{zhdocstring Iter.toIterM Manual.ZhDocString.Iterators.c067}
 
-{docstring Iter.take}
+{zhdocstring Iter.take Manual.ZhDocString.Iterators.c068}
 
-{docstring Iter.takeWhile}
+{zhdocstring Iter.takeWhile Manual.ZhDocString.Iterators.c069}
 
-{docstring Iter.toTake}
+{zhdocstring Iter.toTake Manual.ZhDocString.Iterators.c070}
 
-{docstring Iter.drop}
+{zhdocstring Iter.drop Manual.ZhDocString.Iterators.c071}
 
-{docstring Iter.dropWhile}
+{zhdocstring Iter.dropWhile Manual.ZhDocString.Iterators.c072}
 
-{docstring Iter.stepSize}
+{zhdocstring Iter.stepSize Manual.ZhDocString.Iterators.c073}
 
-{docstring Iter.map}
+{zhdocstring Iter.map Manual.ZhDocString.Iterators.c074}
 
-{docstring Iter.mapM}
+{zhdocstring Iter.mapM Manual.ZhDocString.Iterators.c075}
 
-{docstring Iter.mapWithPostcondition}
+{zhdocstring Iter.mapWithPostcondition Manual.ZhDocString.Iterators.c076}
 
-{docstring Iter.uLift}
+{zhdocstring Iter.uLift Manual.ZhDocString.Iterators.c077}
 
-{docstring Iter.flatMap}
+{zhdocstring Iter.flatMap Manual.ZhDocString.Iterators.c078}
 
-{docstring Iter.flatMapM}
+{zhdocstring Iter.flatMapM Manual.ZhDocString.Iterators.c079}
 
-{docstring Iter.flatMapAfter}
+{zhdocstring Iter.flatMapAfter Manual.ZhDocString.Iterators.c080}
 
-{docstring Iter.flatMapAfterM}
+{zhdocstring Iter.flatMapAfterM Manual.ZhDocString.Iterators.c081}
 
-{docstring Iter.filter}
+{zhdocstring Iter.filter Manual.ZhDocString.Iterators.c082}
 
-{docstring Iter.filterM}
+{zhdocstring Iter.filterM Manual.ZhDocString.Iterators.c083}
 
-{docstring Iter.filterWithPostcondition}
+{zhdocstring Iter.filterWithPostcondition Manual.ZhDocString.Iterators.c084}
 
-{docstring Iter.filterMap}
+{zhdocstring Iter.filterMap Manual.ZhDocString.Iterators.c085}
 
-{docstring Iter.filterMapM}
+{zhdocstring Iter.filterMapM Manual.ZhDocString.Iterators.c086}
 
-{docstring Iter.filterMapWithPostcondition}
+{zhdocstring Iter.filterMapWithPostcondition Manual.ZhDocString.Iterators.c087}
 
-{docstring Iter.zip}
+{zhdocstring Iter.zip Manual.ZhDocString.Iterators.c088}
 
-{docstring Iter.attachWith}
+{zhdocstring Iter.attachWith Manual.ZhDocString.Iterators.c089}
 
 
 ## 单子式组合子
@@ -1092,59 +1093,59 @@ tag := "Lean-__________________--Iterators--Iterator-Combinators--Pure-Combinato
 tag := "Lean-__________________--Iterators--Iterator-Combinators--Monadic-Combinators"
 %%%
 
-{docstring IterM.toIter}
+{zhdocstring IterM.toIter Manual.ZhDocString.Iterators.c090}
 
-{docstring IterM.take}
+{zhdocstring IterM.take Manual.ZhDocString.Iterators.c091}
 
-{docstring IterM.takeWhile}
+{zhdocstring IterM.takeWhile Manual.ZhDocString.Iterators.c092}
 
-{docstring IterM.takeWhileM}
+{zhdocstring IterM.takeWhileM Manual.ZhDocString.Iterators.c093}
 
-{docstring IterM.takeWhileWithPostcondition}
+{zhdocstring IterM.takeWhileWithPostcondition Manual.ZhDocString.Iterators.c094}
 
-{docstring IterM.toTake}
+{zhdocstring IterM.toTake Manual.ZhDocString.Iterators.c095}
 
-{docstring IterM.drop}
+{zhdocstring IterM.drop Manual.ZhDocString.Iterators.c096}
 
-{docstring IterM.dropWhile}
+{zhdocstring IterM.dropWhile Manual.ZhDocString.Iterators.c097}
 
-{docstring IterM.dropWhileM}
+{zhdocstring IterM.dropWhileM Manual.ZhDocString.Iterators.c098}
 
-{docstring IterM.dropWhileWithPostcondition}
+{zhdocstring IterM.dropWhileWithPostcondition Manual.ZhDocString.Iterators.c099}
 
-{docstring IterM.stepSize}
+{zhdocstring IterM.stepSize Manual.ZhDocString.Iterators.c100}
 
-{docstring IterM.map}
+{zhdocstring IterM.map Manual.ZhDocString.Iterators.c101}
 
-{docstring IterM.mapM}
+{zhdocstring IterM.mapM Manual.ZhDocString.Iterators.c102}
 
-{docstring IterM.mapWithPostcondition}
+{zhdocstring IterM.mapWithPostcondition Manual.ZhDocString.Iterators.c103}
 
-{docstring IterM.uLift}
+{zhdocstring IterM.uLift Manual.ZhDocString.Iterators.c104}
 
-{docstring IterM.flatMap}
+{zhdocstring IterM.flatMap Manual.ZhDocString.Iterators.c105}
 
-{docstring IterM.flatMapM}
+{zhdocstring IterM.flatMapM Manual.ZhDocString.Iterators.c106}
 
-{docstring IterM.flatMapAfter}
+{zhdocstring IterM.flatMapAfter Manual.ZhDocString.Iterators.c107}
 
-{docstring IterM.flatMapAfterM}
+{zhdocstring IterM.flatMapAfterM Manual.ZhDocString.Iterators.c108}
 
-{docstring IterM.filter}
+{zhdocstring IterM.filter Manual.ZhDocString.Iterators.c109}
 
-{docstring IterM.filterM}
+{zhdocstring IterM.filterM Manual.ZhDocString.Iterators.c110}
 
-{docstring IterM.filterWithPostcondition}
+{zhdocstring IterM.filterWithPostcondition Manual.ZhDocString.Iterators.c111}
 
-{docstring IterM.filterMap}
+{zhdocstring IterM.filterMap Manual.ZhDocString.Iterators.c112}
 
-{docstring IterM.filterMapM}
+{zhdocstring IterM.filterMapM Manual.ZhDocString.Iterators.c113}
 
-{docstring IterM.filterMapWithPostcondition}
+{zhdocstring IterM.filterMapWithPostcondition Manual.ZhDocString.Iterators.c114}
 
-{docstring IterM.zip}
+{zhdocstring IterM.zip Manual.ZhDocString.Iterators.c115}
 
-{docstring IterM.attachWith}
+{zhdocstring IterM.attachWith Manual.ZhDocString.Iterators.c116}
 
 # 迭代器推理
 %%%
@@ -1208,13 +1209,13 @@ tag := "Lean-__________________--Iterators--Reasoning-About-Iterators--Stepwise-
 当没有足够引理通过改写为列表模型来证明某个性质时，可能需要直接推理迭代器的步骤函数。
 本节的归纳原理适用于逐步推理。
 
-{docstring Iter.inductSkips}
+{zhdocstring Iter.inductSkips Manual.ZhDocString.Iterators.c117}
 
-{docstring IterM.inductSkips}
+{zhdocstring IterM.inductSkips Manual.ZhDocString.Iterators.c118}
 
-{docstring Iter.inductSteps}
+{zhdocstring Iter.inductSteps Manual.ZhDocString.Iterators.c119}
 
-{docstring IterM.inductSteps}
+{zhdocstring IterM.inductSteps Manual.ZhDocString.Iterators.c120}
 
 标准库还包含描述所有生产者和组合子逐步行为的引理。
 例如 {name}`List.step_iter_nil`、{name}`List.step_iter_cons` 和 {name}`IterM.step_map`。
@@ -1224,33 +1225,33 @@ tag := "Lean-__________________--Iterators--Reasoning-About-Iterators--Stepwise-
 tag := "Lean-__________________--Iterators--Reasoning-About-Iterators--Monads-for-Reasoning"
 %%%
 
-{docstring Std.Iterators.PostconditionT}
+{zhdocstring Std.Iterators.PostconditionT Manual.ZhDocString.Iterators.c121}
 
-{docstring Std.Iterators.PostconditionT.run}
+{zhdocstring Std.Iterators.PostconditionT.run Manual.ZhDocString.Iterators.c122}
 
-{docstring Std.Iterators.PostconditionT.lift}
+{zhdocstring Std.Iterators.PostconditionT.lift Manual.ZhDocString.Iterators.c123}
 
-{docstring Std.Iterators.PostconditionT.liftWithProperty}
+{zhdocstring Std.Iterators.PostconditionT.liftWithProperty Manual.ZhDocString.Iterators.c124}
 
-{docstring Iter.IsPlausibleIndirectOutput +allowMissing}
+{zhdocstring Iter.IsPlausibleIndirectOutput Manual.ZhDocString.Iterators.c125 +allowMissing}
 
-{docstring HetT}
+{zhdocstring HetT Manual.ZhDocString.Iterators.c126}
 
-{docstring IterM.stepAsHetT}
+{zhdocstring IterM.stepAsHetT Manual.ZhDocString.Iterators.c127}
 
-{docstring HetT.lift}
+{zhdocstring HetT.lift Manual.ZhDocString.Iterators.c128}
 
-{docstring HetT.prun}
+{zhdocstring HetT.prun Manual.ZhDocString.Iterators.c129}
 
-{docstring HetT.pure}
+{zhdocstring HetT.pure Manual.ZhDocString.Iterators.c130}
 
-{docstring HetT.map}
+{zhdocstring HetT.map Manual.ZhDocString.Iterators.c131}
 
-{docstring HetT.pmap}
+{zhdocstring HetT.pmap Manual.ZhDocString.Iterators.c132}
 
-{docstring HetT.bind}
+{zhdocstring HetT.bind Manual.ZhDocString.Iterators.c133}
 
-{docstring HetT.pbind}
+{zhdocstring HetT.pbind Manual.ZhDocString.Iterators.c134}
 
 ## 等价性
 %%%
@@ -1260,6 +1261,6 @@ tag := "Lean-__________________--Iterators--Reasoning-About-Iterators--Equivalen
 迭代器等价性依据迭代器的可观察行为定义，而非依据其实现。
 尤其是，内部状态会被忽略。
 
-{docstring Iter.Equiv}
+{zhdocstring Iter.Equiv Manual.ZhDocString.Iterators.c135}
 
-{docstring IterM.Equiv}
+{zhdocstring IterM.Equiv Manual.ZhDocString.Iterators.c136}

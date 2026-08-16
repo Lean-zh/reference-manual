@@ -9,6 +9,7 @@ import VersoManual
 import Manual.Meta
 
 import Lean.Parser.Command
+import Manual.ZhDocString.IO
 
 open Manual
 open Verso.Genre
@@ -30,13 +31,13 @@ Lean 提供了向{tech (key := "standard output")}[标准输出]和{tech (key :=
 这些便捷函数只暴露了{ref "stdio"}[标准 I/O 流]所提供的一部分功能。
 特别是，要从标准输入读取一行，应组合使用 {lean}`IO.getStdin` 与 {lean}`IO.FS.Stream.getLine`。
 
-{docstring IO.print}
+{zhdocstring IO.print Manual.ZhDocString.IO.c056}
 
-{docstring IO.println}
+{zhdocstring IO.println Manual.ZhDocString.IO.c057}
 
-{docstring IO.eprint}
+{zhdocstring IO.eprint Manual.ZhDocString.IO.c058}
 
-{docstring IO.eprintln}
+{zhdocstring IO.eprintln Manual.ZhDocString.IO.c059}
 
 ::::example "打印" (file := "Printing")
 该程序演示了全部四个控制台 I/O 便捷函数。

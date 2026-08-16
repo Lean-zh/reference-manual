@@ -10,6 +10,7 @@ import Manual.Meta
 import Manual.Papers
 
 import Lean.Parser.Command
+import Manual.ZhDocString.IO
 
 open Manual
 open Verso.Genre
@@ -31,9 +32,9 @@ file := "Mutable References"
 可变引用的类型为 {lean}`IO.Ref`，它表明单元是可变的；读取和写入都必须显式进行。
 {lean}`IO.Ref` 使用 {lean}`ST.Ref` 实现，因此完整的 {ref "mutable-st-references"}[{lean}`ST.Ref` API] 也可用于 {lean}`IO.Ref`。
 
-{docstring IO.Ref}
+{zhdocstring IO.Ref Manual.ZhDocString.IO.c145}
 
-{docstring IO.mkRef}
+{zhdocstring IO.mkRef Manual.ZhDocString.IO.c146}
 
 
 
@@ -52,29 +53,29 @@ tag := "mutable-st-references"
 允许从 {lean}`ST` 中逃逸的 {lean}`runST` 函数要求：传给它的 {lean}`ST` 动作必须能把该类型参数实例化为_任意_类型。
 这个未知类型只作为函数参数存在，因此类型被它“标记”的值无法逃出其作用域。
 
-{docstring ST}
+{zhdocstring ST Manual.ZhDocString.IO.c147}
 
-{docstring runST}
+{zhdocstring runST Manual.ZhDocString.IO.c148}
 
 与 {lean}`IO` 和 {lean}`EIO` 类似，{lean}`ST` 也有一个把自定义错误类型作为参数的变体。
 这里，{lean}`ST` 对应的是 {lean}`BaseIO` 而非 {lean}`IO`，因为 {lean}`ST` 不会导致错误被抛出。
 
-{docstring EST}
+{zhdocstring EST Manual.ZhDocString.IO.c149}
 
-{docstring runEST}
+{zhdocstring runEST Manual.ZhDocString.IO.c150}
 
-{docstring ST.Ref +hideFields}
+{zhdocstring ST.Ref Manual.ZhDocString.IO.c151 +hideFields}
 
-{docstring ST.mkRef}
+{zhdocstring ST.mkRef Manual.ZhDocString.IO.c152}
 
 ## 读取与写入
 %%%
 tag := "Lean-__________________--IO--Mutable-References--State-Transformers--Reading-and-Writing"
 %%%
 
-{docstring ST.Ref.get}
+{zhdocstring ST.Ref.get Manual.ZhDocString.IO.c153}
 
-{docstring ST.Ref.set}
+{zhdocstring ST.Ref.set Manual.ZhDocString.IO.c154}
 
 ::::example "{name ST.Ref.get}`get` 与 {name ST.Ref.set}`set` 引发的数据竞争" (file := "Data races with get and set")
 :::ioExample
@@ -113,7 +114,7 @@ Final balance is negative!
 :::
 ::::
 
-{docstring ST.Ref.modify}
+{zhdocstring ST.Ref.modify Manual.ZhDocString.IO.c155}
 
 ::::example "使用 {name ST.Ref.modify}`modify` 避免数据竞争" (file := "Avoiding data races with modify")
 
@@ -158,23 +159,23 @@ Final balance is zero or positive.
 :::
 ::::
 
-{docstring ST.Ref.modifyGet}
+{zhdocstring ST.Ref.modifyGet Manual.ZhDocString.IO.c156}
 
-{docstring ST.Ref.swap}
+{zhdocstring ST.Ref.swap Manual.ZhDocString.IO.c157}
 
 ## 比较
 %%%
 tag := "Lean-__________________--IO--Mutable-References--State-Transformers--Comparisons"
 %%%
 
-{docstring ST.Ref.ptrEq}
+{zhdocstring ST.Ref.ptrEq Manual.ZhDocString.IO.c158}
 
 ## 由 `ST` 支撑的状态单子
 %%%
 tag := "Lean-__________________--IO--Mutable-References--State-Transformers--ST--Backed-State-Monads"
 %%%
 
-{docstring ST.Ref.toMonadStateOf}
+{zhdocstring ST.Ref.toMonadStateOf Manual.ZhDocString.IO.c159}
 
 # 并发
 %%%
@@ -185,7 +186,7 @@ tag := "ref-locks"
 _取走_引用内容后，再次尝试取走或读取它的操作都会阻塞，直至通过 {name ST.Ref.set}`set` 重新设置其内容。
 这是一项可用于实现其他同步机制的底层功能；只要可能，通常应优先采用更高层的抽象。
 
-{docstring ST.Ref.take}
+{zhdocstring ST.Ref.take Manual.ZhDocString.IO.c160}
 
 
 ::::example "用引用单元充当锁" (file := "Reference Cells as Locks")

@@ -9,6 +9,7 @@ import VersoManual
 import Manual.Meta
 
 import Lean.Parser.Command
+import Manual.ZhDocString.IO
 
 open Manual
 open Verso.Genre
@@ -75,41 +76,41 @@ tag := "Lean-__________________--IO--Files___-File-Handles___-and-Streams--Low-L
 除了确保文件句柄不再有任何引用外，没有其他显式关闭句柄的方法。
 
 
-{docstring IO.FS.Handle}
+{zhdocstring IO.FS.Handle Manual.ZhDocString.IO.c060}
 
-{docstring IO.FS.Handle.mk}
+{zhdocstring IO.FS.Handle.mk Manual.ZhDocString.IO.c061}
 
-{docstring IO.FS.Mode}
+{zhdocstring IO.FS.Mode Manual.ZhDocString.IO.c062}
 
-{docstring IO.FS.Handle.read}
+{zhdocstring IO.FS.Handle.read Manual.ZhDocString.IO.c063}
 
-{docstring IO.FS.Handle.readToEnd}
+{zhdocstring IO.FS.Handle.readToEnd Manual.ZhDocString.IO.c064}
 
-{docstring IO.FS.Handle.readBinToEnd}
+{zhdocstring IO.FS.Handle.readBinToEnd Manual.ZhDocString.IO.c065}
 
-{docstring IO.FS.Handle.readBinToEndInto}
+{zhdocstring IO.FS.Handle.readBinToEndInto Manual.ZhDocString.IO.c066}
 
-{docstring IO.FS.Handle.getLine}
+{zhdocstring IO.FS.Handle.getLine Manual.ZhDocString.IO.c067}
 
-{docstring IO.FS.Handle.write}
+{zhdocstring IO.FS.Handle.write Manual.ZhDocString.IO.c068}
 
-{docstring IO.FS.Handle.putStr}
+{zhdocstring IO.FS.Handle.putStr Manual.ZhDocString.IO.c069}
 
-{docstring IO.FS.Handle.putStrLn}
+{zhdocstring IO.FS.Handle.putStrLn Manual.ZhDocString.IO.c070}
 
-{docstring IO.FS.Handle.flush}
+{zhdocstring IO.FS.Handle.flush Manual.ZhDocString.IO.c071}
 
-{docstring IO.FS.Handle.rewind}
+{zhdocstring IO.FS.Handle.rewind Manual.ZhDocString.IO.c072}
 
-{docstring IO.FS.Handle.truncate}
+{zhdocstring IO.FS.Handle.truncate Manual.ZhDocString.IO.c073}
 
-{docstring IO.FS.Handle.isTty}
+{zhdocstring IO.FS.Handle.isTty Manual.ZhDocString.IO.c074}
 
-{docstring IO.FS.Handle.lock}
+{zhdocstring IO.FS.Handle.lock Manual.ZhDocString.IO.c075}
 
-{docstring IO.FS.Handle.tryLock}
+{zhdocstring IO.FS.Handle.tryLock Manual.ZhDocString.IO.c076}
 
-{docstring IO.FS.Handle.unlock}
+{zhdocstring IO.FS.Handle.unlock Manual.ZhDocString.IO.c077}
 
 
 ::::example "一个文件，多个句柄" (file := "One File, Multiple Handles")
@@ -174,15 +175,15 @@ Contents: '!!B!!BCD!B'
 tag := "Lean-__________________--IO--Files___-File-Handles___-and-Streams--Streams"
 %%%
 
-{docstring IO.FS.Stream}
+{zhdocstring IO.FS.Stream Manual.ZhDocString.IO.c078}
 
-{docstring IO.FS.Stream.ofBuffer}
+{zhdocstring IO.FS.Stream.ofBuffer Manual.ZhDocString.IO.c079}
 
-{docstring IO.FS.Stream.ofHandle}
+{zhdocstring IO.FS.Stream.ofHandle Manual.ZhDocString.IO.c080}
 
-{docstring IO.FS.Stream.putStrLn}
+{zhdocstring IO.FS.Stream.putStrLn Manual.ZhDocString.IO.c081}
 
-{docstring IO.FS.Stream.Buffer}
+{zhdocstring IO.FS.Stream.Buffer Manual.ZhDocString.IO.c082}
 
 
 # 路径
@@ -202,41 +203,41 @@ tag := "Lean-__________________--IO--Files___-File-Handles___-and-Streams--Paths
 
 {name System.FilePath}`FilePath` 具有 {lean}`Div` 类型类的实例，因此可以使用斜杠运算符拼接路径。
 
-{docstring System.FilePath +allowMissing}
+{zhdocstring System.FilePath Manual.ZhDocString.IO.c083 +allowMissing}
 
-{docstring System.mkFilePath}
+{zhdocstring System.mkFilePath Manual.ZhDocString.IO.c084}
 
-{docstring System.FilePath.join}
+{zhdocstring System.FilePath.join Manual.ZhDocString.IO.c085}
 
-{docstring System.FilePath.normalize}
+{zhdocstring System.FilePath.normalize Manual.ZhDocString.IO.c086}
 
-{docstring System.FilePath.isAbsolute}
+{zhdocstring System.FilePath.isAbsolute Manual.ZhDocString.IO.c087}
 
-{docstring System.FilePath.isRelative}
+{zhdocstring System.FilePath.isRelative Manual.ZhDocString.IO.c088}
 
-{docstring System.FilePath.parent}
+{zhdocstring System.FilePath.parent Manual.ZhDocString.IO.c089}
 
-{docstring System.FilePath.components}
+{zhdocstring System.FilePath.components Manual.ZhDocString.IO.c090}
 
-{docstring System.FilePath.fileName}
+{zhdocstring System.FilePath.fileName Manual.ZhDocString.IO.c091}
 
-{docstring System.FilePath.fileStem}
+{zhdocstring System.FilePath.fileStem Manual.ZhDocString.IO.c092}
 
-{docstring System.FilePath.extension}
+{zhdocstring System.FilePath.extension Manual.ZhDocString.IO.c093}
 
-{docstring System.FilePath.addExtension}
+{zhdocstring System.FilePath.addExtension Manual.ZhDocString.IO.c094}
 
-{docstring System.FilePath.withExtension}
+{zhdocstring System.FilePath.withExtension Manual.ZhDocString.IO.c095}
 
-{docstring System.FilePath.withFileName}
+{zhdocstring System.FilePath.withFileName Manual.ZhDocString.IO.c096}
 
-{docstring System.FilePath.pathSeparator}
+{zhdocstring System.FilePath.pathSeparator Manual.ZhDocString.IO.c097}
 
-{docstring System.FilePath.pathSeparators}
+{zhdocstring System.FilePath.pathSeparators Manual.ZhDocString.IO.c098}
 
-{docstring System.FilePath.extSeparator}
+{zhdocstring System.FilePath.extSeparator Manual.ZhDocString.IO.c099}
 
-{docstring System.FilePath.exeExtension}
+{zhdocstring System.FilePath.exeExtension Manual.ZhDocString.IO.c100}
 
 # 与文件系统交互
 %%%
@@ -245,67 +246,67 @@ tag := "Lean-__________________--IO--Files___-File-Handles___-and-Streams--Inter
 
 有些路径操作会查询文件系统。
 
-{docstring IO.FS.Metadata}
+{zhdocstring IO.FS.Metadata Manual.ZhDocString.IO.c101}
 
-{docstring System.FilePath.metadata}
+{zhdocstring System.FilePath.metadata Manual.ZhDocString.IO.c102}
 
-{docstring System.FilePath.symlinkMetadata}
+{zhdocstring System.FilePath.symlinkMetadata Manual.ZhDocString.IO.c103}
 
-{docstring System.FilePath.pathExists}
+{zhdocstring System.FilePath.pathExists Manual.ZhDocString.IO.c104}
 
-{docstring System.FilePath.isDir}
+{zhdocstring System.FilePath.isDir Manual.ZhDocString.IO.c105}
 
-{docstring IO.FS.DirEntry}
+{zhdocstring IO.FS.DirEntry Manual.ZhDocString.IO.c106}
 
-{docstring IO.FS.DirEntry.path}
+{zhdocstring IO.FS.DirEntry.path Manual.ZhDocString.IO.c107}
 
-{docstring System.FilePath.readDir}
+{zhdocstring System.FilePath.readDir Manual.ZhDocString.IO.c108}
 
-{docstring System.FilePath.walkDir}
+{zhdocstring System.FilePath.walkDir Manual.ZhDocString.IO.c109}
 
-{docstring IO.AccessRight +allowMissing}
+{zhdocstring IO.AccessRight Manual.ZhDocString.IO.c110 +allowMissing}
 
-{docstring IO.AccessRight.flags}
+{zhdocstring IO.AccessRight.flags Manual.ZhDocString.IO.c111}
 
-{docstring IO.FileRight}
+{zhdocstring IO.FileRight Manual.ZhDocString.IO.c112}
 
-{docstring IO.FileRight.flags}
+{zhdocstring IO.FileRight.flags Manual.ZhDocString.IO.c113}
 
-{docstring IO.setAccessRights}
+{zhdocstring IO.setAccessRights Manual.ZhDocString.IO.c114}
 
-{docstring IO.FS.removeFile}
+{zhdocstring IO.FS.removeFile Manual.ZhDocString.IO.c115}
 
-{docstring IO.FS.rename}
+{zhdocstring IO.FS.rename Manual.ZhDocString.IO.c116}
 
-{docstring IO.FS.removeDir}
+{zhdocstring IO.FS.removeDir Manual.ZhDocString.IO.c117}
 
-{docstring IO.FS.lines}
+{zhdocstring IO.FS.lines Manual.ZhDocString.IO.c118}
 
-{docstring IO.FS.withTempFile}
+{zhdocstring IO.FS.withTempFile Manual.ZhDocString.IO.c119}
 
-{docstring IO.FS.withTempDir}
+{zhdocstring IO.FS.withTempDir Manual.ZhDocString.IO.c120}
 
-{docstring IO.FS.createDirAll}
+{zhdocstring IO.FS.createDirAll Manual.ZhDocString.IO.c121}
 
-{docstring IO.FS.writeBinFile}
+{zhdocstring IO.FS.writeBinFile Manual.ZhDocString.IO.c122}
 
-{docstring IO.FS.withFile}
+{zhdocstring IO.FS.withFile Manual.ZhDocString.IO.c123}
 
-{docstring IO.FS.removeDirAll}
+{zhdocstring IO.FS.removeDirAll Manual.ZhDocString.IO.c124}
 
-{docstring IO.FS.createTempFile}
+{zhdocstring IO.FS.createTempFile Manual.ZhDocString.IO.c125}
 
-{docstring IO.FS.createTempDir}
+{zhdocstring IO.FS.createTempDir Manual.ZhDocString.IO.c126}
 
-{docstring IO.FS.readFile}
+{zhdocstring IO.FS.readFile Manual.ZhDocString.IO.c127}
 
-{docstring IO.FS.realPath}
+{zhdocstring IO.FS.realPath Manual.ZhDocString.IO.c128}
 
-{docstring IO.FS.writeFile}
+{zhdocstring IO.FS.writeFile Manual.ZhDocString.IO.c129}
 
-{docstring IO.FS.readBinFile}
+{zhdocstring IO.FS.readBinFile Manual.ZhDocString.IO.c130}
 
-{docstring IO.FS.createDir}
+{zhdocstring IO.FS.createDir Manual.ZhDocString.IO.c131}
 
 # 标准 I/O
 %%%
@@ -321,7 +322,7 @@ Lean 并不直接提供对操作系统标准 I/O 设施的访问，而是用 {na
 这一额外的间接层使 Lean 程序能够在内部重定向输入与输出。
 
 
-{docstring IO.getStdin}
+{zhdocstring IO.getStdin Manual.ZhDocString.IO.c132}
 
 ::::example "从标准输入读取" (file := "Reading from Standard Input")
 本例分别使用 {lean}`IO.getStdin` 和 {lean}`IO.getStdout` 获取当前的标准输入与标准输出。
@@ -350,23 +351,23 @@ Hello, Lean user
 :::
 ::::
 
-{docstring IO.setStdin}
+{zhdocstring IO.setStdin Manual.ZhDocString.IO.c133}
 
-{docstring IO.withStdin}
+{zhdocstring IO.withStdin Manual.ZhDocString.IO.c134}
 
-{docstring IO.getStdout}
+{zhdocstring IO.getStdout Manual.ZhDocString.IO.c135}
 
-{docstring IO.setStdout}
+{zhdocstring IO.setStdout Manual.ZhDocString.IO.c136}
 
-{docstring IO.withStdout}
+{zhdocstring IO.withStdout Manual.ZhDocString.IO.c137}
 
-{docstring IO.getStderr}
+{zhdocstring IO.getStderr Manual.ZhDocString.IO.c138}
 
-{docstring IO.setStderr}
+{zhdocstring IO.setStderr Manual.ZhDocString.IO.c139}
 
-{docstring IO.withStderr}
+{zhdocstring IO.withStderr Manual.ZhDocString.IO.c140}
 
-{docstring IO.FS.withIsolatedStreams}
+{zhdocstring IO.FS.withIsolatedStreams Manual.ZhDocString.IO.c141}
 
 ::::keepEnv
 :::example "将标准 I/O 重定向到字符串" (file := "Redirecting Standard I/O to Strings")
@@ -400,8 +401,8 @@ def runCountdown : IO String := do
 tag := "Lean-__________________--IO--Files___-File-Handles___-and-Streams--Files-and-Directories"
 %%%
 
-{docstring IO.currentDir}
+{zhdocstring IO.currentDir Manual.ZhDocString.IO.c142}
 
-{docstring IO.appPath}
+{zhdocstring IO.appPath Manual.ZhDocString.IO.c143}
 
-{docstring IO.appDir}
+{zhdocstring IO.appDir Manual.ZhDocString.IO.c144}

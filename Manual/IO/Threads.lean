@@ -9,6 +9,7 @@ import VersoManual
 import Manual.Meta
 
 import Lean.Parser.Command
+import Manual.ZhDocString.IO
 
 open Manual
 open Verso.Genre
@@ -56,7 +57,7 @@ Lean 运行时维护一个用于运行任务的线程池。
 默认情况下，这些线程用于运行任务；每个任务都有一个{deftech (key := "task priority")}_优先级_（{name}`Task.Priority`），高优先级任务先于低优先级任务执行。
 也可以用足够高的优先级生成任务，从而为其分配专用线程。
 
-{docstring Task (label := "type") +hideStructureConstructor +hideFields}
+{zhdocstring Task Manual.ZhDocString.IO.c161 (label := "type") +hideStructureConstructor +hideFields}
 
 # 创建任务
 %%%
@@ -74,9 +75,9 @@ tag := "Lean-__________________--IO--Tasks-and-Threads--Creating-Tasks--Pure-Tas
 纯任务可以在 {name}`IO` 单子族之外创建。
 当其最后一个引用被丢弃时，它们会终止。
 
-{docstring Task.spawn}
+{zhdocstring Task.spawn Manual.ZhDocString.IO.c162}
 
-{docstring Task.pure}
+{zhdocstring Task.pure Manual.ZhDocString.IO.c163}
 
 ## 非纯任务
 %%%
@@ -89,11 +90,11 @@ tag := "Lean-__________________--IO--Tasks-and-Threads--Creating-Tasks--Impure-T
 也可以使用 {name}`IO.cancel` 显式请求取消。
 非纯任务必须使用 {name}`IO.checkCanceled` 检查取消请求。
 
-{docstring BaseIO.asTask}
+{zhdocstring BaseIO.asTask Manual.ZhDocString.IO.c164}
 
-{docstring EIO.asTask}
+{zhdocstring EIO.asTask Manual.ZhDocString.IO.c165}
 
-{docstring IO.asTask}
+{zhdocstring IO.asTask Manual.ZhDocString.IO.c166}
 
 ## 优先级
 %%%
@@ -104,24 +105,24 @@ tag := "Lean-__________________--IO--Tasks-and-Threads--Creating-Tasks--Prioriti
 在 {name Task.Priority.default}`default` 到 {name Task.Priority.max}`max` 的优先级范围内，高优先级任务总是先于低优先级任务执行。
 以 {name Task.Priority.dedicated}`dedicated` 优先级生成的任务会被分配各自的专用线程，不会与其他任务争用线程池中的线程。
 
-{docstring Task.Priority}
+{zhdocstring Task.Priority Manual.ZhDocString.IO.c167}
 
-{docstring Task.Priority.default}
+{zhdocstring Task.Priority.default Manual.ZhDocString.IO.c168}
 
-{docstring Task.Priority.max}
+{zhdocstring Task.Priority.max Manual.ZhDocString.IO.c169}
 
-{docstring Task.Priority.dedicated}
+{zhdocstring Task.Priority.dedicated Manual.ZhDocString.IO.c170}
 
 # 任务结果
 %%%
 tag := "Lean-__________________--IO--Tasks-and-Threads--Task-Results"
 %%%
 
-{docstring Task.get}
+{zhdocstring Task.get Manual.ZhDocString.IO.c171}
 
-{docstring IO.wait}
+{zhdocstring IO.wait Manual.ZhDocString.IO.c172}
 
-{docstring IO.waitAny}
+{zhdocstring IO.waitAny Manual.ZhDocString.IO.c173}
 
 # 任务定序
 %%%
@@ -131,35 +132,35 @@ tag := "Lean-__________________--IO--Tasks-and-Threads--Sequencing-Tasks"
 这些运算符从已有任务创建新任务。
 只要可能，最好使用 {name}`Task.map` 或 {name}`Task.bind`，而不要在新任务中手动调用 {name}`Task.get`，因为前两者不会暂时增大线程池。
 
-{docstring Task.map}
+{zhdocstring Task.map Manual.ZhDocString.IO.c174}
 
-{docstring Task.bind}
+{zhdocstring Task.bind Manual.ZhDocString.IO.c175}
 
-{docstring Task.mapList}
+{zhdocstring Task.mapList Manual.ZhDocString.IO.c176}
 
-{docstring BaseIO.mapTask}
+{zhdocstring BaseIO.mapTask Manual.ZhDocString.IO.c177}
 
-{docstring EIO.mapTask}
+{zhdocstring EIO.mapTask Manual.ZhDocString.IO.c178}
 
-{docstring IO.mapTask}
+{zhdocstring IO.mapTask Manual.ZhDocString.IO.c179}
 
-{docstring BaseIO.mapTasks}
+{zhdocstring BaseIO.mapTasks Manual.ZhDocString.IO.c180}
 
-{docstring EIO.mapTasks}
+{zhdocstring EIO.mapTasks Manual.ZhDocString.IO.c181}
 
-{docstring IO.mapTasks}
+{zhdocstring IO.mapTasks Manual.ZhDocString.IO.c182}
 
-{docstring BaseIO.bindTask}
+{zhdocstring BaseIO.bindTask Manual.ZhDocString.IO.c183}
 
-{docstring EIO.bindTask}
+{zhdocstring EIO.bindTask Manual.ZhDocString.IO.c184}
 
-{docstring IO.bindTask}
+{zhdocstring IO.bindTask Manual.ZhDocString.IO.c185}
 
-{docstring BaseIO.chainTask}
+{zhdocstring BaseIO.chainTask Manual.ZhDocString.IO.c186}
 
-{docstring EIO.chainTask}
+{zhdocstring EIO.chainTask Manual.ZhDocString.IO.c187}
 
-{docstring IO.chainTask}
+{zhdocstring IO.chainTask Manual.ZhDocString.IO.c188}
 
 # 取消与状态
 %%%
@@ -169,17 +170,17 @@ tag := "Lean-__________________--IO--Tasks-and-Threads--Cancellation-and-Status"
 非纯任务应使用 `IO.checkCanceled` 响应取消；取消可能由 `IO.cancel` 引发，也可能在任务的最后一个引用被丢弃时发生。
 纯任务会在取消时自动终止。
 
-{docstring IO.cancel}
+{zhdocstring IO.cancel Manual.ZhDocString.IO.c189}
 
-{docstring IO.checkCanceled}
+{zhdocstring IO.checkCanceled Manual.ZhDocString.IO.c190}
 
-{docstring IO.hasFinished}
+{zhdocstring IO.hasFinished Manual.ZhDocString.IO.c191}
 
-{docstring IO.getTaskState}
+{zhdocstring IO.getTaskState Manual.ZhDocString.IO.c192}
 
-{docstring IO.TaskState}
+{zhdocstring IO.TaskState Manual.ZhDocString.IO.c193}
 
-{docstring IO.getTID}
+{zhdocstring IO.getTID Manual.ZhDocString.IO.c194}
 
 # 承诺
 %%%
@@ -191,19 +192,19 @@ tag := "Lean-__________________--IO--Tasks-and-Threads--Promises"
 承诺创建后，可以像其他值一样存入数据结构或四处传递；尝试读取它时会阻塞，直至它兑现。
 
 
-{docstring IO.Promise}
+{zhdocstring IO.Promise Manual.ZhDocString.IO.c195}
 
-{docstring IO.Promise.new}
+{zhdocstring IO.Promise.new Manual.ZhDocString.IO.c196}
 
-{docstring IO.Promise.isResolved}
+{zhdocstring IO.Promise.isResolved Manual.ZhDocString.IO.c197}
 
-{docstring IO.Promise.result?}
+{zhdocstring IO.Promise.result? Manual.ZhDocString.IO.c198}
 
-{docstring IO.Promise.result!}
+{zhdocstring IO.Promise.result! Manual.ZhDocString.IO.c199}
 
-{docstring IO.Promise.resultD}
+{zhdocstring IO.Promise.resultD Manual.ZhDocString.IO.c200}
 
-{docstring IO.Promise.resolve}
+{zhdocstring IO.Promise.resolve Manual.ZhDocString.IO.c201}
 
 # 任务间通信
 %%%
@@ -221,26 +222,26 @@ tag := "Lean-__________________--IO--Tasks-and-Threads--Communication-Between-Ta
 
 导入 {module}`Std.Sync.Channel` 后即可使用本节中的类型与函数。
 
-{docstring Std.Channel}
+{zhdocstring Std.Channel Manual.ZhDocString.IO.c202}
 
-{docstring Std.Channel.new}
+{zhdocstring Std.Channel.new Manual.ZhDocString.IO.c203}
 
-{docstring Std.Channel.send}
+{zhdocstring Std.Channel.send Manual.ZhDocString.IO.c204}
 
-{docstring Std.Channel.recv}
-
-
-{docstring Std.Channel.forAsync}
+{zhdocstring Std.Channel.recv Manual.ZhDocString.IO.c205}
 
 
-{docstring Std.Channel.sync}
-
-{docstring Std.Channel.Sync}
+{zhdocstring Std.Channel.forAsync Manual.ZhDocString.IO.c206}
 
 
-{docstring Std.CloseableChannel}
+{zhdocstring Std.Channel.sync Manual.ZhDocString.IO.c207}
 
-{docstring Std.CloseableChannel.new}
+{zhdocstring Std.Channel.Sync Manual.ZhDocString.IO.c208}
+
+
+{zhdocstring Std.CloseableChannel Manual.ZhDocString.IO.c209}
+
+{zhdocstring Std.CloseableChannel.new Manual.ZhDocString.IO.c210}
 
 
 
@@ -260,15 +261,15 @@ tag := "Lean-__________________--IO--Tasks-and-Threads--Communication-Between-Ta
 
 导入 {module}`Std.Sync.Mutex` 后即可使用本节中的类型与函数。
 
-{docstring Std.Mutex (label := "type") +hideStructureConstructor +hideFields}
+{zhdocstring Std.Mutex Manual.ZhDocString.IO.c211 (label := "type") +hideStructureConstructor +hideFields}
 
-{docstring Std.Mutex.new}
+{zhdocstring Std.Mutex.new Manual.ZhDocString.IO.c212}
 
-{docstring Std.Mutex.atomically}
+{zhdocstring Std.Mutex.atomically Manual.ZhDocString.IO.c213}
 
-{docstring Std.Mutex.atomicallyOnce}
+{zhdocstring Std.Mutex.atomicallyOnce Manual.ZhDocString.IO.c214}
 
-{docstring Std.AtomicT}
+{zhdocstring Std.AtomicT Manual.ZhDocString.IO.c215}
 
 
 ## 条件变量
@@ -278,14 +279,14 @@ tag := "Lean-__________________--IO--Tasks-and-Threads--Communication-Between-Ta
 
 导入 {module}`Std.Sync.Mutex` 后即可使用本节中的类型与函数。
 
-{docstring Std.Condvar}
+{zhdocstring Std.Condvar Manual.ZhDocString.IO.c216}
 
-{docstring Std.Condvar.new}
+{zhdocstring Std.Condvar.new Manual.ZhDocString.IO.c217}
 
-{docstring Std.Condvar.wait}
+{zhdocstring Std.Condvar.wait Manual.ZhDocString.IO.c218}
 
-{docstring Std.Condvar.notifyOne}
+{zhdocstring Std.Condvar.notifyOne Manual.ZhDocString.IO.c219}
 
-{docstring Std.Condvar.notifyAll}
+{zhdocstring Std.Condvar.notifyAll Manual.ZhDocString.IO.c220}
 
-{docstring Std.Condvar.waitUntil}
+{zhdocstring Std.Condvar.waitUntil Manual.ZhDocString.IO.c221}
