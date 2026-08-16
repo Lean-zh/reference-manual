@@ -23,7 +23,7 @@ set_option linter.unusedVariables false
 #doc (Manual) "控制台输出" =>
 %%%
 tag := "Console-Output"
-file := "Console Output"
+file := "Console-Output"
 %%%
 
 Lean 提供了向{tech (key := "standard output")}[标准输出]和{tech (key := "standard error")}[标准错误]写入内容的便捷函数。

@@ -23,7 +23,7 @@ set_option linter.unusedVariables false
 #doc (Manual) "文件、文件句柄与流" =>
 %%%
 tag := "Files___-File-Handles___-and-Streams"
-file := "Files, File Handles, and Streams"
+file := "Files___-File-Handles___-and-Streams"
 %%%
 
 Lean 在所有受支持的平台上提供一致的文件系统 API。

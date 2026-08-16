@@ -58,7 +58,7 @@ axiom α : Type
 # 逻辑模型
 %%%
 tag := "Logical-Model"
-file := "Logical Model"
+file := "Logical-Model"
 %%%
 
 :::::keepEnv
@@ -207,7 +207,7 @@ Access granted!
 # 控制结构
 %%%
 tag := "io-monad-control"
-file := "Control Structures"
+file := "Control-Structures"
 %%%
 
 通常，使用 {lean}`IO` 编写的程序会使用{ref "monads-and-do"}[与其他单子程序相同的控制结构]。
@@ -224,7 +224,7 @@ file := "Control Structures"
 # 系统与平台信息
 %%%
 tag := "platform-info"
-file := "System and Platform Information"
+file := "System-and-Platform-Information"
 %%%
 
 {zhdocstring System.Platform.numBits Manual.ZhDocString.IO.c017}
@@ -241,7 +241,7 @@ file := "System and Platform Information"
 # 环境变量
 %%%
 tag := "io-monad-getenv"
-file := "Environment Variables"
+file := "Environment-Variables"
 %%%
 
 {zhdocstring IO.getEnv Manual.ZhDocString.IO.c022}
@@ -522,7 +522,7 @@ There are 90 four-digit palindromes.
 # 随机数
 %%%
 tag := "Random-Numbers"
-file := "Random Numbers"
+file := "Random-Numbers"
 %%%
 
 {zhdocstring IO.setRandSeed Manual.ZhDocString.IO.c045}

@@ -23,7 +23,7 @@ set_option linter.unusedVariables false
 #doc (Manual) "任务与线程" =>
 %%%
 tag := "concurrency"
-file := "Tasks and Threads"
+file := "Tasks-and-Threads"
 %%%
 
 :::leanSection
