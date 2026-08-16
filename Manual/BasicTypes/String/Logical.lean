@@ -35,6 +35,9 @@ Lean 中字符串的逻辑模型是一个包含两个字段的结构体：
 
 # 向后兼容性
 
+%%%
+tag := "Lean-__________________--Basic-Types--Strings--Logical-Model--Backwards-Compatibility"
+%%%
 在 Lean 的早期版本中，字符串的逻辑模型是包含字符列表的结构体。
 该模型仍然有用。
 它仍然可以使用 {name}`String.ofList`（将字符列表转换为 {name}`String`）以及 {name}`String.toList`（将 {name}`String` 转换为字符列表）来访问。
