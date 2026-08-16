@@ -216,9 +216,14 @@ def c018 := @IteratorLoop.defaultImplementation
 （即使二者相等，给定实例也可能高效得多。）
 -/
 class c019 {β : Type w} (α : Type w) (m : Type w → Type v) (n : Type u → Type u₁)
-    [Monad m] [Monad n] [Std.Iterator α m β] [Std.IteratorLoop α m n] : Prop where
+    [Monad m] [Monad n] [Std.Iterator α m β] [i : Std.IteratorLoop α m n] : Prop where
   /-- `i` 中 `IteratorLoop.forIn` 的实现等于默认实现。 -/
-  lawful : Nonempty (@Std.LawfulIteratorLoop β α m n inferInstance inferInstance inferInstance inferInstance)
+  lawful lift [Std.Internal.LawfulMonadLiftBindFunction lift] γ it init
+      (Pl : β → γ → ForInStep γ → Prop) (wf : Std.IteratorLoop.WellFounded α m Pl)
+      (f : (b : β) → @Std.IterM.IsPlausibleIndirectOutput α β m inferInstance it b →
+        (c : γ) → n (Subtype (Pl b c))) :
+    i.forIn lift γ Pl it init f =
+      Std.IteratorLoop.defaultImplementation.forIn lift γ Pl it init f
 
 /--
 目前，`Shrink α` 只是 `α` 的包装。
