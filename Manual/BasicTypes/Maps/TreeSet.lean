@@ -17,24 +17,24 @@ open Verso.Genre.Manual.InlineLean
 
 set_option pp.rawOnError true
 
-#doc (Manual) "Tree-Based Sets" =>
+#doc (Manual) "基于树的集合" =>
 %%%
 tag := "TreeSet"
 %%%
 
 {docstring Std.TreeSet +hideStructureConstructor +hideFields}
 
-# Creation
+# 创建
 
 {docstring Std.TreeSet.empty}
 
-# Properties
+# 性质
 
 {docstring Std.TreeSet.isEmpty}
 
 {docstring Std.TreeSet.size}
 
-# Queries
+# 查询
 
 {docstring Std.TreeSet.contains}
 
@@ -46,7 +46,7 @@ tag := "TreeSet"
 
 {docstring Std.TreeSet.getD}
 
-## Ordering-Based Queries
+## 基于顺序的查询
 
 {docstring Std.TreeSet.atIdx}
 
@@ -105,7 +105,7 @@ tag := "TreeSet"
 
 {docstring Std.TreeSet.maxD}
 
-# Modification
+# 修改
 
 
 {docstring Std.TreeSet.insert}
@@ -125,7 +125,7 @@ tag := "TreeSet"
 {docstring Std.TreeSet.partition}
 
 
-# Iteration
+# 迭代
 
 {docstring Std.TreeSet.iter}
 
@@ -146,7 +146,7 @@ tag := "TreeSet"
 {docstring Std.TreeSet.forM}
 
 
-# Conversion
+# 转换
 
 {docstring Std.TreeSet.toList}
 
@@ -156,11 +156,11 @@ tag := "TreeSet"
 
 {docstring Std.TreeSet.ofArray}
 
-## Unbundled Variants
+## 分离式变体
 
-Unbundled sets separate well-formedness proofs from data.
-This is primarily useful when defining {ref "raw-data"}[nested inductive types].
-To use these variants, import the module `Std.TreeSet.Raw`.
+分离式集合会将良构性证明与数据本身分开。
+这主要在定义 {ref "raw-data"}[嵌套归纳类型] 时有用。
+要使用这些变体，请导入模块 `Std.TreeSet.Raw`。
 
 {docstring Std.TreeSet.Raw}
 

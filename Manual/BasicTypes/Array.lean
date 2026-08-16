@@ -21,96 +21,96 @@ set_option maxHeartbeats 500000
 
 example := Char
 
-#doc (Manual) "Arrays" =>
+#doc (Manual) "数组" =>
 %%%
 tag := "Array"
 %%%
 
-The {lean}`Array` type represents sequences of elements, addressable by their position in the sequence.
-Arrays are specially supported by Lean:
- * They have a _logical model_ that specifies their behavior in terms of lists of elements, which specifies the meaning of each operation on arrays.
- * They have an optimized run-time representation in compiled code as {tech}[dynamic arrays], and the Lean runtime specially optimizes array operations.
- * There is {ref "array-syntax"}[array literal syntax] for writing arrays.
+{lean}`Array` 类型表示元素序列，可以通过其在序列中的位置进行访问。
+Lean 对数组提供了专门支持：
+ * 它有一个_逻辑模型_，用元素列表来规定其行为，从而给出各个数组操作的含义。
+ * 它在编译后的代码中有一种经过优化的运行时表示，即 {tech (key := "dynamic arrays")}[动态数组]，Lean 运行时还会专门优化数组操作。
+ * 可以使用 {ref "array-syntax"}[数组字面量语法] 来书写数组。
 
-Arrays can be vastly more efficient than lists or other sequences in compiled code.
-In part, this is because they offer good locality: because all the elements of the sequence are next to each other in memory, the processor's caches can be used efficiently.
-Even more importantly, if there is only a single reference to an array, operations that might otherwise copy or allocate a data structure can be implemented via mutation.
-Lean code that uses an array in such a way that there's only ever one unique reference (that is, uses it {deftech}_linearly_) avoids the performance overhead of persistent data structures while still being as convenient to write, read, and prove things about as ordinary pure functional programs.
+在编译后的代码中，数组可以比列表或其他序列高效得多。
+这部分是因为它具有良好的局部性：序列中的所有元素都在内存中彼此相邻，因此处理器缓存可以被高效利用。
+更重要的是，如果一个数组只有唯一引用，那么原本需要复制或分配数据结构的操作就可以通过原地修改来实现。
+当 Lean 代码以始终只有唯一引用的方式使用数组时（也就是 {deftech (key := "linearly")}_线性地_ 使用它），便能避免持久化数据结构的性能开销，同时依旧像普通纯函数式程序一样易于编写、阅读与证明性质。
 
-# Logical Model
+# 逻辑模型
 
 {docstring Array}
 
-The logical model of arrays is a structure that contains a single field, which is a list of elements.
-This is convenient when specifying and proving properties of array-processing functions at a low level.
+数组的逻辑模型是一个只有单个字段的结构体，该字段是元素列表。
+这使得在较低层次上规定和证明数组处理函数的性质时更加方便。
 
-# Run-Time Representation
+# 运行时表示
 %%%
 tag := "array-runtime"
 %%%
 
-Lean's arrays are {deftech}_dynamic arrays_, which are blocks of continuous memory with a defined capacity, not all of which is typically in use.
-As long as the number of elements in the array is less than the capacity, new items can be added to the end without reallocating or moving the data.
-Adding items to an array that has no extra space results in a reallocation that doubles the capacity.
-The amortized overhead scales linearly with the size of the array.
-The values in the array are represented as described in the {ref "inductive-types-ffi"}[section on the foreign function interface].
+Lean 的数组是 {deftech (key := "dynamic arrays")}_动态数组_：它们是一段具有既定容量的连续内存块，通常其中不会全部被占用。
+只要数组中的元素个数小于容量，就可以在末尾追加新元素，而无需重新分配或移动数据。
+向没有剩余空间的数组中添加元素时，会触发一次将容量翻倍的重新分配。
+其摊还开销与数组大小呈线性关系。
+数组中的值按 {ref "inductive-types-ffi"}[外部函数接口一节]所述的方式表示。
 
-:::figure "Memory layout of arrays" (tag := "arrayffi")
+:::figure "数组的内存布局" (tag := "arrayffi")
 ```diagram
 open Illuminate in
 open Manual.Diagram in
 layoutDiagram [
-  ("m_header", .header, txt "Lean object header"),
-  ("m_size", .size_t, twoLine "Byte count" "size_t"),
-  ("m_capacity", .size_t, twoLine "Allocated space" "size_t"),
+  ("m_header", .header, txt "Lean 对象头"),
+  ("m_size", .size_t, twoLine "字节数" "size_t"),
+  ("m_capacity", .size_t, twoLine "已分配空间" "size_t"),
   ("m_data", .data none, some <| .styledText (base := fieldLabelStyle) <|
-    "Array data" ++ "\n" ++ "Array of " ++ family "monospace" "lean_object *")
+    "数组数据" ++ "\n" ++ family "monospace" "lean_object *" ++ " 数组")
 ]
 ```
 :::
 
-After the object header, an array contains:
+在对象头之后，数组包含：
 
-: size
+: 大小
 
-  The number of objects currently stored in the array
+  当前存储在数组中的对象个数
 
-: capacity
+: 容量
 
-  The number of objects that fit in the memory allocated for the array
+  为数组分配的内存中可容纳的对象个数
 
-: data
+: 数据
 
-  The values in the array
+  数组中的值
 
-Many array functions in the Lean runtime check whether they have exclusive access to their argument by consulting the reference count in the object header.
-If they do, and the array's capacity is sufficient, then the existing array can be mutated rather than allocating fresh memory.
-Otherwise, a new array must be allocated.
+Lean 运行时中的许多数组函数都会通过查看对象头中的引用计数，来检查自己是否独占其参数。
+如果是，并且数组容量足够，那么就可以直接修改现有数组，而无需分配新的内存。
+否则，就必须分配一个新数组。
 
-## Performance Notes
+## 性能说明
 %%%
 tag := "array-performance"
 %%%
 
 
-Despite the fact that they appear to be an ordinary constructor and projection, {name}`Array.mk` and {name}`Array.toList` take *time linear in the size of the array* in compiled code.
-This is because converting between linked lists and packed arrays must necessarily visit each element.
+尽管 {name}`Array.mk` 和 {name}`Array.toList` 看起来只是普通的构造子与投影，但在编译后的代码中，它们都需要 *与数组大小成线性关系的时间*。
+这是因为在链表与紧凑数组之间转换时，必然需要访问每一个元素。
 
-Mutable arrays can be used to write very efficient code.
-However, they are a poor persistent data structure.
-Updating a shared array rules out mutation, and requires time linear in the size of the array.
-When using arrays in performance-critical code, it's important to ensure that they are used {tech}[linearly].
+可变数组可用于编写非常高效的代码。
+不过，它们并不是好的持久化数据结构。
+更新共享数组时无法使用原地修改，并且需要耗费与数组大小成线性关系的时间。
+在性能关键的代码中使用数组时，务必确保它们是 {tech (key := "linearly")}[线性地] 使用的。
 
-# Syntax
+# 语法
 %%%
 tag := "array-syntax"
 %%%
 
-Array literals allow arrays to be written directly in code.
-They may be used in expression or pattern contexts.
+数组字面量允许直接在代码中书写数组。
+它们既可用于表达式上下文，也可用于模式上下文。
 
-:::syntax term (title := "Array Literals")
-Array literals begin with `#[` and contain a comma-separated sequence of terms, terminating with `]`.
+:::syntax term (title := "数组字面量")
+数组字面量以 `#[` 开始，包含一串以逗号分隔的项，并以 `]` 结束。
 
 ```grammar
 #[$t,*]
@@ -118,8 +118,8 @@ Array literals begin with `#[` and contain a comma-separated sequence of terms, 
 :::
 
 ::::keepEnv
-:::example "Array Literals"
-Array literals may be used as expressions or as patterns.
+:::example "数组字面量"
+数组字面量既可以用作表达式，也可以用作模式。
 
 ```lean
 def oneTwoThree : Array Nat := #[1, 2, 3]
@@ -132,29 +132,29 @@ def oneTwoThree : Array Nat := #[1, 2, 3]
 :::
 ::::
 
-Additionally, {ref "subarray"}[sub-arrays] may be extracted using the following syntax:
-:::syntax term (title := "Sub-Arrays")
-A start index followed by a colon constructs a sub-array that contains the values from the start index onwards (inclusive):
+此外，还可以用下列语法提取 {ref "subarray"}[子数组]：
+:::syntax term (title := "子数组")
+起始下标后跟一个冒号，会构造出一个子数组，包含从起始下标开始（含该位置）直到末尾的值：
 ```grammar
 $t[$t:term :]
 ```
 
-Providing start and end indices  constructs a sub-array that contains the values from the start index (inclusive) to the end index (exclusive):
+同时提供起始与结束下标时，会构造出一个子数组，包含从起始下标（含）到结束下标（不含）的值：
 ```grammar
 $t[$t:term : $_:term]
 ```
 :::
 
 ::::keepEnv
-:::example "Sub-Array Syntax"
+:::example "子数组语法"
 
-The array {lean}`ten` contains the first ten natural numbers.
+数组 {lean}`ten` 包含前十个自然数。
 ```lean
 def ten : Array Nat :=
   .range 10
 ```
 
-A sub-array that represents the second half of {lean}`ten` can be constructed using the sub-array syntax:
+可以使用子数组语法构造一个表示 {lean}`ten` 后半部分的子数组：
 ```lean (name := subarr1)
 #eval ten[5:]
 ```
@@ -162,7 +162,7 @@ A sub-array that represents the second half of {lean}`ten` can be constructed us
 #[5, 6, 7, 8, 9].toSubarray
 ```
 
-Similarly, sub-array that contains two through five can be constructed by providing a stopping point:
+类似地，通过给出结束位置，可以构造出包含 2 到 5 的子数组：
 ```lean (name := subarr2)
 #eval ten[2:6]
 ```
@@ -170,7 +170,7 @@ Similarly, sub-array that contains two through five can be constructed by provid
 #[2, 3, 4, 5].toSubarray
 ```
 
-Because sub-arrays merely store the start and end indices of interest in the underlying array, the array itself can be recovered:
+由于子数组仅存储其在底层数组中所关注的起止下标，因此可以恢复出该数组本身：
 ```lean (name := subarr3)
 #eval ten[2:6].array == ten
 ```
@@ -180,12 +180,12 @@ true
 :::
 ::::
 
-# API Reference
+# 接口参考
 %%%
 tag := "array-api"
 %%%
 
-## Constructing Arrays
+## 构造数组
 
 {docstring Array.empty}
 
@@ -211,7 +211,7 @@ tag := "array-api"
 
 {docstring Array.rightpad}
 
-## Size
+## 大小
 
 {docstring Array.size}
 
@@ -219,7 +219,7 @@ tag := "array-api"
 
 {docstring Array.isEmpty}
 
-## Lookups
+## 查找
 
 {docstring Array.extract}
 
@@ -235,7 +235,7 @@ tag := "array-api"
 
 {docstring Array.getMax?}
 
-## Queries
+## 查询
 
 {docstring Array.count}
 
@@ -247,7 +247,7 @@ tag := "array-api"
 
 {docstring Array.finIdxOf?}
 
-## Conversions
+## 转换
 
 {docstring Array.toList}
 
@@ -262,7 +262,7 @@ tag := "array-api"
 {docstring Array.ofSubarray}
 
 
-## Modification
+## 修改
 
 {docstring Array.push}
 
@@ -326,7 +326,7 @@ tag := "array-api"
 
 {docstring Array.getEvenElems}
 
-## Sorted Arrays
+## 有序数组
 
 {docstring Array.qsort}
 
@@ -344,7 +344,7 @@ tag := "array-api"
 
 
 
-## Iteration
+## 迭代
 
 {docstring Array.iter}
 
@@ -370,7 +370,7 @@ tag := "array-api"
 
 {docstring Array.sum}
 
-## Transformation
+## 变换
 
 {docstring Array.map}
 
@@ -405,7 +405,7 @@ tag := "array-api"
 {docstring Array.unzip}
 
 
-## Filtering
+## 过滤
 
 {docstring Array.filter}
 
@@ -421,14 +421,14 @@ tag := "array-api"
 
 {docstring Array.filterSepElemsM}
 
-## Partitioning
+## 分割
 
 {docstring Array.partition}
 
 {docstring Array.groupByKey}
 
 
-## Element Predicates
+## 元素判定
 
 {docstring Array.contains}
 
@@ -472,13 +472,13 @@ tag := "array-api"
 
 {docstring Array.isEqv}
 
-## Comparisons
+## 比较
 
 {docstring Array.isPrefixOf}
 
 {docstring Array.lex}
 
-## Termination Helpers
+## 终止辅助
 
 {docstring Array.attach}
 

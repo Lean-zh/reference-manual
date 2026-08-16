@@ -13,15 +13,15 @@ open Manual.FFIDocType
 open Verso.Genre Manual
 open Verso.Genre.Manual.InlineLean
 
-#doc (Manual) "Arithmetic" =>
+#doc (Manual) "算术" =>
 %%%
 tag := "fixed-int-arithmetic"
 %%%
 
-Typically, arithmetic operations on fixed-width integers should be accessed using Lean's overloaded arithmetic notation, particularly their instances of {name}`Add`, {name}`Sub`, {name}`Mul`, {name}`Div`, and {name}`Mod`, as well as {name}`Neg` for signed types.
+通常，定宽整数上的算术运算应通过 Lean 的重载算术记号来使用，尤其是它们的 {name}`Add`、{name}`Sub`、{name}`Mul`、{name}`Div` 与 {name}`Mod` 实例，以及有符号类型的 {name}`Neg` 实例。
 
 ```lean -show
--- Check that all those instances really exist
+-- 检查这些实例确实都存在
 open Lean Elab Command in
 #eval show CommandElabM Unit from do
   let signed := [`ISize, `Int8, `Int16, `Int32, `Int64]

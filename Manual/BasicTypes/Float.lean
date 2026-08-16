@@ -18,48 +18,48 @@ open Verso.Genre.Manual.InlineLean
 
 set_option pp.rawOnError true
 
-#doc (Manual) "Floating-Point Numbers" =>
+#doc (Manual) "浮点数" =>
 %%%
 tag := "Float"
 %%%
 
-Floating-point numbers are a an approximation of the real numbers that are efficiently implemented in computer hardware.
-Computations that use floating-point numbers are very efficient; however, the nature of the way that they approximate the real numbers is complex, with many corner cases.
-The IEEE 754 standard, which defines the floating-point format that is used on modern computers, allows hardware designers and programming language implementations to make certain choices, and real systems differ in these small details.
-Any given combination of hardware, operating system, C compiler, library versions, and even compilation flags can result in different behavior.
-For example, there are many distinct bit representations of `NaN`, the indicator that a result is undefined, and some platforms differ with respect to _which_ `NaN` is returned from adding two `NaN`s.
+浮点数是对实数的一种近似，并且能在计算机硬件中高效实现。
+使用浮点数的计算通常非常高效；不过，它们逼近实数的方式本身很复杂，存在许多边界情况。
+IEEE 754 标准定义了现代计算机使用的浮点格式，它允许硬件设计者和编程语言实现做出某些选择，而真实系统在这些细节上并不完全相同。
+硬件、操作系统、C 编译器、库版本乃至编译选项的任意组合，都可能导致不同的行为。
+例如，表示结果未定义的 `NaN` 就有许多不同的位表示，而且有些平台在“两个 `NaN` 相加时究竟返回哪个 `NaN`”这一点上并不一致。
 
-To enable reasoning about floating-point numbers, Lean exposes a logical model of {name}`Float` that is used in proofs.
-In particular, {name}`Float` and {name}`Float32` are implemented as wrappers around the logical model.
-In compiled code, this logical model is replaced by efficient native code.
-Differences between platforms are resolved by choosing specific representations (for example, all `NaN` values are replaced by a single canonical `NaN` when any operation requests a bit representation) and by modeling only the subset of floating-point operations that are implemented identically on all supported platforms.
-Other operations, such as trigonometric functions, are represented as opaque functions in Lean's logic.
+为了能够对浮点数进行推理，Lean 暴露出了一个用于证明的 {name}`Float` 逻辑模型。
+具体来说，{name}`Float` 与 {name}`Float32` 都是围绕该逻辑模型实现的包装器。
+在编译后的代码中，这个逻辑模型会被高效的原生代码取代。
+平台之间的差异通过两种方式解决：一是选择特定表示（例如，只要某个运算请求位表示，所有 `NaN` 值都会被替换为单一的规范 `NaN`），二是只为所有受支持平台上实现完全一致的那一部分浮点运算建立模型。
+其他运算（例如三角函数）则在 Lean 的逻辑中表示为不透明函数。
 
-The logical model is extensively empirically tested against the floating-point operations on all supported platforms.
-As long as FFI code does not modify the floating-point environment, Lean's runtime floating-point primitives match the model's specification.
+该逻辑模型已在所有受支持平台上与浮点运算进行了广泛的经验性测试。
+只要 FFI 代码不修改浮点环境，Lean 运行时的浮点原语就符合该模型的规约。
 
 {docstring Float}
 
 {docstring Float32}
 
-# Logical Model
+# 逻辑模型
 
-Lean provides two floating-point types: {name}`Float` represents 64-bit floating-point values, while {name}`Float32` represents 32-bit floating-point values.
-The precision of {name}`Float` does not vary based on the platform that Lean is running on.
+Lean 提供两种浮点类型：{name}`Float` 表示 64 位浮点值，而 {name}`Float32` 表示 32 位浮点值。
+{name}`Float` 的精度不会随着 Lean 所运行的平台而变化。
 
-## Model Details
+## 模型细节
 
-The logical models of {lean}`Float` and {lean}`Float32` consist of unsigned integers with validity predicates.
-Each defined operation first interprets the integer into a {lean}`Float.Model.UnpackedFloat`, which is a higher-level model that is not specific to a bit width.
-Then, the defined operation is implemented in terms of {name Float.Model.UnpackedFloat}`UnpackedFloat`, and the result is re-packed.
-These definitions constitute a _logical specification_ designed for reasoning.
-Although they can be executed, they will run significantly slower than native code.
-Not all operations are defined; some are instead opaque functions whose behavior cannot be reasoned about in Lean's logic.
+{lean}`Float` 与 {lean}`Float32` 的逻辑模型由带有有效性谓词的无符号整数组成。
+每个已定义的运算都会先把该整数解释为 {lean}`Float.Model.UnpackedFloat`，这是一个不依赖具体位宽的更高层模型。
+然后，用 {name Float.Model.UnpackedFloat}`UnpackedFloat` 来实现该运算，并将结果重新打包。
+这些定义构成了一个用于推理的_逻辑规约_。
+尽管它们可以执行，但运行速度会明显慢于原生代码。
+并非所有运算都有定义；有些运算则被表示为不透明函数，其行为无法在 Lean 的逻辑中进行推理。
 
-This model is not intended to serve as the basis for a more extensive floating-point library.
-It exists only to support the reasoning tools available in Lean and is not suitable for larger-scale development.
-Do not use this model as the basis of a more extensive floating-point library.
-Instead, implement a suitable model, prove the equivalence of the its operations to this model, and then transfer lemmas using the equivalence.
+该模型并不打算作为更大型浮点数库的基础。
+它仅用于支持 Lean 中可用的推理工具，并不适合更大规模的开发。
+不要把这个模型当作更大型浮点数库的基础。
+正确做法是实现一个合适的模型，证明其运算与该模型上的运算等价，然后借助这种等价转移引理。
 
 {docstring Float.Model}
 
@@ -75,10 +75,10 @@ Instead, implement a suitable model, prove the equivalence of the its operations
 
 {docstring Float.Model.UnpackedFloat}
 
-## Model Operations
+## 模型运算
 
-The following operations are specified for floating-point values.
-Other operators are represented by opaque functions and do not reduce in the kernel.
+下列运算为浮点值提供了规约。
+其他运算符则表示为不透明函数，不能在内核中规约。
 
 {docstring Float.Model.UnpackedFloat.add}
 
@@ -154,17 +154,17 @@ Other operators are represented by opaque functions and do not reduce in the ker
 
 {docstring Float.Model.UnpackedFloat.ofUSize}
 
-:::example "Kernel Reasoning"
-The Lean kernel can compare expressions of type {lean}`Float` for syntactic equality, so {lean  (type := "Float")}`0.0` is definitionally equal to itself.
+:::example "内核推理"
+Lean 内核可以按句法相等比较类型为 {lean}`Float` 的表达式，因此 {lean  (type := "Float")}`0.0` 与其自身定义等价。
 ```lean
 example : (0.0 : Float) = (0.0 : Float) := by rfl
 ```
 
-Additionally, terms that require reduction to become syntactically equal can be checked by the kernel when they use only operations that are modeled in Lean's logic:
+此外，如果若干项需要经过规约后才能在句法上相等，那么只要它们只使用了在 Lean 逻辑中建模的运算，内核也可以检查它们：
 ```lean
 example : (0.0 : Float) = (0.0 + 0.0 : Float) := by rfl
 ```
-The kernel cannot reduce terms that use operations that are not directly modeled, such as trigonometric functions:
+内核无法规约使用了未被直接建模运算的项，例如三角函数：
 ```lean (name := sin0) +error
 example : (0.0 : Float).sin = (0.0 : Float) := by rfl
 ```
@@ -178,15 +178,15 @@ is not definitionally equal to the right-hand side
 ```
 
 
-However, the {tactic}`native_decide` tactic can invoke the underlying platform's floating-point primitives that are used by Lean for run-time programs:
+不过，{tactic}`native_decide` 策略可以调用 Lean 在运行时程序中使用的底层平台浮点原语：
 ```lean
 theorem Float.sin_zero_eq_zero :
     ((0.0 : Float).sin == (0.0 : Float)) = true := by
   native_decide
 ```
-This tactic executes a decision procedure as compiled native code.
-This requires trusting the Lean compiler, interpreter and the low-level implementations of built-in operators in addition to the kernel.
-To make this dependency precisely clear, the tactic creates the axiom {name}`Float.sin_zero_eq_zero._native.native_decide.ax_1`:
+该策略会把判定过程作为编译后的原生代码执行。
+这意味着，除内核外，还必须信任 Lean 编译器、解释器以及内建运算符的底层实现。
+为了精确地说明这一依赖，该策略会生成公理 {name}`Float.sin_zero_eq_zero._native.native_decide.ax_1`：
 ```lean (name := ofRed)
 #print axioms Float.sin_zero_eq_zero
 ```
@@ -198,17 +198,17 @@ To make this dependency precisely clear, the tactic creates the axiom {name}`Flo
 ```
 :::
 
-:::example "Floating-Point Equality Is Not Reflexive"
-Floating-point operations may produce `NaN` values that indicate an undefined result.
-These values are not comparable with each other; in particular, all comparisons involving `NaN` will return `false`, including equality.
+:::example "浮点相等并非自反"
+浮点运算可能产生表示结果未定义的 `NaN` 值。
+这些值彼此不可比较；特别地，凡是涉及 `NaN` 的比较都会返回 `false`，包括相等比较。
 ```lean
 #eval ((0.0 : Float) / 0.0) == ((0.0 : Float) / 0.0)
 ```
 :::
 
-:::example "Floating-Point Equality Is Not a Congruence"
-Applying a function to two equal floating-point numbers may not result in equal numbers.
-In particular, positive and negative zero are distinct values that are equated by floating-point equality, but division by positive or negative zero yields positive or negative infinite values.
+:::example "浮点相等不是同余关系"
+把同一个函数应用到两个相等的浮点数上，结果未必仍然相等。
+特别地，正零与负零是不同的值，但浮点相等会把它们判为相等；然而用正零或负零作除数时，却会分别得到正无穷或负无穷。
 ```lean (name := divZeroPosNeg)
 def neg0 : Float := -0.0
 
@@ -222,26 +222,26 @@ def pos0 : Float := 0.0
 :::
 
 
-# Syntax
+# 语法
 
-Lean does not have dedicated floating-point literals.
-Instead, floating-point literals are resolved via the appropriate instances of the {name}`OfScientific` and {name}`Neg` type classes.
+Lean 没有专门的浮点数字面量。
+相反，浮点数字面量是通过 {name}`OfScientific` 与 {name}`Neg` 类型类的相应实例来解析的。
 
-:::example "Floating-Point Literals"
+:::example "浮点数字面量"
 
-The term
+项
 ```leanTerm
 (-2.523 : Float)
 ```
-is syntactic sugar for
+是下列写法的语法糖：
 ```leanTerm
 (Neg.neg (OfScientific.ofScientific 22523 true 4) : Float)
 ```
-and the term
+而项
 ```leanTerm
 (413.52 : Float32)
 ```
-is syntactic sugar for
+是下列写法的语法糖：
 ```leanTerm
 (OfScientific.ofScientific 41352 true 2 : Float32)
 ```
@@ -252,20 +252,20 @@ example : (413.52 : Float32) = (OfScientific.ofScientific 41352 true 2 : Float32
 ```
 :::
 
-# API Reference
+# 接口参考
 %%%
 tag := "Float-api"
 %%%
 
-## Properties
+## 性质
 
-Floating-point numbers fall into one of three categories:
+浮点数属于以下三类之一：
 
- * Finite numbers are ordinary floating-point values.
+ * 有限数是普通的浮点值。
 
- * Infinities, which may be positive or negative, result from division by zero.
+ * 无穷大可能是正的也可能是负的，它们来源于除以零。
 
- * `NaN`s, which are not numbers, result from other undefined operations, such as the square root of a negative number.
+ * `NaN` 不是数，它来源于其他未定义运算，例如对负数取平方根。
 
 {docstring Float.isInf}
 
@@ -280,7 +280,7 @@ Floating-point numbers fall into one of three categories:
 {docstring Float32.isFinite}
 
 
-## Conversions
+## 转换
 
 {docstring Float.toBits}
 
@@ -350,16 +350,16 @@ Floating-point numbers fall into one of three categories:
 
 {docstring Float32.frExp}
 
-## Comparisons
+## 比较
 
 {docstring Float.beq}
 
 {docstring Float32.beq}
 
-### Inequalities
+### 不等关系
 
-The decision procedures for inequalities are opaque constants in the logic.
-They can only be used via the {name}`Lean.ofReduceBool` axiom, e.g. via the {tactic}`native_decide` tactic.
+不等关系的判定过程在逻辑中是不透明常量。
+它们只能借助 {name}`Lean.ofReduceBool` 公理来使用，例如通过 {tactic}`native_decide` 策略。
 
 {docstring Float.le}
 
@@ -377,9 +377,9 @@ They can only be used via the {name}`Lean.ofReduceBool` axiom, e.g. via the {tac
 
 {docstring Float32.decLt}
 
-## Arithmetic
+## 算术
 
-Arithmetic operations on floating-point values are typically invoked via the {inst}`Add Float`, {inst}`Sub Float`, {inst}`Mul Float`, {inst}`Div Float`, and {inst}`HomogeneousPow Float` instances, along with the corresponding {name}`Float32` instances.
+浮点值上的算术运算通常通过 {inst}`Add Float`、{inst}`Sub Float`、{inst}`Mul Float`、{inst}`Div Float` 和 {inst}`HomogeneousPow Float` 实例来调用，{name}`Float32` 也有对应实例。
 
 {docstring Float.add}
 
@@ -409,9 +409,9 @@ Arithmetic operations on floating-point values are typically invoked via the {in
 
 {docstring Float32.exp2}
 
-### Roots
+### 根
 
-Computing the square root of a negative number yields `NaN`.
+对负数计算平方根会得到 `NaN`。
 
 {docstring Float.sqrt}
 
@@ -421,7 +421,7 @@ Computing the square root of a negative number yields `NaN`.
 
 {docstring Float32.cbrt}
 
-## Logarithms
+## 对数
 
 {docstring Float.log}
 
@@ -435,13 +435,13 @@ Computing the square root of a negative number yields `NaN`.
 
 {docstring Float32.log2}
 
-## Scaling
+## 缩放
 
 {docstring Float.scaleB}
 
 {docstring Float32.scaleB}
 
-## Rounding
+## 取整
 
 {docstring Float.round}
 
@@ -455,9 +455,9 @@ Computing the square root of a negative number yields `NaN`.
 
 {docstring Float32.ceil}
 
-## Trigonometry
+## 三角函数
 
-### Sine
+### 正弦
 
 {docstring Float.sin}
 
@@ -475,7 +475,7 @@ Computing the square root of a negative number yields `NaN`.
 
 {docstring Float32.asinh}
 
-### Cosine
+### 余弦
 
 {docstring Float.cos}
 
@@ -493,7 +493,7 @@ Computing the square root of a negative number yields `NaN`.
 
 {docstring Float32.acosh}
 
-### Tangent
+### 正切
 
 {docstring Float.tan}
 
@@ -515,7 +515,7 @@ Computing the square root of a negative number yields `NaN`.
 
 {docstring Float32.atan2}
 
-## Negation and Absolute Value
+## 取负与绝对值
 
 {docstring Float.abs}
 

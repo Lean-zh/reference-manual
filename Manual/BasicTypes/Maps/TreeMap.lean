@@ -20,28 +20,28 @@ set_option pp.rawOnError true
 set_option maxHeartbeats 250000
 
 
-#doc (Manual) "Tree-Based Maps" =>
+#doc (Manual) "基于树的映射" =>
 %%%
 tag := "TreeMap"
 %%%
 
 
-The declarations in this section should be imported using `import Std.TreeMap`.
+本节中的声明应通过 `import Std.TreeMap` 导入。
 
 {docstring Std.TreeMap +hideFields +hideStructureConstructor}
 
-# Creation
+# 创建
 
 {docstring Std.TreeMap.empty}
 
-# Properties
+# 性质
 
 {docstring Std.TreeMap.size}
 
 {docstring Std.TreeMap.isEmpty}
 
 
-# Queries
+# 查询
 
 {docstring Std.TreeMap.contains}
 
@@ -69,7 +69,7 @@ The declarations in this section should be imported using `import Std.TreeMap`.
 
 {docstring Std.TreeMap.valuesArray}
 
-## Ordering-Based Queries
+## 基于顺序的查询
 
 {docstring Std.TreeMap.entryAtIdx}
 
@@ -184,7 +184,7 @@ The declarations in this section should be imported using `import Std.TreeMap`.
 {docstring Std.TreeMap.maxKeyD}
 
 
-# Modification
+# 修改
 
 {docstring Std.TreeMap.alter}
 
@@ -217,7 +217,7 @@ The declarations in this section should be imported using `import Std.TreeMap`.
 {docstring Std.TreeMap.partition}
 
 
-# Iteration
+# 迭代
 
 {docstring Std.TreeMap.iter}
 
@@ -243,7 +243,7 @@ The declarations in this section should be imported using `import Std.TreeMap`.
 
 {docstring Std.TreeMap.forM}
 
-# Conversion
+# 转换
 
 {docstring Std.TreeMap.ofList}
 
@@ -257,11 +257,11 @@ The declarations in this section should be imported using `import Std.TreeMap`.
 
 {docstring Std.TreeMap.unitOfList}
 
-## Unbundled Variants
+## 分离式变体
 
-Unbundled maps separate well-formedness proofs from data.
-This is primarily useful when defining {ref "raw-data"}[nested inductive types].
-To use these variants, import the module `Std.TreeMap.Raw`.
+分离式映射会将良构性证明与数据本身分开。
+这主要在定义 {ref "raw-data"}[嵌套归纳类型] 时有用。
+要使用这些变体，请导入模块 `Std.TreeMap.Raw`。
 
 {docstring Std.TreeMap.Raw}
 

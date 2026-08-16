@@ -23,27 +23,27 @@ set_option pp.rawOnError true
 set_option maxHeartbeats 250000
 
 
-#doc (Manual) "Linked Lists" =>
+#doc (Manual) "链表" =>
 %%%
 tag := "List"
 %%%
 
-Linked lists, implemented as the {tech}[inductive type] {name}`List`, contain an ordered sequence of elements.
-Unlike {ref "Array"}[arrays], Lean compiles lists according to the ordinary rules for inductive types; however, some operations on lists are replaced by tail-recursive equivalents in compiled code using the {attr}`csimp` mechanism.{TODO}[Write and xref from here]
-Lean provides syntax for both literal lists and the constructor {name}`List.cons`.
+链表由 {tech (key := "inductive type")}[归纳类型] {name}`List` 实现，包含一个有序的元素序列。
+不同于 {ref "Array"}[数组]，Lean 会按照归纳类型的通常规则来编译列表；不过，借助 {attr}`csimp` 机制，某些列表操作在编译后的代码中会被替换为尾递归的等价实现。{TODO}[从此处继续撰写并添加交叉引用]
+Lean 同时为列表字面量和构造子 {name}`List.cons` 提供了语法。
 
 {docstring List}
 
-# Syntax
+# 语法
 %%%
 tag := "list-syntax"
 %%%
 
-List literals are written in square brackets, with the elements of the list separated by commas.
-The constructor {name}`List.cons` that adds an element to the front of a list is represented by the infix operator {keywordOf «term_::_»}`::`.
-The syntax for lists can be used both in ordinary terms and in patterns.
+列表字面量写在方括号中，列表元素以逗号分隔。
+把元素添加到列表头部的构造子 {name}`List.cons` 用中缀运算符 {keywordOf «term_::_»}`::` 表示。
+列表语法既可用于普通项，也可用于模式。
 
-:::syntax term (title := "List Literals")
+:::syntax term (title := "列表字面量")
 ```grammar
 [$_,*]
 ```
@@ -52,7 +52,7 @@ The syntax for lists can be used both in ordinary terms and in patterns.
 
 :::
 
-:::syntax term (title := "List Construction")
+:::syntax term (title := "列表构造")
 ```grammar
 $_ :: $_
 ```
@@ -61,8 +61,8 @@ $_ :: $_
 
 :::
 
-:::example "Constructing Lists"
-All of these examples are equivalent:
+:::example "构造列表"
+这些例子都彼此等价：
 ```lean
 example : List Nat := [1, 2, 3]
 example : List Nat := 1 :: [2, 3]
@@ -74,8 +74,8 @@ example : List Nat := .cons 1 (.cons 2 (.cons 3 .nil))
 ```
 :::
 
-:::example "Pattern Matching and Lists"
-All of these functions are equivalent:
+:::example "模式匹配与列表"
+这些函数都彼此等价：
 ```lean
 def split : List α → List α × List α
   | [] => ([], [])
@@ -101,7 +101,7 @@ def split'' : List α → List α × List α
     (.cons x ys, .cons x' zs)
 ```
 ```lean -show
--- Test claim
+-- 验证上述说法
 example : @split = @split' := by
   funext α xs
   induction xs using split.induct <;> simp [split, split', List.singleton]
@@ -113,28 +113,28 @@ example : @split = @split'' := by
 :::
 
 
-# Performance Notes
+# 性能说明
 %%%
 tag := "list-performance"
 %%%
 
-The representation of lists is not overridden or modified by the compiler: they are linked lists, with a pointer indirection for each element.
-Calculating the length of a list requires a full traversal, and modifying an element in a list requires a traversal and reallocation of the prefix of the list that is prior to the element being modified.
-Due to Lean's reference-counting-based memory management, operations such as {name}`List.map` that traverse a list, allocating a new {name}`List.cons` constructor for each in the prior list, can reuse the original list's memory when there are no other references to it.
+编译器不会覆盖或修改列表的表示：它们就是链表，每个元素都要经过一次指针间接访问。
+计算列表长度需要完整遍历一次列表，而修改列表中的某个元素则需要遍历并重新分配该元素之前的前缀部分。
+由于 Lean 使用基于引用计数的内存管理，像 {name}`List.map` 这样遍历列表、并为原列表中的每个元素分配一个新的 {name}`List.cons` 构造子的操作，在没有其他引用指向原列表时，可以复用原列表的内存。
 
-Because of the important role played by lists in specifications, most list functions are written as straightforwardly as possible using structural recursion.
-This makes it easier to write proofs by induction, but it also means that these operations consume stack space proportional to the length of the list.
-There are tail-recursive versions of many list functions that are equivalent to the non-tail-recursive versions, but are more difficult to use when reasoning.
-In compiled code, the tail-recursive versions are automatically used instead of the non-tail-recursive versions.
+由于列表在规约与说明中扮演着重要角色，大多数列表函数都尽可能直接地用结构递归编写。
+这使得按归纳法编写证明更容易，但也意味着这些操作会消耗与列表长度成比例的栈空间。
+许多列表函数都存在与其非尾递归版本等价的尾递归版本，但在推理时更难使用。
+在编译后的代码中，尾递归版本会自动替代非尾递归版本。
 
-# API Reference
+# 接口参考
 %%%
 tag := "list-api-reference"
 %%%
 
 {include 2 Manual.BasicTypes.List.Predicates}
 
-## Constructing Lists
+## 构造列表
 
 {docstring List.singleton}
 
@@ -158,7 +158,7 @@ tag := "list-api-reference"
 
 {docstring List.finRange}
 
-## Length
+## 长度
 
 {docstring List.length}
 
@@ -166,7 +166,7 @@ tag := "list-api-reference"
 
 {docstring List.isEmpty}
 
-## Head and Tail
+## 头与尾
 
 {docstring List.head}
 
@@ -185,7 +185,7 @@ tag := "list-api-reference"
 {docstring List.tailD}
 
 
-## Lookups
+## 查找
 
 {docstring List.get}
 
@@ -205,7 +205,7 @@ tag := "list-api-reference"
 
 {docstring List.min?}
 
-## Queries
+## 查询
 
 {docstring List.count}
 
@@ -231,7 +231,7 @@ tag := "list-api-reference"
 
 {docstring List.findSomeM?}
 
-## Conversions
+## 转换
 
 {docstring List.toArray}
 
@@ -246,13 +246,13 @@ tag := "list-api-reference"
 
 {include 2 Manual.BasicTypes.List.Modification}
 
-## Sorting
+## 排序
 
 {docstring List.mergeSort}
 
 {docstring List.merge}
 
-## Iteration
+## 迭代
 
 {docstring List.iter}
 
@@ -266,22 +266,22 @@ tag := "list-api-reference"
 
 {docstring List.sum}
 
-### Folds
+### 折叠
 
 :::paragraph
-Folds are operators that combine the elements of a list using a function.
-They come in two varieties, named after the nesting of the function calls:
+折叠是使用某个函数将列表元素组合起来的运算。
+根据函数调用的嵌套方式，它们分为两类：
 
-: {deftech}[Left folds]
+: {deftech (key := "Left folds")}[左折叠]
 
-  Left folds combine the elements from the head of the list towards the end.
-  The head of the list is combined with the initial value, and the result of this operation is then combined with the next value, and so forth.
+  左折叠从列表头开始向末尾依次组合元素。
+  列表头会先与初始值组合，该结果再与下一个值组合，依此类推。
 
-: {deftech}[Right folds]
+: {deftech (key := "Right folds")}[右折叠]
 
-  Right folds combine the elements from the end of the list towards the start, as if each {name List.cons}`cons` constructor were replaced by a call to the combining function and {name List.nil}`nil` were replaced by the initial value.
+  右折叠从列表尾开始向开头组合元素，就像把每个 {name List.cons}`cons` 构造子替换成一次对组合函数的调用，并把 {name List.nil}`nil` 替换成初始值一样。
 
-Monadic folds, indicated with an `-M` suffix, allow the combining function to use effects in a {tech}[monad], which may include stopping the fold early.
+带 `-M` 后缀的单子折叠允许组合函数使用某个 {tech (key := "monad")}[单子] 中的效应，这也可能包括提前终止折叠。
 :::
 
 {docstring List.foldl}
@@ -300,7 +300,7 @@ Monadic folds, indicated with an `-M` suffix, allow the combining function to us
 
 {include 2 Manual.BasicTypes.List.Transformation}
 
-## Filtering
+## 过滤
 
 {docstring List.filter}
 
@@ -318,7 +318,7 @@ Monadic folds, indicated with an `-M` suffix, allow the combining function to us
 
 {include Manual.BasicTypes.List.Partitioning}
 
-## Element Predicates
+## 元素判定
 
 {docstring List.contains}
 
@@ -338,7 +338,7 @@ Monadic folds, indicated with an `-M` suffix, allow the combining function to us
 
 {include 2 Manual.BasicTypes.List.Comparisons}
 
-## Termination Helpers
+## 终止辅助
 
 {docstring List.attach}
 

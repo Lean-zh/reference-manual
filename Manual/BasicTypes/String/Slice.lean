@@ -14,7 +14,7 @@ open Verso.Genre.Manual.InlineLean
 
 set_option pp.rawOnError true
 
-#doc (Manual) "String Slices" =>
+#doc (Manual) "字符串切片" =>
 %%%
 tag := "string-api-slice"
 %%%
@@ -29,19 +29,19 @@ tag := "string-api-slice"
 
 {docstring String.Slice.Pos}
 
-# API Reference
+# 接口参考
 
-## Copying
+## 复制
 
 {docstring String.Slice.copy}
 
-## Size
+## 大小
 
 {docstring String.Slice.isEmpty}
 
 {docstring String.Slice.utf8ByteSize}
 
-## Boundaries
+## 边界
 
 {docstring String.Slice.pos}
 
@@ -56,7 +56,7 @@ tag := "string-api-slice"
 {docstring String.Slice.rawEndPos}
 
 
-### Adjustment
+### 调整
 
 {docstring String.Slice.sliceFrom}
 
@@ -90,7 +90,7 @@ tag := "string-api-slice"
 
 {docstring String.Slice.takeWhile}
 
-## Characters
+## 字符
 
 {docstring String.Slice.front}
 
@@ -100,19 +100,19 @@ tag := "string-api-slice"
 
 {docstring String.Slice.back?}
 
-## Bytes
+## 字节
 
 {docstring String.Slice.getUTF8Byte}
 
 {docstring String.Slice.getUTF8Byte!}
 
-## Positions
+## 位置
 
 {docstring String.Slice.posGE}
 
 {docstring String.Slice.posGT}
 
-## Searching
+## 搜索
 
 {docstring String.Slice.contains}
 
@@ -126,7 +126,7 @@ tag := "string-api-slice"
 
 {docstring String.Slice.revFind?}
 
-## Manipulation
+## 操作
 
 {docstring String.Slice.split}
 
@@ -140,7 +140,7 @@ tag := "string-api-slice"
 
 {docstring String.Slice.trimAsciiStart}
 
-## Iteration
+## 迭代
 
 {docstring String.Slice.chars}
 
@@ -160,7 +160,7 @@ tag := "string-api-slice"
 
 {docstring String.Slice.foldr}
 
-## Conversions
+## 转换
 
 {docstring String.Slice.isNat}
 
@@ -169,32 +169,32 @@ tag := "string-api-slice"
 {docstring String.Slice.toNat?}
 
 
-## Equality
+## 相等性
 
 {docstring String.Slice.beq}
 
 {docstring String.Slice.eqIgnoreAsciiCase}
 
 
-# Patterns
+# 模式
 
-String slices feature generalized search patterns.
-Rather than being defined to work only for characters or for strings, many operations on slices accept arbitrary patterns.
-New types can be made into patterns by defining instances of the classes in this section.
-The Lean standard library provides instances that allow the following types to be used for both forward and backward searching:
+字符串切片支持广义的搜索模式。
+许多切片操作并不只针对字符或字符串定义，而是接受任意模式。
+通过为本节中的类定义实例，可以让新的类型也成为模式。
+Lean 标准库提供了实例，使下列类型既可用于向前搜索，也可用于向后搜索：
 
 :::table +header
-* * Pattern Type
-  * Meaning
+* * 模式类型
+  * 含义
 * * {name}`Char`
-  * Matches the provided character
+  * 匹配给定字符
 *
   * {lean}`Char → Bool`
-  * Matches any character that satisfies the predicate
+  * 匹配任意满足该谓词的字符
 * * {lean}`String`
-  * Matches occurrences of the given string
+  * 匹配给定字符串的出现位置
 * * {lean}`String.Slice`
-  * Matches occurrences of the string represented by the slice
+  * 匹配该切片所表示字符串的出现位置
 :::
 
 {docstring String.Slice.Pattern.ToForwardSearcher}
@@ -205,11 +205,11 @@ The Lean standard library provides instances that allow the following types to b
 
 {docstring String.Slice.Pattern.BackwardPattern +allowMissing}
 
-# Positions
+# 位置
 
-## Lookups
+## 查找
 
-Because they retain a reference to the slice from which they were drawn, slice positions allow individual characters or bytes to be looked up.
+由于切片位置保留了对其来源切片的引用，因此可以借助它们查找单个字符或字节。
 
 {docstring String.Slice.Pos.byte}
 
@@ -219,7 +219,7 @@ Because they retain a reference to the slice from which they were drawn, slice p
 
 {docstring String.Slice.Pos.get?}
 
-## Incrementing and Decrementing
+## 递增与递减
 
 {docstring String.Slice.Pos.prev}
 
@@ -237,7 +237,7 @@ Because they retain a reference to the slice from which they were drawn, slice p
 
 {docstring String.Slice.Pos.nextn}
 
-## Other Strings or Slices
+## 其他字符串或切片
 
 {docstring String.Slice.Pos.cast}
 

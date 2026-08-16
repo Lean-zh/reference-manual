@@ -15,42 +15,42 @@ open Verso.Genre.Manual.InlineLean
 set_option pp.rawOnError true
 
 
-#doc (Manual) "Syntax" =>
+#doc (Manual) "语法" =>
 %%%
 tag := "string-syntax"
 %%%
 
-Lean has three kinds of string literals: ordinary string literals, interpolated string literals, and raw string literals.
+Lean 有三类字符串字面量：普通字符串字面量、插值字符串字面量和原始字符串字面量。
 
-# String Literals
+# 字符串字面量
 %%%
 tag := "string-literals"
 %%%
 
-String literals begin and end with a double-quote character `"`. {index (subterm := "string")}[literal]
-Between these characters, they may contain any other character, including newlines, which are included literally (with the caveat that all newlines in a Lean source file are interpreted as `'\n'`, regardless of file encoding and platform).
-Special characters that cannot otherwise be written in string literals may be escaped with a backslash, so `"\"Quotes\""` is a string literal that begins and ends with double quotes.
-The following forms of escape sequences are accepted:
+字符串字面量以双引号字符 `"` 开始并结束。{index (subterm := "string")}[literal]
+在这两个字符之间，可以包含任意其他字符，包括换行；这些字符都会按字面纳入字符串（但要注意，不论文件编码和平台如何，Lean 源文件中的所有换行都会被解释为 `'\n'`）。
+无法直接写入字符串字面量的特殊字符可以用反斜杠转义，因此 `"\"Quotes\""` 是一个以双引号开头并以双引号结尾的字符串字面量。
+可接受的转义序列形式如下：
 
 : `\r`, `\n`, `\t`, `\\`, `\"`, `\'`
 
-  These escape sequences have the usual meaning, mapping to `CR`, `LF`, tab, backslash, double quote, and single quote, respectively.
+  这些转义序列具有通常的含义，分别对应 `CR`、`LF`、制表符、反斜杠、双引号和单引号。
 
 : `\xNN`
 
-  When `NN` is a sequence of two hexadecimal digits, this escape denotes the character whose Unicode code point is indicated by the two-digit hexadecimal code.
+  当 `NN` 是由两个十六进制数字组成的序列时，该转义表示 Unicode 码点由这两个十六进制数字给出的字符。
 
 : `\uNNNN`
 
-  When `NN` is a sequence of two hexadecimal digits, this escape denotes the character whose Unicode code point is indicated by the four-digit hexadecimal code.
+  当 `NN` 是由四个十六进制数字组成的序列时，该转义表示 Unicode 码点由这四个十六进制数字给出的字符。
 
 
-String literals may contain {deftech}[_gaps_].
-A gap is indicated by an escaped newline, with no intervening characters between the escaping backslash and the newline.
-In this case, the string denoted by the literal is missing the newline and all leading whitespace from the next line.
-String gaps may not precede lines that contain only whitespace.
+字符串字面量可以包含 {deftech (key := "gaps")}_间隙_。
+间隙由一个被转义的换行表示，也就是转义用的反斜杠与换行之间不能有其他字符。
+在这种情况下，字面量所表示的字符串会省去该换行以及下一行开头的全部空白。
+字符串间隙后面不能跟只含空白字符的行。
 
-Here, `str1` and `str2` are the same string:
+这里，`str1` 与 `str2` 是同一个字符串：
 ```lean
 def str1 := "String with \
              a gap"
@@ -59,27 +59,27 @@ def str2 := "String with a gap"
 example : str1 = str2 := rfl
 ```
 
-If the line following the gap is empty, the string is rejected:
+如果间隙后紧跟的那一行为空，则该字符串会被拒绝：
 
 ```syntaxError foo
 def str3 := "String with \
 
              a gap"
 ```
-The parser error is:
+解析器错误为：
 ```leanOutput foo
 <example>:2:0-3:0: unexpected additional newline in string gap
 ```
 
-# Interpolated Strings
+# 插值字符串
 %%%
 tag := "string-interpolation"
 %%%
 
-Preceding a string literal with `s!` causes it to be processed as an {deftech}[_interpolated string_], in which regions of the string surrounded by `{` and `}` characters are parsed and interpreted as Lean expressions.
-Interpolated strings are interpreted by appending the string that precedes the interpolation, the expression (with an added call to {name ToString.toString}`toString` surrounding it), and the string that follows the interpolation.
+在字符串字面量前加上 `s!`，会使其被处理为 {deftech (key := "interpolated string")}_插值字符串_：字符串中由 `{` 与 `}` 包围的部分会被解析并解释为 Lean 表达式。
+插值字符串会被解释为：将插值前的字符串、该表达式（外围额外加上一层 {name ToString.toString}`toString` 调用）以及插值后的字符串依次拼接。
 
-For example:
+例如：
 ```lean
 example :
     s!"1 + 1 = {1 + 1}\n" =
@@ -87,27 +87,27 @@ example :
   rfl
 ```
 
-Preceding a literal with `m!` causes the interpolation to result in an instance of {name Lean.MessageData}`MessageData`, the compiler's internal data structure for messages to be shown to users.
+在字面量前加上 `m!`，会使插值结果成为 {name Lean.MessageData}`MessageData` 的一个实例；这是编译器内部用于向用户显示消息的数据结构。
 
-# Raw String Literals
+# 原始字符串字面量
 %%%
 tag := "raw-string-literals"
 %%%
 
-In {deftech}[raw string literals], {index (subterm := "raw string")}[literal] there are no escape sequences or gaps, and each character denotes itself exactly.
-Raw string literals are preceded by `r`, followed by zero or more hash characters (`#`) and a double quote `"`.
-The string literal is completed at a double quote that is followed by _the same number_ of hash characters.
-For example, they can be used to avoid the need to double-escape certain characters:
+在 {deftech (key := "raw string literals")}[原始字符串字面量] 中，{index (subterm := "raw string")}[literal] 没有转义序列，也没有间隙，每个字符都严格按其自身含义解释。
+原始字符串字面量以 `r` 开头，后跟零个或多个井号字符（`#`）以及一个双引号 `"`。
+当遇到一个后面紧跟着_相同数量_井号字符的双引号时，该字符串字面量结束。
+例如，它们可用于避免某些字符需要双重转义：
 ```lean (name := evalStr)
 example : r"\t" = "\\t" := rfl
 #eval r"Write backslash in a string using '\\\\'"
 ```
-The `#eval` yields:
+该 `#eval` 的结果为：
 ```leanOutput evalStr
 "Write backslash in a string using '\\\\\\\\'"
 ```
 
-Including hash marks allows the strings to contain unescaped quotes:
+加入井号后，字符串中就可以包含无需转义的引号：
 
 ```lean
 example :
@@ -116,7 +116,7 @@ example :
   rfl
 ```
 
-Adding sufficiently many hash marks allows any raw literal to be written literally:
+只要添加足够多的井号，任何原始字面量都可以被按字面写出：
 
 ```lean
 example :

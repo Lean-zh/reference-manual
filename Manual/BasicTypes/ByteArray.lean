@@ -22,24 +22,24 @@ set_option verso.docstring.allowMissing true -- TODO remove after docstrings are
 
 example := Char
 
-#doc (Manual) "Byte Arrays" =>
+#doc (Manual) "字节数组" =>
 %%%
 tag := "ByteArray"
 %%%
 
-Byte arrays are a specialized array type that can only contain elements of type {name}`UInt8`.
-Due to this restriction, they can use a much more efficient representation, with no pointer indirections.
-Like other arrays, byte arrays are represented in compiled code as {tech}[dynamic arrays], and the Lean runtime specially optimizes array operations.
-The operations that modify byte arrays first check the array's {ref "reference-counting"}[reference count], and if there are no other references to the array, it is modified in place.
+字节数组是一种专门化的数组类型，只能包含类型为 {name}`UInt8` 的元素。
+由于这一限制，它们可以采用高效得多的表示，不需要指针间接访问。
+与其他数组一样，字节数组在编译后的代码中表示为 {tech (key := "dynamic arrays")}[动态数组]，Lean 运行时还会专门优化其数组操作。
+修改字节数组的操作会先检查该数组的 {ref "reference-counting"}[引用计数]；如果没有其他引用指向该数组，就会原地修改它。
 
-There is no literal syntax for byte arrays.
-{name}`List.toByteArray` can be used to construct an array from a list literal.
+字节数组没有字面量语法。
+可以使用 {name}`List.toByteArray` 从列表字面量构造字节数组。
 
 {docstring ByteArray}
 
-# API Reference
+# 接口参考
 
-## Constructing Byte Arrays
+## 构造字节数组
 
 {docstring ByteArray.empty}
 
@@ -51,7 +51,7 @@ There is no literal syntax for byte arrays.
 
 {docstring ByteArray.copySlice}
 
-## Size
+## 大小
 
 {docstring ByteArray.size}
 
@@ -59,7 +59,7 @@ There is no literal syntax for byte arrays.
 
 {docstring ByteArray.isEmpty}
 
-## Lookups
+## 查找
 
 {docstring ByteArray.get}
 
@@ -69,7 +69,7 @@ There is no literal syntax for byte arrays.
 
 {docstring ByteArray.extract}
 
-## Conversions
+## 转换
 
 {docstring ByteArray.toList}
 
@@ -85,7 +85,7 @@ There is no literal syntax for byte arrays.
 
 {docstring ByteArray.utf8DecodeChar}
 
-## Modification
+## 修改
 
 {docstring ByteArray.push}
 
@@ -95,7 +95,7 @@ There is no literal syntax for byte arrays.
 
 {docstring ByteArray.set!}
 
-## Iteration
+## 迭代
 
 {docstring ByteArray.foldl}
 
@@ -103,7 +103,7 @@ There is no literal syntax for byte arrays.
 
 {docstring ByteArray.forIn}
 
-## Iterators
+## 迭代器
 
 {docstring ByteArray.iter}
 
@@ -137,7 +137,7 @@ There is no literal syntax for byte arrays.
 
 {docstring ByteArray.Iterator.toEnd}
 
-## Slices
+## 切片
 
 {docstring ByteArray.toByteSlice}
 
@@ -176,7 +176,7 @@ There is no literal syntax for byte arrays.
 {docstring ByteSlice.toByteArray}
 
 
-## Element Predicates
+## 元素判定
 
 {docstring ByteArray.findIdx?}
 

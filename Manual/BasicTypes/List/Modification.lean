@@ -15,7 +15,7 @@ open Verso.Genre.Manual.InlineLean
 
 set_option pp.rawOnError true
 
-#doc (Manual) "Modification" =>
+#doc (Manual) "修改" =>
 
 {docstring List.set}
 
@@ -69,7 +69,7 @@ set_option pp.rawOnError true
 
 {docstring List.rightpad}
 
-# Insertion
+# 插入
 
 {docstring List.insert}
 
