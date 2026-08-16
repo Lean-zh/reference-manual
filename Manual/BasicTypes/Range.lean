@@ -7,6 +7,7 @@ Author: David Thrane Christiansen
 import VersoManual
 
 import Manual.Meta
+import Manual.ZhDocString.Ch19Ch20.G8
 import Manual.Interaction.FormatRepr
 
 open Lean.MessageSeverity
@@ -162,140 +163,140 @@ $a<...*
 %%%
 tag := "Lean-__________________--Basic-Types--Ranges--Range-Types"
 %%%
-{docstring Std.Rco +allowMissing}
+{zhdocstring Std.Rco Manual.ZhDocString.Ch19Ch20.G8.c169 +allowMissing}
 
-{docstring Std.Rco.iter}
+{zhdocstring Std.Rco.iter Manual.ZhDocString.Ch19Ch20.G8.c170}
 
-{docstring Std.Rco.toArray}
+{zhdocstring Std.Rco.toArray Manual.ZhDocString.Ch19Ch20.G8.c171}
 
-{docstring Std.Rco.toList}
+{zhdocstring Std.Rco.toList Manual.ZhDocString.Ch19Ch20.G8.c172}
 
-{docstring Std.Rco.size}
+{zhdocstring Std.Rco.size Manual.ZhDocString.Ch19Ch20.G8.c173}
 
-{docstring Std.Rco.isEmpty}
+{zhdocstring Std.Rco.isEmpty Manual.ZhDocString.Ch19Ch20.G8.c174}
 
-{docstring Std.Rcc +allowMissing}
+{zhdocstring Std.Rcc Manual.ZhDocString.Ch19Ch20.G8.c175 +allowMissing}
 
-{docstring Std.Rcc.iter}
+{zhdocstring Std.Rcc.iter Manual.ZhDocString.Ch19Ch20.G8.c176}
 
-{docstring Std.Rcc.toArray}
+{zhdocstring Std.Rcc.toArray Manual.ZhDocString.Ch19Ch20.G8.c177}
 
-{docstring Std.Rcc.toList}
+{zhdocstring Std.Rcc.toList Manual.ZhDocString.Ch19Ch20.G8.c178}
 
-{docstring Std.Rcc.size}
+{zhdocstring Std.Rcc.size Manual.ZhDocString.Ch19Ch20.G8.c179}
 
-{docstring Std.Rcc.isEmpty}
+{zhdocstring Std.Rcc.isEmpty Manual.ZhDocString.Ch19Ch20.G8.c180}
 
-{docstring Std.Rci +allowMissing}
+{zhdocstring Std.Rci Manual.ZhDocString.Ch19Ch20.G8.c181 +allowMissing}
 
-{docstring Std.Rci.iter}
+{zhdocstring Std.Rci.iter Manual.ZhDocString.Ch19Ch20.G8.c182}
 
-{docstring Std.Rci.toArray}
+{zhdocstring Std.Rci.toArray Manual.ZhDocString.Ch19Ch20.G8.c183}
 
-{docstring Std.Rci.toList}
+{zhdocstring Std.Rci.toList Manual.ZhDocString.Ch19Ch20.G8.c184}
 
-{docstring Std.Rci.size}
+{zhdocstring Std.Rci.size Manual.ZhDocString.Ch19Ch20.G8.c185}
 
-{docstring Std.Rci.isEmpty}
+{zhdocstring Std.Rci.isEmpty Manual.ZhDocString.Ch19Ch20.G8.c186}
 
-{docstring Std.Roo +allowMissing}
+{zhdocstring Std.Roo Manual.ZhDocString.Ch19Ch20.G8.c187 +allowMissing}
 
-{docstring Std.Roo.iter}
+{zhdocstring Std.Roo.iter Manual.ZhDocString.Ch19Ch20.G8.c188}
 
-{docstring Std.Roo.toArray}
+{zhdocstring Std.Roo.toArray Manual.ZhDocString.Ch19Ch20.G8.c189}
 
-{docstring Std.Roo.toList}
+{zhdocstring Std.Roo.toList Manual.ZhDocString.Ch19Ch20.G8.c190}
 
-{docstring Std.Roo.size}
+{zhdocstring Std.Roo.size Manual.ZhDocString.Ch19Ch20.G8.c191}
 
-{docstring Std.Roo.isEmpty}
+{zhdocstring Std.Roo.isEmpty Manual.ZhDocString.Ch19Ch20.G8.c192}
 
-{docstring Std.Roc +allowMissing}
+{zhdocstring Std.Roc Manual.ZhDocString.Ch19Ch20.G8.c193 +allowMissing}
 
-{docstring Std.Roc.iter}
+{zhdocstring Std.Roc.iter Manual.ZhDocString.Ch19Ch20.G8.c194}
 
-{docstring Std.Roc.toArray}
+{zhdocstring Std.Roc.toArray Manual.ZhDocString.Ch19Ch20.G8.c195}
 
-{docstring Std.Roc.toList}
+{zhdocstring Std.Roc.toList Manual.ZhDocString.Ch19Ch20.G8.c196}
 
-{docstring Std.Roc.size}
+{zhdocstring Std.Roc.size Manual.ZhDocString.Ch19Ch20.G8.c197}
 
-{docstring Std.Roc.isEmpty}
+{zhdocstring Std.Roc.isEmpty Manual.ZhDocString.Ch19Ch20.G8.c198}
 
-{docstring Std.Roi +allowMissing}
+{zhdocstring Std.Roi Manual.ZhDocString.Ch19Ch20.G8.c199 +allowMissing}
 
-{docstring Std.Roi.iter}
+{zhdocstring Std.Roi.iter Manual.ZhDocString.Ch19Ch20.G8.c200}
 
-{docstring Std.Roi.toArray}
+{zhdocstring Std.Roi.toArray Manual.ZhDocString.Ch19Ch20.G8.c201}
 
-{docstring Std.Roi.toList}
+{zhdocstring Std.Roi.toList Manual.ZhDocString.Ch19Ch20.G8.c202}
 
-{docstring Std.Roi.size}
+{zhdocstring Std.Roi.size Manual.ZhDocString.Ch19Ch20.G8.c203}
 
-{docstring Std.Roi.isEmpty}
+{zhdocstring Std.Roi.isEmpty Manual.ZhDocString.Ch19Ch20.G8.c204}
 
-{docstring Std.Rio +allowMissing}
+{zhdocstring Std.Rio Manual.ZhDocString.Ch19Ch20.G8.c205 +allowMissing}
 
-{docstring Std.Rio.iter}
+{zhdocstring Std.Rio.iter Manual.ZhDocString.Ch19Ch20.G8.c206}
 
-{docstring Std.Rio.toArray}
+{zhdocstring Std.Rio.toArray Manual.ZhDocString.Ch19Ch20.G8.c207}
 
-{docstring Std.Rio.toList}
+{zhdocstring Std.Rio.toList Manual.ZhDocString.Ch19Ch20.G8.c208}
 
-{docstring Std.Rio.size}
+{zhdocstring Std.Rio.size Manual.ZhDocString.Ch19Ch20.G8.c209}
 
-{docstring Std.Rio.isEmpty}
+{zhdocstring Std.Rio.isEmpty Manual.ZhDocString.Ch19Ch20.G8.c210}
 
-{docstring Std.Ric +allowMissing}
+{zhdocstring Std.Ric Manual.ZhDocString.Ch19Ch20.G8.c211 +allowMissing}
 
-{docstring Std.Ric.iter}
+{zhdocstring Std.Ric.iter Manual.ZhDocString.Ch19Ch20.G8.c212}
 
-{docstring Std.Ric.toArray}
+{zhdocstring Std.Ric.toArray Manual.ZhDocString.Ch19Ch20.G8.c213}
 
-{docstring Std.Ric.toList}
+{zhdocstring Std.Ric.toList Manual.ZhDocString.Ch19Ch20.G8.c214}
 
-{docstring Std.Ric.size}
+{zhdocstring Std.Ric.size Manual.ZhDocString.Ch19Ch20.G8.c215}
 
-{docstring Std.Ric.isEmpty}
+{zhdocstring Std.Ric.isEmpty Manual.ZhDocString.Ch19Ch20.G8.c216}
 
-{docstring Std.Rii}
+{zhdocstring Std.Rii Manual.ZhDocString.Ch19Ch20.G8.c217}
 
-{docstring Std.Rii.iter}
+{zhdocstring Std.Rii.iter Manual.ZhDocString.Ch19Ch20.G8.c218}
 
-{docstring Std.Rii.toArray}
+{zhdocstring Std.Rii.toArray Manual.ZhDocString.Ch19Ch20.G8.c219}
 
-{docstring Std.Rii.toList}
+{zhdocstring Std.Rii.toList Manual.ZhDocString.Ch19Ch20.G8.c220}
 
-{docstring Std.Rii.size}
+{zhdocstring Std.Rii.size Manual.ZhDocString.Ch19Ch20.G8.c221}
 
-{docstring Std.Rii.isEmpty}
+{zhdocstring Std.Rii.isEmpty Manual.ZhDocString.Ch19Ch20.G8.c222}
 
 # 范围相关类型类
 
 %%%
 tag := "Lean-__________________--Basic-Types--Ranges--Range-Related-Type-Classes"
 %%%
-{docstring Std.PRange.UpwardEnumerable}
+{zhdocstring Std.PRange.UpwardEnumerable Manual.ZhDocString.Ch19Ch20.G8.c223}
 
-{docstring Std.PRange.UpwardEnumerable.LE}
+{zhdocstring Std.PRange.UpwardEnumerable.LE Manual.ZhDocString.Ch19Ch20.G8.c224}
 
-{docstring Std.PRange.UpwardEnumerable.LT}
+{zhdocstring Std.PRange.UpwardEnumerable.LT Manual.ZhDocString.Ch19Ch20.G8.c225}
 
-{docstring Std.PRange.LawfulUpwardEnumerable}
+{zhdocstring Std.PRange.LawfulUpwardEnumerable Manual.ZhDocString.Ch19Ch20.G8.c226}
 
-{docstring Std.PRange.Least?}
+{zhdocstring Std.PRange.Least? Manual.ZhDocString.Ch19Ch20.G8.c227}
 
-{docstring Std.PRange.InfinitelyUpwardEnumerable +allowMissing}
+{zhdocstring Std.PRange.InfinitelyUpwardEnumerable Manual.ZhDocString.Ch19Ch20.G8.c228 +allowMissing}
 
-{docstring Std.PRange.LinearlyUpwardEnumerable +allowMissing}
+{zhdocstring Std.PRange.LinearlyUpwardEnumerable Manual.ZhDocString.Ch19Ch20.G8.c229 +allowMissing}
 
-{docstring Std.Rxi.IsAlwaysFinite +allowMissing}
+{zhdocstring Std.Rxi.IsAlwaysFinite Manual.ZhDocString.Ch19Ch20.G8.c230 +allowMissing}
 
-{docstring Std.Rxi.HasSize}
+{zhdocstring Std.Rxi.HasSize Manual.ZhDocString.Ch19Ch20.G8.c231}
 
-{docstring Std.Rxc.IsAlwaysFinite +allowMissing}
+{zhdocstring Std.Rxc.IsAlwaysFinite Manual.ZhDocString.Ch19Ch20.G8.c232 +allowMissing}
 
-{docstring Std.Rxc.HasSize}
+{zhdocstring Std.Rxc.HasSize Manual.ZhDocString.Ch19Ch20.G8.c233}
 
 # 实现范围
 
@@ -700,20 +701,20 @@ open TriplePos in
 
 :::
 
-{docstring Std.Rco.Sliceable +allowMissing}
+{zhdocstring Std.Rco.Sliceable Manual.ZhDocString.Ch19Ch20.G8.c234 +allowMissing}
 
-{docstring Std.Rcc.Sliceable +allowMissing}
+{zhdocstring Std.Rcc.Sliceable Manual.ZhDocString.Ch19Ch20.G8.c235 +allowMissing}
 
-{docstring Std.Rci.Sliceable +allowMissing}
+{zhdocstring Std.Rci.Sliceable Manual.ZhDocString.Ch19Ch20.G8.c236 +allowMissing}
 
-{docstring Std.Roo.Sliceable +allowMissing}
+{zhdocstring Std.Roo.Sliceable Manual.ZhDocString.Ch19Ch20.G8.c237 +allowMissing}
 
-{docstring Std.Roc.Sliceable +allowMissing}
+{zhdocstring Std.Roc.Sliceable Manual.ZhDocString.Ch19Ch20.G8.c238 +allowMissing}
 
-{docstring Std.Roi.Sliceable +allowMissing}
+{zhdocstring Std.Roi.Sliceable Manual.ZhDocString.Ch19Ch20.G8.c239 +allowMissing}
 
-{docstring Std.Rio.Sliceable +allowMissing}
+{zhdocstring Std.Rio.Sliceable Manual.ZhDocString.Ch19Ch20.G8.c240 +allowMissing}
 
-{docstring Std.Ric.Sliceable +allowMissing}
+{zhdocstring Std.Ric.Sliceable Manual.ZhDocString.Ch19Ch20.G8.c241 +allowMissing}
 
-{docstring Std.Rii.Sliceable +allowMissing}
+{zhdocstring Std.Rii.Sliceable Manual.ZhDocString.Ch19Ch20.G8.c242 +allowMissing}

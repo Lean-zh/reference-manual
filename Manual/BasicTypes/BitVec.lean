@@ -7,6 +7,7 @@ Author: David Thrane Christiansen
 import VersoManual
 
 import Manual.Meta
+import Manual.ZhDocString.Ch19Ch20.G8
 
 open Verso.Genre Manual
 open Verso.Genre.Manual.InlineLean
@@ -35,7 +36,7 @@ tag := "Lean-__________________--Basic-Types--Bitvectors--Logical-Model"
 位向量表示为对具有适当界限的 {name}`Fin` 的包装。
 由于 {name}`Fin` 本身是对 {name}`Nat` 的包装，位向量能够利用内核对自然数高效计算的特殊支持。
 
-{docstring BitVec}
+{zhdocstring BitVec Manual.ZhDocString.Ch19Ch20.G8.c087}
 
 # 运行时表示
 
@@ -227,22 +228,22 @@ tag := "BitVec-api"
 %%%
 tag := "Lean-__________________--Basic-Types--Bitvectors--API-Reference--Bounds"
 %%%
-{docstring BitVec.intMax}
+{zhdocstring BitVec.intMax Manual.ZhDocString.Ch19Ch20.G8.c088}
 
-{docstring BitVec.intMin}
+{zhdocstring BitVec.intMin Manual.ZhDocString.Ch19Ch20.G8.c089}
 
 ## 构造
 
 %%%
 tag := "Lean-__________________--Basic-Types--Bitvectors--API-Reference--Construction"
 %%%
-{docstring BitVec.fill}
+{zhdocstring BitVec.fill Manual.ZhDocString.Ch19Ch20.G8.c090}
 
-{docstring BitVec.zero}
+{zhdocstring BitVec.zero Manual.ZhDocString.Ch19Ch20.G8.c091}
 
-{docstring BitVec.allOnes}
+{zhdocstring BitVec.allOnes Manual.ZhDocString.Ch19Ch20.G8.c092}
 
-{docstring BitVec.twoPow}
+{zhdocstring BitVec.twoPow Manual.ZhDocString.Ch19Ch20.G8.c093}
 
 ## 转换
 
@@ -250,47 +251,47 @@ tag := "Lean-__________________--Basic-Types--Bitvectors--API-Reference--Constru
 %%%
 tag := "Lean-__________________--Basic-Types--Bitvectors--API-Reference--Conversion"
 %%%
-{docstring BitVec.toHex}
+{zhdocstring BitVec.toHex Manual.ZhDocString.Ch19Ch20.G8.c094}
 
-{docstring BitVec.toInt}
+{zhdocstring BitVec.toInt Manual.ZhDocString.Ch19Ch20.G8.c095}
 
-{docstring BitVec.toNat}
+{zhdocstring BitVec.toNat Manual.ZhDocString.Ch19Ch20.G8.c096}
 
-{docstring BitVec.ofBool}
+{zhdocstring BitVec.ofBool Manual.ZhDocString.Ch19Ch20.G8.c097}
 
-{docstring BitVec.ofBoolListBE}
+{zhdocstring BitVec.ofBoolListBE Manual.ZhDocString.Ch19Ch20.G8.c098}
 
-{docstring BitVec.ofBoolListLE}
+{zhdocstring BitVec.ofBoolListLE Manual.ZhDocString.Ch19Ch20.G8.c099}
 
-{docstring BitVec.ofInt}
+{zhdocstring BitVec.ofInt Manual.ZhDocString.Ch19Ch20.G8.c100}
 
-{docstring BitVec.ofNat}
+{zhdocstring BitVec.ofNat Manual.ZhDocString.Ch19Ch20.G8.c101}
 
-{docstring BitVec.ofNatLT}
+{zhdocstring BitVec.ofNatLT Manual.ZhDocString.Ch19Ch20.G8.c102}
 
-{docstring BitVec.cast}
+{zhdocstring BitVec.cast Manual.ZhDocString.Ch19Ch20.G8.c103}
 
 ## 比较
 
 %%%
 tag := "Lean-__________________--Basic-Types--Bitvectors--API-Reference--Comparisons"
 %%%
-{docstring BitVec.ule}
+{zhdocstring BitVec.ule Manual.ZhDocString.Ch19Ch20.G8.c104}
 
-{docstring BitVec.sle}
+{zhdocstring BitVec.sle Manual.ZhDocString.Ch19Ch20.G8.c105}
 
-{docstring BitVec.ult}
+{zhdocstring BitVec.ult Manual.ZhDocString.Ch19Ch20.G8.c106}
 
-{docstring BitVec.slt}
+{zhdocstring BitVec.slt Manual.ZhDocString.Ch19Ch20.G8.c107}
 
-{docstring BitVec.decEq}
+{zhdocstring BitVec.decEq Manual.ZhDocString.Ch19Ch20.G8.c108}
 
 ## 哈希
 
 %%%
 tag := "Lean-__________________--Basic-Types--Bitvectors--API-Reference--Hashing"
 %%%
-{docstring BitVec.hash}
+{zhdocstring BitVec.hash Manual.ZhDocString.Ch19Ch20.G8.c109}
 
 ## 序列操作
 
@@ -299,52 +300,52 @@ tag := "Lean-__________________--Basic-Types--Bitvectors--API-Reference--Sequenc
 %%%
 这些操作将位向量视为位的序列，而非数的编码。
 
-{docstring BitVec.nil}
+{zhdocstring BitVec.nil Manual.ZhDocString.Ch19Ch20.G8.c110}
 
-{docstring BitVec.cons}
+{zhdocstring BitVec.cons Manual.ZhDocString.Ch19Ch20.G8.c111}
 
-{docstring BitVec.concat}
+{zhdocstring BitVec.concat Manual.ZhDocString.Ch19Ch20.G8.c112}
 
-{docstring BitVec.shiftConcat}
+{zhdocstring BitVec.shiftConcat Manual.ZhDocString.Ch19Ch20.G8.c113}
 
-{docstring BitVec.truncate}
+{zhdocstring BitVec.truncate Manual.ZhDocString.Ch19Ch20.G8.c114}
 
-{docstring BitVec.setWidth}
+{zhdocstring BitVec.setWidth Manual.ZhDocString.Ch19Ch20.G8.c115}
 
-{docstring BitVec.setWidth'}
+{zhdocstring BitVec.setWidth' Manual.ZhDocString.Ch19Ch20.G8.c116}
 
-{docstring BitVec.append}
+{zhdocstring BitVec.append Manual.ZhDocString.Ch19Ch20.G8.c117}
 
-{docstring BitVec.replicate}
+{zhdocstring BitVec.replicate Manual.ZhDocString.Ch19Ch20.G8.c118}
 
-{docstring BitVec.reverse}
+{zhdocstring BitVec.reverse Manual.ZhDocString.Ch19Ch20.G8.c119}
 
-{docstring BitVec.rotateLeft}
+{zhdocstring BitVec.rotateLeft Manual.ZhDocString.Ch19Ch20.G8.c120}
 
-{docstring BitVec.rotateRight}
+{zhdocstring BitVec.rotateRight Manual.ZhDocString.Ch19Ch20.G8.c121}
 
 ### 位提取
 
 %%%
 tag := "Lean-__________________--Basic-Types--Bitvectors--API-Reference--Sequence-Operations--Bit-Extraction"
 %%%
-{docstring BitVec.msb}
+{zhdocstring BitVec.msb Manual.ZhDocString.Ch19Ch20.G8.c122}
 
-{docstring BitVec.getMsbD}
+{zhdocstring BitVec.getMsbD Manual.ZhDocString.Ch19Ch20.G8.c123}
 
-{docstring BitVec.getMsb}
+{zhdocstring BitVec.getMsb Manual.ZhDocString.Ch19Ch20.G8.c124}
 
-{docstring BitVec.getMsb?}
+{zhdocstring BitVec.getMsb? Manual.ZhDocString.Ch19Ch20.G8.c125}
 
-{docstring BitVec.getLsbD}
+{zhdocstring BitVec.getLsbD Manual.ZhDocString.Ch19Ch20.G8.c126}
 
-{docstring BitVec.getLsb}
+{zhdocstring BitVec.getLsb Manual.ZhDocString.Ch19Ch20.G8.c127}
 
-{docstring BitVec.getLsb?}
+{zhdocstring BitVec.getLsb? Manual.ZhDocString.Ch19Ch20.G8.c128}
 
-{docstring BitVec.extractLsb}
+{zhdocstring BitVec.extractLsb Manual.ZhDocString.Ch19Ch20.G8.c129}
 
-{docstring BitVec.extractLsb'}
+{zhdocstring BitVec.extractLsb' Manual.ZhDocString.Ch19Ch20.G8.c130}
 
 ## 位运算符
 
@@ -353,27 +354,27 @@ tag := "Lean-__________________--Basic-Types--Bitvectors--API-Reference--Bitwise
 %%%
 这些运算符修改一个或多个位向量中的各个位。
 
-{docstring BitVec.and}
+{zhdocstring BitVec.and Manual.ZhDocString.Ch19Ch20.G8.c131}
 
-{docstring BitVec.or}
+{zhdocstring BitVec.or Manual.ZhDocString.Ch19Ch20.G8.c132}
 
-{docstring BitVec.not}
+{zhdocstring BitVec.not Manual.ZhDocString.Ch19Ch20.G8.c133}
 
-{docstring BitVec.xor}
+{zhdocstring BitVec.xor Manual.ZhDocString.Ch19Ch20.G8.c134}
 
-{docstring BitVec.zeroExtend}
+{zhdocstring BitVec.zeroExtend Manual.ZhDocString.Ch19Ch20.G8.c135}
 
-{docstring BitVec.signExtend}
+{zhdocstring BitVec.signExtend Manual.ZhDocString.Ch19Ch20.G8.c136}
 
-{docstring BitVec.ushiftRight}
+{zhdocstring BitVec.ushiftRight Manual.ZhDocString.Ch19Ch20.G8.c137}
 
-{docstring BitVec.sshiftRight}
+{zhdocstring BitVec.sshiftRight Manual.ZhDocString.Ch19Ch20.G8.c138}
 
-{docstring BitVec.sshiftRight'}
+{zhdocstring BitVec.sshiftRight' Manual.ZhDocString.Ch19Ch20.G8.c139}
 
-{docstring BitVec.shiftLeft}
+{zhdocstring BitVec.shiftLeft Manual.ZhDocString.Ch19Ch20.G8.c140}
 
-{docstring BitVec.shiftLeftZeroExtend}
+{zhdocstring BitVec.shiftLeftZeroExtend Manual.ZhDocString.Ch19Ch20.G8.c141}
 
 
 ## 算术
@@ -386,11 +387,11 @@ tag := "Lean-__________________--Basic-Types--Bitvectors--API-Reference--Arithme
 由于位向量被解释为二进制补码数，因此加法、减法和乘法在有符号与无符号解释下是一致的。
 
 
-{docstring BitVec.add}
+{zhdocstring BitVec.add Manual.ZhDocString.Ch19Ch20.G8.c142}
 
-{docstring BitVec.sub}
+{zhdocstring BitVec.sub Manual.ZhDocString.Ch19Ch20.G8.c143}
 
-{docstring BitVec.mul}
+{zhdocstring BitVec.mul Manual.ZhDocString.Ch19Ch20.G8.c144}
 
 
 ### 无符号操作
@@ -398,45 +399,45 @@ tag := "Lean-__________________--Basic-Types--Bitvectors--API-Reference--Arithme
 %%%
 tag := "Lean-__________________--Basic-Types--Bitvectors--API-Reference--Arithmetic--Unsigned-Operations"
 %%%
-{docstring BitVec.udiv}
+{zhdocstring BitVec.udiv Manual.ZhDocString.Ch19Ch20.G8.c145}
 
-{docstring BitVec.smtUDiv}
+{zhdocstring BitVec.smtUDiv Manual.ZhDocString.Ch19Ch20.G8.c146}
 
-{docstring BitVec.umod}
+{zhdocstring BitVec.umod Manual.ZhDocString.Ch19Ch20.G8.c147}
 
-{docstring BitVec.uaddOverflow}
+{zhdocstring BitVec.uaddOverflow Manual.ZhDocString.Ch19Ch20.G8.c148}
 
-{docstring BitVec.usubOverflow}
+{zhdocstring BitVec.usubOverflow Manual.ZhDocString.Ch19Ch20.G8.c149}
 
 ### 有符号操作
 
 %%%
 tag := "Lean-__________________--Basic-Types--Bitvectors--API-Reference--Arithmetic--Signed-Operations"
 %%%
-{docstring BitVec.abs}
+{zhdocstring BitVec.abs Manual.ZhDocString.Ch19Ch20.G8.c150}
 
-{docstring BitVec.neg}
+{zhdocstring BitVec.neg Manual.ZhDocString.Ch19Ch20.G8.c151}
 
-{docstring BitVec.sdiv}
+{zhdocstring BitVec.sdiv Manual.ZhDocString.Ch19Ch20.G8.c152}
 
-{docstring BitVec.smtSDiv}
+{zhdocstring BitVec.smtSDiv Manual.ZhDocString.Ch19Ch20.G8.c153}
 
-{docstring BitVec.smod}
+{zhdocstring BitVec.smod Manual.ZhDocString.Ch19Ch20.G8.c154}
 
-{docstring BitVec.srem}
+{zhdocstring BitVec.srem Manual.ZhDocString.Ch19Ch20.G8.c155}
 
-{docstring BitVec.saddOverflow}
+{zhdocstring BitVec.saddOverflow Manual.ZhDocString.Ch19Ch20.G8.c156}
 
-{docstring BitVec.ssubOverflow}
+{zhdocstring BitVec.ssubOverflow Manual.ZhDocString.Ch19Ch20.G8.c157}
 
 ## 迭代
 
 %%%
 tag := "Lean-__________________--Basic-Types--Bitvectors--API-Reference--Iteration"
 %%%
-{docstring BitVec.iunfoldr}
+{zhdocstring BitVec.iunfoldr Manual.ZhDocString.Ch19Ch20.G8.c158}
 
-{docstring BitVec.iunfoldr_replace}
+{zhdocstring BitVec.iunfoldr_replace Manual.ZhDocString.Ch19Ch20.G8.c159}
 
 ## 证明自动化
 
@@ -450,20 +451,20 @@ tag := "Lean-__________________--Basic-Types--Bitvectors--API-Reference--Proof-A
 %%%
 标准库包含许多有助于实现位爆破的辅助实现；位爆破是 {tactic}`bv_decide` 用来将命题编码为供外部求解器处理的布尔可满足性问题的技术。
 
-{docstring BitVec.adc}
+{zhdocstring BitVec.adc Manual.ZhDocString.Ch19Ch20.G8.c160}
 
-{docstring BitVec.adcb}
+{zhdocstring BitVec.adcb Manual.ZhDocString.Ch19Ch20.G8.c161}
 
-{docstring BitVec.carry}
+{zhdocstring BitVec.carry Manual.ZhDocString.Ch19Ch20.G8.c162}
 
-{docstring BitVec.mulRec}
+{zhdocstring BitVec.mulRec Manual.ZhDocString.Ch19Ch20.G8.c163}
 
-{docstring BitVec.divRec}
+{zhdocstring BitVec.divRec Manual.ZhDocString.Ch19Ch20.G8.c164}
 
-{docstring BitVec.divSubtractShift}
+{zhdocstring BitVec.divSubtractShift Manual.ZhDocString.Ch19Ch20.G8.c165}
 
-{docstring BitVec.shiftLeftRec}
+{zhdocstring BitVec.shiftLeftRec Manual.ZhDocString.Ch19Ch20.G8.c166}
 
-{docstring BitVec.sshiftRightRec}
+{zhdocstring BitVec.sshiftRightRec Manual.ZhDocString.Ch19Ch20.G8.c167}
 
-{docstring BitVec.ushiftRightRec}
+{zhdocstring BitVec.ushiftRightRec Manual.ZhDocString.Ch19Ch20.G8.c168}
