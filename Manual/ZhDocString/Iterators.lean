@@ -42,7 +42,7 @@ def x : Iter Nat := [1, 2, 3].iter
 ```lean
 def x := [1, 2, 3].iter
 
--- if you want to ensure that `x` is an iterator emitting `Nat`
+-- 若要确保 `x` 是发出 `Nat` 的迭代器
 def x := ([1, 2, 3].iter : Iter Nat)
 ```
 -/
@@ -74,13 +74,16 @@ def x : IterM IO Nat := [1, 2, 3].iterM IO
 ```lean
 def x := [1, 2, 3].iterM IO
 
--- if you want to ensure that `x` is an iterator in `IO` emitting `Nat`
+-- 若要确保 `x` 是在 `IO` 中发出 `Nat` 的迭代器
 def x := ([1, 2, 3].iterM IO : IterM IO Nat)
 ```
 -/
 structure c002 {α : Type w} (m : Type w → Type v) (β : Type w) where
   /-- 迭代器的内部实现细节。 -/
   internalState : α
+
+/-- 将迭代器状态包装为 `IterM` 对象。 -/
+add_decl_doc c002.mk
 
 /--
 `IterStep α β` 表示迭代器（`Iter β` 或 `IterM m β`）执行的一步。
