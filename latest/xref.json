@@ -354,18 +354,16 @@
    "test-lint-drivers":
    [{"id": "test-lint-drivers",
      "data":
-     {"title": "Test and Lint Drivers",
+     {"title": "测试和代码检查驱动程序",
       "shortTitle": null,
       "sectionNum": "24.1.1.5.",
       "searchPriority": 50,
       "context":
       [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Build Tools and Distribution",
-        "shortTitle": null,
-        "number": "24"},
+       {"title": "构建工具与发行", "shortTitle": null, "number": "24"},
        {"title": "Lake", "shortTitle": null, "number": "1"},
-       {"title": "Concepts and Terminology", "shortTitle": null, "number": "1"},
-       {"title": "Test and Lint Drivers", "shortTitle": null, "number": "5"}]},
+       {"title": "概念与术语", "shortTitle": null, "number": "1"},
+       {"title": "测试和代码检查驱动程序", "shortTitle": null, "number": "5"}]},
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "terms":
    [{"id": "terms",
@@ -3253,18 +3251,16 @@
    "package-overrides":
    [{"id": "package-overrides",
      "data":
-     {"title": "Package  Overrides",
+     {"title": "包覆盖",
       "shortTitle": null,
       "sectionNum": "24.1.1.1.",
       "searchPriority": 50,
       "context":
       [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Build Tools and Distribution",
-        "shortTitle": null,
-        "number": "24"},
+       {"title": "构建工具与发行", "shortTitle": null, "number": "24"},
        {"title": "Lake", "shortTitle": null, "number": "1"},
-       {"title": "Concepts and Terminology", "shortTitle": null, "number": "1"},
-       {"title": "Package  Overrides", "shortTitle": null, "number": "1"}]},
+       {"title": "概念与术语", "shortTitle": null, "number": "1"},
+       {"title": "包覆盖", "shortTitle": null, "number": "1"}]},
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "ordinary-coercion":
    [{"id": "ordinary-coercion",
@@ -4587,254 +4583,212 @@
    "lake-vocab":
    [{"id": "lake-vocab",
      "data":
-     {"title": "Concepts and Terminology",
+     {"title": "概念与术语",
       "shortTitle": null,
       "sectionNum": "24.1.1.",
       "searchPriority": 50,
       "context":
       [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Build Tools and Distribution",
-        "shortTitle": null,
-        "number": "24"},
+       {"title": "构建工具与发行", "shortTitle": null, "number": "24"},
        {"title": "Lake", "shortTitle": null, "number": "1"},
-       {"title": "Concepts and Terminology",
-        "shortTitle": null,
-        "number": "1"}]},
+       {"title": "概念与术语", "shortTitle": null, "number": "1"}]},
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "lake-test-running":
    [{"id": "lake-test-running",
      "data":
-     {"title": "Running Tests",
+     {"title": "运行测试",
       "shortTitle": null,
       "sectionNum": "24.1.1.5.2.",
       "searchPriority": 50,
       "context":
       [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Build Tools and Distribution",
-        "shortTitle": null,
-        "number": "24"},
+       {"title": "构建工具与发行", "shortTitle": null, "number": "24"},
        {"title": "Lake", "shortTitle": null, "number": "1"},
-       {"title": "Concepts and Terminology", "shortTitle": null, "number": "1"},
-       {"title": "Test and Lint Drivers", "shortTitle": null, "number": "5"},
-       {"title": "Running Tests", "shortTitle": null, "number": "2"}]},
+       {"title": "概念与术语", "shortTitle": null, "number": "1"},
+       {"title": "测试和代码检查驱动程序", "shortTitle": null, "number": "5"},
+       {"title": "运行测试", "shortTitle": null, "number": "2"}]},
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "lake-test-driver-config":
    [{"id": "lake-test-driver-config",
      "data":
-     {"title": "Configuring a Test Driver",
+     {"title": "配置测试驱动程序",
       "shortTitle": null,
       "sectionNum": "24.1.1.5.1.",
       "searchPriority": 50,
       "context":
       [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Build Tools and Distribution",
-        "shortTitle": null,
-        "number": "24"},
+       {"title": "构建工具与发行", "shortTitle": null, "number": "24"},
        {"title": "Lake", "shortTitle": null, "number": "1"},
-       {"title": "Concepts and Terminology", "shortTitle": null, "number": "1"},
-       {"title": "Test and Lint Drivers", "shortTitle": null, "number": "5"},
-       {"title": "Configuring a Test Driver",
-        "shortTitle": null,
-        "number": "1"}]},
+       {"title": "概念与术语", "shortTitle": null, "number": "1"},
+       {"title": "测试和代码检查驱动程序", "shortTitle": null, "number": "5"},
+       {"title": "配置测试驱动程序", "shortTitle": null, "number": "1"}]},
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "lake-scripts":
    [{"id": "lake-scripts",
      "data":
-     {"title": "Scripts",
+     {"title": "脚本",
       "shortTitle": null,
       "sectionNum": "24.1.1.4.",
       "searchPriority": 50,
       "context":
       [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Build Tools and Distribution",
-        "shortTitle": null,
-        "number": "24"},
+       {"title": "构建工具与发行", "shortTitle": null, "number": "24"},
        {"title": "Lake", "shortTitle": null, "number": "1"},
-       {"title": "Concepts and Terminology", "shortTitle": null, "number": "1"},
-       {"title": "Scripts", "shortTitle": null, "number": "4"}]},
+       {"title": "概念与术语", "shortTitle": null, "number": "1"},
+       {"title": "脚本", "shortTitle": null, "number": "4"}]},
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "lake-lint-drivers":
    [{"id": "lake-lint-drivers",
      "data":
-     {"title": "Lint Drivers",
+     {"title": "代码检查驱动程序",
       "shortTitle": null,
       "sectionNum": "24.1.1.5.3.",
       "searchPriority": 50,
       "context":
       [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Build Tools and Distribution",
-        "shortTitle": null,
-        "number": "24"},
+       {"title": "构建工具与发行", "shortTitle": null, "number": "24"},
        {"title": "Lake", "shortTitle": null, "number": "1"},
-       {"title": "Concepts and Terminology", "shortTitle": null, "number": "1"},
-       {"title": "Test and Lint Drivers", "shortTitle": null, "number": "5"},
-       {"title": "Lint Drivers", "shortTitle": null, "number": "3"}]},
+       {"title": "概念与术语", "shortTitle": null, "number": "1"},
+       {"title": "测试和代码检查驱动程序", "shortTitle": null, "number": "5"},
+       {"title": "代码检查驱动程序", "shortTitle": null, "number": "3"}]},
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "lake-github":
    [{"id": "lake-github",
      "data":
-     {"title": "GitHub Release Builds",
+     {"title": "GitHub 发布版本构建",
       "shortTitle": null,
       "sectionNum": "24.1.1.6.",
       "searchPriority": 50,
       "context":
       [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Build Tools and Distribution",
-        "shortTitle": null,
-        "number": "24"},
+       {"title": "构建工具与发行", "shortTitle": null, "number": "24"},
        {"title": "Lake", "shortTitle": null, "number": "1"},
-       {"title": "Concepts and Terminology", "shortTitle": null, "number": "1"},
-       {"title": "GitHub Release Builds", "shortTitle": null, "number": "6"}]},
+       {"title": "概念与术语", "shortTitle": null, "number": "1"},
+       {"title": "GitHub 发布版本构建", "shortTitle": null, "number": "6"}]},
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "lake-facets":
    [{"id": "lake-facets",
      "data":
-     {"title": "Facets",
+     {"title": "分面",
       "shortTitle": null,
       "sectionNum": "24.1.1.3.",
       "searchPriority": 50,
       "context":
       [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Build Tools and Distribution",
-        "shortTitle": null,
-        "number": "24"},
+       {"title": "构建工具与发行", "shortTitle": null, "number": "24"},
        {"title": "Lake", "shortTitle": null, "number": "1"},
-       {"title": "Concepts and Terminology", "shortTitle": null, "number": "1"},
-       {"title": "Facets", "shortTitle": null, "number": "3"}]},
+       {"title": "概念与术语", "shortTitle": null, "number": "1"},
+       {"title": "分面", "shortTitle": null, "number": "3"}]},
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "lake-environment":
    [{"id": "lake-environment",
      "data":
-     {"title": "Environment Variables",
+     {"title": "环境变量",
       "shortTitle": null,
       "sectionNum": "24.1.2.1.",
       "searchPriority": 50,
       "context":
       [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Build Tools and Distribution",
-        "shortTitle": null,
-        "number": "24"},
+       {"title": "构建工具与发行", "shortTitle": null, "number": "24"},
        {"title": "Lake", "shortTitle": null, "number": "1"},
-       {"title": "Command-Line Interface", "shortTitle": null, "number": "2"},
-       {"title": "Environment Variables", "shortTitle": null, "number": "1"}]},
+       {"title": "命令行界面", "shortTitle": null, "number": "2"},
+       {"title": "环境变量", "shortTitle": null, "number": "1"}]},
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "lake-config-toml":
    [{"id": "lake-config-toml",
      "data":
-     {"title": "Declarative TOML Format",
+     {"title": "声明式 TOML 格式",
       "shortTitle": null,
       "sectionNum": "24.1.3.1.",
       "searchPriority": 50,
       "context":
       [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Build Tools and Distribution",
-        "shortTitle": null,
-        "number": "24"},
+       {"title": "构建工具与发行", "shortTitle": null, "number": "24"},
        {"title": "Lake", "shortTitle": null, "number": "1"},
-       {"title": "Configuration File Format",
-        "shortTitle": null,
-        "number": "3"},
-       {"title": "Declarative TOML Format",
-        "shortTitle": null,
-        "number": "1"}]},
+       {"title": "配置文件格式", "shortTitle": null, "number": "3"},
+       {"title": "声明式 TOML 格式", "shortTitle": null, "number": "1"}]},
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "lake-config-lean":
    [{"id": "lake-config-lean",
      "data":
-     {"title": "Lean Format",
+     {"title": "Lean 格式",
       "shortTitle": null,
       "sectionNum": "24.1.3.2.",
       "searchPriority": 50,
       "context":
       [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Build Tools and Distribution",
-        "shortTitle": null,
-        "number": "24"},
+       {"title": "构建工具与发行", "shortTitle": null, "number": "24"},
        {"title": "Lake", "shortTitle": null, "number": "1"},
-       {"title": "Configuration File Format",
-        "shortTitle": null,
-        "number": "3"},
-       {"title": "Lean Format", "shortTitle": null, "number": "2"}]},
+       {"title": "配置文件格式", "shortTitle": null, "number": "3"},
+       {"title": "Lean 格式", "shortTitle": null, "number": "2"}]},
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "lake-config":
    [{"id": "lake-config",
      "data":
-     {"title": "Configuration File Format",
+     {"title": "配置文件格式",
       "shortTitle": null,
       "sectionNum": "24.1.3.",
       "searchPriority": 50,
       "context":
       [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Build Tools and Distribution",
-        "shortTitle": null,
-        "number": "24"},
+       {"title": "构建工具与发行", "shortTitle": null, "number": "24"},
        {"title": "Lake", "shortTitle": null, "number": "1"},
-       {"title": "Configuration File Format",
-        "shortTitle": null,
-        "number": "3"}]},
+       {"title": "配置文件格式", "shortTitle": null, "number": "3"}]},
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "lake-cli":
    [{"id": "lake-cli",
      "data":
-     {"title": "Command-Line Interface",
+     {"title": "命令行界面",
       "shortTitle": null,
       "sectionNum": "24.1.2.",
       "searchPriority": 50,
       "context":
       [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Build Tools and Distribution",
-        "shortTitle": null,
-        "number": "24"},
+       {"title": "构建工具与发行", "shortTitle": null, "number": "24"},
        {"title": "Lake", "shortTitle": null, "number": "1"},
-       {"title": "Command-Line Interface", "shortTitle": null, "number": "2"}]},
+       {"title": "命令行界面", "shortTitle": null, "number": "2"}]},
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "lake-cache-remote":
    [{"id": "lake-cache-remote",
      "data":
-     {"title": "Remote Artifact Caches",
+     {"title": "远程工件缓存",
       "shortTitle": null,
       "sectionNum": "24.1.1.7.1.",
       "searchPriority": 50,
       "context":
       [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Build Tools and Distribution",
-        "shortTitle": null,
-        "number": "24"},
+       {"title": "构建工具与发行", "shortTitle": null, "number": "24"},
        {"title": "Lake", "shortTitle": null, "number": "1"},
-       {"title": "Concepts and Terminology", "shortTitle": null, "number": "1"},
-       {"title": "Artifact Caches", "shortTitle": null, "number": "7"},
-       {"title": "Remote Artifact Caches", "shortTitle": null, "number": "1"}]},
+       {"title": "概念与术语", "shortTitle": null, "number": "1"},
+       {"title": "工件缓存", "shortTitle": null, "number": "7"},
+       {"title": "远程工件缓存", "shortTitle": null, "number": "1"}]},
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "lake-cache":
    [{"id": "lake-cache",
      "data":
-     {"title": "Artifact Caches",
+     {"title": "工件缓存",
       "shortTitle": null,
       "sectionNum": "24.1.1.7.",
       "searchPriority": 50,
       "context":
       [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Build Tools and Distribution",
-        "shortTitle": null,
-        "number": "24"},
+       {"title": "构建工具与发行", "shortTitle": null, "number": "24"},
        {"title": "Lake", "shortTitle": null, "number": "1"},
-       {"title": "Concepts and Terminology", "shortTitle": null, "number": "1"},
-       {"title": "Artifact Caches", "shortTitle": null, "number": "7"}]},
+       {"title": "概念与术语", "shortTitle": null, "number": "1"},
+       {"title": "工件缓存", "shortTitle": null, "number": "7"}]},
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "lake-api":
    [{"id": "lake-api",
      "data":
-     {"title": "Script API Reference",
+     {"title": "脚本接口参考",
       "shortTitle": null,
       "sectionNum": "24.1.4.",
       "searchPriority": 50,
       "context":
       [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Build Tools and Distribution",
-        "shortTitle": null,
-        "number": "24"},
+       {"title": "构建工具与发行", "shortTitle": null, "number": "24"},
        {"title": "Lake", "shortTitle": null, "number": "1"},
-       {"title": "Script API Reference", "shortTitle": null, "number": "4"}]},
+       {"title": "脚本接口参考", "shortTitle": null, "number": "4"}]},
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "lake":
    [{"id": "lake",
@@ -4845,9 +4799,7 @@
       "searchPriority": 50,
       "context":
       [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Build Tools and Distribution",
-        "shortTitle": null,
-        "number": "24"},
+       {"title": "构建工具与发行", "shortTitle": null, "number": "24"},
        {"title": "Lake", "shortTitle": null, "number": "1"}]},
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "keywords-and-identifiers":
@@ -6430,234 +6382,176 @@
    "elan-toolchain-versions":
    [{"id": "elan-toolchain-versions",
      "data":
-     {"title": "Selecting Toolchains",
+     {"title": "选择工具链",
       "shortTitle": null,
       "sectionNum": "24.2.1.",
       "searchPriority": 50,
       "context":
       [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Build Tools and Distribution",
-        "shortTitle": null,
-        "number": "24"},
-       {"title": "Managing Toolchains with Elan",
-        "shortTitle": null,
-        "number": "2"},
-       {"title": "Selecting Toolchains", "shortTitle": null, "number": "1"}]},
+       {"title": "构建工具与发行", "shortTitle": null, "number": "24"},
+       {"title": "使用 Elan 管理工具链", "shortTitle": null, "number": "2"},
+       {"title": "选择工具链", "shortTitle": null, "number": "1"}]},
      "address":
      "/Build-Tools-and-Distribution/Managing-Toolchains-with-Elan/"}],
    "elan-toolchain-config":
    [{"id": "elan-toolchain-config",
      "data":
-     {"title": "Determining the Current Toolchain",
+     {"title": "确定当前工具链",
       "shortTitle": null,
       "sectionNum": "24.2.1.2.",
       "searchPriority": 50,
       "context":
       [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Build Tools and Distribution",
-        "shortTitle": null,
-        "number": "24"},
-       {"title": "Managing Toolchains with Elan",
-        "shortTitle": null,
-        "number": "2"},
-       {"title": "Selecting Toolchains", "shortTitle": null, "number": "1"},
-       {"title": "Determining the Current Toolchain",
-        "shortTitle": null,
-        "number": "2"}]},
+       {"title": "构建工具与发行", "shortTitle": null, "number": "24"},
+       {"title": "使用 Elan 管理工具链", "shortTitle": null, "number": "2"},
+       {"title": "选择工具链", "shortTitle": null, "number": "1"},
+       {"title": "确定当前工具链", "shortTitle": null, "number": "2"}]},
      "address":
      "/Build-Tools-and-Distribution/Managing-Toolchains-with-Elan/"}],
    "elan-toolchain":
    [{"id": "elan-toolchain",
      "data":
-     {"title": "Managing Installed Toolchains",
+     {"title": "管理已安装的工具链",
       "shortTitle": null,
       "sectionNum": "24.2.3.3.",
       "searchPriority": 50,
       "context":
       [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Build Tools and Distribution",
-        "shortTitle": null,
-        "number": "24"},
-       {"title": "Managing Toolchains with Elan",
-        "shortTitle": null,
-        "number": "2"},
-       {"title": "Command-Line Interface", "shortTitle": null, "number": "3"},
-       {"title": "Managing Installed Toolchains",
-        "shortTitle": null,
-        "number": "3"}]},
+       {"title": "构建工具与发行", "shortTitle": null, "number": "24"},
+       {"title": "使用 Elan 管理工具链", "shortTitle": null, "number": "2"},
+       {"title": "命令行界面", "shortTitle": null, "number": "3"},
+       {"title": "管理已安装的工具链", "shortTitle": null, "number": "3"}]},
      "address":
      "/Build-Tools-and-Distribution/Managing-Toolchains-with-Elan/"}],
    "elan-show":
    [{"id": "elan-show",
      "data":
-     {"title": "Querying Toolchains",
+     {"title": "查询工具链",
       "shortTitle": null,
       "sectionNum": "24.2.3.1.",
       "searchPriority": 50,
       "context":
       [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Build Tools and Distribution",
-        "shortTitle": null,
-        "number": "24"},
-       {"title": "Managing Toolchains with Elan",
-        "shortTitle": null,
-        "number": "2"},
-       {"title": "Command-Line Interface", "shortTitle": null, "number": "3"},
-       {"title": "Querying Toolchains", "shortTitle": null, "number": "1"}]},
+       {"title": "构建工具与发行", "shortTitle": null, "number": "24"},
+       {"title": "使用 Elan 管理工具链", "shortTitle": null, "number": "2"},
+       {"title": "命令行界面", "shortTitle": null, "number": "3"},
+       {"title": "查询工具链", "shortTitle": null, "number": "1"}]},
      "address":
      "/Build-Tools-and-Distribution/Managing-Toolchains-with-Elan/"}],
    "elan-self":
    [{"id": "elan-self",
      "data":
-     {"title": "Managing Elan",
+     {"title": "管理 Elan",
       "shortTitle": null,
       "sectionNum": "24.2.3.6.",
       "searchPriority": 50,
       "context":
       [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Build Tools and Distribution",
-        "shortTitle": null,
-        "number": "24"},
-       {"title": "Managing Toolchains with Elan",
-        "shortTitle": null,
-        "number": "2"},
-       {"title": "Command-Line Interface", "shortTitle": null, "number": "3"},
-       {"title": "Managing Elan", "shortTitle": null, "number": "6"}]},
+       {"title": "构建工具与发行", "shortTitle": null, "number": "24"},
+       {"title": "使用 Elan 管理工具链", "shortTitle": null, "number": "2"},
+       {"title": "命令行界面", "shortTitle": null, "number": "3"},
+       {"title": "管理 Elan", "shortTitle": null, "number": "6"}]},
      "address":
      "/Build-Tools-and-Distribution/Managing-Toolchains-with-Elan/"}],
    "elan-run":
    [{"id": "elan-run",
      "data":
-     {"title": "Running Tools and Commands",
+     {"title": "运行工具和命令",
       "shortTitle": null,
       "sectionNum": "24.2.3.5.",
       "searchPriority": 50,
       "context":
       [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Build Tools and Distribution",
-        "shortTitle": null,
-        "number": "24"},
-       {"title": "Managing Toolchains with Elan",
-        "shortTitle": null,
-        "number": "2"},
-       {"title": "Command-Line Interface", "shortTitle": null, "number": "3"},
-       {"title": "Running Tools and Commands",
-        "shortTitle": null,
-        "number": "5"}]},
+       {"title": "构建工具与发行", "shortTitle": null, "number": "24"},
+       {"title": "使用 Elan 管理工具链", "shortTitle": null, "number": "2"},
+       {"title": "命令行界面", "shortTitle": null, "number": "3"},
+       {"title": "运行工具和命令", "shortTitle": null, "number": "5"}]},
      "address":
      "/Build-Tools-and-Distribution/Managing-Toolchains-with-Elan/"}],
    "elan-override":
    [{"id": "elan-override",
      "data":
-     {"title": "Managing Directory Overrides",
+     {"title": "管理目录覆盖项",
       "shortTitle": null,
       "sectionNum": "24.2.3.4.",
       "searchPriority": 50,
       "context":
       [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Build Tools and Distribution",
-        "shortTitle": null,
-        "number": "24"},
-       {"title": "Managing Toolchains with Elan",
-        "shortTitle": null,
-        "number": "2"},
-       {"title": "Command-Line Interface", "shortTitle": null, "number": "3"},
-       {"title": "Managing Directory Overrides",
-        "shortTitle": null,
-        "number": "4"}]},
+       {"title": "构建工具与发行", "shortTitle": null, "number": "24"},
+       {"title": "使用 Elan 管理工具链", "shortTitle": null, "number": "2"},
+       {"title": "命令行界面", "shortTitle": null, "number": "3"},
+       {"title": "管理目录覆盖项", "shortTitle": null, "number": "4"}]},
      "address":
      "/Build-Tools-and-Distribution/Managing-Toolchains-with-Elan/"}],
    "elan-dir":
    [{"id": "elan-dir",
      "data":
-     {"title": "Toolchain Locations",
+     {"title": "工具链位置",
       "shortTitle": null,
       "sectionNum": "24.2.2.",
       "searchPriority": 50,
       "context":
       [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Build Tools and Distribution",
-        "shortTitle": null,
-        "number": "24"},
-       {"title": "Managing Toolchains with Elan",
-        "shortTitle": null,
-        "number": "2"},
-       {"title": "Toolchain Locations", "shortTitle": null, "number": "2"}]},
+       {"title": "构建工具与发行", "shortTitle": null, "number": "24"},
+       {"title": "使用 Elan 管理工具链", "shortTitle": null, "number": "2"},
+       {"title": "工具链位置", "shortTitle": null, "number": "2"}]},
      "address":
      "/Build-Tools-and-Distribution/Managing-Toolchains-with-Elan/"}],
    "elan-default":
    [{"id": "elan-default",
      "data":
-     {"title": "Setting the Default Toolchain",
+     {"title": "设置默认工具链",
       "shortTitle": null,
       "sectionNum": "24.2.3.2.",
       "searchPriority": 50,
       "context":
       [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Build Tools and Distribution",
-        "shortTitle": null,
-        "number": "24"},
-       {"title": "Managing Toolchains with Elan",
-        "shortTitle": null,
-        "number": "2"},
-       {"title": "Command-Line Interface", "shortTitle": null, "number": "3"},
-       {"title": "Setting the Default Toolchain",
-        "shortTitle": null,
-        "number": "2"}]},
+       {"title": "构建工具与发行", "shortTitle": null, "number": "24"},
+       {"title": "使用 Elan 管理工具链", "shortTitle": null, "number": "2"},
+       {"title": "命令行界面", "shortTitle": null, "number": "3"},
+       {"title": "设置默认工具链", "shortTitle": null, "number": "2"}]},
      "address":
      "/Build-Tools-and-Distribution/Managing-Toolchains-with-Elan/"}],
    "elan-cli":
    [{"id": "elan-cli",
      "data":
-     {"title": "Command-Line Interface",
+     {"title": "命令行界面",
       "shortTitle": null,
       "sectionNum": "24.2.3.",
       "searchPriority": 50,
       "context":
       [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Build Tools and Distribution",
-        "shortTitle": null,
-        "number": "24"},
-       {"title": "Managing Toolchains with Elan",
-        "shortTitle": null,
-        "number": "2"},
-       {"title": "Command-Line Interface", "shortTitle": null, "number": "3"}]},
+       {"title": "构建工具与发行", "shortTitle": null, "number": "24"},
+       {"title": "使用 Elan 管理工具链", "shortTitle": null, "number": "2"},
+       {"title": "命令行界面", "shortTitle": null, "number": "3"}]},
      "address":
      "/Build-Tools-and-Distribution/Managing-Toolchains-with-Elan/"}],
    "elan-channels":
    [{"id": "elan-channels",
      "data":
-     {"title": "Toolchain Identifiers",
+     {"title": "工具链标识符",
       "shortTitle": null,
       "sectionNum": "24.2.1.1.",
       "searchPriority": 50,
       "context":
       [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Build Tools and Distribution",
-        "shortTitle": null,
-        "number": "24"},
-       {"title": "Managing Toolchains with Elan",
-        "shortTitle": null,
-        "number": "2"},
-       {"title": "Selecting Toolchains", "shortTitle": null, "number": "1"},
-       {"title": "Toolchain Identifiers", "shortTitle": null, "number": "1"}]},
+       {"title": "构建工具与发行", "shortTitle": null, "number": "24"},
+       {"title": "使用 Elan 管理工具链", "shortTitle": null, "number": "2"},
+       {"title": "选择工具链", "shortTitle": null, "number": "1"},
+       {"title": "工具链标识符", "shortTitle": null, "number": "1"}]},
      "address":
      "/Build-Tools-and-Distribution/Managing-Toolchains-with-Elan/"}],
    "elan":
    [{"id": "elan",
      "data":
-     {"title": "Managing Toolchains with Elan",
+     {"title": "使用 Elan 管理工具链",
       "shortTitle": null,
       "sectionNum": "24.2.",
       "searchPriority": 50,
       "context":
       [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Build Tools and Distribution",
-        "shortTitle": null,
-        "number": "24"},
-       {"title": "Managing Toolchains with Elan",
-        "shortTitle": null,
-        "number": "2"}]},
+       {"title": "构建工具与发行", "shortTitle": null, "number": "24"},
+       {"title": "使用 Elan 管理工具链", "shortTitle": null, "number": "2"}]},
      "address":
      "/Build-Tools-and-Distribution/Managing-Toolchains-with-Elan/"}],
    "elaborators":
@@ -7642,15 +7536,13 @@
    "build-tools-and-distribution":
    [{"id": "build-tools-and-distribution",
      "data":
-     {"title": "Build Tools and Distribution",
+     {"title": "构建工具与发行",
       "shortTitle": null,
       "sectionNum": "24.",
       "searchPriority": 50,
       "context":
       [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Build Tools and Distribution",
-        "shortTitle": null,
-        "number": "24"}]},
+       {"title": "构建工具与发行", "shortTitle": null, "number": "24"}]},
      "address": "/Build-Tools-and-Distribution/"}],
    "bracketed-parameter-syntax":
    [{"id": "bracketed-parameter-syntax",
@@ -7773,20 +7665,16 @@
    "automatic-toolchain-updates":
    [{"id": "automatic-toolchain-updates",
      "data":
-     {"title": "Automatic Toolchain Updates",
+     {"title": "自动更新工具链",
       "shortTitle": null,
       "sectionNum": "24.1.2.4.",
       "searchPriority": 50,
       "context":
       [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Build Tools and Distribution",
-        "shortTitle": null,
-        "number": "24"},
+       {"title": "构建工具与发行", "shortTitle": null, "number": "24"},
        {"title": "Lake", "shortTitle": null, "number": "1"},
-       {"title": "Command-Line Interface", "shortTitle": null, "number": "2"},
-       {"title": "Automatic Toolchain Updates",
-        "shortTitle": null,
-        "number": "4"}]},
+       {"title": "命令行界面", "shortTitle": null, "number": "2"},
+       {"title": "自动更新工具链", "shortTitle": null, "number": "4"}]},
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "automatic-implicit-parameters":
    [{"id": "automatic-implicit-parameters",
@@ -9346,6 +9234,654 @@
        {"title": "控制归约", "shortTitle": null, "number": "7"},
        {"title": "修改可约性", "shortTitle": null, "number": "2"}]},
      "address": "/Definitions/Recursive-Definitions/"}],
+   "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Script-API-Reference--Accessing-the-Workspace":
+   [{"id":
+     "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Script-API-Reference--Accessing-the-Workspace",
+     "data":
+     {"title": "访问工作区",
+      "shortTitle": null,
+      "sectionNum": "24.1.4.2.",
+      "searchPriority": 50,
+      "context":
+      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
+       {"title": "构建工具与发行", "shortTitle": null, "number": "24"},
+       {"title": "Lake", "shortTitle": null, "number": "1"},
+       {"title": "脚本接口参考", "shortTitle": null, "number": "4"},
+       {"title": "访问工作区", "shortTitle": null, "number": "2"}]},
+     "address": "/Build-Tools-and-Distribution/Lake/"}],
+   "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Script-API-Reference--Accessing-the-Environment--Search-Path-Helpers":
+   [{"id":
+     "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Script-API-Reference--Accessing-the-Environment--Search-Path-Helpers",
+     "data":
+     {"title": "搜索路径辅助函数",
+      "shortTitle": null,
+      "sectionNum": "24.1.4.1.1.",
+      "searchPriority": 50,
+      "context":
+      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
+       {"title": "构建工具与发行", "shortTitle": null, "number": "24"},
+       {"title": "Lake", "shortTitle": null, "number": "1"},
+       {"title": "脚本接口参考", "shortTitle": null, "number": "4"},
+       {"title": "访问环境", "shortTitle": null, "number": "1"},
+       {"title": "搜索路径辅助函数", "shortTitle": null, "number": "1"}]},
+     "address": "/Build-Tools-and-Distribution/Lake/"}],
+   "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Script-API-Reference--Accessing-the-Environment--Lean-Install-Helpers":
+   [{"id":
+     "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Script-API-Reference--Accessing-the-Environment--Lean-Install-Helpers",
+     "data":
+     {"title": "Lean 安装辅助函数",
+      "shortTitle": null,
+      "sectionNum": "24.1.4.1.3.",
+      "searchPriority": 50,
+      "context":
+      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
+       {"title": "构建工具与发行", "shortTitle": null, "number": "24"},
+       {"title": "Lake", "shortTitle": null, "number": "1"},
+       {"title": "脚本接口参考", "shortTitle": null, "number": "4"},
+       {"title": "访问环境", "shortTitle": null, "number": "1"},
+       {"title": "Lean 安装辅助函数", "shortTitle": null, "number": "3"}]},
+     "address": "/Build-Tools-and-Distribution/Lake/"}],
+   "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Script-API-Reference--Accessing-the-Environment--Lake-Install-Helpers":
+   [{"id":
+     "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Script-API-Reference--Accessing-the-Environment--Lake-Install-Helpers",
+     "data":
+     {"title": "Lake 安装辅助函数",
+      "shortTitle": null,
+      "sectionNum": "24.1.4.1.4.",
+      "searchPriority": 50,
+      "context":
+      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
+       {"title": "构建工具与发行", "shortTitle": null, "number": "24"},
+       {"title": "Lake", "shortTitle": null, "number": "1"},
+       {"title": "脚本接口参考", "shortTitle": null, "number": "4"},
+       {"title": "访问环境", "shortTitle": null, "number": "1"},
+       {"title": "Lake 安装辅助函数", "shortTitle": null, "number": "4"}]},
+     "address": "/Build-Tools-and-Distribution/Lake/"}],
+   "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Script-API-Reference--Accessing-the-Environment--Elan-Install-Helpers":
+   [{"id":
+     "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Script-API-Reference--Accessing-the-Environment--Elan-Install-Helpers",
+     "data":
+     {"title": "Elan 安装辅助函数",
+      "shortTitle": null,
+      "sectionNum": "24.1.4.1.2.",
+      "searchPriority": 50,
+      "context":
+      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
+       {"title": "构建工具与发行", "shortTitle": null, "number": "24"},
+       {"title": "Lake", "shortTitle": null, "number": "1"},
+       {"title": "脚本接口参考", "shortTitle": null, "number": "4"},
+       {"title": "访问环境", "shortTitle": null, "number": "1"},
+       {"title": "Elan 安装辅助函数", "shortTitle": null, "number": "2"}]},
+     "address": "/Build-Tools-and-Distribution/Lake/"}],
+   "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Script-API-Reference--Accessing-the-Environment":
+   [{"id":
+     "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Script-API-Reference--Accessing-the-Environment",
+     "data":
+     {"title": "访问环境",
+      "shortTitle": null,
+      "sectionNum": "24.1.4.1.",
+      "searchPriority": 50,
+      "context":
+      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
+       {"title": "构建工具与发行", "shortTitle": null, "number": "24"},
+       {"title": "Lake", "shortTitle": null, "number": "1"},
+       {"title": "脚本接口参考", "shortTitle": null, "number": "4"},
+       {"title": "访问环境", "shortTitle": null, "number": "1"}]},
+     "address": "/Build-Tools-and-Distribution/Lake/"}],
+   "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Lean-Format--Utilities":
+   [{"id":
+     "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Lean-Format--Utilities",
+     "data":
+     {"title": "实用工具",
+      "shortTitle": null,
+      "sectionNum": "24.1.3.2.7.",
+      "searchPriority": 50,
+      "context":
+      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
+       {"title": "构建工具与发行", "shortTitle": null, "number": "24"},
+       {"title": "Lake", "shortTitle": null, "number": "1"},
+       {"title": "配置文件格式", "shortTitle": null, "number": "3"},
+       {"title": "Lean 格式", "shortTitle": null, "number": "2"},
+       {"title": "实用工具", "shortTitle": null, "number": "7"}]},
+     "address": "/Build-Tools-and-Distribution/Lake/"}],
+   "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Lean-Format--Targets--Libraries":
+   [{"id":
+     "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Lean-Format--Targets--Libraries",
+     "data":
+     {"title": "库",
+      "shortTitle": null,
+      "sectionNum": "24.1.3.2.4.1.",
+      "searchPriority": 50,
+      "context":
+      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
+       {"title": "构建工具与发行", "shortTitle": null, "number": "24"},
+       {"title": "Lake", "shortTitle": null, "number": "1"},
+       {"title": "配置文件格式", "shortTitle": null, "number": "3"},
+       {"title": "Lean 格式", "shortTitle": null, "number": "2"},
+       {"title": "目标", "shortTitle": null, "number": "4"},
+       {"title": "库", "shortTitle": null, "number": "1"}]},
+     "address": "/Build-Tools-and-Distribution/Lake/"}],
+   "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Lean-Format--Targets--External-Libraries":
+   [{"id":
+     "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Lean-Format--Targets--External-Libraries",
+     "data":
+     {"title": "外部库",
+      "shortTitle": null,
+      "sectionNum": "24.1.3.2.4.3.",
+      "searchPriority": 50,
+      "context":
+      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
+       {"title": "构建工具与发行", "shortTitle": null, "number": "24"},
+       {"title": "Lake", "shortTitle": null, "number": "1"},
+       {"title": "配置文件格式", "shortTitle": null, "number": "3"},
+       {"title": "Lean 格式", "shortTitle": null, "number": "2"},
+       {"title": "目标", "shortTitle": null, "number": "4"},
+       {"title": "外部库", "shortTitle": null, "number": "3"}]},
+     "address": "/Build-Tools-and-Distribution/Lake/"}],
+   "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Lean-Format--Targets--Executables":
+   [{"id":
+     "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Lean-Format--Targets--Executables",
+     "data":
+     {"title": "可执行文件",
+      "shortTitle": null,
+      "sectionNum": "24.1.3.2.4.2.",
+      "searchPriority": 50,
+      "context":
+      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
+       {"title": "构建工具与发行", "shortTitle": null, "number": "24"},
+       {"title": "Lake", "shortTitle": null, "number": "1"},
+       {"title": "配置文件格式", "shortTitle": null, "number": "3"},
+       {"title": "Lean 格式", "shortTitle": null, "number": "2"},
+       {"title": "目标", "shortTitle": null, "number": "4"},
+       {"title": "可执行文件", "shortTitle": null, "number": "2"}]},
+     "address": "/Build-Tools-and-Distribution/Lake/"}],
+   "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Lean-Format--Targets--Custom-Targets":
+   [{"id":
+     "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Lean-Format--Targets--Custom-Targets",
+     "data":
+     {"title": "自定义目标",
+      "shortTitle": null,
+      "sectionNum": "24.1.3.2.4.4.",
+      "searchPriority": 50,
+      "context":
+      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
+       {"title": "构建工具与发行", "shortTitle": null, "number": "24"},
+       {"title": "Lake", "shortTitle": null, "number": "1"},
+       {"title": "配置文件格式", "shortTitle": null, "number": "3"},
+       {"title": "Lean 格式", "shortTitle": null, "number": "2"},
+       {"title": "目标", "shortTitle": null, "number": "4"},
+       {"title": "自定义目标", "shortTitle": null, "number": "4"}]},
+     "address": "/Build-Tools-and-Distribution/Lake/"}],
+   "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Lean-Format--Targets--Custom-Facets":
+   [{"id":
+     "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Lean-Format--Targets--Custom-Facets",
+     "data":
+     {"title": "自定义分面",
+      "shortTitle": null,
+      "sectionNum": "24.1.3.2.4.5.",
+      "searchPriority": 50,
+      "context":
+      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
+       {"title": "构建工具与发行", "shortTitle": null, "number": "24"},
+       {"title": "Lake", "shortTitle": null, "number": "1"},
+       {"title": "配置文件格式", "shortTitle": null, "number": "3"},
+       {"title": "Lean 格式", "shortTitle": null, "number": "2"},
+       {"title": "目标", "shortTitle": null, "number": "4"},
+       {"title": "自定义分面", "shortTitle": null, "number": "5"}]},
+     "address": "/Build-Tools-and-Distribution/Lake/"}],
+   "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Lean-Format--Targets":
+   [{"id":
+     "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Lean-Format--Targets",
+     "data":
+     {"title": "目标",
+      "shortTitle": null,
+      "sectionNum": "24.1.3.2.4.",
+      "searchPriority": 50,
+      "context":
+      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
+       {"title": "构建工具与发行", "shortTitle": null, "number": "24"},
+       {"title": "Lake", "shortTitle": null, "number": "1"},
+       {"title": "配置文件格式", "shortTitle": null, "number": "3"},
+       {"title": "Lean 格式", "shortTitle": null, "number": "2"},
+       {"title": "目标", "shortTitle": null, "number": "4"}]},
+     "address": "/Build-Tools-and-Distribution/Lake/"}],
+   "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Lean-Format--Scripts":
+   [{"id":
+     "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Lean-Format--Scripts",
+     "data":
+     {"title": "脚本",
+      "shortTitle": null,
+      "sectionNum": "24.1.3.2.6.",
+      "searchPriority": 50,
+      "context":
+      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
+       {"title": "构建工具与发行", "shortTitle": null, "number": "24"},
+       {"title": "Lake", "shortTitle": null, "number": "1"},
+       {"title": "配置文件格式", "shortTitle": null, "number": "3"},
+       {"title": "Lean 格式", "shortTitle": null, "number": "2"},
+       {"title": "脚本", "shortTitle": null, "number": "6"}]},
+     "address": "/Build-Tools-and-Distribution/Lake/"}],
+   "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Lean-Format--Packages":
+   [{"id":
+     "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Lean-Format--Packages",
+     "data":
+     {"title": "包",
+      "shortTitle": null,
+      "sectionNum": "24.1.3.2.2.",
+      "searchPriority": 50,
+      "context":
+      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
+       {"title": "构建工具与发行", "shortTitle": null, "number": "24"},
+       {"title": "Lake", "shortTitle": null, "number": "1"},
+       {"title": "配置文件格式", "shortTitle": null, "number": "3"},
+       {"title": "Lean 格式", "shortTitle": null, "number": "2"},
+       {"title": "包", "shortTitle": null, "number": "2"}]},
+     "address": "/Build-Tools-and-Distribution/Lake/"}],
+   "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Lean-Format--Dependencies":
+   [{"id":
+     "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Lean-Format--Dependencies",
+     "data":
+     {"title": "依赖项",
+      "shortTitle": null,
+      "sectionNum": "24.1.3.2.3.",
+      "searchPriority": 50,
+      "context":
+      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
+       {"title": "构建工具与发行", "shortTitle": null, "number": "24"},
+       {"title": "Lake", "shortTitle": null, "number": "1"},
+       {"title": "配置文件格式", "shortTitle": null, "number": "3"},
+       {"title": "Lean 格式", "shortTitle": null, "number": "2"},
+       {"title": "依赖项", "shortTitle": null, "number": "3"}]},
+     "address": "/Build-Tools-and-Distribution/Lake/"}],
+   "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Lean-Format--Declarative-Fields":
+   [{"id":
+     "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Lean-Format--Declarative-Fields",
+     "data":
+     {"title": "声明式字段",
+      "shortTitle": null,
+      "sectionNum": "24.1.3.2.1.",
+      "searchPriority": 50,
+      "context":
+      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
+       {"title": "构建工具与发行", "shortTitle": null, "number": "24"},
+       {"title": "Lake", "shortTitle": null, "number": "1"},
+       {"title": "配置文件格式", "shortTitle": null, "number": "3"},
+       {"title": "Lean 格式", "shortTitle": null, "number": "2"},
+       {"title": "声明式字段", "shortTitle": null, "number": "1"}]},
+     "address": "/Build-Tools-and-Distribution/Lake/"}],
+   "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Lean-Format--Configuration-Value-Types":
+   [{"id":
+     "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Lean-Format--Configuration-Value-Types",
+     "data":
+     {"title": "配置值类型",
+      "shortTitle": null,
+      "sectionNum": "24.1.3.2.5.",
+      "searchPriority": 50,
+      "context":
+      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
+       {"title": "构建工具与发行", "shortTitle": null, "number": "24"},
+       {"title": "Lake", "shortTitle": null, "number": "1"},
+       {"title": "配置文件格式", "shortTitle": null, "number": "3"},
+       {"title": "Lean 格式", "shortTitle": null, "number": "2"},
+       {"title": "配置值类型", "shortTitle": null, "number": "5"}]},
+     "address": "/Build-Tools-and-Distribution/Lake/"}],
+   "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Declarative-TOML-Format--Package-Configuration":
+   [{"id":
+     "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Declarative-TOML-Format--Package-Configuration",
+     "data":
+     {"title": "包配置",
+      "shortTitle": null,
+      "sectionNum": "24.1.3.1.1.",
+      "searchPriority": 50,
+      "context":
+      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
+       {"title": "构建工具与发行", "shortTitle": null, "number": "24"},
+       {"title": "Lake", "shortTitle": null, "number": "1"},
+       {"title": "配置文件格式", "shortTitle": null, "number": "3"},
+       {"title": "声明式 TOML 格式", "shortTitle": null, "number": "1"},
+       {"title": "包配置", "shortTitle": null, "number": "1"}]},
+     "address": "/Build-Tools-and-Distribution/Lake/"}],
+   "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Declarative-TOML-Format--Library-Targets":
+   [{"id":
+     "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Declarative-TOML-Format--Library-Targets",
+     "data":
+     {"title": "库目标",
+      "shortTitle": null,
+      "sectionNum": "24.1.3.1.3.",
+      "searchPriority": 50,
+      "context":
+      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
+       {"title": "构建工具与发行", "shortTitle": null, "number": "24"},
+       {"title": "Lake", "shortTitle": null, "number": "1"},
+       {"title": "配置文件格式", "shortTitle": null, "number": "3"},
+       {"title": "声明式 TOML 格式", "shortTitle": null, "number": "1"},
+       {"title": "库目标", "shortTitle": null, "number": "3"}]},
+     "address": "/Build-Tools-and-Distribution/Lake/"}],
+   "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Declarative-TOML-Format--Executable-Targets":
+   [{"id":
+     "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Declarative-TOML-Format--Executable-Targets",
+     "data":
+     {"title": "可执行文件目标",
+      "shortTitle": null,
+      "sectionNum": "24.1.3.1.4.",
+      "searchPriority": 50,
+      "context":
+      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
+       {"title": "构建工具与发行", "shortTitle": null, "number": "24"},
+       {"title": "Lake", "shortTitle": null, "number": "1"},
+       {"title": "配置文件格式", "shortTitle": null, "number": "3"},
+       {"title": "声明式 TOML 格式", "shortTitle": null, "number": "1"},
+       {"title": "可执行文件目标", "shortTitle": null, "number": "4"}]},
+     "address": "/Build-Tools-and-Distribution/Lake/"}],
+   "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Declarative-TOML-Format--Dependencies":
+   [{"id":
+     "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Declarative-TOML-Format--Dependencies",
+     "data":
+     {"title": "依赖项",
+      "shortTitle": null,
+      "sectionNum": "24.1.3.1.2.",
+      "searchPriority": 50,
+      "context":
+      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
+       {"title": "构建工具与发行", "shortTitle": null, "number": "24"},
+       {"title": "Lake", "shortTitle": null, "number": "1"},
+       {"title": "配置文件格式", "shortTitle": null, "number": "3"},
+       {"title": "声明式 TOML 格式", "shortTitle": null, "number": "1"},
+       {"title": "依赖项", "shortTitle": null, "number": "2"}]},
+     "address": "/Build-Tools-and-Distribution/Lake/"}],
+   "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Concepts-and-Terminology--GitHub-Release-Builds--Uploading":
+   [{"id":
+     "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Concepts-and-Terminology--GitHub-Release-Builds--Uploading",
+     "data":
+     {"title": "上传",
+      "shortTitle": null,
+      "sectionNum": "24.1.1.6.2.",
+      "searchPriority": 50,
+      "context":
+      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
+       {"title": "构建工具与发行", "shortTitle": null, "number": "24"},
+       {"title": "Lake", "shortTitle": null, "number": "1"},
+       {"title": "概念与术语", "shortTitle": null, "number": "1"},
+       {"title": "GitHub 发布版本构建", "shortTitle": null, "number": "6"},
+       {"title": "上传", "shortTitle": null, "number": "2"}]},
+     "address": "/Build-Tools-and-Distribution/Lake/"}],
+   "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Concepts-and-Terminology--GitHub-Release-Builds--Downloading":
+   [{"id":
+     "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Concepts-and-Terminology--GitHub-Release-Builds--Downloading",
+     "data":
+     {"title": "下载",
+      "shortTitle": null,
+      "sectionNum": "24.1.1.6.1.",
+      "searchPriority": 50,
+      "context":
+      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
+       {"title": "构建工具与发行", "shortTitle": null, "number": "24"},
+       {"title": "Lake", "shortTitle": null, "number": "1"},
+       {"title": "概念与术语", "shortTitle": null, "number": "1"},
+       {"title": "GitHub 发布版本构建", "shortTitle": null, "number": "6"},
+       {"title": "下载", "shortTitle": null, "number": "1"}]},
+     "address": "/Build-Tools-and-Distribution/Lake/"}],
+   "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Concepts-and-Terminology--Builds":
+   [{"id":
+     "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Concepts-and-Terminology--Builds",
+     "data":
+     {"title": "构建",
+      "shortTitle": null,
+      "sectionNum": "24.1.1.2.",
+      "searchPriority": 50,
+      "context":
+      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
+       {"title": "构建工具与发行", "shortTitle": null, "number": "24"},
+       {"title": "Lake", "shortTitle": null, "number": "1"},
+       {"title": "概念与术语", "shortTitle": null, "number": "1"},
+       {"title": "构建", "shortTitle": null, "number": "2"}]},
+     "address": "/Build-Tools-and-Distribution/Lake/"}],
+   "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Concepts-and-Terminology--Artifact-Caches--Mappings":
+   [{"id":
+     "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Concepts-and-Terminology--Artifact-Caches--Mappings",
+     "data":
+     {"title": "映射",
+      "shortTitle": null,
+      "sectionNum": "24.1.1.7.2.",
+      "searchPriority": 50,
+      "context":
+      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
+       {"title": "构建工具与发行", "shortTitle": null, "number": "24"},
+       {"title": "Lake", "shortTitle": null, "number": "1"},
+       {"title": "概念与术语", "shortTitle": null, "number": "1"},
+       {"title": "工件缓存", "shortTitle": null, "number": "7"},
+       {"title": "映射", "shortTitle": null, "number": "2"}]},
+     "address": "/Build-Tools-and-Distribution/Lake/"}],
+   "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Concepts-and-Terminology--Artifact-Caches--Configuration":
+   [{"id":
+     "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Concepts-and-Terminology--Artifact-Caches--Configuration",
+     "data":
+     {"title": "配置",
+      "shortTitle": null,
+      "sectionNum": "24.1.1.7.3.",
+      "searchPriority": 50,
+      "context":
+      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
+       {"title": "构建工具与发行", "shortTitle": null, "number": "24"},
+       {"title": "Lake", "shortTitle": null, "number": "1"},
+       {"title": "概念与术语", "shortTitle": null, "number": "1"},
+       {"title": "工件缓存", "shortTitle": null, "number": "7"},
+       {"title": "配置", "shortTitle": null, "number": "3"}]},
+     "address": "/Build-Tools-and-Distribution/Lake/"}],
+   "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Packaging-and-Distribution--Cached-Cloud-Builds":
+   [{"id":
+     "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Packaging-and-Distribution--Cached-Cloud-Builds",
+     "data":
+     {"title": "缓存的云端构建",
+      "shortTitle": null,
+      "sectionNum": "24.1.2.10.1.",
+      "searchPriority": 50,
+      "context":
+      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
+       {"title": "构建工具与发行", "shortTitle": null, "number": "24"},
+       {"title": "Lake", "shortTitle": null, "number": "1"},
+       {"title": "命令行界面", "shortTitle": null, "number": "2"},
+       {"title": "打包和分发", "shortTitle": null, "number": "10"},
+       {"title": "缓存的云端构建", "shortTitle": null, "number": "1"}]},
+     "address": "/Build-Tools-and-Distribution/Lake/"}],
+   "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Packaging-and-Distribution":
+   [{"id":
+     "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Packaging-and-Distribution",
+     "data":
+     {"title": "打包和分发",
+      "shortTitle": null,
+      "sectionNum": "24.1.2.10.",
+      "searchPriority": 50,
+      "context":
+      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
+       {"title": "构建工具与发行", "shortTitle": null, "number": "24"},
+       {"title": "Lake", "shortTitle": null, "number": "1"},
+       {"title": "命令行界面", "shortTitle": null, "number": "2"},
+       {"title": "打包和分发", "shortTitle": null, "number": "10"}]},
+     "address": "/Build-Tools-and-Distribution/Lake/"}],
+   "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Options":
+   [{"id":
+     "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Options",
+     "data":
+     {"title": "选项",
+      "shortTitle": null,
+      "sectionNum": "24.1.2.2.",
+      "searchPriority": 50,
+      "context":
+      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
+       {"title": "构建工具与发行", "shortTitle": null, "number": "24"},
+       {"title": "Lake", "shortTitle": null, "number": "1"},
+       {"title": "命令行界面", "shortTitle": null, "number": "2"},
+       {"title": "选项", "shortTitle": null, "number": "2"}]},
+     "address": "/Build-Tools-and-Distribution/Lake/"}],
+   "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Module-Imports":
+   [{"id":
+     "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Module-Imports",
+     "data":
+     {"title": "模块导入",
+      "shortTitle": null,
+      "sectionNum": "24.1.2.7.",
+      "searchPriority": 50,
+      "context":
+      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
+       {"title": "构建工具与发行", "shortTitle": null, "number": "24"},
+       {"title": "Lake", "shortTitle": null, "number": "1"},
+       {"title": "命令行界面", "shortTitle": null, "number": "2"},
+       {"title": "模块导入", "shortTitle": null, "number": "7"}]},
+     "address": "/Build-Tools-and-Distribution/Lake/"}],
+   "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Local-Caches":
+   [{"id":
+     "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Local-Caches",
+     "data":
+     {"title": "本地缓存",
+      "shortTitle": null,
+      "sectionNum": "24.1.2.11.",
+      "searchPriority": 50,
+      "context":
+      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
+       {"title": "构建工具与发行", "shortTitle": null, "number": "24"},
+       {"title": "Lake", "shortTitle": null, "number": "1"},
+       {"title": "命令行界面", "shortTitle": null, "number": "2"},
+       {"title": "本地缓存", "shortTitle": null, "number": "11"}]},
+     "address": "/Build-Tools-and-Distribution/Lake/"}],
+   "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Development-Tools--Tests-and-Linters":
+   [{"id":
+     "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Development-Tools--Tests-and-Linters",
+     "data":
+     {"title": "测试和代码检查",
+      "shortTitle": null,
+      "sectionNum": "24.1.2.8.1.",
+      "searchPriority": 50,
+      "context":
+      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
+       {"title": "构建工具与发行", "shortTitle": null, "number": "24"},
+       {"title": "Lake", "shortTitle": null, "number": "1"},
+       {"title": "命令行界面", "shortTitle": null, "number": "2"},
+       {"title": "开发工具", "shortTitle": null, "number": "8"},
+       {"title": "测试和代码检查", "shortTitle": null, "number": "1"}]},
+     "address": "/Build-Tools-and-Distribution/Lake/"}],
+   "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Development-Tools--Scripts":
+   [{"id":
+     "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Development-Tools--Scripts",
+     "data":
+     {"title": "脚本",
+      "shortTitle": null,
+      "sectionNum": "24.1.2.8.2.",
+      "searchPriority": 50,
+      "context":
+      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
+       {"title": "构建工具与发行", "shortTitle": null, "number": "24"},
+       {"title": "Lake", "shortTitle": null, "number": "1"},
+       {"title": "命令行界面", "shortTitle": null, "number": "2"},
+       {"title": "开发工具", "shortTitle": null, "number": "8"},
+       {"title": "脚本", "shortTitle": null, "number": "2"}]},
+     "address": "/Build-Tools-and-Distribution/Lake/"}],
+   "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Development-Tools--Language-Server":
+   [{"id":
+     "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Development-Tools--Language-Server",
+     "data":
+     {"title": "语言服务器",
+      "shortTitle": null,
+      "sectionNum": "24.1.2.8.3.",
+      "searchPriority": 50,
+      "context":
+      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
+       {"title": "构建工具与发行", "shortTitle": null, "number": "24"},
+       {"title": "Lake", "shortTitle": null, "number": "1"},
+       {"title": "命令行界面", "shortTitle": null, "number": "2"},
+       {"title": "开发工具", "shortTitle": null, "number": "8"},
+       {"title": "语言服务器", "shortTitle": null, "number": "3"}]},
+     "address": "/Build-Tools-and-Distribution/Lake/"}],
+   "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Development-Tools":
+   [{"id":
+     "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Development-Tools",
+     "data":
+     {"title": "开发工具",
+      "shortTitle": null,
+      "sectionNum": "24.1.2.8.",
+      "searchPriority": 50,
+      "context":
+      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
+       {"title": "构建工具与发行", "shortTitle": null, "number": "24"},
+       {"title": "Lake", "shortTitle": null, "number": "1"},
+       {"title": "命令行界面", "shortTitle": null, "number": "2"},
+       {"title": "开发工具", "shortTitle": null, "number": "8"}]},
+     "address": "/Build-Tools-and-Distribution/Lake/"}],
+   "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Dependency-Management":
+   [{"id":
+     "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Dependency-Management",
+     "data":
+     {"title": "依赖管理",
+      "shortTitle": null,
+      "sectionNum": "24.1.2.9.",
+      "searchPriority": 50,
+      "context":
+      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
+       {"title": "构建工具与发行", "shortTitle": null, "number": "24"},
+       {"title": "Lake", "shortTitle": null, "number": "1"},
+       {"title": "命令行界面", "shortTitle": null, "number": "2"},
+       {"title": "依赖管理", "shortTitle": null, "number": "9"}]},
+     "address": "/Build-Tools-and-Distribution/Lake/"}],
+   "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Creating-Packages":
+   [{"id":
+     "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Creating-Packages",
+     "data":
+     {"title": "创建包",
+      "shortTitle": null,
+      "sectionNum": "24.1.2.5.",
+      "searchPriority": 50,
+      "context":
+      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
+       {"title": "构建工具与发行", "shortTitle": null, "number": "24"},
+       {"title": "Lake", "shortTitle": null, "number": "1"},
+       {"title": "命令行界面", "shortTitle": null, "number": "2"},
+       {"title": "创建包", "shortTitle": null, "number": "5"}]},
+     "address": "/Build-Tools-and-Distribution/Lake/"}],
+   "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Controlling-Output":
+   [{"id":
+     "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Controlling-Output",
+     "data":
+     {"title": "控制输出",
+      "shortTitle": null,
+      "sectionNum": "24.1.2.3.",
+      "searchPriority": 50,
+      "context":
+      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
+       {"title": "构建工具与发行", "shortTitle": null, "number": "24"},
+       {"title": "Lake", "shortTitle": null, "number": "1"},
+       {"title": "命令行界面", "shortTitle": null, "number": "2"},
+       {"title": "控制输出", "shortTitle": null, "number": "3"}]},
+     "address": "/Build-Tools-and-Distribution/Lake/"}],
+   "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Configuration-Files":
+   [{"id":
+     "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Configuration-Files",
+     "data":
+     {"title": "配置文件",
+      "shortTitle": null,
+      "sectionNum": "24.1.2.12.",
+      "searchPriority": 50,
+      "context":
+      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
+       {"title": "构建工具与发行", "shortTitle": null, "number": "24"},
+       {"title": "Lake", "shortTitle": null, "number": "1"},
+       {"title": "命令行界面", "shortTitle": null, "number": "2"},
+       {"title": "配置文件", "shortTitle": null, "number": "12"}]},
+     "address": "/Build-Tools-and-Distribution/Lake/"}],
+   "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Building-and-Running":
+   [{"id":
+     "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Building-and-Running",
+     "data":
+     {"title": "构建与运行",
+      "shortTitle": null,
+      "sectionNum": "24.1.2.6.",
+      "searchPriority": 50,
+      "context":
+      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
+       {"title": "构建工具与发行", "shortTitle": null, "number": "24"},
+       {"title": "Lake", "shortTitle": null, "number": "1"},
+       {"title": "命令行界面", "shortTitle": null, "number": "2"},
+       {"title": "构建与运行", "shortTitle": null, "number": "6"}]},
+     "address": "/Build-Tools-and-Distribution/Lake/"}],
    "The-Lean-Language-Reference--Attributes--The--attribute--Command":
    [{"id": "The-Lean-Language-Reference--Attributes--The--attribute--Command",
      "data":
@@ -17889,786 +18425,6 @@
       [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
        {"title": "Error Explanations", "shortTitle": null, "number": null}]},
      "address": "/Error-Explanations/"}],
-   "Lean-__________________--Build-Tools-and-Distribution--Lake--Script-API-Reference--Accessing-the-Workspace":
-   [{"id":
-     "Lean-__________________--Build-Tools-and-Distribution--Lake--Script-API-Reference--Accessing-the-Workspace",
-     "data":
-     {"title": "Accessing the Workspace",
-      "shortTitle": null,
-      "sectionNum": "24.1.4.2.",
-      "searchPriority": 50,
-      "context":
-      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Build Tools and Distribution",
-        "shortTitle": null,
-        "number": "24"},
-       {"title": "Lake", "shortTitle": null, "number": "1"},
-       {"title": "Script API Reference", "shortTitle": null, "number": "4"},
-       {"title": "Accessing the Workspace",
-        "shortTitle": null,
-        "number": "2"}]},
-     "address": "/Build-Tools-and-Distribution/Lake/"}],
-   "Lean-__________________--Build-Tools-and-Distribution--Lake--Script-API-Reference--Accessing-the-Environment--Search-Path-Helpers":
-   [{"id":
-     "Lean-__________________--Build-Tools-and-Distribution--Lake--Script-API-Reference--Accessing-the-Environment--Search-Path-Helpers",
-     "data":
-     {"title": "Search Path Helpers",
-      "shortTitle": null,
-      "sectionNum": "24.1.4.1.1.",
-      "searchPriority": 50,
-      "context":
-      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Build Tools and Distribution",
-        "shortTitle": null,
-        "number": "24"},
-       {"title": "Lake", "shortTitle": null, "number": "1"},
-       {"title": "Script API Reference", "shortTitle": null, "number": "4"},
-       {"title": "Accessing the Environment",
-        "shortTitle": null,
-        "number": "1"},
-       {"title": "Search Path Helpers", "shortTitle": null, "number": "1"}]},
-     "address": "/Build-Tools-and-Distribution/Lake/"}],
-   "Lean-__________________--Build-Tools-and-Distribution--Lake--Script-API-Reference--Accessing-the-Environment--Lean-Install-Helpers":
-   [{"id":
-     "Lean-__________________--Build-Tools-and-Distribution--Lake--Script-API-Reference--Accessing-the-Environment--Lean-Install-Helpers",
-     "data":
-     {"title": "Lean Install Helpers",
-      "shortTitle": null,
-      "sectionNum": "24.1.4.1.3.",
-      "searchPriority": 50,
-      "context":
-      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Build Tools and Distribution",
-        "shortTitle": null,
-        "number": "24"},
-       {"title": "Lake", "shortTitle": null, "number": "1"},
-       {"title": "Script API Reference", "shortTitle": null, "number": "4"},
-       {"title": "Accessing the Environment",
-        "shortTitle": null,
-        "number": "1"},
-       {"title": "Lean Install Helpers", "shortTitle": null, "number": "3"}]},
-     "address": "/Build-Tools-and-Distribution/Lake/"}],
-   "Lean-__________________--Build-Tools-and-Distribution--Lake--Script-API-Reference--Accessing-the-Environment--Lake-Install-Helpers":
-   [{"id":
-     "Lean-__________________--Build-Tools-and-Distribution--Lake--Script-API-Reference--Accessing-the-Environment--Lake-Install-Helpers",
-     "data":
-     {"title": "Lake Install Helpers",
-      "shortTitle": null,
-      "sectionNum": "24.1.4.1.4.",
-      "searchPriority": 50,
-      "context":
-      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Build Tools and Distribution",
-        "shortTitle": null,
-        "number": "24"},
-       {"title": "Lake", "shortTitle": null, "number": "1"},
-       {"title": "Script API Reference", "shortTitle": null, "number": "4"},
-       {"title": "Accessing the Environment",
-        "shortTitle": null,
-        "number": "1"},
-       {"title": "Lake Install Helpers", "shortTitle": null, "number": "4"}]},
-     "address": "/Build-Tools-and-Distribution/Lake/"}],
-   "Lean-__________________--Build-Tools-and-Distribution--Lake--Script-API-Reference--Accessing-the-Environment--Elan-Install-Helpers":
-   [{"id":
-     "Lean-__________________--Build-Tools-and-Distribution--Lake--Script-API-Reference--Accessing-the-Environment--Elan-Install-Helpers",
-     "data":
-     {"title": "Elan Install Helpers",
-      "shortTitle": null,
-      "sectionNum": "24.1.4.1.2.",
-      "searchPriority": 50,
-      "context":
-      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Build Tools and Distribution",
-        "shortTitle": null,
-        "number": "24"},
-       {"title": "Lake", "shortTitle": null, "number": "1"},
-       {"title": "Script API Reference", "shortTitle": null, "number": "4"},
-       {"title": "Accessing the Environment",
-        "shortTitle": null,
-        "number": "1"},
-       {"title": "Elan Install Helpers", "shortTitle": null, "number": "2"}]},
-     "address": "/Build-Tools-and-Distribution/Lake/"}],
-   "Lean-__________________--Build-Tools-and-Distribution--Lake--Script-API-Reference--Accessing-the-Environment":
-   [{"id":
-     "Lean-__________________--Build-Tools-and-Distribution--Lake--Script-API-Reference--Accessing-the-Environment",
-     "data":
-     {"title": "Accessing the Environment",
-      "shortTitle": null,
-      "sectionNum": "24.1.4.1.",
-      "searchPriority": 50,
-      "context":
-      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Build Tools and Distribution",
-        "shortTitle": null,
-        "number": "24"},
-       {"title": "Lake", "shortTitle": null, "number": "1"},
-       {"title": "Script API Reference", "shortTitle": null, "number": "4"},
-       {"title": "Accessing the Environment",
-        "shortTitle": null,
-        "number": "1"}]},
-     "address": "/Build-Tools-and-Distribution/Lake/"}],
-   "Lean-__________________--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Lean-Format--Utilities":
-   [{"id":
-     "Lean-__________________--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Lean-Format--Utilities",
-     "data":
-     {"title": "Utilities",
-      "shortTitle": null,
-      "sectionNum": "24.1.3.2.7.",
-      "searchPriority": 50,
-      "context":
-      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Build Tools and Distribution",
-        "shortTitle": null,
-        "number": "24"},
-       {"title": "Lake", "shortTitle": null, "number": "1"},
-       {"title": "Configuration File Format",
-        "shortTitle": null,
-        "number": "3"},
-       {"title": "Lean Format", "shortTitle": null, "number": "2"},
-       {"title": "Utilities", "shortTitle": null, "number": "7"}]},
-     "address": "/Build-Tools-and-Distribution/Lake/"}],
-   "Lean-__________________--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Lean-Format--Targets--Libraries":
-   [{"id":
-     "Lean-__________________--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Lean-Format--Targets--Libraries",
-     "data":
-     {"title": "Libraries",
-      "shortTitle": null,
-      "sectionNum": "24.1.3.2.4.1.",
-      "searchPriority": 50,
-      "context":
-      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Build Tools and Distribution",
-        "shortTitle": null,
-        "number": "24"},
-       {"title": "Lake", "shortTitle": null, "number": "1"},
-       {"title": "Configuration File Format",
-        "shortTitle": null,
-        "number": "3"},
-       {"title": "Lean Format", "shortTitle": null, "number": "2"},
-       {"title": "Targets", "shortTitle": null, "number": "4"},
-       {"title": "Libraries", "shortTitle": null, "number": "1"}]},
-     "address": "/Build-Tools-and-Distribution/Lake/"}],
-   "Lean-__________________--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Lean-Format--Targets--External-Libraries":
-   [{"id":
-     "Lean-__________________--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Lean-Format--Targets--External-Libraries",
-     "data":
-     {"title": "External Libraries",
-      "shortTitle": null,
-      "sectionNum": "24.1.3.2.4.3.",
-      "searchPriority": 50,
-      "context":
-      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Build Tools and Distribution",
-        "shortTitle": null,
-        "number": "24"},
-       {"title": "Lake", "shortTitle": null, "number": "1"},
-       {"title": "Configuration File Format",
-        "shortTitle": null,
-        "number": "3"},
-       {"title": "Lean Format", "shortTitle": null, "number": "2"},
-       {"title": "Targets", "shortTitle": null, "number": "4"},
-       {"title": "External Libraries", "shortTitle": null, "number": "3"}]},
-     "address": "/Build-Tools-and-Distribution/Lake/"}],
-   "Lean-__________________--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Lean-Format--Targets--Executables":
-   [{"id":
-     "Lean-__________________--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Lean-Format--Targets--Executables",
-     "data":
-     {"title": "Executables",
-      "shortTitle": null,
-      "sectionNum": "24.1.3.2.4.2.",
-      "searchPriority": 50,
-      "context":
-      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Build Tools and Distribution",
-        "shortTitle": null,
-        "number": "24"},
-       {"title": "Lake", "shortTitle": null, "number": "1"},
-       {"title": "Configuration File Format",
-        "shortTitle": null,
-        "number": "3"},
-       {"title": "Lean Format", "shortTitle": null, "number": "2"},
-       {"title": "Targets", "shortTitle": null, "number": "4"},
-       {"title": "Executables", "shortTitle": null, "number": "2"}]},
-     "address": "/Build-Tools-and-Distribution/Lake/"}],
-   "Lean-__________________--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Lean-Format--Targets--Custom-Targets":
-   [{"id":
-     "Lean-__________________--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Lean-Format--Targets--Custom-Targets",
-     "data":
-     {"title": "Custom Targets",
-      "shortTitle": null,
-      "sectionNum": "24.1.3.2.4.4.",
-      "searchPriority": 50,
-      "context":
-      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Build Tools and Distribution",
-        "shortTitle": null,
-        "number": "24"},
-       {"title": "Lake", "shortTitle": null, "number": "1"},
-       {"title": "Configuration File Format",
-        "shortTitle": null,
-        "number": "3"},
-       {"title": "Lean Format", "shortTitle": null, "number": "2"},
-       {"title": "Targets", "shortTitle": null, "number": "4"},
-       {"title": "Custom Targets", "shortTitle": null, "number": "4"}]},
-     "address": "/Build-Tools-and-Distribution/Lake/"}],
-   "Lean-__________________--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Lean-Format--Targets--Custom-Facets":
-   [{"id":
-     "Lean-__________________--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Lean-Format--Targets--Custom-Facets",
-     "data":
-     {"title": "Custom Facets",
-      "shortTitle": null,
-      "sectionNum": "24.1.3.2.4.5.",
-      "searchPriority": 50,
-      "context":
-      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Build Tools and Distribution",
-        "shortTitle": null,
-        "number": "24"},
-       {"title": "Lake", "shortTitle": null, "number": "1"},
-       {"title": "Configuration File Format",
-        "shortTitle": null,
-        "number": "3"},
-       {"title": "Lean Format", "shortTitle": null, "number": "2"},
-       {"title": "Targets", "shortTitle": null, "number": "4"},
-       {"title": "Custom Facets", "shortTitle": null, "number": "5"}]},
-     "address": "/Build-Tools-and-Distribution/Lake/"}],
-   "Lean-__________________--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Lean-Format--Targets":
-   [{"id":
-     "Lean-__________________--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Lean-Format--Targets",
-     "data":
-     {"title": "Targets",
-      "shortTitle": null,
-      "sectionNum": "24.1.3.2.4.",
-      "searchPriority": 50,
-      "context":
-      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Build Tools and Distribution",
-        "shortTitle": null,
-        "number": "24"},
-       {"title": "Lake", "shortTitle": null, "number": "1"},
-       {"title": "Configuration File Format",
-        "shortTitle": null,
-        "number": "3"},
-       {"title": "Lean Format", "shortTitle": null, "number": "2"},
-       {"title": "Targets", "shortTitle": null, "number": "4"}]},
-     "address": "/Build-Tools-and-Distribution/Lake/"}],
-   "Lean-__________________--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Lean-Format--Scripts":
-   [{"id":
-     "Lean-__________________--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Lean-Format--Scripts",
-     "data":
-     {"title": "Scripts",
-      "shortTitle": null,
-      "sectionNum": "24.1.3.2.6.",
-      "searchPriority": 50,
-      "context":
-      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Build Tools and Distribution",
-        "shortTitle": null,
-        "number": "24"},
-       {"title": "Lake", "shortTitle": null, "number": "1"},
-       {"title": "Configuration File Format",
-        "shortTitle": null,
-        "number": "3"},
-       {"title": "Lean Format", "shortTitle": null, "number": "2"},
-       {"title": "Scripts", "shortTitle": null, "number": "6"}]},
-     "address": "/Build-Tools-and-Distribution/Lake/"}],
-   "Lean-__________________--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Lean-Format--Packages":
-   [{"id":
-     "Lean-__________________--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Lean-Format--Packages",
-     "data":
-     {"title": "Packages",
-      "shortTitle": null,
-      "sectionNum": "24.1.3.2.2.",
-      "searchPriority": 50,
-      "context":
-      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Build Tools and Distribution",
-        "shortTitle": null,
-        "number": "24"},
-       {"title": "Lake", "shortTitle": null, "number": "1"},
-       {"title": "Configuration File Format",
-        "shortTitle": null,
-        "number": "3"},
-       {"title": "Lean Format", "shortTitle": null, "number": "2"},
-       {"title": "Packages", "shortTitle": null, "number": "2"}]},
-     "address": "/Build-Tools-and-Distribution/Lake/"}],
-   "Lean-__________________--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Lean-Format--Dependencies":
-   [{"id":
-     "Lean-__________________--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Lean-Format--Dependencies",
-     "data":
-     {"title": "Dependencies",
-      "shortTitle": null,
-      "sectionNum": "24.1.3.2.3.",
-      "searchPriority": 50,
-      "context":
-      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Build Tools and Distribution",
-        "shortTitle": null,
-        "number": "24"},
-       {"title": "Lake", "shortTitle": null, "number": "1"},
-       {"title": "Configuration File Format",
-        "shortTitle": null,
-        "number": "3"},
-       {"title": "Lean Format", "shortTitle": null, "number": "2"},
-       {"title": "Dependencies", "shortTitle": null, "number": "3"}]},
-     "address": "/Build-Tools-and-Distribution/Lake/"}],
-   "Lean-__________________--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Lean-Format--Declarative-Fields":
-   [{"id":
-     "Lean-__________________--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Lean-Format--Declarative-Fields",
-     "data":
-     {"title": "Declarative Fields",
-      "shortTitle": null,
-      "sectionNum": "24.1.3.2.1.",
-      "searchPriority": 50,
-      "context":
-      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Build Tools and Distribution",
-        "shortTitle": null,
-        "number": "24"},
-       {"title": "Lake", "shortTitle": null, "number": "1"},
-       {"title": "Configuration File Format",
-        "shortTitle": null,
-        "number": "3"},
-       {"title": "Lean Format", "shortTitle": null, "number": "2"},
-       {"title": "Declarative Fields", "shortTitle": null, "number": "1"}]},
-     "address": "/Build-Tools-and-Distribution/Lake/"}],
-   "Lean-__________________--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Lean-Format--Configuration-Value-Types":
-   [{"id":
-     "Lean-__________________--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Lean-Format--Configuration-Value-Types",
-     "data":
-     {"title": "Configuration Value Types",
-      "shortTitle": null,
-      "sectionNum": "24.1.3.2.5.",
-      "searchPriority": 50,
-      "context":
-      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Build Tools and Distribution",
-        "shortTitle": null,
-        "number": "24"},
-       {"title": "Lake", "shortTitle": null, "number": "1"},
-       {"title": "Configuration File Format",
-        "shortTitle": null,
-        "number": "3"},
-       {"title": "Lean Format", "shortTitle": null, "number": "2"},
-       {"title": "Configuration Value Types",
-        "shortTitle": null,
-        "number": "5"}]},
-     "address": "/Build-Tools-and-Distribution/Lake/"}],
-   "Lean-__________________--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Declarative-TOML-Format--Package-Configuration":
-   [{"id":
-     "Lean-__________________--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Declarative-TOML-Format--Package-Configuration",
-     "data":
-     {"title": "Package Configuration",
-      "shortTitle": null,
-      "sectionNum": "24.1.3.1.1.",
-      "searchPriority": 50,
-      "context":
-      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Build Tools and Distribution",
-        "shortTitle": null,
-        "number": "24"},
-       {"title": "Lake", "shortTitle": null, "number": "1"},
-       {"title": "Configuration File Format",
-        "shortTitle": null,
-        "number": "3"},
-       {"title": "Declarative TOML Format", "shortTitle": null, "number": "1"},
-       {"title": "Package Configuration", "shortTitle": null, "number": "1"}]},
-     "address": "/Build-Tools-and-Distribution/Lake/"}],
-   "Lean-__________________--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Declarative-TOML-Format--Library-Targets":
-   [{"id":
-     "Lean-__________________--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Declarative-TOML-Format--Library-Targets",
-     "data":
-     {"title": "Library Targets",
-      "shortTitle": null,
-      "sectionNum": "24.1.3.1.3.",
-      "searchPriority": 50,
-      "context":
-      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Build Tools and Distribution",
-        "shortTitle": null,
-        "number": "24"},
-       {"title": "Lake", "shortTitle": null, "number": "1"},
-       {"title": "Configuration File Format",
-        "shortTitle": null,
-        "number": "3"},
-       {"title": "Declarative TOML Format", "shortTitle": null, "number": "1"},
-       {"title": "Library Targets", "shortTitle": null, "number": "3"}]},
-     "address": "/Build-Tools-and-Distribution/Lake/"}],
-   "Lean-__________________--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Declarative-TOML-Format--Executable-Targets":
-   [{"id":
-     "Lean-__________________--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Declarative-TOML-Format--Executable-Targets",
-     "data":
-     {"title": "Executable Targets",
-      "shortTitle": null,
-      "sectionNum": "24.1.3.1.4.",
-      "searchPriority": 50,
-      "context":
-      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Build Tools and Distribution",
-        "shortTitle": null,
-        "number": "24"},
-       {"title": "Lake", "shortTitle": null, "number": "1"},
-       {"title": "Configuration File Format",
-        "shortTitle": null,
-        "number": "3"},
-       {"title": "Declarative TOML Format", "shortTitle": null, "number": "1"},
-       {"title": "Executable Targets", "shortTitle": null, "number": "4"}]},
-     "address": "/Build-Tools-and-Distribution/Lake/"}],
-   "Lean-__________________--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Declarative-TOML-Format--Dependencies":
-   [{"id":
-     "Lean-__________________--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Declarative-TOML-Format--Dependencies",
-     "data":
-     {"title": "Dependencies",
-      "shortTitle": null,
-      "sectionNum": "24.1.3.1.2.",
-      "searchPriority": 50,
-      "context":
-      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Build Tools and Distribution",
-        "shortTitle": null,
-        "number": "24"},
-       {"title": "Lake", "shortTitle": null, "number": "1"},
-       {"title": "Configuration File Format",
-        "shortTitle": null,
-        "number": "3"},
-       {"title": "Declarative TOML Format", "shortTitle": null, "number": "1"},
-       {"title": "Dependencies", "shortTitle": null, "number": "2"}]},
-     "address": "/Build-Tools-and-Distribution/Lake/"}],
-   "Lean-__________________--Build-Tools-and-Distribution--Lake--Concepts-and-Terminology--GitHub-Release-Builds--Uploading":
-   [{"id":
-     "Lean-__________________--Build-Tools-and-Distribution--Lake--Concepts-and-Terminology--GitHub-Release-Builds--Uploading",
-     "data":
-     {"title": "Uploading",
-      "shortTitle": null,
-      "sectionNum": "24.1.1.6.2.",
-      "searchPriority": 50,
-      "context":
-      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Build Tools and Distribution",
-        "shortTitle": null,
-        "number": "24"},
-       {"title": "Lake", "shortTitle": null, "number": "1"},
-       {"title": "Concepts and Terminology", "shortTitle": null, "number": "1"},
-       {"title": "GitHub Release Builds", "shortTitle": null, "number": "6"},
-       {"title": "Uploading", "shortTitle": null, "number": "2"}]},
-     "address": "/Build-Tools-and-Distribution/Lake/"}],
-   "Lean-__________________--Build-Tools-and-Distribution--Lake--Concepts-and-Terminology--GitHub-Release-Builds--Downloading":
-   [{"id":
-     "Lean-__________________--Build-Tools-and-Distribution--Lake--Concepts-and-Terminology--GitHub-Release-Builds--Downloading",
-     "data":
-     {"title": "Downloading",
-      "shortTitle": null,
-      "sectionNum": "24.1.1.6.1.",
-      "searchPriority": 50,
-      "context":
-      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Build Tools and Distribution",
-        "shortTitle": null,
-        "number": "24"},
-       {"title": "Lake", "shortTitle": null, "number": "1"},
-       {"title": "Concepts and Terminology", "shortTitle": null, "number": "1"},
-       {"title": "GitHub Release Builds", "shortTitle": null, "number": "6"},
-       {"title": "Downloading", "shortTitle": null, "number": "1"}]},
-     "address": "/Build-Tools-and-Distribution/Lake/"}],
-   "Lean-__________________--Build-Tools-and-Distribution--Lake--Concepts-and-Terminology--Builds":
-   [{"id":
-     "Lean-__________________--Build-Tools-and-Distribution--Lake--Concepts-and-Terminology--Builds",
-     "data":
-     {"title": "Builds",
-      "shortTitle": null,
-      "sectionNum": "24.1.1.2.",
-      "searchPriority": 50,
-      "context":
-      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Build Tools and Distribution",
-        "shortTitle": null,
-        "number": "24"},
-       {"title": "Lake", "shortTitle": null, "number": "1"},
-       {"title": "Concepts and Terminology", "shortTitle": null, "number": "1"},
-       {"title": "Builds", "shortTitle": null, "number": "2"}]},
-     "address": "/Build-Tools-and-Distribution/Lake/"}],
-   "Lean-__________________--Build-Tools-and-Distribution--Lake--Concepts-and-Terminology--Artifact-Caches--Mappings":
-   [{"id":
-     "Lean-__________________--Build-Tools-and-Distribution--Lake--Concepts-and-Terminology--Artifact-Caches--Mappings",
-     "data":
-     {"title": "Mappings",
-      "shortTitle": null,
-      "sectionNum": "24.1.1.7.2.",
-      "searchPriority": 50,
-      "context":
-      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Build Tools and Distribution",
-        "shortTitle": null,
-        "number": "24"},
-       {"title": "Lake", "shortTitle": null, "number": "1"},
-       {"title": "Concepts and Terminology", "shortTitle": null, "number": "1"},
-       {"title": "Artifact Caches", "shortTitle": null, "number": "7"},
-       {"title": "Mappings", "shortTitle": null, "number": "2"}]},
-     "address": "/Build-Tools-and-Distribution/Lake/"}],
-   "Lean-__________________--Build-Tools-and-Distribution--Lake--Concepts-and-Terminology--Artifact-Caches--Configuration":
-   [{"id":
-     "Lean-__________________--Build-Tools-and-Distribution--Lake--Concepts-and-Terminology--Artifact-Caches--Configuration",
-     "data":
-     {"title": "Configuration",
-      "shortTitle": null,
-      "sectionNum": "24.1.1.7.3.",
-      "searchPriority": 50,
-      "context":
-      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Build Tools and Distribution",
-        "shortTitle": null,
-        "number": "24"},
-       {"title": "Lake", "shortTitle": null, "number": "1"},
-       {"title": "Concepts and Terminology", "shortTitle": null, "number": "1"},
-       {"title": "Artifact Caches", "shortTitle": null, "number": "7"},
-       {"title": "Configuration", "shortTitle": null, "number": "3"}]},
-     "address": "/Build-Tools-and-Distribution/Lake/"}],
-   "Lean-__________________--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Packaging-and-Distribution--Cached-Cloud-Builds":
-   [{"id":
-     "Lean-__________________--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Packaging-and-Distribution--Cached-Cloud-Builds",
-     "data":
-     {"title": "Cached Cloud Builds",
-      "shortTitle": null,
-      "sectionNum": "24.1.2.10.1.",
-      "searchPriority": 50,
-      "context":
-      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Build Tools and Distribution",
-        "shortTitle": null,
-        "number": "24"},
-       {"title": "Lake", "shortTitle": null, "number": "1"},
-       {"title": "Command-Line Interface", "shortTitle": null, "number": "2"},
-       {"title": "Packaging and Distribution",
-        "shortTitle": null,
-        "number": "10"},
-       {"title": "Cached Cloud Builds", "shortTitle": null, "number": "1"}]},
-     "address": "/Build-Tools-and-Distribution/Lake/"}],
-   "Lean-__________________--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Packaging-and-Distribution":
-   [{"id":
-     "Lean-__________________--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Packaging-and-Distribution",
-     "data":
-     {"title": "Packaging and Distribution",
-      "shortTitle": null,
-      "sectionNum": "24.1.2.10.",
-      "searchPriority": 50,
-      "context":
-      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Build Tools and Distribution",
-        "shortTitle": null,
-        "number": "24"},
-       {"title": "Lake", "shortTitle": null, "number": "1"},
-       {"title": "Command-Line Interface", "shortTitle": null, "number": "2"},
-       {"title": "Packaging and Distribution",
-        "shortTitle": null,
-        "number": "10"}]},
-     "address": "/Build-Tools-and-Distribution/Lake/"}],
-   "Lean-__________________--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Options":
-   [{"id":
-     "Lean-__________________--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Options",
-     "data":
-     {"title": "Options",
-      "shortTitle": null,
-      "sectionNum": "24.1.2.2.",
-      "searchPriority": 50,
-      "context":
-      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Build Tools and Distribution",
-        "shortTitle": null,
-        "number": "24"},
-       {"title": "Lake", "shortTitle": null, "number": "1"},
-       {"title": "Command-Line Interface", "shortTitle": null, "number": "2"},
-       {"title": "Options", "shortTitle": null, "number": "2"}]},
-     "address": "/Build-Tools-and-Distribution/Lake/"}],
-   "Lean-__________________--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Module-Imports":
-   [{"id":
-     "Lean-__________________--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Module-Imports",
-     "data":
-     {"title": "Module Imports",
-      "shortTitle": null,
-      "sectionNum": "24.1.2.7.",
-      "searchPriority": 50,
-      "context":
-      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Build Tools and Distribution",
-        "shortTitle": null,
-        "number": "24"},
-       {"title": "Lake", "shortTitle": null, "number": "1"},
-       {"title": "Command-Line Interface", "shortTitle": null, "number": "2"},
-       {"title": "Module Imports", "shortTitle": null, "number": "7"}]},
-     "address": "/Build-Tools-and-Distribution/Lake/"}],
-   "Lean-__________________--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Local-Caches":
-   [{"id":
-     "Lean-__________________--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Local-Caches",
-     "data":
-     {"title": "Local Caches",
-      "shortTitle": null,
-      "sectionNum": "24.1.2.11.",
-      "searchPriority": 50,
-      "context":
-      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Build Tools and Distribution",
-        "shortTitle": null,
-        "number": "24"},
-       {"title": "Lake", "shortTitle": null, "number": "1"},
-       {"title": "Command-Line Interface", "shortTitle": null, "number": "2"},
-       {"title": "Local Caches", "shortTitle": null, "number": "11"}]},
-     "address": "/Build-Tools-and-Distribution/Lake/"}],
-   "Lean-__________________--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Development-Tools--Tests-and-Linters":
-   [{"id":
-     "Lean-__________________--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Development-Tools--Tests-and-Linters",
-     "data":
-     {"title": "Tests and Linters",
-      "shortTitle": null,
-      "sectionNum": "24.1.2.8.1.",
-      "searchPriority": 50,
-      "context":
-      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Build Tools and Distribution",
-        "shortTitle": null,
-        "number": "24"},
-       {"title": "Lake", "shortTitle": null, "number": "1"},
-       {"title": "Command-Line Interface", "shortTitle": null, "number": "2"},
-       {"title": "Development Tools", "shortTitle": null, "number": "8"},
-       {"title": "Tests and Linters", "shortTitle": null, "number": "1"}]},
-     "address": "/Build-Tools-and-Distribution/Lake/"}],
-   "Lean-__________________--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Development-Tools--Scripts":
-   [{"id":
-     "Lean-__________________--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Development-Tools--Scripts",
-     "data":
-     {"title": "Scripts",
-      "shortTitle": null,
-      "sectionNum": "24.1.2.8.2.",
-      "searchPriority": 50,
-      "context":
-      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Build Tools and Distribution",
-        "shortTitle": null,
-        "number": "24"},
-       {"title": "Lake", "shortTitle": null, "number": "1"},
-       {"title": "Command-Line Interface", "shortTitle": null, "number": "2"},
-       {"title": "Development Tools", "shortTitle": null, "number": "8"},
-       {"title": "Scripts", "shortTitle": null, "number": "2"}]},
-     "address": "/Build-Tools-and-Distribution/Lake/"}],
-   "Lean-__________________--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Development-Tools--Language-Server":
-   [{"id":
-     "Lean-__________________--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Development-Tools--Language-Server",
-     "data":
-     {"title": "Language Server",
-      "shortTitle": null,
-      "sectionNum": "24.1.2.8.3.",
-      "searchPriority": 50,
-      "context":
-      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Build Tools and Distribution",
-        "shortTitle": null,
-        "number": "24"},
-       {"title": "Lake", "shortTitle": null, "number": "1"},
-       {"title": "Command-Line Interface", "shortTitle": null, "number": "2"},
-       {"title": "Development Tools", "shortTitle": null, "number": "8"},
-       {"title": "Language Server", "shortTitle": null, "number": "3"}]},
-     "address": "/Build-Tools-and-Distribution/Lake/"}],
-   "Lean-__________________--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Development-Tools":
-   [{"id":
-     "Lean-__________________--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Development-Tools",
-     "data":
-     {"title": "Development Tools",
-      "shortTitle": null,
-      "sectionNum": "24.1.2.8.",
-      "searchPriority": 50,
-      "context":
-      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Build Tools and Distribution",
-        "shortTitle": null,
-        "number": "24"},
-       {"title": "Lake", "shortTitle": null, "number": "1"},
-       {"title": "Command-Line Interface", "shortTitle": null, "number": "2"},
-       {"title": "Development Tools", "shortTitle": null, "number": "8"}]},
-     "address": "/Build-Tools-and-Distribution/Lake/"}],
-   "Lean-__________________--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Dependency-Management":
-   [{"id":
-     "Lean-__________________--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Dependency-Management",
-     "data":
-     {"title": "Dependency Management",
-      "shortTitle": null,
-      "sectionNum": "24.1.2.9.",
-      "searchPriority": 50,
-      "context":
-      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Build Tools and Distribution",
-        "shortTitle": null,
-        "number": "24"},
-       {"title": "Lake", "shortTitle": null, "number": "1"},
-       {"title": "Command-Line Interface", "shortTitle": null, "number": "2"},
-       {"title": "Dependency Management", "shortTitle": null, "number": "9"}]},
-     "address": "/Build-Tools-and-Distribution/Lake/"}],
-   "Lean-__________________--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Creating-Packages":
-   [{"id":
-     "Lean-__________________--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Creating-Packages",
-     "data":
-     {"title": "Creating Packages",
-      "shortTitle": null,
-      "sectionNum": "24.1.2.5.",
-      "searchPriority": 50,
-      "context":
-      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Build Tools and Distribution",
-        "shortTitle": null,
-        "number": "24"},
-       {"title": "Lake", "shortTitle": null, "number": "1"},
-       {"title": "Command-Line Interface", "shortTitle": null, "number": "2"},
-       {"title": "Creating Packages", "shortTitle": null, "number": "5"}]},
-     "address": "/Build-Tools-and-Distribution/Lake/"}],
-   "Lean-__________________--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Controlling-Output":
-   [{"id":
-     "Lean-__________________--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Controlling-Output",
-     "data":
-     {"title": "Controlling Output",
-      "shortTitle": null,
-      "sectionNum": "24.1.2.3.",
-      "searchPriority": 50,
-      "context":
-      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Build Tools and Distribution",
-        "shortTitle": null,
-        "number": "24"},
-       {"title": "Lake", "shortTitle": null, "number": "1"},
-       {"title": "Command-Line Interface", "shortTitle": null, "number": "2"},
-       {"title": "Controlling Output", "shortTitle": null, "number": "3"}]},
-     "address": "/Build-Tools-and-Distribution/Lake/"}],
-   "Lean-__________________--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Configuration-Files":
-   [{"id":
-     "Lean-__________________--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Configuration-Files",
-     "data":
-     {"title": "Configuration Files",
-      "shortTitle": null,
-      "sectionNum": "24.1.2.12.",
-      "searchPriority": 50,
-      "context":
-      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Build Tools and Distribution",
-        "shortTitle": null,
-        "number": "24"},
-       {"title": "Lake", "shortTitle": null, "number": "1"},
-       {"title": "Command-Line Interface", "shortTitle": null, "number": "2"},
-       {"title": "Configuration Files", "shortTitle": null, "number": "12"}]},
-     "address": "/Build-Tools-and-Distribution/Lake/"}],
-   "Lean-__________________--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Building-and-Running":
-   [{"id":
-     "Lean-__________________--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Building-and-Running",
-     "data":
-     {"title": "Building and Running",
-      "shortTitle": null,
-      "sectionNum": "24.1.2.6.",
-      "searchPriority": 50,
-      "context":
-      [{"title": "Lean 语言参考手册", "shortTitle": null, "number": null},
-       {"title": "Build Tools and Distribution",
-        "shortTitle": null,
-        "number": "24"},
-       {"title": "Lake", "shortTitle": null, "number": "1"},
-       {"title": "Command-Line Interface", "shortTitle": null, "number": "2"},
-       {"title": "Building and Running", "shortTitle": null, "number": "6"}]},
-     "address": "/Build-Tools-and-Distribution/Lake/"}],
    "Lean-__________________--Basic-Types--Tuples--Ordered-Pairs--API-Reference--Transformation":
    [{"id":
      "Lean-__________________--Basic-Types--Tuples--Ordered-Pairs--API-Reference--Transformation",
@@ -34599,35 +34355,35 @@
       {"display": "Later",
        "context": ["Lean 语言参考手册", "强制转换", "强制转换插入", "用强制转换控制求值"]}},
      "address": "/Coercions/Coercion-Insertion/"}],
-   "Lake.CustomOut.«my-package-tests» (in Test Driver ( lakefile.lean ))":
+   "Lake.CustomOut.«my-package-tests» (in 测试驱动（ lakefile.lean ）)":
    [{"id":
-     "Lake___CustomOut____FLQQ_my-package-tests_FLQQ_-_LPAR_in-Test-Driver-_LPAR_-lakefile___lean-_RPAR__RPAR_",
+     "Lake___CustomOut____FLQQ_my-package-tests_FLQQ_-_LPAR_in-_______________-lakefile___lean-____RPAR_",
      "data":
-     {"/Build-Tools-and-Distribution/Lake/#Lake___CustomOut____FLQQ_my-package-tests_FLQQ_-_LPAR_in-Test-Driver-_LPAR_-lakefile___lean-_RPAR__RPAR_":
+     {"/Build-Tools-and-Distribution/Lake/#Lake___CustomOut____FLQQ_my-package-tests_FLQQ_-_LPAR_in-_______________-lakefile___lean-____RPAR_":
       {"display": "«my-package-tests»",
        "context":
        ["Lean 语言参考手册",
-        "Build Tools and Distribution",
+        "构建工具与发行",
         "Lake",
-        "Concepts and Terminology",
-        "Test and Lint Drivers",
-        "Configuring a Test Driver",
-        "Test Driver ( lakefile.lean )"]}},
+        "概念与术语",
+        "测试和代码检查驱动程序",
+        "配置测试驱动程序",
+        "测试驱动（ lakefile.lean ）"]}},
      "address": "/Build-Tools-and-Distribution/Lake/"}],
-   "Lake.CustomOut.«my-package-lint» (in Lint Driver ( lakefile.lean ))":
+   "Lake.CustomOut.«my-package-lint» (in 代码检查驱动（ lakefile.lean ）)":
    [{"id":
-     "Lake___CustomOut____FLQQ_my-package-lint_FLQQ_-_LPAR_in-Lint-Driver-_LPAR_-lakefile___lean-_RPAR__RPAR_",
+     "Lake___CustomOut____FLQQ_my-package-lint_FLQQ_-_LPAR_in-_____________________-lakefile___lean-____RPAR_",
      "data":
-     {"/Build-Tools-and-Distribution/Lake/#Lake___CustomOut____FLQQ_my-package-lint_FLQQ_-_LPAR_in-Lint-Driver-_LPAR_-lakefile___lean-_RPAR__RPAR_":
+     {"/Build-Tools-and-Distribution/Lake/#Lake___CustomOut____FLQQ_my-package-lint_FLQQ_-_LPAR_in-_____________________-lakefile___lean-____RPAR_":
       {"display": "«my-package-lint»",
        "context":
        ["Lean 语言参考手册",
-        "Build Tools and Distribution",
+        "构建工具与发行",
         "Lake",
-        "Concepts and Terminology",
-        "Test and Lint Drivers",
-        "Lint Drivers",
-        "Lint Driver ( lakefile.lean )"]}},
+        "概念与术语",
+        "测试和代码检查驱动程序",
+        "代码检查驱动程序",
+        "代码检查驱动（ lakefile.lean ）"]}},
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "L (in 自动宇宙参数与  universe  命令)":
    [{"id": "L-_LPAR_in-_____________________--universe--_______RPAR_-next-next",
@@ -38364,8 +38120,9 @@
      "data": {"term": "Σ-types"},
      "address": "/Basic-Types/Tuples/"}],
    "workspace":
-   [{"id": "--tech-term-workspace",
-     "data": {"term": "workspace"},
+   [{"id":
+     "--tech-term-_________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": {"term": "工作区"},
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "witnes":
    [{"id": "--tech-term-witness",
@@ -38466,16 +38223,19 @@
      "data": {"term": "trivial wrapper"},
      "address": "/The Type System/Inductive Types/"}],
    "transitive dependency":
-   [{"id": "--tech-term-transitive-dependencies",
-     "data": {"term": "transitive dependencies"},
+   [{"id":
+     "--tech-term-____________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": {"term": "传递依赖"},
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "trace file":
-   [{"id": "--tech-term-trace-files",
-     "data": {"term": "trace files"},
+   [{"id":
+     "--tech-term-____________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": {"term": "追踪文件"},
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "trace":
-   [{"id": "--tech-term-traces",
-     "data": {"term": "traces"},
+   [{"id":
+     "--tech-term-______-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": {"term": "追踪"},
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "total correctness interpretation":
    [{"id":
@@ -38487,18 +38247,21 @@
      "data": {"term": "完全"},
      "address": "/The Type System/Functions/"}],
    "toolchain override":
-   [{"id": "--tech-term-toolchain-override",
-     "data": {"term": "toolchain override"},
+   [{"id":
+     "--tech-term-__________________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": {"term": "工具链覆盖项"},
      "address":
      "/Build-Tools-and-Distribution/Managing-Toolchains-with-Elan/"}],
    "toolchain file":
-   [{"id": "--tech-term-toolchain-file",
-     "data": {"term": "toolchain file"},
+   [{"id":
+     "--tech-term-_______________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": {"term": "工具链文件"},
      "address":
      "/Build-Tools-and-Distribution/Managing-Toolchains-with-Elan/"}],
    "toolchain":
-   [{"id": "--tech-term-toolchain",
-     "data": {"term": "toolchain"},
+   [{"id":
+     "--tech-term-_________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": {"term": "工具链"},
      "address": "/Build-Tools-and-Distribution/"}],
    "token antiquotation":
    [{"id":
@@ -38520,8 +38283,9 @@
      "data": {"term": "定理"},
      "address": "/Definitions/Theorems/"}],
    "test driver":
-   [{"id": "--tech-term-test-driver",
-     "data": {"term": "test driver"},
+   [{"id":
+     "--tech-term-__________________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": {"term": "测试驱动程序"},
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "term elaborator":
    [{"id":
@@ -38548,8 +38312,9 @@
      "data": {"term": "Tasks"},
      "address": "/IO/Tasks-and-Threads/"}],
    "target":
-   [{"id": "--tech-term-target",
-     "data": {"term": "target"},
+   [{"id":
+     "--tech-term-______-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": {"term": "目标"},
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "tail position":
    [{"id":
@@ -38671,8 +38436,9 @@
      "data": {"term": "源文件"},
      "address": "/Source Files and Modules/"}],
    "source directory":
-   [{"id": "--tech-term-source-directory",
-     "data": {"term": "source directory"},
+   [{"id":
+     "--tech-term-____________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": {"term": "源码目录"},
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "sort":
    [{"id": "--tech-term-_______LPAR_sort_RPAR_",
@@ -38743,8 +38509,9 @@
      "data": {"term": "轮"},
      "address": "/The--grind--tactic/E___matching/"}],
    "root package":
-   [{"id": "--tech-term-root-package",
-     "data": {"term": "root package"},
+   [{"id":
+     "--tech-term-______-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": {"term": "根包"},
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "root directory":
    [{"id": "--tech-term-root-directory",
@@ -38774,8 +38541,9 @@
      "data": {"term": "解析"},
      "address": "/Terms/Identifiers/"}],
    "require":
-   [{"id": "--tech-term-require",
-     "data": {"term": "require"},
+   [{"id":
+     "--tech-term-______-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": {"term": "请求"},
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "repl":
    [{"id": "--tech-term-REPL",
@@ -38990,8 +38758,9 @@
      "data": {"term": "模式"},
      "address": "/Terms/Pattern-Matching/"}],
    "path dependency":
-   [{"id": "--tech-term-path-dependencies",
-     "data": {"term": "path dependencies"},
+   [{"id":
+     "--tech-term-____________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": {"term": "路径依赖"},
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "path":
    [{"id": "--tech-term-paths",
@@ -39022,20 +38791,23 @@
      "data": {"term": "参数"},
      "address": "/The Type System/Inductive Types/"}],
    "package override":
-   [{"id": "--tech-term-package-overrides",
-     "data": {"term": "package overrides"},
+   [{"id":
+     "--tech-term-_________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": {"term": "包覆盖"},
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "package directory":
-   [{"id": "--tech-term-package-directory",
-     "data": {"term": "package directory"},
+   [{"id":
+     "--tech-term-_________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": {"term": "包目录"},
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "package configuration":
-   [{"id": "--tech-term-package-configuration",
-     "data": {"term": "package configuration"},
+   [{"id":
+     "--tech-term-_________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": {"term": "包配置"},
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "package":
-   [{"id": "--tech-term-package",
-     "data": {"term": "package"},
+   [{"id": "--tech-term-___-next-next-next-next-next",
+     "data": {"term": "包"},
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "owned":
    [{"id":
@@ -39053,8 +38825,9 @@
      "data": {"term": "原始"},
      "address": "/Notations-and-Macros/Defining-New-Syntax/"}],
    "origin":
-   [{"id": "--tech-term-origin",
-     "data": {"term": "origin"},
+   [{"id":
+     "--tech-term-______-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": {"term": "来源"},
      "address":
      "/Build-Tools-and-Distribution/Managing-Toolchains-with-Elan/"}],
    "optional parameter":
@@ -39192,8 +38965,9 @@
      "data": {"term": "modus ponens"},
      "address": "/Basic-Propositions/Logical-Connectives/"}],
    "module root":
-   [{"id": "--tech-term-module-roots",
-     "data": {"term": "module roots"},
+   [{"id":
+     "--tech-term-_________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": {"term": "模块根"},
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "module":
    [{"id": "--tech-term-module",
@@ -39269,16 +39043,18 @@
      "data": {"term": "marble diagrams"},
      "address": "/Iterators/Iterator-Combinators/"}],
    "mappings file":
-   [{"id": "--tech-term-mappings-file",
-     "data": {"term": "mappings file"},
+   [{"id":
+     "--tech-term-____________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": {"term": "映射文件"},
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "map":
    [{"id": "--tech-term-map",
      "data": {"term": "map"},
      "address": "/Basic-Types/Maps-and-Sets/"}],
    "manifest":
-   [{"id": "--tech-term-manifest",
-     "data": {"term": "manifest"},
+   [{"id":
+     "--tech-term-______-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": {"term": "清单"},
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "maliciou":
    [{"id": "--tech-term-malicious",
@@ -39314,8 +39090,9 @@
      "data": {"term": "循环不变式"},
      "address": "/The--mvcgen--tactic/Overview/"}],
    "log":
-   [{"id": "--tech-term-log",
-     "data": {"term": "log"},
+   [{"id":
+     "--tech-term-______-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": {"term": "日志"},
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "local longest match rule":
    [{"id": "--tech-term-________________________",
@@ -39327,12 +39104,13 @@
      "data": {"term": "局部实例"},
      "address": "/Type-Classes/Instance-Synthesis/"}],
    "local cache":
-   [{"id": "--tech-term-local-artifact-cache",
-     "data": {"term": "local artifact cache"},
+   [{"id":
+     "--tech-term-__________________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": {"term": "本地工件缓存"},
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "lint driver":
-   [{"id": "--tech-term-lint-driver",
-     "data": {"term": "lint driver"},
+   [{"id": "--tech-term-________________________-next",
+     "data": {"term": "代码检查驱动程序"},
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "linearly":
    [{"id": "--tech-term-linearly",
@@ -39344,15 +39122,16 @@
      "data": {"term": "提升"},
      "address": "/Functors___-Monads-and--do--Notation/Lifting-Monads/"}],
    "library directory":
-   [{"id": "--tech-term-library-directories",
-     "data": {"term": "library directories"},
+   [{"id":
+     "--tech-term-_________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": {"term": "库目录"},
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "library":
-   [{"id": "--tech-term-Libraries",
-     "data": {"term": "Libraries"},
+   [{"id": "--tech-term-___-next-next-next-next-next-next",
+     "data": {"term": "库"},
      "address": "/Build-Tools-and-Distribution/Lake/"},
     {"id": "--tech-term-___-next",
-     "data": {"term": "Libraries"},
+     "data": {"term": "库"},
      "address": "/Source Files and Modules/"}],
    "left fold":
    [{"id": "--tech-term-Left-folds",
@@ -39393,12 +39172,12 @@
      "data": {"term": "余归纳谓词"},
      "address": "/Definitions/Recursive-Definitions/"}],
    "lake script":
-   [{"id": "--tech-term-Lake-scripts",
-     "data": {"term": "Lake scripts"},
+   [{"id": "--tech-term-Lake-______",
+     "data": {"term": "Lake 脚本"},
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "lake home":
-   [{"id": "--tech-term-Lake-home",
-     "data": {"term": "Lake home"},
+   [{"id": "--tech-term-Lake-_________",
+     "data": {"term": "Lake 主目录"},
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "kleisli composition":
    [{"id":
@@ -39468,8 +39247,9 @@
      "data": {"term": "初始化"},
      "address": "/Elaboration and Compilation/"}],
    "initial target":
-   [{"id": "--tech-term-initial-targets",
-     "data": {"term": "initial targets"},
+   [{"id":
+     "--tech-term-____________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": {"term": "初始目标"},
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "info tree":
    [{"id": "--tech-term-_________",
@@ -39496,8 +39276,9 @@
      "data": {"term": "索引"},
      "address": "/The Type System/Inductive Types/"}],
    "incremental build":
-   [{"id": "--tech-term-incremental-build",
-     "data": {"term": "incremental build"},
+   [{"id":
+     "--tech-term-____________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": {"term": "增量构建"},
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "inaccessible pattern":
    [{"id":
@@ -39595,12 +39376,13 @@
      "data": {"term": "全局实例"},
      "address": "/Type-Classes/Instance-Synthesis/"}],
    "glob":
-   [{"id": "--tech-term-globs",
-     "data": {"term": "globs"},
+   [{"id":
+     "--tech-term-____________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": {"term": "通配模式"},
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "git dependency":
-   [{"id": "--tech-term-Git-dependencies",
-     "data": {"term": "Git dependencies"},
+   [{"id": "--tech-term-Git-______",
+     "data": {"term": "Git 依赖"},
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "generation":
    [{"id":
@@ -39688,12 +39470,14 @@
      "data": {"term": "字段表示法"},
      "address": "/Terms/Function-Application/"}],
    "facet":
-   [{"id": "--tech-term-facet",
-     "data": {"term": "facet"},
+   [{"id":
+     "--tech-term-______-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": {"term": "分面"},
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "external library":
-   [{"id": "--tech-term-External-libraries",
-     "data": {"term": "External libraries"},
+   [{"id":
+     "--tech-term-_________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": {"term": "外部库"},
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "extensional map":
    [{"id": "--tech-term-Extensional-maps",
@@ -39736,12 +39520,13 @@
      "data": {"term": "存在形式"},
      "address": "/Definitions/Recursive-Definitions/"}],
    "executable":
-   [{"id": "--tech-term-Executables",
-     "data": {"term": "Executables"},
+   [{"id":
+     "--tech-term-_______________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": {"term": "可执行文件"},
      "address": "/Build-Tools-and-Distribution/Lake/"},
     {"id":
      "--tech-term-_______________-next-next-next-next-next-next-next-next-next",
-     "data": {"term": "Executables"},
+     "data": {"term": "可执行文件"},
      "address": "/Source Files and Modules/"}],
    "exception monad":
    [{"id":
@@ -39844,8 +39629,9 @@
      "data": {"term": "Directories"},
      "address": "/IO/Files___-File-Handles___-and-Streams/"}],
    "direct dependency":
-   [{"id": "--tech-term-direct-dependencies",
-     "data": {"term": "direct dependencies"},
+   [{"id":
+     "--tech-term-____________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": {"term": "直接依赖"},
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "dictionary":
    [{"id": "--tech-term-dictionaries",
@@ -39909,13 +39695,15 @@
      "data": {"term": "已定义常量"},
      "address": "/The Type System/"}],
    "default toolchain":
-   [{"id": "--tech-term-default-toolchain",
-     "data": {"term": "default toolchain"},
+   [{"id":
+     "--tech-term-_______________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": {"term": "默认工具链"},
      "address":
      "/Build-Tools-and-Distribution/Managing-Toolchains-with-Elan/"}],
    "default target":
-   [{"id": "--tech-term-default-targets",
-     "data": {"term": "default targets"},
+   [{"id":
+     "--tech-term-____________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": {"term": "默认目标"},
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "default simp set":
    [{"id": "--tech-term-______-simp-___",
@@ -39927,8 +39715,9 @@
      "data": {"term": "默认实例"},
      "address": "/Type-Classes/Instance-Synthesis/"}],
    "default facet":
-   [{"id": "--tech-term-default-facet",
-     "data": {"term": "default facet"},
+   [{"id":
+     "--tech-term-____________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": {"term": "默认分面"},
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "decreasing parameter":
    [{"id":
@@ -39955,13 +39744,14 @@
      "data": {"term": "循环"},
      "address": "/Type-Classes/Instance-Synthesis/"}],
    "custom toolchain name":
-   [{"id": "--tech-term-custom-toolchain-name",
-     "data": {"term": "custom toolchain name"},
+   [{"id": "--tech-term-________________________-next-next",
+     "data": {"term": "自定义工具链名称"},
      "address":
      "/Build-Tools-and-Distribution/Managing-Toolchains-with-Elan/"}],
    "custom target":
-   [{"id": "--tech-term-Custom-targets",
-     "data": {"term": "Custom targets"},
+   [{"id":
+     "--tech-term-_______________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": {"term": "自定义目标"},
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "custom simp set":
    [{"id": "--tech-term-_________-simp-___",
@@ -40038,8 +39828,9 @@
      "data": {"term": "同余闭包"},
      "address": "/The--grind--tactic/Congruence-Closure/"}],
    "configure package":
-   [{"id": "--tech-term-Configuring",
-     "data": {"term": "Configuring"},
+   [{"id":
+     "--tech-term-_________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": {"term": "配置包"},
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "configuration item":
    [{"id":
@@ -40090,8 +39881,9 @@
      "data": {"term": "备选结点"},
      "address": "/Elaboration and Compilation/"}],
    "channel":
-   [{"id": "--tech-term-channel",
-     "data": {"term": "channel"},
+   [{"id":
+     "--tech-term-______-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": {"term": "通道"},
      "address":
      "/Build-Tools-and-Distribution/Managing-Toolchains-with-Elan/"}],
    "cbv simplification procedure":
@@ -40128,20 +39920,24 @@
      "data": {"term": "传值求值"},
      "address": "/Tactic-Proofs/Tactic-Reference/"}],
    "cache scope":
-   [{"id": "--tech-term-cache-scope",
-     "data": {"term": "cache scope"},
+   [{"id":
+     "--tech-term-_______________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": {"term": "缓存作用域"},
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "builtin linter":
-   [{"id": "--tech-term-builtin-linter",
-     "data": {"term": "builtin linter"},
+   [{"id":
+     "--tech-term-_______________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": {"term": "内置检查器"},
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "build directory":
-   [{"id": "--tech-term-build-directory",
-     "data": {"term": "build directory"},
+   [{"id":
+     "--tech-term-____________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": {"term": "构建目录"},
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "build":
-   [{"id": "--tech-term-build",
-     "data": {"term": "build"},
+   [{"id":
+     "--tech-term-______-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": {"term": "构建"},
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "buffered":
    [{"id": "--tech-term-buffered",
@@ -40163,8 +39959,9 @@
      "data": {"term": "借用"},
      "address": "/Run-Time-Code/Foreign-Function-Interface/"}],
    "binary directory":
-   [{"id": "--tech-term-binary-directory",
-     "data": {"term": "binary directory"},
+   [{"id":
+     "--tech-term-_______________-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": {"term": "二进制目录"},
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "basic termination measure":
    [{"id": "--tech-term-__________________-next-next-next-next-next-next",
@@ -40218,8 +40015,9 @@
      "data": {"term": "associative arrays"},
      "address": "/Basic-Types/Maps-and-Sets/"}],
    "artifact":
-   [{"id": "--tech-term-artifact",
-     "data": {"term": "artifact"},
+   [{"id":
+     "--tech-term-______-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next-next",
+     "data": {"term": "工件"},
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "applicative functor":
    [{"id": "--tech-term-Applicative-____________",
@@ -58339,30 +58137,26 @@
   {"Lake.PackageConfig":
    [{"id": "Lake___PackageConfig",
      "data":
-     {"type": "Lake.PackageConfig",
-      "description": "Package Configuration",
-      "arrayKey": null},
+     {"type": "Lake.PackageConfig", "description": "包配置", "arrayKey": null},
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "Lake.LeanLibConfig":
    [{"id": "Lake___LeanLibConfig",
      "data":
      {"type": "Lake.LeanLibConfig",
-      "description": "Library Targets",
+      "description": "库目标",
       "arrayKey": "lean_lib"},
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "Lake.LeanExeConfig":
    [{"id": "Lake___LeanExeConfig",
      "data":
      {"type": "Lake.LeanExeConfig",
-      "description": "Executable Targets",
+      "description": "可执行文件目标",
       "arrayKey": "lean_exe"},
      "address": "/Build-Tools-and-Distribution/Lake/"}],
    "Lake.Dependency":
    [{"id": "Lake___Dependency",
      "data":
-     {"type": "Lake.Dependency",
-      "description": "Requiring Packages",
-      "arrayKey": "require"},
+     {"type": "Lake.Dependency", "description": "引入包", "arrayKey": "require"},
      "address": "/Build-Tools-and-Distribution/Lake/"}]}},
  "Manual.lakeTomlField":
  {"title": "Manual.lakeTomlField",
@@ -59501,6 +59295,7 @@
    "策略卫生性：不可访问的假设": [],
    "等式引理": [],
    "真命题": [],
+   "目标和分面规范": [],
    "由全可达性推出的无限链": [],
    "由  linarith  判定的目标": [],
    "由  linarith  判定的交换环目标": [],
@@ -59510,6 +59305,8 @@
    "用  elab_rules  精译  do  元素": [],
    "状态类型": [],
    "特征为零": [],
+   "测试驱动（ lakefile.toml ）": [],
+   "测试驱动（ lakefile.lean ）": [],
    "测试返回值": [],
    "派生多个类": [],
    "派生处理器": [],
@@ -59529,6 +59326,7 @@
    "构造子的模式": [],
    "来自结论与假设的模式": [],
    "来自类型的隐式参数": [],
+   "本地化远程依赖": [],
    "有限环的特征": [],
    "有限域推理": [],
    "有理数解但无整数解": [],
@@ -59536,6 +59334,9 @@
    "有状态证明": [],
    "有歧义的标识符": [],
    "有作用域的宏": [],
+   "最小库目标": [],
+   "最小可执行文件目标": [],
+   "最小 TOML 包配置": [],
    "最多的圆括号": [],
    "更多交换环证明": [],
    "普通隐式参数与严格隐式参数": [],
@@ -59594,6 +59395,7 @@
    "强制转换与  OfNat": [],
    "强制转换": [],
    "异常与提升": [],
+   "库的 TOML 包配置": [],
    "广义字段表示法": [],
    "平坦归纳类型": [],
    "带符号整数": [],
@@ -59601,6 +59403,8 @@
    "带后缀的拼接": [],
    "带参数和指标的递归子": [],
    "带分支的尾递归": [],
+   "已配置的库目标": [],
+   "已配置的可执行文件目标": [],
    "已有值的输出参数": [],
    "已有值的半输出参数": [],
    "左管道表示法": [],
@@ -59756,9 +59560,17 @@
    "余归纳的简单证明": [],
    "余归纳—归纳互递归块": [],
    "传播等式": [],
+   "以表表示来源": [],
    "以定长列表作为应用函子": [],
+   "代码检查驱动（ lakefile.toml ）": [],
+   "代码检查驱动（ lakefile.lean ）": [],
    "代数推理": [],
+   "从路径引入包": [],
    "从左到右生成": [],
+   "从 Reservoir 引入包": [],
+   "从 Git 标签引入包": [],
+   "从 Git 标签引入 Reservoir 包": [],
+   "从 Git 引入包": [],
    "仅限谓词": [],
    "交换（半）环规范化": [],
    "交换环": [],
@@ -59800,22 +59612,13 @@
    "Truth-Functional Implication": [],
    "True  是子单元": [],
    "Throwing and Catching Errors": [],
-   "Test Driver ( lakefile.toml )": [],
-   "Test Driver ( lakefile.lean )": [],
-   "Target and Facet Specifications": [],
    "Subtype Coercions": [],
    "Sub-Array Syntax": [],
-   "Sources as Tables": [],
    "Sort 强制转换": [],
    "Slicing Lists": [],
    "Section Variables and Recursion": [],
    "Running a Program on a File": [],
    "Running a Program": [],
-   "Requiring Reservoir Packages from a Git tag": [],
-   "Requiring Packages from a Git tag": [],
-   "Requiring Packages from Reservoir": [],
-   "Requiring Packages from Paths": [],
-   "Requiring Packages from Git": [],
    "Reference Cells as Locks": [],
    "Redirecting Standard I/O to Strings": [],
    "Reasoning via Lists": [],
@@ -59852,15 +59655,8 @@
    "Missing Type Class Instance": [],
    "Missing Resulting Type After Constructor Parameter": [],
    "Missing Namespace": [],
-   "Minimal TOML Package Configuration": [],
-   "Minimal Library Target": [],
-   "Minimal Executable Target": [],
    "Meta Definitions": [],
-   "Making Remote Dependencies Local": [],
    "List  的递归子": [],
-   "Lint Driver ( lakefile.toml )": [],
-   "Lint Driver ( lakefile.lean )": [],
-   "Library TOML Package Configuration": [],
    "Lean 输出中的自定义运算符": [],
    "Lazy Lists": [],
    "Kernel Reasoning": [],
@@ -59919,8 +59715,6 @@
    "Consuming Iterators in Loops": [],
    "Consuming Iterators Directly": [],
    "Constructing Lists": [],
-   "Configured Library Target": [],
-   "Configured Executable Target": [],
    "Coercions and  Option": [],
    "Coercing from  Fin  to  Nat": [],
    "CoeOut  与  Coe  实例": [],

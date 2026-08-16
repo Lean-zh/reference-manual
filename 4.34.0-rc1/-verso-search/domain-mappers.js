@@ -40,15 +40,15 @@ const Manual_DOT_lakeTomlField = {
       (domainData) =>
           Object.entries(domainData.contents).map(([key, value]) => {
             let tableArrayKey = value[0].data.tableArrayKey;
-            let arr = tableArrayKey ? `[[${tableArrayKey}]]` : 'package configuration';
+            let arr = tableArrayKey ? `[[${tableArrayKey}]]` : '包配置';
             return {
-              searchKey: `${value[0].data.field} in ${arr}`,
+              searchKey: `${arr}中的${value[0].data.field}`,
               address: `${value[0].address}#${value[0].id}`,
               domainId: 'Manual.lakeTomlField',
               ref: value,
             }}),
     className: "lake-toml-field-domain",
-    displayName: "Lake TOML Field",
+    displayName: "Lake TOML 字段",
     };
 
 /**
@@ -187,7 +187,7 @@ const Manual_DOT_lakeTomlTable = {
           }})
       ,
     className: "lake-toml-table-domain",
-    displayName: "Lake TOML Table",
+    displayName: "Lake TOML 表",
     };
 
 /**
