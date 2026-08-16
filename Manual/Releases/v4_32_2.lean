@@ -13,7 +13,7 @@ open Verso.Genre
 open Verso.Genre.Manual
 open Verso.Genre.Manual.InlineLean
 
-#doc (Manual) "精益4.32.2 (2026-07-28)" =>
+#doc (Manual) "Lean4.32.2 (2026-07-28)" =>
 %%%
 tag := "release-v4.32.2"
 file := "v4.32.2"
@@ -27,8 +27,8 @@ file := "v4.32.2"
 
 即使使用 `comparator` 也可以利用该错误。
 
-外部检查器 `nanoda` 不会遇到同样的错误。然而，根据这个错误的性质，可以编写利用它的证明术语，同时利用外部检查器中不相关的错误，正如 Kumar 在 `nanoda` 中的一个错误（独立地）[reported and fixed very recently](https://github.com/ammkrn/nanoda_lib/pull/22/changes) 所演示的那样。我们强烈建议必须考虑恶意证明并遵循 {ref "validating-comparator"}[验证证明的推荐方法] 的用户也升级到最新的 `nanoda` 版本。
+外部检查器 `nanoda` 不会遇到同样的错误。然而，根据这个错误的性质，可以编写利用它的证明项，同时利用外部检查器中不相关的错误，正如 Kumar 在 `nanoda` 中一个[最近独立报告并修复的错误](https://github.com/ammkrn/nanoda_lib/pull/22/changes)所演示的那样。我们强烈建议必须考虑恶意证明并遵循 {ref "validating-comparator"}[验证证明的推荐方法] 的用户也升级到最新的 `nanoda` 版本。
 
 FRO 认真对待这些问题，并将投资检查器生态系统，以实现内核和检查器的更强化、更多测试和更独立的实现。
 
-有关错误的更多详细信息，请参阅 [issue #14576](https://github.com/leanprover/lean4/issues/14576) ，有关修复的详细信息，请参阅 [PR #14577](https://github.com/leanprover/lean4/pull/14577) 。
+有关错误的更多详细信息，请参阅 [议题 #14576](https://github.com/leanprover/lean4/issues/14576) ，有关修复的详细信息，请参阅 [PR #14577](https://github.com/leanprover/lean4/pull/14577) 。

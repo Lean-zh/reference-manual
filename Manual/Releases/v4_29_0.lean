@@ -15,7 +15,7 @@ open Verso.Genre.Manual.InlineLean
 
 set_option linter.typography.quotes false
 
-#doc (Manual) "精益4.29.0 (2026-03-27)" =>
+#doc (Manual) "Lean4.29.0 (2026-03-27)" =>
 %%%
 tag := "release-v4.29.0"
 file := "v4.29.0"
@@ -28,7 +28,7 @@ file := "v4.29.0"
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-03-27_RPAR_--Highlights"
 %%%
 
-_Violetta Sim 帮助编写了 4.16 到 4.29 的发布亮点，精益开发人员衷心感谢她的贡献。_
+_Violetta Sim 帮助编写了 4.16 到 4.29 的发布亮点，Lean开发人员衷心感谢她的贡献。_
 
 
 ## 性能改进
@@ -45,13 +45,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-0
 [#12406](https://github.com/leanprover/lean4/pull/12406) 显着
 减少 `bv_decide` 中 LRAT 验证检查所消耗的内存。
 
-## 新的可扩展`do`阐述器
+## 新的可扩展`do`精译器
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-03-27_RPAR_--Highlights--New-Extensible--do--Elaborator"
 %%%
 
 [#12459](https://github.com/leanprover/lean4/pull/12459) 添加了一个新的，
-可扩展的 `do` 阐述器。用户可以通过以下方式选择加入新的阐述器
+可扩展的 `do` 精译器。用户可以通过以下方式选择加入新的精译器
 取消设置选项 `backward.do.legacy`。
 
 内置 `doElem` 语法类别的新精译器可以是
@@ -73,7 +73,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-0
 接下来的序列现在是 `doSeqIndented` 为了不被窃取
   来自记录语法的语法。
 
-通过取消设置选择新的 `do` 阐述器时的*重大更改*
+通过取消设置选择新的 `do` 精译器时的*重大更改*
 `backward.do.legacy`:
 
 - `do` 表示法现在始终需要 `Pure`。
@@ -122,16 +122,16 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-0
 
 [#12483](https://github.com/leanprover/lean4/pull/12483) 添加支持
 用于 `grind` 电子匹配引擎中的高阶米勒模式。
-以前，电子匹配模式中的 lambda 参数始终是
+以前，电子匹配模式中的 λ 参数始终是
 被视为 `dontCare`，这意味着它们无法有助于匹配
 或绑定模式变量。这是一个重大限制
-lambda 参数带有基本结构的定理，例如
+λ 参数带有基本结构的定理，例如
 `List.foldl`、`List.foldrM` 或任何采用函数的组合器
 争论。
 
-通过此更改，当模式参数是 lambda 时，其主体
+通过此更改，当模式参数是 λ 时，其主体
 满足*米勒模式条件* — 即模式变量
-仅适用于不同的 lambda 绑定变量 - lambda 是
+仅适用于不同的 λ 绑定变量 - λ 是
 保留为 `ho[...]` 模式。在实例化时，这些
 在所有一阶之后，高阶模式通过 `isDefEq` 进行匹配
 模式变量已由电子图分配。
@@ -144,8 +144,8 @@ lambda 参数带有基本结构的定理，例如
 ```
 
 模式 `applyFlip ho[fun x => fun y => #2 y x] #1 #0` 捕获
-结构上的 lambda 参数： `#2` （`f` 的模式变量）
-应用于不同的 lambda 绑定变量 `y` 和 `x`。当
+结构上的 λ 参数： `#2` （`f` 的模式变量）
+应用于不同的 λ 绑定变量 `y` 和 `x`。当
 `grind` 遇到 `applyFlip (fun x y => Nat.add y x) 3 4`，它绑定
 `f := Nat.add` 通过 `isDefEq` 并触发重写。
 
@@ -174,8 +174,8 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-0
 描述以获取更多信息。
 
 *重大变化。*宇宙级元变量仅存在于
-构造函数字段不再提升为 Universe 级别
-参数：使用显式的 Universe 级别参数。此次促销活动是
+构造函数字段不再提升为宇宙级别
+参数：使用显式的宇宙级别参数。此次促销活动是
 不一致的完成取决于归纳类型的宇宙是否
 level 有一个元变量，也给用户带来了困惑，
 因为这些宇宙层次不受前一种类型的限制
@@ -252,7 +252,7 @@ def D := Nat
 instance : Inhabited D := inferInstanceAs (Inhabited Nat)
 ```
 
-调整将确保生成的实例在以下情况下不会泄漏 RHS `Nat`
+调整将确保生成的实例在以下情况下不会泄漏右侧 `Nat`
 在透明度级别低于 `semireducible` 时减少，即 `D` 也不会展开。
 
 更具体地说，给定源类型（参数）和目标类型（预期类型），
@@ -264,7 +264,7 @@ instance : Inhabited D := inferInstanceAs (Inhabited Nat)
 * `backward.inferInstanceAs.wrap`： `inferInstanceAs` 中实例调整的主开关
 和默认的派生处理程序
 * `backward.inferInstanceAs.wrap.reuseSubInstances`：重用目标类型的现有实例
-  对于子实例字段以避免非 defeq 实例菱形
+  对于子实例字段以避免非定义相等实例菱形
 * `backward.inferInstanceAs.wrap.instances`：将不可约实例包装在辅助定义中
 * `backward.inferInstanceAs.wrap.data`：将数据字段包装在辅助定义中（证明字段是
   总是包裹着）
@@ -321,10 +321,10 @@ backward.isDefEq.respectTransparency = false
 它试图识别和解释，或者至少提供线索，潜在的定义滥用问题
 可以解释为什么声明当前需要 `set_option backward.isDefEq.respectTransparency false in ...`。
 我们鼓励用户在 [Zulip](https://leanprover.zulipchat.com/) 上报告此命令的问题，
-我们希望，随着该诊断命令的稳定，我们将能够将其作为未来精益工具链的一部分。
+我们希望，随着该诊断命令的稳定，我们将能够将其作为未来Lean工具链的一部分。
 
 我们鼓励您检查项目中所有默认透明度类型同义词的实例构造。
-如果可能，您应该使用 `deriving` 处理程序，或新的 `inferInstanceAs` 阐述器，
+如果可能，您应该使用 `deriving` 处理程序，或新的 `inferInstanceAs` 精译器，
 而不是编写需要展开类型同义词才能进行类型检查的术语模式结构。
 `inferInstanceAs` 命令现在 *需要* 一个预期的类型。
 如果您遇到错误，其中 `inferInstanceAs` 现在因未提供预期类型而给出错误，
@@ -336,7 +336,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-0
 %%%
 
 [#12423](https://github.com/leanprover/lean4/pull/12423) 添加了
-属性 `@[univ_out_params]` 用于指定哪些 Universe 级别
+属性 `@[univ_out_params]` 用于指定哪些宇宙级别
 应被视为输出参数。默认情况下，任何宇宙级别
 任何输入参数中都没有出现的被视为输出
 参数。
@@ -390,7 +390,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-0
   防止通过硬链接路径意外损坏。
 
 - [#12444](https://github.com/leanprover/lean4/pull/12444) 添加了
-  Lake CLI 命令 `lake cache clean`，删除 Lake 缓存
+  Lake 命令行界面命令 `lake cache clean`，删除 Lake 缓存
   目录。
 
 - [#12490](https://github.com/leanprover/lean4/pull/12490) 添加了一个
@@ -450,9 +450,9 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-0
   数学库。在 `toInductive` 内部，传递了错误的自由变量，
   这使得在某些情况下无法进行统一。
 
-* [#12236](https://github.com/leanprover/lean4/pull/12236) 将 `orElse` 组合器添加到 `Sym.Simp` 的 simprocs 中。
+* [#12236](https://github.com/leanprover/lean4/pull/12236) 将 `orElse` 组合器添加到 `Sym.Simp` 的简化过程中。
 
-* [#12243](https://github.com/leanprover/lean4/pull/12243) 修复了 #12240，其中 `deriving Ord` 因“未知标识符 `a✝`”而失败。
+* [#12243](https://github.com/leanprover/lean4/pull/12243) 修复了 #12240，其中 `deriving Ord` 因诊断信息 `Unknown identifier a✝` 而失败。
 
 * [#12247](https://github.com/leanprover/lean4/pull/12247) 添加了新的透明度设置 `@[instance_reducible]`。我们
   用于检查声明是否具有 `instance` 可还原性，方法是使用
@@ -471,7 +471,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-0
 * [#12283](https://github.com/leanprover/lean4/pull/12283) 引入了 `cbv_opaque` 属性，允许标记
   定义不会被 `cbv` 策略展开。
 
-* [#12285](https://github.com/leanprover/lean4/pull/12285) 实现类 Universe 级别位置的缓存
+* [#12285](https://github.com/leanprover/lean4/pull/12285) 实现类宇宙级别位置的缓存
   仅出现在输出参数类型中的参数。
 
 * [#12286](https://github.com/leanprover/lean4/pull/12286) 确保类型解析缓存正确缓存结果
@@ -489,7 +489,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-0
 * [#12338](https://github.com/leanprover/lean4/pull/12338) 实施 #12179 的准备工作。它实现了一个新的
 `isDefEq` 中的功能确保它不会增加透明度
   检查隐式的定义相等性时将级别设置为 `.default`
-  论据。这种透明度级别的提升是在精益 3 中引入的，但它
+  论据。这种透明度级别的提升是在Lean 3 中引入的，但它
   不是性能问题，而是影响 Mathlib。添加了
   新功能，但默认情况下处于禁用状态。
 
@@ -553,7 +553,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-0
 * [#12407](https://github.com/leanprover/lean4/pull/12407) 与#12403 类似。
 
 * [#12416](https://github.com/leanprover/lean4/pull/12416) 使 `Sym.Simp.toBetaApp` 公开。这是必要的
-  重构 #12417 中的主要 `cbv` simproc。
+  重构 #12417 中的主要 `cbv` 简化过程。
 
 * [#12425](https://github.com/leanprover/lean4/pull/12425) 修复了 `mvcgen` 中因 `match` 拆分不完整而导致的错误。
 
@@ -565,11 +565,11 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-0
   `defeq`，这可能导致 `simp` 生成不键入的证明
   检查默认透明度。
 
-* [#12451](https://github.com/leanprover/lean4/pull/12451) 为新的 do 阐述器调用提供必要的钩子
-  进入 let 和 match 阐述器。
+* [#12451](https://github.com/leanprover/lean4/pull/12451) 为新的 do 精译器调用提供必要的钩子
+  进入 let 和 match 精译器。
 
-* [#12459](https://github.com/leanprover/lean4/pull/12459) 添加了一个新的、可扩展的 `do` 阐述器。用户可以选择加入
-  通过取消选项 `backward.do.legacy` 来创建新的阐述器。
+* [#12459](https://github.com/leanprover/lean4/pull/12459) 添加了一个新的、可扩展的 `do` 精译器。用户可以选择加入
+  通过取消选项 `backward.do.legacy` 来创建新的精译器。
 
 * [#12460](https://github.com/leanprover/lean4/pull/12460) 修复了 `cbv` 策略中的 `AppBuilder` 异常
   简化投影函数相关的投影（关闭
@@ -582,8 +582,8 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-0
 * [#12514](https://github.com/leanprover/lean4/pull/12514) 改进了 `inductive` 的宇宙级别推断，并且
   `structure` 命令更可靠并产生更好的错误
   消息。回想一下，归纳类型的主要约束是，如果
-  `u` 是类型和 `u > 0` 的 Universe 级别，然后每个
-  构造函数字段的 Universe 级别 `v` 满足 `v ≤ u`，其中
+  `u` 是类型和 `u > 0` 的宇宙级别，然后每个
+  构造函数字段的宇宙级别 `v` 满足 `v ≤ u`，其中
   *构造函数字段*是一个不是该类型的参数之一
   *参数*（回想一下：类型的参数是
   类型前者和所有构造函数共享的参数）。给定
@@ -636,7 +636,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-0
 
 * [#12574](https://github.com/leanprover/lean4/pull/12574) 将 `SpecTheorems.add` 重命名为 `SpecTheorems.insert`
 
-* [#12576](https://github.com/leanprover/lean4/pull/12576) 将 `Sym.mkPatternFromDeclWithKey` 添加到 Sym API 中以进行泛化
+* [#12576](https://github.com/leanprover/lean4/pull/12576) 将 `Sym.mkPatternFromDeclWithKey` 添加到 Sym 接口中以进行泛化
   并实施`Sym.mkEqPatternFromDecl`。这对于实施很有用
   自定义类似重写的策略，想要使用 `Pattern`s
   判别树查找。
@@ -705,7 +705,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-0
 * [#12897](https://github.com/leanprover/lean4/pull/12897) 调整 `inferInstanceAs` 和 `def` `deriving` 的结果
   处理程序以符合最近加强的可还原性限制。
   当派生或推断半可简化类型定义的实例时，
-  当实例减少时，定义的 RHS 不再泄漏
+  当实例减少时，定义的右侧不再泄漏
   低于半还原透明度。合成实例的组件
   （字段、嵌套实例）根据需要展开和重新包装。
 
@@ -756,7 +756,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-0
 * [#11994](https://github.com/leanprover/lean4/pull/11994) 提供了更多关于列表/数组/向量之和的引理，
   特别是 `Nat` 或 `Int` 列表/数组/向量的总和。
 
-* [#12017](https://github.com/leanprover/lean4/pull/12017) 对列表/数组/向量 API 进行了一些小改进：
+* [#12017](https://github.com/leanprover/lean4/pull/12017) 对列表/数组/向量接口进行了一些小改进：
   * 它修复了`Init.Core`中的拼写错误。
   * 它添加了`List.isSome_min_iff`和`List.isSome_max_iff`。
   * 它将 `grind` 和 `simp` 注释添加到以前的各种注释中
@@ -870,7 +870,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-0
 * [#12349](https://github.com/leanprover/lean4/pull/12349) 建立在 #12333 之上并证明 `Char` 和 `Char -> Bool`
   模式是合法的。
 
-* [#12352](https://github.com/leanprover/lean4/pull/12352) 使用 `drop`/`take` 操作的引理改进了切片 API
+* [#12352](https://github.com/leanprover/lean4/pull/12352) 使用 `drop`/`take` 操作的引理改进了切片接口
   关于 `Subarray` 以及更多关于 `Std.Slice.fold`、`Std.Slice.foldM` 的引理
   和`Std.Slice.forIn`。它还更改了 `simp` 和 `grind`
   `Slice` 相关引理的注释。切片之间转换的引理
@@ -915,7 +915,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-0
   `Acc.inv`。`Acc.inv` 表明给定 `r y x` 时，`Acc r x` 蕴含 `Acc r y`；新引理表明，如果 `y` 仅是，则这也成立
   *传递*与 `x` 相关。
 
-* [#12432](https://github.com/leanprover/lean4/pull/12432) 将引理 `isSome_find?` 和 `isSome_findSome?` 添加到 API
+* [#12432](https://github.com/leanprover/lean4/pull/12432) 将引理 `isSome_find?` 和 `isSome_findSome?` 添加到接口
   列表、数组和向量。
 
 * [#12437](https://github.com/leanprover/lean4/pull/12437) 通过关联来验证 `String.Slice.splitToSubslice` 函数
@@ -991,7 +991,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-0
   在 Mathlib 中被识别为有问题的
   https://github.com/leanprover/lean4/issues/12805.
 
-# 战术
+# 策略
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-03-27_RPAR_--Tactics"
 %%%
@@ -1000,25 +1000,24 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-0
   它不应该处理像 `Rat` 这样的有序类型。 `lia` 策略是
   仅用于线性整数算术。
 
-* [#12152](https://github.com/leanprover/lean4/pull/12152) 添加了 `simpArrowTelescope`，一个简化望远镜的 simproc
+* [#12152](https://github.com/leanprover/lean4/pull/12152) 添加了 `simpArrowTelescope`，一个简化望远镜的简化过程
 非相关箭头 (p₁ → p2 → ... → q)，同时避免二次
   证明增长。
 
-* [#12153](https://github.com/leanprover/lean4/pull/12153) 改进了 `simpArrowTelescope` simproc，简化了
+* [#12153](https://github.com/leanprover/lean4/pull/12153) 改进了 `simpArrowTelescope` 简化过程，简化了
   非相关箭头望远镜：`p₁ → p₂ → ... → q`。
 
-* [#12154](https://github.com/leanprover/lean4/pull/12154) 添加了 `simpTelescope`，一个简化望远镜的 simproc
+* [#12154](https://github.com/leanprover/lean4/pull/12154) 添加了 `simpTelescope`，一个简化望远镜的简化过程
   粘合剂（`have`-表达式值和箭头假设），但不是
   最终的身体。这对于在引入之前简化目标很有用
   假设。
 
-* [#12168](https://github.com/leanprover/lean4/pull/12168) 在 `SymM` 中添加了对 eta 缩减的支持。
+* [#12168](https://github.com/leanprover/lean4/pull/12168) 在 `SymM` 中添加了对 η 缩减的支持。
 
 * [#12172](https://github.com/leanprover/lean4/pull/12172) 修复了我们如何确定函数参数是否为
   实例。
-  以前，我们依赖活页夹注释（例如， `[Ring A]` 与 `{_ ：
-  环A}`)
-  做出这个决定。这是不可靠的，因为用户
+  以前，我们依赖绑定器注解（例如 `[Ring A]` 与 `{_ : Ring A}`）
+  做出这个决定。这并不可靠，因为用户
   合法使用
   当实例已经可用时，类类型的 `{..}` 绑定器
   来自
@@ -1066,7 +1065,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-0
   因此它们必须保留在建议中。
 
 * [#12226](https://github.com/leanprover/lean4/pull/12226) 修复了当定理 `foo` 有时 `grind [foo]` 失败的错误
-  与目标不同的 Universe 变量名称，即使 Universe
+  与目标不同的宇宙变量名称，即使宇宙
   多态性应该允许宇宙统一。
 
 * [#12244](https://github.com/leanprover/lean4/pull/12244) 确保 `simp` 默认情况下不会“简化”实例。旧的
@@ -1077,7 +1076,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-0
 
 * [#12259](https://github.com/leanprover/lean4/pull/12259) 确保我们将 `unfold_definition` 定义的结果缓存在
   内核类型检查器。我们曾经将这些信息缓存在线程中
-  本地存储，但在精益 3 到精益 4 期间被删除
+  本地存储，但在Lean 3 到Lean 4 期间被删除
   过渡。
 
 * [#12260](https://github.com/leanprover/lean4/pull/12260) 修复了 `Sym` 中函数 `instantiateRangeS'` 中的错误
@@ -1104,15 +1103,15 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-0
   通过对大自然数进行评估的有充分依据的递归来定义
   到 `60` 数字）。
 
-* [#12361](https://github.com/leanprover/lean4/pull/12361) 开发自定义 simprocs 来处理 `ite`/`dite`
-  `cbv` 策略中的表达式，基于等效的 simprocs
+* [#12361](https://github.com/leanprover/lean4/pull/12361) 开发自定义简化过程来处理 `ite`/`dite`
+  `cbv` 策略中的表达式，基于等效的简化过程
   `Sym.simp`，区别在于如果条件没有简化为
 `True`/`False`，我们利用可判定实例并计算
   条件减少到什么程度。
 
 * [#12370](https://github.com/leanprover/lean4/pull/12370) 修复了 `Sym.simp` 中的证明构造错误。
 
-* [#12399](https://github.com/leanprover/lean4/pull/12399) 添加了一个自定义 simproc 来处理 `Decidable.rec`，我们强制
+* [#12399](https://github.com/leanprover/lean4/pull/12399) 添加了一个自定义简化过程来处理 `Decidable.rec`，我们强制
   重写 `Decidable` 类型的参数，通常是
   由于是子单例而没有重写。
 
@@ -1138,11 +1137,11 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-0
   `of_decide_eq_true` 然后尝试使用以下方法实现剩余目标
   `cbv`.
 
-* [#12415](https://github.com/leanprover/lean4/pull/12415) 改进了对 `grind` 模式中 eta 扩展项的支持。
+* [#12415](https://github.com/leanprover/lean4/pull/12415) 改进了对 `grind` 模式中 η 扩展项的支持。
 
 * [#12417](https://github.com/leanprover/lean4/pull/12417) 重构了 `cbv` 策略的主循环。而不是使用
-  多个 simproc，引入了中央预 simproc。此外，让
-  由于性能原因，表达式不再立即 zeta 缩减
+  多个简化过程，引入了中央预简化过程。此外，让
+  由于性能原因，表达式不再立即 ζ 缩减
   基准之一 (`leroy.lean`)。
 
 * [#12423](https://github.com/leanprover/lean4/pull/12423) 添加属性 `@[univ_out_params]` 用于指定哪个
@@ -1204,7 +1203,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-0
 
 * [#12562](https://github.com/leanprover/lean4/pull/12562) 修复了 `cbv` 策略抛出“意外内核”的#12554
   结构定义相等期间的投影项”重写时
-  定理的模式包含一个 lambda 并且匹配的表达式有
+  定理的模式包含一个 λ 并且匹配的表达式有
   相应位置处的 `.proj` （内核投影）。
 
 * [#12568](https://github.com/leanprover/lean4/pull/12568) 从中删除 `tryMatchEquations` 和 `tryMatcher`
@@ -1213,19 +1212,19 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-0
   无法访问的死代码。
 
 * [#12585](https://github.com/leanprover/lean4/pull/12585) 删除 `ite` 和 `dite` 中不必要的 `trySynthInstance `
-  `cbv` 使用的 simprocs 之前导致了太多
+  `cbv` 使用的简化过程之前导致了太多
   该策略不必要地展开。
 
 * [#12588](https://github.com/leanprover/lean4/pull/12588) 为 `cbv` 策略添加了一个基准，其中涉及评估
   `List.mergeSort` 在自然数的反转列表上。
 
-* [#12601](https://github.com/leanprover/lean4/pull/12601) 在战术模式下使用 `cbv` 或 `decide_cbv` 时添加警告，
+* [#12601](https://github.com/leanprover/lean4/pull/12601) 在策略模式下使用 `cbv` 或 `decide_cbv` 时添加警告，
   与转换模式下的现有警告相匹配
   （`src/Lean/Elab/Tactic/Conv/Cbv.lean`）。该警告告知用户
   这些策略是实验性的，仍在开发中。它可以是
   使用 `set_option cbv.warning false` 禁用。
 
-* [#12612](https://github.com/leanprover/lean4/pull/12612) 修复了 `cbv` 策略的 `handleProj` simproc 中的崩溃问题
+* [#12612](https://github.com/leanprover/lean4/pull/12612) 修复了 `cbv` 策略的 `handleProj` 简化过程中的崩溃问题
   处理依赖投影（例如 `Sigma.snd`），其结构为
   通过 `@[cbv_eval]` 重写为非定义相等的术语
   无法进一步减少。
@@ -1268,7 +1267,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-0
   可以从二进制文件静态初始化。这样剩下的
   它们是延迟初始化的，而不是在启动时初始化的。
 
-* [#12052](https://github.com/leanprover/lean4/pull/12052) 避免了精益程序关闭时潜在的死锁
+* [#12052](https://github.com/leanprover/lean4/pull/12052) 避免了Lean程序关闭时潜在的死锁
   池线程数已暂时推至高于
   限制。
 
@@ -1284,7 +1283,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-0
 * [#12117](https://github.com/leanprover/lean4/pull/12117) 升级 Lean 的内部工具链以使用 C++20 作为准备
   步骤#12044。
 
-* [#12214](https://github.com/leanprover/lean4/pull/12214) 向 LCNF IR 引入相分离。这是一个
+* [#12214](https://github.com/leanprover/lean4/pull/12214) 向 LCNF 中间表示引入相分离。这是一个
   为合并做准备
   旧的 `Lean.Compiler.IR` 和新的 `Lean.Compiler.LCNF` 框架。
 
@@ -1307,9 +1306,9 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-0
   `f` 并在 `y` 中的活页夹下使用，从而阻止拉入
   `x` 到专业化，对实例进行抽象。
 
-* [#12272](https://github.com/leanprover/lean4/pull/12272) 将 LCNF mono 到 lambda pure 的转换转移到
+* [#12272](https://github.com/leanprover/lean4/pull/12272) 将 LCNF mono 到 λ pure 的转换转移到
   LCNF 不纯相。这是为即将进行的重构做的准备工作
-IR转化为不纯的LCNF。
+中间表示转化为不纯的LCNF。
 
 * [#12284](https://github.com/leanprover/lean4/pull/12284) 更改了对过度应用案例表达式的处理
   `ToLCNF` 以避免生成被调用的函数声明
@@ -1351,10 +1350,10 @@ IR转化为不纯的LCNF。
   这与 #8309 尤其相关，因为 `dite` 定义为
   过度应用 `Bool.casesOn`。
 
-* [#12294](https://github.com/leanprover/lean4/pull/12294) 将 `push_proj` 通道从 IR 移植到 LCNF。值得注意的是它不能
-  将其从 IR 中删除，因为稍后仍会使用该通行证。
+* [#12294](https://github.com/leanprover/lean4/pull/12294) 将 `push_proj` 通道从中间表示移植到 LCNF。值得注意的是它不能
+  将其从中间表示中删除，因为稍后仍会使用该通行证。
 
-* [#12315](https://github.com/leanprover/lean4/pull/12315) 将 IR ResetReuse 传递迁移到 LCNF。
+* [#12315](https://github.com/leanprover/lean4/pull/12315) 将中间表示 ResetReuse 传递迁移到 LCNF。
 
 * [#12344](https://github.com/leanprover/lean4/pull/12344) 更改编译器中 `inline` 注释的语义。
   原始 `@[inline]` 属性的行为保持不变，但是
@@ -1362,11 +1361,11 @@ IR转化为不纯的LCNF。
   当前模块的本地声明。这是作为
   准备将编译器拉出到一个单独的进程中。
 
-* [#12356](https://github.com/leanprover/lean4/pull/12356) 将 IR `elim_dead_vars` 通道移至 LCNF。它无法删除
+* [#12356](https://github.com/leanprover/lean4/pull/12356) 将中间表示 `elim_dead_vars` 通道移至 LCNF。它无法删除
   尚未通过，因为仍在使用
-  在后来的IR通行证中。
+  在后来的中间表示通行证中。
 
-* [#12384](https://github.com/leanprover/lean4/pull/12384) 将 IR SimpCase 传递移植到 LCNF。
+* [#12384](https://github.com/leanprover/lean4/pull/12384) 将中间表示 SimpCase 传递移植到 LCNF。
 
 * [#12387](https://github.com/leanprover/lean4/pull/12387) 修复了 LCNF simp 中尝试采取行动的问题
   输入错误 `cases`
@@ -1376,7 +1375,7 @@ IR转化为不纯的LCNF。
   成为一个问题
   即将发生的变化。
 
-* [#12413](https://github.com/leanprover/lean4/pull/12413) 将 IR 借用通行证移植到 LCNF。
+* [#12413](https://github.com/leanprover/lean4/pull/12413) 将中间表示借用通行证移植到 LCNF。
 
 * [#12434](https://github.com/leanprover/lean4/pull/12434) 删除了引入的 `shared_timed_mutex` 的使用
   因为我们被困在 C++14 上
@@ -1387,7 +1386,7 @@ IR转化为不纯的LCNF。
   确保我们避免立即触及 `Task` 的运行时
   无论如何都会被破坏。
 
-* [#12458](https://github.com/leanprover/lean4/pull/12458) 将用于装箱/拆箱插入的 IR 通道移植到 LCNF。
+* [#12458](https://github.com/leanprover/lean4/pull/12458) 将用于装箱/拆箱插入的中间表示通道移植到 LCNF。
 
 * [#12465](https://github.com/leanprover/lean4/pull/12465) 将 `uint64` 的装箱类型从 `tobject` 更改为 `object`
 允许更精确的引用计数。
@@ -1399,7 +1398,7 @@ IR转化为不纯的LCNF。
 * [#12472](https://github.com/leanprover/lean4/pull/12472) 内联 `mix_hash` 来自 C++，它提供了一般加速
   哈希函数。
 
-* [#12548](https://github.com/leanprover/lean4/pull/12548) 将 RC 插入从 IR 移植到 LCNF。
+* [#12548](https://github.com/leanprover/lean4/pull/12548) 将 RC 插入从中间表示移植到 LCNF。
 
 * [#12580](https://github.com/leanprover/lean4/pull/12580) 使 `computed_field` 尊重
   计算函数
@@ -1417,7 +1416,7 @@ IR转化为不纯的LCNF。
   section` 内部还是外部，以便检测后续错误或不可计算标记
   在初始编译中，而不是在管道的某个地方。
 
-* [#12644](https://github.com/leanprover/lean4/pull/12644) 将拓扑排序过程从 IR 移植到 LCNF。
+* [#12644](https://github.com/leanprover/lean4/pull/12644) 将拓扑排序过程从中间表示移植到 LCNF。
 
 * [#12759](https://github.com/leanprover/lean4/pull/12759) 将 `isImplicitReducible` 检查替换为 `Meta.isInstance`
   在 `inlineCandidate?` 内的 `shouldInline` 函数中。
@@ -1439,7 +1438,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-0
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-03-27_RPAR_--Documentation"
 %%%
 
-* [#12157](https://github.com/leanprover/lean4/pull/12157) 更新了#12137，并提供了精益参考手册的链接。
+* [#12157](https://github.com/leanprover/lean4/pull/12157) 更新了#12137，并提供了Lean参考手册的链接。
 
 * [#12174](https://github.com/leanprover/lean4/pull/12174) 修复了 `ExtractLetsConfig.merge` 文档注释中的拼写错误。
 
@@ -1454,16 +1453,16 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-0
 
 * [#12487](https://github.com/leanprover/lean4/pull/12487) 扩展了 `@[univ_out_params]` 的文档字符串来解释：
 
-  - Universe 输出参数如何影响类型类解析缓存
+  - 宇宙输出参数如何影响类型类解析缓存
   （它们从缓存键中删除，因此查询仅在输出上有所不同
   宇宙共享条目）
-  - 何时应将 Universe 参数视为输出（确定
+  - 何时应将宇宙参数视为输出（确定
   通过输入）与不（所提出问题的一部分）
 
 * [#12616](https://github.com/leanprover/lean4/pull/12616) 将文档添加到下面的 Cbv 评估器文件中
   `Meta/Tactic/Cbv/`。模块文档字符串描述了求值策略，
   限制、属性和展开顺序。函数文档字符串覆盖
-  公共 API 和关键的内部 simprocs。
+  公共接口和关键的内部简化过程。
 
 * [#13115](https://github.com/leanprover/lean4/pull/13115) 更新 `inferInstanceAs` 文档字符串以反映当前
   行为：它需要一个
@@ -1485,7 +1484,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-0
   语言服务器在使用某些代码操作时显示错误。
 
 * [#12553](https://github.com/leanprover/lean4/pull/12553) 修复了不支持增量的命令的问题
-  当进行相关编辑时，他们的阐述没有被打断
+  当进行相关编辑时，他们的精译没有被打断
   由用户。由于 def/theorem 的所有内置变体都有一个共同点
   增量精译器，这可能对标准的影响可以忽略不计
   精简文件，但可能会影响严重依赖自定义的其他用例
@@ -1528,7 +1527,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-0
   踪迹。这保证了不同标识的模块有不同的
   输入哈希，即使它们的源文件和导入相同。
 
-* [#12444](https://github.com/leanprover/lean4/pull/12444) 添加 Lake CLI 命令 `lake cache clean`，该命令删除
+* [#12444](https://github.com/leanprover/lean4/pull/12444) 添加 Lake 命令行界面命令 `lake cache clean`，该命令删除
   湖缓存目录。
 
 * [#12461](https://github.com/leanprover/lean4/pull/12461) 添加了对构建时手动重新发布 nightly 的支持
@@ -1580,22 +1579,21 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-0
   通过 `sort -rV` 最新的 `nightly-*` 标签并创建
   那个。
 
-* [#12517](https://github.com/leanprover/lean4/pull/12517) 添加了用于以人类可读方式分析精益程序的工具
+* [#12517](https://github.com/leanprover/lean4/pull/12517) 添加了用于以人类可读方式分析Lean程序的工具
   Firefox Profiler 中的函数名称：
 
   - *`script/lean_profile.sh`* — 单命令管道：记录
 在 Firefox Profiler 中采样、符号化、分解和打开
   - *`script/profiler/lean_demangle.py`* — 忠实端口
   `Name.demangleAux` 来自 `NameMangling.lean`，带有一个后处理器
-  将编译器后缀折叠成紧凑的注释（`[λ, arity↓]`，`spec
-  在上下文[标志]`)
+  将编译器后缀折叠成紧凑的注解（`[λ, arity↓]`、`spec at context[flags]`）
   - *`script/profiler/symbolicate_profile.py`* — 解析原始地址
-  通过 samply 的符号 API
+  通过 samply 的符号接口
   - *`script/profiler/serve_profile.py`* — 将分解的配置文件提供给
   无需重新符号化的 Firefox Profiler
   - *`PROFILER_README.md`* — 文档，包括阅读指南
   分解的名字
 
-* [#12533](https://github.com/leanprover/lean4/pull/12533) 在运行时添加了人性化的精益符号名称整理
-  回溯。当精益程序出现恐慌时，堆栈跟踪现在显示可读
+* [#12533](https://github.com/leanprover/lean4/pull/12533) 在运行时添加了人性化的Lean符号名称整理
+  回溯。当Lean程序出现恐慌时，堆栈跟踪现在显示可读
   名称而不是损坏的 C 标识符。

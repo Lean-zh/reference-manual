@@ -13,7 +13,7 @@ open Verso.Genre
 open Verso.Genre.Manual
 open Verso.Genre.Manual.InlineLean
 
-#doc (Manual) "精益4.34.0-rc1 (2026-08-10)" =>
+#doc (Manual) "Lean4.34.0-rc1 (2026-08-10)" =>
 %%%
 tag := "release-v4.34.0"
 file := "v4.34.0"
@@ -59,7 +59,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___34___0-rc1-_LPAR_20
   将 `assert` 元素添加到 `do` 符号中以进行内在验证。 `assert P` 表明 `P` 在程序中的该点成立； `assert s => P s` 使用 `fun` 接受的相同绑定器来绑定断言本身的参数，例如状态单子的状态。 `vcgen` 从程序中读取断言并证明它作为验证条件；在运行时该元素不执行任何操作。
 
 - [#14603](https://github.com/leanprover/lean4/pull/14603)
-  让 `requires` 和 `invariant` 子句绑定断言本身的参数，因此断言是函数的 monad 不再需要显式 `fun`。对于状态 monad，状态可以直接命名：
+  让 `requires` 和 `invariant` 子句绑定断言本身的参数，因此断言是函数的单子不再需要显式 `fun`。对于状态单子，状态可以直接命名：
 
   ```lean
   def sumIntoState (xs : List Nat) : StateM Nat Unit
@@ -80,7 +80,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___34___0-rc1-_LPAR_20
   警告未命名的 `initialize` 块上的 `public/private` 可见性修饰符 - 它们不会做任何可能令人困惑的事情。
 
 - [#14581](https://github.com/leanprover/lean4/pull/14581)
-  将 `withSetOptionIn` 概括为包装函数的结果类型。之前的签名只接受 `CommandElab`，它返回 `Unit`。有状态 linter (#14357) 的阶段返回值，因此它们无法使用帮助器（例如，请参阅leanprover-community/mathlib4#42186）。所有现有的调用站点都使用 `Unit` 实例化结果类型，并且不会更改。
+  将 `withSetOptionIn` 概括为包装函数的结果类型。之前的签名只接受 `CommandElab`，它返回 `Unit`。有状态检查器 (#14357) 的阶段返回值，因此它们无法使用帮助器（例如，请参阅leanprover-community/mathlib4#42186）。所有现有的调用站点都使用 `Unit` 实例化结果类型，并且不会更改。
 
 - [#14579](https://github.com/leanprover/lean4/pull/14579)
   让 `def` 合约在 `where … finally` 的 `spec` 部分解除 `vcgen` 无法自行证明的验证条件。该部分是一个普通的策略块，在 `vcgen` 保持打开的任何内容上运行，因此条件通过它们的案例名称来寻址，并且它们的绑定器命名条件所涉及的变量：
@@ -111,7 +111,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___34___0-rc1-_LPAR_20
   为 `Std.Internal.Do` do-notation 添加内在验证语法：`vcgen` 自动释放的循环不变量和函数契约。
 
 - [#14402](https://github.com/leanprover/lean4/pull/14402)
-  向 linter 添加对代码操作的支持。  当启用 `Elab.async` 时，在调度 linter 任务之前，我们为信息树节点创建一个 Promise。然后，我们通过 linter 执行累积新添加的信息树，并解析 linter 任务内部的 Promise。最后，在主要任务中，我们修改信息树（包装在命令上下文中）并添加一个带有 mvar id 的新叶子，最终将填充一个承诺值。
+  向检查器添加对代码操作的支持。  当启用 `Elab.async` 时，在调度检查器任务之前，我们为信息树节点创建一个 Promise。然后，我们通过检查器执行累积新添加的信息树，并解析检查器任务内部的 Promise。最后，在主要任务中，我们修改信息树（包装在命令上下文中）并添加一个带有 mvar id 的新叶子，最终将填充一个承诺值。
 
 - [#14520](https://github.com/leanprover/lean4/pull/14520)
   修复了 `instantiateMVars` 中的指数爆炸（时间和内存，通常表现为内存不足故障），其证明条款重复引用通过 `MVarId.assert`/`intro` 引入的假设 - 正如 `MVarId.note`、`replaceLocalDecl`、`simp at h` 以及每一步 LNSym 的 `sym_n` 策略所做的那样。修复#14329。
@@ -120,16 +120,16 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___34___0-rc1-_LPAR_20
   改变了我们弃用用户注册选项的方式（通过 `register_option` 添加）。为了确保我们在使用 `set_option` 与选项交互时以及在元代码中收到警告，我们要求通过 `@[deprecated]` 属性进行弃用，并使用该属性中的信息填充内部 `deprecation?` 字段。
 
 - [#7577](https://github.com/leanprover/lean4/pull/7577)
-  概括 `conv` 和 `simp` 策略以应用 `pi_congr` 而不是 `forall_congr`。 #7507 的测试用例有现在可以工作的示例，但之前只在 Universe `v=0` 上工作。
+  概括 `conv` 和 `simp` 策略以应用 `pi_congr` 而不是 `forall_congr`。 #7507 的测试用例有现在可以工作的示例，但之前只在宇宙 `v=0` 上工作。
 
 - [#14391](https://github.com/leanprover/lean4/pull/14391)
   将 `Lean.Environment.replay` 重构为 `Lean.Kernel.Environment.replay`，以便环境在 `Kernel.Environment` 而不是 `Environment` 上重放工作，避免使用不稳定的 `Environment.ofKernelEnv`。有关更多背景信息，请参阅#13783。
 
 - [#14357](https://github.com/leanprover/lean4/pull/14357)
-  引入了有状态的 linter，它允许 linter 在命令阐述中持久保存并共享状态。
+  引入了有状态的检查器，它允许检查器在命令精译中持久保存并共享状态。
 
 - [#14418](https://github.com/leanprover/lean4/pull/14418)
-  更改 `checkUnivs` linter 的行为，以在计算不单独出现的 Universe 时采用所有声明和构造函数（如果处理归纳类型）。
+  更改 `checkUnivs` 检查器的行为，以在计算不单独出现的宇宙时采用所有声明和构造函数（如果处理归纳类型）。
 
 - [#14437](https://github.com/leanprover/lean4/pull/14437)
   修复了 `inferInstanceAs` 标记其包装辅助定义 `@[expose]`，即使它们的主体仅在私有范围内类型良好，这使得通过 `inferInstanceAs` 为没有公开主体的类型定义的实例为公共错误类型。
@@ -178,7 +178,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___34___0-rc1-_LPAR_20
   限制。
 
 - [#14623](https://github.com/leanprover/lean4/pull/14623)
-  概括 `MonadTail (StateT σ m)` 实例无需 `Nonempty σ` 即可工作。这意味着即使状态类型没有 `Nonempty` 实例，现在也可以使用 `StateT` monad 证明有关 `while` 的规范。
+  概括 `MonadTail (StateT σ m)` 实例无需 `Nonempty σ` 即可工作。这意味着即使状态类型没有 `Nonempty` 实例，现在也可以使用 `StateT` 单子证明有关 `while` 的规范。
 
 - [#14268](https://github.com/leanprover/lean4/pull/14268)
   添加 HTTP 服务器基准测试
@@ -229,7 +229,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___34___0-rc1-_LPAR_20
   添加了 `Replayable` 类型类，可用于检查某些 `Body` 是否可以在重定向请求中重播。
 
 - [#14481](https://github.com/leanprover/lean4/pull/14481)
-  通过以下方式改进了 `Float` / `Float.Model` / `Float32` / `Float32.Model` / `UnpackedFloat` 周围的 API：
+  通过以下方式改进了 `Float` / `Float.Model` / `Float32` / `Float32.Model` / `UnpackedFloat` 周围的接口：
   - 添加了声明 `Float.nan` / `Float.inf` / `Float32.nan` / `Float32.inf` 及其相应的型号 `Float.Model.nan` / `Float.Model.inf` / `Float32.Model.nan` / `Float32.Model.inf` （如果愿意的话，从电池上游）。
   - 添加了缩写`Int.toFloat`和`Int.toFloat32`，类似于现有的`Nat.toFloat`和`Nat.toFloat32`。
   - `Float.Model.Format` 现在需要 `2 ≤ exponentBits` 而不仅仅是 `0 < exponentBits`；这是 `pack` 和 `unpack` 正确运行的必要条件
@@ -251,7 +251,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___34___0-rc1-_LPAR_20
 
 ````
 
-# 战术
+# 策略
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___34___0-rc1-_LPAR_2026-08-10_RPAR_--Tactics"
 %%%
@@ -259,136 +259,136 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___34___0-rc1-_LPAR_20
 ```markdown
 
 - [#14713](https://github.com/leanprover/lean4/pull/14713)
-  adds support for `bv_decide` to make use of the `grind` state when used in `sym`/`grind` interactive mode. `bv_decide` now picks up on the (relevant) equivalence classes, encodes them into the SAT problem and then handles the problem as normally.
+添加了对 `bv_decide` 的支持，以便在 `sym`/`grind` 交互模式下使用时使用 `grind` 状态。 `bv_decide` 现在选取（相关）等价类，将它们编码到 SAT 问题中，然后像平常一样处理问题。
 
 - [#14709](https://github.com/leanprover/lean4/pull/14709)
-  ensures beta-reduction is applied when canonicalizing types in `grind`.
+确保在规范化 `grind` 中的类型时应用 β 缩减。
 
 - [#14694](https://github.com/leanprover/lean4/pull/14694)
-  ensures assigned metavariables are properly handled in the `SymM` discrimination tree module.
+确保分配的元变量在`SymM`判别树模块中得到正确处理。
 
 - [#14691](https://github.com/leanprover/lean4/pull/14691)
-  ensures that the `SymM` matcher/unifier does not get confused by `Expr.mdata`.
+确保`SymM`匹配器/统一器不会被`Expr.mdata`混淆。
 
 - [#14683](https://github.com/leanprover/lean4/pull/14683)
-  makes `bv_decide`'s embedded constraints pass understand both `a = true` and `(!a) = true` correctly. This allows us to solve slightly more problems in pre-processing.
+使得`bv_decide`的嵌入约束能够正确理解`a = true`和`(!a) = true`。这使我们能够在预处理中解决更多的问题。
 
 - [#14681](https://github.com/leanprover/lean4/pull/14681)
-  adds support for restricting the set of complex types that `bv_decide` is going to analyze as a user. By default `bv_decide` guesses that enums and structures in its context might be relevant and tries to incorporate them into the solving process. Now users can supply a restricted set of types via `bv_decide types [MyEnum, MyStruct]`. `bv_decide` is only going to work these types and disable automated discovery once this option is passed.
+添加了对限制 `bv_decide` 将作为用户分析的复杂类型集的支持。默认情况下，`bv_decide`猜测其上下文中的枚举和结构可能是相关的，并尝试将它们合并到求解过程中。现在用户可以通过`bv_decide types [MyEnum, MyStruct]`提供一组受限的类型。 `bv_decide` 仅适用于这些类型，并在通过此选项后禁用自动发现。
 
 - [#14672](https://github.com/leanprover/lean4/pull/14672)
-  makes `bv_decide` available from within `sym =>` mode.
+使 `bv_decide` 在 `sym =>` 模式下可用。
 
 - [#14669](https://github.com/leanprover/lean4/pull/14669)
-  makes `vcgen` try the `@[spec]` theorems matching a program in priority order and apply the first one that fits the goal, so a spec whose instance argument the call site cannot synthesize no longer shadows a more specific one.
+使 `vcgen` 尝试按优先顺序匹配程序的 `@[spec]` 定理，并应用符合目标的第一个定理，因此调用站点无法合成其实例参数的规范不再隐藏更具体的定理。
 
 - [#14215](https://github.com/leanprover/lean4/pull/14215)
-  ports `bv_decide`'s pre-processor to `SymM`. For large, rewriting heavy problems we observe a performance win of up to 6x. Furthermore, it fixes the asymptotics of embedded constraint substitution to be linear in the size of all hypotheses. There are also some breaking changes included:
-  - `bv_normalize`'s proving power got slightly changed (both positively and negatively)
-  - `@[bv_normalize]` is now a `Sym.simp` set which comes with some differences in terms of pattern matching power and required shape of the theorem.
+将`bv_decide`的预处理器移植到`SymM`。对于大型、重写繁重的问题，我们观察到性能提升高达 6 倍。此外，它将嵌入约束替换的渐近性固定为与所有假设的大小呈线性关系。还有一些重大变化包括：
+- `bv_normalize`的证明力略有改变（正面和负面）
+- `@[bv_normalize]` 现在是`Sym.simp` 集合，它在模式匹配能力和所需定理形状方面存在一些差异。
 
 - [#14664](https://github.com/leanprover/lean4/pull/14664)
-  fixes a bug in `mkTheoremFromDecl` in `SymM`. It did not correctly handled polymorphic theorems that require adapters.
+修复了`SymM`中`mkTheoremFromDecl`的错误。它没有正确处理需要适配器的多态定理。
 
 - [#14529](https://github.com/leanprover/lean4/pull/14529)
-  reworks how a `@[frameproc]` procedure discharges its split verification condition so that frame inference scales to operators whose residual the built-in lattice split cannot decompose. A procedure for separating conjunction `∗` used to leave behind a `∗` that no split rule could discharge, halting `vcgen`; a procedure may now discharge its split VC however it wants, so separation-logic framing closes with `vcgen … with finish`.
+重新设计`@[frameproc]`过程如何释放其分割验证条件，以便框架推理扩展到其内置晶格分割的残差无法分解的运算符。分离合取`∗`的过程，用于留下任何分割规则都无法释放的`∗`，从而停止`vcgen`；一个过程现在可以根据需要释放其分离的 VC，因此分离逻辑框架以`vcgen … with finish` 结束。
 
 - [#14535](https://github.com/leanprover/lean4/pull/14535)
-  fixes `vcgen [f, h, …]` reporting `No spec found` for a sibling call inside a self-recursive `f` when the list both brackets `f` to unfold and supplies a spec `h` for `f`, whether `h` is named or pulled by `*`. A bracketed definition's unfoldings now rank below both a named spec and a `*` hypothesis for the same program, so at a recursive call `vcgen` applies that spec and stops rather than unfolding `f` again into a branch whose sibling call has no matching spec. The regression came from #14528, which had raised these unfoldings to the named-spec priority.
+修复了当列表两个括号`f`展开时，修复`vcgen [f, h, …]`报告自递归`f`内同级调用的`No spec found`，并为`f`提供规范`h`，无论`h`是命名还是拉取作者：`*`。括号内定义的展开现在排名低于同一程序的命名规范和 `*` 假设，因此在递归调用时 `vcgen` 应用该规范并停止，而不是再次将 `f` 展开到其兄弟调用没有匹配规范的分支中。回归来自#14528，它将这些展开提升到命名规范优先级。
 
 - [#14530](https://github.com/leanprover/lean4/pull/14530)
-  fixes a panic in `vcgen` when an equation or unfold spec supplied via `vcgen [someDef]` is used for a program in a deep embedding, i.e. a program type with a bare `Std.Internal.Do.WP` instance rather than a monadic one.
+修复了当通过 `vcgen [someDef]` 提供的方程或展开规范用于深度嵌入的程序时，`vcgen` 中的恐慌，即具有裸 `Std.Internal.Do.WP` 实例而不是单子实例的程序类型。
 
 - [#14528](https://github.com/leanprover/lean4/pull/14528)
-  makes every `vcgen [f]` argument enter the spec database at the call-site priority band, so a definition to unfold or a spec supplied as a term outranks an ambient `@[spec]` on the same program.
+使每个 `vcgen [f]` 参数在调用站点优先级带上进入规范数据库，因此要展开的定义或作为术语提供的规范在同一程序上优先于环境 `@[spec]`。
 
 - [#14524](https://github.com/leanprover/lean4/pull/14524)
-  fixes `vcgen … with finish` on a provably unreachable `match` branch: it no longer reports success while leaving an unassigned metavariable that the kernel rejects (`declaration has metavariables`), nor fails with `finish failed` on a verification condition whose proof needs a lifted precondition.
+修复了可证明无法访问的 `match` 分支上的 `vcgen … with finish`：它不再报告成功，同时留下内核拒绝的未分配元变量 (`declaration has metavariables`)，也不再在证明需要解除前提条件的验证条件上失败并显示 `finish failed`。
 
 - [#14492](https://github.com/leanprover/lean4/pull/14492)
-  makes `vcgen` prefer a spec named in a `vcgen [...]` argument over one collected from an ambient local hypothesis, and prefer `foo` over a hypothesis pulled in by `*` in `vcgen [foo, *]`, so the spec you supply at a call site wins when several match.
+使得 `vcgen` 更喜欢在 `vcgen [...]` 参数中命名的规范，而不是从环境局部假设中收集的规范，并且更喜欢 `foo` 而不是由 `vcgen [foo, *]` 中的 `*` 引入的假设，因此，当多个匹配时，您在调用站点提供的规范获胜。
 
 - [#14497](https://github.com/leanprover/lean4/pull/14497)
-  teaches `vcgen` to decompose a raw `∀`/`→` on the RHS of a `Prop` entailment and an `iInf` on any `Pi` assertion lattice.
+教`vcgen`分解`Prop`蕴涵的右侧上的原始`∀`/`→`以及任何`Pi`断言格上的`iInf`。
 
 - [#14490](https://github.com/leanprover/lean4/pull/14490)
-  makes `vcgen` report a clean missing-spec error when the spec it selects for a program turns out not to unify with it, instead of dumping the internal backward rule and its type.
+当它为程序选择的规范结果与它不统一时，使 `vcgen` 报告一个干净的缺失规范错误，而不是转储内部向后规则及其类型。
 
 - [#14487](https://github.com/leanprover/lean4/pull/14487)
-  lets `vcgen [...]` accept arbitrary term arguments, not just bare identifiers, mirroring `simp [...]`. A term that proves a Hoare-triple or `⊑ wp` specification is registered as a spec, and any other term proof is handled as a simp lemma, so forms like `vcgen [show l = r from h]`, `vcgen [foo x]`, and `vcgen [@foo]` now work.
+让`vcgen [...]`接受任意术语参数，而不仅仅是裸标识符，镜像`simp [...]`。证明 Hoare-triple 或 `⊑ wp` 规范的术语被注册为规范，任何其他术语证明都被视为简单引理，因此像 `vcgen [show l = r from h]`、`vcgen [foo x]` 和 `vcgen [@foo]` 这样的形式现在可以使用。
 
 - [#14429](https://github.com/leanprover/lean4/pull/14429)
-  makes `vcgen [f]` handle a definition `f` whose body is a `match` on its arguments like `simp [f]` does. A call with an opaque discriminant now rewrites through the unfold theorem `f.eq_def` and splits the exposed `match`, instead of reporting a missing spec.
+使`vcgen [f]`处理定义`f`，其主体是其参数上的`match`，就像`simp [f]`一样。具有不透明判别式的调用现在通过展开定理 `f.eq_def` 进行重写，并拆分公开的 `match`，而不是报告丢失的规范。
 
 - [#14475](https://github.com/leanprover/lean4/pull/14475)
-  fixes a spurious "Too many variable names provided" error from `fun_induction` (and `induction`/`cases`) when an alternative had a `let`-bound field, so that all hypotheses of such an alternative can now be named.
+修复了当替代方案具有 `let` 绑定字段时，来自 `fun_induction`（和 `induction`/`cases`）的虚假“提供了太多变量名称”错误，以便现在可以命名此类替代方案的所有假设。
 
 - [#14469](https://github.com/leanprover/lean4/pull/14469)
-  makes `vcgen` work after a preceding tactic `have`, `let`, or `suffices`, which previously failed with "vcgen: could not determine the program type of the goal".
+使`vcgen`在前面的策略`have`、`let`或`suffices`之后起作用，这些策略之前因“vcgen：无法确定目标的程序类型”而失败。
 
 - [#14468](https://github.com/leanprover/lean4/pull/14468)
-  migrates the standard library to the `[grind hom]` and `[grind hom_pred]` attribute modifiers and removes the deprecated `[grind homo]` and `[grind homo_pred]` spellings.
+将标准库迁移到 `[grind hom]` 和 `[grind hom_pred]` 属性修饰符，并删除已弃用的 `[grind homo]` 和 `[grind homo_pred]` 拼写。
 
 - [#14460](https://github.com/leanprover/lean4/pull/14460)
-  adds additional `BitVec` operations to the set of operations supported by `Simp.Simp.evalGround` and `Sym.DSimp.evalGround`.
+将额外的 `BitVec` 操作添加到 `Simp.Simp.evalGround` 和 `Sym.DSimp.evalGround` 支持的操作集中。
 
 - [#14459](https://github.com/leanprover/lean4/pull/14459)
-  adds an option for `Sym.dsimp` to rewrite in instances. This is usually not desirable as it can lead to non-standard instances. However, we might for example want to rewrite ground terms in instances to make more terms syntactically equal.
+添加`Sym.dsimp`在实例中重写的选项。这通常是不可取的，因为它可能导致非标准实例。然而，例如，我们可能想要重写实例中的基本术语，以使更多术语在语法上相等。
 
 - [#14464](https://github.com/leanprover/lean4/pull/14464)
-  renames the `[grind homo]` and `[grind homo_pred]` attribute modifiers to `[grind hom]` and `[grind hom_pred]`. The previous spellings remain as deprecated aliases with identical behavior, and will be removed once the standard library migrates to the new spellings in a follow-up PR.
+将 `[grind homo]` 和 `[grind homo_pred]` 属性修饰符重命名为 `[grind hom]` 和 `[grind hom_pred]`。以前的拼写仍然是具有相同行为的已弃用别名，一旦标准库在后续 PR 中迁移到新拼写，就会将其删除。
 
 - [#14457](https://github.com/leanprover/lean4/pull/14457)
-  records the homomorphism source types of a `[grind homo]` theorem set: when an `=`-injection rule (a rule translating `Eq τ`) is registered, the head constant of `τ` is added to a new environment extension, and rules whose source type is not headed by a constant are rejected. The source types identify the terms the `grind` homomorphism engine must track in the E-graph. The `reset_grind_attrs%` command clears the new extension.
+记录`[grind homo]`定理集的同态源类型：当注册`=`注入规则（翻译`Eq τ`的规则）时，`τ`的头常量被添加到新的环境扩展中，源类型不以常量为头的规则将被拒绝。源类型标识 `grind` 同态引擎必须在 E 图中跟踪的术语。 `reset_grind_attrs%` 命令清除新扩展名。
 
 - [#14454](https://github.com/leanprover/lean4/pull/14454)
-  annotates theorems for `BitVec`, `Fin`, and fixed (signed and unsigned) integers using then new  `[grind homo]` and `[grind homo_pred]` attributes. This PR is based on the prototype implemented by Andres Erbsen at https://github.com/AeneasVerif/kraken/pull/122
+使用新的 `[grind homo]` 和 `[grind homo_pred]` 属性注释 `BitVec`、`Fin` 和固定（有符号和无符号）整数的定理。此 PR 基于 Andres Erbsen 在 https://github.com/AeneasVerif/kraken/pull/122 实现的原型
 
 - [#14452](https://github.com/leanprover/lean4/pull/14452)
-  rejects `[grind homo]` theorems that are conditional rewriting rules. Conditional theorems are rejected with an error pointing to the E-matching attributes. The `reset_grind_attrs%` command now also clears the `[grind homo]` and `[grind homo_pred]` extensions.
+拒绝作为条件重写规则的`[grind homo]`定理。条件定理被拒绝，并出现指向 E 匹配属性的错误。 `reset_grind_attrs%` 命令现在还清除 `[grind homo]` 和 `[grind homo_pred]` 扩展。
 
 - [#14451](https://github.com/leanprover/lean4/pull/14451)
-  adds the attribute `[grind homo_pred]`. This attribute is used for a separate mechanism which complements `[grind homo]`. It is not a rewrite set but an eager fact injector keyed by head symbol. Where `[grind homo]`` rules translate terms, `[grind homo_pred]` theorems generate new facts about terms the moment they enter the E-graph.
+添加属性`[grind homo_pred]`。该属性用于补充`[grind homo]`的单独机制。它不是一个重写集，而是一个由头符号键控的热切事实注入器。 `[grind homo]`` 规则翻译术语，`[grind homo_pred]` 定理在术语进入电子图时生成有关术语的新事实。
 
 - [#14446](https://github.com/leanprover/lean4/pull/14446)
-  adds the attribute `[grind homo]`. This is just the first step. We are going to use it to implement the approach described at
+添加属性`[grind homo]`。这只是第一步。我们将使用它来实现描述的方法
   https://hackmd.io/Qd0nkWdzQImVe7TDGSAGbA
 
 - [#14444](https://github.com/leanprover/lean4/pull/14444)
-  ensures `grind` doesn't timeout checking for definitionally equality while trying to propagate `match`-expressions conditions.
+确保在尝试传播 `match` 表达式条件时，`grind` 不会超时检查定义相等性。
 
 - [#14439](https://github.com/leanprover/lean4/pull/14439)
-  fixes a `grind` bug where the canonicalizer could resynthesize a propositional instance (e.g. `Nonempty α`) occurring in a binder body skipped by preprocessing, producing a closed nested proof lacking the `Grind.nestedProof` wrapper. Congruence closure then treated the term as distinct from correctly wrapped occurrences of the same application, and `grind` missed valid contradictions. Closes #13655.
+修复了一个 `grind` 错误，其中规范化器可以重新合成发生在通过预处理跳过的活页夹主体中的命题实例（例如 `Nonempty α`），从而生成缺少 `Grind.nestedProof` 包装器的封闭嵌套证明。然后，同余闭包将该术语视为与同一应用程序的正确包装出现的术语不同，并且 `grind` 错过了有效的矛盾。关闭#13655。
 
 - [#14431](https://github.com/leanprover/lean4/pull/14431)
-  fixes `vcgen` failing with `Failed to apply rule` when the same equality spec matches two different programs within one run, e.g. the equations of a recursive function registered via `vcgen [f]`: the cached backward rule was specialized to the first matched program and could not be applied to the next one.
+修复了当相同的相等规范在一次运行中匹配两个不同的程序时，例如，`vcgen`因`Failed to apply rule`而失败。通过`vcgen [f]`注册的递归函数方程：缓存的后向规则专门用于第一个匹配的程序，不能应用于下一个匹配的程序。
 
 - [#14428](https://github.com/leanprover/lean4/pull/14428)
-  fixes the `grind` filter syntax. It prevented `grind =>` from being used nested in `match` expressions.
+修复了 `grind` 过滤器语法。它阻止了 `grind =>` 嵌套在 `match` 表达式中使用。
 
 - [#14426](https://github.com/leanprover/lean4/pull/14426)
-  fixes `grind` dropping E-matching theorems from custom `grind` attributes when a partially activated theorem was reinserted under the same symbol.
+修复了在同一符号下重新插入部分激活的定理时，`grind`从自定义`grind`属性中删除电子匹配定理的问题。
 
 - [#14425](https://github.com/leanprover/lean4/pull/14425)
-  implements support for using `grind` to discharge hypotheses in conditional `Sym.simp` theorems.
+实现对使用 `grind` 提出条件 `Sym.simp` 定理中的假设的支持。
 
 - [#14424](https://github.com/leanprover/lean4/pull/14424)
-  fixes a maximal-sharing violation in `Sym.simp`: when a conditional rewrite discharged a hypothesis that occurs in the theorem's right-hand side., the discharger-provided proof was spliced into the resulting term without restoring maximal sharing, violating the `SymM` sharing invariant (detected by `sym.debug`). Dischargers are not required to return maximally shared proofs. This issue was reported by @hargoniX
+修复了`Sym.simp`中的最大共享违规：当条件重写释放了发生在定理右侧的假设时，释放者提供的证明被拼接到结果项中，而不恢复最大共享，违反了`SymM`共享不变式（由`sym.debug`检测到）。放电者不需要返回最大共享证明。此问题由 @hargoniX 报告
 
 - [#14416](https://github.com/leanprover/lean4/pull/14416)
-  fixes `vcgen` and `mvcgen` failing to split `match h : e with ...` expressions, whose alternatives bind an equality `h : e = pattern`. Fixes #12275.
+修复了 `vcgen` 和 `mvcgen` 无法拆分 `match h : e with ...` 表达式，其替代方案绑定了等式 `h : e = pattern`。修复#12275。
 
 - [#14405](https://github.com/leanprover/lean4/pull/14405)
-  improves the support for offsets in `SymM` matcher/unifier. See new test for example that could not be handled.
+改进了对 `SymM` 匹配器/统一器中偏移的支持。例如，请参阅无法处理的新测试。
 
 - [#13587](https://github.com/leanprover/lean4/pull/13587)
-  fixes a kernel type mismatch raised by `lia`/`grind` when internalizing an integer expression whose syntactic structure differs from the structure of its polynomial representation. The mismatch occurred because the `eq_def` proof term bridged `x.denote ctx = e.denote ctx` to `Poly.denote' ctx p = 0` via a plain `Eq.refl e`, but `Poly.denote'` collapses sub-structure such as a trailing `+ 0` (the `(.num 0)` monomial is dropped) while `e` keeps it. The kernel then rejected the application because the equality between `x.denote` and `Poly.denote' p` did not hold definitionally.
+修复了内部化语法结构与其多项式表示结构不同的整数表达式时由 `lia`/`grind` 引发的内核类型不匹配问题。发生不匹配是因为 `eq_def` 证明项通过普通 `Eq.refl e` 将 `x.denote ctx = e.denote ctx` 桥接到 `Poly.denote' ctx p = 0`，但 `Poly.denote'` 折叠了子结构，例如尾随 `+ 0`（`(.num 0)` 单项式是掉落），而 `e` 保留它。然后内核拒绝了该申请，因为`x.denote`和`Poly.denote' p`之间的等式在定义上不成立。
 
 - [#14404](https://github.com/leanprover/lean4/pull/14404)
-  fixes `Sym.simp` failing to rewrite terms containing unassigned metavariables, and prevents the matcher from unsoundly unifying such metavariables when matching nonlinear patterns.
+修复了`Sym.simp`无法重写包含未分配元变量的术语，并防止匹配器在匹配非线性模式时不合理地统一此类元变量。
 
 - [#14401](https://github.com/leanprover/lean4/pull/14401)
-  fixes `preprocessType` in `SymM`. It must not perform `zetaDelta` by default.
+修复了`SymM`中的`preprocessType`。默认情况下它不能执行`zetaDelta`。
 
 ```
 
@@ -400,28 +400,28 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___34___0-rc1-_LPAR_20
 ```markdown
 
 - [#14717](https://github.com/leanprover/lean4/pull/14717)
-  the model/runtime mismatch in `String.Pos.Raw.extract` and adds a faster variant (`lean_string_utf8_extract_fast`) for `String.extract` that assumes that the positions are valid positions.
+`String.Pos.Raw.extract` 中的模型/运行时不匹配，并为 `String.extract` 添加更快的变体 (`lean_string_utf8_extract_fast`)，假设这些位置是有效位置。
 
 - [#14505](https://github.com/leanprover/lean4/pull/14505)
-  fixes a compiler issue where private imports of the `Lean` library could lead to segfaults by ensuring the necessary call to `lean_initialize` happens in each module's initializer when necessary. As a follow-up clean up, the call to `lean_initialize_runtime_module` is made implicit as well, meaning users of Lean as an FFI library do not need to call these functions themselves anymore.
+通过确保在必要时在每个模块的初始化程序中发生对 `lean_initialize` 的必要调用，修复了编译器问题，即 `Lean` 库的私有导入可能会导致段错误。作为后续清理，对 `lean_initialize_runtime_module` 的调用也被隐式调用，这意味着 Lean 作为 FFI 库的用户不再需要自己调用这些函数。
 
 - [#14332](https://github.com/leanprover/lean4/pull/14332)
-  adds `DT_SONAME` entries to the shared libraries `libInit_shared, libleanshared*, libLake_shared` on Linux. This is analogous to `LC_ID_DYLIB` on Mac which we already set via `-install_name`. Fixes #9420.
+将 `DT_SONAME` 条目添加到 Linux 上的共享库 `libInit_shared, libleanshared*, libLake_shared` 中。这类似于 Mac 上的 `LC_ID_DYLIB`，我们已经通过 `-install_name` 设置了。修复#9420。
 
 - [#14479](https://github.com/leanprover/lean4/pull/14479)
-  prevents possible corruption if two threads simultaneously call `lean_decode_io_error`. It also changes the semantics of `osCode` in `IO.Error`, such that it emulates posix `errno` rather than forwarding uv error codes cast to unsigned integers.
+如果两个线程同时调用`lean_decode_io_error`，则可以防止可能的损坏。它还更改了`IO.Error`中`osCode`的语义，以便它模拟posix`errno`，而不是转发转换为无符号整数的uv错误代码。
 
 - [#14471](https://github.com/leanprover/lean4/pull/14471)
-  fixes a sanitizer warning where `initialize` functions were passed uninitialized memory as their `world` argument, by failing to call `io_mk_world`.
+修复了一个清理程序警告，其中 `initialize` 函数因未能调用 `io_mk_world` 而被传递未初始化的内存作为其 `world` 参数。
 
 - [#14463](https://github.com/leanprover/lean4/pull/14463)
-  reverts #14423 until we can get the situation on Windows figured out.
+恢复#14423，直到我们弄清楚 Windows 上的情况。
 
 - [#14423](https://github.com/leanprover/lean4/pull/14423)
-  prevents possible corruption if two threads simultaneously call `lean_decode_io_error`. It also changes the semantics of `osCode` in `IO.Error`, such that it emulates posix `errno` rather than forwarding uv error codes cast to unsigned integers.
+如果两个线程同时调用`lean_decode_io_error`，则可以防止可能的损坏。它还更改了`IO.Error`中`osCode`的语义，以便它模拟posix`errno`，而不是转发转换为无符号整数的uv错误代码。
 
 - [#14204](https://github.com/leanprover/lean4/pull/14204)
-  prevents silent olean truncation when disk space is exhausted.
+防止磁盘空间耗尽时静默的 olean 截断。
 
 ```
 
@@ -433,10 +433,10 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___34___0-rc1-_LPAR_20
 ```markdown
 
 - [#14512](https://github.com/leanprover/lean4/pull/14512)
-  makes a `for` do-element pretty-print with a space before `do`. The do-element `for` parser emitted `"do "` with no leading space, so reformatting a `for … do` block glued the range to the keyword (`for x in xs do` printed as `for x in xsdo`). Every sibling do-keyword (`while`, `unless`, term-level `for`) already emits ` do `; this aligns `for`.
+制作一个 `for` do 元素漂亮打印，并在 `do` 之前添加一个空格。 do 元素 `for` 解析器发出 `"do "` 且没有前导空格，因此重新格式化 `for … do` 块将范围粘合到关键字（`for x in xs do` 打印为 `for x in xsdo`）。每个同级 do 关键字（`while`、`unless`、术语级别 `for`）已发出 ` do `；这对齐了`for`。
 
 - [#14367](https://github.com/leanprover/lean4/pull/14367)
-  fixes an issue where the `@[simp ←]` attribute would pretty-print as `@[simp← ]`, along with analogous issues with `@[grind norm ←]`, `@[wf_preprocess ←]`, `@[bv_normalize ←]`, etc. See also discussion on [Zulip](https://leanprover.zulipchat.com/#narrow/channel/287929-mathlib4/topic/Whitespace.20linter.20interaction.20with.20reverse.20simp.20attributes/near/590971428).
+修复了 `@[simp ←]` 属性将漂亮地打印为 `@[simp← ]` 的问题，以及 `@[grind norm ←]`、`@[wf_preprocess ←]`、`@[bv_normalize ←]` 等的类似问题。另请参阅 [Zulip](https://leanprover.zulipchat.com/#narrow/channel/287929-mathlib4/topic/Whitespace.20linter.20interaction.20with.20reverse.20simp.20attributes/near/590971428) 的讨论。
 
 ```
 
@@ -448,7 +448,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___34___0-rc1-_LPAR_20
 ```markdown
 
 - [#14436](https://github.com/leanprover/lean4/pull/14436)
-  removes references to the unfolding lemma from the `repeatM` docstrings and moves that lemma into the `repeatM.Internal` namespace.
+从 `repeatM` 文档字符串中删除对展开引理的引用，并将该引理移至 `repeatM.Internal` 命名空间中。
 
 ```
 
@@ -460,31 +460,31 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___34___0-rc1-_LPAR_20
 ```markdown
 
 - [#14723](https://github.com/leanprover/lean4/pull/14723)
-  makes the `MACOSX_DEPLOYMENT_TARGET` configurable via the Lake API -- both across a build and for custom builds of shared libraries or executables.  It also includes the target in traces, ensuring a rebuilding if the value changes (e.g., if the environment variable `MACOSX_DEPLOYMENT_TARGET` is set).
+使 `MACOSX_DEPLOYMENT_TARGET` 可通过 Lake 接口进行配置——既可以跨构建，也可以用于共享库或可执行文件的自定义构建。  它还将目标包含在跟踪中，确保在值发生变化时进行重建（例如，如果设置了环境变量`MACOSX_DEPLOYMENT_TARGET`）。
 
 - [#14724](https://github.com/leanprover/lean4/pull/14724)
-  adds the `--package` option for `lake cache get`, which fetches outputs for a specific package in the workspace (not just the root). This is particularly useful for downloading dependency outputs from a custom service. In addition, the undocumented `--rev` support has been removed from `put` and documented for `put-staged`.
+为 `lake cache get` 添加 `--package` 选项，该选项获取工作区中特定包（而不仅仅是根）的输出。这对于从自定义服务下载依赖项输出特别有用。此外，未记录的 `--rev` 支持已从 `put` 中删除，并为 `put-staged` 记录。
 
 - [#14720](https://github.com/leanprover/lean4/pull/14720)
-  demotes all cache-related failures during a build to `trace`-level messages. This ensures that builds run with `--wfail` or `--iofail` do not fail solely due to the cache.
+将构建期间所有与缓存相关的故障降级为`trace`级别消息。这确保使用 `--wfail` 或 `--iofail` 运行的构建不会仅仅由于缓存而失败。
 
 - [#14622](https://github.com/leanprover/lean4/pull/14622)
-  adds a `--code-quality` option to `lake lint` that emits builtin linter results as machine-readable JSON entries instead of human-readable diagnostics. Text-linter warnings are aggregated per module and linter into one entry holding the warning count, and environment-linter findings are reported per flagged declaration; both are keyed by the linter's option name. The option implies `--builtin-lint` and `--builtin-only`.
+向 `lake lint` 添加了 `--code-quality` 选项，该选项将内置检查器结果作为机器可读的 JSON 条目而不是人类可读的诊断发出。每个模块和检查器的文本检查器警告都会聚合到一个保存警告计数的条目中，并且每个标记的声明都会报告环境检查器结果；两者都由检查器的选项名称作为键控。该选项意味着 `--builtin-lint` 和 `--builtin-only`。
 
 - [#14617](https://github.com/leanprover/lean4/pull/14617)
-  refactors `lake lint --builtin-lint` internals so that it has a `Mode` flag (reporting vs recording exceptions) in the anticipation of the third mode of running upcoming code quality checks.
+重构`lake lint --builtin-lint`内部结构，使其具有`Mode`标志（报告与记录异常），以应对即将运行的代码质量检查的第三种模式。
 
 - [#14629](https://github.com/leanprover/lean4/pull/14629)
-  suppresses Lake's wrapper line `error: Lean exited with code 1` when `lean` has already emitted error-level diagnostics and exited with code 1, which is the usual type-error path and was pure noise next to the real errors.
+当 `lean` 已经发出错误级别诊断并以代码 1 退出时，会抑制 Lake 的包装器行 `error: Lean exited with code 1`，这是常见的类型错误路径，并且是真实错误旁边的纯粹噪声。
 
 - [#14625](https://github.com/leanprover/lean4/pull/14625)
-  makes Lake report the underlying file error when a `lean_lib` root module has no source file, instead of only reporting that some modules have bad imports.
+使 Lake 在 `lean_lib` 根模块没有源文件时报告底层文件错误，而不是仅报告某些模块导入错误。
 
 - [#14651](https://github.com/leanprover/lean4/pull/14651)
-  fixes a number of ways a failed artifact transfer in `lake cache get` / `lake cache put` could fail to be recorded or could lead to an early abort of the entire transfer batch. Sometimes this would leave a corrupted artifact in the local Lake cache, which could break downstream builds.
+修复了 `lake cache get` / `lake cache put` 中失败的工件传输可能无法记录或导致整个传输批次提前中止的多种方式。有时，这会在本地 Lake 缓存中留下损坏的工件，这可能会破坏下游构建。
 
 - [#14630](https://github.com/leanprover/lean4/pull/14630)
-  makes `lake update <pkg>...` fail with a clear error when a specified package name is not known to the current dependency manifest. Previously, unknown or misspelled names (including case mismatches) were silently ignored, which was confusing.
+当当前依赖项清单未知指定的包名称时，使 `lake update <pkg>...` 失败并出现明显错误。以前，未知或拼写错误的名称（包括大小写不匹配）会被默默忽略，这令人困惑。
 
 ```
 
@@ -496,6 +496,6 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___34___0-rc1-_LPAR_20
 ```markdown
 
 - [#14161](https://github.com/leanprover/lean4/pull/14161)
-  adds support for compiling with thread sanitizer. This both increases memory consumption and slows lean down massively so we only run a very small subset of tests to remain in a reasonable time. Developers need to add additional tests to the set themselves.
+添加了对使用线程清理程序进行编译的支持。这既增加了内存消耗，又大大减慢了Lean的速度，因此我们只运行一小部分测试来保持合理的时间。开发人员需要自己向集合中添加额外的测试。
 
 ```

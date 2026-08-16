@@ -13,7 +13,7 @@ open Verso.Genre
 open Verso.Genre.Manual
 open Verso.Genre.Manual.InlineLean
 
-#doc (Manual) "精益4.28.0 (2026-02-17)" =>
+#doc (Manual) "Lean4.28.0 (2026-02-17)" =>
 %%%
 tag := "release-v4.28.0"
 file := "v4.28.0"
@@ -40,7 +40,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___28___0-_LPAR_2026-0
 并启用验证条件生成器的实现
 和符号执行引擎。
 [#12143](https://github.com/leanprover/lean4/pull/12143) 定义
-该框架的核心API。
+该框架的核心接口。
 
 有关设计说明和实现细节，请参阅：
 
@@ -150,7 +150,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___28___0-_LPAR_2026-0
 
 [#11947](https://github.com/leanprover/lean4/pull/11947) 添加了一个
 `+locals` 配置选项到 `simp`、`simp_all` 和 `dsimp`
-战术。
+策略。
 
 ##  `bv_decide` 中的解算器模式
 %%%
@@ -166,7 +166,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___28___0-_LPAR_2026-0
 - `counterexample`，改进反例搜索；
 - `default`，其中没有额外的 SAT 求解器标志。
 
-## 并行战术组合器
+## 并行策略组合器
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___28___0-_LPAR_2026-02-17_RPAR_--Highlights--Parallel-Tactic-Combinator"
 %%%
@@ -200,7 +200,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___28___0-_LPAR_2026-0
 
 - [#11921](https://github.com/leanprover/lean4/pull/11921) 添加
   `lake shake` 作为内置 Lake 命令，移动抖动
-  功能从 `script/Shake.lean` 到 Lake CLI。
+  功能从 `script/Shake.lean` 到 Lake 命令行界面。
 
 ## 外部检查器
 %%%
@@ -208,7 +208,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___28___0-_LPAR_2026-0
 %%%
 
 [#11887](https://github.com/leanprover/lean4/pull/11887) 使
-外部检查器 Lean4checker 可用作现有的 `leanchecker`
+外部检查器 Lean4检查器可用作现有的 `leanchecker`
 elan 已知的二进制文件，允许开箱即用地访问
 它。
 
@@ -222,20 +222,19 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___28___0-_LPAR_2026-0
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___28___0-_LPAR_2026-02-17_RPAR_--Highlights--Library-Highlights--Ranges"
 %%%
 
-- [#11438](https://github.com/leanprover/lean4/pull/11438) 重命名
-  namespace `Std.Range` to `Std.Legacy.Range`. Instead of using
-  `Std.Range` 和 `[a:b]` 表示法，新范围类型 `Std.Rco` 和
-  应使用其相应的 `a...b` 符号。
+- [#11438](https://github.com/leanprover/lean4/pull/11438) 将命名空间
+  `Std.Range` 重命名为 `Std.Legacy.Range`。应使用新的范围类型
+  `Std.Rco` 及其对应的 `a...b` 表示法，而非 `Std.Range` 和
+  `[a:b]` 表示法。
 
 ### 迭代器
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___28___0-_LPAR_2026-02-17_RPAR_--Highlights--Library-Highlights--Iterators"
 %%%
 
-- [#11446](https://github.com/leanprover/lean4/pull/11446) 移动很多
-  迭代器 API 的常量从 `Std.Iterators` 到 `Std`
-  namespace in order to make them more convenient to use. These
-  常量包括但不限于 `Iter`、`IterM` 和
+- [#11446](https://github.com/leanprover/lean4/pull/11446) 将许多
+  迭代器接口常量从 `Std.Iterators` 移至 `Std`
+  命名空间，使其更便于使用。这些常量包括但不限于 `Iter`、`IterM` 和
   `IteratorLoop`。这是一个*重大变更*。如果有内容失效，
   尝试添加 `open Std` 以使这些常量可用
   再次。如果 `Std.Iterators` 命名空间中的某些常量不能
@@ -243,7 +242,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___28___0-_LPAR_2026-0
 
 - [#11789](https://github.com/leanprover/lean4/pull/11789) 使
   `FinitenessRelation` 结构，这在证明时很有帮助
-  迭代器的有限性，公共 API 的一部分。
+  迭代器的有限性，公共接口的一部分。
 
 ### 位向量
 %%%
@@ -352,7 +351,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___28___0-_LPAR_2026-0
   `unsafeEIO`，并且还将该函数保留为私有。
 
 * [#11933](https://github.com/leanprover/lean4/pull/11933) 添加了用于在期间管理消息日志的实用程序函数
-  战术
+  策略
   评估，并重构现有代码以使用它们。
 
 * [#11940](https://github.com/leanprover/lean4/pull/11940) 修复了尝试声明模块时的模块系统可见性问题
@@ -394,7 +393,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___28___0-_LPAR_2026-0
   `Std.Data.Range.Polymorphic` 和新的范围表示法也适用于
   `Int`、`Int8`、`UInt8`、`Fin` 等。
 
-* [#11446](https://github.com/leanprover/lean4/pull/11446) 将迭代器 API 的许多常量从 `Std.Iterators` 移动到
+* [#11446](https://github.com/leanprover/lean4/pull/11446) 将迭代器接口的许多常量从 `Std.Iterators` 移动到
   `Std` 命名空间，以便使它们更方便使用。这些
   常量包括但不限于 `Iter`、`IterM` 和
   `IteratorLoop`。这是一个重大变更。如果出现问题，请尝试
@@ -408,7 +407,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___28___0-_LPAR_2026-0
 
 * [#11532](https://github.com/leanprover/lean4/pull/11532) 添加新操作 `MonadAttach.attach` 附加一个
   证明后置条件保持一元函数的返回值
-  操作。标准库中的大多数非 CPS monad 都支持此功能
+  操作。标准库中的大多数非 CPS 单子都支持此功能
   以一种不平凡的方式进行操作。 PR 还更改了 `filterMapM`，
   `mapM` 和 `flatMapM` 组合器，以便它们将后置条件附加到
   用户提供的一元函数传递给他们。这使得
@@ -427,7 +426,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___28___0-_LPAR_2026-0
   `Nat.toList_rcc_eq_toList_rco` 和配偶。
 
 * [#11706](https://github.com/leanprover/lean4/pull/11706) 删除 `IteratorCollect` 类型类并由此简化
-  迭代器 API。其有限的优势并不能证明其复杂性是合理的
+  迭代器接口。其有限的优势并不能证明其复杂性是合理的
   成本。
 
 * [#11710](https://github.com/leanprover/lean4/pull/11710) 扩展了范围的 get-elem 策略，以便它支持
@@ -491,7 +490,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___28___0-_LPAR_2026-0
   `PersistentArray.forM`
 
 * [#11789](https://github.com/leanprover/lean4/pull/11789) 生成 `FinitenessRelation` 结构，这在以下情况下很有帮助：
-  证明迭代器的有限性，公共 API 的一部分。此前，
+  证明迭代器的有限性，公共接口的一部分。此前，
   它被标记为内部和实验性的。
 
 * [#11794](https://github.com/leanprover/lean4/pull/11794) 实现函数 `getMaxFVar?` 来实现 `SymM`
@@ -503,7 +502,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___28___0-_LPAR_2026-0
   转换为模式变量。
 
 * [#11848](https://github.com/leanprover/lean4/pull/11848) 修复了 `Name.beq` 报告的错误
-  加油站codemanager@gmail.com
+  gasstationcodemanager@gmail.com
 
 * [#11852](https://github.com/leanprover/lean4/pull/11852) 更改迭代器组合器的定义 `takeWhileM`
   和 `dropWhileM` 以便他们使用 `MonadAttach`。这只是相关的
@@ -545,7 +544,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___28___0-_LPAR_2026-0
   包括该函数的所有其他运算符使用的模式
   以及拼写列表中的语法。
 
-# 战术
+# 策略
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___28___0-_LPAR_2026-02-17_RPAR_--Tactics"
 %%%
@@ -579,7 +578,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___28___0-_LPAR_2026-0
   参考手册中描述 `grind` 的部分。
 
 * [#11712](https://github.com/leanprover/lean4/pull/11712) 避免调用 TC 合成和其他推理机制
-  `bv_decide` 的 simprocs。这可以显着加速
+  `bv_decide` 的简化过程。这可以显着加速
   给这些模拟过程带来压力的问题。
 
 * [#11717](https://github.com/leanprover/lean4/pull/11717) 提高了 `bv_decide` 重写器在大型机上的性能
@@ -589,7 +588,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___28___0-_LPAR_2026-0
   当前模块中定义的声明。
 
 * [#11739](https://github.com/leanprover/lean4/pull/11739) 变成了更常用的 `bv_decide` 定理，需要
-  统一为快速 simprocs
+  统一为快速简化过程
   使用句法相等。这推动了整体性能
   sage/app7 至 <= 1min10s
   每个问题。
@@ -640,16 +639,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___28___0-_LPAR_2026-0
   数千个新的封闭学期
   声明反过来又会减慢编译器的速度。
 
-* [#11787](https://github.com/leanprover/lean4/pull/11787) 添加了对增量处理本地声明的支持
-  `grind`。`grind` 不再在目标初始化过程中一次处理所有假设，
-  初始化， `grind` 现在跟踪哪些本地声明已被
-  通过 `Goal.nextDeclIdx` 处理并提供 API 来处理新的
-  逐步提出假设。
-  新的 `SymM` monad 将使用此功能来实现高效的符号
-  模拟。
+* [#11787](https://github.com/leanprover/lean4/pull/11787) 添加了在 `grind` 中
+  增量处理局部声明的支持。`grind` 不再在目标初始化期间一次处理所有假设，
+  而是通过 `Goal.nextDeclIdx` 跟踪已处理的局部声明，并提供接口来增量处理
+  新的假设。新的 `SymM` 单子将使用此功能实现高效的符号模拟。
 
-* [#11788](https://github.com/leanprover/lean4/pull/11788) 引入了 `SymM`，一个用于实现符号的新 monad
-  精益中的模拟器（例如验证条件生成器）。单子
+* [#11788](https://github.com/leanprover/lean4/pull/11788) 引入了 `SymM`，一个用于实现符号的新单子
+  Lean中的模拟器（例如验证条件生成器）。单子
   解决了在顶部构建的符号模拟器中发现的性能问题
   面向用户的策略，如 `apply` 和 `intros`。
 
@@ -667,7 +663,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___28___0-_LPAR_2026-0
 * [#11800](https://github.com/leanprover/lean4/pull/11800) 增加了函数 `Sym.replaceS`，类似于
   `replace_fn` 在内核中可用，但假设输入最大
   共享并确保输出也得到最大程度的共享。公关还
-  概括了 `AlphaShareBuilder` API。
+  概括了 `AlphaShareBuilder` 接口。
 
 * [#11802](https://github.com/leanprover/lean4/pull/11802) 添加了函数 `Sym.instantiateS` 及其变体，它们是
   类似于 `Expr.instantiate` 但假设输入最大限度地共享
@@ -693,10 +689,10 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___28___0-_LPAR_2026-0
 
   *阶段 1（语法匹配）*
   - Patterns 使用 de Bruijn 索引作为表达式变量并重命名
-  Universe 变量的级别参数 (`_uvar.0`, `_uvar.1`, ...)
+  宇宙变量的级别参数 (`_uvar.0`, `_uvar.1`, ...)
   - 展开可简化定义后匹配纯粹是结构性的
   预处理期间
-  - Universe 级别将 `max` 和 `imax` 视为未解释的函数（无
+  - 宇宙级别将 `max` 和 `imax` 视为未解释的函数（无
   交流推理）
   - 绑定器和术语元变量被推迟到第 2 阶段
 
@@ -706,8 +702,8 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___28___0-_LPAR_2026-0
 必要时   -  回退到 `isDefEq`
 
 * [#11814](https://github.com/leanprover/lean4/pull/11814) 实现 `instantiateRevBetaS`，类似于
-  `instantiateRevS` 但 beta 减少了其功能的嵌套应用程序
-  替换后变为 lambda。
+  `instantiateRevS` 但 β 减少了其功能的嵌套应用程序
+  替换后变为 λ。
 
 * [#11815](https://github.com/leanprover/lean4/pull/11815) 通过跳过证明和实例来优化模式匹配
   第一阶段（语法匹配）期间的参数。
@@ -751,12 +747,12 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___28___0-_LPAR_2026-0
 
 * [#11857](https://github.com/leanprover/lean4/pull/11857) 为表达式添加 `shareCommon` 的增量变体
   由已经共享的子项构建。当表达式
-  `e` 由精益 API（例如 `inferType`、`mkApp4`）生成，该 API
-  不保留最大共享，但该 API 的输入已经
+  `e` 由Lean 接口（例如 `inferType`、`mkApp4`）生成，该接口
+  不保留最大共享，但该接口的输入已经
   最大限度地共享。与 `shareCommon` 不同，该函数不使用
   local `Std.HashMap ExprPtr Expr` 来跟踪访问过的节点。这更
   当新（非共享）节点数量较少时，效率较高，即
-  包装构建一些构造函数节点的 API 调用时的常见情况
+  包装构建一些构造函数节点的接口调用时的常见情况
   围绕共享输入。
 
 * [#11858](https://github.com/leanprover/lean4/pull/11858) 更改了 `bv_decide` 对于要使用哪种结构的启发式
@@ -799,7 +795,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___28___0-_LPAR_2026-0
 实现 `SymM` 因为它有自己的基于指针相等的缓存。
 
 * [#11878](https://github.com/leanprover/lean4/pull/11878) 记录符号模拟框架所做的假设
-  关于结构匹配和定义平等。
+  关于结构匹配和定义相等。
 
 * [#11880](https://github.com/leanprover/lean4/pull/11880) 添加了 `with_unfolding_none` 策略来设置透明度
   模式为 `.none`，其中不展开任何定义。这补充了
@@ -839,10 +835,10 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___28___0-_LPAR_2026-0
 * [#11892](https://github.com/leanprover/lean4/pull/11892) 优化了 `simp` 中同余证明的构造。
   它使用了 `Sym.simp` 中使用的一些想法。
 
-* [#11898](https://github.com/leanprover/lean4/pull/11898) 添加了对简化 `Sym.simp` 中的 lambda 表达式的支持。
-  对于非常大的 lambda 来说，它比标准 simpl 更有效
+* [#11898](https://github.com/leanprover/lean4/pull/11898) 添加了对简化 `Sym.simp` 中的 λ 表达式的支持。
+  对于非常大的 λ 来说，它比标准 simpl 更有效
   具有许多活页夹的表达式。关键思想是生成一个自定义的
-  lambda 类型的函数外延定理
+  λ 类型的函数外延定理
   简化。
 
 * [#11900](https://github.com/leanprover/lean4/pull/11900) 将 `done` 标志添加到 `Simproc`s 返回的结果中
@@ -851,8 +847,8 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___28___0-_LPAR_2026-0
 * [#11906](https://github.com/leanprover/lean4/pull/11906) 尝试最小化创建的表达式数量
   `AlphaShareCommon`.
 
-* [#11909](https://github.com/leanprover/lean4/pull/11909) 重新组织 monad 层次结构以进行符号计算
-  精益。
+* [#11909](https://github.com/leanprover/lean4/pull/11909) 重新组织单子层次结构以进行符号计算
+  Lean。
 
 * [#11911](https://github.com/leanprover/lean4/pull/11911) 最小化执行的表达式分配数量
 `replaceS` 和 `instantiateRevBetaS`。
@@ -873,8 +869,8 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___28___0-_LPAR_2026-0
   * 在第二遍中，未使用的声明被消除。
 
 * [#11932](https://github.com/leanprover/lean4/pull/11932) 消除了超线性内核类型检查开销
-  简化 lambda 表达式。我改进了产生的证明项
-  `mkFunext`。该函数由 `Sym.simp` 用于简化 lambda
+  简化 λ 表达式。我改进了产生的证明项
+  `mkFunext`。该函数由 `Sym.simp` 用于简化 λ
   表达式。
 
 * [#11946](https://github.com/leanprover/lean4/pull/11946) 在 `grind` 策略中添加了 `+locals` 配置选项，
@@ -941,13 +937,13 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___28___0-_LPAR_2026-0
 
 * [#12033](https://github.com/leanprover/lean4/pull/12033) 向 `Sym.simp` 添加了对条件重写规则的支持。
 
-* [#12035](https://github.com/leanprover/lean4/pull/12035) 添加了 `simpControl`，一个处理控制流的 simproc
+* [#12035](https://github.com/leanprover/lean4/pull/12035) 添加了 `simpControl`，一个处理控制流的简化过程
   诸如 `if-then-else` 之类的表达式。它简化了条件，同时
   避免在不会被采用的分支上进行不必要的工作。
 
 * [#12039](https://github.com/leanprover/lean4/pull/12039) 实现 `Sym.simp` 的 `match` 表达式简化。
 
-* [#12040](https://github.com/leanprover/lean4/pull/12040) 添加了 simprocs 以简化 `cond` 和依赖项
+* [#12040](https://github.com/leanprover/lean4/pull/12040) 添加了简化过程以简化 `cond` 和依赖项
   `if-then-else` 在 `Sym.simp` 中。
 
 * [#12053](https://github.com/leanprover/lean4/pull/12053) 在 `SymM` 中添加了对偏移项的支持。这对于
@@ -955,7 +951,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___28___0-_LPAR_2026-0
 `Sym.simp` 中的数字。如果没有这个，它就无法处理简单的例子
   例如 `pw (a + 2)` ，其中 `pw` 模式与 `n+1` 匹配。
 
-* [#12077](https://github.com/leanprover/lean4/pull/12077) 为 `String` 和 `Char` 实现 simprocs。它还确保
+* [#12077](https://github.com/leanprover/lean4/pull/12077) 为 `String` 和 `Char` 实现简化过程。它还确保
   可简化的定义在 `SymM` 中展开
 
 * [#12096](https://github.com/leanprover/lean4/pull/12096) 清理应用时生成的临时元变量
@@ -967,8 +963,8 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___28___0-_LPAR_2026-0
 * [#12100](https://github.com/leanprover/lean4/pull/12100) 添加了 `MetaM` 和 `SymM` 之间的比较，基准测试为
   在 Lean@Google 黑客马拉松期间提出。
 
-* [#12101](https://github.com/leanprover/lean4/pull/12101) 改进了 `Sym.simp` API。现在更容易重用
-  不同简化步骤之间的简化器缓存。我们使用 API
+* [#12101](https://github.com/leanprover/lean4/pull/12101) 改进了 `Sym.simp` 接口。现在更容易重用
+  不同简化步骤之间的简化器缓存。我们使用接口
   将基准提高到#12100。
 
 * [#12134](https://github.com/leanprover/lean4/pull/12134) 添加了一个新的基准 `shallow_add_sub_cancel.lean`
@@ -976,9 +972,9 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___28___0-_LPAR_2026-0
   `do` 表示法，而不是深度嵌入方法
   `add_sub_cancel.lean`.
 
-* [#12143](https://github.com/leanprover/lean4/pull/12143) 添加了用于构建符号模拟引擎的 API
+* [#12143](https://github.com/leanprover/lean4/pull/12143) 添加了用于构建符号模拟引擎的接口
   验证
-利用 `grind` 的条件生成器。 API 包装 `Sym`
+利用 `grind` 的条件生成器。 接口包装 `Sym`
   操作到
   使用 `grind` 的 `Goal` 类型，实现轻量级符号执行
   同时
@@ -987,7 +983,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___28___0-_LPAR_2026-0
 * [#12145](https://github.com/leanprover/lean4/pull/12145) 将预共享常用表达式从 `GrindM` 移至
   `SymM`.
 
-* [#12147](https://github.com/leanprover/lean4/pull/12147) 添加了一个新的 API，用于帮助用户编写有针对性的重写。
+* [#12147](https://github.com/leanprover/lean4/pull/12147) 添加了一个新的接口，用于帮助用户编写有针对性的重写。
 
 # 编译器
 %%%
@@ -1030,7 +1026,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___28___0-_LPAR_2026-0
 
 * [#12003](https://github.com/leanprover/lean4/pull/12003) 将编译器管理的 SCC 拆分为（可能）
   之后有多个
-  执行 lambda 提升。这有助于封闭术语提取器和
+  执行 λ 提升。这有助于封闭术语提取器和
   elimDeadBranches 传递为
   当申报数量超过要求时，它们都会受到负面影响
   位于一个 SCC 内。
@@ -1064,8 +1060,8 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___28___0-_LPAR_2026-0
 * [#12072](https://github.com/leanprover/lean4/pull/12072) 启用 `let rec` 策略的策略完成和文档，
   在 #12047 之后需要进行 stage0 更新。
 
-* [#12093](https://github.com/leanprover/lean4/pull/12093) 使 Verso 模块文档字符串 API 更像 Markdown
-  模块文档字符串API，使下游消费者能够相同地使用它们
+* [#12093](https://github.com/leanprover/lean4/pull/12093) 使 Verso 模块文档字符串接口更像 Markdown
+  模块文档字符串接口，使下游消费者能够相同地使用它们
   方式。
 
 # 服务器
@@ -1110,7 +1106,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___28___0-_LPAR_2026-0
   这在早期的修订中已经是合法的。
 
 * [#11921](https://github.com/leanprover/lean4/pull/11921) 添加 `lake shake` 作为内置 Lake 命令，移动抖动
-  功能从 `script/Shake.lean` 到 Lake CLI。
+  功能从 `script/Shake.lean` 到 Lake 命令行界面。
 
 * [#12034](https://github.com/leanprover/lean4/pull/12034) 更改 `enableArtifactCache` 的默认值以使用
   如果包是依赖项，则工作区的 `enableArtifactCache` 设置
@@ -1122,11 +1118,10 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___28___0-_LPAR_2026-0
   不会产生错误和缓存的 `--wfail` 检查中的错误
   命令。
 
-* [#12076](https://github.com/leanprover/lean4/pull/12076) 将额外的调试信息添加到 `lake build 的运行中
-  --no-build` via a `.nobuild` 跟踪文件。当构建由于以下原因失败时
-  需要重建，Lake 接下来发出新的预期跟踪作为 `.nobuild`
-  文件位于构建的旧 `.trace` 旁边。这些输入记录在
-  然后可以比较文件以调试导致不匹配的原因。
+* [#12076](https://github.com/leanprover/lean4/pull/12076) 通过 `.nobuild` 跟踪文件，
+  为 `lake build --no-build` 的运行添加额外调试信息。当构建因需要重新构建而
+  失败时，Lake 会在构建的旧 `.trace` 文件旁生成包含新预期跟踪的 `.nobuild`
+  文件。随后可以比较这些文件中记录的输入，以调试不匹配的原因。
 
 * [#12086](https://github.com/leanprover/lean4/pull/12086) 修复了 `lake build --no-build` 将退出并带有代码的错误
 `3` 如果是获取 GitHub 或 Reservoir 版本的可选作业
@@ -1145,24 +1140,24 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___28___0-_LPAR_2026-0
 %%%
 
 * [#11727](https://github.com/leanprover/lean4/pull/11727) 添加了一个 Python 脚本，帮助查找哪个提交引入了
-  精益中的行为改变。它支持多种二分模式和
+  Lean中的行为改变。它支持多种二分模式和
   当可用时自动下载 CI 工件。
 
 * [#11735](https://github.com/leanprover/lean4/pull/11735) 添加了一个独立脚本来下载预构建的 CI 工件
   GitHub 操作。这使我们能够快速切换提交，而无需
   重建。
 
-* [#11887](https://github.com/leanprover/lean4/pull/11887) 使外部检查器lean4checker 可用作为
+* [#11887](https://github.com/leanprover/lean4/pull/11887) 使外部检查器lean4检查器可用作为
   elan 已知现有的 `leanchecker` 二进制文件，允许
   开箱即用地访问它。
 
 * [#12121](https://github.com/leanprover/lean4/pull/12121) 包装由 `lean` Verso 文档字符串生成的信息树
   上下文信息节点中的代码块。
 
-# Ffi
+# 外部函数接口
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___28___0-_LPAR_2026-02-17_RPAR_--Ffi"
 %%%
 
-* [#12098](https://github.com/leanprover/lean4/pull/12098) 删除了针对精益编译库的要求
+* [#12098](https://github.com/leanprover/lean4/pull/12098) 删除了针对Lean编译库的要求
   标头必须使用 `-fwrapv`。

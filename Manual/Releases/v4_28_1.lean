@@ -13,7 +13,7 @@ open Verso.Genre
 open Verso.Genre.Manual
 open Verso.Genre.Manual.InlineLean
 
-#doc (Manual) "精益4.28.1 (2026-04-14)" =>
+#doc (Manual) "Lean4.28.1 (2026-04-14)" =>
 %%%
 tag := "release-v4.28.1"
 file := "v4.28.1"
@@ -36,9 +36,9 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___28___1-_LPAR_2026-0
 ```markdown
 
 - [#13392](https://github.com/leanprover/lean4/pull/13392)
-  fixes a heap buffer overflow in `lean_io_prim_handle_read` that was triggered through an
-  integer overflow in the size computation of an allocation. In addition it places several checked
-  arithmetic operations on all relevant allocation paths to have potential future overflows be turned
-  into crashes instead. The offending code now throws an out of memory error instead.
+  修复了 `lean_io_prim_handle_read` 中由分配大小计算发生整数溢出而触发的堆缓冲区溢出。
+  此外，所有相关的分配路径现在都使用若干经过检查的算术运算，
+  从而让未来可能出现的溢出转化为崩溃，而不是继续执行。
+  相关代码现在会改为抛出内存不足错误。
 
 ```

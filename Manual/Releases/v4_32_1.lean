@@ -13,7 +13,7 @@ open Verso.Genre
 open Verso.Genre.Manual
 open Verso.Genre.Manual.InlineLean
 
-#doc (Manual) "精益4.32.1 (2026-07-22)" =>
+#doc (Manual) "Lean4.32.1 (2026-07-22)" =>
 %%%
 tag := "release-v4.32.1"
 file := "v4.32.1"
@@ -27,4 +27,4 @@ file := "v4.32.1"
 
 使用比较器的 {ref "validating-comparator"}[检查可能不诚实的证明的推荐方法]*不受*此错误的影响。
 
-有关错误的更多详细信息，请参阅 [issue #14484](https://github.com/leanprover/lean4/issues/14484) ，有关修复的详细信息，请参阅 [PR #14498](https://github.com/leanprover/lean4/pull/14498) 。
+有关错误的更多详细信息，请参阅 [议题 #14484](https://github.com/leanprover/lean4/issues/14484) ，有关修复的详细信息，请参阅 [PR #14498](https://github.com/leanprover/lean4/pull/14498) 。
