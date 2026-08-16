@@ -22,42 +22,44 @@ file := "v4.17.0"
 
 ````markdown
 
-For this release, 319 changes landed. In addition to the 168 feature additions and 57 fixes listed below there were 12 refactoring changes, 13 documentation improvements and 56 chores.
+本次发布共合入 319 项变更。除下方列出的 168 项功能新增和 57 项修复外，另有 12 项重构、13 项文档改进和 56 项杂项工作。
 
 
-## Highlights
+````
+# 高亮
+%%%
+tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___17___0-_LPAR_2025-03-03_RPAR_--Highlights"
+%%%
 
-The Lean v4.17 release brings a range of new features, performance improvements,
-and bug fixes. Notable user-visible updates include:
+````markdown
 
-* [#6368](https://github.com/leanprover/lean4/pull/6368) implements executing kernel checking in parallel to elaboration,
-which is a prerequisite for parallelizing elaboration itself.
+Lean v4.17 带来了一系列新特性、性能改进和问题修复。用户可见的重点更新包括：
 
-* [#6711](https://github.com/leanprover/lean4/pull/6711) adds support for `UIntX` and `USize` in `bv_decide` by adding a
-preprocessor that turns them into `BitVec` of their corresponding size.
+* [#6368](https://github.com/leanprover/lean4/pull/6368) 实现了与精译并行执行的内核检查，这是精译本身实现并行化的前提。
 
-* [#6505](https://github.com/leanprover/lean4/pull/6505) implements a basic async framework as well as asynchronously
-running timers using libuv.
+* [#6711](https://github.com/leanprover/lean4/pull/6711) 通过加入一个预处理器，把 `UIntX` 和 `USize` 转换为对应位宽的 `BitVec`，从而为 `bv_decide` 增加了对它们的支持。
 
-* improvements to documentation with `docgen`, which now links
-dot notations ([#6703](https://github.com/leanprover/lean4/pull/6703)),
-coerced functions ([#6729](https://github.com/leanprover/lean4/pull/6729)),
-and tokens ([#6730](https://github.com/leanprover/lean4/pull/6730)).
+* [#6505](https://github.com/leanprover/lean4/pull/6505) 实现了基础异步框架，以及基于 libuv 的异步定时器运行机制。
 
-* extensive library development, in particular, expanding verification APIs of `BitVec`,
-making APIs of `List` / `Array` / `Vector` consistent, and adding lemmas describing the behavior of `UInt`.
+* `docgen` 的文档能力得到改进，现在可以为 dot 记法（[#6703](https://github.com/leanprover/lean4/pull/6703)）、被 强制转换的函数（[#6729](https://github.com/leanprover/lean4/pull/6729)）以及 词元（[#6730](https://github.com/leanprover/lean4/pull/6730)）建立链接。
 
-* [#6597](https://github.com/leanprover/lean4/pull/6597) fixes the indentation of nested traces nodes in the info view.
+* 库方面有大量开发，尤其包括扩展 `BitVec` 的验证 API、统一 List / `Array` / `Vector` 的 API，并新增描述 `UInt` 行为的引理。
 
-### New Language Features
+* [#6597](https://github.com/leanprover/lean4/pull/6597) 修复了信息视图中嵌套跟踪节点的缩进问题。
 
-* **Partial Fixpoint**
+````
+## 新语言特性
+%%%
+tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___17___0-_LPAR_2025-03-03_RPAR_--Highlights--New-Language-Features"
+%%%
 
-  [#6355](https://github.com/leanprover/lean4/pull/6355) adds the ability to define possibly non-terminating functions
-and still be able to reason about them equationally, as long as they are
-tail-recursive, or operate within certain monads such as `Option`
+````markdown
 
-  Typical examples:
+* **部分不动点**
+
+ [#6355](https://github.com/leanprover/lean4/pull/6355) 增加了定义可能不终止函数的能力，同时仍可对其进行等式推理，只要这些函数是尾递归的，或运行在诸如 `Option` 这样的特定单子中。
+
+ 典型示例如下：
 
   ```lean
   def ack : (n m : Nat) → Option Nat
@@ -81,11 +83,9 @@ tail-recursive, or operate within certain monads such as `Option`
   partial_fixpoint
   ```
 
-  See the [reference manual](https://lean-lang.org/doc/reference/latest/Recursive-Definitions/Partial-Fixpoint-Recursion/#partial-fixpoint)
-for more details.
+ 更多细节请参阅[参考手册](https://lean-lang.org/doc/reference/latest/Recursive-Definitions/Partial-Fixpoint-Recursion/#partial-fixpoint)。
 
-* [#6905](https://github.com/leanprover/lean4/pull/6905) adds a first draft of the `try`?
-  interactive tactic, which tries various tactics, including induction:
+* [#6905](https://github.com/leanprover/lean4/pull/6905) 增加了 `try`? 交互式策略的首个草案，它会尝试多种策略，包括归纳：
   ```lean
   @[simp] def revAppend : List Nat → List Nat → List Nat
   | [],    ys => ys
@@ -104,12 +104,9 @@ for more details.
     -/
   ```
 
-* **`induction` with zero alternatives**
+* **零分支的 `induction`**
 
-  [#6486](https://github.com/leanprover/lean4/pull/6486) modifies the `induction`/`cases` syntax so that the `with`
-clause does not need to be followed by any alternatives. This improves
-friendliness of these tactics, since this lets them surface the names of
-the missing alternatives:
+ [#6486](https://github.com/leanprover/lean4/pull/6486) 修改了 `induction`/`cases` 语法，使 `with` 子句后面不再必须跟任何分支。这提升了这些策略的易用性，因为它们现在可以直接显示缺失分支的名称：
   ```lean
   example (n : Nat) : True := by
     induction n with
@@ -119,70 +116,59 @@ the missing alternatives:
   -/
   ```
 
-* **`simp?` and `dsimp?` tactics in conversion mode**
+* **转换模式中的 `simp?` 与 `dsimp?` 策略**
 
-  [#6593](https://github.com/leanprover/lean4/pull/6593) adds support for the `simp?` and `dsimp?` tactics in conversion
-mode.
+ [#6593](https://github.com/leanprover/lean4/pull/6593) 为转换模式中的 `simp?` 和 `dsimp?` 策略增加了支持。
 
 * **`fun_cases`**
 
-  [#6261](https://github.com/leanprover/lean4/pull/6261) adds `foo.fun_cases`, an automatically generated theorem that
-splits the goal according to the branching structure of `foo`, much like
-the Functional Induction Principle, but for all functions (not just
-recursive ones), and without providing inductive hypotheses.
+ [#6261](https://github.com/leanprover/lean4/pull/6261) 增加了 `foo.fun_cases`，这是一个自动生成的定理，会按照 `foo` 的分支结构拆分目标，类似函数归纳原理，但它适用于所有函数（不只是递归函数），并且不提供归纳假设。
 
-### New CLI Features
+````
+## 新 CLI 特性
+%%%
+tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___17___0-_LPAR_2025-03-03_RPAR_--Highlights--New-CLI-Features"
+%%%
 
-* [#6427](https://github.com/leanprover/lean4/pull/6427) adds the Lean CLI option `--src-deps` which parallels `--deps`.
-It parses the Lean code's header and prints out the paths to the
-(transitively) imported modules' source files (deduced from
-`LEAN_SRC_PATH`).
+````markdown
 
-* [#6323](https://github.com/leanprover/lean4/pull/6323) adds a new Lake CLI command, `lake query`, that both builds
-targets and outputs their results. It can produce raw text or JSON
--formatted output (with `--json` / `-J`).
+* [#6427](https://github.com/leanprover/lean4/pull/6427) 为 Lean CLI 增加了 `--src-deps` 选项，对应于 `--deps`。它会解析 Lean 代码的头部，并打印（传递导入的）模块源码文件路径（根据 `LEAN_SRC_PATH` 推导）。
 
-### Breaking Changes
+* [#6323](https://github.com/leanprover/lean4/pull/6323) 新增 Lake CLI 命令 `lake query`，既会构建目标，也会输出其结果。它可以生成原始文本或 JSON 格式的输出（使用 `--json` / `-J`）。
 
-* [#6602](https://github.com/leanprover/lean4/pull/6602) allows the dot ident notation to resolve to the current
-definition, or to any of the other definitions in the same mutual block.
-Existing code that uses dot ident notation may need to have `nonrec`
-added if the ident has the same name as the definition.
+````
+## 破坏性变更
+%%%
+tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___17___0-_LPAR_2025-03-03_RPAR_--Highlights--Breaking-Changes"
+%%%
 
-* Introduction of the `zetaUnused` simp and reduction option ([#6755](https://github.com/leanprover/lean4/pull/6755))
-is a breaking change in rare cases: the `split` tactic no longer removes unused `let` and `have` expressions as a side-effect.
-`dsimp only` can be used to remove unused `have` and `let` expressions.
+````markdown
 
-_This highlights section was contributed by Violetta Sim._
+* [#6602](https://github.com/leanprover/lean4/pull/6602) 允许点标识符记法解析到当前定义，或者同一互递归代码块中的其他定义。现有使用点标识符记法的代码，如果标识符与定义同名，可能需要添加 `nonrec`。
 
-## Language
+* 引入 `zetaUnused` simp 与规约选项（[#6755](https://github.com/leanprover/lean4/pull/6755)）在少数情况下属于破坏性变更：`split` 策略不再以副作用方式移除未使用的 `let` 和 `have` 表达式。可以使用 `dsimp only` 移除未使用的 `have` 与 `let` 表达式。
 
-* [#5145](https://github.com/leanprover/lean4/pull/5145) splits the environment used by the kernel from that used by the
-elaborator, providing the foundation for tracking of asynchronously
-elaborated declarations, which will exist as a concept only in the
-latter.
+_本高亮部分由 Violetta Sim 撰写。_
 
-* [#6261](https://github.com/leanprover/lean4/pull/6261) adds `foo.fun_cases`, an automatically generated theorem that
-splits the goal according to the branching structure of `foo`, much like
-the Functional Induction Principle, but for all functions (not just
-recursive ones), and without providing inductive hypotheses.
+````
+# 语言
+%%%
+tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___17___0-_LPAR_2025-03-03_RPAR_--Language"
+%%%
 
-* [#6355](https://github.com/leanprover/lean4/pull/6355) adds the ability to define possibly non-terminating functions
-and still be able to reason about them equationally, as long as they are
-tail-recursive or monadic.
+````markdown
 
-* [#6368](https://github.com/leanprover/lean4/pull/6368) implements executing kernel checking in parallel to elaboration,
-which is a prerequisite for parallelizing elaboration itself.
+* [#5145](https://github.com/leanprover/lean4/pull/5145) 将内核使用的环境与精译器使用的环境分离开来，为跟踪异步精译的声明奠定了基础；后者中的这类声明只会作为概念存在于精译器一侧。
 
-* [#6427](https://github.com/leanprover/lean4/pull/6427) adds the Lean CLI option `--src-deps` which parallels `--deps`.
-It parses the Lean code's header and prints out the paths to the
-(transitively) imported modules' source files (deduced from
-`LEAN_SRC_PATH`).
+* [#6261](https://github.com/leanprover/lean4/pull/6261) 增加了 `foo.fun_cases`，这是一个自动生成的定理，会按照 `foo` 的分支结构拆分目标，类似函数归纳原理，但它适用于所有函数（不只是递归函数），并且不提供归纳假设。
 
-* [#6486](https://github.com/leanprover/lean4/pull/6486) modifies the `induction`/`cases` syntax so that the `with`
-clause does not need to be followed by any alternatives. This improves
-friendliness of these tactics, since this lets them surface the names of
-the missing alternatives:
+* [#6355](https://github.com/leanprover/lean4/pull/6355) 增加了定义可能不终止函数的能力，同时仍可对其进行等式推理，只要它们是尾递归的或是单子式的。
+
+* [#6368](https://github.com/leanprover/lean4/pull/6368) 实现了与精译并行执行的内核检查，这是精译本身实现并行化的前提。
+
+* [#6427](https://github.com/leanprover/lean4/pull/6427) 为 Lean CLI 增加了 `--src-deps` 选项，对应于 `--deps`。它会解析 Lean 代码的头部，并打印（传递导入的）模块源码文件路径（根据 `LEAN_SRC_PATH` 推导）。
+
+* [#6486](https://github.com/leanprover/lean4/pull/6486) 修改了 `induction`/`cases` 语法，使 `with` 子句后面不再必须跟任何分支。这提升了这些策略的易用性，因为它们现在可以直接显示缺失分支的名称：
   ```lean
   example (n : Nat) : True := by
     induction n with
@@ -192,68 +178,45 @@ the missing alternatives:
   -/
   ```
 
-* [#6505](https://github.com/leanprover/lean4/pull/6505) implements a basic async framework as well as asynchronously
-running timers using libuv.
+* [#6505](https://github.com/leanprover/lean4/pull/6505) 实现了基础异步框架，以及基于 libuv 的异步定时器运行机制。
 
-* [#6516](https://github.com/leanprover/lean4/pull/6516) enhances the `cases` tactic used in the `grind` tactic and
-ensures that it can be applied to arbitrary expressions.
+* [#6516](https://github.com/leanprover/lean4/pull/6516) 增强了 grind 策略中使用的 `cases` 策略，并确保它可以应用于任意表达式。
 
-* [#6521](https://github.com/leanprover/lean4/pull/6521) adds support for activating relevant `match`-equations as
-E-matching theorems. It uses the `match`-equation lhs as the pattern.
+* [#6521](https://github.com/leanprover/lean4/pull/6521) 增加了把相关 `match` 方程作为 E-匹配定理激活的支持。它会使用 `match` 方程的左侧作为模式。
 
-* [#6528](https://github.com/leanprover/lean4/pull/6528) adds a missing propagation rule to the (WIP) `grind` tactic.
+* [#6528](https://github.com/leanprover/lean4/pull/6528) 为仍在开发中的 grind 策略补上了一条缺失的传播规则。
 
-* [#6529](https://github.com/leanprover/lean4/pull/6529) adds support for `let`-declarations to the (WIP) `grind` tactic.
+* [#6529](https://github.com/leanprover/lean4/pull/6529) 为仍在开发中的 grind 策略增加了对 `let` 声明的支持。
 
-* [#6530](https://github.com/leanprover/lean4/pull/6530) fixes nondeterministic failures in the (WIP) `grind` tactic.
+* [#6530](https://github.com/leanprover/lean4/pull/6530) 修复了仍在开发中的 grind 策略中非确定性的失败问题。
 
-* [#6531](https://github.com/leanprover/lean4/pull/6531) fixes the support for `let_fun` in `grind`.
+* [#6531](https://github.com/leanprover/lean4/pull/6531) 修复了 grind 对 `let_fun` 的支持。
 
-* [#6533](https://github.com/leanprover/lean4/pull/6533) adds support to E-matching offset patterns. For example, we want
-to be able to E-match the pattern `f (#0 + 1)` with term `f (a + 2)`.
+* [#6533](https://github.com/leanprover/lean4/pull/6533) 为 E-匹配的偏移模式增加支持。例如，我们希望能用模式 `f (#0 + 1)` 去 E-匹配项 `f (a + 2)`。
 
-* [#6534](https://github.com/leanprover/lean4/pull/6534) ensures that users can utilize projections in E-matching
-patterns within the `grind` tactic.
+* [#6534](https://github.com/leanprover/lean4/pull/6534) 确保用户可以在 `grind` 策略中的 E-匹配模式里使用投影。
 
-* [#6536](https://github.com/leanprover/lean4/pull/6536) fixes different thresholds for controlling E-matching in the
-`grind` tactic.
+* [#6536](https://github.com/leanprover/lean4/pull/6536) 修复了 `grind` 策略中控制 E-匹配的若干阈值问题。
 
-* [#6538](https://github.com/leanprover/lean4/pull/6538) ensures patterns provided by users are normalized. See new test
-to understand why this is needed.
+* [#6538](https://github.com/leanprover/lean4/pull/6538) 确保用户提供的模式会被规范化。为何需要这样做，可参见新增测试。
 
-* [#6539](https://github.com/leanprover/lean4/pull/6539) introduces the `[grind_eq]` attribute, designed to annotate
-equational theorems and functions for heuristic instantiations in the
-`grind` tactic.
-When applied to an equational theorem, the `[grind_eq]` attribute
-instructs the `grind` tactic to automatically use the annotated theorem
-to instantiate patterns during proof search. If applied to a function,
-it marks all equational theorems associated with that function.
+* [#6539](https://github.com/leanprover/lean4/pull/6539) 引入 `[grind_eq]` 属性，用于给等式定理和函数做标注，以便 `grind` 策略进行启发式实例化。应用于等式定理时，`[grind_eq]` 会指示 `grind` 在证明搜索期间自动使用被标注定理来实例化模式；如果应用于函数，则会标记与该函数关联的所有等式定理。
 
-* [#6543](https://github.com/leanprover/lean4/pull/6543) adds additional tests for `grind`, demonstrating that we can
-automate some manual proofs from Mathlib's basic category theory
-library, with less reliance on Mathlib's `@[reassoc]` trick.
+* [#6543](https://github.com/leanprover/lean4/pull/6543) 为 `grind` 增加了更多测试，展示了我们可以自动化 Mathlib 基础范畴论库中的一些手写证明，并减少对 Mathlib 的 `@[reassoc]` 技巧的依赖。
 
-* [#6545](https://github.com/leanprover/lean4/pull/6545) introduces the parametric attribute `[grind]` for annotating
-theorems and definitions. It also replaces `[grind_eq]` with `[grind
-=]`. For definitions, `[grind]` is equivalent to `[grind =]`.
+* [#6545](https://github.com/leanprover/lean4/pull/6545) 引入参数化属性 `[grind]`，用于标注定理和定义。同时还以 `[grind =]` 替换了 `[grind_eq]`。对于定义而言，`[grind]` 等价于 `[grind =]`。
 
-* [#6556](https://github.com/leanprover/lean4/pull/6556) adds propagators for implication to the `grind` tactic. It also
-disables the normalization rule: `(p → q) = (¬ p ∨ q)`
+* [#6556](https://github.com/leanprover/lean4/pull/6556) 为 `grind` 策略增加了针对蕴含的传播器。同时还禁用了规范化规则 `(p → q) = (¬ p ∨ q)`。
 
-* [#6559](https://github.com/leanprover/lean4/pull/6559) adds a basic case-splitting strategy for the `grind` tactic. We
-still need to add support for user customization.
+* [#6559](https://github.com/leanprover/lean4/pull/6559) 为 `grind` 策略增加了一种基础的分情况拆分策略。我们之后仍需加入用户自定义支持。
 
-* [#6565](https://github.com/leanprover/lean4/pull/6565) fixes the location of the error emitted when the `rintro` and
-`intro` tactics cannot introduce the requested number of binders.
+* [#6565](https://github.com/leanprover/lean4/pull/6565) 修复了当 `rintro` 和 `intro` 策略无法引入请求数量的绑定器时，其报错位置不正确的问题。
 
-* [#6566](https://github.com/leanprover/lean4/pull/6566) adds support for erasing the `[grind]` attribute used to mark
-theorems for heuristic instantiation in the `grind` tactic.
+* [#6566](https://github.com/leanprover/lean4/pull/6566) 增加了删除 `[grind]` 属性的支持；该属性原本用于在 `grind` 策略中标记要进行启发式实例化的定理。
 
-* [#6567](https://github.com/leanprover/lean4/pull/6567) adds support for erasing the `[grind]` attribute used to mark
-theorems for heuristic instantiation in the `grind` tactic.
+* [#6567](https://github.com/leanprover/lean4/pull/6567) 增加了删除 `[grind]` 属性的支持；该属性原本用于在 `grind` 策略中标记要进行启发式实例化的定理。
 
-* [#6568](https://github.com/leanprover/lean4/pull/6568) adds basic support for cast-like operators to the grind tactic.
-Example:
+* [#6568](https://github.com/leanprover/lean4/pull/6568) 为 `grind` 策略增加了对 cast-like 运算符的基础支持。例如：
   ```lean
   example (α : Type) (β : Type) (a₁ a₂ : α) (b₁ b₂ : β)
           (h₁ : α = β)
@@ -264,113 +227,67 @@ Example:
     grind
   ```
 
-* [#6569](https://github.com/leanprover/lean4/pull/6569) adds support for case splitting on `match`-expressions in
-`grind`.
-We still need to add support for resolving the antecedents of
-`match`-conditional equations.
+* [#6569](https://github.com/leanprover/lean4/pull/6569) 为 `grind` 增加了对 `match` 表达式进行分情况拆分的支持。之后仍需支持求解 `match` 条件方程的前件。
 
-* [#6575](https://github.com/leanprover/lean4/pull/6575) ensures tactics are evaluated incrementally in the body of
-`classical`.
+* [#6575](https://github.com/leanprover/lean4/pull/6575) 确保在 `classical` 的主体中，策略会被增量求值。
 
-* [#6578](https://github.com/leanprover/lean4/pull/6578) fixes and improves the propagator for forall-expressions in the
-`grind` tactic.
+* [#6578](https://github.com/leanprover/lean4/pull/6578) 修复并改进了 `grind` 策略中针对 forall 表达式的传播器。
 
-* [#6581](https://github.com/leanprover/lean4/pull/6581) adds the following configuration options to `Grind.Config`:
-`splitIte`, `splitMatch`, and `splitIndPred`.
+* [#6581](https://github.com/leanprover/lean4/pull/6581) 为 `Grind.Config` 增加以下配置项：`splitIte`、`splitMatch` 和 `splitIndPred`。
 
-* [#6582](https://github.com/leanprover/lean4/pull/6582) adds support for creating local E-matching theorems for
-universal propositions known to be true. It allows `grind` to
-automatically solve examples such as:
+* [#6582](https://github.com/leanprover/lean4/pull/6582) 增加了为已知为真的全称命题创建局部 E-匹配定理的支持。这使 `grind` 可以自动解出如下示例：
 
-* [#6584](https://github.com/leanprover/lean4/pull/6584) adds helper theorems to implement offset constraints in grind.
+* [#6584](https://github.com/leanprover/lean4/pull/6584) 添加了辅助定理，用于在 `grind` 中实现偏移约束。
 
-* [#6585](https://github.com/leanprover/lean4/pull/6585) fixes a bug in the `grind` canonicalizer.
+* [#6585](https://github.com/leanprover/lean4/pull/6585) 修复了 `grind` 规范化器中的一个问题。
 
-* [#6588](https://github.com/leanprover/lean4/pull/6588) improves the `grind` canonicalizer diagnostics.
+* [#6588](https://github.com/leanprover/lean4/pull/6588) 改进了 `grind` 规范化器的诊断信息。
 
-* [#6593](https://github.com/leanprover/lean4/pull/6593) adds support for the `simp?` and `dsimp?` tactics in conversion
-mode.
+* [#6593](https://github.com/leanprover/lean4/pull/6593) 为转换模式中的 `simp?` 与 `dsimp?` 策略增加支持。
 
-* [#6595](https://github.com/leanprover/lean4/pull/6595) improves the theorems used to justify the steps performed by the
-inequality offset module. See new test for examples of how they are
-going to be used.
+* [#6595](https://github.com/leanprover/lean4/pull/6595) 改进了用于证明不等式偏移模块各步骤正确性的定理。它们未来如何使用，可见新增测试中的示例。
 
-* [#6600](https://github.com/leanprover/lean4/pull/6600) removes functions from compiling decls from Environment, and
-moves all users to functions on CoreM. This is required for supporting
-the new code generator, since its implementation uses CoreM.
+* [#6600](https://github.com/leanprover/lean4/pull/6600) 移除了 Environment 上用于编译声明的函数，并将所有调用方迁移到 CoreM 上的函数。这是支持新代码生成器所必需的，因为它的实现使用了 CoreM。
 
-* [#6602](https://github.com/leanprover/lean4/pull/6602) allows the dot ident notation to resolve to the current
-definition, or to any of the other definitions in the same mutual block.
-Existing code that uses dot ident notation may need to have `nonrec`
-added if the ident has the same name as the definition.
+* [#6602](https://github.com/leanprover/lean4/pull/6602) 允许点标识符记法解析到当前定义，或者同一互递归代码块中的其他定义。现有使用点标识符记法的代码，如果标识符与定义同名，可能需要添加 `nonrec`。
 
-* [#6603](https://github.com/leanprover/lean4/pull/6603) implements support for offset constraints in the `grind` tactic.
-Several features are still missing, such as constraint propagation and
-support for offset equalities, but `grind` can already solve examples
-like the following:
+* [#6603](https://github.com/leanprover/lean4/pull/6603) 在 `grind` 策略中实现了偏移约束支持。尽管仍缺少一些特性，例如约束传播和偏移相等式支持，但 `grind` 已经能解决如下示例：
 
-* [#6606](https://github.com/leanprover/lean4/pull/6606) fixes a bug in the pattern selection in the `grind`.
+* [#6606](https://github.com/leanprover/lean4/pull/6606) 修复了 `grind` 中模式选择的一个问题。
 
-* [#6607](https://github.com/leanprover/lean4/pull/6607) adds support for case-splitting on `<->` (and `@Eq Prop`) in the
-`grind` tactic.
+* [#6607](https://github.com/leanprover/lean4/pull/6607) 为 `grind` 策略增加了对 `<->`（以及 `@Eq Prop`）进行分情况拆分的支持。
 
-* [#6608](https://github.com/leanprover/lean4/pull/6608) fixes a bug in the `simp_arith` tactic. See new test.
+* [#6608](https://github.com/leanprover/lean4/pull/6608) 修复了 `simp_arith` 策略中的一个问题。详见新增测试。
 
-* [#6609](https://github.com/leanprover/lean4/pull/6609) improves the case-split heuristic used in grind, prioritizing
-case-splits with fewer cases.
+* [#6609](https://github.com/leanprover/lean4/pull/6609) 改进了 `grind` 使用的分情况拆分启发式，优先选择分支数更少的拆分。
 
-* [#6610](https://github.com/leanprover/lean4/pull/6610) fixes a bug in the `grind` core module responsible for merging
-equivalence classes and propagating constraints.
+* [#6610](https://github.com/leanprover/lean4/pull/6610) 修复了 `grind` 核心模块中的一个问题；该模块负责合并等价类和传播约束。
 
-* [#6611](https://github.com/leanprover/lean4/pull/6611) fixes one of the sanity check tests used in `grind`.
+* [#6611](https://github.com/leanprover/lean4/pull/6611) 修复了 `grind` 使用的一项健全性检查测试。
 
-* [#6613](https://github.com/leanprover/lean4/pull/6613) improves the case split heuristic used in the `grind` tactic,
-ensuring it now avoids unnecessary case-splits on `Iff`.
+* [#6613](https://github.com/leanprover/lean4/pull/6613) 改进了 `grind` 策略使用的分情况拆分启发式，确保它现在会避免对 `Iff` 做不必要的拆分。
 
-* [#6614](https://github.com/leanprover/lean4/pull/6614) improves the usability of the `[grind =]` attribute by
-automatically handling
-forbidden pattern symbols. For example, consider the following theorem
-tagged with this attribute:
+* [#6614](https://github.com/leanprover/lean4/pull/6614) 通过自动处理被禁止的模式符号，改进了 `[grind =]` 属性的可用性。比如，考虑下面这个带有该属性的定理：
   ```lean
   getLast?_eq_some_iff {xs : List α} {a : α} : xs.getLast? = some a ↔ ∃ ys, xs = ys ++ [a]
   ```
-  Here, the selected pattern is `xs.getLast? = some a`, but `Eq` is a
-forbidden pattern symbol.
-Instead of producing an error, this function converts the pattern into a
-multi-pattern,
-allowing the attribute to be used conveniently.
+  这里选中的模式是 `xs.getLast? = some a`，但 `Eq` 是被禁止的模式符号。该函数不会直接报错，而是会把这个模式转换为多模式，从而让这个属性更方便使用。
 
-* [#6615](https://github.com/leanprover/lean4/pull/6615) adds two auxiliary functions `mkEqTrueCore` and `mkOfEqTrueCore`
-that avoid redundant proof terms in proofs produced by `grind`.
+* [#6615](https://github.com/leanprover/lean4/pull/6615) 添加了两个辅助函数 `mkEqTrueCore` 与 `mkOfEqTrueCore`，用于避免 `grind` 生成的证明中出现冗余证明项。
 
-* [#6618](https://github.com/leanprover/lean4/pull/6618) implements exhaustive offset constraint propagation in the
-`grind` tactic. This enhancement minimizes the number of case splits
-performed by `grind`. For instance, it can solve the following example
-without performing any case splits:
+* [#6618](https://github.com/leanprover/lean4/pull/6618) 在 `grind` 策略中实现了穷尽式偏移约束传播。这个增强能尽量减少 `grind` 执行的分情况拆分次数。例如，它可以在不做任何分情况拆分的情况下解出如下示例：
 
-* [#6633](https://github.com/leanprover/lean4/pull/6633) improves the failure message produced by the `grind` tactic. We
-now include information about asserted facts, propositions that are
-known to be true and false, and equivalence classes.
+* [#6633](https://github.com/leanprover/lean4/pull/6633) 改进了 `grind` 策略产生的失败消息。现在会包含已断言事实、已知为真和为假的命题，以及等价类等信息。
 
-* [#6636](https://github.com/leanprover/lean4/pull/6636) implements model construction for offset constraints in the
-`grind` tactic.
+* [#6636](https://github.com/leanprover/lean4/pull/6636) 在 `grind` 策略中实现了偏移约束的模型构造。
 
-* [#6639](https://github.com/leanprover/lean4/pull/6639) puts the `bv_normalize` simp set into simp_nf and splits up the
-bv_normalize implementation across multiple files in preparation for
-upcoming changes.
+* [#6639](https://github.com/leanprover/lean4/pull/6639) 将 bv_normalize 的 simp set 放入 simp_nf，并把 bv_normalize 的实现拆分到多个文件中，为后续变更做准备。
 
-* [#6641](https://github.com/leanprover/lean4/pull/6641) implements several optimisation tricks from Bitwuzla's
-preprocessing passes into the Lean equivalent in `bv_decide`. Note that
-these changes are mostly geared towards large proof states as for
-example seen in SMT-Lib.
+* [#6641](https://github.com/leanprover/lean4/pull/6641) 把 Bitwuzla 预处理过程中的若干优化技巧实现到 `bv_decide` 中对应的 Lean 版本里。请注意，这些改动主要面向大型证明状态，例如 SMT-Lib 中常见的那类场景。
 
-* [#6645](https://github.com/leanprover/lean4/pull/6645) implements support for offset equality constraints in the
-`grind` tactic and exhaustive equality propagation for them. The `grind`
-tactic can now solve problems such as the following:
+* [#6645](https://github.com/leanprover/lean4/pull/6645) 在 `grind` 策略中实现了偏移相等约束支持，以及针对它们的穷尽式相等传播。`grind` 现在可以解决如下问题：
 
-* [#6648](https://github.com/leanprover/lean4/pull/6648) adds support for numerals, lower & upper bounds to the offset
-constraint module in the `grind` tactic. `grind` can now solve examples
-such as:
+* [#6648](https://github.com/leanprover/lean4/pull/6648) 为 `grind` 策略中的偏移约束模块增加了对数值字面量、下界和上界的支持。`grind` 现在可以解出如下示例：
   ```lean
   example (f : Nat → Nat) :
           f 2 = a →
@@ -379,125 +296,69 @@ such as:
           f c = a := by
     grind
   ```
-  In the example above, the literal `2` and the lower&upper bounds, `b ≤
-1` and `b ≥ 1`, are now processed by offset constraint module.
+  在上面的例子中，字面量 `2` 以及上下界 `b ≤ 1` 和 `b ≥ 1` 现在都会由偏移约束模块处理。
 
-* [#6649](https://github.com/leanprover/lean4/pull/6649) fixes a bug in the term canonicalizer used in the `grind`
-tactic.
+* [#6649](https://github.com/leanprover/lean4/pull/6649) 修复了 `grind` 策略使用的项规范化器中的一个问题。
 
-* [#6652](https://github.com/leanprover/lean4/pull/6652) adds the `int_toBitVec` simp set to convert UIntX and later IntX
-propositions to BitVec ones. This will be used as a preprocessor for `bv_decide` to provide UIntX/IntX `bv_decide` support.
+* [#6652](https://github.com/leanprover/lean4/pull/6652) 增加了 `int_toBitVec` simp set，用于把 UIntX 以及后续的 IntX 命题转换为 BitVec 命题。这将作为 `bv_decide` 的预处理器，为 UIntX/IntX 提供 `bv_decide` 支持。
 
-* [#6653](https://github.com/leanprover/lean4/pull/6653) improves the E-matching pattern selection heuristics in the
-`grind` tactic. They now take into account type predicates and
-transformers.
+* [#6653](https://github.com/leanprover/lean4/pull/6653) 改进了 `grind` 策略中 E-匹配的模式选择启发式。现在它们会考虑类型谓词和变换器。
 
-* [#6654](https://github.com/leanprover/lean4/pull/6654) improves the support for partial applications in the E-matching
-procedure used in `grind`.
+* [#6654](https://github.com/leanprover/lean4/pull/6654) 改进了 `grind` 所使用的 E-匹配过程中对部分应用的支持。
 
-* [#6656](https://github.com/leanprover/lean4/pull/6656) improves the diagnostic information provided in `grind` failure
-states. We now include the list of issues found during the search, and
-all search thresholds that have been reached. also improves its
-formatting.
+* [#6656](https://github.com/leanprover/lean4/pull/6656) 改进了 `grind` 失败状态下提供的诊断信息。现在会包含搜索过程中发现的问题列表，以及所有达到过的搜索阈值；同时也改进了其格式化方式。
 
-* [#6657](https://github.com/leanprover/lean4/pull/6657) improves the `grind` search procedure, and adds the new
-configuration option: `failures`.
+* [#6657](https://github.com/leanprover/lean4/pull/6657) 改进了 `grind` 的搜索过程，并新增配置项 `failures`。
 
-* [#6658](https://github.com/leanprover/lean4/pull/6658) ensures that `grind` avoids case-splitting on terms congruent to
-those that have already been case-split.
+* [#6658](https://github.com/leanprover/lean4/pull/6658) 确保 `grind` 会避免对那些与已经分情况拆分过的项 congruent 的项再次进行拆分。
 
-* [#6659](https://github.com/leanprover/lean4/pull/6659) fixes a bug in the `grind` term preprocessor. It was abstracting
-nested proofs **before** reducible constants were unfolded.
+* [#6659](https://github.com/leanprover/lean4/pull/6659) 修复了 `grind` 项预处理器中的一个问题。此前它会在展开 reducible 常量**之前**抽象嵌套证明。
 
-* [#6662](https://github.com/leanprover/lean4/pull/6662) improves the canonicalizer used in the `grind` tactic and the
-diagnostics it produces. It also adds a new configuration option,
-`canonHeartbeats`, to address (some of) the issues. Here is an example
-illustrating the new diagnostics, where we intentionally create a
-problem by using a very small number of heartbeats.
+* [#6662](https://github.com/leanprover/lean4/pull/6662) 改进了 `grind` 策略使用的规范化器及其产生的诊断信息。同时新增配置项 `canonHeartbeats`，以解决其中（部分）问题。下面的例子展示了新的诊断信息，我们通过设置一个很小的 heartbeat 数量来故意制造问题。
 
-* [#6663](https://github.com/leanprover/lean4/pull/6663) implements a basic equality resolution procedure for the `grind`
-tactic.
+* [#6663](https://github.com/leanprover/lean4/pull/6663) 为 `grind` 策略实现了基础的相等式求解过程。
 
-* [#6669](https://github.com/leanprover/lean4/pull/6669) adds a workaround for the discrepancy between Terminal/Emacs and
-VS Code when displaying info trees.
+* [#6669](https://github.com/leanprover/lean4/pull/6669) 针对 Terminal/Emacs 与 VS Code 在显示信息树时的不一致行为，加入了一个变通方案。
 
-* [#6675](https://github.com/leanprover/lean4/pull/6675) adds `simp`-like parameters to `grind`, and `grind only` similar
-to `simp only`.
+* [#6675](https://github.com/leanprover/lean4/pull/6675) 为 `grind` 增加了类似 `simp` 的参数，以及类似 `simp only` 的 `grind only`。
 
-* [#6679](https://github.com/leanprover/lean4/pull/6679) changes the identifier parser to allow for the ⱼ unicode
-character which was forgotten as it lives by itself in a codeblock with
-coptic characters.
+* [#6679](https://github.com/leanprover/lean4/pull/6679) 修改了标识符解析器，允许使用 Unicode 字符 ⱼ；此前它被遗漏了，因为它单独位于一段包含科普特字符的代码块中。
 
-* [#6682](https://github.com/leanprover/lean4/pull/6682) adds support for extensionality theorems (using the `[ext]`
-attribute) to the `grind` tactic. Users can disable this functionality
-using `grind -ext` . Below are examples that demonstrate problems now
-solvable by `grind`.
+* [#6682](https://github.com/leanprover/lean4/pull/6682) 为 `grind` 策略增加了对外延性定理（通过 `[ext]` 属性）的支持。用户可以通过 `grind -ext` 禁用该功能。下面的例子展示了现在可由 `grind` 解决的问题。
 
-* [#6685](https://github.com/leanprover/lean4/pull/6685) fixes the issue that `#check_failure`'s output is warning
+* [#6685](https://github.com/leanprover/lean4/pull/6685) 修复了 `#check_failure` 的输出被当成 warning 的问题。
 
-* [#6686](https://github.com/leanprover/lean4/pull/6686) fixes parameter processing, initialization, and attribute
-handling issues in the `grind` tactic.
+* [#6686](https://github.com/leanprover/lean4/pull/6686) 修复了 `grind` 策略中参数处理、初始化和属性处理的问题。
 
-* [#6691](https://github.com/leanprover/lean4/pull/6691) introduces the central API for making parallel changes to the
-environment
+* [#6691](https://github.com/leanprover/lean4/pull/6691) 引入了用于对环境进行并行修改的核心 API。
 
-* [#6692](https://github.com/leanprover/lean4/pull/6692) removes the `[grind_norm]` attribute. The normalization theorems
-used by `grind` are now fixed and cannot be modified by users. We use
-normalization theorems to ensure the built-in procedures receive term
-wish expected "shapes". We use it for types that have built-in support
-in grind. Users could misuse this feature as a simplification rule. For
-example, consider the following example:
+* [#6692](https://github.com/leanprover/lean4/pull/6692) 移除了 `[grind_norm]` 属性。`grind` 使用的规范化定理现在是固定的，用户无法修改。我们使用这些规范化定理来确保内建过程接收到期望“形状”的项，它们用于 `grind` 内建支持的那些类型。用户原本可能把这个特性误用为简化规则。比如，考虑下面的例子：
 
-* [#6700](https://github.com/leanprover/lean4/pull/6700) adds support for beta reduction in the `grind` tactic. `grind`
-can now solve goals such as
+* [#6700](https://github.com/leanprover/lean4/pull/6700) 为 `grind` 策略增加了 beta reduction 支持。`grind` 现在可以解出如下目标：
   ```lean
   example (f : Nat → Nat) : f = (fun x : Nat => x + 5) → f 2 > 5 := by
     grind
   ```
 
-* [#6702](https://github.com/leanprover/lean4/pull/6702) adds support for equality backward reasoning to `grind`. We can
-illustrate the new feature with the following example. Suppose we have a
-theorem:
+* [#6702](https://github.com/leanprover/lean4/pull/6702) 为 `grind` 增加了相等式的反向推理支持。下面的例子可以说明这一新特性。假设我们有如下定理：
   ```lean
   theorem inv_eq {a b : α} (w : a * b = 1) : inv a = b
   ```
-  and we want to instantiate the theorem whenever we are tying to prove
-`inv t = s` for some terms `t` and `s`
-The attribute `[grind ←]` is not applicable in this case because, by
-default, `=` is not eligible for E-matching. The new attribute `[grind
-←=]` instructs `grind` to use the equality and consider disequalities in
-the `grind` proof state as candidates for E-matching.
+  并且我们希望在尝试证明某些项 `t` 与 `s` 满足 `inv t = s` 时实例化该定理。由于默认情况下 `=` 不能用于 E-匹配，所以属性 `[grind ←]` 不适用于此。新的属性 `[grind ←=]` 会指示 `grind` 使用相等式，并把 `grind` 证明状态中的不等式也视作 E-匹配候选。
 
-* [#6705](https://github.com/leanprover/lean4/pull/6705) adds the attributes `[grind cases]` and `[grind cases eager]`
-for controlling case splitting in `grind`. They will replace the
-`[grind_cases]` and the configuration option `splitIndPred`.
+* [#6705](https://github.com/leanprover/lean4/pull/6705) 增加了 `[grind cases]` 和 `[grind cases eager]` 属性，用于控制 `grind` 中的分情况拆分。它们将取代 `[grind_cases]` 和配置项 `splitIndPred`。
 
-* [#6711](https://github.com/leanprover/lean4/pull/6711) adds support for `UIntX` and `USize` in `bv_decide` by adding a
-preprocessor that turns them into `BitVec` of their corresponding size.
+* [#6711](https://github.com/leanprover/lean4/pull/6711) 通过加入一个预处理器，把 `UIntX` 和 `USize` 转换为对应位宽的 `BitVec`，从而为 `bv_decide` 增加了对它们的支持。
 
-* [#6717](https://github.com/leanprover/lean4/pull/6717) introduces a new feature that allows users to specify which
-inductive datatypes the `grind` tactic should perform case splits on.
-The configuration option `splitIndPred` is now set to `false` by
-default. The attribute `[grind cases]` is used to mark inductive
-datatypes and predicates that `grind` may case split on during the
-search. Additionally, the attribute `[grind cases eager]` can be used to
-mark datatypes and predicates for case splitting both during
-pre-processing and the search.
+* [#6717](https://github.com/leanprover/lean4/pull/6717) 引入了一项新特性，允许用户指定 `grind` 策略应对哪些归纳数据类型进行分情况拆分。配置项 `splitIndPred` 现在默认设为 `false`。属性 `[grind cases]` 用于标记那些可在搜索期间由 `grind` 进行分情况拆分的归纳数据类型和谓词；另外，`[grind cases eager]` 可用于标记那些既能在预处理阶段、也能在搜索期间进行分情况拆分的数据类型和谓词。
 
-* [#6718](https://github.com/leanprover/lean4/pull/6718) adds BitVec lemmas required to cancel multiplicative negatives,
-and plumb support through to `bv_normalize` to make use of this result in
-the normalized twos-complement form.
+* [#6718](https://github.com/leanprover/lean4/pull/6718) 添加了消去乘法负号所需的 BitVec 引理，并把支持接入 bv_normalize，以便在规范化后的二补码形式中利用这些结果。
 
-* [#6719](https://github.com/leanprover/lean4/pull/6719) fixes a bug in the equational theorem generator for
-`match`-expressions. See new test for an example.
+* [#6719](https://github.com/leanprover/lean4/pull/6719) 修复了 `match` 表达式等式定理生成器中的一个问题。可参见新增测试中的例子。
 
-* [#6724](https://github.com/leanprover/lean4/pull/6724) adds support for `bv_decide` to automatically split up
-non-recursive structures that contain information about supported types.
-It can be controlled using the new `structures` field in the `bv_decide`
-config.
+* [#6724](https://github.com/leanprover/lean4/pull/6724) 为 `bv_decide` 增加了自动拆解包含受支持类型信息的非递归结构体的支持。可以通过 `bv_decide` 配置中的新字段 `structures` 进行控制。
 
-* [#6733](https://github.com/leanprover/lean4/pull/6733) adds better support for overlapping `match` patterns in `grind`.
-`grind` can now solve examples such as
+* [#6733](https://github.com/leanprover/lean4/pull/6733) 改进了 `grind` 对重叠 `match` 模式的支持。`grind` 现在可以解出如下示例：
   ```lean
   inductive S where
     | mk1 (n : Nat)
@@ -517,9 +378,7 @@ config.
     grind (splits := 0)
   ```
 
-* [#6735](https://github.com/leanprover/lean4/pull/6735) adds support for case splitting on `match`-expressions with
-overlapping patterns to the `grind` tactic. `grind` can now solve
-examples such as:
+* [#6735](https://github.com/leanprover/lean4/pull/6735) 为 `grind` 策略增加了对带重叠模式的 `match` 表达式进行分情况拆分的支持。`grind` 现在可以解出如下示例：
   ```lean
   inductive S where
     | mk1 (n : Nat)
@@ -538,71 +397,41 @@ examples such as:
     grind [g.eq_def]
   ```
 
-* [#6736](https://github.com/leanprover/lean4/pull/6736) ensures the canonicalizer used in `grind` does not waste time
-checking whether terms with different types are definitionally equal.
+* [#6736](https://github.com/leanprover/lean4/pull/6736) 确保 `grind` 使用的规范化器不会浪费时间去检查不同类型的项是否定义相等。
 
-* [#6737](https://github.com/leanprover/lean4/pull/6737) ensures that the branches of an `if-then-else` term are
-internalized only after establishing the truth value of the condition.
-This change makes its behavior consistent with the `match`-expression
-and dependent `if-then-else` behavior in `grind`.
-This feature is particularly important for recursive functions defined
-by well-founded recursion and `if-then-else`. Without lazy
-`if-then-else` branch internalization, the equation theorem for the
-recursive function would unfold until reaching the generation depth
-threshold, and before performing any case analysis. See new tests for an
-example.
+* [#6737](https://github.com/leanprover/lean4/pull/6737) 确保 `if-then-else` 项的分支只会在确定条件真值之后才被内化。这一改动使其行为与 `grind` 中 `match` 表达式和依赖型 `if-then-else` 的处理保持一致。对于通过良基递归和 `if-then-else` 定义的递归函数而言，这个特性尤为重要；若不采用惰性的 `if-then-else` 分支内化，递归函数的方程定理会在执行任何 case 分析之前就一直展开到生成深度阈值。相关示例见新增测试。
 
-* [#6739](https://github.com/leanprover/lean4/pull/6739) adds a fast path for bitblasting multiplication with constants
-in `bv_decide`.
+* [#6739](https://github.com/leanprover/lean4/pull/6739) 为 `bv_decide` 中对常量乘法进行 bitblasting 增加了一条快速路径。
 
-* [#6740](https://github.com/leanprover/lean4/pull/6740) extends `bv_decide`'s structure reasoning support for also
-reasoning about equalities of supported structures.
+* [#6740](https://github.com/leanprover/lean4/pull/6740) 扩展了 `bv_decide` 的结构体推理支持，使其也能推理受支持结构体之间的相等性。
 
-* [#6745](https://github.com/leanprover/lean4/pull/6745) supports rewriting `ushiftRight` in terms of `extractLsb'`. This
-is the companion PR to #6743 which adds the similar lemmas about
-`shiftLeft`.
+* [#6745](https://github.com/leanprover/lean4/pull/6745) 支持用 `extractLsb'` 重写 ushiftRight。这是 #6743 的配套 PR；#6743 增加了关于 `shiftLeft` 的类似引理。
 
-* [#6746](https://github.com/leanprover/lean4/pull/6746) ensures that conditional equation theorems for function
-definitions are handled correctly in `grind`. We use the same
-infrastructure built for `match`-expression equations. Recall that in
-both cases, these theorems are conditional when there are overlapping
-patterns.
+* [#6746](https://github.com/leanprover/lean4/pull/6746) 确保 `grind` 能正确处理函数定义的条件方程定理。这里复用了为 `match` 表达式方程构建的同一套基础设施。回顾一下：在这两种场景下，只要存在重叠模式，这些定理都会是条件性的。
 
-* [#6748](https://github.com/leanprover/lean4/pull/6748) fixes a few bugs in the `grind` tactic: missing issues, bad
-error messages, incorrect threshold in the canonicalizer, and bug in the
-ground pattern internalizer.
+* [#6748](https://github.com/leanprover/lean4/pull/6748) 修复了 `grind` 策略中的一些问题：漏报问题、错误消息糟糕、规范化器中阈值不正确，以及 ground 模式内化器中的问题。
 
-* [#6750](https://github.com/leanprover/lean4/pull/6750) adds support for fixing type mismatches using `cast` while
-instantiating quantifiers in the E-matching module used by the grind
-tactic.
+* [#6750](https://github.com/leanprover/lean4/pull/6750) 为 `grind` 策略所用的 E-匹配模块增加支持：在实例化量词时，可使用 `cast` 修复类型不匹配。
 
-* [#6754](https://github.com/leanprover/lean4/pull/6754) adds the `+zetaUnused` option.
+* [#6754](https://github.com/leanprover/lean4/pull/6754) 增加了 `+zetaUnused` 选项。
 
-* [#6755](https://github.com/leanprover/lean4/pull/6755) implements the `zetaUnused` simp and reduction option (added in
-#6754).
+* [#6755](https://github.com/leanprover/lean4/pull/6755) 实现了 `zetaUnused` simp 与规约选项（见 #6754）。
 
-* [#6761](https://github.com/leanprover/lean4/pull/6761) fixes issues in `grind` when processing `match`-expressions with
-indexed families.
+* [#6761](https://github.com/leanprover/lean4/pull/6761) 修复了 `grind` 在处理带索引族的 `match` 表达式时的问题。
 
-* [#6773](https://github.com/leanprover/lean4/pull/6773) fixes a typo that prevented `Nat.reduceAnd` from working
-correctly.
+* [#6773](https://github.com/leanprover/lean4/pull/6773) 修复了一个拼写错误，该错误会导致 `Nat.reduceAnd` 无法正常工作。
 
-* [#6777](https://github.com/leanprover/lean4/pull/6777) fixes a bug in the internalization of offset terms in the
-`grind` tactic. For example, `grind` was failing to solve the following
-example because of this bug.
+* [#6777](https://github.com/leanprover/lean4/pull/6777) 修复了 `grind` 策略中偏移项内化的一个问题。例如，`grind` 之前就因为这个问题而无法解决下面这个例子。
   ```lean
   example (f : Nat → Nat) : f (a + 1) = 1 → a = 0 → f 1 = 1 := by
     grind
   ```
 
-* [#6778](https://github.com/leanprover/lean4/pull/6778) fixes the assignment produced by `grind` to satisfy the offset
-constraints in a goal.
+* [#6778](https://github.com/leanprover/lean4/pull/6778) 修复了 `grind` 生成的赋值，使其能够满足目标中的偏移约束。
 
-* [#6779](https://github.com/leanprover/lean4/pull/6779) improves the support for `match`-expressions in the `grind`
-tactic.
+* [#6779](https://github.com/leanprover/lean4/pull/6779) 改进了 `grind` 策略对 `match` 表达式的支持。
 
-* [#6781](https://github.com/leanprover/lean4/pull/6781) fixes the support for case splitting on data in the `grind`
-tactic. The following example works now:
+* [#6781](https://github.com/leanprover/lean4/pull/6781) 修复了 `grind` 策略中对数据进行分情况拆分的支持。下面这个例子现在可以工作了：
   ```lean
   inductive C where
     | a | b | c
@@ -619,9 +448,7 @@ tactic. The following example works now:
     ]
   ```
 
-* [#6783](https://github.com/leanprover/lean4/pull/6783) adds support for closing goals using `match`-expression
-conditions that are known to be true in the `grind` tactic state.
-`grind` can now solve goals such as:
+* [#6783](https://github.com/leanprover/lean4/pull/6783) 增加了使用 `grind` 策略状态中已知为真的 `match` 表达式条件来关闭目标的支持。`grind` 现在可以解出如下目标：
   ```lean
   def f : List Nat → List Nat → Nat
     | _, 1 :: _ :: _ => 1
@@ -631,502 +458,322 @@ conditions that are known to be true in the `grind` tactic state.
   example : z = a :: as → y = z → f x y > 0
   ```
 
-* [#6785](https://github.com/leanprover/lean4/pull/6785) adds infrastructure for the `grind?` tactic. It also adds the
-new modifier `usr` which allows users to write `grind only [use thmName]` to instruct `grind` to only use theorem `thmName`, but using
-the patterns specified with the command `grind_pattern`.
+* [#6785](https://github.com/leanprover/lean4/pull/6785) 为 `grind?` 策略增加了基础设施。它还增加了新修饰符 `usr`，使用户能够写出 `grind only [use thmName]`，从而指示 `grind` 仅使用定理 `thmName`，但使用由 `grind_pattern` 命令指定的模式。
 
-* [#6788](https://github.com/leanprover/lean4/pull/6788) teaches bv_normalize that `!(x < x)` and `!(x < 0)`.
+* [#6788](https://github.com/leanprover/lean4/pull/6788) 让 bv_normalize 认识到 `!(x < x)` 和 `!(x < 0)`。
 
-* [#6790](https://github.com/leanprover/lean4/pull/6790) fixes an issue with the generation of equational theorems from
-`partial_fixpoint` when case-splitting is necessary. Fixes #6786.
+* [#6790](https://github.com/leanprover/lean4/pull/6790) 修复了在需要分情况拆分时，由 `partial_fixpoint` 生成等式定理的问题。修复 #6786。
 
-* [#6791](https://github.com/leanprover/lean4/pull/6791) fixes #6789 by ensuring metadata generated for inaccessible
-variables in pattern-matches is consumed in `casesOnStuckLHS`
-accordingly.
+* [#6791](https://github.com/leanprover/lean4/pull/6791) 通过确保模式匹配中为不可访问变量生成的元数据会在 `casesOnStuckLHS` 中被相应消费，从而修复了 #6789。
 
-* [#6801](https://github.com/leanprover/lean4/pull/6801) fixes a bug in the exhaustive offset constraint propagation
-module used in `grind`.
+* [#6801](https://github.com/leanprover/lean4/pull/6801) 修复了 `grind` 使用的穷尽式偏移约束传播模块中的一个问题。
 
-* [#6810](https://github.com/leanprover/lean4/pull/6810) implements a basic `grind?` tactic companion for `grind`. We
-will add more bells and whistles later.
+* [#6810](https://github.com/leanprover/lean4/pull/6810) 为 `grind` 实现了一个基础的配套 `grind?` 策略。后续还会继续增强。
 
-* [#6822](https://github.com/leanprover/lean4/pull/6822) adds a few builtin case-splits for `grind`. They are similar to
-builtin `simp` theorems. They reduce the noise in the tactics produced
-by `grind?`.
+* [#6822](https://github.com/leanprover/lean4/pull/6822) 为 `grind` 增加了一些内建的分情况拆分。它们类似于内建 `simp` 定理，可以减少 `grind?` 生成策略时的噪音。
 
-* [#6824](https://github.com/leanprover/lean4/pull/6824) introduces the auxiliary command `%reset_grind_attrs` for
-debugging purposes. It is particularly useful for writing self-contained
-tests.
+* [#6824](https://github.com/leanprover/lean4/pull/6824) 引入辅助命令 `%reset_grind_attrs` 以供调试之用。它对编写自包含测试尤其有帮助。
 
-* [#6834](https://github.com/leanprover/lean4/pull/6834) adds "performance" counters (e.g., number of instances per
-theorem) to `grind`. The counters are always reported on failures, and
-on successes when `set_option diagnostics true`.
+* [#6834](https://github.com/leanprover/lean4/pull/6834) 为 `grind` 增加了“性能”计数器（例如每个定理对应的实例数）。在失败时总会报告这些计数器；成功时若 `set_option diagnostics true`，也会报告。
 
-* [#6839](https://github.com/leanprover/lean4/pull/6839) ensures `grind` can use constructors and axioms for heuristic
-instantiation based on E-matching. It also allows patterns without
-pattern variables for theorems such as `theorem evenz : Even 0`.
+* [#6839](https://github.com/leanprover/lean4/pull/6839) 确保 `grind` 可以把构造子和公理用于基于 E-匹配的启发式实例化。它还允许对诸如 `theorem evenz : Even 0` 这样的定理使用不带模式变量的模式。
 
-* [#6851](https://github.com/leanprover/lean4/pull/6851) makes `bv_normalize` rewrite shifts by `BitVec` constants to
-shifts by `Nat` constants. This is part of the greater effort in
-providing good support for constant shift simplification in
-`bv_normalize`.
+* [#6851](https://github.com/leanprover/lean4/pull/6851) 让 bv_normalize 把以 `BitVec` 常量表示的移位重写为以 `Nat` 常量表示的移位。这是增强 bv_normalize 对常量移位化简支持这一更大工作的组成部分。
 
-* [#6852](https://github.com/leanprover/lean4/pull/6852) allows environment extensions to opt into access modes that do
-not block on the entire environment up to this point as a necessary
-prerequisite for parallel proof elaboration.
+* [#6852](https://github.com/leanprover/lean4/pull/6852) 允许环境扩展选择不会阻塞截至当前整个环境的访问模式，这是实现并行证明精译所必需的前提。
 
-* [#6854](https://github.com/leanprover/lean4/pull/6854) adds a convenience for inductive predicates in `grind`. Now,
-give an inductive predicate `C`, `grind [C]` marks `C` terms as
-case-split candidates **and** `C` constructors as E-matching theorems.
-Here is an example:
+* [#6854](https://github.com/leanprover/lean4/pull/6854) 为 `grind` 中的归纳谓词增加了一项便利功能。现在，给定归纳谓词 `C`，`grind [C]` 会把 `C` 项标记为可分情况拆分候选，**并且**把 `C` 的构造子标记为 E-匹配定理。示例如下：
   ```lean
   example {B S T s t} (hcond : B s) : (ifThenElse B S T, s) ==> t → (S, s) ==> t := by
     grind [BigStep]
   ```
-  Users can still use `grind [cases BigStep]` to only mark `C` as a case
-split candidate.
+  用户仍可使用 `grind [cases BigStep]`，仅把 `C` 标记为分情况拆分候选。
 
-* [#6858](https://github.com/leanprover/lean4/pull/6858) adds new propagation rules for `decide` and equality in `grind`.
-It also adds new tests and cleans old ones
+* [#6858](https://github.com/leanprover/lean4/pull/6858) 为 `grind` 中的 `decide` 和相等式增加了新的传播规则。同时还增加了新测试并清理了旧测试。
 
-* [#6861](https://github.com/leanprover/lean4/pull/6861) adds propagation rules for `Bool.and`, `Bool.or`, and `Bool.not`
-to the `grind` tactic.
+* [#6861](https://github.com/leanprover/lean4/pull/6861) 为 `grind` 策略增加了 `Bool.and`、`Bool.or` 和 `Bool.not` 的传播规则。
 
-* [#6870](https://github.com/leanprover/lean4/pull/6870) adds two new normalization steps in `grind` that reduces `a !=
-b` and `a == b` to `decide (¬ a = b)` and `decide (a = b)`,
-respectively.
+* [#6870](https://github.com/leanprover/lean4/pull/6870) 为 `grind` 增加了两个新的规范化步骤，分别把 `a != b` 和 `a == b` 规约为 `decide (¬ a = b)` 与 `decide (a = b)`。
 
-* [#6879](https://github.com/leanprover/lean4/pull/6879) fixes a bug in `mkMatchCondProf?` used by the `grind` tactic.
-This bug was introducing a failure in the test `grind_constProp.lean`.
+* [#6879](https://github.com/leanprover/lean4/pull/6879) 修复了 `grind` 策略所使用的 `mkMatchCondProf?` 中的一个问题。该问题会导致测试 `grind_constProp.lean` 失败。
 
-* [#6880](https://github.com/leanprover/lean4/pull/6880) improves the E-matching pattern selection heuristic used in
-`grind`.
+* [#6880](https://github.com/leanprover/lean4/pull/6880) 改进了 `grind` 中使用的 E-匹配模式选择启发式。
 
-* [#6881](https://github.com/leanprover/lean4/pull/6881) improves the `grind` error message by including a trace of the
-terms on which `grind` applied `cases`-like operations.
+* [#6881](https://github.com/leanprover/lean4/pull/6881) 改进了 `grind` 的错误消息，将 `grind` 应用 `cases` 类操作的那些项的跟踪一并包含其中。
 
-* [#6882](https://github.com/leanprover/lean4/pull/6882) ensures `grind` auxiliary gadgets are "hidden" in error and
-diagnostic messages.
+* [#6882](https://github.com/leanprover/lean4/pull/6882) 确保 `grind` 的辅助装置在错误和诊断消息中会被“隐藏”起来。
 
-* [#6888](https://github.com/leanprover/lean4/pull/6888) adds the `[grind intro]` attribute. It instructs `grind` to mark
-the introduction rules of an inductive predicate as E-matching theorems.
+* [#6888](https://github.com/leanprover/lean4/pull/6888) 增加了 `[grind intro]` 属性。它会指示 `grind` 把归纳谓词的引入规则标记为 E-匹配定理。
 
-* [#6889](https://github.com/leanprover/lean4/pull/6889) inlines a few functions in the `bv_decide` circuit cache.
+* [#6889](https://github.com/leanprover/lean4/pull/6889) 对 `bv_decide` 电路缓存中的一些函数进行了内联。
 
-* [#6892](https://github.com/leanprover/lean4/pull/6892) fixes a bug in the pattern selection heuristic used in `grind`.
-It was unfolding definitions/abstractions that were not supposed to be
-unfolded. See `grind_constProp.lean` for examples affected by this bug.
+* [#6892](https://github.com/leanprover/lean4/pull/6892) 修复了 `grind` 中模式选择启发式的一个问题。此前它会展开本不该展开的定义/抽象。受影响的例子见 `grind_constProp.lean`。
 
-* [#6895](https://github.com/leanprover/lean4/pull/6895) fixes a few `grind` issues exposed by the `grind_constProp.lean`
-test.
-  - Support for equational theorem hypotheses created before invoking
-  `grind`. Example: applying an induction principle.s
-  - Support of `Unit`-like types.
-  - Missing recursion depth checks.
+* [#6895](https://github.com/leanprover/lean4/pull/6895) 修复了 `grind_constProp.lean` 测试暴露出的若干 `grind` 问题。
+  - 支持在调用 `grind` 之前就已创建的等式定理假设，例如应用归纳原理时。
+  - 支持 `Unit`-like 类型。
+  - 补上缺失的递归深度检查。
 
-* [#6897](https://github.com/leanprover/lean4/pull/6897) adds the new attributes `[grind =>]` and `[grind <=]` for
-controlling pattern selection and minimizing the number of places where
-we have to use verbose `grind_pattern` command. It also fixes a bug in
-the new pattern selection procedure, and improves the automatic pattern
-selection for local lemmas.
+* [#6897](https://github.com/leanprover/lean4/pull/6897) 增加了新的属性 `[grind =>]` 和 `[grind <=]`，用于控制模式选择，并尽量减少必须使用冗长 `grind_pattern` 命令的场景。它还修复了新模式选择过程中的一个问题，并改进了对局部引理的自动模式选择。
 
-* [#6904](https://github.com/leanprover/lean4/pull/6904) adds the `grind` configuration option `verbose`. For example,
-`grind -verbose` disables all diagnostics. We are going to use this flag
-to implement `try?`.
+* [#6904](https://github.com/leanprover/lean4/pull/6904) 增加了 `grind` 配置项 `verbose`。例如，`grind -verbose` 会禁用所有诊断信息。我们将利用这个标志来实现 `try?`。
 
-* [#6905](https://github.com/leanprover/lean4/pull/6905) adds the `try?` tactic; see above
+* [#6905](https://github.com/leanprover/lean4/pull/6905) 增加了 `try?` 策略；详见上文。
 
-## Library
+````
+# 库
+%%%
+tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___17___0-_LPAR_2025-03-03_RPAR_--Library"
+%%%
 
-* [#6177](https://github.com/leanprover/lean4/pull/6177) implements `BitVec.*_fill`.
+````markdown
 
-* [#6211](https://github.com/leanprover/lean4/pull/6211) verifies the `insertMany` method on `HashMap`s for the special
-case of inserting lists.
+* [#6177](https://github.com/leanprover/lean4/pull/6177) 实现了 `BitVec.*_fill`。
 
-* [#6346](https://github.com/leanprover/lean4/pull/6346) completes the toNat/Int/Fin family for `shiftLeft`.
+* [#6211](https://github.com/leanprover/lean4/pull/6211) 针对插入列表这一特殊情形，验证了 `HashMap` 上的 `insertMany` 方法。
 
-* [#6347](https://github.com/leanprover/lean4/pull/6347) adds `BitVec.toNat_rotateLeft` and `BitVec.toNat_rotateLeft`.
+* [#6346](https://github.com/leanprover/lean4/pull/6346) 补全了 `shiftLeft` 的 toNat/Int/Fin 系列。
 
-* [#6402](https://github.com/leanprover/lean4/pull/6402) adds a `toFin` and `msb` lemma for unsigned bitvector division.
-We *don't* have `toInt_udiv`, since the only truly general statement we
-can make does no better than unfolding the definition, and it's not
-uncontroversially clear how to unfold `toInt` (see
-`toInt_eq_msb_cond`/`toInt_eq_toNat_cond`/`toInt_eq_toNat_bmod` for a
-few options currently provided). Instead, we do have `toInt_udiv_of_msb`
-that's able to provide a more meaningful rewrite given an extra
-side-condition (that `x.msb = false`).
+* [#6347](https://github.com/leanprover/lean4/pull/6347) 增加了 `BitVec.toNat_rotateLeft` 和 `BitVec.toNat_rotateLeft`。
 
-* [#6404](https://github.com/leanprover/lean4/pull/6404) adds a `toFin` and `msb` lemma for unsigned bitvector modulus.
-Similar to #6402, we don't provide a general `toInt_umod` lemmas, but
-instead choose to provide more specialized rewrites, with extra
-side-conditions.
+* [#6402](https://github.com/leanprover/lean4/pull/6402) 为无符号位向量除法增加了 `toFin` 和 `msb` 引理。我们*没有*提供 `toInt_udiv`，因为唯一真正通用的表述无非是展开定义，而如何展开 `toInt` 本身并没有无争议的统一方式（可参见当前提供的几个选项：`toInt_eq_msb_cond`/`toInt_eq_toNat_cond`/`toInt_eq_toNat_bmod`）。相反，我们提供了 `toInt_udiv_of_msb`，在额外假设 `x.msb = false` 下，它能够给出更有意义的重写。
 
-* [#6431](https://github.com/leanprover/lean4/pull/6431) fixes the `Repr` instance of the `Timestamp` type and changes
-the `PlainTime` type so that it always represents a clock time that may
-be a leap second.
+* [#6404](https://github.com/leanprover/lean4/pull/6404) 为无符号位向量取模增加了 `toFin` 和 `msb` 引理。与 #6402 类似，我们不提供通用的 `toInt_umod` 引理，而是选择提供带额外侧条件的、更专门化的重写。
 
-* [#6476](https://github.com/leanprover/lean4/pull/6476) defines `reverse` for bitvectors and implements a first subset
-of theorems (`getLsbD_reverse, getMsbD_reverse, reverse_append,
-reverse_replicate, reverse_cast, msb_reverse`). We also include some
-necessary related theorems (`cons_append, cons_append_append,
-append_assoc, replicate_append_self, replicate_succ'`) and deprecate
-theorems`replicate_zero_eq` and `replicate_succ_eq`.
+* [#6431](https://github.com/leanprover/lean4/pull/6431) 修复了 `Timestamp` 类型的 `Repr` 实例，并修改 `PlainTime` 类型，使其始终表示一个可能是闰秒的时钟时间。
 
-* [#6494](https://github.com/leanprover/lean4/pull/6494) proves the basic theorems about the functions `Int.bdiv` and
-`Int.bmod`.
+* [#6476](https://github.com/leanprover/lean4/pull/6476) 为位向量定义了 `reverse`，并实现了首批相关定理（`getLsbD_reverse, getMsbD_reverse, reverse_append, reverse_replicate, reverse_cast, msb_reverse`）。我们还加入了一些必要的相关定理（`cons_append, cons_append_append, append_assoc, replicate_append_self, replicate_succ'`），并弃用了定理 `replicate_zero_eq` 和 `replicate_succ_eq`。
 
-* [#6507](https://github.com/leanprover/lean4/pull/6507) adds the subtraction equivalents for `Int.emod_add_emod` (`(a %
-n + b) % n = (a + b) % n`) and `Int.add_emod_emod` (`(a + b % n) % n =
-(a + b) % n`). These are marked @[simp] like their addition equivalents.
+* [#6494](https://github.com/leanprover/lean4/pull/6494) 证明了关于函数 `Int.bdiv` 和 `Int.bmod` 的基础定理。
 
-* [#6524](https://github.com/leanprover/lean4/pull/6524) upstreams some remaining `List.Perm` lemmas from Batteries.
+* [#6507](https://github.com/leanprover/lean4/pull/6507) 为 `Int.emod_add_emod`（`(a % n + b) % n = (a + b) % n`）和 `Int.add_emod_emod`（`(a + b % n) % n = (a + b) % n`）添加了对应的减法版本。它们像加法版本一样被标记为 @[simp]。
 
-* [#6546](https://github.com/leanprover/lean4/pull/6546) continues aligning `Array` and `Vector` lemmas with `List`,
-working on `fold` and `map` operations.
+* [#6524](https://github.com/leanprover/lean4/pull/6524) 将 Batteries 中剩余的一些 `List.Perm` 引理上游化。
 
-* [#6563](https://github.com/leanprover/lean4/pull/6563) implements `Std.Net.Addr` which contains structures around IP
-and socket addresses.
+* [#6546](https://github.com/leanprover/lean4/pull/6546) 继续把 `Array` 与 `Vector` 的引理与 `List` 对齐，重点处理 `fold` 和 `map` 操作。
 
-* [#6573](https://github.com/leanprover/lean4/pull/6573) replaces the existing implementations of `(D)HashMap.alter` and
-`(D)HashMap.modify` with primitive, more efficient ones and in
-particular provides proofs that they yield well-formed hash maps (`WF`
-type class).
+* [#6563](https://github.com/leanprover/lean4/pull/6563) 实现了 `Std.Net.Addr`，其中包含围绕 IP 和套接字地址的结构体。
 
-* [#6586](https://github.com/leanprover/lean4/pull/6586) continues aligning `List/Array/Vector` lemmas, finishing up
-lemmas about `map`.
+* [#6573](https://github.com/leanprover/lean4/pull/6573) 用更底层、更高效的实现替换了现有的 `(D)HashMap.alter` 和 `(D)HashMap.modify`，并特别给出了它们会产生良构哈希映射（`WF` 类型类）的证明。
 
-* [#6587](https://github.com/leanprover/lean4/pull/6587) adds decidable instances for the `LE` and `LT` instances for the
-`Offset` types defined in `Std.Time`.
+* [#6586](https://github.com/leanprover/lean4/pull/6586) 继续对齐 `List/Array/Vector` 的引理，完成了关于 `map` 的引理。
 
-* [#6589](https://github.com/leanprover/lean4/pull/6589) continues aligning `List/Array` lemmas, finishing `filter` and
-`filterMap`.
+* [#6587](https://github.com/leanprover/lean4/pull/6587) 为 `Std.Time` 中定义的 `Offset` 类型上的 `LE` 与 `LT` 实例增加了可判定实例。
 
-* [#6591](https://github.com/leanprover/lean4/pull/6591) adds less-than and less-than-or-equal-to relations to `UInt32`,
-consistent with the other `UIntN` types.
+* [#6589](https://github.com/leanprover/lean4/pull/6589) 继续对齐 `List/Array` 的引理，完成了 `filter` 和 `filterMap` 相关部分。
 
-* [#6612](https://github.com/leanprover/lean4/pull/6612) adds lemmas about `Array.append`, improving alignment with the
-`List` API.
+* [#6591](https://github.com/leanprover/lean4/pull/6591) 为 `UInt32` 添加了小于与小于等于关系，与其他 `UIntN` 类型保持一致。
 
-* [#6617](https://github.com/leanprover/lean4/pull/6617) completes alignment of `List`/`Array`/`Vector` `append` lemmas.
+* [#6612](https://github.com/leanprover/lean4/pull/6612) 添加了关于 `Array.append` 的引理，进一步对齐 `List` API。
 
-* [#6620](https://github.com/leanprover/lean4/pull/6620) adds lemmas about HashMap.alter and .modify. These lemmas
-describe the interaction of alter and modify with the read methods of
-the HashMap. The additions affect the HashMap, the DHashMap and their
-respective raw versions. Moreover, the raw versions of alter and modify
-are defined.
+* [#6617](https://github.com/leanprover/lean4/pull/6617) 完成了 `List`/`Array`/`Vector` 上 `append` 引理的对齐。
 
-* [#6625](https://github.com/leanprover/lean4/pull/6625) adds lemmas describing the behavior of `UIntX.toBitVec` on
-`UIntX` operations.
+* [#6620](https://github.com/leanprover/lean4/pull/6620) 添加了关于 HashMap.alter 和 .modify 的引理。这些引理描述了 alter 和 modify 与 HashMap 读取方法之间的交互。新增内容影响到 HashMap、DHashMap 以及它们各自的 raw 版本；此外，也定义了 alter 和 modify 的 raw 版本。
 
-* [#6630](https://github.com/leanprover/lean4/pull/6630) adds theorems `Nat.[shiftLeft_or_distrib`,
-shiftLeft_xor_distrib`, shiftLeft_and_distrib`, `testBit_mul_two_pow`,
-`bitwise_mul_two_pow`, `shiftLeft_bitwise_distrib]`, to prove
-`Nat.shiftLeft_or_distrib` by emulating the proof strategy of
-`shiftRight_and_distrib`.
+* [#6625](https://github.com/leanprover/lean4/pull/6625) 添加了描述 `UIntX.toBitVec` 在 `UIntX` 运算上行为的引理。
 
-* [#6640](https://github.com/leanprover/lean4/pull/6640) completes aligning `List`/`Array`/`Vector` lemmas about
-`flatten`. `Vector.flatten` was previously missing, and has been added
-(for rectangular sizes only). A small number of missing `Option` lemmas
-were also need to get the proofs to go through.
+* [#6630](https://github.com/leanprover/lean4/pull/6630) 添加定理 `Nat.[shiftLeft_or_distrib`, shiftLeft_xor_distrib`, shiftLeft_and_distrib`, `testBit_mul_two_pow`, `bitwise_mul_two_pow`, `shiftLeft_bitwise_distrib]`，以模仿 `shiftRight_and_distrib` 的证明策略来证明 `Nat.shiftLeft_or_distrib`。
 
-* [#6660](https://github.com/leanprover/lean4/pull/6660) defines `Vector.flatMap`, changes the order of arguments in
-`List.flatMap` for consistency, and aligns the lemmas for
-`List`/`Array`/`Vector` `flatMap`.
+* [#6640](https://github.com/leanprover/lean4/pull/6640) 完成了 `List`/`Array`/`Vector` 上关于 `flatten` 的引理对齐。此前缺失的 `Vector.flatten` 也已加入（仅适用于矩形尺寸）。另外还补充了少量缺失的 `Option` 引理，以便相关证明可以通过。
 
-* [#6661](https://github.com/leanprover/lean4/pull/6661) adds array indexing lemmas for `Vector.flatMap`. (These were not
-available for `List` and `Array` due to variable lengths.)
+* [#6660](https://github.com/leanprover/lean4/pull/6660) 定义了 `Vector.flatMap`，并为保持一致性修改了 `List.flatMap` 的参数顺序，同时对齐了 `List`/`Array`/`Vector` 的 `flatMap` 引理。
 
-* [#6667](https://github.com/leanprover/lean4/pull/6667) aligns `List.replicate`/`Array.mkArray`/`Vector.mkVector`
-lemmas.
+* [#6661](https://github.com/leanprover/lean4/pull/6661) 为 `Vector.flatMap` 添加了数组索引引理。（由于长度可变，这些引理对 `List` 和 `Array` 并不适用。）
 
-* [#6668](https://github.com/leanprover/lean4/pull/6668) fixes negative timestamps and `PlainDateTime`s before 1970.
+* [#6667](https://github.com/leanprover/lean4/pull/6667) 对齐了 `List.replicate`/`Array.mkArray`/`Vector.mkVector` 的引理。
 
-* [#6674](https://github.com/leanprover/lean4/pull/6674) adds theorems `BitVec.[getMsbD_mul, getElem_udiv, getLsbD_udiv,
-getMsbD_udiv]`
+* [#6668](https://github.com/leanprover/lean4/pull/6668) 修复了负时间戳以及 1970 年之前的 `PlainDateTime`。
 
-* [#6695](https://github.com/leanprover/lean4/pull/6695) aligns `List/Array/Vector.reverse` lemmas.
+* [#6674](https://github.com/leanprover/lean4/pull/6674) 添加定理 `BitVec.[getMsbD_mul, getElem_udiv, getLsbD_udiv, getMsbD_udiv]`。
 
-* [#6697](https://github.com/leanprover/lean4/pull/6697) changes the arguments of `List/Array.mapFinIdx` from `(f : Fin
-as.size → α → β)` to `(f : (i : Nat) → α → (h : i < as.size) → β)`, in
-line with the API design elsewhere for `List/Array`.
+* [#6695](https://github.com/leanprover/lean4/pull/6695) 对齐了 `List/Array/Vector.reverse` 的引理。
 
-* [#6701](https://github.com/leanprover/lean4/pull/6701) completes aligning `mapIdx` and `mapFinIdx` across
-`List/Array/Vector`.
+* [#6697](https://github.com/leanprover/lean4/pull/6697) 将 `List/Array.mapFinIdx` 的参数从 `(f : Fin as.size → α → β)` 改为 `(f : (i : Nat) → α → (h : i < as.size) → β)`，以与 `List/Array` 其他地方的 API 设计保持一致。
 
-* [#6707](https://github.com/leanprover/lean4/pull/6707) completes aligning lemmas for `List` / `Array` / `Vector` about
-`foldl`, `foldr`, and their monadic versions.
+* [#6701](https://github.com/leanprover/lean4/pull/6701) 完成了 `List/Array/Vector` 上 `mapIdx` 与 `mapFinIdx` 的对齐。
 
-* [#6708](https://github.com/leanprover/lean4/pull/6708) deprecates `List.iota`, which we make no essential use of. `iota
-n` can be replaced with `(range' 1 n).reverse`. The verification lemmas
-for `range'` already have better coverage than those for `iota`.
-Any downstream projects using it (I am not aware of any) are encouraged
-to adopt it.
+* [#6707](https://github.com/leanprover/lean4/pull/6707) 完成了 `List` / `Array` / `Vector` 上关于 `foldl`、`foldr` 及其单子式版本的引理对齐。
 
-* [#6712](https://github.com/leanprover/lean4/pull/6712) aligns `List`/`Array`/`Vector` theorems for `countP` and
-`count`.
+* [#6708](https://github.com/leanprover/lean4/pull/6708) 弃用了 `List.iota`，因为我们并未在本质上依赖它。`iota n` 可替换为 `(range' 1 n).reverse`。`range'` 的验证引理覆盖面已经优于 `iota`。任何仍在使用它的下游项目（我目前并不知道有哪一个）都建议迁移。
 
-* [#6723](https://github.com/leanprover/lean4/pull/6723) completes the alignment of
-{List/Array/Vector}.{attach,attachWith,pmap} lemmas. I had to fill in a
-number of gaps in the List API.
+* [#6712](https://github.com/leanprover/lean4/pull/6712) 对齐了 `List`/`Array`/`Vector` 上关于 `countP` 和 `count` 的定理。
 
-* [#6728](https://github.com/leanprover/lean4/pull/6728) removes theorems `Nat.mul_one` to simplify a rewrite in the
-proof of `BitVec.getMsbD_rotateLeft_of_lt`
+* [#6723](https://github.com/leanprover/lean4/pull/6723) 完成了 {List/Array/Vector}.{attach,attachWith,pmap} 引理的对齐。我还不得不补齐 `List` API 中的若干空缺。
 
-* [#6742](https://github.com/leanprover/lean4/pull/6742) adds the lemmas that show what happens when multiplying by
-`twoPow` to an arbitrary term, as well to another `twoPow`.
+* [#6728](https://github.com/leanprover/lean4/pull/6728) 移除了定理 `Nat.mul_one`，以简化 `BitVec.getMsbD_rotateLeft_of_lt` 证明中的一次重写。
 
-* [#6743](https://github.com/leanprover/lean4/pull/6743) adds rewrites that normalizes left shifts by extracting bits and
-concatenating zeroes. If the shift amount is larger than the bit-width,
-then the resulting bitvector is zero.
+* [#6742](https://github.com/leanprover/lean4/pull/6742) 添加了若干引理，用来说明任意项乘以 twoPow，以及 `twoPow` 与另一个 `twoPow` 相乘时会发生什么。
 
-* [#6747](https://github.com/leanprover/lean4/pull/6747) adds the ability to push `BitVec.extractLsb` and
-`BitVec.extractLsb'` with bitwise operations. This is useful for
-constant-folding extracts.
+* [#6743](https://github.com/leanprover/lean4/pull/6743) 增加了若干重写规则，通过提取比特并连接零来规范化左移。如果移位量大于位宽，那么结果位向量就是零。
 
-* [#6767](https://github.com/leanprover/lean4/pull/6767) adds lemmas to rewrite
-`BitVec.shiftLeft,shiftRight,sshiftRight'` by a `BitVec.ofNat` into a
-shift-by-natural number. This will be used to canonicalize shifts by
-constant bitvectors into shift by constant numbers, which have further
-rewrites on them if the number is a power of two.
+* [#6747](https://github.com/leanprover/lean4/pull/6747) 增加了让 `BitVec.extractLsb` 和 `BitVec.extractLsb'` 穿过按位运算的能力。这对对 extract 进行常量折叠很有用。
 
-* [#6799](https://github.com/leanprover/lean4/pull/6799) adds a number of simple comparison lemmas to the top/bottom
-element for BitVec. Then they are applied to teach bv_normalize that
-`(a<1) = (a==0)` and to remove an intermediate proof that is no longer
-necessary along the way.
+* [#6767](https://github.com/leanprover/lean4/pull/6767) 添加引理，把由 `BitVec.ofNat` 指定的 `BitVec.shiftLeft,shiftRight,sshiftRight'` 重写为按自然数移位。这将用于把按常量位向量的移位规范化成按常量数值的移位；如果该数值是 2 的幂，还可继续应用进一步的重写。
 
-* [#6800](https://github.com/leanprover/lean4/pull/6800) uniformizes the naming of `enum`/`enumFrom` (on `List`) and
-`zipWithIndex` (on `Array` on `Vector`), replacing all with `zipIdx`. At
-the same time, we generalize to add an optional `Nat` parameter for the
-initial value of the index (which previously existed, only for `List`,
-as the separate function `enumFrom`).
+* [#6799](https://github.com/leanprover/lean4/pull/6799) 为 BitVec 的顶/底元素添加了一些简单比较引理。随后利用它们让 `bv_normalize` 知道 `(a<1) = (a==0)`，并顺带移除了一个不再需要的中间证明。
 
-* [#6808](https://github.com/leanprover/lean4/pull/6808) adds simp lemmas replacing `BitVec.setWidth'` with `setWidth`,
-and conditionally simplifying `setWidth v (setWidth w v)`.
+* [#6800](https://github.com/leanprover/lean4/pull/6800) 统一了 `enum`/`enumFrom`（在 `List` 上）与 `zipWithIndex`（在 `Array` 和 `Vector` 上）的命名，全部替换为 `zipIdx`。同时还进一步泛化，增加了一个可选的 `Nat` 参数来指定索引的初始值（此前这只在 `List` 上以独立函数 `enumFrom` 的形式存在）。
 
-* [#6818](https://github.com/leanprover/lean4/pull/6818) adds a BitVec lemma that `(x >> x) = 0` and plumbs it through to
-bv_normalize. I also move some theorems I found useful to the top of the
-ushiftRight section.
+* [#6808](https://github.com/leanprover/lean4/pull/6808) 增加 simp 引理，把 `BitVec.setWidth'` 替换为 `setWidth`，并在适当条件下简化 `setWidth v (setWidth w v)`。
 
-* [#6821](https://github.com/leanprover/lean4/pull/6821) adds basic lemmas about `Ordering`, describing the interaction
-of `isLT`/`isLE`/`isGE`/`isGT`, `swap` and the constructors.
-Additionally, it refactors the instance derivation code such that a
-`LawfulBEq Ordering` instance is also derived automatically.
+* [#6818](https://github.com/leanprover/lean4/pull/6818) 增加了一个 BitVec 引理 `(x >> x) = 0`，并把支持接入 `bv_normalize`。我还把一些有用的定理移动到了 `ushiftRight` 章节的前面。
 
-* [#6826](https://github.com/leanprover/lean4/pull/6826) adds injectivity theorems for inductives that did not get them
-automatically (because they are defined too early) but also not yet
-manually later.
+* [#6821](https://github.com/leanprover/lean4/pull/6821) 添加了关于 `Ordering` 的基础引理，描述 `isLT`/`isLE`/`isGE`/`isGT`、`swap` 与各构造子之间的相互作用。此外，它还重构了实例派生代码，使 `LawfulBEq Ordering` 实例也能自动派生。
 
-* [#6828](https://github.com/leanprover/lean4/pull/6828) adds add/sub injectivity lemmas for BitVec, and then adds
-specialized forms with additional symmetries for the `bv_normalize`
-normal form.
+* [#6826](https://github.com/leanprover/lean4/pull/6826) 为那些未能自动获得单射性定理（因为定义得过早）且后来也尚未手动补上的归纳类型添加这些定理。
 
-* [#6831](https://github.com/leanprover/lean4/pull/6831) completes the alignment of `List/Array/Vector` lemmas about
-`isEqv` and `==`.
+* [#6828](https://github.com/leanprover/lean4/pull/6828) 为 BitVec 添加了加法/减法的单射性引理，并为 `bv_normalize` 的范式加入了带额外对称性的专门形式。
 
-* [#6833](https://github.com/leanprover/lean4/pull/6833) makes the signatures of `find` functions across
-`List`/`Array`/`Vector` consistent. Verification lemmas will follow in
-subsequent PRs.
+* [#6831](https://github.com/leanprover/lean4/pull/6831) 完成了 `List/Array/Vector` 上关于 `isEqv` 和 `==` 的引理对齐。
 
-* [#6835](https://github.com/leanprover/lean4/pull/6835) fills some gaps in the `Vector` API, adding `mapM`, `zip`, and
-`ForIn'` and `ToStream` instances.
+* [#6833](https://github.com/leanprover/lean4/pull/6833) 统一了 `List`/`Array`/`Vector` 上 `find` 系列函数的签名。验证引理将在后续 PR 中补上。
 
-* [#6838](https://github.com/leanprover/lean4/pull/6838) completes aligning the (limited) verification API for
-`List/Array/Vector.ofFn`.
+* [#6835](https://github.com/leanprover/lean4/pull/6835) 补齐了 `Vector` API 中的一些空缺，增加了 `mapM`、`zip`，以及 `ForIn'` 和 `ToStream` 实例。
 
-* [#6840](https://github.com/leanprover/lean4/pull/6840) completes the alignment of
-`List/Array/Vector.zip/zipWith/zipWithAll/unzip` lemmas.
+* [#6838](https://github.com/leanprover/lean4/pull/6838) 完成了 `List/Array/Vector.ofFn` 的（有限）验证 API 对齐。
 
-* [#6845](https://github.com/leanprover/lean4/pull/6845) adds missing monadic higher order functions on
-`List`/`Array`/`Vector`. Only the most basic verification lemmas
-(relating the operations on the three container types) are provided for
-now.
+* [#6840](https://github.com/leanprover/lean4/pull/6840) 完成了 `List/Array/Vector.zip/zipWith/zipWithAll/unzip` 引理的对齐。
 
-* [#6848](https://github.com/leanprover/lean4/pull/6848) adds simp lemmas proving `x + y = x ↔ x = 0` for BitVec, along
-with symmetries, and then adds these to the bv_normalize simpset.
+* [#6845](https://github.com/leanprover/lean4/pull/6845) 为 `List`/`Array`/`Vector` 增加了缺失的单子式高阶函数。目前只提供了最基础的验证引理（用于关联这三种容器类型上的操作）。
 
-* [#6860](https://github.com/leanprover/lean4/pull/6860) makes `take`/`drop`/`extract` available for each of
-`List`/`Array`/`Vector`. The simp normal forms differ, however: in
-`List`, we simplify `extract` to `take+drop`, while in `Array` and
-`Vector` we simplify `take` and `drop` to `extract`. We also provide
-`Array/Vector.shrink`, which simplifies to `take`, but is implemented by
-repeatedly popping. Verification lemmas for `Array/Vector.extract` to
-follow in a subsequent PR.
+* [#6848](https://github.com/leanprover/lean4/pull/6848) 为 BitVec 添加了证明 `x + y = x ↔ x = 0` 的 simp 引理及其对称版本，并将它们加入 bv_normalize simpset。
 
-* [#6862](https://github.com/leanprover/lean4/pull/6862) defines Cooper resolution with a divisibility constraint as
-formulated in
-"Cutting to the Chase: Solving Linear Integer Arithmetic" by Dejan
-Jovanović and Leonardo de Moura,
-DOI 10.1007/s10817-013-9281-x.
+* [#6860](https://github.com/leanprover/lean4/pull/6860) 让 `List`/`Array`/`Vector` 都具备 `take`/`drop`/`extract`。不过它们的 simp 范式并不相同：在 `List` 中，我们把 `extract` 简化为 `take+drop`；而在 `Array` 与 `Vector` 中，我们把 `take` 和 `drop` 简化为 `extract`。我们还提供了 `Array/Vector.shrink`，它会简化为 `take`，但实现方式是反复弹出元素。关于 `Array/Vector.extract` 的验证引理将在后续 PR 中补上。
 
-* [#6863](https://github.com/leanprover/lean4/pull/6863) allows fixing regressions in mathlib introduced in
-nightly-2024-02-25 by allowing the use of `x * y` in match patterns.
-There are currently 11 instances in mathlib explicitly flagging the lack
-of this match pattern.
+* [#6862](https://github.com/leanprover/lean4/pull/6862) 按 Dejan Jovanović 和 Leonardo de Moura 的论文 “Cutting to the Chase: Solving Linear Integer Arithmetic”（DOI 10.1007/s10817-013-9281-x）中的表述，定义了带整除约束的 Cooper 消解。
 
-* [#6864](https://github.com/leanprover/lean4/pull/6864) adds lemmas relating the operations on
-findIdx?/findFinIdx?/idxOf?/findIdxOf?/eraseP/erase on List and on
-Array. It's preliminary to aligning the verification lemmas for
-`find...` and `erase...`.
+* [#6863](https://github.com/leanprover/lean4/pull/6863) 通过允许在匹配模式中使用 `x * y`，修复了 nightly-2024-02-25 引入到 mathlib 中的回归。目前 mathlib 中已有 11 处明确标记了这一匹配模式的缺失。
 
-* [#6868](https://github.com/leanprover/lean4/pull/6868) completes the alignment across `List/Array/Vector` of lemmas
-about the `eraseP/erase/eraseIdx` operations.
+* [#6864](https://github.com/leanprover/lean4/pull/6864) 添加了把 List 和 Array 上的 findIdx?/findFinIdx?/idxOf?/findIdxOf?/eraseP/erase 操作关联起来的引理。这是对齐 `find...` 与 `erase...` 验证引理的前置工作。
 
-* [#6872](https://github.com/leanprover/lean4/pull/6872) adds lemmas for xor injectivity and when and/or/xor equal
-allOnes or zero. Then I plumb support for the new lemmas through to
-bv_normalize.
+* [#6868](https://github.com/leanprover/lean4/pull/6868) 完成了 `List/Array/Vector` 上关于 `eraseP/erase/eraseIdx` 操作的引理对齐。
 
-* [#6875](https://github.com/leanprover/lean4/pull/6875) adds a lemma relating `msb` and `getMsbD`, and three lemmas
-regarding `getElem` and `shiftConcat`. These lemmas were needed in
-[Batteries#1078](https://github.com/leanprover-community/batteries/pull/1078)
-and the request to upstream was made in the review of that PR.
+* [#6872](https://github.com/leanprover/lean4/pull/6872) 添加了关于 xor 的单射性，以及 and/or/xor 何时等于 allOnes 或 zero 的引理。随后我将这些新引理的支持接入了 `bv_normalize`。
 
-* [#6878](https://github.com/leanprover/lean4/pull/6878) completes alignments of `List/Array/Vector` lemmas about
-`range`, `range'`, and `zipIdx`.
+* [#6875](https://github.com/leanprover/lean4/pull/6875) 添加了一个关联 `msb` 与 `getMsbD` 的引理，以及三个关于 `getElem` 和 `shiftConcat` 的引理。这些引理在 [Batteries#1078](https://github.com/leanprover-community/batteries/pull/1078) 中被需要，而将其上游化的请求是在该 PR 的 review 中提出的。
 
-* [#6883](https://github.com/leanprover/lean4/pull/6883) completes the alignment of lemmas about monadic functions on
-`List/Array/Vector`. Amongst other changes, we change the simp normal
-form from `List.forM` to `ForM.forM`, and correct the definition of
-`List.flatMapM`, which previously was returning results in the incorrect
-order. There remain many gaps in the verification lemmas for monadic
-functions; this PR only makes the lemmas uniform across
-`List/Array/Vector`.
+* [#6878](https://github.com/leanprover/lean4/pull/6878) 完成了 `List/Array/Vector` 上关于 `range`、`range'` 和 `zipIdx` 的引理对齐。
 
-* [#6890](https://github.com/leanprover/lean4/pull/6890) teaches bv_normalize to replace subtractions on one side of an
-equality with an addition on the other side, this re-write eliminates a
-not + addition in the normalized form so it is easier on the solver.
+* [#6883](https://github.com/leanprover/lean4/pull/6883) 完成了 `List/Array/Vector` 上单子式函数引理的对齐。除其他变更外，我们还把 simp 范式从 `List.forM` 改为 `ForM.forM`，并修正了 `List.flatMapM` 的定义；它此前返回结果的顺序是错误的。关于单子式函数的验证引理仍有不少空缺；这个 PR 只是让这些引理在 `List/Array/Vector` 之间保持统一。
 
-* [#6912](https://github.com/leanprover/lean4/pull/6912) aligns current coverage of `find`-type theorems across
-`List`/`Array`/`Vector`. There are still quite a few holes in this API,
-which will be filled later.
+* [#6890](https://github.com/leanprover/lean4/pull/6890) 让 `bv_normalize` 学会把等式一侧的减法替换为另一侧的加法。这个重写消除了规范化形式中的某个 not + addition 组合，从而让求解器更容易处理。
 
-## Compiler
+* [#6912](https://github.com/leanprover/lean4/pull/6912) 对齐了 `List`/`Array`/`Vector` 上当前已覆盖的 `find` 类定理。这套 API 仍有不少空缺，后续会继续补齐。
 
-* [#6535](https://github.com/leanprover/lean4/pull/6535) avoids a linker warning on Windows.
+````
+# 编译器
+%%%
+tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___17___0-_LPAR_2025-03-03_RPAR_--Compiler"
+%%%
 
-* [#6547](https://github.com/leanprover/lean4/pull/6547) should prevent Lake from accidentally picking up other linkers
-installed on the machine.
+````markdown
 
-* [#6574](https://github.com/leanprover/lean4/pull/6574) actually prevents Lake from accidentally picking up other
-toolchains installed on the machine.
+* [#6535](https://github.com/leanprover/lean4/pull/6535) 避免了 Windows 上的链接器警告。
 
-* [#6664](https://github.com/leanprover/lean4/pull/6664) changes the toMono pass to longer filter out type class
-instances, because they may actually be needed for later compilation.
+* [#6547](https://github.com/leanprover/lean4/pull/6547) 应可防止 Lake 意外拾取机器上安装的其他链接器。
 
-* [#6665](https://github.com/leanprover/lean4/pull/6665) adds a new lcAny constant to Prelude, which is meant for use in
-LCNF to represent types whose dependency on another term has been erased
-during compilation. This is in addition to the existing lcErased
-constant, which represents types that are irrelevant.
+* [#6574](https://github.com/leanprover/lean4/pull/6574) 真实地阻止了 Lake 意外拾取机器上安装的其他工具链。
 
-* [#6678](https://github.com/leanprover/lean4/pull/6678) modifies LCNF.toMonoType to use a more refined type erasure
-scheme, which distinguishes between irrelevant/erased information
-(represented by lcErased) and erased type dependencies (represented by
-lcAny). This corresponds to the irrelevant/object distinction in the old
-code generator.
+* [#6664](https://github.com/leanprover/lean4/pull/6664) 修改了 toMono pass，使其不再过滤掉类型类实例，因为后续编译实际上可能需要它们。
 
-* [#6680](https://github.com/leanprover/lean4/pull/6680) makes the new code generator skip generating code for decls with
-an implemented_by decl, just like the old code generator.
+* [#6665](https://github.com/leanprover/lean4/pull/6665) 向 Prelude 添加了新的 lcAny 常量，供 LCNF 使用，用来表示那些在编译期间擦除了对其他项依赖的类型。这与现有的 lcErased 常量并列存在；后者表示无关的类型。
 
-* [#6757](https://github.com/leanprover/lean4/pull/6757) adds support for applying crimp theorems in toLCNF.
+* [#6678](https://github.com/leanprover/lean4/pull/6678) 修改 LCNF.toMonoType，使其采用更细致的类型擦除方案，区分无关/已擦除信息（由 lcErased 表示）和已擦除的类型依赖（由 lcAny 表示）。这对应于旧代码生成器中的 irrelevant/object 区分。
 
-* [#6758](https://github.com/leanprover/lean4/pull/6758) prevents deadlocks from non-cyclical task waits that may
-otherwise occur during parallel elaboration with small threadpool sizes.
+* [#6680](https://github.com/leanprover/lean4/pull/6680) 让新代码生成器像旧代码生成器一样，跳过为带有 implemented_by 声明的 decl 生成代码。
 
-* [#6837](https://github.com/leanprover/lean4/pull/6837) adds Float32 to the LCNF builtinRuntimeTypes list. This was
-missed during the initial Float32 implementation, but this omission has
-the side effect of lowering Float32 to obj in the IR.
+* [#6757](https://github.com/leanprover/lean4/pull/6757) 在 toLCNF 中增加了应用 crimp 定理的支持。
 
-## Pretty Printing
+* [#6758](https://github.com/leanprover/lean4/pull/6758) 防止了由非循环任务等待引发的死锁；这类死锁原本可能在小线程池规模下的并行精译中出现。
 
-* [#6703](https://github.com/leanprover/lean4/pull/6703) modifies the delaborator so that in `pp.tagAppFns` mode,
-generalized field notation is tagged with the head constant. The effect
-is that docgen documentation will linkify dot notation. Internal change:
-now formatted `rawIdent` can be tagged.
+* [#6837](https://github.com/leanprover/lean4/pull/6837) 将 Float32 加入 LCNF 的 builtinRuntimeTypes 列表。这在最初实现 Float32 时被遗漏了，而这一遗漏的副作用是会在 IR 中把 Float32 降级为 obj。
 
-* [#6716](https://github.com/leanprover/lean4/pull/6716) renames the option `infoview.maxTraceChildren` to
-`maxTraceChildren` and applies it to the cmdline driver and language
-server clients lacking an info view as well. It also implements the
-common idiom of the option value `0` meaning "unlimited".
+````
+# 漂亮打印
+%%%
+tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___17___0-_LPAR_2025-03-03_RPAR_--Pretty-Printing"
+%%%
 
-* [#6729](https://github.com/leanprover/lean4/pull/6729) makes the pretty printer for `.coeFun`-tagged functions respect
-`pp.tagAppFns`. The effect is that in docgen, when an expression pretty
-prints as `f x y z` with `f` a coerced function, then if `f` is a
-constant it will be linkified.
+````markdown
 
-* [#6730](https://github.com/leanprover/lean4/pull/6730) changes how app unexpanders are invoked. Before the ref was
-`.missing`, but now the ref is the head constant's delaborated syntax.
-This way, when `pp.tagAppFns` is true, then tokens in app unexpanders
-are annotated with the head constant. The consequence is that in docgen,
-tokens will be linkified. This new behavior is consistent with how
-`notation` defines app unexpanders.
+* [#6703](https://github.com/leanprover/lean4/pull/6703) 修改了 delaborator，使得在 `pp.tagAppFns` 模式下，广义字段记法会带上头常量的标签。其效果是 docgen 文档会为 dot 记法自动加链接。内部变更：现在格式化后的 `rawIdent` 也可以被加标签。
 
-## Documentation
+* [#6716](https://github.com/leanprover/lean4/pull/6716) 将选项 `infoview.maxTraceChildren` 重命名为 `maxTraceChildren`，并把它也应用到命令行驱动和那些缺少信息视图的语言服务器客户端。同时还实现了一个常见约定：选项值为 `0` 表示“不受限制”。
 
-* [#6549](https://github.com/leanprover/lean4/pull/6549) fixes #6548.
+* [#6729](https://github.com/leanprover/lean4/pull/6729) 让带有 `.coeFun` 标签的函数的漂亮打印器遵守 `pp.tagAppFns`。其效果是在 docgen 中，当一个表达式被漂亮打印为 `f x y z` 且 `f` 是一个被强制转换的函数时，如果 `f` 是常量，它就会被自动加链接。
 
-* [#6638](https://github.com/leanprover/lean4/pull/6638) correct the docstring of theorem `Bitvec.toNat_add_of_lt`
+* [#6730](https://github.com/leanprover/lean4/pull/6730) 修改了应用反展开器的调用方式。以前 ref 是 `.missing`，现在则改为头常量的 delaborated syntax。这样一来，当 `pp.tagAppFns` 为真时，应用反展开器里的词元会带上头常量注解。其结果是在 docgen 中，这些词元也会被自动加链接。这一新行为与 `notation` 定义应用反展开器的方式保持一致。
 
-* [#6643](https://github.com/leanprover/lean4/pull/6643) changes the macOS docs to indicate that Lean now requires
-pkgconf to build.
+````
+# 文档
+%%%
+tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___17___0-_LPAR_2025-03-03_RPAR_--Documentation"
+%%%
 
-* [#6646](https://github.com/leanprover/lean4/pull/6646) changes the ubuntu docs to indicate that Lean now requires
-pkgconf to build.
+````markdown
 
-* [#6738](https://github.com/leanprover/lean4/pull/6738) updates our lexical structure documentation to mention the newly
-supported ⱼ which lives in a separate unicode block and is thus not
-captured by the current ranges.
+* [#6549](https://github.com/leanprover/lean4/pull/6549) 修复了 #6548。
 
-* [#6885](https://github.com/leanprover/lean4/pull/6885) fixes the name of the truncating integer division function in
-the `HDiv.hDiv` docstring (which is shown when hovering over `/`). It
-was changed from `Int.div` to `Int.tdiv` in #5301.
+* [#6638](https://github.com/leanprover/lean4/pull/6638) 更正了定理 `Bitvec.toNat_add_of_lt` 的文档字符串。
 
-## Server
+* [#6643](https://github.com/leanprover/lean4/pull/6643) 更新了 macOS 文档，说明 Lean 现在需要 pkgconf 才能构建。
 
-* [#6597](https://github.com/leanprover/lean4/pull/6597) fixes the indentation of nested traces nodes in the info view.
+* [#6646](https://github.com/leanprover/lean4/pull/6646) 更新了 Ubuntu 文档，说明 Lean 现在需要 pkgconf 才能构建。
 
-* [#6794](https://github.com/leanprover/lean4/pull/6794) fixes a significant auto-completion performance regression that
-was introduced in #5666, i.e. v4.14.0.
+* [#6738](https://github.com/leanprover/lean4/pull/6738) 更新了词法结构文档，加入了对新近支持的 ⱼ 的说明；它位于单独的 Unicode 区块中，因此不被当前范围捕获。
 
-## Lake
+* [#6885](https://github.com/leanprover/lean4/pull/6885) 修复了 `HDiv.hDiv` 文档字符串（即悬停在 `/` 上时显示的内容）中截断整数除法函数的名称。该名称已在 #5301 中从 `Int.div` 改为 `Int.tdiv`。
 
-* [#6290](https://github.com/leanprover/lean4/pull/6290) uses `StateRefT` instead of `StateT` to equip the Lake build
-monad with a build store.
+````
+# 服务器
+%%%
+tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___17___0-_LPAR_2025-03-03_RPAR_--Server"
+%%%
 
-* [#6323](https://github.com/leanprover/lean4/pull/6323) adds a new Lake CLI command, `lake query`, that both builds
-targets and outputs their results. It can produce raw text or JSON
--formatted output (with `--json` / `-J`).
+````markdown
 
-* [#6418](https://github.com/leanprover/lean4/pull/6418) alters all builtin Lake facets to produce `Job` objects.
+* [#6597](https://github.com/leanprover/lean4/pull/6597) 修复了信息视图中嵌套跟踪节点的缩进问题。
 
-* [#6627](https://github.com/leanprover/lean4/pull/6627) aims to fix the trace issues reported by Mathlib that are
-breaking `lake exe cache` in downstream projects.
+* [#6794](https://github.com/leanprover/lean4/pull/6794) 修复了一个严重的自动补全性能回归，该回归由 #5666（也就是 v4.14.0）引入。
 
-* [#6631](https://github.com/leanprover/lean4/pull/6631) sets `MACOSX_DEPLOYMENT_TARGET` for shared libraries (it was
-previously only set for executables).
+````
+# Lake
+%%%
+tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___17___0-_LPAR_2025-03-03_RPAR_--Lake"
+%%%
 
-* [#6771](https://github.com/leanprover/lean4/pull/6771) enables `FetchM` to be run from `JobM` / `SpawnM` and
-vice-versa. This allows calls of `fetch` to asynchronously depend on the
-outputs of other jobs.
+````markdown
 
-* [#6780](https://github.com/leanprover/lean4/pull/6780) makes all targets and all `fetch` calls produce a `Job` of some
-value. As part of this change, facet definitions (e.g., `library_data`,
-`module_data`, `package_data`) and Lake type families (e.g.,
-`FamilyOut`) should no longer include `Job` in their types (as this is
-now implicit).
+* [#6290](https://github.com/leanprover/lean4/pull/6290) 使用 `StateRefT` 而非 `StateT`，为 Lake 构建单子配备构建存储。
 
-* [#6798](https://github.com/leanprover/lean4/pull/6798) deprecates the `-U` shorthand for the `--update` option.
+* [#6323](https://github.com/leanprover/lean4/pull/6323) 新增 Lake CLI 命令 `lake query`，既会构建目标，也会输出其结果。它可以生成原始文本或 JSON 格式的输出（使用 `--json` / `-J`）。
 
-* [#7209](https://github.com/leanprover/lean4/pull/7209) fixes broken Lake tests on Windows' new MSYS2. As of MSYS2
-0.0.20250221, `OSTYPE` is now reported as `cygwin` instead of `msys`, which must be accounted for in a few Lake tests.
+* [#6418](https://github.com/leanprover/lean4/pull/6418) 调整所有内建 Lake facet，使其产出 `Job` 对象。
 
-## Other
+* [#6627](https://github.com/leanprover/lean4/pull/6627) 旨在修复 Mathlib 报告的跟踪问题；这些问题会导致下游项目中的 `lake exe cache` 失效。
 
-* [#6479](https://github.com/leanprover/lean4/pull/6479) speeds up JSON serialisation by using a lookup table to check
-whether a string needs to be escaped.
+* [#6631](https://github.com/leanprover/lean4/pull/6631) 为共享库设置 `MACOSX_DEPLOYMENT_TARGET`（此前只对可执行文件设置）。
 
-* [#6519](https://github.com/leanprover/lean4/pull/6519) adds a script to automatically generate release notes using the
-new `changelog-*` labels and "..." conventions.
+* [#6771](https://github.com/leanprover/lean4/pull/6771) 允许从 `JobM` / `SpawnM` 运行 `FetchM`，反之亦然。这使 `fetch` 调用能够异步依赖其他作业的输出。
 
-* [#6542](https://github.com/leanprover/lean4/pull/6542) introduces a script that automates checking whether major
-downstream repositories have been updated for a new toolchain release.
+* [#6780](https://github.com/leanprover/lean4/pull/6780) 让所有 target 和所有 `fetch` 调用都产出某个值的 `Job`。作为这项改动的一部分，facet 定义（例如 `library_data`、`module_data`、`package_data`）和 Lake 类型族（例如 `FamilyOut`）的类型中不应再显式包含 `Job`（因为现在它已成为隐含内容）。
+
+* [#6798](https://github.com/leanprover/lean4/pull/6798) 弃用了 `--update` 选项的 `-U` 简写。
+
+* [#7209](https://github.com/leanprover/lean4/pull/7209) 修复了 Windows 新版 MSYS2 上失效的 Lake 测试。从 MSYS2 0.0.20250221 起，`OSTYPE` 现在报告为 `cygwin` 而不是 `msys`，因此需要在若干 Lake 测试中加以处理。
+
+````
+# 其他
+%%%
+tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___17___0-_LPAR_2025-03-03_RPAR_--Other"
+%%%
+
+````markdown
+
+* [#6479](https://github.com/leanprover/lean4/pull/6479) 通过使用查找表检查字符串是否需要转义，加快了 JSON 序列化速度。
+
+* [#6519](https://github.com/leanprover/lean4/pull/6519) 添加了一个脚本，利用新的 `changelog-*` 标签和 “...” 约定自动生成发布说明。
+
+* [#6542](https://github.com/leanprover/lean4/pull/6542) 引入了一个脚本，用于自动检查主要下游仓库是否已为新的工具链发布完成更新。
 
 ````

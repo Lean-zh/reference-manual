@@ -19,43 +19,41 @@ file := "v4.0.0"
 %%%
 
 ````markdown
-* [`Lean.Meta.getConst?` has been renamed](https://github.com/leanprover/lean4/pull/2454).
-  We have renamed `getConst?` to `getUnfoldableConst?` (and `getConstNoEx?` to `getUnfoldableConstNoEx?`).
-  These were not intended to be part of the public API, but downstream projects had been using them
-  (sometimes expecting different behaviour) incorrectly instead of `Lean.getConstInfo`.
+* [`Lean.Meta.getConst?` 已重命名](https://github.com/leanprover/lean4/pull/2454)。
+  我们将 `getConst?` 重命名为 `getUnfoldableConst?`（并将 `getConstNoEx?` 重命名为 `getUnfoldableConstNoEx?`）。
+  它们原本并不打算成为公共 API 的一部分，但下游项目一直错误地用它们来代替 `Lean.getConstInfo`
+  （有时还期待不同的行为）。
 
-* [`dsimp` / `simp` / `simp_all` now fail by default if they make no progress](https://github.com/leanprover/lean4/pull/2336).
+* [`dsimp` / `simp` / `simp_all` 现在在没有任何进展时默认失败](https://github.com/leanprover/lean4/pull/2336)。
 
-  This can be overridden with the `(config := { failIfUnchanged := false })` option.
-  This change was made to ease manual use of `simp` (with complicated goals it can be hard to tell if it was effective)
-  and to allow easier flow control in tactics internally using `simp`.
-  See the [summary discussion](https://leanprover.zulipchat.com/#narrow/stream/270676-lean4/topic/simp.20fails.20if.20no.20progress/near/380153295)
-  on zulip for more details.
+  可以通过 `(config := { failIfUnchanged := false })` 选项覆盖此行为。
+  这一改动旨在让手工使用 `simp` 更容易（目标复杂时，很难判断它是否真的起效），
+  也便于在内部使用 `simp` 的策略中更轻松地控制流程。
+  更多细节可参见 Zulip 上的[总结讨论](https://leanprover.zulipchat.com/#narrow/stream/270676-lean4/topic/simp.20fails.20if.20no.20progress/near/380153295)。
 
-* [`simp_all` now preserves order of hypotheses](https://github.com/leanprover/lean4/pull/2334).
+* [`simp_all` 现在会保留假设顺序](https://github.com/leanprover/lean4/pull/2334)。
 
-  In order to support the `failIfUnchanged` configuration option for `dsimp` / `simp` / `simp_all`
-  the way `simp_all` replaces hypotheses has changed.
-  In particular it is now more likely to preserve the order of hypotheses.
-  See [`simp_all` reorders hypotheses unnecessarily](https://github.com/leanprover/lean4/pull/2334).
-  (Previously all non-dependent propositional hypotheses were reverted and reintroduced.
-  Now only such hypotheses which were changed, or which come after a changed hypothesis,
-  are reverted and reintroduced.
-  This has the effect of preserving the ordering amongst the non-dependent propositional hypotheses,
-  but now any dependent or non-propositional hypotheses retain their position amongst the unchanged
-  non-dependent propositional hypotheses.)
-  This may affect proofs that use `rename_i`, `case ... =>`, or `next ... =>`.
+  为了支持 `dsimp` / `simp` / `simp_all` 的 `failIfUnchanged` 配置选项，
+  `simp_all` 替换假设的方式已经改变。
+  特别是，它现在更有可能保留假设原有的顺序。
+  参见 [`simp_all` 会不必要地重排假设](https://github.com/leanprover/lean4/pull/2334)。
+  （以前所有非依赖的命题假设都会被回退并重新引入。
+  现在只有那些被修改的假设，或位于被修改假设之后的此类假设，
+  才会被回退并重新引入。
+  这样会保留非依赖命题假设彼此之间的顺序，
+  但现在任何依赖型假设或非命题假设，都会在未改动的非依赖命题假设之间保留其原本位置。）
+  这可能会影响使用 `rename_i`、`case ... =>` 或 `next ... =>` 的证明。
 
-* [New `have this` implementation](https://github.com/leanprover/lean4/pull/2247).
+* [新的 `have this` 实现](https://github.com/leanprover/lean4/pull/2247)。
 
-  `this` is now a regular identifier again that is implicitly introduced by anonymous `have :=` for the remainder of the tactic block. It used to be a keyword that was visible in all scopes and led to unexpected behavior when explicitly used as a binder name.
+  `this` 现在再次成为普通标识符，它会在匿名 `have :=` 之后，隐式引入并在策略块剩余部分可见。过去它是一个在所有作用域中都可见的关键字，因此在显式用作绑定器名时会导致意外行为。
 
-* [Show type class and tactic names in profile output](https://github.com/leanprover/lean4/pull/2170).
+* [在性能分析输出中显示类型类与策略名称](https://github.com/leanprover/lean4/pull/2170)。
 
-* [Make `calc` require the sequence of relation/proof-s to have the same indentation](https://github.com/leanprover/lean4/pull/1844),
-  and [add `calc` alternative syntax allowing underscores `_` in the first relation](https://github.com/leanprover/lean4/pull/1844).
+* [要求 `calc` 中关系列/证明列具有相同缩进](https://github.com/leanprover/lean4/pull/1844)，
+  并且[为 `calc` 添加替代语法，允许在第一条关系中使用下划线 `_`](https://github.com/leanprover/lean4/pull/1844)。
 
-  The flexible indentation in `calc` was often used to align the relation symbols:
+  `calc` 中灵活的缩进过去常被用来对齐关系符号：
   ```lean
   example (x y : Nat) : (x + y) * (x + y) = x * x + y * x + x * y + y * y :=
     calc
@@ -66,7 +64,7 @@ file := "v4.0.0"
                         _ = x * x + y * x + x * y + y * y   := by rw [←Nat.add_assoc]
   ```
 
-  This is no longer legal.  The new syntax puts the first term right after the `calc` and each step has the same indentation:
+  这种写法现在已不再合法。新语法将第一项直接写在 `calc` 后面，并要求每一步具有相同的缩进：
   ```lean
   example (x y : Nat) : (x + y) * (x + y) = x * x + y * x + x * y + y * y :=
     calc (x + y) * (x + y)
@@ -77,64 +75,64 @@ file := "v4.0.0"
   ```
 
 
-* Update Lake to latest prerelease.
+* 将 Lake 更新到最新预发布版本。
 
-* [Make go-to-definition on a type class projection application go to the instance(s)](https://github.com/leanprover/lean4/pull/1767).
+* [让类型类投影应用上的“跳转到定义”跳到实例](https://github.com/leanprover/lean4/pull/1767)。
 
-* [Include timings in trace messages when `profiler` is true](https://github.com/leanprover/lean4/pull/1995).
+* [当 `profiler` 为 true 时，在跟踪消息中包含耗时](https://github.com/leanprover/lean4/pull/1995)。
 
-* [Pretty-print signatures in hover and `#check <ident>`](https://github.com/leanprover/lean4/pull/1943).
+* [在悬停信息和 `#check <ident>` 中美观打印签名](https://github.com/leanprover/lean4/pull/1943)。
 
-* [Introduce parser memoization to avoid exponential behavior](https://github.com/leanprover/lean4/pull/1799).
+* [引入解析器记忆化以避免指数级行为](https://github.com/leanprover/lean4/pull/1799)。
 
-* [feat: allow `doSeq` in `let x <- e | seq`](https://github.com/leanprover/lean4/pull/1809).
+* [功能：在 `let x <- e | seq` 中允许 `doSeq`](https://github.com/leanprover/lean4/pull/1809)。
 
-* [Add hover/go-to-def/refs for options](https://github.com/leanprover/lean4/pull/1783).
+* [为选项添加悬停 / 跳转到定义 / 查找引用](https://github.com/leanprover/lean4/pull/1783)。
 
-* [Add empty type ascription syntax `(e :)`](https://github.com/leanprover/lean4/pull/1797).
+* [添加空类型标注语法 `(e :)`](https://github.com/leanprover/lean4/pull/1797)。
 
-* [Make tokens in `<|>` relevant to syntax match](https://github.com/leanprover/lean4/pull/1744).
+* [使 `<|>` 中的词元会影响语法匹配](https://github.com/leanprover/lean4/pull/1744)。
 
-* [Add `linter.deprecated` option to silence deprecation warnings](https://github.com/leanprover/lean4/pull/1768).
+* [添加 `linter.deprecated` 选项以静默弃用警告](https://github.com/leanprover/lean4/pull/1768)。
 
-* [Improve fuzzy-matching heuristics](https://github.com/leanprover/lean4/pull/1710).
+* [改进模糊匹配启发式](https://github.com/leanprover/lean4/pull/1710)。
 
-* [Implementation-detail hypotheses](https://github.com/leanprover/lean4/pull/1692).
+* [实现细节假设](https://github.com/leanprover/lean4/pull/1692)。
 
-* [Hover information for `cases`/`induction` case names](https://github.com/leanprover/lean4/pull/1660).
+* [`cases`/`induction` 分支名的悬停信息](https://github.com/leanprover/lean4/pull/1660)。
 
-* [Prefer longer parse even if unsuccessful](https://github.com/leanprover/lean4/pull/1658).
+* [即使解析失败，也优先选择更长的解析结果](https://github.com/leanprover/lean4/pull/1658)。
 
-* [Show declaration module in hover](https://github.com/leanprover/lean4/pull/1638).
+* [在悬停信息中显示声明所在模块](https://github.com/leanprover/lean4/pull/1638)。
 
-* [New `conv` mode structuring tactics](https://github.com/leanprover/lean4/pull/1636).
+* [新的 `conv` 模式结构化策略](https://github.com/leanprover/lean4/pull/1636)。
 
-* `simp` can track information and can print an equivalent `simp only`. [PR #1626](https://github.com/leanprover/lean4/pull/1626).
+* `simp` 现在可以跟踪信息，并打印等价的 `simp only`。 [PR #1626](https://github.com/leanprover/lean4/pull/1626)。
 
-* Enforce uniform indentation in tactic blocks / do blocks. See issue [#1606](https://github.com/leanprover/lean4/issues/1606).
+* 强制策略块 / do 块使用统一缩进。参见 issue [#1606](https://github.com/leanprover/lean4/issues/1606)。
 
-* Moved `AssocList`, `HashMap`, `HashSet`, `RBMap`, `RBSet`, `PersistentArray`, `PersistentHashMap`, `PersistentHashSet` to the Lean package. The [standard library](https://github.com/leanprover/std4) contains versions that will evolve independently to simplify bootstrapping process.
+* 将 `AssocList`、`HashMap`、`HashSet`、`RBMap`、`RBSet`、`PersistentArray`、`PersistentHashMap`、`PersistentHashSet` 移入 Lean 包中。[标准库](https://github.com/leanprover/std4)中保留了会独立演进的版本，以简化自举过程。
 
-* Standard library moved to the [std4 GitHub repository](https://github.com/leanprover/std4).
+* 标准库已迁移到 [std4 GitHub 仓库](https://github.com/leanprover/std4)。
 
-* `InteractiveGoals` now has information that a client infoview can use to show what parts of the goal have changed after applying a tactic. [PR #1610](https://github.com/leanprover/lean4/pull/1610).
+* `InteractiveGoals` 现在携带了客户端信息视图可用的信息，以显示应用策略后目标的哪些部分发生了变化。[PR #1610](https://github.com/leanprover/lean4/pull/1610)。
 
-* Add `[inheritDoc]` attribute. [PR #1480](https://github.com/leanprover/lean4/pull/1480).
+* 添加 `[inheritDoc]` 属性。[PR #1480](https://github.com/leanprover/lean4/pull/1480)。
 
-* Expose that `panic = default`. [PR #1614](https://github.com/leanprover/lean4/pull/1614).
+* 显式说明 `panic = default`。[PR #1614](https://github.com/leanprover/lean4/pull/1614)。
 
-* New [code generator](https://github.com/leanprover/lean4/tree/master/src/Lean/Compiler/LCNF) project has started.
+* 新的[代码生成器](https://github.com/leanprover/lean4/tree/master/src/Lean/Compiler/LCNF)项目已经启动。
 
-* Remove description argument from `register_simp_attr`. [PR #1566](https://github.com/leanprover/lean4/pull/1566).
+* 从 `register_simp_attr` 中移除描述参数。[PR #1566](https://github.com/leanprover/lean4/pull/1566)。
 
-* [Additional concurrency primitives](https://github.com/leanprover/lean4/pull/1555).
+* [额外的并发原语](https://github.com/leanprover/lean4/pull/1555)。
 
-* [Collapsible traces with messages](https://github.com/leanprover/lean4/pull/1448).
+* [带消息的可折叠跟踪](https://github.com/leanprover/lean4/pull/1448)。
 
-* [Hygienic resolution of namespaces](https://github.com/leanprover/lean4/pull/1442).
+* [命名空间的卫生解析](https://github.com/leanprover/lean4/pull/1442)。
 
-* [New `Float` functions](https://github.com/leanprover/lean4/pull/1460).
+* [新的 `Float` 函数](https://github.com/leanprover/lean4/pull/1460)。
 
-* Many new doc strings have been added to declarations at `Init`.
+* `Init` 中的声明新增了许多文档字符串。
 
 ````

@@ -19,7 +19,7 @@ file := "v4.6.0"
 %%%
 
 ````markdown
-* Add custom simplification procedures (aka `simproc`s) to `simp`. Simprocs can be triggered by the simplifier on a specified term-pattern. Here is an small example:
+* 为 `simp` 添加自定义化简过程（即 `simproc`）。Simproc 可以由化简器在指定的项模式上触发。下面是一个小例子：
   ```lean
   import Lean.Meta.Tactic.Simp.BuiltinSimprocs.Nat
 
@@ -51,8 +51,8 @@ file := "v4.6.0"
         | return .continue
       return .done { expr := Lean.mkNatLit (n+10) }
   ```
-  We disable simprocs support by using the command `set_option simprocs false`. This command is particularly useful when porting files to v4.6.0.
-  Simprocs can be scoped, manually added to `simp` commands, and suppressed using `-`. They are also supported by `simp?`. `simp only` does not execute any `simproc`. Here are some examples for the `simproc` defined above.
+  我们可以用命令 `set_option simprocs false` 禁用 simproc 支持。这个命令在将文件移植到 v4.6.0 时尤其有用。
+  Simproc 可以受作用域约束、手动加入 `simp` 命令，也可以用 `-` 屏蔽。`simp?` 同样支持它们。`simp only` 不会执行任何 `simproc`。下面是针对上述 `simproc` 的一些示例。
   ```lean
   example : x + foo 2 = 12 + x := by
     set_option simprocs false in
@@ -77,49 +77,43 @@ file := "v4.6.0"
     fail_if_success simp [-reduceFoo]
     simp_arith
   ```
-  The command `register_simp_attr <id>` now creates a `simp` **and** a `simproc` set with the name `<id>`. The following command instructs Lean to insert the `reduceFoo` simplification procedure into the set `my_simp`. If no set is specified, Lean uses the default `simp` set.
+  命令 `register_simp_attr <id>` 现在会创建一个名为 `<id>` 的 `simp` **以及** `simproc` 集。下面这条命令告诉 Lean 将 `reduceFoo` 化简过程放入 `my_simp` 集；若未指定集合，则 Lean 使用默认的 `simp` 集。
   ```lean
   simproc [my_simp] reduceFoo (foo _) := ...
   ```
 
-* The syntax of the `termination_by` and `decreasing_by` termination hints is overhauled:
+* `termination_by` 与 `decreasing_by` 终止性提示的语法已全面调整：
 
-  * They are now placed directly after the function they apply to, instead of
-    after the whole `mutual` block.
-  * Therefore, the function name no longer has to be mentioned in the hint.
-  * If the function has a `where` clause, the `termination_by` and
-    `decreasing_by` for that function come before the `where`. The
-    functions in the `where` clause can have their own termination hints, each
-    following the corresponding definition.
-  * The `termination_by` clause can only bind “extra parameters”, that are not
-    already bound by the function header, but are bound in a lambda (`:= fun x
-    y z =>`) or in patterns (`| x, n + 1 => …`). These extra parameters used to
-    be understood as a suffix of the function parameters; now it is a prefix.
+  * 它们现在直接放在所作用的函数之后，而不再放在整个 `mutual` 块之后。
+  * 因此，提示中不再需要写出函数名。
+  * 如果函数带有 `where` 子句，则该函数的 `termination_by` 与
+    `decreasing_by` 放在 `where` 之前。`where` 子句中的函数也可以有各自的终止性提示，
+    并且各自紧跟在对应定义之后。
+  * `termination_by` 子句现在只能绑定“额外参数”，即那些并未在函数头中绑定，
+    而是在 lambda 表达式（`:= fun x y z =>`）或模式（`| x, n + 1 => …`）中绑定的参数。
+    这些额外参数过去被理解为函数参数的后缀；现在则被理解为前缀。
 
-  Migration guide: In simple cases just remove the function name, and any
-  variables already bound at the header.
+  迁移指南：在简单情况下，只需去掉函数名，以及任何已经在函数头绑定的变量。
   ```diff
    def foo : Nat → Nat → Nat := …
   -termination_by foo a b => a - b
   +termination_by a b => a - b
   ```
-  or
+  或者
   ```diff
    def foo : Nat → Nat → Nat := …
   -termination_by _ a b => a - b
   +termination_by a b => a - b
   ```
 
-  If the parameters are bound in the function header (before the `:`), remove them as well:
+  如果参数已经在函数头（即 `:` 之前）绑定，也要将它们去掉：
   ```diff
    def foo (a b : Nat) : Nat := …
   -termination_by foo a b => a - b
   +termination_by a - b
   ```
 
-  Else, if there are multiple extra parameters, make sure to refer to the right
-  ones; the bound variables are interpreted from left to right, no longer from
-  right to left:
+  否则，如果有多个额外参数，请确保引用的是正确那些参数；绑定变量现在按从左到右解释，不再是从右到左：
   ```diff
    def foo : Nat → Nat → Nat → Nat
      | a, b, c => …
@@ -127,8 +121,7 @@ file := "v4.6.0"
   +termination_by a b => b
   ```
 
-  In the case of a `mutual` block, place the termination arguments (without the
-  function name) next to the function definition:
+  对于 `mutual` 块，请将终止性参数（不带函数名）放到对应函数定义旁边：
   ```diff
   -mutual
   -def foo : Nat → Nat → Nat := …
@@ -145,8 +138,7 @@ file := "v4.6.0"
   +end
   ```
 
-  Similarly, if you have (mutual) recursion through `where` or `let rec`, the
-  termination hints are now placed directly after the function they apply to:
+  同样地，如果通过 `where` 或 `let rec` 进行（互）递归，终止性提示现在也直接放在它所作用的函数之后：
   ```diff
   -def foo (a b : Nat) : Nat := …
   -  where bar (x : Nat) : Nat := …
@@ -172,16 +164,11 @@ file := "v4.6.0"
   +termination_by a - b
   ```
 
-  In cases where a single `decreasing_by` clause applied to multiple mutually
-  recursive functions before, the tactic now has to be duplicated.
+  过去若一个 `decreasing_by` 子句会作用于多个互递归函数，现在必须将该策略分别重复写出。
 
-* The semantics of `decreasing_by` changed; the tactic is applied to all
-  termination proof goals together, not individually.
+* `decreasing_by` 的语义已更改；现在策略会一次性应用于所有终止性证明目标，而不是逐个应用。
 
-  This helps when writing termination proofs interactively, as one can focus
-  each subgoal individually, for example using `·`. Previously, the given
-  tactic script had to work for _all_ goals, and one had to resort to tactic
-  combinators like `first`:
+  这使得交互式编写终止性证明更方便，因为现在可以分别聚焦每个子目标，例如使用 `·`。此前，给出的策略脚本必须对 _所有_ 目标都有效，因此常常需要借助 `first` 之类的策略组合子：
 
   ```diff
    def foo (n : Nat) := … foo e1 … foo e2 …
@@ -195,55 +182,43 @@ file := "v4.6.0"
   +· apply something_about_e2; …
   ```
 
-  To obtain the old behaviour of applying a tactic to each goal individually,
-  use `all_goals`:
+  如果要恢复旧行为、将某个策略分别应用到每个目标，请使用 `all_goals`：
   ```diff
    def foo (n : Nat) := …
   -decreasing_by some_tactic
   +decreasing_by all_goals some_tactic
   ```
 
-  In the case of mutual recursion each `decreasing_by` now applies to just its
-  function. If some functions in a recursive group do not have their own
-  `decreasing_by`, the default `decreasing_tactic` is used. If the same tactic
-  ought to be applied to multiple functions, the `decreasing_by` clause has to
-  be repeated at each of these functions.
+  对于互递归，现在每个 `decreasing_by` 只作用于它所属的函数。如果递归组中的某些函数没有自己的 `decreasing_by`，则会使用默认的 `decreasing_tactic`。如果多个函数需要应用同一个策略，就必须在这些函数处分别重复书写 `decreasing_by` 子句。
 
-* Modify `InfoTree.context` to facilitate augmenting it with partial contexts while elaborating a command. This breaks backwards compatibility with all downstream projects that traverse the `InfoTree` manually instead of going through the functions in `InfoUtils.lean`, as well as those manually creating and saving `InfoTree`s. See [PR #3159](https://github.com/leanprover/lean4/pull/3159) for how to migrate your code.
+* 调整 `InfoTree.context`，以便在精译命令时更方便地为其补充局部上下文。这会破坏与下游项目的向后兼容性：凡是手动遍历 `InfoTree` 而不是通过 `InfoUtils.lean` 中函数访问的项目，以及手动创建并保存 `InfoTree` 的项目，都会受影响。如何迁移代码，请参见 [PR #3159](https://github.com/leanprover/lean4/pull/3159)。
 
-* Add language server support for [call hierarchy requests](https://www.youtube.com/watch?v=r5LA7ivUb2c) ([PR #3082](https://github.com/leanprover/lean4/pull/3082)). The change to the .ilean format in this PR means that projects must be fully rebuilt once in order to generate .ilean files with the new format before features like "find references" work correctly again.
+* 为语言服务器添加对[调用层级请求](https://www.youtube.com/watch?v=r5LA7ivUb2c)的支持（[PR #3082](https://github.com/leanprover/lean4/pull/3082)）。该 PR 对 .ilean 格式的修改意味着，项目必须完整重建一次，以生成新格式的 .ilean 文件，之后“查找引用”等功能才能再次正常工作。
 
-* Structure instances with multiple sources (for example `{a, b, c with x := 0}`) now have their fields filled from these sources
-  in strict left-to-right order. Furthermore, the structure instance elaborator now aggressively use sources to fill in subobject
-  fields, which prevents unnecessary eta expansion of the sources,
-  and hence greatly reduces the reliance on costly structure eta reduction. This has a large impact on mathlib,
-  reducing total CPU instructions by 3% and enabling impactful refactors like leanprover-community/mathlib4#8386
-  which reduces the build time by almost 20%.
-  See [PR #2478](https://github.com/leanprover/lean4/pull/2478) and [RFC #2451](https://github.com/leanprover/lean4/issues/2451).
+* 含有多个来源的结构体实例（例如 `{a, b, c with x := 0}`）现在会严格按从左到右的顺序，从这些来源中填充字段。此外，结构体实例精译器现在会更积极地利用来源来填充子对象字段，从而避免不必要的来源 eta 展开，因此大幅降低了对高成本结构体 eta 归约的依赖。这对 mathlib 影响很大，使总 CPU 指令数降低了 3%，并支持了像 leanprover-community/mathlib4#8386 这样的重要重构，而后者将构建时间缩短了近 20%。参见 [PR #2478](https://github.com/leanprover/lean4/pull/2478) 和 [RFC #2451](https://github.com/leanprover/lean4/issues/2451)。
 
-* Add pretty printer settings to omit deeply nested terms (`pp.deepTerms false` and `pp.deepTerms.threshold`) ([PR #3201](https://github.com/leanprover/lean4/pull/3201))
+* 添加美观打印器设置，以省略深度嵌套的项（`pp.deepTerms false` 和 `pp.deepTerms.threshold`）（[PR #3201](https://github.com/leanprover/lean4/pull/3201)）
 
-* Add pretty printer options `pp.numeralTypes` and `pp.natLit`.
-  When `pp.numeralTypes` is true, then natural number literals, integer literals, and rational number literals
-  are pretty printed with type ascriptions, such as `(2 : Rat)`, `(-2 : Rat)`, and `(-2 / 3 : Rat)`.
-  When `pp.natLit` is true, then raw natural number literals are pretty printed as `nat_lit 2`.
-  [PR #2933](https://github.com/leanprover/lean4/pull/2933) and [RFC #3021](https://github.com/leanprover/lean4/issues/3021).
+* 添加美观打印器选项 `pp.numeralTypes` 与 `pp.natLit`。
+  当 `pp.numeralTypes` 为 true 时，自然数、整数和有理数字面量会以带类型标注的形式进行美观打印，例如 `(2 : Rat)`、`(-2 : Rat)` 和 `(-2 / 3 : Rat)`。
+  当 `pp.natLit` 为 true 时，原始自然数字面量会被美观打印为 `nat_lit 2`。
+  参见 [PR #2933](https://github.com/leanprover/lean4/pull/2933) 和 [RFC #3021](https://github.com/leanprover/lean4/issues/3021)。
 
-Lake updates:
-* improved platform information & control [#3226](https://github.com/leanprover/lean4/pull/3226)
-* `lake update` from unsupported manifest versions [#3149](https://github.com/leanprover/lean4/pull/3149)
+Lake 更新：
+* 改进平台信息与控制 [#3226](https://github.com/leanprover/lean4/pull/3226)
+* 支持从不受支持的清单版本执行 `lake update` [#3149](https://github.com/leanprover/lean4/pull/3149)
 
-Other improvements:
-* make `intro` be aware of `let_fun` [#3115](https://github.com/leanprover/lean4/pull/3115)
-* produce simpler proof terms in `rw` [#3121](https://github.com/leanprover/lean4/pull/3121)
-* fuse nested `mkCongrArg` calls in proofs generated by `simp` [#3203](https://github.com/leanprover/lean4/pull/3203)
-* `induction using` followed by a general term [#3188](https://github.com/leanprover/lean4/pull/3188)
-* allow generalization in `let` [#3060](https://github.com/leanprover/lean4/pull/3060), fixing [#3065](https://github.com/leanprover/lean4/issues/3065)
-* reducing out-of-bounds `swap!` should return `a`, not `default`` [#3197](https://github.com/leanprover/lean4/pull/3197), fixing [#3196](https://github.com/leanprover/lean4/issues/3196)
-* derive `BEq` on structure with `Prop`-fields [#3191](https://github.com/leanprover/lean4/pull/3191), fixing [#3140](https://github.com/leanprover/lean4/issues/3140)
-* refine through more `casesOnApp`/`matcherApp` [#3176](https://github.com/leanprover/lean4/pull/3176), fixing [#3175](https://github.com/leanprover/lean4/pull/3175)
-* do not strip dotted components from lean module names [#2994](https://github.com/leanprover/lean4/pull/2994), fixing [#2999](https://github.com/leanprover/lean4/issues/2999)
-* fix `deriving` only deriving the first declaration for some handlers [#3058](https://github.com/leanprover/lean4/pull/3058), fixing [#3057](https://github.com/leanprover/lean4/issues/3057)
-* do not instantiate metavariables in kabstract/rw for disallowed occurrences [#2539](https://github.com/leanprover/lean4/pull/2539), fixing [#2538](https://github.com/leanprover/lean4/issues/2538)
-* hover info for `cases h : ...` [#3084](https://github.com/leanprover/lean4/pull/3084)
+其他改进：
+* 让 `intro` 识别 `let_fun` [#3115](https://github.com/leanprover/lean4/pull/3115)
+* 在 `rw` 中生成更简洁的证明项 [#3121](https://github.com/leanprover/lean4/pull/3121)
+* 在 `simp` 生成的证明中融合嵌套的 `mkCongrArg` 调用 [#3203](https://github.com/leanprover/lean4/pull/3203)
+* 支持 `induction using` 后接一般项 [#3188](https://github.com/leanprover/lean4/pull/3188)
+* 允许在 `let` 中做泛化 [#3060](https://github.com/leanprover/lean4/pull/3060)，修复 [#3065](https://github.com/leanprover/lean4/issues/3065)
+* 对越界的 `swap!` 进行归约时应返回 `a`，而不是 `default`` [#3197](https://github.com/leanprover/lean4/pull/3197)，修复 [#3196](https://github.com/leanprover/lean4/issues/3196)
+* 为含 `Prop` 字段的结构体派生 `BEq` [#3191](https://github.com/leanprover/lean4/pull/3191)，修复 [#3140](https://github.com/leanprover/lean4/issues/3140)
+* 在更多 `casesOnApp`/`matcherApp` 情况下改进 refine [#3176](https://github.com/leanprover/lean4/pull/3176)，修复 [#3175](https://github.com/leanprover/lean4/pull/3175)
+* 不再从 Lean 模块名中剥离带点的组成部分 [#2994](https://github.com/leanprover/lean4/pull/2994)，修复 [#2999](https://github.com/leanprover/lean4/issues/2999)
+* 修复某些处理器下 `deriving` 只派生第一条声明的问题 [#3058](https://github.com/leanprover/lean4/pull/3058)，修复 [#3057](https://github.com/leanprover/lean4/issues/3057)
+* 在 kabstract/rw 中，对于不允许的出现位置不再实例化元变量 [#2539](https://github.com/leanprover/lean4/pull/2539)，修复 [#2538](https://github.com/leanprover/lean4/issues/2538)
+* 为 `cases h : ...` 提供悬停信息 [#3084](https://github.com/leanprover/lean4/pull/3084)
 ````

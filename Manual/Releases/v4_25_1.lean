@@ -19,5 +19,5 @@ file := "v4.25.1"
 %%%
 
 ```markdown
-Lean `v4.25.1` is a bug fix release fixing a caching problem in `lake`, affecting certain downstream dependencies of `ProofWidgets4`.
+Lean `v4.25.1` 是一个错误修复版本，修复了 `lake` 中的缓存问题；该问题会影响 `ProofWidgets4` 的某些下游依赖。
 ```

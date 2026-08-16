@@ -19,15 +19,21 @@ file := "v4.0.0-m1"
 %%%
 
 ```markdown
-The Lean development team is proud to announce the first milestone release of Lean 4. This release is aimed at experimentation with the new features of Lean 4, eventually leading to a full release of 4.0.0 ready for general use.
+Lean 开发团队自豪地宣布 Lean 4 的首个里程碑版本发布。此次发布旨在让用户试验 Lean 4 的新特性，并最终推动形成可供广泛使用的正式 4.0.0 版本。
 
-This release is the result of almost three years of work since the release of Lean 3.4.0, reworking, extending, and improving almost all aspects of Lean. More information about Lean 4 can be found in the [official documentation](https://leanprover.github.io/lean4/doc/) as well as in the introductory talk ["An overview of Lean 4"](https://www.youtube.com/watch?v=UeGvhfW1v9M) at Lean Together 2021.
+此次发布凝聚了自 Lean 3.4.0 发布以来近三年的工作成果，几乎对 Lean 的各个方面都进行了重构、扩展与改进。有关 Lean 4 的更多信息，可参见[官方文档](https://leanprover.github.io/lean4/doc/)，以及 Lean Together 2021 上的介绍性演讲[“An overview of Lean 4”](https://www.youtube.com/watch?v=UeGvhfW1v9M)。
 
-Leonardo de Moura & Sebastian Ullrich
+Leonardo de Moura 与 Sebastian Ullrich
 
-#### Acknowledgements
-* Daniel Selsam - type class resolution, feedback, design discussions
-* Marc Huisinga and Wojciech Nawrocki - Lean Server
-* Joe Hendrix, Andrew Kent, Rob Dockins, Simon Winwood (Galois Inc) - early adopters, suggestions, feedback
-* Daan Leijen, Simon Peyton Jones, Nikhil Swamy, Sebastian Graf, Max Wagner - design discussions, feedback, suggestions
+```
+# 致谢
+%%%
+tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___0___0-m1-_LPAR_2021-01-04_RPAR_--Acknowledgements"
+%%%
+
+```markdown
+* Daniel Selsam - 类型类解析、反馈、设计讨论
+* Marc Huisinga 和 Wojciech Nawrocki - Lean Server
+* Joe Hendrix、Andrew Kent、Rob Dockins、Simon Winwood（Galois Inc）- 早期采用者、建议、反馈
+* Daan Leijen、Simon Peyton Jones、Nikhil Swamy、Sebastian Graf、Max Wagner - 设计讨论、反馈、建议
 ```

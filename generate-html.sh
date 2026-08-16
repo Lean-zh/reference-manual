@@ -95,6 +95,12 @@ lake --quiet exe generate-tutorials --verbose --resume tutorials.json --remote-c
 # changing the hover payloads used by untranslated chapters.
 python3 scripts/localize-generated-html.py "$REF_SOURCE"
 
+# v4.20.1 is an upstream orphan source module: it is not imported by the
+# Release Notes aggregate and has no route in the official generated manual.
+# The generator nevertheless discovers its olean when a full build was run.
+# Keep the published route set identical to the aggregate/manual route set.
+rm -rf "$REF_SOURCE/releases/v4.20.1"
+
 # Set up output directories
 echo "Setting up output directories"
 mkdir -p "$OUTPUT/reference"

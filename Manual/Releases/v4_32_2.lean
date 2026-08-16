@@ -13,22 +13,22 @@ open Verso.Genre
 open Verso.Genre.Manual
 open Verso.Genre.Manual.InlineLean
 
-#doc (Manual) "Lean 4.32.2 (2026-07-28)" =>
+#doc (Manual) "Lean4.32.2 (2026-07-28)" =>
 %%%
 tag := "release-v4.32.2"
 file := "v4.32.2"
 %%%
 
-This point release fixes a soundness bug in the kernel.
+此版本修复了内核中的一个健全性错误。
 
-The issue was discovered by Ramana Kumar and reported by Kiran Gopinathan.
+该问题由 Ramana Kumar 发现并由 Kiran Gopinathan 报告。
 
-A malicious meta program can trick the kernel into accepting a proof of `False`, or any other theorem. The kernel’s handling of nested inductive types with phantom type parameters was incomplete and bypassed the type checker.
+恶意元程序可以欺骗内核接受 `False` 的证明或任何其他定理。内核对具有幻像类型参数的嵌套归纳类型的处理不完整，并且绕过了类型检查器。
 
-The bug can be exploited even when using `comparator`.
+即使使用 `comparator` 也可以利用该错误。
 
-The external checker `nanoda` does not suffer from the same bug. However, by the nature of this bug, it is possible to write proof terms that exploit it and at the same time exploit unrelated bugs in the external checker, as demonstrated by Kumar with a bug in `nanoda` that was (independently) [reported and fixed very recently](https://github.com/ammkrn/nanoda_lib/pull/22/changes). We highly recommend users who have to account for malicious proofs and follow the {ref "validating-comparator"}[recommended way to validate proofs] to upgrade to the latest `nanoda` version as well.
+外部检查器 `nanoda` 不会遇到同样的错误。然而，根据这个错误的性质，可以编写利用它的证明项，同时利用外部检查器中不相关的错误，正如 Kumar 在 `nanoda` 中一个[最近独立报告并修复的错误](https://github.com/ammkrn/nanoda_lib/pull/22/changes)所演示的那样。我们强烈建议必须考虑恶意证明并遵循 {ref "validating-comparator"}[验证证明的推荐方法] 的用户也升级到最新的 `nanoda` 版本。
 
-The FRO takes these issues seriously and will invest in the checker ecosystem, towards more hardening, more testing and more independent implementations of kernels and checkers.
+FRO 认真对待这些问题，并将投资检查器生态系统，以实现内核和检查器的更强化、更多测试和更独立的实现。
 
-See [issue #14576](https://github.com/leanprover/lean4/issues/14576) for more details on the bug and [PR #14577](https://github.com/leanprover/lean4/pull/14577) for the fix.
+有关错误的更多详细信息，请参阅 [议题 #14576](https://github.com/leanprover/lean4/issues/14576) ，有关修复的详细信息，请参阅 [PR #14577](https://github.com/leanprover/lean4/pull/14577) 。
