@@ -15,34 +15,43 @@ open Verso.Genre
 open Verso.Genre.Manual
 open Verso.Genre.Manual.InlineLean
 
-#doc (Manual) "Lean 4.32.0 (2026-07-13)" =>
+#doc (Manual) "精益4.32.0 (2026-07-13)" =>
 %%%
 tag := "release-v4.32.0"
 file := "v4.32.0"
 %%%
 
-For this release, 102 changes landed.
-In addition to the 35 feature additions,
-and 20 fixes listed below,
-there were 7 refactoring changes,
-2 documentation improvements,
-9 performance improvements,
-2 improvements to the test suite,
-and 27 other changes.
+此版本有 102 项更改。
+除了 35 项新增功能外，
+以及下面列出的 20 个修复，
+有 7 个重构更改，
+2 文档改进，
+9 项性能改进，
+对测试套件的 2 项改进，
+以及其他 27 项变更。
 
-# Highlights
+# 亮点
+%%%
+tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___32___0-_LPAR_2026-07-13_RPAR_--Highlights"
+%%%
 
-Lean 4.32.0 makes the new {ref "do-notation"}`do` elaborator the default, expands `do` notation with the `do←` marker for effect forwarding, and brings notable performance improvements including a ~10% reduction in `import Mathlib` time. Lake's linting framework gains option-based control and module-level linters, and an experimental incremental-compilation mode lands behind CLI flags.
+Lean 4.32.0 使新的 {ref "do-notation"}`do` 阐述器成为默认值，使用 `do←` 标记扩展 `do` 表示法以进行效果转发，并带来显着的性能改进，包括 `import Mathlib` 时间减少约 10%。 Lake 的 linting 框架获得了基于选项的控制和模块级 linters，并且实验性增量编译模式支持 CLI 标志。
 
-_This highlights section was contributed by Juanjo Madrigal._
+_此亮点部分由 Juanjo Madrigal 贡献。_
 
-## New `do` Elaborator is Now the Default
+## 新 `do` Elaborator 现在是默认值
+%%%
+tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___32___0-_LPAR_2026-07-13_RPAR_--Highlights--New--do--Elaborator-is-Now-the-Default"
+%%%
 
-[#13305](https://github.com/leanprover/lean4/pull/13305) makes the new {ref "do-notation"}`do` elaborator (introduced as experimental in v4.31.0) the default by flipping {option}`backward.do.legacy` to `false`. The legacy elaborator remains available via `set_option backward.do.legacy true`. [#13912](https://github.com/leanprover/lean4/pull/13912) and [#13931](https://github.com/leanprover/lean4/pull/13931) add significant new capabilities:
+[#13305](https://github.com/leanprover/lean4/pull/13305) 通过将 {option}`backward.do.legacy` 翻转为 `false`，使新的 {ref "do-notation"}`do` 精译器（在 v4.31.0 中作为实验引入）成为默认值。旧版 elaborator 仍可通过 `set_option backward.do.legacy true` 使用。 [#13912](https://github.com/leanprover/lean4/pull/13912) 和 [#13931](https://github.com/leanprover/lean4/pull/13931) 添加了重要的新功能：
 
-### `do←` — Effect Forwarding
+### `do←` — 效果转发
+%%%
+tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___32___0-_LPAR_2026-07-13_RPAR_--Highlights--New--do--Elaborator-is-Now-the-Default--do___--___-Effect-Forwarding"
+%%%
 
-[#13931](https://github.com/leanprover/lean4/pull/13931) introduces the `do← body` marker (ASCII `do<- body`), which lets ordinary continuation-taking wrappers like `withReader` or `Meta.withLocalDecl` participate in the surrounding `do` block's control flow. When `do← body` appears as the last argument of an application inside a `do` block, the body's `return`, `break`, `continue`, and `mut`-variable reassignments are forwarded out through the wrapper to the enclosing block. For instance, let
+[#13931](https://github.com/leanprover/lean4/pull/13931) 引入了 `do← body` 标记（ASCII `do<- body`），它允许普通的连续获取包装器（如 `withReader` 或 `Meta.withLocalDecl`）参与周围 `do` 块的控制流。当 `do← body` 作为 `do` 块内应用程序的最后一个参数出现时，主体的 `return`、`break`、`continue` 和 `mut` 变量重新分配将通过包装器转发到封闭块。例如，让
 
 ```lean
 def withLogging [Monad m] [MonadLiftT IO m] (act : m α) : m α := do
@@ -50,7 +59,7 @@ def withLogging [Monad m] [MonadLiftT IO m] (act : m α) : m α := do
   act
 ```
 
-Internal `do← body` can mutate external variables:
+内部 `do← body` 可以改变外部变量：
 
 ```lean
 def mutForward : IO Nat := do
@@ -67,7 +76,7 @@ info: 1
 #eval mutForward
 ```
 
-It can also trigger an early return:
+它还可以触发提前返回：
 
 ```lean
 def retForward : IO Nat := do
@@ -84,7 +93,7 @@ info: 5
 #eval retForward
 ```
 
-Or break an external loop (and the `do← body` can be executed multiple times):
+或者打破外部循环（并且 `do← body` 可以执行多次）：
 
 ```lean
 def brkForward : IO Nat := do
@@ -104,11 +113,14 @@ info: 6
 #eval brkForward
 ```
 
-The syntax is reminiscent of a nested action `(← body)`, but unlike a nested action, `body` is not run eagerly before the wrapping function is called. The wrapping function decides when to run `body`, and code is inserted to forward `body`'s effects to the outer `do` block.
+该语法让人想起嵌套操作 `(← body)`，但与嵌套操作不同，`body` 在调用包装函数之前不会立即运行。包装函数决定何时运行 `body`，并插入代码以将 `body` 的效果转发到外部 `do` 块。
 
-### Arbitrary `doElem`s in Nested Actions
+嵌套操作中的 ### 任意 `doElem`
+%%%
+tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___32___0-_LPAR_2026-07-13_RPAR_--Highlights--New--do--Elaborator-is-Now-the-Default--Arbitrary--doElem-s-in-Nested-Actions"
+%%%
 
-[#13912](https://github.com/leanprover/lean4/pull/13912) extends the `nestedAction` parser (`←` inside `do` blocks) to accept arbitrary `doElem`s after `←` instead of just terms.
+[#13912](https://github.com/leanprover/lean4/pull/13912) 扩展了 `nestedAction` 解析器（`do` 块内的 `←`）以接受 `←` 之后的任意 `doElem` 而不仅仅是术语。
 
 ```lean
 def bumpAndUse : IO Nat := do
@@ -125,35 +137,44 @@ def bumpAndUse : IO Nat := do
 #eval bumpAndUse
 ```
 
-`return e` inside `(← do …)` or `(← try … catch …)` now early-returns from the _enclosing_ `do` block, not from the nested action. This a *breaking change*: replace with `pure e` when value-return from the nested block is intended, or wrap the `do` block in parentheses (`(← (do …))`).
+`(← do …)` 或 `(← try … catch …)` 内的 `return e` 现在从 _enending_ `do` 块提前返回，而不是从嵌套操作中返回。这是一个*重大更改*：当打算从嵌套块返回值时替换为 `pure e`，或者将 `do` 块括在括号中 (`(← (do …))`)。
 
-### Other `do` Elaborator Improvements
+### 其他 `do` 精译器改进
+%%%
+tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___32___0-_LPAR_2026-07-13_RPAR_--Highlights--New--do--Elaborator-is-Now-the-Default--Other--do--Elaborator-Improvements"
+%%%
 
-- [#13970](https://github.com/leanprover/lean4/pull/13970) makes printed names of `mut` variables in error messages carry hover info so the infoview surfaces their type.
-- [#13910](https://github.com/leanprover/lean4/pull/13910) renames the `liftMethod` parser to `nestedAction`, reflecting the terminology already used in documentation.
+- [#13970](https://github.com/leanprover/lean4/pull/13970) 使错误消息中 `mut` 变量的打印名称携带悬停信息，以便信息视图显示其类型。
+- [#13910](https://github.com/leanprover/lean4/pull/13910) 将 `liftMethod` 解析器重命名为 `nestedAction`，反映文档中已使用的术语。
 
-## Performance
+## 性能
+%%%
+tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___32___0-_LPAR_2026-07-13_RPAR_--Highlights--Performance"
+%%%
 
-A fix to DiscrTree insertion ([#13928](https://github.com/leanprover/lean4/pull/13928)) reduces the time to `import Mathlib` by approximately 10% by eliminating a non-linearity in the insertion algorithm.
+通过消除插入算法中的非线性，对 DiscrTree 插入 ([#13928](https://github.com/leanprover/lean4/pull/13928)) 的修复将 `import Mathlib` 的时间减少了约 10%。
 
-Other notable performance work:
+其他值得注意的表演作品：
 
-- [#13123](https://github.com/leanprover/lean4/pull/13123) makes the task thread pool reclaim idle worker threads after 5 seconds of inactivity, reducing memory waste from the 1GB default stack size per thread.
-- [#13938](https://github.com/leanprover/lean4/pull/13938) adds tail-recursive `@[csimp]` runtime replacements for bounded-quantifier `Decidable` instances (`Nat.decidableBallLT`, `Nat.decidableExistsLT`, `Nat.decidableExistsLT'`), so running examples like
+- [#13123](https://github.com/leanprover/lean4/pull/13123) 使任务线程池在 5 秒不活动后回收空闲工作线程，从而减少每个线程 1GB 默认堆栈大小的内存浪费。
+- [#13938](https://github.com/leanprover/lean4/pull/13938) 添加了有界量词 `Decidable` 实例（`Nat.decidableBallLT`、`Nat.decidableExistsLT`、`Nat.decidableExistsLT'`）的尾递归 `@[csimp]` 运行时替换，因此运行如下示例
 
   ```lean (name := ex)
   #eval decide (∀ k, k < 2000000 → 0 ≤ k)
   #eval decide (∃ k, k < 50000000 ∧ k + 1 = 0)
   ```
 
-  no longer take quadratic time or overflow the stack.
-- [#13991](https://github.com/leanprover/lean4/pull/13991) adds constant folding for `USize` operations and common bitwise operations, and [#13974](https://github.com/leanprover/lean4/pull/13974) extends it to `USize` relations. [#14044](https://github.com/leanprover/lean4/pull/14044) adds constant folding for `Nat.reprFast`.
+  不再花费二次时间或溢出堆栈。
+- [#13991](https://github.com/leanprover/lean4/pull/13991) 为 `USize` 操作和常见的按位操作添加常量折叠，[#13974](https://github.com/leanprover/lean4/pull/13974) 将其扩展为 `USize` 关系。 [#14044](https://github.com/leanprover/lean4/pull/14044) 为 `Nat.reprFast` 添加常量折叠。
 
-## Monadic Verification: `mvcgen'` and `grind` Improvements
+## Monadic 验证：`mvcgen'` 和 `grind` 改进
+%%%
+tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___32___0-_LPAR_2026-07-13_RPAR_--Highlights--Monadic-Verification___--mvcgen___--and--grind--Improvements"
+%%%
 
-The `mvcgen'` and {tactic}`grind` ecosystem continues to mature:
+`mvcgen'` 和 {tactic}`grind` 生态系统不断成熟：
 
-- [#13983](https://github.com/leanprover/lean4/pull/13983) adds `mvcgen' until $t`, where `$t` is a conv-style pattern; verification-condition generation stops as soon as the program matches the pattern. For instance, compare the traces in these two examples:
+- [#13983](https://github.com/leanprover/lean4/pull/13983) 添加 `mvcgen' until $t`，其中 `$t` 是一个 conv 样式模式；一旦程序与模式匹配，验证条件生成就会停止。例如，比较这两个示例中的迹线：
 
   ```lean -show
   set_option mvcgen.warning false
@@ -186,7 +207,7 @@ The `mvcgen'` and {tactic}`grind` ecosystem continues to mature:
       omega
   ```
 
-- [#13925](https://github.com/leanprover/lean4/pull/13925) consolidates `mvcgen'` syntax across tactic and {tactic}`grind` (`sym =>`) modes:
+- [#13925](https://github.com/leanprover/lean4/pull/13925) 跨策略和 {tactic}`grind` (`sym =>`) 模式整合 `mvcgen'` 语法：
 
   ```
   example (n : Nat) : ⦃⌜True⌝⦄ inc n ⦃⇓ r => ⌜r = n + 15⌝⦄ := by
@@ -194,51 +215,75 @@ The `mvcgen'` and {tactic}`grind` ecosystem continues to mature:
       mvcgen' [inc] <;> (show_asserted; finish)
   ```
 
-  `mvcgen' invariants?` (suggest mode) also works inside sym => … blocks.
+  `mvcgen' invariants?`（建议模式）也可以在 sym => … 块内工作。
 
-- [#13881](https://github.com/leanprover/lean4/pull/13881) lets `mvcgen'` decompose programs whose head is a typeclass method projection (e.g. `Add.add inst a b`).
-- [#13888](https://github.com/leanprover/lean4/pull/13888) teaches `mvcgen'` to register `Triple`-shaped local hypotheses as specs during VC generation.
-- [#13971](https://github.com/leanprover/lean4/pull/13971) makes the {tactic}`cbv` tactic available inside {tactic}`grind`'s interactive `sym =>` mode.
+- [#13881](https://github.com/leanprover/lean4/pull/13881) 让 `mvcgen'` 分解其头部是类型类方法投影的程序（例如 `Add.add inst a b`）。
+- [#13888](https://github.com/leanprover/lean4/pull/13888) 教导 `mvcgen'` 在 VC 生成期间将 `Triple` 形状的局部假设注册为规范。
+- [#13971](https://github.com/leanprover/lean4/pull/13971) 使 {tactic}`cbv` 策略在 {tactic}`grind` 的交互式 `sym =>` 模式中可用。
 
-## Lake: Linter Overhaul and Cache Improvements
+## Lake：Linter 检修和缓存改进
+%%%
+tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___32___0-_LPAR_2026-07-13_RPAR_--Highlights--Lake___-Linter-Overhaul-and-Cache-Improvements"
+%%%
 
-### Environment Linters via Options
+### 通过选项进行环境检查
+%%%
+tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___32___0-_LPAR_2026-07-13_RPAR_--Highlights--Lake___-Linter-Overhaul-and-Cache-Improvements--Environment-Linters-via-Options"
+%%%
 
-[#13893](https://github.com/leanprover/lean4/pull/13893) (building on [#13852](https://github.com/leanprover/lean4/pull/13852)'s builtin linter sets) makes environment linters controlled by Lean options ({name}`Lean.Option`), just like ordinary linters. Each environment linter is tied to a boolean option, so you can enable or disable it per declaration with `set_option linter.X false in ...` and across a lint run with the new `lake lint --linters=linter.X,-linter.Y` flag. Using `--lint-only` with the same syntax collects information only from the specified linters. *Breaking change:* the previous `lake lint` flags `--extra`, `--lint-all`, and the `builtin_nolint` attribute are removed in favour of this option-based control. `linter.extra` becomes a linter set whose members are the existing extra linters.
+[#13893](https://github.com/leanprover/lean4/pull/13893)（基于 [#13852](https://github.com/leanprover/lean4/pull/13852) 的内置 linter 集构建）使环境 linter 由精益选项 ({name}`Lean.Option`) 控制，就像普通的 linter 一样。每个环境 linter 都与一个布尔选项相关联，因此您可以使用 `set_option linter.X false in ...` 启用或禁用每个声明，并使用新的 `lake lint --linters=linter.X,-linter.Y` 标志跨 lint 运行。使用具有相同语法的 `--lint-only` 仅从指定的 linter 收集信息。 *重大更改：*之前的 `lake lint` 标志 `--extra`、`--lint-all` 和 `builtin_nolint` 属性已被删除，以支持此基于选项的控制。 `linter.extra` 成为一个 linter 集，其成员是现有的额外 linter。
 
-### Module Linters
+### 模块检查器
+%%%
+tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___32___0-_LPAR_2026-07-13_RPAR_--Highlights--Lake___-Linter-Overhaul-and-Cache-Improvements--Module-Linters"
+%%%
 
-[#13917](https://github.com/leanprover/lean4/pull/13917) adds module linters, which run once at the end of elaborating a module rather than after every command. A module linter receives the full array of top-level command syntaxes for the module, making it suitable for checks that need a whole-module view (e.g. enforcing module-wide syntactic conventions).
+[#13917](https://github.com/leanprover/lean4/pull/13917) 添加了模块 linter，它在详细说明模块结束时运行一次，而不是在每个命令之后运行。模块 linter 接收模块的完整顶级命令语法数组，使其适合需要整个模块视图的检查（例如强制执行模块范围的语法约定）。
 
-### Other Lake Improvements
+### 其他湖改进
+%%%
+tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___32___0-_LPAR_2026-07-13_RPAR_--Highlights--Lake___-Linter-Overhaul-and-Cache-Improvements--Other-Lake-Improvements"
+%%%
 
-- [#13961](https://github.com/leanprover/lean4/pull/13961) adds a `--record-exceptions` flag to `lake lint`, which inserts `set_option` flags to silence warnings on the definitions that triggered them.
-- [#14060](https://github.com/leanprover/lean4/pull/14060) deduplicates cached artifacts by hash, and [#14036](https://github.com/leanprover/lean4/pull/14036) refines when and how Lake overwrites cache data with new `--no-overwrite` and `--force-overwrite` options. [#13949](https://github.com/leanprover/lean4/pull/13949) adds a `LAKE_RESTORE_ARTIFACTS` environment variable to override the workspace's `restoreAllArtifacts` configuration.
+- [#13961](https://github.com/leanprover/lean4/pull/13961) 将 `--record-exceptions` 标志添加到 `lake lint`，其中插入 `set_option` 标志以消除触发警告的定义上的警告。
+- [#14060](https://github.com/leanprover/lean4/pull/14060) 通过哈希对缓存工件进行重复数据删除，而 [#14036](https://github.com/leanprover/lean4/pull/14036) 使用新的 `--no-overwrite` 和 `--force-overwrite` 选项改进了 Lake 覆盖缓存数据的时间和方式。 [#13949](https://github.com/leanprover/lean4/pull/13949) 添加 `LAKE_RESTORE_ARTIFACTS` 环境变量来覆盖工作区的 `restoreAllArtifacts` 配置。
 
-## Experimental: Incremental Compilation Caching
+## 实验：增量编译缓存
+%%%
+tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___32___0-_LPAR_2026-07-13_RPAR_--Highlights--Experimental___-Incremental-Compilation-Caching"
+%%%
 
-[#13965](https://github.com/leanprover/lean4/pull/13965) adds *experimental* CLI flags that cache `lean`'s post-import elaboration state across invocations: `--incr-save FILE` writes a full snapshot at end of run, `--incr-load FILE` reuses one at startup, and `--incr-header-save FILE` writes a header-only snapshot (post-import `Environment`, no command bodies). A loaded snapshot is reused as far as unchanged syntax allows.
+[#13965](https://github.com/leanprover/lean4/pull/13965) 添加*实验性* CLI 标志，用于跨调用缓存 `lean` 的导入后详细状态：`--incr-save FILE` 在运行结束时写入完整快照，`--incr-load FILE` 在启动时重用一个快照，`--incr-header-save FILE` 写入仅标头快照（导入后 `Environment`，无命令体）。只要语法允许，加载的快照将被重复使用。
 
-## Library Highlights
+## 库亮点
+%%%
+tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___32___0-_LPAR_2026-07-13_RPAR_--Highlights--Library-Highlights"
+%%%
 
-- [#3727](https://github.com/leanprover/lean4/pull/3727) adds `BitVec.flattenList` for concatenating lists of bitvectors, with characterizing lemmas and a `@[csimp]`-driven divide-and-conquer implementation that's ~900× faster than a naive left fold.
-- [#12030](https://github.com/leanprover/lean4/pull/12030) links OpenSSL into Lean's runtime, with [#13988](https://github.com/leanprover/lean4/pull/13988) making it lazily loadable.
-- [#14054](https://github.com/leanprover/lean4/pull/14054) upstreams `Nat.sqrt` from Batteries, with characterizing lemmas that avoid exposing internals.
-- [#13798](https://github.com/leanprover/lean4/pull/13798) simplifies the `Std.Time` API: `DateTime (tz : TimeZone)` is removed and the former `ZonedDateTime` is renamed to `DateTime`. *Breaking change:* code using `DateTime` or `ZonedDateTime` directly will need updating.
-- [#13908](https://github.com/leanprover/lean4/pull/13908) deprecates `Lean.RBMap` and `Lean.RBTree` in favour of `Std.TreeMap` and `Std.TreeSet`. Importers now receive a deprecation warning via {keywordOf Lean.Parser.Command.deprecated_module}`deprecated_module`.
-- [#13891](https://github.com/leanprover/lean4/pull/13891) adds opt-in support for serializing closures to `.olean` files via `CompactedRegion.save (allowClosures := true)`.
+- [#3727](https://github.com/leanprover/lean4/pull/3727) 添加了 `BitVec.flattenList` 用于连接位向量列表，具有特征引理和 `@[csimp]` 驱动的分而治之实现，比简单的左折叠快约 900 倍。
+- [#12030](https://github.com/leanprover/lean4/pull/12030) 将 OpenSSL 链接到 Lean 的运行时，并使用 [#13988](https://github.com/leanprover/lean4/pull/13988) 使其可延迟加载。
+- [#14054](https://github.com/leanprover/lean4/pull/14054) 位于电池的 `Nat.sqrt` 上游，具有避免暴露内部结构的特征引理。
+- [#13798](https://github.com/leanprover/lean4/pull/13798) 简化了 `Std.Time` API：删除了 `DateTime (tz : TimeZone)`，并将之前的 `ZonedDateTime` 重命名为 `DateTime`。 *重大更改：*直接使用 `DateTime` 或 `ZonedDateTime` 的代码需要更新。
+- [#13908](https://github.com/leanprover/lean4/pull/13908) 弃用 `Lean.RBMap` 和 `Lean.RBTree`，转而使用 `Std.TreeMap` 和 `Std.TreeSet`。进口商现在通过 {keywordOf Lean.Parser.Command.deprecated_module}`deprecated_module` 收到弃用警告。
+- [#13891](https://github.com/leanprover/lean4/pull/13891) 添加了对通过 `CompactedRegion.save (allowClosures := true)` 将闭包序列化到 `.olean` 文件的选择支持。
 
-## Breaking Changes
+## 重大变更
+%%%
+tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___32___0-_LPAR_2026-07-13_RPAR_--Highlights--Breaking-Changes"
+%%%
 
-In addition to the `do` elaborator and linter changes described above:
+除了上述 `do` elaborator 和 linter 更改之外：
 
-- [#13305](https://github.com/leanprover/lean4/pull/13305) (new `do` elaborator default): `do` notation now requires a `Pure` instance, not just `Bind`. The arms of `do match` are non-dependent by default — write `do match (dependent := true)` to recover the legacy term-match expansion. `try`/`catch` no longer accepts a body whose result type matches the surrounding expected type only via coercion. Unreachable code now triggers a warning instead of an error. The syntax `let pat := rhs | otherwise` now scopes over the `doSeq` that follows.
-- [#13912](https://github.com/leanprover/lean4/pull/13912) (nested actions): `return e` inside `(← do …)` or `(← try … catch …)` now early-returns from the *enclosing* `do` block. *Migration:* replace with `pure e` when value-return from the nested block is intended, or wrap in parentheses `(← (do …))`.
-- [#13893](https://github.com/leanprover/lean4/pull/13893) (Lake lint): the `--extra`, `--lint-all` flags and `@[builtin_nolint]` attribute are removed. Use `lake lint --linters=linter.X,-linter.Y` and `set_option linter.X false in ...` instead.
-- [#13798](https://github.com/leanprover/lean4/pull/13798) (Std.Time): `DateTime (tz : TimeZone)` is removed; use `DateTime` (the former `ZonedDateTime`). *Migration:* replace uses of `DateTime` with an explicit timezone argument with the new `DateTime`, and rename references to the old `ZonedDateTime` to `DateTime`.
-- [#13908](https://github.com/leanprover/lean4/pull/13908): `Lean.RBMap` and `Lean.RBTree` are deprecated. *Migration:* switch to `Std.TreeMap` and `Std.TreeSet`.
+- [#13305](https://github.com/leanprover/lean4/pull/13305)（新的 `do` 阐述器默认值）：`do` 表示法现在需要 `Pure` 实例，而不仅仅是 `Bind`。默认情况下，`do match` 的臂是非相关的 - 写入 `do match (dependent := true)` 以恢复旧的术语匹配扩展。 `try`/`catch` 不再接受结果类型仅通过强制与周围预期类型匹配的主体。无法访问的代码现在会触发警告而不是错误。语法 `let pat := rhs __FIX001__ otherwise` 现在的范围涵盖后面的 `doSeq`。
+- [#13912](https://github.com/leanprover/lean4/pull/13912)（嵌套操作）：`(← do …)` 或 `(← try … catch …)` 内的 `return e` 现在从*封闭* `do` 块提前返回。 *迁移：* 当需要从嵌套块返回值时替换为 `pure e`，或者用括号 `(← (do …))` 括起来。
+- [#13893](https://github.com/leanprover/lean4/pull/13893)（Lake lint）：删除 `--extra`、`--lint-all` 标志和 `@[builtin_nolint]` 属性。请改用 `lake lint --linters=linter.X,-linter.Y` 和 `set_option linter.X false in ...`。
+- [#13798](https://github.com/leanprover/lean4/pull/13798)（标准时间）：`DateTime (tz : TimeZone)` 已删除；使用 `DateTime` （以前的 `ZonedDateTime`）。 *迁移：*用新的 `DateTime` 替换带有显式时区参数的 `DateTime` 的使用，并将对旧 `ZonedDateTime` 的引用重命名为 `DateTime` 。
+- [#13908](https://github.com/leanprover/lean4/pull/13908)：`Lean.RBMap` 和 `Lean.RBTree` 已弃用。 *迁移：*切换到`Std.TreeMap`和`Std.TreeSet`。
 
-# Language
+# 语言
+%%%
+tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___32___0-_LPAR_2026-07-13_RPAR_--Language"
+%%%
 
 ```markdown
 
@@ -298,7 +343,10 @@ In addition to the `do` elaborator and linter changes described above:
 
 ```
 
-# Library
+# 图书馆
+%%%
+tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___32___0-_LPAR_2026-07-13_RPAR_--Library"
+%%%
 
 ```markdown
 
@@ -349,7 +397,10 @@ In addition to the `do` elaborator and linter changes described above:
 
 ```
 
-# Tactics
+# 战术
+%%%
+tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___32___0-_LPAR_2026-07-13_RPAR_--Tactics"
+%%%
 
 ```markdown
 
@@ -418,7 +469,10 @@ In addition to the `do` elaborator and linter changes described above:
 
 ```
 
-# Compiler
+# 编译器
+%%%
+tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___32___0-_LPAR_2026-07-13_RPAR_--Compiler"
+%%%
 
 ```markdown
 
@@ -449,6 +503,9 @@ In addition to the `do` elaborator and linter changes described above:
 ```
 
 # FFI
+%%%
+tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___32___0-_LPAR_2026-07-13_RPAR_--FFI"
+%%%
 
 ```markdown
 
@@ -457,7 +514,10 @@ In addition to the `do` elaborator and linter changes described above:
 
 ```
 
-# Lake
+# 湖
+%%%
+tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___32___0-_LPAR_2026-07-13_RPAR_--Lake"
+%%%
 
 ```markdown
 
@@ -478,7 +538,10 @@ In addition to the `do` elaborator and linter changes described above:
 
 ```
 
-# Other
+# 其他
+%%%
+tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___32___0-_LPAR_2026-07-13_RPAR_--Other"
+%%%
 
 ```markdown
 

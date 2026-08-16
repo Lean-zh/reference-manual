@@ -55,7 +55,7 @@ import Manual.Releases.«v4_0_0-m1»
 open Manual
 open Verso.Genre
 
-#doc (Manual) "Release Notes" =>
+#doc (Manual) "发行说明" =>
 %%%
 tag := "release-notes"
 file := "releases"
@@ -63,9 +63,9 @@ number := false
 searchPriority := 10
 %%%
 
-This section provides release notes about recent versions of Lean. When updating to a new version, please
-read the corresponding release notes. They may contain advice that will help you understand
-the differences with the previous version and upgrade your projects.
+本部分提供有关 Lean 最新版本的发行说明。更新到新版本时，请
+阅读相应的发行说明。它们可能包含有助于您理解的建议
+与以前版本的差异并升级您的项目。
 
 {include 0 Manual.Releases.«v4_34_0»}
 

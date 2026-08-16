@@ -15,67 +15,79 @@ open Verso.Genre.Manual.InlineLean
 
 set_option linter.typography.quotes false
 
-#doc (Manual) "Lean 4.29.0 (2026-03-27)" =>
+#doc (Manual) "精益4.29.0 (2026-03-27)" =>
 %%%
 tag := "release-v4.29.0"
 file := "v4.29.0"
 %%%
 
-For this release, 453 changes landed. In addition to the 112 feature additions and 107 fixes listed below there were 30 refactoring changes, 21 documentation improvements, 29 performance improvements, 26 improvements to the test suite and 115 other changes.
+此版本有 453 项更改。除了下面列出的 112 项功能添加和 107 项修复之外，还有 30 项重构更改、21 项文档改进、29 项性能改进、26 项测试套件改进和 115 项其他更改。
 
-# Highlights
+# 亮点
+%%%
+tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-03-27_RPAR_--Highlights"
+%%%
 
-_Violetta Sim has helpfully written the release highlights from 4.16 through 4.29, and the Lean developers gratefully acknowledge her contributions._
+_Violetta Sim 帮助编写了 4.16 到 4.29 的发布亮点，精益开发人员衷心感谢她的贡献。_
 
 
-## Performance Improvements
+## 性能改进
+%%%
+tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-03-27_RPAR_--Highlights--Performance-Improvements"
+%%%
 
-[#12082](https://github.com/leanprover/lean4/pull/12082) and
-[#12044](https://github.com/leanprover/lean4/pull/12044) reduce
-startup time by storing closed terms directly in the binary, where
-possible, and initializing the remaining ones lazily instead of at
-startup.
+[#12082](https://github.com/leanprover/lean4/pull/12082) 和
+[#12044](https://github.com/leanprover/lean4/pull/12044) 减少
+通过直接在二进制文件中存储封闭项来启动时间，其中
+可能，并延迟初始化剩余的而不是 at
+启动。
 
-[#12406](https://github.com/leanprover/lean4/pull/12406) significantly
-reduces the memory consumed by LRAT proof checking in `bv_decide`.
+[#12406](https://github.com/leanprover/lean4/pull/12406) 显着
+减少 `bv_decide` 中 LRAT 验证检查所消耗的内存。
 
-## New Extensible `do` Elaborator
+## 新的可扩展`do`阐述器
+%%%
+tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-03-27_RPAR_--Highlights--New-Extensible--do--Elaborator"
+%%%
 
-[#12459](https://github.com/leanprover/lean4/pull/12459) adds a new,
-extensible `do` elaborator. Users can opt into the new elaborator by
-unsetting the option `backward.do.legacy`.
+[#12459](https://github.com/leanprover/lean4/pull/12459) 添加了一个新的，
+可扩展的 `do` 阐述器。用户可以通过以下方式选择加入新的阐述器
+取消设置选项 `backward.do.legacy`。
 
-New elaborators for the builtin `doElem` syntax category can be
-registered with attribute `doElem_elab`. For new syntax, additionally
-a control info handler must be registered with attribute
-`doElem_control_info` that specifies whether the new syntax `return`s
-early, `break`s, `continue`s and which `mut` vars it reassigns.
+内置 `doElem` 语法类别的新精译器可以是
+使用属性 `doElem_elab` 注册。对于新语法，另外
+控制信息处理程序必须使用属性注册
+`doElem_control_info` 指定新语法是否 `return`s
+早期，`break`s、`continue`s 以及它重新分配的 `mut` 变量。
 
-Do elaborators have type
-``TSyntax `doElem → DoElemCont → DoElabM Expr``, where `DoElabM` is
-essentially `TermElabM` and the `DoElemCont` represents how the rest
-of the `do` block is to be elaborated. Consult the docstrings for more
-details.
+精译器有类型吗
+``TSyntax `doElem → DoElemCont → DoElabM Expr``，其中 `DoElabM` 是
+本质上 `TermElabM` 和 `DoElemCont` 代表其余部分如何
+`do` 块的内容有待详细说明。请参阅文档字符串了解更多信息
+详细信息。
 
-*Breaking Changes:*
+*重大变更：*
 
-- The syntax for `let pat := rhs | otherwise` and similar now scope
-  over the `doSeq` that follows. Furthermore, `otherwise` and the
-  sequence that follows are now `doSeqIndented` in order not to steal
-  syntax from record syntax.
+- `let pat := rhs __FIX001__ otherwise` 的语法和类似的现在范围
+  在随后的 `doSeq` 之上。此外，`otherwise` 和
+接下来的序列现在是 `doSeqIndented` 为了不被窃取
+  来自记录语法的语法。
 
-*Breaking Changes* when opting into the new `do` elaborator by unsetting
+通过取消设置选择新的 `do` 阐述器时的*重大更改*
 `backward.do.legacy`:
 
-- `do` notation now always requires `Pure`.
-- `do match` is now always non-dependent. There is
-  `do match (dependent := true)` that expands to a term match as a
-  workaround for some dependent uses.
+- `do` 表示法现在始终需要 `Pure`。
+- `do match` 现在始终是非依赖的。有
+  `do match (dependent := true)` 扩展为术语匹配
+  一些相关用途的解决方法。
 
-## mvcgen: Specifications in the Local Context
+## mvcgen：本地上下文中的规范
+%%%
+tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-03-27_RPAR_--Highlights--mvcgen___-Specifications-in-the-Local-Context"
+%%%
 
-[#12395](https://github.com/leanprover/lean4/pull/12395) adds mvcgen
-support for specifications in the local context. Example:
+[#12395](https://github.com/leanprover/lean4/pull/12395) 添加 mvcgen
+支持本地环境中的规范。示例：
 
 ```
 import Std.Tactic.Do
@@ -103,387 +115,417 @@ example : ⦃⌜True⌝⦄ foo bar ⦃⇓r => ⌜r % 2 = 0⌝⦄ := by
   mvcgen [foo_spec, bar] -- unfold `bar` and automatically apply the spec for the higher-order argument `k`
 ```
 
-## grind: Higher-Order Miller Pattern Support in E-matching
+## grind：电子匹配中的高阶米勒模式支持
+%%%
+tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-03-27_RPAR_--Highlights--grind___-Higher-Order-Miller-Pattern-Support-in-E-matching"
+%%%
 
-[#12483](https://github.com/leanprover/lean4/pull/12483) adds support
-for higher-order Miller patterns in `grind`'s e-matching engine.
-Previously, lambda arguments in e-matching patterns were always
-treated as `dontCare`, meaning they could not contribute to matching
-or bind pattern variables. This was a significant limitation for
-theorems where lambda arguments carry essential structure, such as
-`List.foldl`, `List.foldrM`, or any combinator that takes a function
-argument.
+[#12483](https://github.com/leanprover/lean4/pull/12483) 添加支持
+用于 `grind` 电子匹配引擎中的高阶米勒模式。
+以前，电子匹配模式中的 lambda 参数始终是
+被视为 `dontCare`，这意味着它们无法有助于匹配
+或绑定模式变量。这是一个重大限制
+lambda 参数带有基本结构的定理，例如
+`List.foldl`、`List.foldrM` 或任何采用函数的组合器
+争论。
 
-With this change, when a pattern argument is a lambda whose body
-satisfies the *Miller pattern condition* — i.e., pattern variables
-are applied only to distinct lambda-bound variables — the lambda is
-preserved as an `ho[...]` pattern. At instantiation time, these
-higher-order patterns are matched via `isDefEq` after all first-order
-pattern variables have been assigned by the E-graph.
+通过此更改，当模式参数是 lambda 时，其主体
+满足*米勒模式条件* — 即模式变量
+仅适用于不同的 lambda 绑定变量 - lambda 是
+保留为 `ho[...]` 模式。在实例化时，这些
+在所有一阶之后，高阶模式通过 `isDefEq` 进行匹配
+模式变量已由电子图分配。
 
-*Example*
+*示例*
 
 ```
 @[grind =] theorem applyFlip_spec (f : Nat → Nat → Nat) (a b : Nat)
     : applyFlip (fun x y => f y x) a b = f b a := sorry
 ```
 
-The pattern `applyFlip ho[fun x => fun y => #2 y x] #1 #0` captures
-the lambda argument structurally: `#2` (the pattern variable for `f`)
-is applied to distinct lambda-bound variables `y` and `x`. When
-`grind` encounters `applyFlip (fun x y => Nat.add y x) 3 4`, it binds
-`f := Nat.add` via `isDefEq` and fires the rewrite.
+模式 `applyFlip ho[fun x => fun y => #2 y x] #1 #0` 捕获
+结构上的 lambda 参数： `#2` （`f` 的模式变量）
+应用于不同的 lambda 绑定变量 `y` 和 `x`。当
+`grind` 遇到 `applyFlip (fun x y => Nat.add y x) 3 4`，它绑定
+`f := Nat.add` 通过 `isDefEq` 并触发重写。
 
-## One Axiom per Native Computation
+## 每个本机计算一个公理
+%%%
+tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-03-27_RPAR_--Highlights--One-Axiom-per-Native-Computation"
+%%%
 
-[#12217](https://github.com/leanprover/lean4/pull/12217) implements
-RFC [#12216](https://github.com/leanprover/lean4/issues/12216): native
-computation ({tactic}`native_decide`, {tactic}`bv_decide`) is represented in the logic
-as one axiom per computation, asserting the equality that was obtained
-from the native computation. `#print axiom` will no longer show
-`Lean.trustCompiler`, but rather the auto-generated names of these
-axioms (with, for example, `._native.bv_decide.` in the name). See the
-RFC for more information.
+[#12217](https://github.com/leanprover/lean4/pull/12217) 实现
+RFC [#12216](https://github.com/leanprover/lean4/issues/12216)：本机
+计算 ({tactic}`native_decide`, {tactic}`bv_decide`) 在逻辑中表示
+作为每次计算的一个公理，断言所获得的相等性
+来自本机计算。 `#print axiom` 将不再显示
+`Lean.trustCompiler`，而是这些的自动生成的名称
+公理（例如，名称中包含 `._native.bv_decide.`）。请参阅
+RFC 了解更多信息。
 
-## More Reliable Universe Level Inference in `inductive`/`structure` Commands
+##  `inductive`/`structure` 命令中更可靠的宇宙级别推断
+%%%
+tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-03-27_RPAR_--Highlights--More-Reliable-Universe-Level-Inference-in--inductive-___-structure--Commands"
+%%%
 
-[#12514](https://github.com/leanprover/lean4/pull/12514) improves
-universe level inference for the `inductive` and `structure` commands
-to be more reliable and to produce better error messages. See the PR
-description for more information.
+[#12514](https://github.com/leanprover/lean4/pull/12514) 改进
+`inductive` 和 `structure` 命令的宇宙级别推断
+更加可靠并产生更好的错误消息。查看公关
+描述以获取更多信息。
 
-*Breaking change.* Universe level metavariables present only in
-constructor fields are no longer promoted to be universe level
-parameters: use explicit universe level parameters. This promotion was
-inconsistently done depending on whether the inductive type's universe
-level had a metavariable, and also it caused confusion for users,
-since these universe levels are not constrained by the type former's
-parameters.
+*重大变化。*宇宙级元变量仅存在于
+构造函数字段不再提升为 Universe 级别
+参数：使用显式的 Universe 级别参数。此次促销活动是
+不一致的完成取决于归纳类型的宇宙是否
+level 有一个元变量，也给用户带来了困惑，
+因为这些宇宙层次不受前一种类型的限制
+参数。
 
-*Breaking change.* Now recursive types do not count as “obvious
-`Prop` candidates”. Use an explicit `Prop` type former annotation on
-recursive inductive predicates.
+*重大更改。*现在递归类型不算“明显的”
+`Prop` 候选人”。使用显式 `Prop` 类型前注释
+递归归纳谓词。
 
-## Simpler `noncomputable` Semantics
+## 更简单 `noncomputable` 语义
+%%%
+tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-03-27_RPAR_--Highlights--Simpler--noncomputable--Semantics"
+%%%
 
-[#12028](https://github.com/leanprover/lean4/pull/12028) gives a
-simpler semantics to `noncomputable`, improving predictability as well
-as preparing codegen to be moved into a separate build step without
-breaking immediate generation of error messages.
+[#12028](https://github.com/leanprover/lean4/pull/12028) 给出
+`noncomputable` 的语义更简单，也提高了可预测性
+准备将代码生成移动到单独的构建步骤中，而无需
+打破错误消息的立即生成。
 
-Specifically, `noncomputable` is now needed whenever an axiom or
-another `noncomputable` def is used by a def except for the following
-special cases:
+具体来说，现在每当公理或
+另一个 `noncomputable` def 由 def 使用，但以下情况除外
+特殊情况：
 
-- uses inside proofs, types, type formers, and constructor arguments
-  corresponding to (fixed) inductive parameters are ignored
-- uses of functions marked `@[extern]/@[implemented_by]/@[csimp]` are
-  ignored
-- for applications of a function marked `@[macro_inline]`,
-  noncomputability of the inlining is instead inspected
+- 使用内部证明、类型、类型形成器和构造函数参数
+  对应于（固定）感应参数被忽略
+-  标记为 `@[extern]/@[implemented_by]/@[csimp]` 的函数的用途是
+  被忽略
+-  用于标记为 `@[macro_inline]` 的函数的应用程序，
+  相反，检查内联的不可计算性
 
-*Breaking change*: After this change, more `noncomputable`
-annotations than before may be required in exchange for improved
-future stability.
+*重大更改*：此更改后，更多 `noncomputable`
+可能需要比以前更多的注释来换取改进
+未来的稳定。
 
-## Changes to Instance and Reducibility Handling
+## 实例和还原性处理的更改
+%%%
+tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-03-27_RPAR_--Highlights--Changes-to-Instance-and-Reducibility-Handling"
+%%%
 
-v4.29.0 brings a significant and breaking change to the handling of reducibility settings.
-We address a longstanding problem: prior to v4.29.0, the `isDefEq` algorithm would bump the
-transparency level up to `.default` (i.e. become willing to unfold default transparency definitions)
-when comparing implicit arguments.
+v4.29.0 对还原性设置的处理带来了重大且突破性的变化。
+我们解决了一个长期存在的问题：在 v4.29.0 之前，`isDefEq` 算法会影响
+透明度级别高达 `.default` （即愿意展开默认透明度定义）
+比较隐式参数时。
 
-This was a serious problem, causing both immediate unpredictable performance problems in
-`isDefEq`, and hiding many places where definitional abuse was occurring in downstream libraries.
+这是一个严重的问题，导致立即出现不可预测的性能问题
+`isDefEq`，并隐藏了下游库中发生定义滥用的许多地方。
 
-In order to ensure scalability, and address these definitional abuse problems, we have
-made the quite disruptive change, in [#12179](https://github.com/leanprover/lean4/pull/12179),
-of removing this transparency level bump as the default path.
+为了确保可扩展性并解决这些定义滥用问题，我们有
+在 [#12179](https://github.com/leanprover/lean4/pull/12179) 中做出了相当颠覆性的改变，
+删除此透明度级别凹凸作为默认路径。
 
-The changes to the transparency bump in comparing implicit arguments can be controlled in two ways:
-* Definitions can be tagged with the new `@[implicit_reducible]` attribute.
-  This is intermediate between `@[reducible]` and `@[semireducible]` (i.e. the default setting),
-  in that the definition is mostly treated as semireducible, except when `isDefEq` is processing
-  implicit arguments or match discriminants.
-  See [#12247](https://github.com/leanprover/lean4/pull/12247) and [#12567](https://github.com/leanprover/lean4/pull/12567).
-* The option `set_option backward.isDefEq.respectTransparency false` restores the previous behaviour prior to `v4.29.0`
-  (equivalently, all semireducible definitions are treated as `implicit_reducible`).
-  As a backward compatibility option, this may eventually be removed, but given how disruptive this change is we anticipate leaving the option available for the medium term.
+比较隐式参数时透明度凹凸的变化可以通过两种方式控制：
+* 定义可以使用新的 `@[implicit_reducible]` 属性进行标记。
+  这是 `@[reducible]` 和 `@[semireducible]` 之间的中间值（即默认设置），
+  因为该定义大多被视为半可简化的，除非 `isDefEq` 正在处理
+  隐式参数或匹配判别式。
+  请参阅 [#12247](https://github.com/leanprover/lean4/pull/12247) 和 [#12567](https://github.com/leanprover/lean4/pull/12567)。
+* 选项 `set_option backward.isDefEq.respectTransparency false` 恢复 `v4.29.0` 之前的行为
+  （等效地，所有半可约定义都被视为 `implicit_reducible`）。
+作为向后兼容选项，这最终可能会被删除，但考虑到这一变化的破坏性，我们预计会在中期保留该选项。
 
 
-As a consequence of these changes to transparency handling, existing definitional abuse problems in downstream libraries now surface in places
-where previously they didn't. To help address these problems, which primarily, but not exclusively,
-are caused by incorrectly implemented typeclass instances, we have made changes in [#12897](https://github.com/leanprover/lean4/pull/12897)
-to `inferInstanceAs` and the default `deriving` handler.
-These ensure that instances created using them do not leak the definition of the types involved,
-when the instances are reduced at less than semireducible transparency.
+由于透明度处理的这些变化，下游库中现有的定义滥用问题现在在某些地方浮现出来
+以前他们没有。为了帮助解决这些问题，主要但不限于：
+是由错误实现的类型类实例引起的，我们在 [#12897](https://github.com/leanprover/lean4/pull/12897) 中进行了更改
+到 `inferInstanceAs` 和默认的 `deriving` 处理程序。
+这些确保使用它们创建的实例不会泄漏所涉及类型的定义，
+当实例以低于半可缩减的透明度缩减时。
 
-`inferInstanceAs α` synthesizes an instance of type `α` but now adjusts it to conform to the
-expected type `β`, which must be inferable from context.
+`inferInstanceAs α` 合成 `α` 类型的实例，但现在对其进行调整以符合
+预期类型 `β`，必须可以从上下文推断。
 
-Example:
+示例：
 ```
 def D := Nat
 instance : Inhabited D := inferInstanceAs (Inhabited Nat)
 ```
 
-The adjustment will make sure that the resulting instance will not leak the RHS `Nat` when
-reduced at transparency levels below `semireducible`, i.e. where `D` would not be unfolded either.
+调整将确保生成的实例在以下情况下不会泄漏 RHS `Nat`
+在透明度级别低于 `semireducible` 时减少，即 `D` 也不会展开。
 
-More specifically, given the source type (the argument) and target type (the expected type),
-`inferInstanceAs` synthesizes an instance for the source type and then unfolds and rewraps its
-components (fields, nested instances) as necessary to make them compatible with the target type. The
-individual steps are represented by the following options, which all default to enabled and can be
-disabled to help with porting:
+更具体地说，给定源类型（参数）和目标类型（预期类型），
+`inferInstanceAs` 合成源类型的实例，然后展开并重新包装其
+根据需要添加组件（字段、嵌套实例）以使它们与目标类型兼容。的
+各个步骤由以下选项表示，这些选项均默认启用并且可以
+禁用以帮助移植：
 
-* `backward.inferInstanceAs.wrap`: master switch for instance adjustment in both `inferInstanceAs`
-  and the default deriving handler
-* `backward.inferInstanceAs.wrap.reuseSubInstances`: reuse existing instances for the target type
-  for sub-instance fields to avoid non-defeq instance diamonds
-* `backward.inferInstanceAs.wrap.instances`: wrap non-reducible instances in auxiliary definitions
-* `backward.inferInstanceAs.wrap.data`: wrap data fields in auxiliary definitions (proof fields are
-  always wrapped)
+* `backward.inferInstanceAs.wrap`： `inferInstanceAs` 中实例调整的主开关
+和默认的派生处理程序
+* `backward.inferInstanceAs.wrap.reuseSubInstances`：重用目标类型的现有实例
+  对于子实例字段以避免非 defeq 实例菱形
+* `backward.inferInstanceAs.wrap.instances`：将不可约实例包装在辅助定义中
+* `backward.inferInstanceAs.wrap.data`：将数据字段包装在辅助定义中（证明字段是
+  总是包裹着）
 
-If you just need to synthesize an instance without transporting between types, use `inferInstance`
-instead, potentially with a type annotation for the expected type.
+如果您只需要合成一个实例而不需要在类型之间进行传输，请使用 `inferInstance`
+相反，可能带有预期类型的类型注释。
 
-A third significant change in `v4.29.0` is that `simp` and `dsimp` no longer process typeclass instances.
-This behaviour was producing non-standard instances, and causing problems in Mathlib.
-See [#12244](https://github.com/leanprover/lean4/pull/12244) and [#12195](https://github.com/leanprover/lean4/pull/12195).
-The old behavior can be restored with
+`v4.29.0` 中的第三个重大变化是 `simp` 和 `dsimp` 不再处理类型类实例。
+此行为会产生非标准实例，并导致 Mathlib 中出现问题。
+请参阅 [#12244](https://github.com/leanprover/lean4/pull/12244) 和 [#12195](https://github.com/leanprover/lean4/pull/12195)。
+可以恢复旧的行为
 
 ```
 set_option backward.dsimp.instances true
 ```
 
-or `simp +instances` for `simp`. Our experience so far, however, is that this is not often needed.
+或 `simp +instances` 表示 `simp`。然而，到目前为止，我们的经验是，这并不经常需要。
 
-Finally we have fixed in [#12172](https://github.com/leanprover/lean4/pull/12172) a problem with how
-we determine whether a function parameter is an instance, which has follow-on effects in several algorithms that depend on this classification.
-This may cause potential regressions: automation may now behave differently
-in cases where it previously misidentified instance parameters.
-For example, a rewrite rule in `simp` that was not firing due to
-incorrect indexing may now fire.
+最后我们在 [#12172](https://github.com/leanprover/lean4/pull/12172) 中解决了一个问题
+我们确定函数参数是否是实例，这对依赖于该分类的多种算法具有后续影响。
+这可能会导致潜在的回归：自动化现在可能表现不同
+在以前错误识别实例参数的情况下。
+例如，`simp` 中的重写规则由于以下原因而未触发
+现在可能会触发不正确的索引。
 
-### Migration guide
+### 迁移指南
+%%%
+tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-03-27_RPAR_--Highlights--Changes-to-Instance-and-Reducibility-Handling--Migration-guide"
+%%%
 
-Any projects wanting to postpone dealing with the adaptations required by the changes to transparency level bumps can
-simply use `set_option backward.isDefEq.respectTransparency false`.
+任何想要推迟处理透明度级别变化所需的调整的项目都可以
+只需使用 `set_option backward.isDefEq.respectTransparency false` 即可。
 
-This can be set on a project-wide level in your `lakefile.toml`:
+这可以在 `lakefile.toml` 中的项目范围级别上设置：
 ```
 [leanOptions]
 backward.isDefEq.respectTransparency = false
 ```
 
-However we encourage you to instead localize the option in the files that need it,
-or even on individual declarations using `set_option backward.isDefEq.respectTransparency false in ...`.
-This makes it easier to start identifying the definitional abuse problems in your code.
+但是，我们鼓励您在需要它的文件中本地化该选项，
+甚至在使用 `set_option backward.isDefEq.respectTransparency false in ...` 的单独声明上。
+这使得开始识别代码中定义的滥用问题变得更加容易。
 
-If your project is downstream of Mathlib, you may find the following two scripts useful:
-* `scripts/add_set_option.py` (available in `.lake/packages/mathlib/scripts/add_set_option.py` if you have Mathlib as a dependency)
-  which tries compiling your project, and automatically wrapping any failing declaration with `set_option backward.isDefEq.respectTransparency false in ...`,
-  in those cases where doing so resolves the failure.
-* `scripts/rm_set_option.py`, which compiles your project and identifies all occurrences of `set_option backward.isDefEq.respectTransparency false in ...` which can be removed without causing a failure (in that same declaration).
-  This may happen because of earlier changes which resolve the definitional abuse problem.
+如果您的项目位于 Mathlib 的下游，您可能会发现以下两个脚本很有用：
+* `scripts/add_set_option.py` （如果您有 Mathlib 作为依赖项，则可在 `.lake/packages/mathlib/scripts/add_set_option.py` 中使用）
+  它尝试编译您的项目，并自动用 `set_option backward.isDefEq.respectTransparency false in ...` 包装任何失败的声明，
+  在这种情况下，这样做可以解决失败。
+* `scripts/rm_set_option.py`，它编译您的项目并标识所有出现的 `set_option backward.isDefEq.respectTransparency false in ...` ，可以将其删除而不会导致失败（在同一声明中）。
+  发生这种情况可能是因为之前的更改解决了定义滥用问题。
 
-These scripts can also be copied out of Mathlib and run on any project.
+这些脚本也可以从 Mathlib 中复制出来并在任何项目上运行。
 
-Again, when downstream of Mathlib you may also use the experimental `#defeq_abuse in ...` command,
-which attempts to identify and explain, or at least give clues to, the underlying definitional abuse problem that
-may explain why a declaration currently needs `set_option backward.isDefEq.respectTransparency false in ...`.
-We encourage users to report problems with this command on the [Zulip](https://leanprover.zulipchat.com/),
-and we hope that as this diagnostic command stabilizes we will be able to make it available as part of a future Lean toolchain.
+同样，当 Mathlib 下游时，您还可以使用实验性 `#defeq_abuse in ...` 命令，
+它试图识别和解释，或者至少提供线索，潜在的定义滥用问题
+可以解释为什么声明当前需要 `set_option backward.isDefEq.respectTransparency false in ...`。
+我们鼓励用户在 [Zulip](https://leanprover.zulipchat.com/) 上报告此命令的问题，
+我们希望，随着该诊断命令的稳定，我们将能够将其作为未来精益工具链的一部分。
 
-You are encouraged to review the construction of instances for all default transparency type synonyms in your project.
-Where possible, you should use the `deriving` handler, or the new `inferInstanceAs` elaborator,
-rather than writing term mode constructions which require unfolding the type synonym in order to typecheck.
-The `inferInstanceAs` command now *requires* an expected type.
-If you encounter errors where `inferInstanceAs` now gives an error because an expected type was not provided,
-you may find that you should simply be using `inferInstance` instead.
+我们鼓励您检查项目中所有默认透明度类型同义词的实例构造。
+如果可能，您应该使用 `deriving` 处理程序，或新的 `inferInstanceAs` 阐述器，
+而不是编写需要展开类型同义词才能进行类型检查的术语模式结构。
+`inferInstanceAs` 命令现在 *需要* 一个预期的类型。
+如果您遇到错误，其中 `inferInstanceAs` 现在因未提供预期类型而给出错误，
+您可能会发现您应该简单地使用 `inferInstance` 来代替。
 
-## Universe Levels as Output Parameters
+## 宇宙级别作为输出参数
+%%%
+tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-03-27_RPAR_--Highlights--Universe-Levels-as-Output-Parameters"
+%%%
 
-[#12423](https://github.com/leanprover/lean4/pull/12423) adds the
-attribute `@[univ_out_params]` for specifying which universe levels
-should be treated as output parameters. By default, any universe level
-that does not occur in any input parameter is considered an output
-parameter.
+[#12423](https://github.com/leanprover/lean4/pull/12423) 添加了
+属性 `@[univ_out_params]` 用于指定哪些 Universe 级别
+应被视为输出参数。默认情况下，任何宇宙级别
+任何输入参数中都没有出现的被视为输出
+参数。
 
-## Library Highlights
+## 库亮点
+%%%
+tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-03-27_RPAR_--Highlights--Library-Highlights"
+%%%
 
-This release includes a new string search infrastructure, using a
-polymorphic pattern system that works uniformly over characters,
-predicates, and strings. See:
+此版本包括一个新的字符串搜索基础架构，使用
+对字符统一工作的多态模式系统，
+谓词和字符串。参见：
 
-- [#12333](https://github.com/leanprover/lean4/pull/12333) adds the
-  basic typeclasses that will be used in the verification of our
-  string searching infrastructure.
+- [#12333](https://github.com/leanprover/lean4/pull/12333) 添加了
+将用于验证我们的基本类型类
+  字符串搜索基础设施。
 
-- [#12424](https://github.com/leanprover/lean4/pull/12424) gives a
-  proof of `LawfulToForwardSearcherModel` for `Slice` patterns, which
-  amounts to proving that our implementation of KMP is correct.
+- [#12424](https://github.com/leanprover/lean4/pull/12424) 给出
+  `LawfulToForwardSearcherModel` 的 `Slice` 模式的证明，其中
+  等于证明我们实施的KMP是正确的。
 
-There are also various additions to the library, including:
+该库还添加了各种内容，包括：
 
-- [#11938](https://github.com/leanprover/lean4/pull/11938) introduces
-  projected minima and maxima, also known as “argmin/argmax”, for
-  lists under the names `List.minOn` and `List.maxOn`. It also introduces
-  `List.minIdxOn` and `List.maxIdxOn`, which return the index of the
-  minimal or maximal element.
+- [#11938](https://github.com/leanprover/lean4/pull/11938)介绍
+  投影最小值和最大值，也称为“argmin/argmax”，用于
+  列出在名称 `List.minOn` 和 `List.maxOn` 下。还介绍了
+  `List.minIdxOn` 和 `List.maxIdxOn`，返回索引
+  最小或最大元素。
 
-- [#11994](https://github.com/leanprover/lean4/pull/11994) provides
-  more lemmas about sums of lists/arrays/vectors, especially sums of
-  `Nat` or `Int` lists/arrays/vectors.
+- [#11994](https://github.com/leanprover/lean4/pull/11994) 提供
+  更多关于列表/数组/向量之和的引理，尤其是
+  `Nat` 或 `Int` 列表/数组/向量。
 
-- [#12363](https://github.com/leanprover/lean4/pull/12363) introduces
-  iterators for vectors via `Vector.iter` and `Vector.iterM`, together
-  with the usual lemmas.
+- [#12363](https://github.com/leanprover/lean4/pull/12363)介绍
+  通过 `Vector.iter` 和 `Vector.iterM` 一起进行向量的迭代器
+  与通常的引理。
 
-- [#12452](https://github.com/leanprover/lean4/pull/12452) upstreams
-  `List.scanl`, `List.scanr` and their lemmas from batteries into the
-  standard library.
+- [#12452](https://github.com/leanprover/lean4/pull/12452) 上游
+  `List.scanl`、`List.scanr` 及其引理从电池到
+标准库。
 
-## New Features in Lake
+## Lake 的新功能
+%%%
+tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-03-27_RPAR_--Highlights--New-Features-in-Lake"
+%%%
 
-- [#12203](https://github.com/leanprover/lean4/pull/12203) changes
-  artifact transfer from the local cache to prefer hard links over
-  copies, with a fallback to copying when hard linking fails (e.g., on
-  a different filesystem). Cache artifacts are now marked read-only to
-  prevent accidental corruption via hard-linked paths.
+- [#12203](https://github.com/leanprover/lean4/pull/12203) 更改
+  从本地缓存传输工件，优先选择硬链接
+  副本，当硬链接失败时（例如，在
+  不同的文件系统）。缓存工件现在标记为只读
+  防止通过硬链接路径意外损坏。
 
-- [#12444](https://github.com/leanprover/lean4/pull/12444) adds the
-  Lake CLI command `lake cache clean`, which deletes the Lake cache
-  directory.
+- [#12444](https://github.com/leanprover/lean4/pull/12444) 添加了
+  Lake CLI 命令 `lake cache clean`，删除 Lake 缓存
+  目录。
 
-- [#12490](https://github.com/leanprover/lean4/pull/12490) adds a
-  system-wide Lake configuration file and uses it to configure the
-  remote cache services used by `lake cache`.
+- [#12490](https://github.com/leanprover/lean4/pull/12490) 添加了一个
+  系统范围的 Lake 配置文件并使用它来配置
+  `lake cache` 使用的远程缓存服务。
 
-# Language
+# 语言
+%%%
+tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-03-27_RPAR_--Language"
+%%%
 
-* [#11963](https://github.com/leanprover/lean4/pull/11963) activates `getElem?_pos` more aggressively, triggered by `c[i]`.
+* [#11963](https://github.com/leanprover/lean4/pull/11963) 更积极地激活 `getElem?_pos`，由 `c[i]` 触发。
 
-* [#12028](https://github.com/leanprover/lean4/pull/12028) gives a simpler semantics to `noncomputable`, improving
-  predictability as well as preparing codegen to be moved into a separate
-  build step without breaking immediate generation of error messages.
+* [#12028](https://github.com/leanprover/lean4/pull/12028) 为 `noncomputable` 提供了更简单的语义，改进了
+  可预测性以及准备将代码生成移至单独的
+  构建步骤不会中断错误消息的立即生成。
 
-* [#12110](https://github.com/leanprover/lean4/pull/12110) fixes a SIGFPE crash on `x86_64` when evaluating `(ISize.minValue
-  / -1 : ISize)`, filling an omission from #11624.
+* [#12110](https://github.com/leanprover/lean4/pull/12110) 修复了评估 `(ISize.minValue 时 `x86_64` 上的 SIGFPE 崩溃
+  / -1 : ISize)`，填补了 #11624 中的遗漏。
 
-* [#12159](https://github.com/leanprover/lean4/pull/12159) makes Std.Do's `post` macro universe polymorphic by expanding to
-  `PUnit.unit` instead of `()`.
+* [#12159](https://github.com/leanprover/lean4/pull/12159) 使 Std.Do 的 `post` 宏宇宙通过扩展为多态
+  `PUnit.unit` 而不是 `()`。
 
-* [#12160](https://github.com/leanprover/lean4/pull/12160) removes calls to `check` that we expect to pass under normal
-  circumstances. This may be re-added later guarded by a `debug` option.
+* [#12160](https://github.com/leanprover/lean4/pull/12160) 删除了对 `check` 的调用，我们希望在正常情况下传递该调用
+  情况。稍后可以通过 `debug` 选项重新添加它。
 
-* [#12164](https://github.com/leanprover/lean4/pull/12164) uses the `.inj` theorem in the proof of one direction of the
-  `.injEq` theorem.
+* [#12164](https://github.com/leanprover/lean4/pull/12164) 在证明一个方向时使用 `.inj` 定理
+  `.injEq` 定理。
 
-* [#12179](https://github.com/leanprover/lean4/pull/12179) ensures `isDefEq` does not increase the transparency mode to
-  `.default` when checking whether implicit arguments are definitionally
-  equal. The previous behavior was creating scalability problems in
-  Mathlib. That said, this is a very disruptive change. The previous
-  behavior can be restored using the command
+* [#12179](https://github.com/leanprover/lean4/pull/12179) 确保 `isDefEq` 不会将透明度模式增加到
+  `.default` 检查隐式参数是否定义时
+  平等。以前的行为造成了可扩展性问题
+  数学库。也就是说，这是一个非常具有颠覆性的变化。上一个
+  可以使用命令恢复行为
   ```
   set_option backward.isDefEq.respectTransparency false
   ```
 
-* [#12184](https://github.com/leanprover/lean4/pull/12184) ensures that the `mspec` tactic does not assign synthetic opaque
-  MVars occurring in the goal, just like the `apply` tactic.
+* [#12184](https://github.com/leanprover/lean4/pull/12184) 确保 `mspec` 策略不会分配合成不透明
+  MVar 发生在目标中，就像 `apply` 策略一样。
 
-* [#12190](https://github.com/leanprover/lean4/pull/12190) adds the `introSubstEq` MetaM tactic, as an optimization over
-  `intro h; subst h` that avoids introducing `h : a = b` if it can be
-  avoided,
-  which is the case when `b` can be reverted without reverting anything
-  else. Speeds up the generation of `injEq` theorem.
+* [#12190](https://github.com/leanprover/lean4/pull/12190) 添加了 `introSubstEq` MetaM 策略，作为对
+  `intro h; subst h` 避免引入 `h : a = b`（如果可以的话）
+  避免,
+  在这种情况下，可以恢复 `b` 而无需恢复任何内容
+  否则。加速 `injEq` 定理的生成。
 
-* [#12217](https://github.com/leanprover/lean4/pull/12217) implements RFC #12216: native computation (`native_decide`,
-  `bv_decide`) is represented in the logic as one axiom per computation,
-  asserting the equality that was obtained from the native computation.
-  `#print axiom` will no longer show `Lean.trustCompiler`, but rather the
-  auto-generated names of these axioms (with, for example,
-  `._native.bv_decide.` in the name). See the RFC for more information.
+* [#12217](https://github.com/leanprover/lean4/pull/12217) 实现 RFC #12216：本机计算 (`native_decide`,
+  `bv_decide`) 在逻辑中表示为每次计算一个公理，
+  断言从本机计算获得的相等性。
+  `#print axiom` 将不再显示 `Lean.trustCompiler`，而是显示
+  这些公理的自动生成的名称（例如，
+  名称中的 `._native.bv_decide.`）。请参阅 RFC 了解更多信息。
 
-* [#12219](https://github.com/leanprover/lean4/pull/12219) fixes a unification issue that appeared in
-  `Lean.Meta.MkIffOfInductiveProp` machinery that was upstreamed from
-  Mathlib. Inside of `toInductive`, wrong free variables were passed,
-  which made it impossible to perform a unification in certain cases.
+* [#12219](https://github.com/leanprover/lean4/pull/12219) 修复了出现在
+  `Lean.Meta.MkIffOfInductiveProp` 上游机械
+  数学库。在 `toInductive` 内部，传递了错误的自由变量，
+  这使得在某些情况下无法进行统一。
 
-* [#12236](https://github.com/leanprover/lean4/pull/12236) adds `orElse` combinator to simprocs of `Sym.Simp`.
+* [#12236](https://github.com/leanprover/lean4/pull/12236) 将 `orElse` 组合器添加到 `Sym.Simp` 的 simprocs 中。
 
-* [#12243](https://github.com/leanprover/lean4/pull/12243) fixes #12240, where `deriving Ord` failed with `Unknown
-  identifier a✝`.
+* [#12243](https://github.com/leanprover/lean4/pull/12243) 修复了 #12240，其中 `deriving Ord` 因“未知”而失败
+  标识符a✝`。
 
-* [#12247](https://github.com/leanprover/lean4/pull/12247) adds the new transparency setting `@[instance_reducible]`. We
-  used to check whether a declaration had `instance` reducibility by using
-  the `isInstance` predicate. However, this was not a robust solution
-  because:
+* [#12247](https://github.com/leanprover/lean4/pull/12247) 添加了新的透明度设置 `@[instance_reducible]`。我们
+  用于检查声明是否具有 `instance` 可还原性，方法是使用
+  `isInstance` 谓词。然而，这并不是一个可靠的解决方案
+  因为：
 
-  - We have scoped instances, and `isInstance` returns `true` only if the
-  scope is active.
+  - 我们有作用域实例，并且 `isInstance` 仅在以下情况下返回 `true`
+范围处于活动状态。
 
-* [#12263](https://github.com/leanprover/lean4/pull/12263) implements the second part of #12247.
+* [#12263](https://github.com/leanprover/lean4/pull/12263) 实现#12247 的第二部分。
 
-* [#12269](https://github.com/leanprover/lean4/pull/12269) refines upon #12106, by setting the `isRecursive` env extension
-  after adding the declaration, but before processing attributes like
-  `macro_inline` that want to look at the flag. Fixes #12268.
+* [#12269](https://github.com/leanprover/lean4/pull/12269) 通过设置 `isRecursive` 环境扩展来改进 #12106
+  添加声明之后，但在处理属性之前，例如
+  `macro_inline` 想要查看标志。修复#12268。
 
-* [#12283](https://github.com/leanprover/lean4/pull/12283) introduces `cbv_opaque` attribute that allows one to mark
-  definitions not to be unfolded by the `cbv` tactic.
+* [#12283](https://github.com/leanprover/lean4/pull/12283) 引入了 `cbv_opaque` 属性，允许标记
+  定义不会被 `cbv` 策略展开。
 
-* [#12285](https://github.com/leanprover/lean4/pull/12285) implements a cache for the positions of class universe level
-  parameters that only appear in output parameter types.
+* [#12285](https://github.com/leanprover/lean4/pull/12285) 实现类 Universe 级别位置的缓存
+  仅出现在输出参数类型中的参数。
 
-* [#12286](https://github.com/leanprover/lean4/pull/12286) ensures the type resolution cache properly caches results for
-  type classe containing output parameters.
+* [#12286](https://github.com/leanprover/lean4/pull/12286) 确保类型解析缓存正确缓存结果
+  包含输出参数的类型类。
 
-* [#12324](https://github.com/leanprover/lean4/pull/12324) adds a default `Inhabited` instance to `Theorem` type.
+* [#12324](https://github.com/leanprover/lean4/pull/12324) 将默认的 `Inhabited` 实例添加到 `Theorem` 类型。
 
-* [#12325](https://github.com/leanprover/lean4/pull/12325) adds a warning to any `def` of class type that does not also
-  declare an appropriate reducibility.
+* [#12325](https://github.com/leanprover/lean4/pull/12325) 向任何不包含警告的类类型的 `def` 添加警告
+  声明适当的还原性。
 
-* [#12329](https://github.com/leanprover/lean4/pull/12329) adds the option `doc.verso.module`. If set, it controls whether
-  module docstrings use Verso syntax. If not set, it defaults to the value
-  of the `doc.verso` option.
+* [#12329](https://github.com/leanprover/lean4/pull/12329) 添加选项 `doc.verso.module`。如果设置，它控制是否
+  模块文档字符串使用 Verso 语法。如果未设置，则默认为该值
+  `doc.verso` 选项。
 
-* [#12338](https://github.com/leanprover/lean4/pull/12338) implements preparatory work for #12179. It implements a new
-  feature in `isDefEq` to ensure it does not increase the transparency
-  level to `.default` when checking definitionally equality of implicit
-  arguments. This transparency level bump was introduced in Lean 3, but it
-  is not a performance issue and is affecting Mathlib. adds the
-  new feature, but it is disabled by default.
+* [#12338](https://github.com/leanprover/lean4/pull/12338) 实施 #12179 的准备工作。它实现了一个新的
+`isDefEq` 中的功能确保它不会增加透明度
+  检查隐式的定义相等性时将级别设置为 `.default`
+  论据。这种透明度级别的提升是在精益 3 中引入的，但它
+  不是性能问题，而是影响 Mathlib。添加了
+  新功能，但默认情况下处于禁用状态。
 
-* [#12339](https://github.com/leanprover/lean4/pull/12339) fixes a diamond problem in delta deriving where
-  instance-implicit class parameters in the derived instance type were
-  using instances synthesized for the underlying type, not the alias type.
+* [#12339](https://github.com/leanprover/lean4/pull/12339) 修复了 delta 导出中的钻石问题，其中
+  派生实例类型中的实例隐式类参数为
+  使用为基础类型而不是别名类型合成的实例。
 
-* [#12340](https://github.com/leanprover/lean4/pull/12340) implements better support for unfolding class fields marked as
-  `reducible`. For example, we want to mark fields that are types such as
+* [#12340](https://github.com/leanprover/lean4/pull/12340) 实现了对标记为的展开类字段的更好支持
+  __修复000__。例如，我们想要标记以下类型的字段
   ```
   MonadControlT.stM : Type u -> Type u
   ```
-  The motivation is similar to our heuristic that type definitions should
-  be abbreviations.
-  Now, suppose we want to unfold `stM m (ExceptT ε m) α` using the
-  `.reducible` transparency setting, we want the result to be `stM m m
-  (MonadControl.stM m (ExceptT ε m) α)` instead of
-  `(instMonadControlTOfMonadControl m m (ExceptT ε m)).1 α`. The latter
-  would defeat the intent of marking the field as reducible, since the
-  instance `instMonadControlTOfMonadControl` is `[instance_reducible]` and
-  the resulting term would be stuck when using `.reducible` transparency
-  mode.
+  动机类似于我们的启发式，类型定义应该
+  是缩写。
+  现在，假设我们想使用以下方法展开 `stM m (ExceptT ε m) α`
+  `.reducible` 透明度设置，我们希望结果是`stM m m
+  (MonadControl.stM m (ExceptT ε m) α)` 而不是
+  __修复000__。后者
+  将破坏将该字段标记为可约的意图，因为
+  实例 `instMonadControlTOfMonadControl` 是 `[instance_reducible]` 并且
+使用 `.reducible` 透明度时，结果项将被卡住
+  模式。
 
-* [#12353](https://github.com/leanprover/lean4/pull/12353) ressurects the dead trace class `Elab.resume` by redirecting the
-  non-existant `Elab.resuming` to it.
+* [#12353](https://github.com/leanprover/lean4/pull/12353) 通过重定向死跟踪类 `Elab.resume`
+  不存在 `Elab.resuming` 。
 
-* [#12355](https://github.com/leanprover/lean4/pull/12355) adds `isBoolTrueExpr` and `isBoolFalseExpr` functions to `SymM`
+* [#12355](https://github.com/leanprover/lean4/pull/12355) 将 `isBoolTrueExpr` 和 `isBoolFalseExpr` 函数添加到 `SymM`
 
-* [#12391](https://github.com/leanprover/lean4/pull/12391) makes `simpCond` public. It is needed to avoid code duplication
-  in #12361
+* [#12391](https://github.com/leanprover/lean4/pull/12391) 使 `simpCond` 公开。需要避免代码重复
+  在 #12361
 
-* [#12395](https://github.com/leanprover/lean4/pull/12395) adds `mvcgen` support for specifications in the local context.
-  Example:
+* [#12395](https://github.com/leanprover/lean4/pull/12395) 添加了 `mvcgen` 对本地上下文中规范的支持。
+  示例：
 
   ```
   import Std.Tactic.Do
@@ -511,474 +553,480 @@ There are also various additions to the library, including:
     mvcgen [foo_spec, bar] -- unfold `bar` and automatically apply the spec for the higher-order argument `k`
   ```
 
-* [#12407](https://github.com/leanprover/lean4/pull/12407) is similar to #12403.
+* [#12407](https://github.com/leanprover/lean4/pull/12407) 与#12403 类似。
 
-* [#12416](https://github.com/leanprover/lean4/pull/12416) makes `Sym.Simp.toBetaApp` public. This is necessary for the
-  refactor of the main `cbv` simproc in #12417.
+* [#12416](https://github.com/leanprover/lean4/pull/12416) 使 `Sym.Simp.toBetaApp` 公开。这是必要的
+  重构 #12417 中的主要 `cbv` simproc。
 
-* [#12425](https://github.com/leanprover/lean4/pull/12425) fixes a bug in `mvcgen` caused by incomplete `match` splitting.
+* [#12425](https://github.com/leanprover/lean4/pull/12425) 修复了 `mvcgen` 中因 `match` 拆分不完整而导致的错误。
 
-* [#12427](https://github.com/leanprover/lean4/pull/12427) makes `mvcgen` suggest to use `-trivial` when doing so avoids a
-  recursion depth error.
+* [#12427](https://github.com/leanprover/lean4/pull/12427) 使 `mvcgen` 建议使用 `-trivial` ，这样做可以避免
+  递归深度错误。
 
-* [#12429](https://github.com/leanprover/lean4/pull/12429) sets the `irreducible` attribute before generating the equations
-  for recursive definitions. This prevents these equations to be marked as
-  `defeq`, which could lead to `simp` generation proofs that do not type
-  check at default transparency.
+* [#12429](https://github.com/leanprover/lean4/pull/12429) 在生成方程之前设置 `irreducible` 属性
+  用于递归定义。这可以防止这些方程被标记为
+  `defeq`，这可能导致 `simp` 生成不键入的证明
+  检查默认透明度。
 
-* [#12451](https://github.com/leanprover/lean4/pull/12451) provides the necessary hooks for the new do elaborator to call
-  into the let and match elaborator.
+* [#12451](https://github.com/leanprover/lean4/pull/12451) 为新的 do 阐述器调用提供必要的钩子
+  进入 let 和 match 阐述器。
 
-* [#12459](https://github.com/leanprover/lean4/pull/12459) adds a new, extensible `do` elaborator. Users can opt into the
-  new elaborator by unsetting the option `backward.do.legacy`.
+* [#12459](https://github.com/leanprover/lean4/pull/12459) 添加了一个新的、可扩展的 `do` 阐述器。用户可以选择加入
+  通过取消选项 `backward.do.legacy` 来创建新的阐述器。
 
-* [#12460](https://github.com/leanprover/lean4/pull/12460) fixes an `AppBuilder` exception in the `cbv` tactic when
-  simplifying projections whose projection function is dependent (closes
+* [#12460](https://github.com/leanprover/lean4/pull/12460) 修复了 `cbv` 策略中的 `AppBuilder` 异常
+  简化投影函数相关的投影（关闭
   #12457).
 
-* [#12507](https://github.com/leanprover/lean4/pull/12507) fixes #12495 where equational theorem generation fails for
-  structurally recursive definitions using a Box-like wrapper around
-  nested inductives.
+* [#12507](https://github.com/leanprover/lean4/pull/12507) 修复了方程定理生成失败的 #12495
+  使用类似 Box 的包装器进行结构递归定义
+  嵌套归纳法。
 
-* [#12514](https://github.com/leanprover/lean4/pull/12514) improves universe level inference for the `inductive` and
-  `structure` commands to be more reliable and to produce better error
-  messages. Recall that the main constraint for inductive types is that if
-  `u` is the universe level for the type and `u > 0`, then each
-  constructor field's universe level `v` satisfies `v ≤ u`, where a
-  *constructor field* is an argument that is not one of the type's
-  *parameters* (recall: the type's parameters are a prefix of the
-  parameters shared by the type former and all the constructors). Given
-  this constraint, the `inductive` elaborator attempts to find reasonable
-  assignments to metavariables that may be present:
-  - For the universe level `u`, choosing an assignment that makes this
-  level least is reasonable, provided it is unique.
-  - For constructor fields, choosing the unique assignment is usually
-  reasonable.
-  - For the type's parameters, promoting level metavariables to new
-  universe level parameters is reasonable.
+* [#12514](https://github.com/leanprover/lean4/pull/12514) 改进了 `inductive` 的宇宙级别推断，并且
+  `structure` 命令更可靠并产生更好的错误
+  消息。回想一下，归纳类型的主要约束是，如果
+  `u` 是类型和 `u > 0` 的 Universe 级别，然后每个
+  构造函数字段的 Universe 级别 `v` 满足 `v ≤ u`，其中
+  *构造函数字段*是一个不是该类型的参数之一
+  *参数*（回想一下：类型的参数是
+  类型前者和所有构造函数共享的参数）。给定
+  对于这个约束，`inductive` 精译器试图找到合理的
+对可能存在的元变量的赋值：
+  - 对于宇宙级别 `u`，选择一个作业以实现此目的
+  最低级别是合理的，只要它是唯一的。
+  - 对于构造函数字段，选择唯一的赋值通常是
+  合理。
+  - 对于类型的参数，将级别元变量提升为新的
+  宇宙级参数合理。
 
-* [#12524](https://github.com/leanprover/lean4/pull/12524) adds `Std.Iter.toHashSet` and variants.
+* [#12524](https://github.com/leanprover/lean4/pull/12524) 添加了 `Std.Iter.toHashSet` 和变体。
 
-* [#12525](https://github.com/leanprover/lean4/pull/12525) adds declaration names to leanchecker error messages to make
-  debugging easier when the kernel rejects a declaration.
+* [#12525](https://github.com/leanprover/lean4/pull/12525) 将声明名称添加到leanchecker错误消息中以使得
+  当内核拒绝声明时调试更容易。
 
-* [#12530](https://github.com/leanprover/lean4/pull/12530) improves the error message when `mvcgen` cannot resolve the name
-  of a spec theorem.
+* [#12530](https://github.com/leanprover/lean4/pull/12530) 改进了 `mvcgen` 无法解析名称时的错误消息
+  规范定理。
 
-* [#12538](https://github.com/leanprover/lean4/pull/12538) enables `backward.whnf.reducibleClassField` for v4.29.
+* [#12538](https://github.com/leanprover/lean4/pull/12538) 为 v4.29 启用 `backward.whnf.reducibleClassField`。
 
-* [#12558](https://github.com/leanprover/lean4/pull/12558) fixes a `(kernel) declaration has metavariables` error that
-  occurred when a `by` tactic was used in a dependent inductive type index
-  that refers to a previous index:
+* [#12558](https://github.com/leanprover/lean4/pull/12558) 修复了 `(kernel) declaration has metavariables` 错误
+  当在依赖归纳类型索引中使用 `by` 策略时发生
+  引用先前的索引：
 
   ```
   axiom P : Prop
   axiom Q : P → Prop
-  -- Previously gave: (kernel) declaration has metavariables 'Foo'
+  -- 先前给出：（内核）声明具有元变量“Foo”
   inductive Foo : (h : P) → (Q (by exact h)) → Prop
   ```
 
-* [#12564](https://github.com/leanprover/lean4/pull/12564) fixes `getStuckMVar?` to detect stuck metavariables through
-  auxiliary parent projections created for diamond inheritance. These
-  coercions (e.g., `AddMonoid'.toAddZero'`) are not registered as regular
-  projections because they construct the parent value from individual
-  fields rather than extracting a single field. Previously,
-  `getStuckMVar?` would give up when encountering them, preventing TC
-  synthesis from being triggered.
+* [#12564](https://github.com/leanprover/lean4/pull/12564) 修复 `getStuckMVar?` 以通过以下方式检测卡住的元变量
+为钻石继承创建的辅助父投影。这些
+  强制转换（例如 `AddMonoid'.toAddZero'`）未注册为常规
+  预测，因为它们根据个体构建父值
+  字段而不是提取单个字段。此前，
+  `getStuckMVar?`遇到就会放弃，防止TC
+  合成被触发。
 
-* [#12567](https://github.com/leanprover/lean4/pull/12567) renames `instance_reducible` to `implicit_reducible` and adds a
-  new
-  `backward.isDefEq.implicitBump` option to prepare for treating all
-  implicit
-  arguments uniformly during definitional equality checking.
+* [#12567](https://github.com/leanprover/lean4/pull/12567) 将 `instance_reducible` 重命名为 `implicit_reducible` 并添加
+  新的
+  `backward.isDefEq.implicitBump` 选项准备治疗所有
+  隐含的
+  在定义相等性检查期间统一参数。
 
-* [#12572](https://github.com/leanprover/lean4/pull/12572) is part 2 of the `implicit_reducible` refactoring (part 1:
+* [#12572](https://github.com/leanprover/lean4/pull/12572) 是 `implicit_reducible` 重构的第 2 部分（第 1 部分：
   #12567).
 
-* [#12574](https://github.com/leanprover/lean4/pull/12574) renames `SpecTheorems.add` to `SpecTheorems.insert`
+* [#12574](https://github.com/leanprover/lean4/pull/12574) 将 `SpecTheorems.add` 重命名为 `SpecTheorems.insert`
 
-* [#12576](https://github.com/leanprover/lean4/pull/12576) adds `Sym.mkPatternFromDeclWithKey` to the Sym API to generalize
-  and implement `Sym.mkEqPatternFromDecl`. This is useful to implement
-  custom rewrite-like tactics that want to use `Pattern`s for
-  discrimination tree lookup.
+* [#12576](https://github.com/leanprover/lean4/pull/12576) 将 `Sym.mkPatternFromDeclWithKey` 添加到 Sym API 中以进行泛化
+  并实施`Sym.mkEqPatternFromDecl`。这对于实施很有用
+  自定义类似重写的策略，想要使用 `Pattern`s
+  判别树查找。
 
-* [#12621](https://github.com/leanprover/lean4/pull/12621) fixes a bug where `reduceRecMatcher?` and `reduceProj?` bypassed
-  the `@[cbv_opaque]` attribute. These kernel-level reduction functions
-  use `whnf` internally, which does not know about `@[cbv_opaque]`. This
-  meant `@[cbv_opaque]` values were unfolded when they appeared as match
-  discriminants, recursor major premises, or projection targets. The fix
-  introduces `withCbvOpaqueGuard`, which wraps these calls with
-  `withCanUnfoldPred` to prevent `whnf` from unfolding `@[cbv_opaque]`
-  definitions.
+* [#12621](https://github.com/leanprover/lean4/pull/12621) 修复了 `reduceRecMatcher?` 和 `reduceProj?` 绕过的错误
+`@[cbv_opaque]` 属性。这些内核级归约函数
+  内部使用`whnf`，它不知道`@[cbv_opaque]`。这个
+  意味着 `@[cbv_opaque]` 值在显示为匹配时展开
+  判别式、递归主前提或投影目标。修复
+  引入 `withCbvOpaqueGuard`，它将这些调用包装为
+  `withCanUnfoldPred` 防止 `whnf` 展开 `@[cbv_opaque]`
+  定义。
 
-* [#12633](https://github.com/leanprover/lean4/pull/12633) makes `isDefEqProj` bump transparency to `.instances` (via
-  `withInstanceConfig`) when comparing the struct arguments of class
-  projections. This makes the behavior consistent with `isDefEqArgs`,
-  which already applies the same bump for instance-implicit parameters
-  when comparing function applications.
+* [#12633](https://github.com/leanprover/lean4/pull/12633) 使 `isDefEqProj` 凹凸透明度到 `.instances` （通过
+  `withInstanceConfig`) 比较类的结构参数时
+  预测。这使得行为与 `isDefEqArgs` 一致，
+  它已经对实例隐式参数应用了相同的凹凸
+  在比较功能应用程序时。
 
-* [#12639](https://github.com/leanprover/lean4/pull/12639) fixes the interaction between
-  `backward.whnf.reducibleClassField` and `isDefEqDelta`'s
-  argument-comparison heuristic.
+* [#12639](https://github.com/leanprover/lean4/pull/12639) 修复了之间的交互
+  `backward.whnf.reducibleClassField` 和 `isDefEqDelta` 的
+  论证比较启发式。
 
-* [#12650](https://github.com/leanprover/lean4/pull/12650) fixes a performance regression introduced by enabling
+* [#12650](https://github.com/leanprover/lean4/pull/12650) 修复了通过启用
   `backward.whnf.reducibleClassField`
-  (https://github.com/leanprover/lean4/pull/12538). The
-  `isNonTrivialRegular` function in `ExprDefEq` was classifying class
-  projections as nontrivial at all transparency levels, but the extra
-  `.instances` reduction in `unfoldDefault` that motivates this
-  classification only applies at `.reducible` transparency. At higher
-  transparency levels, the nontrivial classification caused unnecessary
-  heuristic comparison attempts in `isDefEqDelta` that cascaded through
-  BitVec reductions, causing elaboration of `Lean.Data.Json.Parser` to
-  double from ~3.6G to ~7.2G instructions.
+  （https://github.com/leanprover/lean4/pull/12538）。的
+  `ExprDefEq` 中的 `isNonTrivialRegular` 函数正在对类进行分类
+在所有透明度级别上的预测都是不平凡的，但额外的
+  `.instances` 减少 `unfoldDefault` 激发了这一点
+  分类仅适用于 `.reducible` 透明度。在较高的
+  透明度级别，不平凡的分类导致不必要的
+  `isDefEqDelta` 中级联的启发式比较尝试
+  BitVec 减少，导致 `Lean.Data.Json.Parser` 的详细说明
+  从 ~3.6G 指令翻倍到 ~7.2G。
 
-* [#12698](https://github.com/leanprover/lean4/pull/12698) adds a `result? : Option TraceResult` field to `TraceData` and
-  populates it in `withTraceNode` and `withTraceNodeBefore`, so that
-  metaprograms walking trace trees can determine success/failure
-  structurally instead of string-matching on emoji.
+* [#12698](https://github.com/leanprover/lean4/pull/12698) 将 `result? : Option TraceResult` 字段添加到 `TraceData` 并
+  将其填充到 `withTraceNode` 和 `withTraceNodeBefore` 中，以便
+  元程序行走跟踪树可以决定成功/失败
+  在结构上而不是表情符号上的字符串匹配。
 
-* [#12699](https://github.com/leanprover/lean4/pull/12699) gives the `generate` function's "apply @Foo to Goal" trace nodes
-  their own trace sub-class `Meta.synthInstance.apply` instead of sharing
-  the parent `Meta.synthInstance` class.
+* [#12699](https://github.com/leanprover/lean4/pull/12699) 给出 `generate` 函数的“将 @Foo 应用到目标”跟踪节点
+  他们自己的跟踪子类 `Meta.synthInstance.apply` 而不是共享
+  父 `Meta.synthInstance` 类。
 
-* [#12701](https://github.com/leanprover/lean4/pull/12701) fixes a gap in how `@[implicit_reducible]` is assigned to parent
-  projections during structure elaboration.
+* [#12701](https://github.com/leanprover/lean4/pull/12701) 修复了 `@[implicit_reducible]` 分配给父级的方式上的差距
+  结构细化期间的预测。
 
-* [#12719](https://github.com/leanprover/lean4/pull/12719) marks `levelZero`, `levelOne`, and `Level.ofNat` as
-  `@[implicit_reducible]` so that `Level.ofNat 0 =?= Level.zero` succeeds when
-  the definitional equality checker respects transparency annotations.
+* [#12719](https://github.com/leanprover/lean4/pull/12719) 将 `levelZero`、`levelOne` 和 `Level.ofNat` 标记为
+  `@[implicit_reducible]` 以便 `Level.ofNat 0 =?= Level.zero` 在以下情况下成功
+定义相等检查器尊重透明度注释。
 
-* [#12756](https://github.com/leanprover/lean4/pull/12756) adds `deriving noncomputable instance` syntax so that
-  delta-derived instances can be marked noncomputable.
+* [#12756](https://github.com/leanprover/lean4/pull/12756) 添加 `deriving noncomputable instance` 语法，以便
+  增量派生实例可以标记为不可计算。
 
-* [#12789](https://github.com/leanprover/lean4/pull/12789) skips the noncomputable pre-check in `deriving instance` when
-  the instance type is `Prop`, since proofs are erased by the compiler and
-  computability is irrelevant.
+* [#12789](https://github.com/leanprover/lean4/pull/12789) 跳过 `deriving instance` 中不可计算的预检查，当
+  实例类型是 `Prop`，因为编译器会删除证明并且
+  可计算性是无关紧要的。
 
-* [#12778](https://github.com/leanprover/lean4/pull/12778) fixes an inconsistency in `getStuckMVar?` where the instance
-  argument to class projection functions and auxiliary parent projections
-  was not whnf-normalized before checking for stuck metavariables. Every
-  other case in `getStuckMVar?` (recursors, quotient recursors, `.proj`
-  nodes) normalizes the major argument via `whnf` before recursing — class
-  projection functions and aux parent projections were the exception.
+* [#12778](https://github.com/leanprover/lean4/pull/12778) 修复了 `getStuckMVar?` 中实例的不一致问题
+  类投影函数和辅助父投影的参数
+  在检查卡住的元变量之前未进行 whnf 标准化。每个
+  `getStuckMVar?` 中的其他情况（递归器、商递归器、`.proj`
+  节点）在递归之前通过 `whnf` 规范主要参数 — 类
+  投影函数和辅助父投影是例外。
 
-* [#12897](https://github.com/leanprover/lean4/pull/12897) adjusts the results of `inferInstanceAs` and the `def` `deriving`
-  handler to conform to recently strengthened restrictions on reducibility.
-  When deriving or inferring an instance for a semireducible type definition,
-  the definition's RHS is no longer leaked when the instance is reduced at
-  lower than semireducible transparency. The synthesized instance's components
-  (fields, nested instances) are unfolded and rewrapped as necessary.
+* [#12897](https://github.com/leanprover/lean4/pull/12897) 调整 `inferInstanceAs` 和 `def` `deriving` 的结果
+  处理程序以符合最近加强的可还原性限制。
+  当派生或推断半可简化类型定义的实例时，
+  当实例减少时，定义的 RHS 不再泄漏
+  低于半还原透明度。合成实例的组件
+  （字段、嵌套实例）根据需要展开和重新包装。
 
-* [#13043](https://github.com/leanprover/lean4/pull/13043) fixes a bug where `inferInstanceAs` and the default `deriving`
-  handler, when used inside a `meta section`, would create auxiliary
-  definitions (via `normalizeInstance`) that were not marked as `meta`.
-  This caused the compiler to reject the parent `meta` definition with:
+* [#13043](https://github.com/leanprover/lean4/pull/13043) 修复了 `inferInstanceAs` 和默认 `deriving` 的错误
+  处理程序，当在 `meta section` 内部使用时，将创建辅助
+  未标记为 `meta` 的定义（通过 `normalizeInstance`）。
+  这导致编译器拒绝父 `meta` 定义：
 
   ```
   Invalid `meta` definition `instEmptyCollectionNamePrefixRel`, `instEmptyCollectionNamePrefixRel._aux_1` not marked `meta`
   ```
 
-* [#13059](https://github.com/leanprover/lean4/pull/13059) switches the meta marking of auxiliary definitions created by
-  `normalizeInstance` from using `isMetaSection` to the `declName?` pattern,
-  fixing a bug where `deriving` in meta sections would fail because aux defs
-  were incorrectly marked `meta` while the instance itself was not.
+* [#13059](https://github.com/leanprover/lean4/pull/13059) 切换由以下命令创建的辅助定义的元标记
+  `normalizeInstance` 从使用 `isMetaSection` 到 `declName?` 模式，
+  修复元部分中的 `deriving` 由于辅助定义而失败的错误
+  被错误地标记为 `meta` 而实例本身却没有。
 
-# Library
+# 图书馆
+%%%
+tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-03-27_RPAR_--Library"
+%%%
 
-* [#11811](https://github.com/leanprover/lean4/pull/11811) proves that membership is preserved by eraseDups: an element
-  exists in the deduplicated list iff it was in the original.
+* [#11811](https://github.com/leanprover/lean4/pull/11811) 证明成员资格是由eraseDups 保留的：一个元素
+  存在于重复数据删除列表中，前提是它存在于原始列表中。
 
-* [#11832](https://github.com/leanprover/lean4/pull/11832) uses an `Array` instead of a `List` to store the clauses in
-  `Std.CNF`. This reduces the memory footprint and pressure on the
-  allocator, leading to noticeable performance changes with gigantic CNFs.
+* [#11832](https://github.com/leanprover/lean4/pull/11832) 使用 `Array` 而不是 `List` 将子句存储在
+  __修复000__。这减少了内存占用和压力
+  分配器，导致巨大的 CNF 出现显着的性能变化。
 
-* [#11936](https://github.com/leanprover/lean4/pull/11936) provides `Array` operations analogous to `List.min(?)` and
+* [#11936](https://github.com/leanprover/lean4/pull/11936) 提供类似于 `List.min(?)` 的 `Array` 操作
   `List.max(?)`.
 
-* [#11938](https://github.com/leanprover/lean4/pull/11938) introduces projected minima and maxima, also known as
-  "argmin/argmax", for lists under the names `List.minOn` and
-  `List.maxOn`. It also introduces `List.minIdxOn` and `List.maxIdxOn`,
-  which return the index of the minimal or maximal element. Moreover,
-  there are variants with `?` suffix that return an `Option`. The change
-  further introduces new instances for opposite orders, such as
-  `LE.opposite`, `IsLinearOrder.opposite` etc. The change also adds the
-  missing `Std.lt_irrefl` lemma.
+* [#11938](https://github.com/leanprover/lean4/pull/11938) 引入投影最小值和最大值，也称为
+  “argmin/argmax”，用于名称 `List.minOn` 下的列表和
+  __修复000__。它还介绍了`List.minIdxOn`和`List.maxIdxOn`，
+  返回最小或最大元素的索引。而且，
+有一些带有 `?` 后缀的变体返回 `Option`。改变
+  进一步引入了相反顺序的新实例，例如
+  `LE.opposite`、`IsLinearOrder.opposite` 等。此更改还添加了
+  缺少 `Std.lt_irrefl` 引理。
 
-* [#11943](https://github.com/leanprover/lean4/pull/11943) introduces the theorem
-  `BitVec.sshiftRight_eq_setWidth_extractLsb_signExtend` theorem, proving
-  `x.sshiftRight n` is equivalent to first sign-extending `x`, extracting
-  the appropriate least significant bits, and then setting the width back
-  to `w`.
+* [#11943](https://github.com/leanprover/lean4/pull/11943) 介绍定理
+  `BitVec.sshiftRight_eq_setWidth_extractLsb_signExtend` 定理，证明
+  `x.sshiftRight n` 相当于先符号扩展 `x`，提取
+  适当的最低有效位，然后设置宽度
+  至 `w`。
 
-* [#11994](https://github.com/leanprover/lean4/pull/11994) provides more lemmas about sums of lists/arrays/vectors,
-  especially sums of `Nat` or `Int` lists/arrays/vectors.
+* [#11994](https://github.com/leanprover/lean4/pull/11994) 提供了更多关于列表/数组/向量之和的引理，
+  特别是 `Nat` 或 `Int` 列表/数组/向量的总和。
 
-* [#12017](https://github.com/leanprover/lean4/pull/12017) makes several small improvements to the list/array/vector API:
-  * It fixes typos in `Init.Core`.
-  * It adds `List.isSome_min_iff` and `List.isSome_max_iff`.
-  * It adds `grind` and `simp` annotations to various previously
-  unannotated lemmas.
-  * It adds lemmas for characterizing `∃ x ∈ xs, P x` using indices as `∃
-  (i : Nat), ∃ hi, P (xs[i])`, and similar universally quantified lemmas:
-  `exists_mem_iff_exists_getElem` and `forall_mem_iff_forall_getElem`.
-  * It adds `Vector.toList_zip`.
-  * It adds `map_ofFn` and `ofFn_getElem` for lists/arrays/vectors.
+* [#12017](https://github.com/leanprover/lean4/pull/12017) 对列表/数组/向量 API 进行了一些小改进：
+  * 它修复了`Init.Core`中的拼写错误。
+  * 它添加了`List.isSome_min_iff`和`List.isSome_max_iff`。
+  * 它将 `grind` 和 `simp` 注释添加到以前的各种注释中
+  未注释的引理。
+  * 它添加了引理，用于使用索引作为`∃来表征`∃ x ∈ xs, P x`
+  (i : Nat), ∃ hi, P (xs[i])`，以及类似的通用量化引理：
+`exists_mem_iff_exists_getElem` 和 `forall_mem_iff_forall_getElem`。
+  * 它添加了`Vector.toList_zip`。
+  * 它为列表/数组/向量添加了 `map_ofFn` 和 `ofFn_getElem` 。
 
-* [#12019](https://github.com/leanprover/lean4/pull/12019) provides the `Nat`/`Int` lemmas `x ≤ y * z ↔ (x + z - 1) / z ≤
-  y`, `x ≤ y * z ↔ (x + y - 1) / y ≤ z` and `x / z + y / z ≤ (x + y) / z`.
+* [#12019](https://github.com/leanprover/lean4/pull/12019) 提供 `Nat`/`Int` 引理 `x ≤ y * z ↔ (x + z - 1) / z ≤
+  y`, `x ≤ y * z ↔ (x + y - 1) / y ≤ z` and `x / z + y / z ≤ (x + y) / z`。
 
-* [#12108](https://github.com/leanprover/lean4/pull/12108) adds `prefix_map_iff_of_injective` and
-  `suffix_map_iff_of_injective` lemmas to Init.Data.List.Nat.Sublist.
+* [#12108](https://github.com/leanprover/lean4/pull/12108) 添加 `prefix_map_iff_of_injective` 和
+  Init.Data.List.Nat.Sublist 的 `suffix_map_iff_of_injective` 引理。
 
-* [#12161](https://github.com/leanprover/lean4/pull/12161) adds `Option.of_wp_eq` and `Except.of_wp_eq`, similar to the
-  existing `Except.of_wp`. `Except.of_wp` is deprecated because applying
-  it requires prior generalization, at which point it is more convenient
-  to use `Except.of_wp_eq`.
+* [#12161](https://github.com/leanprover/lean4/pull/12161) 增加了 `Option.of_wp_eq` 和 `Except.of_wp_eq`，类似于
+  现有 `Except.of_wp`。 `Except.of_wp` 已弃用，因为应用
+  需要先进行泛化，此时比较方便
+  使用`Except.of_wp_eq`。
 
-* [#12162](https://github.com/leanprover/lean4/pull/12162) adds the function `Std.Iter.first?` and proves the specification
-  lemma `Std.Iter.first?_eq_match_step` if the iterator is productive.
+* [#12162](https://github.com/leanprover/lean4/pull/12162) 添加函数 `Std.Iter.first?` 并证明规范
+  引理 `Std.Iter.first?_eq_match_step` 如果迭代器是高效的。
 
-* [#12170](https://github.com/leanprover/lean4/pull/12170) adjusts the grind annotations for List.take/drop, and adds two
-  theorems.
+* [#12170](https://github.com/leanprover/lean4/pull/12170) 调整了List.take/drop的研磨注释，并添加了两个
+  定理。
 
-* [#12181](https://github.com/leanprover/lean4/pull/12181) adds two missing order instances for `Int`.
+* [#12181](https://github.com/leanprover/lean4/pull/12181) 为 `Int` 添加两个缺失的订单实例。
 
-* [#12193](https://github.com/leanprover/lean4/pull/12193) adds `DecidableEq` instances for `Sigma` and `PSigma`.
+* [#12193](https://github.com/leanprover/lean4/pull/12193) 为 `Sigma` 和 `PSigma` 添加 `DecidableEq` 实例。
 
-* [#12204](https://github.com/leanprover/lean4/pull/12204) adds theorems showing the consistency between `find?` and the
-  various index-finding functions. The theorems establish bidirectional
-  relationships between finding elements and finding their indices.
+* [#12204](https://github.com/leanprover/lean4/pull/12204) 添加了显示 `find?` 和
+各种索引查找功能。定理建立双向
+  查找元素和查找其索引之间的关系。
 
-* [#12212](https://github.com/leanprover/lean4/pull/12212) adds the function `Std.Iter.isEmpty` and proves the
-  specification lemmas `Std.Iter.isEmpty_eq_match_step` and
-  `Std.Iter.isEmpty_toList` if the iterator is productive.
+* [#12212](https://github.com/leanprover/lean4/pull/12212) 添加函数 `Std.Iter.isEmpty` 并证明
+  规范引理 `Std.Iter.isEmpty_eq_match_step` 和
+  `Std.Iter.isEmpty_toList` 如果迭代器有效。
 
-* [#12220](https://github.com/leanprover/lean4/pull/12220) fixes a bug on Windows with `IO.Process.spawn` where setting an
-  environment variable to the empty string would not set the environment
-  variable on the subprocess.
+* [#12220](https://github.com/leanprover/lean4/pull/12220) 使用 `IO.Process.spawn` 修复了 Windows 上的错误，其中设置
+  环境变量为空字符串不会设置环境
+  子进程上的变量。
 
-* [#12234](https://github.com/leanprover/lean4/pull/12234) introduces an `Iter.step_eq` lemma that fully unfolds an
-  `Iter.step` call, bypassing layers of unfolding.
+* [#12234](https://github.com/leanprover/lean4/pull/12234) 引入了一个 `Iter.step_eq` 引理，它完全展开了
+  `Iter.step` 调用，绕过层层展开。
 
-* [#12249](https://github.com/leanprover/lean4/pull/12249) adds some lemmas about the interaction of `sum`, `min` and `max`
-  about arrays that already exist for lists.
+* [#12249](https://github.com/leanprover/lean4/pull/12249) 添加了一些关于 `sum`、`min` 和 `max` 相互作用的引理
+  关于列表中已经存在的数组。
 
-* [#12250](https://github.com/leanprover/lean4/pull/12250) introduces the defining equality `Triple.iff` and uses that in
-  proofs instead of relying on definitional equality. It also introduces
-  `Triple.iff_conseq` that is useful for backward reasoning and introduces
-  verification conditions. Similarly, `Triple.entails_wp_*` theorems are
-  introduced for backward reasoning where the target is an stateful
-  entailment rather than a triple.
+* [#12250](https://github.com/leanprover/lean4/pull/12250) 引入了定义等式 `Triple.iff` 并将其用于
+  证明而不是依赖定义等式。还介绍了
+  `Triple.iff_conseq` 对于向后推理很有用并引入
+  验证条件。类似地， `Triple.entails_wp_*` 定理是
+  引入用于向后推理，其中目标是有状态的
+  蕴涵而不是三元组。
 
-* [#12258](https://github.com/leanprover/lean4/pull/12258) adds theorems that directly state that div and mod form an
-  injective pair: if `a / n = b / n` and `a % n = b % n` then `a = b`.
-  These complement existing div/mod lemmas and are useful for extension
-  arguments.
+* [#12258](https://github.com/leanprover/lean4/pull/12258) 添加了直接说明 div 和 mod 形成的定理
+  单射对：如果 `a / n = b / n` 和 `a % n = b % n` 那么 `a = b`。
+  这些补充了现有的 div/mod 引理并且对于扩展很有用
+  论据。
 
-* [#12277](https://github.com/leanprover/lean4/pull/12277) adds `IO.FS.Metadata.numLinks`, which contains the number of
-  hard links to a file.
+* [#12277](https://github.com/leanprover/lean4/pull/12277) 添加 `IO.FS.Metadata.numLinks`，其中包含
+  到文件的硬链接。
 
-* [#12281](https://github.com/leanprover/lean4/pull/12281) changes the definition of `Squash` to use `Quotient` by
-  upstreaming
+* [#12281](https://github.com/leanprover/lean4/pull/12281) 将 `Squash` 的定义更改为使用 `Quotient`
+  上游
   [`true_equivalence`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Quot.html#true_equivalence)
-  (now `equivalence_true`) and
+  （现在 `equivalence_true`）和
   [`trueSetoid`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/Data/Quot.html#trueSetoid)
-  (now `Setoid.trivial`). The new definition is def-eq to the old one, but
-  ensures that `Squash` can be used whenever a `Quotient` argument is
-  expected without having to explicitly provide the setoid.
+  （现在是`Setoid.trivial`）。新定义相对于旧定义来说是 def-eq，但是
+  确保只要有 `Quotient` 参数，就可以使用 `Squash`
+  无需显式提供 setoid 即可实现预期效果。
 
-* [#12282](https://github.com/leanprover/lean4/pull/12282) fixes a platform inconsistency in `IO.FS.removeFile` where it
-  could not delete read-only files on Windows.
+* [#12282](https://github.com/leanprover/lean4/pull/12282) 修复了 `IO.FS.removeFile` 中的平台不一致问题
+  无法删除 Windows 上的只读文件。
 
-* [#12290](https://github.com/leanprover/lean4/pull/12290) moves the `PredTrans.apply` structure field into a separate
-  `def`. Doing so improves kernel reduction speed because the kernel is
-  less likely to unfold definitions compared to structure field
-  projections. This causes minor shifts in `simp` normal forms.
+* [#12290](https://github.com/leanprover/lean4/pull/12290) 将 `PredTrans.apply` 结构体字段移动到一个单独的
+  __修复000__。这样做可以提高内核缩减速度，因为内核是
+  与结构域相比，不太可能展开定义
+  预测。这会导致 `simp` 正常形式发生微小变化。
 
-* [#12301](https://github.com/leanprover/lean4/pull/12301) introduces the functions `(String|Slice).posGE` and
-  `(String|Slice).posGT` will full verification and deprecates
-  `Slice.findNextPos` in favor of `Slice.posGT`.
+* [#12301](https://github.com/leanprover/lean4/pull/12301) 介绍了函数 `(String__FIX001__Slice).posGE` 和
+  `(String__FIX000__Slice).posGT` 将进行全面验证并弃用
+  `Slice.findNextPos` 支持 `Slice.posGT`。
 
-* [#12305](https://github.com/leanprover/lean4/pull/12305) adds various uninteresting lemmas about basic types, extracted
-  from the KMP verification.
+* [#12305](https://github.com/leanprover/lean4/pull/12305) 添加了有关基本类型的各种无趣引理，提取
+  从KMP验证。
 
-* [#12311](https://github.com/leanprover/lean4/pull/12311) exposes the chain and `is_sup` definitions such that other modules
-  can declare custom CCPO instances.
+* [#12311](https://github.com/leanprover/lean4/pull/12311) 公开链和 `is_sup` 定义，以便其他模块
+  可以声明自定义 CCPO 实例。
 
-* [#12312](https://github.com/leanprover/lean4/pull/12312) reverses the relationship between the `ForwardPattern` and
-  `ToForwardSearcher` classes.
+* [#12312](https://github.com/leanprover/lean4/pull/12312) 颠倒了 `ForwardPattern` 和 `ForwardPattern` 之间的关系
+  `ToForwardSearcher` 类。
 
-* [#12318](https://github.com/leanprover/lean4/pull/12318) avoids undefined behavior in `String.Slice.hash` on unaligned
-  substrings.
-  This could produce a SIGILL on some Arm platforms.
+* [#12318](https://github.com/leanprover/lean4/pull/12318) 避免 `String.Slice.hash` 中未对齐时的未定义行为
+  子串。
+  这可能会在某些 Arm 平台上产生 SIGILL。
 
-* [#12322](https://github.com/leanprover/lean4/pull/12322) adds `String.Slice.Subslice`, which is an unbundled version of
+* [#12322](https://github.com/leanprover/lean4/pull/12322) 添加了 `String.Slice.Subslice`，它是 `String.Slice.Subslice` 的非捆绑版本
   `String.Slice`.
 
-* [#12333](https://github.com/leanprover/lean4/pull/12333) adds the basic typeclasses that will be used in the verification
-  of our string searching infrastructure.
+* [#12333](https://github.com/leanprover/lean4/pull/12333) 添加将在验证中使用的基本类型类
+  我们的字符串搜索基础设施。
 
-* [#12341](https://github.com/leanprover/lean4/pull/12341) adds a few unification hints that we will need after
-  `backward.isDefEq.respectTransparency` is `true` by default.
+* [#12341](https://github.com/leanprover/lean4/pull/12341) 添加了一些我们之后需要的统一提示
+  `backward.isDefEq.respectTransparency` 默认为 `true`。
 
-* [#12346](https://github.com/leanprover/lean4/pull/12346) shows `s == t ↔ s.copy = t.copy` for `s t : String.Slice` and
-  establishes the right-hand side as the simp normal form.
+* [#12346](https://github.com/leanprover/lean4/pull/12346) 显示 `s t : String.Slice` 的 `s == t ↔ s.copy = t.copy` 和
+将右侧建立为 simpl 范式。
 
-* [#12349](https://github.com/leanprover/lean4/pull/12349) builds on #12333 and proves that `Char` and `Char -> Bool`
-  patterns are lawful.
+* [#12349](https://github.com/leanprover/lean4/pull/12349) 建立在 #12333 之上并证明 `Char` 和 `Char -> Bool`
+  模式是合法的。
 
-* [#12352](https://github.com/leanprover/lean4/pull/12352) improves the slice API with lemmas for `drop`/`take` operations
-  on `Subarray` and more lemmas about `Std.Slice.fold`, `Std.Slice.foldM`
-  and `Std.Slice.forIn`. It also changes the `simp` and `grind`
-  annotations for `Slice`-related lemmas. Lemmas converting between slices
-  of different shapes are no longer `simp`/`grind`-annotated because they
-  often complicated lemmas and hindered automation.
+* [#12352](https://github.com/leanprover/lean4/pull/12352) 使用 `drop`/`take` 操作的引理改进了切片 API
+  关于 `Subarray` 以及更多关于 `Std.Slice.fold`、`Std.Slice.foldM` 的引理
+  和`Std.Slice.forIn`。它还更改了 `simp` 和 `grind`
+  `Slice` 相关引理的注释。切片之间转换的引理
+  不同形状的不再被 `simp`/`grind`-注释，因为它们
+  通常引理很复杂并且阻碍了自动化。
 
-* [#12358](https://github.com/leanprover/lean4/pull/12358) improves the `simp` and `grind` rule framework for
-  `PredTrans.apply` and also renames the respective lemmas according to
-  convention.
+* [#12358](https://github.com/leanprover/lean4/pull/12358) 改进了 `simp` 和 `grind` 规则框架
+  `PredTrans.apply` 并根据以下内容重命名相应的引理
+  公约。
 
-* [#12359](https://github.com/leanprover/lean4/pull/12359) deprecates `extract_eq_drop_take` in favor of the more correct
-  name `extract_eq_take_drop`, so that we'll be able to use the old name
-  for a lemma `xs.extract start stop = (xs.take stop).drop start`. Until
-  the deprecation deadline has passed, this new lemma will be called
+* [#12359](https://github.com/leanprover/lean4/pull/12359) 弃用 `extract_eq_drop_take` 以支持更正确的方法
+  name `extract_eq_take_drop`，这样我们就可以使用旧名称
+  对于引理 `xs.extract start stop = (xs.take stop).drop start`。直到
+  弃用截止日期已过，这个新引理将被称为
   `extract_eq_drop_take'`.
 
-* [#12360](https://github.com/leanprover/lean4/pull/12360) provides a `LawfulForwardPatternModel` instance for string
-  patterns, i.e., it proves correctness of the `dropPrefix?` and
-  `startsWith` functions for string patterns.
+* [#12360](https://github.com/leanprover/lean4/pull/12360) 为字符串提供 `LawfulForwardPatternModel` 实例
+  模式，即它证明 `dropPrefix?` 的正确性和
+用于字符串模式的 `startsWith` 函数。
 
-* [#12363](https://github.com/leanprover/lean4/pull/12363) introduces iterators for vectors via `Vector.iter` and
-  `Vector.iterM`, together with the usual lemmas.
+* [#12363](https://github.com/leanprover/lean4/pull/12363) 通过 `Vector.iter` 引入向量的迭代器
+  `Vector.iterM`，以及通常的引理。
 
-* [#12371](https://github.com/leanprover/lean4/pull/12371) adds lemmas for simplifying situations involving `Bool` and
+* [#12371](https://github.com/leanprover/lean4/pull/12371) 添加引理以简化涉及 `Bool` 和
   `ite`/`dite`.
 
-* [#12412](https://github.com/leanprover/lean4/pull/12412) introduces `Rat.abs` and adds missing lemmas about `Int` and
+* [#12412](https://github.com/leanprover/lean4/pull/12412) 引入 `Rat.abs` 并添加关于 `Int` 的缺失引理和
   `Rat`.
 
-* [#12419](https://github.com/leanprover/lean4/pull/12419) adds `LawfulOrderOrd` instances for `Nat`, `Int`, and all
-  fixed-width integer types (`Int8`, `Int16`, `Int32`, `Int64`, `ISize`,
-  `UInt8`, `UInt16`, `UInt32`, `UInt64`, `USize`). These instances
-  establish that the `Ord` instances for these types are compatible with
-  their `LE` instances. Additionally, this PR adds a few missing lemmas
-  and `grind` patterns.
+* [#12419](https://github.com/leanprover/lean4/pull/12419) 为 `Nat`、`Int` 和所有添加 `LawfulOrderOrd` 实例
+  固定宽度整数类型（`Int8`、`Int16`、`Int32`、`Int64`、`ISize`、
+  `UInt8`、`UInt16`、`UInt32`、`UInt64`、`USize`）。这些实例
+  确定这些类型的 `Ord` 实例与
+  他们的 `LE` 实例。此外，此 PR 添加了一些缺失的引理
+  和 `grind` 模式。
 
-* [#12424](https://github.com/leanprover/lean4/pull/12424) gives a proof of `LawfulToForwardSearcherModel` for `Slice`
-  patterns, which amounts to proving that our implementation of KMP is
-  correct.
+* [#12424](https://github.com/leanprover/lean4/pull/12424) 给出 `Slice` 的 `LawfulToForwardSearcherModel` 的证明
+  模式，这相当于证明我们的 KMP 实施是
+  正确。
 
-* [#12426](https://github.com/leanprover/lean4/pull/12426) adds the lemma `Acc.inv_of_transGen`, a generalization of
-  `Acc.inv`. While `Acc.inv` shows that `Acc r x` implies `Acc r y` given
-  that `r y x`, the new lemma shows that this also holds if `y` is only
-  *transitively* related to `x`.
+* [#12426](https://github.com/leanprover/lean4/pull/12426) 添加了引理 `Acc.inv_of_transGen`，它是
+  __修复000__。虽然 `Acc.inv` 表明 `Acc r x` 暗示 `Acc r y` 给定
+  `r y x`，新引理表明，如果 `y` 仅是，则这也成立
+  *传递*与 `x` 相关。
 
-* [#12432](https://github.com/leanprover/lean4/pull/12432) adds the lemmas `isSome_find?` and `isSome_findSome?` to the API
-  of lists, arrays and vectors.
+* [#12432](https://github.com/leanprover/lean4/pull/12432) 将引理 `isSome_find?` 和 `isSome_findSome?` 添加到 API
+  列表、数组和向量。
 
-* [#12437](https://github.com/leanprover/lean4/pull/12437) verifies the `String.Slice.splitToSubslice` function by relating
-  it to a model implementation `Model.split` based on a
+* [#12437](https://github.com/leanprover/lean4/pull/12437) 通过关联来验证 `String.Slice.splitToSubslice` 函数
+  它基于一个模型实现 `Model.split`
   `ForwardPatternModel`.
 
-* [#12438](https://github.com/leanprover/lean4/pull/12438) provides (1) lemmas showing that lists obtained from ranges have
-  no duplicates and (2) lemmas about `forIn` and `foldl` on slices.
+* [#12438](https://github.com/leanprover/lean4/pull/12438) 提供 (1) 引理，表明从范围获得的列表具有
+  切片上没有重复项和 (2) 关于 `forIn` 和 `foldl` 的引理。
 
-* [#12441](https://github.com/leanprover/lean4/pull/12441) removes `Subarray.foldl(M)`, `Subarray.toArray` and
-  `Subarray.size` in favor of the `Std.Slice`-namespaced operations. Dot
-  notation will continue to work. If, say, `Subarray.size` is explicitly
-  referred to, an error suggesting to use `Std.Slice.size` will show up.
+* [#12441](https://github.com/leanprover/lean4/pull/12441) 删除 `Subarray.foldl(M)`、`Subarray.toArray` 和
+  `Subarray.size` 支持 `Std.Slice` 命名空间操作。点
+  符号将继续起作用。比如说，如果 `Subarray.size` 是明确的
+  参考，会出现一条错误建议使用 `Std.Slice.size` 。
 
-* [#12442](https://github.com/leanprover/lean4/pull/12442) derives `DecidableEq` instances for the types of ranges such as
-  `a...b` (in this case, `Std.Rco`).
+* [#12442](https://github.com/leanprover/lean4/pull/12442) 派生 `DecidableEq` 范围类型的实例，例如
+  `a...b`（在本例中为 `Std.Rco`）。
 
-* [#12445](https://github.com/leanprover/lean4/pull/12445) provides lemmas characterizing `Nat.toDigits`, `Nat.repr` and
+* [#12445](https://github.com/leanprover/lean4/pull/12445) 提供表征 `Nat.toDigits`、`Nat.repr` 和
   `ToString Nat`.
 
-* [#12449](https://github.com/leanprover/lean4/pull/12449) marks `String.toString_eq_singleton` as a `simp` lemma.
+* [#12449](https://github.com/leanprover/lean4/pull/12449) 将 `String.toString_eq_singleton` 标记为 `simp` 引理。
 
-* [#12450](https://github.com/leanprover/lean4/pull/12450) moves the `String.Slice`/`String` iterators out into their own
-  file, in preparation for verification.
+* [#12450](https://github.com/leanprover/lean4/pull/12450) 将 `String.Slice`/`String` 迭代器移出到自己的迭代器中
+  文件，准备审核。
 
-* [#12452](https://github.com/leanprover/lean4/pull/12452) upstreams `List.scanl`, `List.scanr` and their lemmas from
-  batteries into the standard library.
+* [#12452](https://github.com/leanprover/lean4/pull/12452) 上游 `List.scanl`、`List.scanr` 及其引理
+  电池放入标准库。
 
-* [#12456](https://github.com/leanprover/lean4/pull/12456) verifies all of the `String` iterators except for the bytes
-  iterator by relating them to `String.toList`.
+* [#12456](https://github.com/leanprover/lean4/pull/12456) 验证除字节之外的所有 `String` 迭代器
+  迭代器，将它们与 `String.toList` 相关联。
 
-* [#12504](https://github.com/leanprover/lean4/pull/12504) makes the `Rat.abs_*` lemmas (`abs_zero`, `abs_nonneg`,
+* [#12504](https://github.com/leanprover/lean4/pull/12504) 产生 `Rat.abs_*` 引理 (`abs_zero`, `abs_nonneg`,
   `abs_of_nonneg`, `abs_of_nonpos`, `abs_neg`, `abs_sub_comm`,
-  `abs_eq_zero_iff`, `abs_pos_iff`) protected, so they don't shadow the
-  general `abs_*` lemmas when the `Rat` namespace is opened in downstream
-  projects.
+  `abs_eq_zero_iff`、`abs_pos_iff`) 受保护，因此它们不会遮蔽
+  当 `Rat` 命名空间在下游打开时，通用 `abs_*` 引理
+  项目。
 
-* [#12521](https://github.com/leanprover/lean4/pull/12521) shows `HashSet.ofList l ~m l.foldl (init := ∅) fun acc a =>
-  acc.insert a` (which is "just" the definition).
+* [#12521](https://github.com/leanprover/lean4/pull/12521) 显示 `HashSet.ofList l ~m l.foldl (init := ∅) fun acc a =>
+  acc.insert a`（“只是”定义）。
 
-* [#12531](https://github.com/leanprover/lean4/pull/12531) bundles some lemmas about hash maps into equivalences for easier
-  rewriting.
+* [#12531](https://github.com/leanprover/lean4/pull/12531) 将一些关于哈希映射的引理捆绑到等价中以便更容易
+  重写。
 
-* [#12582](https://github.com/leanprover/lean4/pull/12582) uses a `ptrEq` fast path for `Name.quickCmp`. It is particularly
-  effective at speeding up
-  `quickCmp` calls in `TreeMap`'s indexed by `FVarId` as usually there is
-  only one pointer per `FVarId`
-  so equality is always instantly detected without traversing the linked
-  list of `Name` components.
+* [#12582](https://github.com/leanprover/lean4/pull/12582) 对 `Name.quickCmp` 使用 `ptrEq` 快速路径。它特别是
+  有效加速
+  `quickCmp` 调用由 `FVarId` 索引的 `TreeMap`，通常是这样
+  每个 `FVarId` 只有一个指针
+  因此，始终会立即检测到相等性，而无需遍历链接
+  `Name` 组件列表。
 
-* [#12583](https://github.com/leanprover/lean4/pull/12583) inlines the accessor for the computed hash field of `Name`. This
-  ensures that accessing the
-  value is basically always just a single load instead of doing a full
-  function call.
+* [#12583](https://github.com/leanprover/lean4/pull/12583) 内联 `Name` 的计算哈希字段的访问器。这个
+  确保访问
+值基本上总是只是一次加载，而不是执行完整的加载
+  函数调用。
 
-* [#12596](https://github.com/leanprover/lean4/pull/12596) adds an `Std.Do` spec lemma for `ForIn` over strings.
+* [#12596](https://github.com/leanprover/lean4/pull/12596) 在字符串上为 `ForIn` 添加了 `Std.Do` 规范引理。
 
-* [#12641](https://github.com/leanprover/lean4/pull/12641) derives the linear order on string positions (`String.Pos.Raw`,
-  `String.Pos`, `String.Slice.Pos`) via `Std.LinearOrderPackage`, which
-  ensures that all data-carrying and propositional instances are present.
+* [#12641](https://github.com/leanprover/lean4/pull/12641) 导出字符串位置上的线性顺序 (`String.Pos.Raw`,
+  `String.Pos`、`String.Slice.Pos`) 通过 `Std.LinearOrderPackage`，其中
+  确保所有数据承载和命题实例都存在。
 
-* [#12642](https://github.com/leanprover/lean4/pull/12642) adds dsimprocs for reducing `String.toList` and `String.push`.
+* [#12642](https://github.com/leanprover/lean4/pull/12642) 添加了 dsimprocs 以减少 `String.toList` 和 `String.push`。
 
-* [#12651](https://github.com/leanprover/lean4/pull/12651) adds some missing lemmas about `min`, `minOn`, `List.min`,
+* [#12651](https://github.com/leanprover/lean4/pull/12651) 添加了一些关于 `min`、`minOn`、`List.min` 的缺失引理，
   `List.minOn`.
 
-* [#12757](https://github.com/leanprover/lean4/pull/12757) marks `Id.run` as `[implicit_reducible]` to ensure that
-  `Id.instMonadLiftTOfPure` and `instMonadLiftT Id` are definitionally
-  equal when using `.implicitReducible` transparency setting.
+* [#12757](https://github.com/leanprover/lean4/pull/12757) 将 `Id.run` 标记为 `[implicit_reducible]` 以确保
+  `Id.instMonadLiftTOfPure` 和 `instMonadLiftT Id` 定义为
+  使用 `.implicitReducible` 透明度设置时相等。
 
-* [#12821](https://github.com/leanprover/lean4/pull/12821) removes the `@[grind →]` attribute from
-  `List.getElem_of_getElem?` and `Vector.getElem_of_getElem?`. These were
-  identified as problematic in Mathlib by
+* [#12821](https://github.com/leanprover/lean4/pull/12821) 删除 `@[grind →]` 属性
+  `List.getElem_of_getElem?` 和 `Vector.getElem_of_getElem?`。这些是
+  在 Mathlib 中被识别为有问题的
   https://github.com/leanprover/lean4/issues/12805.
 
-# Tactics
+# 战术
+%%%
+tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-03-27_RPAR_--Tactics"
+%%%
 
-* [#11744](https://github.com/leanprover/lean4/pull/11744) fixes a bug where `lia` was incorrectly solving goals involving
-  ordered types like `Rat` that it shouldn't handle. The `lia` tactic is
-  intended for linear integer arithmetic only.
+* [#11744](https://github.com/leanprover/lean4/pull/11744) 修复了 `lia` 错误地解决涉及的目标的错误
+  它不应该处理像 `Rat` 这样的有序类型。 `lia` 策略是
+  仅用于线性整数算术。
 
-* [#12152](https://github.com/leanprover/lean4/pull/12152) adds `simpArrowTelescope`, a simproc that simplifies telescopes
-  of non-dependent arrows (p₁ → p₂ → ... → q) while avoiding quadratic
-  proof growth.
+* [#12152](https://github.com/leanprover/lean4/pull/12152) 添加了 `simpArrowTelescope`，一个简化望远镜的 simproc
+非相关箭头 (p₁ → p2 → ... → q)，同时避免二次
+  证明增长。
 
-* [#12153](https://github.com/leanprover/lean4/pull/12153) improves the `simpArrowTelescope` simproc that simplifies
-  non-dependent arrow telescopes: `p₁ → p₂ → ... → q`.
+* [#12153](https://github.com/leanprover/lean4/pull/12153) 改进了 `simpArrowTelescope` simproc，简化了
+  非相关箭头望远镜：`p₁ → p₂ → ... → q`。
 
-* [#12154](https://github.com/leanprover/lean4/pull/12154) adds `simpTelescope`, a simproc that simplifies telescope
-  binders (`have`-expression values and arrow hypotheses) but not the
-  final body. This is useful for simplifying targets before introducing
-  hypotheses.
+* [#12154](https://github.com/leanprover/lean4/pull/12154) 添加了 `simpTelescope`，一个简化望远镜的 simproc
+  粘合剂（`have`-表达式值和箭头假设），但不是
+  最终的身体。这对于在引入之前简化目标很有用
+  假设。
 
-* [#12168](https://github.com/leanprover/lean4/pull/12168) adds support for eta-reduction in `SymM`.
+* [#12168](https://github.com/leanprover/lean4/pull/12168) 在 `SymM` 中添加了对 eta 缩减的支持。
 
-* [#12172](https://github.com/leanprover/lean4/pull/12172) fixes how we determine whether a function parameter is an
-  instance.
-  Previously, we relied on binder annotations (e.g., `[Ring A]` vs `{_ :
-  Ring A}`)
-  to make this determination. This is unreliable because users
-  legitimately use
-  `{..}` binders for class types when the instance is already available
-  from
-  context. For example:
+* [#12172](https://github.com/leanprover/lean4/pull/12172) 修复了我们如何确定函数参数是否为
+  实例。
+  以前，我们依赖活页夹注释（例如， `[Ring A]` 与 `{_ ：
+  环A}`)
+  做出这个决定。这是不可靠的，因为用户
+  合法使用
+  当实例已经可用时，类类型的 `{..}` 绑定器
+  来自
+  上下文。例如：
   ```
   structure OrdSet (α : Type) [Hashable α] [BEq α] where
     ...
@@ -987,286 +1035,289 @@ There are also various additions to the library, including:
     ...
   ```
 
-  Here, `Hashable` and `BEq` are classes, but the `{..}` binder is intentional, the
-  instances come from `OrdSet`'s parameters, so type class resolution is unnecessary.
+这里， `Hashable` 和 `BEq` 是类，但 `{..}` 绑定器是故意的，
+  实例来自 `OrdSet` 的参数，因此类型类解析是不必要的。
 
-  The fix checks the parameter's *type* using `isClass?` rather than its syntax, and
-  caches this information in `FunInfo`. This affects several subsystems:
-  discrimination trees, congruence lemma generation, and the `grind` canonicalizer.
+  该修复使用 `isClass?` 而不是其语法来检查参数的*类型*，并且
+  将此信息缓存在 `FunInfo` 中。这会影响多个子系统：
+  判别树、同余引理生成和 `grind` 规范化器。
 
-* [#12176](https://github.com/leanprover/lean4/pull/12176) fixes a bug where delayed E-match theorem instances could cause
-  uniqueId collisions in the instance tracking map.
+* [#12176](https://github.com/leanprover/lean4/pull/12176) 修复了延迟 E 匹配定理实例可能导致的错误
+  实例跟踪映射中的 uniqueId 冲突。
 
-* [#12195](https://github.com/leanprover/lean4/pull/12195) ensures `dsimp` does not "simplify" instances by default. The
-  old behavior can be retrieved by using
+* [#12195](https://github.com/leanprover/lean4/pull/12195) 确保 `dsimp` 默认情况下不会“简化”实例。的
+  可以通过使用来检索旧行为
   ```
   set_option backward.dsimp.instances true
   ```
-  Applying `dsimp` to instances creates non-standard instances, and this
-  creates all sorts of problems in Mathlib.
-  This modification is similar to
+  将 `dsimp` 应用于实例会创建非标准实例，这
+  在 Mathlib 中产生各种各样的问题。
+  这个修改类似于
   ```
   set_option backward.dsimp.proofs true
   ```
 
-* [#12205](https://github.com/leanprover/lean4/pull/12205) adds `mkBackwardRuleFromExpr` to create backward rules from
-  expressions, complementing the existing `mkBackwardRuleFromDecl` which
-  only works with declaration names.
+* [#12205](https://github.com/leanprover/lean4/pull/12205) 添加 `mkBackwardRuleFromExpr` 以创建向后规则
+  表达式，补充现有的 `mkBackwardRuleFromDecl` 其中
+  仅适用于声明名称。
 
-* [#12224](https://github.com/leanprover/lean4/pull/12224) fixes a bug where `grind?` suggestions would not include
-  parameters using local variable dot notation (e.g.,
-  `cs.getD_rightInvSeq` where `cs` is a local variable). These parameters
-  were incorrectly filtered out because the code assumed all ident params
-  resolve to global declarations. In fact, local variable dot notation
-  produces anchors that need the original term to be loaded during replay,
-  so they must be preserved in the suggestion.
+* [#12224](https://github.com/leanprover/lean4/pull/12224) 修复了 `grind?` 建议不包括的错误
+  使用局部变量点表示法的参数（例如，
+  `cs.getD_rightInvSeq` 其中 `cs` 是局部变量）。这些参数
+被错误地过滤掉，因为代码假定了所有 ident 参数
+  决心全球声明。事实上，局部变量点表示法
+  生成需要在重播期间加载原始术语的锚点，
+  因此它们必须保留在建议中。
 
-* [#12226](https://github.com/leanprover/lean4/pull/12226) fixes a bug where `grind [foo]` fails when the theorem `foo` has
-  a different universe variable name than the goal, even though universe
-  polymorphism should allow the universes to unify.
+* [#12226](https://github.com/leanprover/lean4/pull/12226) 修复了当定理 `foo` 有时 `grind [foo]` 失败的错误
+  与目标不同的 Universe 变量名称，即使 Universe
+  多态性应该允许宇宙统一。
 
-* [#12244](https://github.com/leanprover/lean4/pull/12244) ensures `simp` does not "simplify" instances by default. The old
-  behavior can be retrieved by using `simp +instances`. is similar
-  to #12195, but for `dsimp`.
-  The backward compatibility flag for `dsimp` also deactivates this new
-  feature.
+* [#12244](https://github.com/leanprover/lean4/pull/12244) 确保 `simp` 默认情况下不会“简化”实例。旧的
+  可以使用 `simp +instances` 检索行为。是相似的
+  到#12195，但对于`dsimp`。
+  `dsimp` 的向后兼容性标志也会停用此新功能
+  功能。
 
-* [#12259](https://github.com/leanprover/lean4/pull/12259) ensures we cache the result of `unfold_definition` definition in
-  the kernel type checker. We used to cache this information in a thread
-  local storage, but it was deleted during the Lean 3 to Lean 4
-  transition.
+* [#12259](https://github.com/leanprover/lean4/pull/12259) 确保我们将 `unfold_definition` 定义的结果缓存在
+  内核类型检查器。我们曾经将这些信息缓存在线程中
+  本地存储，但在精益 3 到精益 4 期间被删除
+  过渡。
 
-* [#12260](https://github.com/leanprover/lean4/pull/12260) fixes a bug in the function `instantiateRangeS'` in the `Sym`
-  framework.
+* [#12260](https://github.com/leanprover/lean4/pull/12260) 修复了 `Sym` 中函数 `instantiateRangeS'` 中的错误
+  框架。
 
-* [#12279](https://github.com/leanprover/lean4/pull/12279) adds an experimental `cbv` tactic that can be invoked from
-  `conv` mode. The tactic is not suitable for production use and an
-  appropriate warning is displayed.
+* [#12279](https://github.com/leanprover/lean4/pull/12279) 添加了一个实验性 `cbv` 策略，可以从
+  `conv` 模式。该策略不适合生产使用，并且
+  显示适当的警告。
 
-* [#12280](https://github.com/leanprover/lean4/pull/12280) adds a benchmark based on Xavier Leroy's compiler verification
-  course to test call-by-value tactic.
+* [#12280](https://github.com/leanprover/lean4/pull/12280) 添加了基于 Xavier Leroy 编译器验证的基准
+  测试按值调用策略的课程。
 
-* [#12287](https://github.com/leanprover/lean4/pull/12287) fixes an issue where `attribute [local simp]` was incorrectly
-  rejected on a theorem from a private import
+* [#12287](https://github.com/leanprover/lean4/pull/12287) 修复了 `attribute [local simp]` 不正确的问题
+  私人导入的定理被拒绝
 
-* [#12296](https://github.com/leanprover/lean4/pull/12296) adds `cbv_eval` attribute that allows to evaluate functions in
-  `cbv` tactic using pre-registered theorems.
+* [#12296](https://github.com/leanprover/lean4/pull/12296) 添加了 `cbv_eval` 属性，允许计算以下函数
+  使用预先注册的定理的 `cbv` 策略。
 
-* [#12319](https://github.com/leanprover/lean4/pull/12319) leverages the fact that expressions are type correct in `grind`
-  and the conclusion of extensionality theorems is of the form `?a = ?b`.
+* [#12319](https://github.com/leanprover/lean4/pull/12319) 利用 `grind` 中表达式类型正确的事实
+  外延定理的结论的形式为`?a = ?b`。
 
-* [#12345](https://github.com/leanprover/lean4/pull/12345) adds two benchmarks (sieve of Eratosthenes, removing duplicates
-  from the list) and one test (a function with sublinear complexity
-  defined via well-founded recursion evaluated on large naturals with up
-  to `60` digits).
+* [#12345](https://github.com/leanprover/lean4/pull/12345) 添加了两个基准（埃拉托色尼筛选、删除重复项
+  从列表中）和一个测试（具有次线性复杂度的函数
+  通过对大自然数进行评估的有充分依据的递归来定义
+  到 `60` 数字）。
 
-* [#12361](https://github.com/leanprover/lean4/pull/12361) develops custom simprocs for dealing with `ite`/`dite`
-  expressions in `cbv` tactics, based on equivalent simprocs from
-  `Sym.simp`, with the difference that if the condition is not reduced to
-  `True`/`False`, we make use of the decidable instance and calculate to
-  what the condition reduces to.
+* [#12361](https://github.com/leanprover/lean4/pull/12361) 开发自定义 simprocs 来处理 `ite`/`dite`
+  `cbv` 策略中的表达式，基于等效的 simprocs
+  `Sym.simp`，区别在于如果条件没有简化为
+`True`/`False`，我们利用可判定实例并计算
+  条件减少到什么程度。
 
-* [#12370](https://github.com/leanprover/lean4/pull/12370) fixes a proof construction bug in `Sym.simp`.
+* [#12370](https://github.com/leanprover/lean4/pull/12370) 修复了 `Sym.simp` 中的证明构造错误。
 
-* [#12399](https://github.com/leanprover/lean4/pull/12399) adds a custom simproc to handle `Decidable.rec`, where we force
-  the rewrite in the argument of the `Decidable` type, that normally is
-  not rewritten due to being a subsingleton.
+* [#12399](https://github.com/leanprover/lean4/pull/12399) 添加了一个自定义 simproc 来处理 `Decidable.rec`，我们强制
+  重写 `Decidable` 类型的参数，通常是
+  由于是子单例而没有重写。
 
-* [#12406](https://github.com/leanprover/lean4/pull/12406) implements two changes to LRAT checking in `bv_decide`:
-  1. The LRAT trimmer previously used to drop delete instructions as we
-  did not act upon them in a meaningful way (as explained in 2). Now it
-  figures out the earliest point after which a clause may be deleted in
-  the trimmed LRAT proof and inserts a deletion there.
-  2. The LRAT checker takes in an `Array IntAction` and explodes it into
-  an `Array DefaultClauseAction` before passing it into the checking loop.
-  `DefaultClauseAction` has a much larger memory footprint compared to
-  `IntAction`. Thus materializing the entire proof as
-  `DefaultClauseAction` upfront consumes a lot of memory. In the adapted
-  LRAT checker we take in an `Array IntAction` and only ever convert the
-  step we are currently working on to a `DefaultClauseAction`. In
-  combination with the fact that we now insert deletion instructions this
-  can drastically reduce memory consumption.
+* [#12406](https://github.com/leanprover/lean4/pull/12406) 对 `bv_decide` 中的 LRAT 检查进行了两项更改：
+  1. LRAT 修剪器以前用于删除删除指令，因为我们
+  没有以有意义的方式对它们采取行动（如2中所述）。现在它
+  找出最早可以删除条款的时间点
+  修剪后的 LRAT 证明并在那里插入删除内容。
+  2. LRAT 检查器接收 `Array IntAction` 并将其分解为
+  在将其传递到检查循环之前先添加 `Array DefaultClauseAction` 。
+  与相比，`DefaultClauseAction` 的内存占用要大得多
+  __修复000__。因此将整个证明具体化为
+  `DefaultClauseAction` 前期会消耗大量内存。在改编的
+  LRAT 检查器我们接受 `Array IntAction` 并且只转换
+  我们目前正在努力实现 `DefaultClauseAction`。在
+结合我们现在插入删除指令的事实
+  可以大大减少内存消耗。
 
-* [#12408](https://github.com/leanprover/lean4/pull/12408) adds a user facing `cbv` tactic that can be used outside of the
-  `conv` mode.
+* [#12408](https://github.com/leanprover/lean4/pull/12408) 添加了一个面向用户的 `cbv` 策略，可以在
+  `conv` 模式。
 
-* [#12411](https://github.com/leanprover/lean4/pull/12411) adds a finishing `decide_cbv` tactic, which applies
-  `of_decide_eq_true` and then tries to discharge the remaining goal using
+* [#12411](https://github.com/leanprover/lean4/pull/12411) 添加了终结 `decide_cbv` 策略，适用
+  `of_decide_eq_true` 然后尝试使用以下方法实现剩余目标
   `cbv`.
 
-* [#12415](https://github.com/leanprover/lean4/pull/12415) improves the support for eta expanded terms in `grind` patterns.
+* [#12415](https://github.com/leanprover/lean4/pull/12415) 改进了对 `grind` 模式中 eta 扩展项的支持。
 
-* [#12417](https://github.com/leanprover/lean4/pull/12417) refactors the main loop of the `cbv` tactic. Rather than using
-  multiple simprocs, a central pre simproc is introduced. Moreover, let
-  expressions are no longer immediately zeta-reduced due to performance on
-  one of the benchmarks (`leroy.lean`).
+* [#12417](https://github.com/leanprover/lean4/pull/12417) 重构了 `cbv` 策略的主循环。而不是使用
+  多个 simproc，引入了中央预 simproc。此外，让
+  由于性能原因，表达式不再立即 zeta 缩减
+  基准之一 (`leroy.lean`)。
 
-* [#12423](https://github.com/leanprover/lean4/pull/12423) adds the attribute `@[univ_out_params]` for specifying which
-  universe levels should be treated as output parameters. By default, any
-  universe level that does not occur in any input parameter is considered
-  an output parameter.
+* [#12423](https://github.com/leanprover/lean4/pull/12423) 添加属性 `@[univ_out_params]` 用于指定哪个
+  宇宙级别应被视为输出参数。默认情况下，任何
+  考虑任何输入参数中未出现的宇宙级别
+  一个输出参数。
 
-* [#12467](https://github.com/leanprover/lean4/pull/12467) adds a benchmark for `cbv` tactic for evaluating
-  `Decidable.decide` for a `Decidable` instance for a problem of checking
-  if a number is not a prime power.
+* [#12467](https://github.com/leanprover/lean4/pull/12467) 为 `cbv` 策略添加了评估基准
+  `Decidable.decide` 用于检查问题的 `Decidable` 实例
+  如果一个数不是素数幂。
 
-* [#12473](https://github.com/leanprover/lean4/pull/12473) fixes an assertion violation in `grind` reported at #12246 This
-  assertion fails when in examples containing heterogenous equalities with
-  elements of different types (e.g., `Fin n` and `Fin m`) attached to the
-  same theory solver.
+* [#12473](https://github.com/leanprover/lean4/pull/12473) 修复了 #12246 报告的 `grind` 中的断言冲突
+  在包含异质等式的示例中，断言失败
+  附加到不同类型的元素（例如 `Fin n` 和 `Fin m`）
+  相同的理论求解器。
 
-* [#12474](https://github.com/leanprover/lean4/pull/12474) fixes a panic in `grind` where `sreifyCore?` could encounter
-  power subterms not yet internalized in the E-graph during nested
-  propagation. The ring reifier (`reifyCore?`) already had a defensive
-  `alreadyInternalized` check before creating variables, but the semiring
-  reifier (`sreifyCore?`) was missing this guard. When `propagatePower`
-  decomposed `a ^ (b₁ + b₂)` into `a^b₁ * a^b₂` and the resulting terms
-  triggered further propagation, the semiring reifier could be called on
-  subterms not yet in the E-graph, causing `markTerm` to fail.
+* [#12474](https://github.com/leanprover/lean4/pull/12474) 修复了 `grind` 中 `sreifyCore?` 可能遇到的恐慌
+  嵌套期间尚未在 E 图中内化的幂子项
+  传播。环形强化器（`reifyCore?`）已经具有防御能力
+  `alreadyInternalized` 在创建变量之前检查，但半环
+  reifier (`sreifyCore?`) 缺少这个守卫。当`propagatePower`时
+  将 `a ^ (b₁ + b₂)` 分解为 `a^b₁ * a^b₂` 以及所得项
+  触发进一步传播，可以调用半环放大器
+  子项尚未出现在 E 图中，导致 `markTerm` 失败。
 
-* [#12475](https://github.com/leanprover/lean4/pull/12475) fixes `grind` failing when hypotheses contain metavariables
-  (e.g., after `refine`). The root cause was that `abstractMVars` in
-  `withProtectedMCtx` only abstracted metavariables in the target, not in
-  hypotheses, creating a disconnect in grind's e-graph.
+* [#12475](https://github.com/leanprover/lean4/pull/12475) 修复了假设包含元变量时 `grind` 失败的问题
+  （例如，在 `refine` 之后）。根本原因是 `abstractMVars` 在
+  `withProtectedMCtx` 仅抽象目标中的元变量，而不是
+  假设，在grind的电子图中造成了脱节。
 
-* [#12476](https://github.com/leanprover/lean4/pull/12476) fixes #12245 where `grind` works on `Fin n` but fails on `Fin (n
+* [#12476](https://github.com/leanprover/lean4/pull/12476) 修复了 #12245，其中 `grind` 在 `Fin n` 上工作，但在 `Fin (n
   + 1)`.
 
-* [#12477](https://github.com/leanprover/lean4/pull/12477) fixes an internal `grind` error where `mkEqProof` is invoked
-  with terms of different types. When equivalence classes contain
-  heterogeneous equalities (e.g., `0 : Fin 3` and `0 : Fin 2` merged via
-  `HEq`), `closeGoalWithValuesEq` would call `mkEqProof` on terms with
-  incompatible types, triggering an internal error.
+* [#12477](https://github.com/leanprover/lean4/pull/12477) 修复了调用 `mkEqProof` 的内部 `grind` 错误
+具有不同类型的术语。当等价类包含
+  异构平等（例如， `0 : Fin 3` 和 `0 : Fin 2` 通过合并
+  `HEq`), `closeGoalWithValuesEq` 会根据以下条件调用 `mkEqProof`
+  不兼容的类型，触发内部错误。
 
-* [#12480](https://github.com/leanprover/lean4/pull/12480) skips the relabeling step during AIG to CNF conversion, reducing
-  memory pressure.
+* [#12480](https://github.com/leanprover/lean4/pull/12480) 在 AIG 到 CNF 转换期间跳过重新标记步骤，减少
+  内存压力。
 
-* [#12483](https://github.com/leanprover/lean4/pull/12483) adds support for higher-order Miller patterns in `grind`'s
-  e-matching engine.
+* [#12483](https://github.com/leanprover/lean4/pull/12483) 在 `grind` 中添加了对高阶米勒模式的支持
+  电子匹配引擎。
 
-* [#12486](https://github.com/leanprover/lean4/pull/12486) caches `isDefEqI` results in `Sym`. During symbolic computation
-  (e.g., VC generators), we find the same instances over and over again.
+* [#12486](https://github.com/leanprover/lean4/pull/12486) 将 `isDefEqI` 结果缓存在 `Sym` 中。符号计算期间
+  （例如，VC 生成器），我们一遍又一遍地找到相同的实例。
 
-* [#12500](https://github.com/leanprover/lean4/pull/12500) improves the error messages produced by the `decide_cbv` tactic
-  by only reducing the left-hand side of the equality introduced by
-  `of_decide_eq_true`, rather than attempting to reduce both sides via
+* [#12500](https://github.com/leanprover/lean4/pull/12500) 改进了 `decide_cbv` 策略产生的错误消息
+  通过仅减少引入的等式的左侧
+  `of_decide_eq_true`，而不是尝试通过
   `cbvGoal`.
 
-* [#12506](https://github.com/leanprover/lean4/pull/12506) adds the ability to register theorems with the `cbv_eval`
-  attribute in the reverse direction using the `←` modifier, mirroring the
-  existing `simp` attribute behavior. When `@[cbv_eval ←]` is used, the
-  equation `lhs = rhs` is inverted to `rhs = lhs`, allowing `cbv` to
-  rewrite occurrences of `rhs` to `lhs`.
+* [#12506](https://github.com/leanprover/lean4/pull/12506) 添加了使用 `cbv_eval` 注册定理的功能
+  使用 `←` 修饰符反向设置属性，镜像
+  现有的 `simp` 属性行为。当使用 `@[cbv_eval ←]` 时，
+  方程 `lhs = rhs` 反转为 `rhs = lhs`，允许 `cbv`
+  将出现的 `rhs` 重写为 `lhs`。
 
-* [#12562](https://github.com/leanprover/lean4/pull/12562) fixes #12554 where the `cbv` tactic throws "unexpected kernel
-  projection term during structural definitional equality" when a rewrite
-  theorem's pattern contains a lambda and the expression being matched has
-  a `.proj` (kernel projection) at the corresponding position.
+* [#12562](https://github.com/leanprover/lean4/pull/12562) 修复了 `cbv` 策略抛出“意外内核”的#12554
+  结构定义相等期间的投影项”重写时
+  定理的模式包含一个 lambda 并且匹配的表达式有
+  相应位置处的 `.proj` （内核投影）。
 
-* [#12568](https://github.com/leanprover/lean4/pull/12568) removes `tryMatchEquations` and `tryMatcher` from
-  `Lean.Meta.Tactic.Cbv.Main`, as both are already defined and used in
-  `Lean.Meta.Tactic.Cbv.ControlFlow`. The copies in `Main.lean` were
-  unreachable dead code.
+* [#12568](https://github.com/leanprover/lean4/pull/12568) 从中删除 `tryMatchEquations` 和 `tryMatcher`
+  `Lean.Meta.Tactic.Cbv.Main`，因为两者都已在中定义和使用
+  __修复000__。 `Main.lean` 中的副本是
+  无法访问的死代码。
 
-* [#12585](https://github.com/leanprover/lean4/pull/12585) removes unnecessary `trySynthInstance ` in `ite` and `dite`
-  simprocs used by `cbv` that previously contributed to too much of
-  unnecessary unrolling by the tactic.
+* [#12585](https://github.com/leanprover/lean4/pull/12585) 删除 `ite` 和 `dite` 中不必要的 `trySynthInstance `
+  `cbv` 使用的 simprocs 之前导致了太多
+  该策略不必要地展开。
 
-* [#12588](https://github.com/leanprover/lean4/pull/12588) adds a benchmark for `cbv` tactic that involves evaluating
-  `List.mergeSort` on a reversed list on natural numbers.
+* [#12588](https://github.com/leanprover/lean4/pull/12588) 为 `cbv` 策略添加了一个基准，其中涉及评估
+  `List.mergeSort` 在自然数的反转列表上。
 
-* [#12601](https://github.com/leanprover/lean4/pull/12601) adds a warning when using `cbv` or `decide_cbv` in tactic mode,
-  matching the existing warning in conv mode
-  (`src/Lean/Elab/Tactic/Conv/Cbv.lean`). The warning informs users that
-  these tactics are experimental and still under development. It can be
-  disabled with `set_option cbv.warning false`.
+* [#12601](https://github.com/leanprover/lean4/pull/12601) 在战术模式下使用 `cbv` 或 `decide_cbv` 时添加警告，
+  与转换模式下的现有警告相匹配
+  （`src/Lean/Elab/Tactic/Conv/Cbv.lean`）。该警告告知用户
+  这些策略是实验性的，仍在开发中。它可以是
+  使用 `set_option cbv.warning false` 禁用。
 
-* [#12612](https://github.com/leanprover/lean4/pull/12612) fixes a crash in the `cbv` tactic's `handleProj` simproc when
-  processing a dependent projection (e.g. `Sigma.snd`) whose struct is
-  rewritten via `@[cbv_eval]` to a non-definitionally-equal term that
-  cannot be further reduced.
+* [#12612](https://github.com/leanprover/lean4/pull/12612) 修复了 `cbv` 策略的 `handleProj` simproc 中的崩溃问题
+  处理依赖投影（例如 `Sigma.snd`），其结构为
+  通过 `@[cbv_eval]` 重写为非定义相等的术语
+  无法进一步减少。
 
-* [#12615](https://github.com/leanprover/lean4/pull/12615) fixes a flipped condition in `handleConst` that prevented `cbv`
-  from unfolding nullary (non-function) constant definitions like
-  `def myVal : Nat := 42`. The check `unless eType matches .forallE` was
-  intended to skip bare function constants (whose unfold theorems expect
-  arguments) but instead skipped value constants. The fix changes the
-  guard to `if eType matches .forallE`, matching the logic used in the
-  standard `simp` ground evaluator.
+* [#12615](https://github.com/leanprover/lean4/pull/12615) 修复了 `handleConst` 中阻止 `cbv` 的翻转条件
+  从展开无效（非函数）常量定义，例如
+  __修复000__。支票 `unless eType matches .forallE` 是
+  旨在跳过裸函数常量（其展开定理期望
+  参数），而是跳过值常量。该修复更改了
+  防护到 `if eType matches .forallE`，匹配中使用的逻辑
+  标准 `simp` 地面评估器。
 
-* [#12622](https://github.com/leanprover/lean4/pull/12622) fixes a bug where `simp` made no progress on class projection
-  reductions when `backward.whnf.reducibleClassField` is `true`.
+* [#12622](https://github.com/leanprover/lean4/pull/12622) 修复了 `simp` 在类投影上没有取得进展的错误
+  当 `backward.whnf.reducibleClassField` 为 `true` 时减少。
 
-* [#12627](https://github.com/leanprover/lean4/pull/12627) reverts #12615, which accidentally broke Leroy's compiler
-  verification course benchmark.
+* [#12627](https://github.com/leanprover/lean4/pull/12627) 恢复 #12615，这意外地破坏了 Leroy 的编译器
+  验证课程基准。
 
-* [#12646](https://github.com/leanprover/lean4/pull/12646) enables the `cbv` tactic to unfold nullary (non-function)
-  constant
-  definitions such as `def myNat : Nat := 42`, allowing ground term
-  evaluation
-  (e.g. `evalEq`, `evalLT`) to recognize their values as literals.
+* [#12646](https://github.com/leanprover/lean4/pull/12646) 使 `cbv` 策略能够展开无效（非功能）
+  常数
+  诸如 `def myNat : Nat := 42` 之类的定义，允许地面术语
+评价
+  （例如 `evalEq`、`evalLT`）将它们的值识别为文字。
 
-* [#12782](https://github.com/leanprover/lean4/pull/12782) adds high priority to instances for `OfSemiring.Q` in the grind
-  ring envelope. When Mathlib is imported, instance synthesis for types
-  like `OfSemiring.Q Nat` becomes very expensive because the solver
-  explores many irrelevant paths before finding the correct instances. By
-  marking these instances as high priority and adding shortcut instances
-  for basic operations (`Add`, `Sub`, `Mul`, `Neg`, `OfNat`, `NatCast`,
-  `IntCast`, `HPow`), instance synthesis resolves quickly.
+* [#12782](https://github.com/leanprover/lean4/pull/12782) 为 `OfSemiring.Q` 的实例添加高优先级
+  环形信封。当Mathlib导入时，类型的实例合成
+  像 `OfSemiring.Q Nat` 变得非常昂贵，因为求解器
+  在找到正确的实例之前探索许多不相关的路径。由
+  将这些实例标记为高优先级并添加快捷方式实例
+  用于基本操作（`Add`、`Sub`、`Mul`、`Neg`、`OfNat`、`NatCast`、
+  `IntCast`, `HPow`)，实例合成快速解析。
 
-# Compiler
+# 编译器
+%%%
+tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-03-27_RPAR_--Compiler"
+%%%
 
-* [#12044](https://github.com/leanprover/lean4/pull/12044) implements lazy initialization of closed terms. Previous work
-  has already made sure that ~70% of the closed terms occurring in core
-  can be statically initialized from the binary. With this the remaining
-  ones are initialized lazily instead of at startup.
+* [#12044](https://github.com/leanprover/lean4/pull/12044) 实现封闭项的延迟初始化。以前的工作
+  已经确保约 70% 的封闭术语出现在核心中
+  可以从二进制文件静态初始化。这样剩下的
+  它们是延迟初始化的，而不是在启动时初始化的。
 
-* [#12052](https://github.com/leanprover/lean4/pull/12052) avoids a potential deadlock on shutdown of a Lean program when
-  the number of pooled threads has temporarily been pushed above the
-  limit.
+* [#12052](https://github.com/leanprover/lean4/pull/12052) 避免了精益程序关闭时潜在的死锁
+  池线程数已暂时推至高于
+  限制。
 
-* [#12060](https://github.com/leanprover/lean4/pull/12060) strips unneeded symbol names from libleanshared.so on Linux. It
-  appears that on other platforms the symbols names we are interested in
-  here are already removed by the linker.
+* [#12060](https://github.com/leanprover/lean4/pull/12060) 从 Linux 上的 libleanshared.so 中删除不需要的符号名称。它
+  似乎在其他平台上我们感兴趣的符号名称
+这里已经被链接器删除了。
 
-* [#12082](https://github.com/leanprover/lean4/pull/12082) makes the compiler produce C code that statically initializes
-  close terms when possible. This change reduces startup time as the terms
-  are directly stored in the binary instead of getting computed at
-  startup.
+* [#12082](https://github.com/leanprover/lean4/pull/12082) 使编译器生成静态初始化的 C 代码
+  尽可能接近条款。此更改减少了启动时间，因为条款
+  直接存储在二进制文件中，而不是在
+  启动。
 
-* [#12117](https://github.com/leanprover/lean4/pull/12117) upgrades Lean's internal toolchain to use C++20 as a preparatory
-  step for #12044.
+* [#12117](https://github.com/leanprover/lean4/pull/12117) 升级 Lean 的内部工具链以使用 C++20 作为准备
+  步骤#12044。
 
-* [#12214](https://github.com/leanprover/lean4/pull/12214) introduces a phase separation to the LCNF IR. This is a
-  preparation for the merge of
-  the old `Lean.Compiler.IR` and the new `Lean.Compiler.LCNF` framework.
+* [#12214](https://github.com/leanprover/lean4/pull/12214) 向 LCNF IR 引入相分离。这是一个
+  为合并做准备
+  旧的 `Lean.Compiler.IR` 和新的 `Lean.Compiler.LCNF` 框架。
 
-* [#12239](https://github.com/leanprover/lean4/pull/12239) reverts a lot of the changes done in #8308. We practically
-  encountered situations such as:
+* [#12239](https://github.com/leanprover/lean4/pull/12239) 恢复#8308 中所做的许多更改。我们实际上
+  遇到过这样的情况：
   ```
   fun y (z) :=
     let x := inst
     mkInst x z
   f y
   ```
-  Where the instance puller turns it into:
+  实例拉取器将其变成：
   ```
   let x := inst
   fun y (z) :=
     mkInst x z
   f y
   ```
-  The current heuristic now discovers `x` being in scope at the call site
-  of `f` and being used under a binder in `y` and thus blocks pulling in
-  `x` to the specialization, abstracting over an instance.
+  当前的启发式现在发现 `x` 在调用站点的范围内
+  `f` 并在 `y` 中的活页夹下使用，从而阻止拉入
+  `x` 到专业化，对实例进行抽象。
 
-* [#12272](https://github.com/leanprover/lean4/pull/12272) shifts the conversion from LCNF mono to lambda pure into the
-  LCNF impure phase. This is preparatory work for the upcoming refactor of
-  IR into LCNF impure.
+* [#12272](https://github.com/leanprover/lean4/pull/12272) 将 LCNF mono 到 lambda pure 的转换转移到
+  LCNF 不纯相。这是为即将进行的重构做的准备工作
+IR转化为不纯的LCNF。
 
-* [#12284](https://github.com/leanprover/lean4/pull/12284) changes the handling of over-applied cases expressions in
-  `ToLCNF` to avoid generating function declarations that are called
-  immediately. For example, `ToLCNF` previously produced this:
+* [#12284](https://github.com/leanprover/lean4/pull/12284) 更改了对过度应用案例表达式的处理
+  `ToLCNF` 以避免生成被调用的函数声明
+  立即。例如，`ToLCNF` 之前生成了这个：
   ```
   set_option trace.Compiler.init true
   /--
@@ -1286,7 +1337,7 @@ There are also various additions to the library, including:
   def test (x : Unit) (y : Bool) : Bool :=
     x.casesOn (fun a => a) y
   ```
-  which is now simplified to
+  现在简化为
   ```
   set_option trace.Compiler.init true
   /--
@@ -1301,239 +1352,254 @@ There are also various additions to the library, including:
   def test (x : Unit) (y : Bool) : Bool :=
     x.casesOn (fun a => a) y
   ```
-  This is especially relevant for #8309 because there `dite` is defined as
-  an over-applied `Bool.casesOn`.
+  这与 #8309 尤其相关，因为 `dite` 定义为
+  过度应用 `Bool.casesOn`。
 
-* [#12294](https://github.com/leanprover/lean4/pull/12294) ports the `push_proj` pass from IR to LCNF. Notably it cannot
-  delete it from IR yet as the pass is still used later on.
+* [#12294](https://github.com/leanprover/lean4/pull/12294) 将 `push_proj` 通道从 IR 移植到 LCNF。值得注意的是它不能
+  将其从 IR 中删除，因为稍后仍会使用该通行证。
 
-* [#12315](https://github.com/leanprover/lean4/pull/12315) migrates the IR ResetReuse pass to LCNF.
+* [#12315](https://github.com/leanprover/lean4/pull/12315) 将 IR ResetReuse 传递迁移到 LCNF。
 
-* [#12344](https://github.com/leanprover/lean4/pull/12344) changes the semantics of `inline` annotations in the compiler.
-  The behavior of the original `@[inline]` attribute remains the same but
-  the function `inline` now comes with a restriction that it can only use
-  declarations that are local to the current module. This comes as a
-  preparation to pulling the compiler out into a separate process.
+* [#12344](https://github.com/leanprover/lean4/pull/12344) 更改编译器中 `inline` 注释的语义。
+  原始 `@[inline]` 属性的行为保持不变，但是
+  函数 `inline` 现在有一个限制，它只能使用
+  当前模块的本地声明。这是作为
+  准备将编译器拉出到一个单独的进程中。
 
-* [#12356](https://github.com/leanprover/lean4/pull/12356) moves the IR `elim_dead_vars` pass to LCNF. It cannot delete the
-  pass yet as it is still used
-  in later IR passes.
+* [#12356](https://github.com/leanprover/lean4/pull/12356) 将 IR `elim_dead_vars` 通道移至 LCNF。它无法删除
+  尚未通过，因为仍在使用
+  在后来的IR通行证中。
 
-* [#12384](https://github.com/leanprover/lean4/pull/12384) ports the IR SimpCase pass to LCNF.
+* [#12384](https://github.com/leanprover/lean4/pull/12384) 将 IR SimpCase 传递移植到 LCNF。
 
-* [#12387](https://github.com/leanprover/lean4/pull/12387) fixes an issue in LCNF simp where it would attempt to act on
-  type incorrect `cases`
-  statements and look for a branch, otherwise panic. This issue did not
-  yet manifest in production as
-  various other invariants upheld by LCNF simp help mask it but will start
-  to become an issue with the
-  upcoming changes.
+* [#12387](https://github.com/leanprover/lean4/pull/12387) 修复了 LCNF simp 中尝试采取行动的问题
+  输入错误 `cases`
+  语句并寻找分支，否则会出现恐慌。这个问题没有
+  但在生产中表现为
+  LCNF simp 所支持的各种其他不变量有助于掩盖它，但会开始
+  成为一个问题
+  即将发生的变化。
 
-* [#12413](https://github.com/leanprover/lean4/pull/12413) ports the IR borrow pass to LCNF.
+* [#12413](https://github.com/leanprover/lean4/pull/12413) 将 IR 借用通行证移植到 LCNF。
 
-* [#12434](https://github.com/leanprover/lean4/pull/12434) removes the uses of `shared_timed_mutex` that were introduced
-  because we were stuck on C++14
-  with the `shared_mutex` available from C++17 and above.
+* [#12434](https://github.com/leanprover/lean4/pull/12434) 删除了引入的 `shared_timed_mutex` 的使用
+  因为我们被困在 C++14 上
+  与 C++17 及更高版本中提供的 `shared_mutex` 一起使用。
 
-* [#12446](https://github.com/leanprover/lean4/pull/12446) adds a simplification rule for `Task.get (Task.pure x) = x` into
-  the LCNF simplifier. This
-  ensures that we avoid touching the runtime for a `Task` that instantly
-  gets destructed anyways.
+* [#12446](https://github.com/leanprover/lean4/pull/12446) 添加了 `Task.get (Task.pure x) = x` 的简化规则
+  LCNF 简化器。这个
+  确保我们避免立即触及 `Task` 的运行时
+  无论如何都会被破坏。
 
-* [#12458](https://github.com/leanprover/lean4/pull/12458) ports the IR pass for box/unbox insertion to LCNF.
+* [#12458](https://github.com/leanprover/lean4/pull/12458) 将用于装箱/拆箱插入的 IR 通道移植到 LCNF。
 
-* [#12465](https://github.com/leanprover/lean4/pull/12465) changes the boxed type of `uint64` from `tobject` to `object` to
-  allow for more precise reference counting.
+* [#12465](https://github.com/leanprover/lean4/pull/12465) 将 `uint64` 的装箱类型从 `tobject` 更改为 `object`
+允许更精确的引用计数。
 
-* [#12466](https://github.com/leanprover/lean4/pull/12466) handles zero-sized reads on handles correctly by returning an
-  empty array before the syscall
-  is even attempted.
+* [#12466](https://github.com/leanprover/lean4/pull/12466) 通过返回正确处理句柄上的零大小读取
+  系统调用之前的空数组
+  甚至尝试过。
 
-* [#12472](https://github.com/leanprover/lean4/pull/12472) inlines `mix_hash` from C++ which provides general speedups for
-  hash functions.
+* [#12472](https://github.com/leanprover/lean4/pull/12472) 内联 `mix_hash` 来自 C++，它提供了一般加速
+  哈希函数。
 
-* [#12548](https://github.com/leanprover/lean4/pull/12548) ports the RC insertion from IR to LCNF.
+* [#12548](https://github.com/leanprover/lean4/pull/12548) 将 RC 插入从 IR 移植到 LCNF。
 
-* [#12580](https://github.com/leanprover/lean4/pull/12580) makes `computed_field` respect the inline attributes on the
-  function for computing the
-  field. This means we can inline the accessor for the field, allowing
-  quicker access.
+* [#12580](https://github.com/leanprover/lean4/pull/12580) 使 `computed_field` 尊重
+  计算函数
+  场。这意味着我们可以内联字段的访问器，从而允许
+  更快的访问。
 
-* [#12604](https://github.com/leanprover/lean4/pull/12604) makes the derived value analysis in RC insertion recognize
-  `Array.uget` as another kind of
-  "projection-like" operation. This allows it to reduce reference count
-  pressure on elements accessed
-  through uget.
+* [#12604](https://github.com/leanprover/lean4/pull/12604)使RC插入中的导出值分析识别
+  `Array.uget` 作为另一种
+  “类投影”操作。这使得它可以减少引用计数
+  访问元素的压力
+  通过uget。
 
-* [#12625](https://github.com/leanprover/lean4/pull/12625) ensures that failure in initial compilation marks the relevant
-  definitions as `noncomputable`, inside and outside `noncomputable
-  section`, so that follow-up errors/noncomputable markings are detected
-  in initial compilation as well instead of somewhere down the pipeline.
+* [#12625](https://github.com/leanprover/lean4/pull/12625) 确保初始编译失败标记相关
+  定义为 `noncomputable`，内部和外部“不可计算”
+节`，以便检测到后续错误/不可计算的标记
+  在初始编译中，而不是在管道的某个地方。
 
-* [#12644](https://github.com/leanprover/lean4/pull/12644) ports the toposorting pass from IR to LCNF.
+* [#12644](https://github.com/leanprover/lean4/pull/12644) 将拓扑排序过程从 IR 移植到 LCNF。
 
-* [#12759](https://github.com/leanprover/lean4/pull/12759) replaces the `isImplicitReducible` check with `Meta.isInstance`
-  in the `shouldInline` function within `inlineCandidate?`.
+* [#12759](https://github.com/leanprover/lean4/pull/12759) 将 `isImplicitReducible` 检查替换为 `Meta.isInstance`
+  在 `inlineCandidate?` 内的 `shouldInline` 函数中。
 
-# Pretty Printing
+# 漂亮的打印
+%%%
+tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-03-27_RPAR_--Pretty-Printing"
+%%%
 
-* [#12688](https://github.com/leanprover/lean4/pull/12688) adds the `pp.fvars.anonymous` option (default `true`) that
-  controls the display of loose free variables (fvars not in the local
-  context). When `false`, they display as `_fvar._` instead of their internal
-  name. This is useful for stabilizing output in `#guard_msgs`.
-  [#12745](https://github.com/leanprover/lean4/pull/12745) fixes the
-  behavior when the option is set to `false`.
+* [#12688](https://github.com/leanprover/lean4/pull/12688) 添加 `pp.fvars.anonymous` 选项（默认 `true`）
+  控制松散自由变量的显示（fvars 不在本地
+  上下文）。当 `false` 时，它们显示为 `_fvar._` 而不是其内部
+  名字。这对于稳定 `#guard_msgs` 中的输出很有用。
+  [#12745](https://github.com/leanprover/lean4/pull/12745) 修复
+  该选项设置为 `false` 时的行为。
 
-# Documentation
+# 文档
+%%%
+tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-03-27_RPAR_--Documentation"
+%%%
 
-* [#12157](https://github.com/leanprover/lean4/pull/12157) updates #12137 with a link to the Lean reference manual.
+* [#12157](https://github.com/leanprover/lean4/pull/12157) 更新了#12137，并提供了精益参考手册的链接。
 
-* [#12174](https://github.com/leanprover/lean4/pull/12174) fixes a typo in `ExtractLetsConfig.merge` doc comment.
+* [#12174](https://github.com/leanprover/lean4/pull/12174) 修复了 `ExtractLetsConfig.merge` 文档注释中的拼写错误。
 
-* [#12253](https://github.com/leanprover/lean4/pull/12253) adds a "Stabilizing output" section to the `#guard_msgs`
-  docstring, explaining how to use `pp.mvars.anonymous` and `pp.mvars`
-  options to stabilize output containing autogenerated metavariable names
-  like `?m.47`.
+* [#12253](https://github.com/leanprover/lean4/pull/12253) 在 `#guard_msgs` 中添加了“稳定输出”部分
+  文档字符串，解释如何使用 `pp.mvars.anonymous` 和 `pp.mvars`
+  用于稳定包含自动生成的元变量名称的输出的选项
+  像`?m.47`。
 
-* [#12271](https://github.com/leanprover/lean4/pull/12271) adds and updates docstrings for syntax (and one for ranges).
+* [#12271](https://github.com/leanprover/lean4/pull/12271) 添加和更新语法文档字符串（以及范围文档字符串）。
 
-* [#12439](https://github.com/leanprover/lean4/pull/12439) improves docstrings for `cbv` and `decide_cbv` tactics
+* [#12439](https://github.com/leanprover/lean4/pull/12439) 改进了 `cbv` 和 `decide_cbv` 策略的文档字符串
 
-* [#12487](https://github.com/leanprover/lean4/pull/12487) expands the docstring for `@[univ_out_params]` to explain:
+* [#12487](https://github.com/leanprover/lean4/pull/12487) 扩展了 `@[univ_out_params]` 的文档字符串来解释：
 
-  - How universe output parameters affect the typeclass resolution cache
-  (they are erased from cache keys, so queries differing only in output
-  universes share entries)
-  - When a universe parameter should be considered an output (determined
-  by inputs) vs. not (part of the question being asked)
+  - Universe 输出参数如何影响类型类解析缓存
+  （它们从缓存键中删除，因此查询仅在输出上有所不同
+  宇宙共享条目）
+  - 何时应将 Universe 参数视为输出（确定
+  通过输入）与不（所提出问题的一部分）
 
-* [#12616](https://github.com/leanprover/lean4/pull/12616) adds documentation to the Cbv evaluator files under
-  `Meta/Tactic/Cbv/`. Module docstrings describe the evaluation strategy,
-  limitations, attributes, and unfolding order. Function docstrings cover
-  the public API and key internal simprocs.
+* [#12616](https://github.com/leanprover/lean4/pull/12616) 将文档添加到下面的 Cbv 评估器文件中
+  __修复000__。模块文档字符串描述了评估策略，
+  限制、属性和展开顺序。函数文档字符串覆盖
+  公共 API 和关键的内部 simprocs。
 
-* [#13115](https://github.com/leanprover/lean4/pull/13115) updates the `inferInstanceAs` docstring to reflect current
-  behavior: it requires an
-  expected type from context and should not be used as a simple
-  `inferInstance` synonym. The
-  old example (`#check inferInstanceAs (Inhabited Nat)`) no longer works,
-  so it's replaced
-  with one demonstrating the intended transport use case.
+* [#13115](https://github.com/leanprover/lean4/pull/13115) 更新 `inferInstanceAs` 文档字符串以反映当前
+  行为：它需要一个
+  上下文中的预期类型，不应用作简单的
+  `inferInstance` 同义词。的
+  旧示例（`#check inferInstanceAs (Inhabited Nat)`）不再有效，
+  所以它被替换了
+  其中一个演示了预期的运输用例。
 
-# Server
+# 服务器
+%%%
+tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-03-27_RPAR_--Server"
+%%%
 
-* [#12197](https://github.com/leanprover/lean4/pull/12197) fixes a bug in `System.Uri.fileUriToPath?` where it wouldn't use
-  the default Windows path separator in the path it produces.
+* [#12197](https://github.com/leanprover/lean4/pull/12197) 修复了 `System.Uri.fileUriToPath?` 中无法使用的错误
+  它生成的路径中的默认 Windows 路径分隔符。
 
-* [#12332](https://github.com/leanprover/lean4/pull/12332) fixes an issue on new NeoVim versions that would cause the
-  language server to display an error when using certain code actions.
+* [#12332](https://github.com/leanprover/lean4/pull/12332) 修复了新 NeoVim 版本上的一个问题，该问题会导致
+  语言服务器在使用某些代码操作时显示错误。
 
-* [#12553](https://github.com/leanprover/lean4/pull/12553) fixes an issue where commands that do not support incrementality
-  did not have their elaboration interrupted when a relevant edit is made
-  by the user. As all built-in variants of def/theorem share a common
-  incremental elaborator, this likely had negligible impact on standard
-  Lean files but could affect other use cases heavily relying on custom
-  commands such as Verso.
+* [#12553](https://github.com/leanprover/lean4/pull/12553) 修复了不支持增量的命令的问题
+  当进行相关编辑时，他们的阐述没有被打断
+  由用户。由于 def/theorem 的所有内置变体都有一个共同点
+  增量精译器，这可能对标准的影响可以忽略不计
+  精简文件，但可能会影响严重依赖自定义的其他用例
+  命令，例如 Verso。
 
-# Lake
+# 湖
+%%%
+tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-03-27_RPAR_--Lake"
+%%%
 
-* [#12113](https://github.com/leanprover/lean4/pull/12113) changes the alters the file format of outputs stored in the
-  local Lake cache to include an identifier indicating the service (if
-  any) the output came from. This will be used to enable lazily
-  downloading artifacts on-demand during builds.
+* [#12113](https://github.com/leanprover/lean4/pull/12113) 更改存储在中的输出的文件格式
+  本地 Lake 缓存包含指示服务的标识符（如果
+  任何）输出来自。这将用于延迟启用
+  在构建期间按需下载工件。
 
-* [#12178](https://github.com/leanprover/lean4/pull/12178) scopes the `simp` attribute on `FamilyOut.fam_eq` to the `Lake`
-  namespace. The lemma has a very permissive discrimination tree key
-  (`_`), so when `Lake.Util.Family` is transitively imported into
-  downstream projects, it causes `simp` to attempt this lemma on every
-  goal, leading to timeouts.
+* [#12178](https://github.com/leanprover/lean4/pull/12178) 将 `FamilyOut.fam_eq` 上的 `simp` 属性范围限定为 `Lake`
+  命名空间。引理有一个非常宽松的判别树键
+  (`_`)，因此当 `Lake.Util.Family` 被传递导入到
+  下游项目，它会导致 `simp` 在每个项目上尝试这个引理
+进球，导致暂停。
 
-* [#12203](https://github.com/leanprover/lean4/pull/12203) changes the way artifacts are transferred from the local Lake
-  cache to a local build path. Now, Lake will first attempt to hard link
-  the local build path to artifact in the cache. If this fails (e.g.,
-  because the cache is on a different file system or drive), it will
-  fallback to pre-existing approach of copying the artifact. Lake also now
-  marks cache artifacts as read-only to avoid corrupting the cache by
-  writing to a hard linked artifact.
+* [#12203](https://github.com/leanprover/lean4/pull/12203) 改变了从当地湖泊转移文物的方式
+  缓存到本地构建路径。现在，Lake 将首先尝试硬链接
+  缓存中工件的本地构建路径。如果失败（例如，
+  因为缓存位于不同的文件系统或驱动器上），它将
+  回退到复制工件的现有方法。现在湖也
+  将缓存工件标记为只读，以避免通过以下方式损坏缓存
+  写入硬链接工件。
 
-* [#12261](https://github.com/leanprover/lean4/pull/12261) fixes a bug in Lake where the facet names printed in unknown
-  facet errors would contain the internal facet kind.
+* [#12261](https://github.com/leanprover/lean4/pull/12261) 修复了 Lake 中以未知方式打印方面名称的错误
+  构面错误将包含内部构面类型。
 
-* [#12300](https://github.com/leanprover/lean4/pull/12300) makes disabling the artifact cache (e.g., via
-  `LAKE_ARTIFACT_CACHE=false` or `enableArtifactCache = false`) now stop
-  Lake from fetching from the cache (whereas it previously only stopped
-  writing to it).
+* [#12300](https://github.com/leanprover/lean4/pull/12300) 禁用工件缓存（例如，通过
+  `LAKE_ARTIFACT_CACHE=false` 或 `enableArtifactCache = false`) 现在停止
+  Lake 不再从缓存中获取数据（而之前它只是停止了
+  写信给它）。
 
-* [#12377](https://github.com/leanprover/lean4/pull/12377) adds identifying information about a module available to `lean`
-  (e.g., its name and package identifier) to the module's dependency
-  trace. This ensures modules with different identification have different
-  input hashes even if their source files and imports are identical.
+* [#12377](https://github.com/leanprover/lean4/pull/12377) 添加有关可用于 `lean` 的模块的标识信息
+  （例如，其名称和包标识符）到模块的依赖关系
+  踪迹。这保证了不同标识的模块有不同的
+  输入哈希，即使它们的源文件和导入相同。
 
-* [#12444](https://github.com/leanprover/lean4/pull/12444) adds the Lake CLI command `lake cache clean`, which deletes the
-  Lake cache directory.
+* [#12444](https://github.com/leanprover/lean4/pull/12444) 添加 Lake CLI 命令 `lake cache clean`，该命令删除
+  湖缓存目录。
 
-* [#12461](https://github.com/leanprover/lean4/pull/12461) adds support for manually re-releasing nightlies when a build
-  issue or critical fix requires it. When a `workflow_dispatch` triggers
-  the nightly release job and a `nightly-YYYY-MM-DD` tag already exists,
-  the CI now creates `nightly-YYYY-MM-DD-rev1` (then `-rev2`, etc.)
-  instead of silently skipping.
+* [#12461](https://github.com/leanprover/lean4/pull/12461) 添加了对构建时手动重新发布 nightly 的支持
+  问题或关键修复需要它。当 `workflow_dispatch` 触发时
+  每晚发布作业和 `nightly-YYYY-MM-DD` 标签已经存在，
+  CI 现在创建 `nightly-YYYY-MM-DD-rev1` （然后创建 `-rev2` 等）
+  而不是默默地跳过。
 
-* [#12490](https://github.com/leanprover/lean4/pull/12490) adds a system-wide Lake configuration file and uses it to
-  configure the remote cache services used by `lake cache`.
+* [#12490](https://github.com/leanprover/lean4/pull/12490) 添加系统范围的 Lake 配置文件并使用它
+  配置 `lake cache` 使用的远程缓存服务。
 
-* [#12532](https://github.com/leanprover/lean4/pull/12532) fixes a bug with `cache clean` where it would fail if the cache
-  directory does not exist.
+* [#12532](https://github.com/leanprover/lean4/pull/12532) 修复了 `cache clean` 的一个错误，如果缓存
+  目录不存在。
 
-* [#12537](https://github.com/leanprover/lean4/pull/12537) fixes a bug where Lake recached artifacts already present within
-  the cache. As a result, Lake would attempt to overwrite the read-only
-  artifacts, causing a permission denied error.
+* [#12537](https://github.com/leanprover/lean4/pull/12537) 修复了 Lake 重新缓存的工件已存在于其中的错误
+  缓存。因此，Lake 会尝试覆盖只读的
+  工件，导致权限被拒绝错误。
 
-* [#12835](https://github.com/leanprover/lean4/pull/12835) changes Lake to only emit `.nobuild` traces (introduced in
-  #12076) if the normal trace file already exists. This fixes an issue
-  where a `lake build --no-build` would create the build directory and
-  thereby prevent a cloud release fetch in a future build.
+* [#12835](https://github.com/leanprover/lean4/pull/12835) 将 Lake 更改为仅发出 `.nobuild` 痕迹（在
+  #12076) 如果正常跟踪文件已经存在。这解决了一个问题
+  其中 `lake build --no-build` 将创建构建目录并
+  从而防止在未来的构建中进行云发布获取。
 
-* [#13141](https://github.com/leanprover/lean4/pull/13141) changes Lake to run `git clean -xf` when updating dependency
-  repositories, ensuring stale untracked files (such as `.hash` files) in the
-  source tree are removed. Stale `.hash` files could cause incorrect trace
-  computation and break builds.
+* [#13141](https://github.com/leanprover/lean4/pull/13141) 将 Lake 更改为在更新依赖项时运行 `git clean -xf`
+  存储库，确保旧的未跟踪文件（例如 `.hash` 文件）
+  源树已被删除。陈旧的 `.hash` 文件可能会导致错误的跟踪
+  计算和中断构建。
 
-# Other
+# 其他
+%%%
+tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___29___0-_LPAR_2026-03-27_RPAR_--Other"
+%%%
 
-* [#12351](https://github.com/leanprover/lean4/pull/12351) extends the `@[csimp]` attribute to be correctly tracked by
+* [#12351](https://github.com/leanprover/lean4/pull/12351) 扩展了 `@[csimp]` 属性以正确跟踪
   `lake shake`
 
-* [#12375](https://github.com/leanprover/lean4/pull/12375) extends shake with tracking of attribute names passed to
+* [#12375](https://github.com/leanprover/lean4/pull/12375) 通过跟踪传递给的属性名称来扩展 shake
   `simp`/`grind`.
 
-* [#12463](https://github.com/leanprover/lean4/pull/12463) fixes two issues discovered during the first test of the revised
-  nightly release workflow
+* [#12463](https://github.com/leanprover/lean4/pull/12463) 修复了修订版第一次测试中发现的两个问题
+  每晚发布工作流程
   (https://github.com/leanprover/lean4/pull/12461):
 
-  *1. Date logic:* The `workflow_dispatch` path used `date -u +%F`
-  (current UTC date) to find the base nightly to revise. If the most
-  recent nightly was from yesterday (e.g. `nightly-2026-02-12`) but UTC
-  has rolled over to Feb 13, the code would look for `nightly-2026-02-13`,
-  not find it, and create a fresh nightly instead of a revision. Now finds
-  the latest `nightly-*` tag via `sort -rV` and creates a revision of
-  that.
+  *1.日期逻辑：* 使用的 `workflow_dispatch` 路径 `date -u +%F`
+  （当前 UTC 日期）每晚查找基准进行修改。如果最
+  最近每晚是从昨天开始的（例如 `nightly-2026-02-12`），但 UTC
+  已转至 2 月 13 日，代码将查找 `nightly-2026-02-13`，
+  找不到它，并创建一个新的每晚而不是修订版。现在发现
+  通过 `sort -rV` 最新的 `nightly-*` 标签并创建
+  那个。
 
-* [#12517](https://github.com/leanprover/lean4/pull/12517) adds tooling for profiling Lean programs with human-readable
-  function names in Firefox Profiler:
+* [#12517](https://github.com/leanprover/lean4/pull/12517) 添加了用于以人类可读方式分析精益程序的工具
+  Firefox Profiler 中的函数名称：
 
-  - *`script/lean_profile.sh`* — One-command pipeline: record with
-  samply, symbolicate, demangle, and open in Firefox Profiler
-  - *`script/profiler/lean_demangle.py`* — Faithful port of
-  `Name.demangleAux` from `NameMangling.lean`, with a postprocessor that
-  folds compiler suffixes into compact annotations (`[λ, arity↓]`, `spec
-  at context[flags]`)
-  - *`script/profiler/symbolicate_profile.py`* — Resolves raw addresses
-  via samply's symbolication API
-  - *`script/profiler/serve_profile.py`* — Serves demangled profiles to
-  Firefox Profiler without re-symbolication
-  - *`PROFILER_README.md`* — Documentation including a guide to reading
-  demangled names
+  - *`script/lean_profile.sh`* — 单命令管道：记录
+在 Firefox Profiler 中采样、符号化、分解和打开
+  - *`script/profiler/lean_demangle.py`* — 忠实端口
+  `Name.demangleAux` 来自 `NameMangling.lean`，带有一个后处理器
+  将编译器后缀折叠成紧凑的注释（`[λ, arity↓]`，`spec
+  在上下文[标志]`)
+  - *`script/profiler/symbolicate_profile.py`* — 解析原始地址
+  通过 samply 的符号 API
+  - *`script/profiler/serve_profile.py`* — 将分解的配置文件提供给
+  无需重新符号化的 Firefox Profiler
+  - *`PROFILER_README.md`* — 文档，包括阅读指南
+  分解的名字
 
-* [#12533](https://github.com/leanprover/lean4/pull/12533) adds human-friendly demangling of Lean symbol names in runtime
-  backtraces. When a Lean program panics, stack traces now show readable
-  names instead of mangled C identifiers.
+* [#12533](https://github.com/leanprover/lean4/pull/12533) 在运行时添加了人性化的精益符号名称整理
+  回溯。当精益程序出现恐慌时，堆栈跟踪现在显示可读
+  名称而不是损坏的 C 标识符。
