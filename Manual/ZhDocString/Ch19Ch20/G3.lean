@@ -1508,7 +1508,7 @@ def c132 := @Array.lex
 
 `O(1)`。
 
-此函数主要用于允许使用高阶函数（例如 `Array.map`）的[有充分依据的递归](https://lean-lang.org/doc/reference/4.34.0-rc1/find/?domain=Verso.Genre.Manual.section&name=well-founded-recursion) 的定义来证明从列表中获取的值小于列表。这使得有根据的递归机制能够证明函数终止。
+此函数主要用于证明从数组中取出的值小于数组中的对应值，从而允许在良基递归定义中使用 `Array.map` 等高阶函数。这使良基递归机制能够证明函数终止。
 -/
 def c133 := @Array.attach
 
@@ -1526,7 +1526,7 @@ def c134 := @Array.attachWith
 
 大多数情况下，用户不需要这样做。它是由诸如 `map_subtype` 之类的引理作为中间步骤引入的，并且理想情况下随后由 `unattach_attach` 进行简化。
 
-该函数通常由精益自动插入，作为证明终止时的中间步骤。它很少在代码中显式使用。它是通过[有充分依据的递归](https://lean-lang.org/doc/reference/4.34.0-rc1/find/?domain=Verso.Genre.Manual.section&name=well-founded-recursion) 详细阐述定义过程中的中间步骤引入的。如果在证明状态下遇到此函数，正确的方法通常是策略 `simp [Array.unattach, -Array.map_subtype]`。
+该函数通常由 Lean 自动插入，作为证明终止性时的中间步骤，很少在代码中显式使用。精译良基递归定义时会引入它。如果在证明状态中遇到此函数，通常应使用策略 `simp [Array.unattach, -Array.map_subtype]`。
 -/
 def c135 := @Array.unattach
 
@@ -1574,7 +1574,7 @@ def c138 := @Std.TreeSet.empty
 def c139 := @Std.TreeSet.isEmpty
 
 /--
-返回地图中存在的映射数量。
+返回映射中条目的数量。
 -/
 def c140 := @Std.TreeSet.size
 
@@ -1784,7 +1784,7 @@ def c179 := @Std.TreeSet.filter
 /--
 返回包含 `t₁` 和 `t2 的所有映射的集合。
 
-该功能确保`t₁` 线性使用。因此，只要 `t₁` 不共享，性能特征就遵循以下命令式描述：迭代 `t₂` 中的所有映射，将它们插入到 `t₁` 中。
+该函数保证线性使用 `t₁`。因此，只要 `t₁` 未被共享，其性能特征就可用以下命令式过程描述：遍历 `t₂` 中的所有映射并将其插入 `t₁`。
 
 因此，只要 `t₁` 未共享，此方法的运行时间就以 `t₁` 的大小呈对数缩放，并以 `t₂` 的大小呈线性缩放。
 -/
