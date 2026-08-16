@@ -12,77 +12,77 @@ open Verso.Genre Manual
 open Verso.Genre.Manual.InlineLean
 
 set_option pp.rawOnError true
-set_option linter.typography.dashes false -- There's a reference to a Figure 5-2 below that should not be an en dash
+set_option linter.typography.dashes false -- 下文引用图 5-2，此处不应使用短破折号
 
 set_option maxRecDepth 768
 
-#doc (Manual) "Bitvectors" =>
+#doc (Manual) "位向量" =>
 %%%
 tag := "BitVec"
 %%%
 
-Bitvectors are fixed-width sequences of binary digits.
-They are frequently used in software verification, because they closely model efficient data structures and operations that are similar to hardware.
-A bitvector can be understood from two perspectives: as a sequence of bits, or as a number encoded by a sequence of bits.
-When a bitvector represents a number, it can do so as either a signed or an unsigned number.
-Signed numbers are represented in two's complement form.
+位向量是固定宽度的二进制数字序列。
+它们经常用于软件验证，因为它们能贴切地建模与硬件相似的高效数据结构和操作。
+位向量可以从两个角度来理解：既可视为位的序列，也可视为由位序列编码的数。
+当位向量表示一个数时，它既可以表示有符号数，也可以表示无符号数。
+有符号数采用二进制补码形式表示。
 
-# Logical Model
+# 逻辑模型
 
-Bitvectors are represented as a wrapper around a {name}`Fin` with a suitable bound.
-Because {name}`Fin` itself is a wrapper around a {name}`Nat`, bitvectors are able to use the kernel's special support for efficient computation with natural numbers.
+位向量表示为对具有适当界限的 {name}`Fin` 的包装。
+由于 {name}`Fin` 本身是对 {name}`Nat` 的包装，位向量能够利用内核对自然数高效计算的特殊支持。
 
 {docstring BitVec}
 
-# Runtime Representation
+# 运行时表示
 
-Bitvectors are represented as a {lean}`Fin` with the corresponding range.
-Because {name}`BitVec` is a {ref "inductive-types-trivial-wrappers"}[trivial wrapper] around {name}`Fin` and {name}`Fin` is a trivial wrapper around {name}`Nat`, bitvectors use the same runtime representation as {name}`Nat` in compiled code.
+位向量表示为具有相应范围的 {lean}`Fin`。
+由于 {name}`BitVec` 是对 {name}`Fin` 的{ref "inductive-types-trivial-wrappers"}[平凡包装]，而 {name}`Fin` 又是对 {name}`Nat` 的平凡包装，因此在编译后的代码中，位向量与 {name}`Nat` 使用相同的运行时表示。
 
-# Syntax
+# 语法
 :::leanSection
 ```lean -show
 variable {w n : Nat}
 ```
-There is an {inst}`OfNat (BitVec w) n` instance for all widths {lean}`w` and natural numbers {lean}`n`.
-Natural number literals, including those that use hexadecimal or binary notation, may be used to represent bitvectors in contexts where the expected type is known.
-When the expected type is not known, a dedicated syntax allows the width of the bitvector to be specified along with its value.
+实例 {inst}`OfNat (BitVec w) n` 对所有宽度 {lean}`w` 和自然数 {lean}`n` 都存在。
+在预期类型已知的上下文中，可以使用自然数文本——包括十六进制或二进制记法——来表示位向量。
+当预期类型未知时，可以使用专用语法同时指定该位向量的宽度和值。
 :::
 
-:::example "Numeric Literals for Bitvectors"
-The following literals are all equivalent:
+:::example "位向量的数值文本"
+以下文本都等价：
 ```lean
 example : BitVec 8 := 0xff
 example : BitVec 8 := 255
 example : BitVec 8 := 0b1111_1111
 ```
 ```lean -show
--- Inline test
+-- 内联测试
 example : (0xff : BitVec 8) = 255 := by rfl
 example : (0b1111_1111 : BitVec 8) = 255 := by rfl
 ```
 :::
 
-:::syntax term (title := "Fixed-Width Bitvector Literals")
+:::syntax term (title := "固定宽度位向量文本")
 ```grammar
 $_:num#$_
 ```
-This notation pairs a numeric literal with a term that denotes its width.
-Spaces are forbidden around the `#`.
-Literals that overflow the width of the bitvector are truncated.
+此记法将数值文本与表示其宽度的项配对。
+`#` 两侧禁止出现空格。
+超出位向量宽度的文本将被截断。
 :::
 
-:::::example "Fixed-Width Bitvector Literals"
+:::::example "固定宽度位向量文本"
 
-Bitvectors may be represented by natural number literals, so {lean}`(5 : BitVec 8)` is a valid bitvector.
-Additionally, a width may be specified directly in the literal:
+位向量可以用自然数文本表示，因此 {lean}`(5 : BitVec 8)` 是一个有效的位向量。
+此外，还可以直接在文本中指定宽度：
 
 ```leanTerm
 5#8
 ```
 
 
-Spaces are not allowed on either side of the `#`:
+`#` 的任何一侧都不允许有空格：
 
 ```syntaxError spc1 (category := term)
 5 #8
@@ -99,7 +99,7 @@ Spaces are not allowed on either side of the `#`:
 ```
 
 
-A numeric literal is required to the left of the `#`:
+`#` 的左侧必须是数值文本：
 
 ```syntaxError spc3 (category := term)
 (3 + 2)#8
@@ -109,12 +109,12 @@ A numeric literal is required to the left of the `#`:
 ```
 
 
-However, a term is allowed to the right of the `#`:
+不过，`#` 的右侧可以是一个项：
 ```leanTerm
 5#(4 + 4)
 ```
 
-If the literal is too large to fit in the specified number of bits, then it is truncated:
+如果文本过大，无法容纳在指定的位数中，则会被截断：
 ```lean (name := overflow)
 #eval 7#2
 ```
@@ -123,31 +123,31 @@ If the literal is too large to fit in the specified number of bits, then it is t
 ```
 :::::
 
-:::syntax term (title := "Bounded Bitvector Literals") (namespace := BitVec)
+:::syntax term (title := "有界位向量文本") (namespace := BitVec)
 
 ```grammar
 $_:num#'$_
 ```
 
-This notation is available only when the `BitVec` namespace has been opened.
-Rather than an explicit width, it expects a proof that the literal value is representable by a bitvector of the corresponding width.
+此记法仅在打开 `BitVec` 命名空间后可用。
+它不要求显式给出宽度，而是要求提供一个证明，表明文本值可由相应宽度的位向量表示。
 :::
 
 ::::::leanSection
-:::::example "Bounded Bitvector Literals"
-The bounded bitvector literal notation ensures that literals do not overflow the specified number of bits.
-The notation is only available when the `BitVec` namespace has been opened.
+:::::example "有界位向量文本"
+有界位向量文本记法可确保文本不会溢出指定的位数。
+此记法仅在打开 `BitVec` 命名空间后可用。
 
 ```lean
 open BitVec
 ```
 
-Literals that are in bounds require a proof to that effect:
+界限内的文本需要提供相应证明：
 ```lean
 example : BitVec 8 := 1#'(by decide)
 ```
 
-Literals that are not in bounds are not allowed:
+不在界限内的文本是不允许的：
 ```lean +error (name := oob)
 example : BitVec 8 := 256#'(by decide)
 ```
@@ -160,23 +160,23 @@ is false
 :::::
 ::::::
 
-# Automation
+# 自动化
 %%%
 tag := "BitVec-automation"
 %%%
 
-In addition to the full suite of automation and tools provided by Lean for every type, the {tactic}`bv_decide` tactic can solve many bitvector-related problems.
-This tactic invokes an external automated theorem prover (`cadical`) and reconstructs the proof that it provides in Lean's own logic.
-The resulting proofs rely only on the axiom {name}`Lean.ofReduceBool`; the external prover is not part of the trusted code base.
+除了 Lean 为每种类型提供的整套自动化功能和工具外，{tactic}`bv_decide` 策略还能解决许多与位向量有关的问题。
+此策略调用外部自动定理证明器（`cadical`），并在 Lean 自身的逻辑中重构它所提供的证明。
+所得证明仅依赖公理 {name}`Lean.ofReduceBool`；外部证明器并非可信代码库的一部分。
 
-:::example "Popcount"
+:::example "置位计数"
 
 ```imports -show
 import Std.Tactic.BVDecide
 ```
 
-The function {lean}`popcount` returns the number of set bits in a bitvector.
-It can be implemented as a 32-iteration loop that tests each bit, incrementing a counter if the bit is set:
+函数 {lean}`popcount` 返回位向量中置位的数量。
+它可以实现为一个迭代 32 次的循环：逐一测试每个位，若该位已置位，则递增计数器：
 
 ```lean
 def popcount_spec (x : BitVec 32) : BitVec 32 :=
@@ -184,9 +184,9 @@ def popcount_spec (x : BitVec 32) : BitVec 32 :=
     pop + ((x >>> i) &&& 1)
 ```
 
-An alternative implementation of {lean}`popcount` is described in _Hacker's Delight, Second Edition_, by Henry S. Warren,
-Jr. in Figure 5-2 on p. 82.
-It uses low-level bitwise operations to compute the same value with far fewer operations:
+Henry S. Warren,
+Jr. 所著 _Hacker's Delight, Second Edition_ 第 82 页的图 5-2 描述了 {lean}`popcount` 的另一种实现。
+它使用底层位运算，以少得多的操作计算出相同的值：
 ```lean
 def popcount (x : BitVec 32) : BitVec 32 :=
   let x := x - ((x >>> 1) &&& 0x55555555)
@@ -198,7 +198,7 @@ def popcount (x : BitVec 32) : BitVec 32 :=
   x
 ```
 
-These two implementations can be proven equivalent using {tactic}`bv_decide`:
+可以使用 {tactic}`bv_decide` 证明这两种实现等价：
 ```lean
 theorem popcount_correct : popcount = popcount_spec := by
   funext x
@@ -207,19 +207,19 @@ theorem popcount_correct : popcount = popcount_spec := by
 ```
 :::
 
-# API Reference
+# API 参考
 %%%
 tag := "BitVec-api"
 %%%
 
 
-## Bounds
+## 界限
 
 {docstring BitVec.intMax}
 
 {docstring BitVec.intMin}
 
-## Construction
+## 构造
 
 {docstring BitVec.fill}
 
@@ -229,7 +229,7 @@ tag := "BitVec-api"
 
 {docstring BitVec.twoPow}
 
-## Conversion
+## 转换
 
 
 {docstring BitVec.toHex}
@@ -252,7 +252,7 @@ tag := "BitVec-api"
 
 {docstring BitVec.cast}
 
-## Comparisons
+## 比较
 
 {docstring BitVec.ule}
 
@@ -264,13 +264,13 @@ tag := "BitVec-api"
 
 {docstring BitVec.decEq}
 
-## Hashing
+## 哈希
 
 {docstring BitVec.hash}
 
-## Sequence Operations
+## 序列操作
 
-These operations treat bitvectors as sequences of bits, rather than as encodings of numbers.
+这些操作将位向量视为位的序列，而非数的编码。
 
 {docstring BitVec.nil}
 
@@ -296,7 +296,7 @@ These operations treat bitvectors as sequences of bits, rather than as encodings
 
 {docstring BitVec.rotateRight}
 
-### Bit Extraction
+### 位提取
 
 {docstring BitVec.msb}
 
@@ -316,9 +316,9 @@ These operations treat bitvectors as sequences of bits, rather than as encodings
 
 {docstring BitVec.extractLsb'}
 
-## Bitwise Operators
+## 位运算符
 
-These operators modify the individual bits of one or more bitvectors.
+这些运算符修改一个或多个位向量中的各个位。
 
 {docstring BitVec.and}
 
@@ -343,11 +343,11 @@ These operators modify the individual bits of one or more bitvectors.
 {docstring BitVec.shiftLeftZeroExtend}
 
 
-## Arithmetic
+## 算术
 
-These operators treat bitvectors as numbers.
-Some operations are signed, while others are unsigned.
-Because bitvectors are understood as two's complement numbers, addition, subtraction and multiplication coincide for the signed and unsigned interpretations.
+这些运算符将位向量视为数。
+有些操作按有符号方式进行，另一些则按无符号方式进行。
+由于位向量被解释为二进制补码数，因此加法、减法和乘法在有符号与无符号解释下是一致的。
 
 
 {docstring BitVec.add}
@@ -357,7 +357,7 @@ Because bitvectors are understood as two's complement numbers, addition, subtrac
 {docstring BitVec.mul}
 
 
-### Unsigned Operations
+### 无符号操作
 
 {docstring BitVec.udiv}
 
@@ -369,7 +369,7 @@ Because bitvectors are understood as two's complement numbers, addition, subtrac
 
 {docstring BitVec.usubOverflow}
 
-### Signed Operations
+### 有符号操作
 
 {docstring BitVec.abs}
 
@@ -387,17 +387,17 @@ Because bitvectors are understood as two's complement numbers, addition, subtrac
 
 {docstring BitVec.ssubOverflow}
 
-## Iteration
+## 迭代
 
 {docstring BitVec.iunfoldr}
 
 {docstring BitVec.iunfoldr_replace}
 
-## Proof Automation
+## 证明自动化
 
-### Bit Blasting
+### 位爆破
 
-The standard library contains a number of helper implementations that are useful to implement bit blasting, which is the technique used by {tactic}`bv_decide` to encode propositions as Boolean satisfiability problems for external solvers.
+标准库包含许多有助于实现位爆破的辅助实现；位爆破是 {tactic}`bv_decide` 用来将命题编码为供外部求解器处理的布尔可满足性问题的技术。
 
 {docstring BitVec.adc}
 

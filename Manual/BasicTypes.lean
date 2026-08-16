@@ -34,15 +34,15 @@ open Verso.Genre.Manual.InlineLean
 
 set_option pp.rawOnError true
 
-#doc (Manual) "Basic Types" =>
+#doc (Manual) "基本类型" =>
 %%%
 tag := "basic-types"
 %%%
 
 
-Lean includes a number of built-in types that are specially supported by the compiler.
-Some, such as {lean}`Nat`, additionally have special support in the kernel.
-Other types don't have special compiler support _per se_, but rely in important ways on the internal representation of types for performance reasons.
+Lean 包含一些由编译器提供特殊支持的内置类型。
+其中有些类型（例如 {lean}`Nat`）在内核中还有特殊支持。
+其他类型本身虽然没有特殊的编译器支持，但出于性能原因，它们在很大程度上依赖于类型的内部表示。
 
 {include 0 Manual.BasicTypes.Nat}
 
@@ -61,37 +61,37 @@ Other types don't have special compiler support _per se_, but rely in important 
 
 {include 0 Manual.BasicTypes.String}
 
-# The Unit Type
+# 单元类型
 
-The unit type is the canonical type with exactly one element, named {name Unit.unit}`unit` and represented by the empty tuple {lean}`()`.
-It describes only a single value, which consists of said constructor applied to no arguments whatsoever.
+单元类型是恰好具有一个元素的规范类型，该元素名为 {name Unit.unit}`unit`，并由空元组 {lean}`()` 表示。
+它只描述单个值，该值由上述构造子应用到零个参数组成。
 
-{lean}`Unit` is analogous to `void` in languages derived from C: even though `void` has no elements that can be named, it represents the return of control flow from a function with no additional information.
-In functional programming, {lean}`Unit` is the return type of things that “return nothing”.
-Mathematically, this is represented by a single completely uninformative value, as opposed to an empty type such as {lean}`Empty`, which represents unreachable code.
+{lean}`Unit` 类似于 C 语言及其派生语言中的 `void`：尽管 `void` 没有任何可以被命名的元素，但它表示从函数返回的控制流，而不包含额外信息。
+在函数式编程中，{lean}`Unit` 是那些“什么都不返回”的事物的返回类型。
+在数学上，这由一个完全不包含任何信息的单一值来表示，这与 {lean}`Empty` 这样的空类型相反，后者表示不可达的代码。
 
 :::leanSection
 ```lean -show
 variable {m : Type → Type} [Monad m] {α : Type}
 ```
 
-When programming with {ref "monads-and-do"}[monads], {lean}`Unit` is especially useful.
-For any type {lean}`α`, {lean}`m α` represents an action that has side effects and returns a value of type {lean}`α`.
-The type {lean}`m Unit` represents an action that has some side effects but does not return a value.
+当使用 {ref "monads-and-do"}[单子]编程时，{lean}`Unit` 特别有用。
+对于任何类型 {lean}`α`，{lean}`m α` 表示一个具有副作用并返回类型 {lean}`α` 的值的操作。
+类型 {lean}`m Unit` 表示一个具有某些副作用但不返回值的操作。
 
 :::
 
 
 
-There are two variants of the unit type:
+单元类型有两种变体：
 
- * {lean}`Unit` is a {lean}`Type` that exists in the smallest non-propositional {tech}[universe].
+ * {lean}`Unit` 是一个 {lean}`Type`，存在于最小的非命题 {tech (key := "universe")}[宇宙]中。
 
- * {lean}`PUnit` is {tech (key := "universe polymorphism")}[universe polymorphic] and can be used in any non-propositional {tech}[universe].
+ * {lean}`PUnit` 是 {tech (key := "universe polymorphism")}[宇宙多态]的，可以在任何非命题 {tech (key := "universe")}[宇宙]中使用。
 
-Behind the scenes, {lean}`Unit` is actually defined as {lean}`PUnit.{1}`.
-{lean}`Unit` should be preferred over {name}`PUnit` when possible to avoid unnecessary universe parameters.
-If in doubt, use {lean}`Unit` until universe errors occur.
+在幕后，{lean}`Unit` 实际上被定义为 {lean}`PUnit.{1}`。
+可能的情况下，应优先使用 {lean}`Unit` 而不是 {name}`PUnit`，以避免不必要的宇宙参数。
+如有疑问，请使用 {lean}`Unit` 直到出现宇宙层级的错误。
 
 {docstring Unit}
 
@@ -99,14 +99,14 @@ If in doubt, use {lean}`Unit` until universe errors occur.
 
 {docstring PUnit}
 
-## Definitional Equality
+## 定义等价
 
-{deftech}_Unit-like types_ are inductive types that have a single constructor which takes no non-proof parameters.
-{lean}`PUnit` is one such type.
-All elements of unit-like types are {tech (key := "definitional equality")}[definitionally equal] to all other elements.
+{deftech (key := "Unit-like types")}_类单元类型_ 是一种只有一个构造子的归纳类型，且该构造子不接受非证明参数。
+{lean}`PUnit` 就是这样一种类型。
+类单元类型的所有元素都与所有其他元素 {tech (key := "definitional equality")}[定义等价]。
 
-:::example "Definitional Equality of {lean}`Unit`"
-Every term with type {lean}`Unit` is definitionally equal to every other term with type {lean}`Unit`:
+:::example "{lean}`Unit` 的定义等价"
+具有 {lean}`Unit` 类型的每个项都与具有 {lean}`Unit` 类型的每个其他项定义等价：
 
 ```lean
 example (e1 e2 : Unit) : e1 = e2 := rfl
@@ -114,10 +114,10 @@ example (e1 e2 : Unit) : e1 = e2 := rfl
 :::
 
 ::::keepEnv
-:::example "Definitional Equality of Unit-Like Types"
+:::example "类单元类型的定义等价"
 
-Both {lean}`CustomUnit` and {lean}`AlsoUnit` are unit-like types, with a single constructor that takes no parameters.
-Every pair of terms with either type is definitionally equal.
+{lean}`CustomUnit` 和 {lean}`AlsoUnit` 都是类单元类型，具有不带参数的单一构造子。
+这两种类型中的任意一对项都是定义等价的。
 
 ```lean
 inductive CustomUnit where
@@ -130,7 +130,7 @@ structure AlsoUnit where
 example (e1 e2 : AlsoUnit) : e1 = e2 := rfl
 ```
 
-Types with parameters, such as {lean}`WithParam`, are also unit-like if they have a single constructor that does not take parameters.
+带有参数的类型（例如 {lean}`WithParam`）如果是具有不接受参数的单一构造子，那么它们也是类单元类型。
 
 ```lean
 inductive WithParam (n : Nat) where
@@ -139,7 +139,7 @@ inductive WithParam (n : Nat) where
 example (x y : WithParam 3) : x = y := rfl
 ```
 
-Constructors with non-proof parameters are not unit-like, even if the parameters are all unit-like types.
+具有非证明参数的构造子不是类单元类型，即使参数全部是类单元类型也是如此。
 ```lean
 inductive NotUnitLike where
   | mk (u : Unit)
@@ -157,7 +157,7 @@ but is expected to have type
   e1 = e2
 ```
 
-Constructors of unit-like types may take parameters that are proofs.
+类单元类型的构造子可以接受证明作为参数。
 ```lean
 inductive ProofUnitLike where
   | mk : 2 = 2 → ProofUnitLike
@@ -170,23 +170,23 @@ example (e1 e2 : ProofUnitLike) : e1 = e2 := rfl
 {include 0 Manual.BasicTypes.Empty}
 
 
-# Booleans
+# 布尔值
 
 {docstring Bool}
 
-The constructors {lean}`Bool.true` and {lean}`Bool.false` are exported from the {lean}`Bool` namespace, so they can be written {lean}`true` and {lean}`false`.
+构造子 {lean}`Bool.true` 和 {lean}`Bool.false` 是从 {lean}`Bool` 命名空间导出的，因此它们可以被写成 {lean}`true` 和 {lean}`false`。
 
-## Run-Time Representation
+## 运行时表示
 
-Because {lean}`Bool` is an {tech}[enum inductive] type, it is represented by a single byte in compiled code.
+因为 {lean}`Bool` 是一个 {tech (key := "enum inductive")}[枚举归纳]类型，所以它在编译后的代码中由单字节表示。
 
-## Booleans and Propositions
+## 布尔值和命题
 
-Both {lean}`Bool` and {lean}`Prop` represent notions of truth.
-From a purely logical perspective, they are equivalent: {tech}[propositional extensionality] means that there are fundamentally only two propositions, namely {lean}`True` and {lean}`False`.
-However, there is an important pragmatic difference: {lean}`Bool` classifies _values_ that can be computed by programs, while {lean}`Prop` classifies statements for which code generation doesn't make sense.
-In other words, {lean}`Bool` is the notion of truth and falsehood that's appropriate for programs, while {lean}`Prop` is the notion that's appropriate for mathematics.
-Because proofs are erased from compiled programs, keeping {lean}`Bool` and {lean}`Prop` distinct makes it clear which parts of a Lean file are intended for computation.
+{lean}`Bool` 和 {lean}`Prop` 都表示真理的概念。
+从纯逻辑的角度来看，它们是等价的：{tech (key := "propositional extensionality")}[命题外延性]意味着从根本上只有两个命题，即 {lean}`True` 和 {lean}`False`。
+然而，这里有一个重要的实用差异：{lean}`Bool` 分类可以由程序计算的_值_，而 {lean}`Prop` 分类代码生成没有意义的陈述。
+换句话说，{lean}`Bool` 是适用于程序的真与假的概念，而 {lean}`Prop` 是适用于数学的概念。
+由于证明会从编译后的程序中被擦除，因此保持 {lean}`Bool` 和 {lean}`Prop` 区分清楚了 Lean 文件中哪些部分旨在用于计算。
 
 ```lean -show
 section BoolProp
@@ -202,16 +202,16 @@ example : (true = true) = True := by simp
 #check decide
 ```
 
-A {lean}`Bool` can be used wherever a {lean}`Prop` is expected.
-There is a {tech}[coercion] from every {lean}`Bool` {lean}`b` to the proposition {lean}`b = true`.
-By {lean}`propext`, {lean}`true = true` is equal to {lean}`True`, and {lean}`false = true` is equal to {lean}`False`.
+{lean}`Bool` 可以用在任何预期 {lean}`Prop` 的地方。
+从每个 {lean}`Bool` 类型的 {lean}`b` 到命题 {lean}`b = true` 都存在一个 {tech (key := "coercion")}[强制转换]。
+根据 {lean}`propext`，{lean}`true = true` 等于 {lean}`True`，而 {lean}`false = true` 等于 {lean}`False`。
 
-Not every proposition can be used by programs to make run-time decisions.
-Otherwise, a program could branch on whether the Collatz conjecture is true or false!
-Many propositions, however, can be checked algorithmically.
-These propositions are called {tech}_decidable_ propositions, and have instances of the {lean}`Decidable` type class.
-The function {name}`Decidable.decide` converts a proof-carrying {lean}`Decidable` result into a {lean}`Bool`.
-This function is also a coercion from decidable propositions to {lean}`Bool`, so {lean}`(2 = 2 : Bool)` evaluates to {lean}`true`.
+并非每个命题都可以被程序用来在运行时做出决定。
+否则，程序就可以对角谷猜想是真还是假进行分支！
+然而，许多命题可以通过算法来检查。
+这些命题被称为 {tech (key := "decidable")}_可判定_ 命题，并具有 {lean}`Decidable` 类型类的实例。
+函数 {name}`Decidable.decide` 将带有证明的 {lean}`Decidable` 结果转换为 {lean}`Bool`。
+此函数也是从可判定命题到 {lean}`Bool` 的强制转换，因此 {lean}`(2 = 2 : Bool)` 的计算结果为 {lean}`true`。
 
 ```lean -show
 /-- info: true -/
@@ -220,10 +220,10 @@ This function is also a coercion from decidable propositions to {lean}`Bool`, so
 end BoolProp
 ```
 
-## Syntax
+## 语法
 
-:::syntax term (title := "Boolean Infix Operators")
-The infix operators `&&`, `||`, and `^^` are notations for {lean}`Bool.and`, {lean}`Bool.or`, and {lean}`Bool.xor`, respectively.
+:::syntax term (title := "布尔中缀运算符")
+中缀运算符 `&&`、`||` 和 `^^` 分别是 {lean}`Bool.and`、{lean}`Bool.or` 和 {lean}`Bool.xor` 的记号。
 
 ```grammar
 $_:term && $_:term
@@ -236,17 +236,17 @@ $_:term ^^ $_:term
 ```
 :::
 
-:::syntax term (title := "Boolean Negation")
-The prefix operator `!` is notation for {lean}`Bool.not`.
+:::syntax term (title := "布尔非")
+前缀运算符 `!` 是 {lean}`Bool.not` 的记号。
 ```grammar
 !$_:term
 ```
 :::
 
 
-## API Reference
+## API 参考
 
-### Logical Operations
+### 逻辑运算
 
 ```lean -show
 section ShortCircuit
@@ -254,9 +254,9 @@ section ShortCircuit
 axiom BIG_EXPENSIVE_COMPUTATION : Bool
 ```
 
-The functions {name}`cond`, {name Bool.and}`and`, and {name Bool.or}`or` are short-circuiting.
-In other words, {lean}`false && BIG_EXPENSIVE_COMPUTATION` does not need to execute {lean}`BIG_EXPENSIVE_COMPUTATION` before returning `false`.
-These functions are defined using the {attr}`macro_inline` attribute, which causes the compiler to replace calls to them with their definitions while generating code, and the definitions use nested pattern matching to achieve the short-circuiting behavior.
+函数 {name}`cond`、{name Bool.and}`and` 和 {name Bool.or}`or` 是短路的。
+换句话说，{lean}`false && BIG_EXPENSIVE_COMPUTATION` 不需要执行 {lean}`BIG_EXPENSIVE_COMPUTATION` 就可返回 `false`。
+这些函数使用 {attr}`macro_inline` 属性定义，这会使得编译器在生成代码时将其调用替换为它们的定义，并且这些定义使用嵌套模式匹配来实现短路行为。
 
 ```lean -show
 end ShortCircuit
@@ -275,13 +275,13 @@ end ShortCircuit
 
 {docstring Bool.xor}
 
-### Comparisons
+### 比较
 
-Most comparisons on Booleans should be performed using the {inst}`DecidableEq Bool`, {inst}`LT Bool`, {inst}`LE Bool` instances.
+大多数关于布尔值的比较应该使用 {inst}`DecidableEq Bool`、{inst}`LT Bool` 和 {inst}`LE Bool` 实例来执行。
 
 {docstring Bool.decEq}
 
-### Conversions
+### 转换
 
 {docstring Bool.toISize}
 

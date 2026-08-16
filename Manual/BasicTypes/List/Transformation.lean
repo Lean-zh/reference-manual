@@ -15,7 +15,7 @@ open Verso.Genre.Manual.InlineLean
 
 set_option pp.rawOnError true
 
-#doc (Manual) "Transformation" =>
+#doc (Manual) "转换" =>
 
 {docstring List.map}
 

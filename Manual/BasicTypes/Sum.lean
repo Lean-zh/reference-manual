@@ -13,15 +13,15 @@ open Verso.Genre.Manual.InlineLean
 
 set_option pp.rawOnError true
 
-#doc (Manual) "Sum Types" =>
+#doc (Manual) "和类型" =>
 %%%
 tag := "sum-types"
 %%%
 
 
-{deftech}_Sum types_ represent a choice between two types: an element of the sum is an element of one of the other types, paired with an indication of which type it came from.
-Sums are also known as disjoint unions, discriminated unions, or tagged unions.
-The constructors of a sum are also called {deftech}_injections_; mathematically, they can be considered as injective functions from each summand to the sum.
+{deftech (key := "Sum types")}_和类型_表示两种类型之间的选择：和类型的一个元素是这两种类型之一的元素，并配有指示其来源类型的标记。
+和类型也称为不相交并集、可辨识联合或标记联合。
+和类型的构造子也称为{deftech (key := "injections")}_单射_；在数学上，它们可以被视为从每个被加数到和类型的单射函数。
 
 ::::leanSection
 ```lean -show
@@ -29,16 +29,16 @@ universe u v
 ```
 
 :::paragraph
-There are two varieties of the sum type:
+和类型有两种变体：
 
- * {lean}`Sum` is {tech (key := "universe polymorphism")}[polymorphic] over all {lean}`Type` {tech}[universes], and is never a {tech}[proposition].
+ * {lean}`Sum` 是{tech (key := "universe polymorphism")}[多态]的，覆盖所有 {lean}`Type` {tech (key := "universes")}[宇宙]，并且永远不是{tech (key := "proposition")}[命题]。
 
- * {lean}`PSum` is allows the summands to be propositions or types. Unlike {name}`Or`, the {name}`PSum` of two propositions is still a type, and non-propositional code can check which injection was used to construct a given value.
+ * {lean}`PSum` 允许被加数为命题或类型。与 {name}`Or` 不同，两个命题的 {name}`PSum` 仍然是一个类型，并且非命题代码可以检查用于构造给定值的是哪个单射。
 
-Manually-written Lean code almost always uses only {lean}`Sum`, while {lean}`PSum` is used as part of the implementation of proof automation.
-This is because it imposes problematic constraints that universe level unification cannot solve.
-In particular, this type is in the universe {lean}`Sort (max 1 u v)`, which can cause problems for universe level unification because the equation `max 1 u v = ?u + 1` has no solution in level arithmetic.
-`PSum` is usually only used in automation that constructs sums of arbitrary types.
+手动编写的 Lean 代码几乎总是只使用 {lean}`Sum`，而 {lean}`PSum` 则作为证明自动化实现的一部分使用。
+这是因为它施加了宇宙层级合一无法解决的棘手约束。
+特别地，该类型位于宇宙 {lean}`Sort (max 1 u v)` 中，这可能会给宇宙层级合一带来问题，因为等式 `max 1 u v = ?u + 1` 在层级算术中无解。
+`PSum` 通常仅用于构造任意类型之和的自动化中。
 :::
 ::::
 
@@ -48,25 +48,25 @@ In particular, this type is in the universe {lean}`Sort (max 1 u v)`, which can 
 
 
 
-# Syntax
+# 语法
 %%%
 tag := "sum-syntax"
 %%%
 
-The names {name}`Sum` and {name}`PSum` are rarely written explicitly.
-Most code uses the corresponding infix operators.
+名称 {name}`Sum` 和 {name}`PSum` 很少被显式写出。
+大多数代码使用相应的插缀运算符。
 
 ```lean -show
 section
 variable {α : Type u} {β : Type v}
 ```
 
-:::syntax term (title := "Sum Types")
+:::syntax term (title := "和类型")
 ```grammar
 $_ ⊕ $_
 ```
 
-{lean}`α ⊕ β` is notation for {lean}`Sum α β`.
+{lean}`α ⊕ β` 是 {lean}`Sum α β` 的记号。
 
 :::
 
@@ -79,12 +79,12 @@ section
 variable {α : Sort u} {β : Sort v}
 ```
 
-:::syntax term (title := "Potentially-Propositional Sum Types")
+:::syntax term (title := "潜在命题和类型")
 ```grammar
 $_ ⊕' $_
 ```
 
-{lean}`α ⊕' β` is notation for {lean}`PSum α β`.
+{lean}`α ⊕' β` 是 {lean}`PSum α β` 的记号。
 
 :::
 
@@ -92,21 +92,21 @@ $_ ⊕' $_
 end
 ```
 
-# API Reference
+# API 参考
 %%%
 tag := "sum-api"
 %%%
 
-Sum types are primarily used with {tech}[pattern matching] rather than explicit function calls from an API.
-As such, their primary API is the constructors {name Sum.inl}`inl` and {name Sum.inr}`inr`.
+和类型主要与{tech (key := "pattern matching")}[模式匹配]一起使用，而不是来自 API 的显式函数调用。
+因此，它们的主要 API 是构造子 {name Sum.inl}`inl` 和 {name Sum.inr}`inr`。
 
-## Case Distinction
+## 分情况讨论
 
 {docstring Sum.isLeft}
 
 {docstring Sum.isRight}
 
-## Extracting Values
+## 提取值
 
 {docstring Sum.elim}
 
@@ -118,33 +118,33 @@ As such, their primary API is the constructors {name Sum.inl}`inl` and {name Sum
 
 {docstring Sum.getRight?}
 
-## Transformations
+## 转换
 
 {docstring Sum.map}
 
 {docstring Sum.swap}
 
-## Inhabited
+## 居留性
 
-The {name}`Inhabited` definitions for {name}`Sum` and {name}`PSum` are not registered as instances.
-This is because there are two separate ways to construct a default value (via {name Sum.inl}`inl` or {name Sum.inr}`inr`), and instance synthesis might result in either choice.
-The result could be situations where two identically-written terms elaborate differently and are not {tech (key := "definitional equality")}[definitionally equal].
+{name}`Inhabited` 对 {name}`Sum` 和 {name}`PSum` 的定义没有被注册为实例。
+这是因为有两种不同的方法来构造默认值（通过 {name Sum.inl}`inl` 或 {name Sum.inr}`inr`），而实例合成可能会导致任一选择。
+结果可能是两种写法完全相同的项却精译出不同的结果，并且它们不是{tech (key := "definitional equality")}[定义等价]的。
 
-Both types have {name}`Nonempty` instances, for which {tech}[proof irrelevance] makes the choice of {name Sum.inl}`inl` or {name Sum.inr}`inr` not matter.
-This is enough to enable {keyword}`partial` functions.
-For situations that require an {name}`Inhabited` instance, such as programs that use {keyword}`panic!`, the instance can be explicitly used by adding it to the local context with {keywordOf Lean.Parser.Term.have}`have` or {keywordOf Lean.Parser.Term.let}`let`.
+这两种类型都有 {name}`Nonempty` 实例，由于{tech (key := "proof irrelevance")}[证明无关性]，选择 {name Sum.inl}`inl` 还是 {name Sum.inr}`inr` 并不重要。
+这足以启用 {keyword}`partial` 函数。
+对于需要 {name}`Inhabited` 实例的情况，例如使用 {keyword}`panic!` 的程序，可以通过 {keywordOf Lean.Parser.Term.have}`have` 或 {keywordOf Lean.Parser.Term.let}`let` 将其添加到局部上下文中来显式使用该实例。
 
-:::example "Inhabited Sum Types"
+:::example "具有居留性的和类型"
 
-In Lean's logic, {keywordOf Lean.Parser.Term.panic}`panic!` is equivalent to the default value specified in its type's {name}`Inhabited` instance.
-This means that the type must have such an instance—a {name}`Nonempty` instance combined with the axiom of choice would render the program non-computable.
+在 Lean 的逻辑中，{keywordOf Lean.Parser.Term.panic}`panic!` 等同于在其类型的 {name}`Inhabited` 实例中指定的默认值。
+这意味着该类型必须具有这样的实例——{name}`Nonempty` 实例结合选择公理会使程序变得不可计算。
 
-Products have the right instance:
+积类型具有合适的实例：
 ```lean
 example : Nat × String := panic! "Can't find it"
 ```
 
-Sums do not, by default:
+和类型默认情况下没有：
 ```lean +error (name := panic)
 example : Nat ⊕ String := panic! "Can't find it"
 ```
@@ -155,7 +155,7 @@ failed to synthesize instance of type class
 Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
 ```
 
-The desired instance can be made available to instance synthesis using {keywordOf Lean.Parser.Term.have}`have`:
+可以使用 {keywordOf Lean.Parser.Term.have}`have` 使所需的实例对实例合成可用：
 ```lean
 example : Nat ⊕ String :=
   have : Inhabited (Nat ⊕ String) := Sum.inhabitedLeft

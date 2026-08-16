@@ -15,17 +15,17 @@ open Verso.Genre.Manual.InlineLean
 
 set_option verso.docstring.allowMissing true
 
-#doc (Manual) "Comparisons" =>
+#doc (Manual) "比较" =>
 %%%
 tag := "fixed-int-comparisons"
 %%%
 
 
-The operators in this section are rarely invoked by name.
-Typically, comparisons operations on fixed-width integers should use the decidability of the corresponding relations, which consist of the equality type {name}`Eq` and those implemented in instances of {name}`LE` and {name}`LT`.
+本节中的运算符很少通过名称调用。
+通常，定宽整数上的比较操作应该使用相应关系的可判定性，这些关系由相等类型 {name}`Eq` 以及在 {name}`LE` 和 {name}`LT` 实例中实现的关系组成。
 
 ```lean -show
--- Check that all those instances really exist
+-- 检查所有这些实例是否确实存在
 open Lean Elab Command in
 #eval show CommandElabM Unit from do
   let types := [`ISize, `Int8, `Int16, `Int32, `Int64, `USize, `UInt8, `UInt16, `UInt32, `UInt64]
@@ -35,7 +35,7 @@ open Lean Elab Command in
 ```
 
 ```lean -show
--- Check that all those instances really exist
+-- 检查所有这些实例是否确实存在
 open Lean Elab Command in
 #eval show CommandElabM Unit from do
   let types := [`ISize, `Int8, `Int16, `Int32, `Int64, `USize, `UInt8, `UInt16, `UInt32, `UInt64]

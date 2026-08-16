@@ -15,23 +15,23 @@ open Manual.FFIDocType
 open Verso.Genre Manual
 open Verso.Genre.Manual.InlineLean
 
-#doc (Manual) "Fixed-Precision Integers" =>
+#doc (Manual) "定精度整数" =>
 %%%
 tag := "fixed-ints"
 %%%
 
-Lean's standard library includes the usual assortment of fixed-width integer types.
-From the perspective of formalization and proofs, these types are wrappers around bitvectors of the appropriate size; the wrappers ensure that the correct implementations of e.g. arithmetic operations are applied.
-In compiled code, they are represented efficiently: the compiler has special support for them, as it does for other fundamental types.
+Lean 的标准库包含通常的各种固定宽度整数类型。
+从形式化和证明的角度来看，这些类型是适当大小的位向量的包装器；这些包装器确保应用正确的算术操作等实现。
+在编译后的代码中，它们的表示非常高效：编译器对它们有特殊的支持，就像对其他基础类型一样。
 
-# Logical Model
+# 逻辑模型
 
-Fixed-width integers may be unsigned or signed.
-Furthermore, they are available in five sizes: 8, 16, 32, and 64 bits, along with the current architecture's word size.
-In their logical models, the unsigned integers are structures that wrap a {name}`BitVec` of the appropriate width.
-Signed integers wrap the corresponding unsigned integers, and use a twos-complement representation.
+固定宽度整数可以是无符号的或有符号的。
+此外，它们有五种大小：8 位、16 位、32 位和 64 位，以及当前架构的字长。
+在它们的逻辑模型中，无符号整数是包装了适当宽度的 {name}`BitVec` 的结构体。
+有符号整数包装了相应的无符号整数，并使用二进制补码表示。
 
-## Unsigned
+## 无符号
 
 {docstring USize}
 
@@ -43,7 +43,7 @@ Signed integers wrap the corresponding unsigned integers, and use a twos-complem
 
 {docstring UInt64}
 
-## Signed
+## 有符号
 
 {docstring ISize}
 
@@ -55,32 +55,32 @@ Signed integers wrap the corresponding unsigned integers, and use a twos-complem
 
 {docstring Int64}
 
-# Run-Time Representation
+# 运行时表示
 %%%
 tag := "fixed-int-runtime"
 %%%
 
-In compiled code in contexts that require {tech}[boxed] representations, fixed-width integer types that fit in one less bit than the platform's pointer size are always represented without additional allocations or indirections.
-This always includes {lean}`Int8`, {lean}`UInt8`, {lean}`Int16`, and {lean}`UInt16`.
-On 64-bit architectures, {lean}`Int32` and {lean}`UInt32` are also represented without pointers.
-On 32-bit architectures, {lean}`Int32` and {lean}`UInt32` require a pointer to an object on the heap.
-{lean}`ISize`, {lean}`USize`, {lean}`Int64` and {lean}`UInt64` may require pointers on all architectures.
+在需要{tech (key := "boxed")}[装箱]表示的上下文中，在编译后的代码里，适合在比平台指针大小少一位的空间内容纳的固定宽度整数类型总是被表示而无需额外的分配或间接寻址。
+这始终包含 {lean}`Int8`、{lean}`UInt8`、{lean}`Int16` 和 {lean}`UInt16`。
+在 64 位架构上，{lean}`Int32` 和 {lean}`UInt32` 也可以在没有指针的情况下表示。
+在 32 位架构上，{lean}`Int32` 和 {lean}`UInt32` 需要一个指向堆上对象的指针。
+{lean}`ISize`、{lean}`USize`、{lean}`Int64` 和 {lean}`UInt64` 在所有架构上都可能需要指针。
 
-Even though some fixed-with integer types require boxing in general, the compiler is able to represent them without boxing or pointer indirections in code paths that use only a specific fixed-width type rather than being polymorphic, potentially after a specialization pass.
-This applies in most practical situations where these types are used: their values are represented using the corresponding unsigned fixed-width C type when a constructor parameter, function parameter, function return value, or intermediate result is known to be a fixed-width integer type.
-The Lean run-time system includes primitives for storing fixed-width integers in constructors of {tech}[inductive types], and the primitive operations are defined on the corresponding C types, so boxing tends to happen at the “edges” of integer calculations rather than for each intermediate result.
-In contexts where other types might occur, such as the contents of polymorphic containers like {name}`Array`, these types are boxed, even if an array is statically known to contain only a single fixed-width integer type.{margin}[The monomorphic array type {lean}`ByteArray` avoids boxing for arrays of {lean}`UInt8`.]
-Lean does not specialize the representation of inductive types or arrays.
-Inspecting a function's type in Lean is not sufficient to determine how fixed-width integer values will be represented, because boxed values are not eagerly unboxed—a function that projects an {name}`Int64` from an array returns a boxed integer value.
+尽管通常情况下一些固定宽度整数类型需要装箱，但编译器能够在仅使用特定固定宽度类型而不是多态的代码路径中，（可能在特化阶段之后）在没有装箱或指针间接寻址的情况下表示它们。
+这适用于使用这些类型的大多数实际情况：当已知构造子参数、函数参数、函数返回值或中间结果是固定宽度整数类型时，它们的值将使用相应的无符号固定宽度 C 类型来表示。
+Lean 运行时系统包含了在{tech (key := "inductive types")}[归纳类型]的构造子中存储固定宽度整数的原语，并且基本操作是在相应的 C 类型上定义的，因此装箱往往发生在整数计算的“边缘”，而不是针对每个中间结果。
+在可能出现其他类型的上下文中，例如像 {name}`Array` 这样的多态容器的内容，这些类型会被装箱，即使静态地知道一个数组只包含单一的固定宽度整数类型。{margin}[单态数组类型 {lean}`ByteArray` 避免了对 {lean}`UInt8` 数组的装箱。]
+Lean 不特化归纳类型或数组的表示。
+在 Lean 中检查函数的类型不足以确定固定宽度整数值将如何表示，因为装箱的值不会被急切地取消装箱——例如一个从数组中投影出 {name}`Int64` 的函数返回的是一个装箱的整数值。
 
-# Syntax
+# 语法
 
-All the fixed-width integer types have {name}`OfNat` instances, which allow numerals to be used as literals, both in expression and in pattern contexts.
-The signed types additionally have {lean}`Neg` instances, allowing negation to be applied.
+所有的固定宽度整数类型都有 {name}`OfNat` 实例，这允许在表达式和模式上下文中将数字用作字面量。
+有符号类型另外还有 {lean}`Neg` 实例，允许应用求负操作。
 
-:::example "Fixed-Width Literals"
-Lean allows both decimal and hexadecimal literals to be used for types with {name}`OfNat` instances.
-In this example, literal notation is used to define masks.
+:::example "固定宽度字面量"
+对于具有 {name}`OfNat` 实例的类型，Lean 允许使用十进制和十六进制字面量。
+在此示例中，字面量表示法用于定义掩码。
 
 ```lean
 structure Permissions where
@@ -99,7 +99,7 @@ def Permissions.decode (i : UInt8) : Permissions :=
 ```
 
 ```lean -show
--- Check the above
+-- 检查以上内容
 theorem Permissions.decode_encode (p : Permissions) : p = .decode (p.encode) := by
   let ⟨r, w, x⟩ := p
   cases r <;> cases w <;> cases x <;>
@@ -107,11 +107,11 @@ theorem Permissions.decode_encode (p : Permissions) : p = .decode (p.encode) := 
 ```
 :::
 
-Literals that overflow their types' precision are interpreted modulus the precision.
-Signed types, are interpreted according to the underlying twos-complement representation.
+溢出其类型精度的字面量将被解释为对精度取模。
+有符号类型，根据底层的二进制补码表示进行解释。
 
-:::example "Overflowing Fixed-Width Literals"
-The following statements are all true:
+:::example "溢出固定宽度字面量"
+以下声明均为真：
 ```lean
 example : (255 : UInt8) = 255 := by rfl
 example : (256 : UInt8) = 0   := by rfl
@@ -123,12 +123,12 @@ example : (0xff : Int8) = -1   := by rfl
 ```
 :::
 
-# API Reference
+# API 参考
 
-## Sizes
+## 大小
 
-Each fixed-width integer has a _size_, which is the number of distinct values that can be represented by the type.
-This is not equivalent to C's `sizeof` operator, which instead determines how many bytes the type occupies.
+每个固定宽度整数都有一个_大小_，这是该类型可以表示的不同值的数量。
+这不等同于 C 语言的 `sizeof` 运算符，后者是用来确定该类型占用多少字节的。
 
 {docstring USize.size}
 
@@ -150,7 +150,7 @@ This is not equivalent to C's `sizeof` operator, which instead determines how ma
 
 {docstring Int64.size}
 
-## Ranges
+## 范围
 
 {docstring ISize.minValue}
 
@@ -172,9 +172,9 @@ This is not equivalent to C's `sizeof` operator, which instead determines how ma
 
 {docstring Int64.maxValue}
 
-## Conversions
+## 转换
 
-### To and From `Int`
+### 到/从 `Int` 转换
 
 {docstring ISize.toInt}
 
@@ -220,7 +220,7 @@ This is not equivalent to C's `sizeof` operator, which instead determines how ma
 {docstring Int64.ofIntLE}
 
 
-### To and From `Nat`
+### 到/从 `Nat` 转换
 
 {docstring USize.ofNat}
 
@@ -285,7 +285,7 @@ This is not equivalent to C's `sizeof` operator, which instead determines how ma
 {docstring Int64.toNatClampNeg}
 
 
-### To Other Fixed-Width Integers
+### 到其他固定宽度整数转换
 
 {docstring USize.toUInt8}
 
@@ -388,7 +388,7 @@ This is not equivalent to C's `sizeof` operator, which instead determines how ma
 
 
 
-### To Floating-Point Numbers
+### 到浮点数转换
 
 {docstring ISize.toFloat}
 
@@ -430,7 +430,7 @@ This is not equivalent to C's `sizeof` operator, which instead determines how ma
 
 {docstring UInt64.toFloat32}
 
-### To and From Bitvectors
+### 到/从位向量转换
 
 {docstring ISize.toBitVec}
 
@@ -452,7 +452,7 @@ This is not equivalent to C's `sizeof` operator, which instead determines how ma
 
 {docstring Int64.ofBitVec}
 
-### To and From Finite Numbers
+### 到/从有限数转换
 
 {docstring USize.toFin}
 
@@ -476,10 +476,10 @@ This is not equivalent to C's `sizeof` operator, which instead determines how ma
 
 {docstring USize.repr}
 
-### To Characters
+### 到字符转换
 
-The {name}`Char` type is a wrapper around {name}`UInt32` that requires a proof that the wrapped integer represents a Unicode code point.
-This predicate is part of the {name}`UInt32` API.
+{name}`Char` 类型是对 {name}`UInt32` 的包装器，它需要一个证明，证明所包装的整数表示一个 Unicode 代码点。
+该谓词是 {name}`UInt32` API 的一部分。
 
 {docstring UInt32.isValidChar}
 
@@ -487,12 +487,12 @@ This predicate is part of the {name}`UInt32` API.
 
 {include 2 Manual.BasicTypes.UInt.Arith}
 
-## Bitwise Operations
+## 按位操作
 
-Typically, bitwise operations on fixed-width integers should be accessed using Lean's overloaded operators, particularly their instances of {name}`ShiftLeft`, {name}`ShiftRight`, {name}`AndOp`, {name}`OrOp`, and {name}`XorOp`.
+通常，对固定宽度整数的按位操作应该使用 Lean 的重载运算符来访问，特别是它们对 {name}`ShiftLeft`、{name}`ShiftRight`、{name}`AndOp`、{name}`OrOp` 和 {name}`XorOp` 的实例。
 
 ```lean -show
--- Check that all those instances really exist
+-- 检查所有这些实例是否确实存在
 open Lean Elab Command in
 #eval show CommandElabM Unit from do
   let types := [`ISize, `Int8, `Int16, `Int32, `Int64, `USize, `UInt8, `UInt16, `UInt32, `UInt64]

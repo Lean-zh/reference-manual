@@ -13,43 +13,43 @@ open Manual.FFIDocType
 open Verso.Genre Manual
 open Verso.Genre.Manual.InlineLean
 
-#doc (Manual) "Integers" =>
+#doc (Manual) "整数" =>
 %%%
 tag := "Int"
 %%%
 
-The integers are whole numbers, both positive and negative.
-Integers are arbitrary-precision, limited only by the capability of the hardware on which Lean is running; for fixed-width integers that are used in programming and computer science, please see the {ref "fixed-ints"}[section on fixed-precision integers].
+整数是包含正负的完整数字。
+整数是任意精度的，仅受运行 Lean 的硬件能力的限制；对于编程和计算机科学中使用的固定宽度整数，请参阅{ref "fixed-ints"}[定精度整数章节]。
 
-Integers are specially supported by Lean's implementation.
-The logical model of the integers is based on the natural numbers: each integer is modeled as either a natural number or the negative successor of a natural number.
-Operations on the integers are specified using this model, which is used in the kernel and in interpreted code.
-In these contexts, integer code inherits the performance benefits of the natural numbers' special support.
-In compiled code, integers are represented as efficient arbitrary-precision integers, and sufficiently small numbers are stored as values that don't require indirection through a pointer.
-Arithmetic operations are implemented by primitives that take advantage of the efficient representations.
+Lean 的实现对整数提供了特殊支持。
+整数的逻辑模型基于自然数：每个整数被建模为自然数或自然数的负后继。
+整数上的操作是使用该模型指定的，该模型用于内核和解释代码中。
+在这些语境中，整数代码继承了自然数特殊支持带来的性能优势。
+在编译后的代码中，整数被表示为高效的任意精度整数，并且足够小的数字被存储为不需要通过指针间接引用的值。
+算术操作由利用这些高效表示的原语实现。
 
-# Logical Model
+# 逻辑模型
 %%%
 tag := "int-model"
 %%%
-Integers are represented either as a natural number or as the negation of the successor of a natural number.
+整数既可以表示为一个自然数，也可以表示为一个自然数后继的否定。
 
 {docstring Int}
 
-This representation of the integers has a number of useful properties.
-It is relatively simple to use and to understand.
-Unlike a pair of a sign and a {lean}`Nat`, there is a unique representation for $`0`, which simplifies reasoning about equality.
-Integers can also be represented as a pair of natural numbers in which one is subtracted from the other, but this requires a {ref "quotients"}[quotient type] to be well-behaved, and quotient types can be laborious to work with due to the need to prove that functions respect the equivalence relation.
+整数的这种表示方式具有许多有用的属性。
+它使用和理解起来相对简单。
+与符号和 {lean}`Nat` 构成的有序对不同，$`0` 有一个唯一的表示形式，这简化了关于等式的推理。
+整数也可以表示为一对自然数，其中一个减去另一个，但这需要一个行为良好的{ref "quotients"}[商类型]，并且由于需要证明函数尊重等价关系，使用商类型可能会非常繁琐。
 
-# Run-Time Representation
+# 运行时表示
 %%%
 tag := "int-runtime"
 %%%
 
-Like {ref "nat-runtime"}[natural numbers], sufficiently-small integers are represented without pointers: the lowest-order bit in an object pointer is used to indicate that the value is not, in fact, a pointer.
-If an integer is too large to fit in the remaining bits, it is instead allocated as an ordinary Lean object that consists of an object header and an arbitrary-precision integer.
+像{ref "nat-runtime"}[自然数]一样，足够小的整数无需指针即可表示：对象指针中的最低位用于指示该值实际上不是指针。
+如果一个整数太大，无法放入剩余的位中，它将作为一个普通的 Lean 对象分配，该对象由对象头和任意精度整数组成。
 
-# Syntax
+# 语法
 %%%
 tag := "int-syntax"
 %%%
@@ -59,20 +59,20 @@ section
 variable (n : Nat)
 ```
 
-The {lean}`OfNat Int` instance allows numerals to be used as literals, both in expression and in pattern contexts.
-{lean}`(OfNat.ofNat n : Int)` reduces to the constructor application {lean}`Int.ofNat n`.
-The {inst}`Neg Int` instance allows negation to be used as well.
+{lean}`OfNat Int` 实例允许数字在表达式和模式语境中用作字面量。
+{lean}`(OfNat.ofNat n : Int)` 规约为构造子应用 {lean}`Int.ofNat n`。
+{inst}`Neg Int` 实例也允许使用否定。
 
 ```lean -show
 open Int
 ```
 
-On top of these instances, there is special syntax for the constructor {lean}`Int.negSucc` that is available when the `Int` namespace is opened.
-The notation {lean}`-[ n +1]` is suggestive of $`-(n + 1)`, which is the meaning of {lean}`Int.negSucc n`.
+在这些实例之上，构造子 {lean}`Int.negSucc` 还有一套特殊语法，可在打开 `Int` 命名空间时使用。
+记号 {lean}`-[ n +1]` 让人联想到 $`-(n + 1)`，这也是 {lean}`Int.negSucc n` 的含义。
 
-:::syntax term (title := "Negative Successor")
+:::syntax term (title := "负后继")
 
-{lean}`-[ n +1]` is notation for {lean}`Int.negSucc n`.
+{lean}`-[ n +1]` 是 {lean}`Int.negSucc n` 的记号。
 
 ```grammar
 -[ $_ +1]
@@ -84,13 +84,13 @@ end
 ```
 
 
-# API Reference
+# API 参考
 
-## Properties
+## 属性
 
 {docstring Int.sign}
 
-## Conversions
+## 转换
 
 {docstring Int.natAbs}
 
@@ -110,11 +110,11 @@ end
 
 {docstring Int.repr}
 
-## Arithmetic
+## 算术
 
-Typically, arithmetic operations on integers are accessed using Lean's overloaded arithmetic notation.
-In particular, the instances of {inst}`Add Int`, {inst}`Neg Int`, {inst}`Sub Int`, and {inst}`Mul Int` allow ordinary infix operators to be used.
-{ref "int-div"}[Division] is somewhat more intricate, because there are multiple sensible notions of division on integers.
+通常，使用 Lean 的重载算术记号来访问整数上的算术操作。
+特别是，{inst}`Add Int`、{inst}`Neg Int`、{inst}`Sub Int` 和 {inst}`Mul Int` 实例允许使用普通的插缀运算符。
+{ref "int-div"}[除法]稍微复杂一些，因为整数上有多种合理的除法概念。
 
 {docstring Int.add}
 
@@ -134,16 +134,16 @@ In particular, the instances of {inst}`Add Int`, {inst}`Neg Int`, {inst}`Sub Int
 
 {docstring Int.lcm}
 
-### Division
+### 除法
 %%%
 tag := "int-div"
 %%%
-The {inst}`Div Int` and {inst}`Mod Int` instances implement Euclidean division, described in the reference for {name}`Int.ediv`.
-This is not, however, the only sensible convention for rounding and remainders in division.
-Four pairs of division and modulus functions are available, implementing various conventions.
+{inst}`Div Int` 和 {inst}`Mod Int` 实例实现了欧几里得除法，在 {name}`Int.ediv` 的参考中有描述。
+然而，这并不是唯一合理的除法舍入和余数约定。
+有四对除法和取模函数可用，它们实现了各种约定。
 
-:::example "Division by 0"
-In all integer division conventions, division by {lean  (type := "Int")}`0` is defined to be {lean  (type := "Int")}`0`:
+:::example "除以 0"
+在所有整数除法约定中，除以 {lean  (type := "Int")}`0` 都被定义为 {lean  (type := "Int")}`0`：
 
 ```lean (name := div0)
 #eval Int.ediv 5 0
@@ -159,7 +159,7 @@ In all integer division conventions, division by {lean  (type := "Int")}`0` is d
 #eval Int.tdiv 0 0
 #eval Int.tdiv (-5) 0
 ```
-All evaluate to 0.
+都求值为 0。
 ```leanOutput div0
 0
 ```
@@ -181,17 +181,17 @@ All evaluate to 0.
 
 {docstring Int.fmod}
 
-## Bitwise Operators
+## 按位运算符
 
-Bitwise operators on {name}`Int` can be understood as bitwise operators on an infinite stream of bits that are the twos-complement representation of integers.
+{name}`Int` 上的按位运算符可以理解为对整数的二进制补码表示的无限位流进行按位操作。
 
 {docstring Int.not}
 
 {docstring Int.shiftRight}
 
-## Comparisons
+## 比较
 
-Equality and inequality tests on {lean}`Int` are typically performed using the decidability of its equality and ordering relations or using the {inst}`BEq Int` and {inst}`Ord Int` instances.
+{lean}`Int` 上的相等和不等测试通常使用其相等和排序关系的可判定性，或者使用 {inst}`BEq Int` 和 {inst}`Ord Int` 实例来执行。
 
 ```lean -show
 example (i j : Int) : Decidable (i ≤ j) := inferInstance

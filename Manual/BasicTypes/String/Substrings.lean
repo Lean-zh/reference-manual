@@ -14,13 +14,13 @@ open Verso.Genre.Manual.InlineLean
 
 set_option pp.rawOnError true
 
-#doc (Manual) "Raw Substrings" =>
+#doc (Manual) "原生子字符串" =>
 %%%
 tag := "string-api-substring"
 %%%
 
-Raw substrings are a low-level type that groups a string together with byte positions that delimit a region in the string.
-Most code should use {ref "string-api-slice"}[slices] instead, because they are safer and more convenient.
+原生子字符串是一种底层类型，它将字符串与其内部限定某个区域的字节位置组合在一起。
+大多数代码应该改用{ref "string-api-slice"}[切片]，因为它们更安全也更方便。
 
 {docstring String.toRawSubstring}
 
@@ -28,13 +28,13 @@ Most code should use {ref "string-api-slice"}[slices] instead, because they are 
 
 {docstring Substring.Raw}
 
-# Properties
+# 属性
 
 {docstring Substring.Raw.isEmpty}
 
 {docstring Substring.Raw.bsize}
 
-# Positions
+# 位置
 
 {docstring Substring.Raw.atEnd}
 
@@ -49,7 +49,7 @@ Most code should use {ref "string-api-slice"}[slices] instead, because they are 
 {docstring Substring.Raw.prevn}
 
 
-# Folds and Aggregation
+# 归折与聚合
 
 {docstring Substring.Raw.foldl}
 
@@ -59,13 +59,13 @@ Most code should use {ref "string-api-slice"}[slices] instead, because they are 
 
 {docstring Substring.Raw.any}
 
-# Comparisons
+# 比较
 
 {docstring Substring.Raw.beq}
 
 {docstring Substring.Raw.sameAs}
 
-# Prefix and Suffix
+# 前缀与后缀
 
 {docstring Substring.Raw.commonPrefix}
 
@@ -75,7 +75,7 @@ Most code should use {ref "string-api-slice"}[slices] instead, because they are 
 
 {docstring Substring.Raw.dropSuffix?}
 
-# Lookups
+# 查找
 
 {docstring Substring.Raw.get}
 
@@ -84,7 +84,7 @@ Most code should use {ref "string-api-slice"}[slices] instead, because they are 
 {docstring Substring.Raw.front}
 
 
-# Modifications
+# 修改
 
 {docstring Substring.Raw.drop}
 
@@ -115,7 +115,7 @@ Most code should use {ref "string-api-slice"}[slices] instead, because they are 
 
 {docstring Substring.Raw.repair}
 
-# Conversions
+# 转换
 
 {docstring Substring.Raw.toString}
 

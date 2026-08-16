@@ -15,7 +15,7 @@ open Verso.Genre.Manual.InlineLean
 
 set_option pp.rawOnError true
 
-#doc (Manual) "Subarrays" =>
+#doc (Manual) "子数组" =>
 %%%
 tag := "subarray"
 %%%
@@ -25,15 +25,15 @@ tag := "subarray"
 variable {α : Type u}
 ```
 
-The type {lean}`Subarray α` is an abbreviations for {lean}`Std.Slice α`.
-This means that, in addition to the operators in this section, {tech}[generalized field notation] can be used to call functions in the {namespace}`Std.Slice` namespace, such as {name}`Std.Slice.foldl`.
+类型 {lean}`Subarray α` 是 {lean}`Std.Slice α` 的缩写。
+这意味着，除了本节中的运算符外，还可以使用{tech (key := "generalized field notation")}[泛化字段记号]来调用 {namespace}`Std.Slice` 命名空间中的函数，例如 {name}`Std.Slice.foldl`。
 :::
 
 {docstring Subarray}
 
 {docstring Subarray.empty}
 
-# Array Data
+# 数组数据
 
 {docstring Subarray.array}
 
@@ -45,7 +45,7 @@ This means that, in addition to the operators in this section, {tech}[generalize
 
 {docstring Subarray.stop_le_array_size}
 
-# Resizing
+# 调整大小
 
 {docstring Subarray.drop}
 
@@ -55,7 +55,7 @@ This means that, in addition to the operators in this section, {tech}[generalize
 
 {docstring Subarray.split}
 
-# Lookups
+# 查找
 
 {docstring Subarray.get}
 
@@ -63,7 +63,7 @@ This means that, in addition to the operators in this section, {tech}[generalize
 
 {docstring Subarray.getD}
 
-# Iteration
+# 迭代
 
 {docstring Subarray.foldr}
 
@@ -75,7 +75,7 @@ This means that, in addition to the operators in this section, {tech}[generalize
 
 {docstring Subarray.forIn}
 
-# Element Predicates
+# 元素谓词
 
 {docstring Subarray.findRev?}
 
