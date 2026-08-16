@@ -9,7 +9,7 @@ import Manual.Meta.ErrorExplanation
 open Lean
 open Verso.Genre Manual InlineLean
 
-#doc (Manual) "About: `synthInstanceFailed`" =>
+#doc (Manual) "关于：`synthInstanceFailed`" =>
 %%%
 shortTitle := "synthInstanceFailed"
 %%%
@@ -20,25 +20,21 @@ shortTitle := "synthInstanceFailed"
 variable {t : Type} (x y : Int)
 ```
 
-{ref "type-classes"}[Type classes] are the mechanism that Lean and many other
-programming languages use to handle overloaded operations. The code that handles a particular
-overloaded operation is an {tech}_instance_ of a type class; deciding which instance to use for a given
-overloaded operation is called _synthesizing_ an instance.
+{ref "type-classes"}[类型类] 是 Lean 及许多其他编程语言用来处理重载操作的机制。处理特定
+重载操作的代码是类型类的一个 {tech}_实例_；决定给定重载操作应使用哪个实例称为_精译_实例。
 
-As an example, when Lean encounters an expression {lean}`x + y` where {lean}`x` and {lean}`y` both
-have type {name}`Int`, it is necessary to look up how it should add two integers and also look up
-what the resulting type will be. This is described as synthesizing an instance of the type class
-{lean}`HAdd Int Int t` for some type `t`.
+例如，当 Lean 遇到表达式 {lean}`x + y`，且 {lean}`x` 和 {lean}`y` 都具有
+{name}`Int` 类型时，需要查找如何将两个整数相加，并查找结果类型。这被描述为精译类型类
+对于某种类型 `t` 的 {lean}`HAdd Int Int t`。
+{lean}`HAdd Int Int t` 的实例，其中 `t` 是某种类型。
 
-Many failures to synthesize an instance of a type class are the result of using the wrong binary
-operation. Both success and failure are not always straightforward, because some instances are
-defined in terms of other instances, and Lean must recursively search to find appropriate instances.
-It's possible to {ref "instance-search"}[inspect Lean's instance synthesis], and this
-can be helpful for diagnosing tricky failures of type class instance synthesis.
+许多类型类实例精译失败是由于使用了错误的二元运算。成功和失败并不总是显而易见，因为有些实例
+是根据其他实例定义的，Lean 必须递归搜索才能找到合适的实例。可以
+{ref "instance-search"}[检查 Lean 的实例精译]，这有助于诊断棘手的类型类实例精译失败。
 
-# Examples
+# 示例
 
-:::errorExample "Using the Wrong Binary Operation"
+:::errorExample "使用错误的二元运算"
 
 ```broken
 #eval "A" + "3"
@@ -53,12 +49,11 @@ Hint: Type class instance resolution failures can be inspected with the `set_opt
 #eval "A" ++ "3"
 ```
 
-The binary operation `+` is associated with the {name}`HAdd` type class, and there's no way to add
-two strings. The binary operation `++`, associated with the {name}`HAppend` type class, is the
-correct way to append strings.
+二元运算 `+` 与 {name}`HAdd` 类型类相关联，而字符串无法进行相加。二元运算 `++` 与
+{name}`HAppend` 类型类相关联，是拼接字符串的正确方式。
 :::
 
-:::errorExample "Arguments Have the Wrong Type"
+:::errorExample "参数类型错误"
 
 ```broken
 def x : Int := 3
@@ -75,12 +70,11 @@ def x : Int := 3
 #eval ToString.toString x ++ "meters"
 ```
 
-Lean does not allow integers and strings to be added directly. The function
-{name}`ToString.toString` uses type class overloading to convert values to strings; by successfully
-searching for an instance of {lean}`ToString Int`, the second example will succeed.
+Lean 不允许直接将整数和字符串相加。函数 {name}`ToString.toString` 使用类型类重载将值转换为
+字符串；通过成功搜索 {lean}`ToString Int` 的实例，第二个示例即可成功。
 :::
 
-:::errorExample "Missing Type Class Instance"
+:::errorExample "缺少类型类实例"
 
 ```broken
 inductive MyColor where
@@ -95,7 +89,7 @@ failed to synthesize instance of type class
 
 Hint: Adding the command `deriving instance Inhabited for MyColor` may allow Lean to derive the missing instance.
 ```
-```fixed "derive instance when defining type"
+```fixed "定义类型时派生实例"
 inductive MyColor where
   | chartreuse | sienna | thistle
 deriving Inhabited
@@ -103,7 +97,7 @@ deriving Inhabited
 def forceColor (oc : Option MyColor) :=
   oc.get!
 ```
-```fixed "derive instance separately"
+```fixed "单独派生实例"
 inductive MyColor where
   | chartreuse | sienna | thistle
 
@@ -112,7 +106,7 @@ deriving instance Inhabited for MyColor
 def forceColor (oc : Option MyColor) :=
   oc.get!
 ```
-```fixed "define instance"
+```fixed "定义实例"
 inductive MyColor where
   | chartreuse | sienna | thistle
 
@@ -123,9 +117,8 @@ def forceColor (oc : Option MyColor) :=
   oc.get!
 ```
 
-Type class synthesis can fail because an instance of the type class simply needs to be provided.
-This commonly happens for type classes like {name}`Repr`, {name}`BEq`, {name}`ToJson` and
-{name}`Inhabited`. Lean can often {ref "deriving-instances"}[automatically generate instances of the
-type class with the `deriving` keyword] either when the type is defined or with the stand-alone
-{keywordOf Lean.Parser.Command.deriving}`deriving` command.
+类型类合成可能失败，因为只需提供该类型类的一个实例。这通常发生在 {name}`Repr`、{name}`BEq`、
+{name}`ToJson` 和 {name}`Inhabited` 等类型类上。Lean 通常可以在定义类型时，或使用独立的
+{keywordOf Lean.Parser.Command.deriving}`deriving` 命令，通过 `deriving` 关键字
+{ref "deriving-instances"}[自动生成类型类的实例]。
 :::

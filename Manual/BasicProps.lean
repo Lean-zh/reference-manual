@@ -18,34 +18,34 @@ open Verso.Genre.Manual.InlineLean
 set_option pp.rawOnError true
 
 
-#doc (Manual) "Basic Propositions" =>
+#doc (Manual) "基本命题" =>
 %%%
 tag := "basic-props"
 %%%
 
-With the exception of implication and universal quantification, logical connectives and quantifiers are implemented as {tech}[inductive types] in the {lean}`Prop` universe.
-In some sense, the connectives described in this chapter are not special—they could be implemented by any user.
-However, these basic connectives are used pervasively in the standard library and built-in proof automation tools.
+除了蕴含和全称量词外，逻辑连接词和量词都在 {lean}`Prop` 宇宙中实现为 {tech}[归纳类型]。
+从某种意义上说，本章介绍的连接词并不特殊——任何用户都可以实现它们。
+不过，标准库和内置证明自动化工具广泛使用了这些基本连接词。
 
 
 
-# Truth
+# 真与假
 %%%
 tag := "true-false"
 %%%
 
-Fundamentally, there are only two propositions in Lean: {lean}`True` and {lean}`False`.
-The axiom of propositional extensionality ({name}`propext`) allows propositions to be considered equal when they are logically equivalent, and every true proposition is logically equivalent to {lean}`True`.
-Similarly, every false proposition is logically equivalent to {lean}`False`.
+从根本上说，Lean 中只有两个命题：{lean}`True` 和 {lean}`False`。
+命题外延公理（{name}`propext`）允许将逻辑等价的命题视为相等；每个真命题都与 {lean}`True` 逻辑等价。
+同样，每个假命题都与 {lean}`False` 逻辑等价。
 
-{lean}`True` is an inductively defined proposition with a single constructor that takes no parameters.
-It is always possible to prove {lean}`True`.
-{lean}`False`, on the other hand, is an inductively defined proposition with no constructors.
-Proving it requires finding an inconsistency in the current context.
+{lean}`True` 是一个归纳定义的命题，只有一个不接受参数的构造器。
+证明 {lean}`True` 总是可能的。
+另一方面，{lean}`False` 是一个没有构造器的归纳定义命题。
+证明它需要在当前上下文中找到矛盾。
 
-Both {lean}`True` and {lean}`False` are {ref "subsingleton-elimination"}[subsingletons]; this means that they can be used to compute inhabitants of non-propositional types.
-For {lean}`True`, this amounts to ignoring the proof, which is not informative.
-For {lean}`False`, this amounts to a demonstration that the current code is unreachable and does not need to be completed.
+{lean}`True` 和 {lean}`False` 都是 {ref "subsingleton-elimination"}[至多单元素类型]；这意味着它们可用于计算非命题类型的元素。
+对于 {lean}`True`，这相当于忽略证明，因为证明并不携带信息。
+对于 {lean}`False`，这表示当前代码不可达，因此无需完成。
 
 {docstring True}
 
@@ -53,10 +53,10 @@ For {lean}`False`, this amounts to a demonstration that the current code is unre
 
 {docstring False.elim}
 
-:::example "Dead Code and Subsingleton Elimination"
+:::example "死代码与至多单元素消去"
 
 
-The fourth branch in the definition of {lean}`f` is unreachable, so no concrete {lean}`String` value needs to be provided:
+{lean}`f` 的定义中的第四个分支不可达，因此无需提供具体的 {lean}`String` 值：
 ```lean
 def f (n : Nat) : String :=
   if h1 : n < 11 then
@@ -69,11 +69,11 @@ def f (n : Nat) : String :=
     False.elim (by omega)
   else "Twelve"
 ```
-In this example, {name}`False.elim` indicates to Lean that the current local context is logically inconsistent: proving {name}`False` suffices to abandon the branch.
+在此例中，{name}`False.elim` 向 Lean 表明当前局部上下文不一致：证明 {name}`False` 就足以放弃该分支。
 
-Similarly, the definition of {name}`g` appears to have the potential to be non-terminating.
-However, the recursive call occurs on an unreachable path through the program.
-The proof automation used for producing termination proofs can detect that the local assumptions are inconsistent.
+类似地，{name}`g` 的定义看起来可能不会终止。
+然而，递归调用位于程序的一条不可达路径上。
+用于生成终止性证明的自动化能够检测出局部假设之间的矛盾。
 ```lean
 def g (n : Nat) : String :=
   if n < 11 then
@@ -89,37 +89,37 @@ termination_by n
 ```
 :::
 
-# Logical Connectives
+# 逻辑连接词
 
-Conjunction is implemented as the inductively defined proposition {name}`And`.
-The constructor {name}`And.intro` represents the introduction rule for conjunction: to prove a conjunction, it suffices to prove both conjuncts.
-Similarly, {name}`And.elim` represents the elimination rule: given a proof of a conjunction and a proof of some other statement that assumes both conjuncts, the other statement can be proven.
-Because {name}`And` is a {tech}[subsingleton], {name}`And.elim` can also be used as part of computing data.
-However, it should not be confused with {name}`PProd`: using non-computable reasoning principles such as the Axiom of Choice to define data (including {lean}`Prod`) causes Lean to be unable to compile and run the resulting program, while using them in a proof of a proposition causes no such issue.
+合取实现为归纳定义的命题 {name}`And`。
+构造器 {name}`And.intro` 表示合取的引入规则：要证明合取，只需分别证明两个合取项。
+类似地，{name}`And.elim` 表示消去规则：给定合取的证明，以及一个假设两个合取项成立的其他命题的证明，就可以证明该命题。
+由于 {name}`And` 是 {tech}[至多单元素类型]，{name}`And.elim` 也可参与数据计算。
+但它不应与 {name}`PProd` 混淆：使用选择公理等不可计算的推理原则定义数据（包括 {lean}`Prod`）会使 Lean 无法编译和运行所得程序，而在命题证明中使用它们则没有这个问题。
 
-In a {ref "tactics"}[tactic] proof, conjunctions can be proved using {name}`And.intro` explicitly via {tactic}`apply`, but {tactic}`constructor` is more common.
-When multiple conjunctions are nested in a proof goal, {tactic}`and_intros` can be used to apply {name}`And.intro` in each relevant location.
-Assumptions of conjunctions in the context can be simplified using {tactic}`cases`, pattern matching with {tactic}`let` or {tactic (show := "match")}`Lean.Parser.Tactic.match`, or {tactic}`rcases`.
+在 {ref "tactics"}[策略]证明中，可以通过 {tactic}`apply` 显式使用 {name}`And.intro` 证明合取，但更常见的是使用 {tactic}`constructor`。
+当证明目标中嵌套了多个合取时，可以使用 {tactic}`and_intros` 在各个相关位置应用 {name}`And.intro`。
+上下文中的合取假设可以用 {tactic}`cases`、使用 {tactic}`let` 或 {tactic (show := "match")}`Lean.Parser.Tactic.match` 进行模式匹配，或用 {tactic}`rcases` 化简。
 
 {docstring And}
 
 {docstring And.elim}
 
-Disjunction implemented as the inductively defined proposition {name}`Or`.
-It has two constructors, one for each introduction rule: a proof of either disjunct is sufficient to prove the disjunction.
-While the definition of {lean}`Or` is similar to that of {lean}`Sum`, it is quite different in practice.
-Because {lean}`Sum` is a type, it is possible to check _which_ constructor was used to create any given value.
-{lean}`Or`, on the other hand, forms propositions: terms that prove a disjunction cannot be interrogated to check which disjunct was true.
-In other words, because {lean}`Or` is not a {tech}[subsingleton], its proofs cannot be used as part of a computation.
+析取实现为归纳定义的命题 {name}`Or`。
+它有两个构造器，分别对应两个引入规则：证明任一析取项即可证明析取。
+虽然 {lean}`Or` 的定义与 {lean}`Sum` 类似，但实际使用时差异很大。
+由于 {lean}`Sum` 是类型，可以检查给定值由哪一个构造器创建。
+另一方面，{lean}`Or` 构成命题：无法检查证明析取的项来确定哪一项为真。
+换言之，由于 {lean}`Or` 不是 {tech}[至多单元素类型]，其证明不能参与计算。
 
-In a {ref "tactics"}[tactic] proof, disjunctions can be proved using either constructor ({name}`Or.inl` or {name}`Or.inr`) explicitly via {tactic}`apply`.
-The {tactic}`left` and {tactic}`right` tactics select the left and right disjuncts.
-Assumptions of disjunctions in the context can be simplified using {tactic}`cases`, pattern matching with {tactic (show := "match")}`Lean.Parser.Tactic.match`, or {tactic}`rcases`.
+在 {ref "tactics"}[策略]证明中，可以通过 {tactic}`apply` 显式使用任一构造器（{name}`Or.inl` 或 {name}`Or.inr`）证明析取。
+{tactic}`left` 和 {tactic}`right` 策略分别选择左、右析取项。
+上下文中的析取假设可以用 {tactic}`cases`、使用 {tactic (show := "match")}`Lean.Parser.Tactic.match` 进行模式匹配，或用 {tactic}`rcases` 化简。
 
 {docstring Or}
 
-When either disjunct is {tech}[decidable], it becomes possible to use {lean}`Or` to compute data.
-This is because the decision procedure's result provides a suitable branch condition.
+当任一析取项是 {tech}[可判定的]时，就可以使用 {lean}`Or` 计算数据。
+这是因为判定过程的结果提供了合适的分支条件。
 
 {docstring Or.by_cases}
 
@@ -130,9 +130,9 @@ This is because the decision procedure's result provides a suitable branch condi
 section
 variable {P : Prop}
 ```
-Rather than encoding negation as an inductive type, {lean}`¬P` is defined to mean {lean}`P → False`.
-In other words, to prove a negation, it suffices to assume the negated statement and derive a contradiction.
-This also means that {lean}`False` can be derived immediately from a proof of a proposition and its negation, and then used to prove any proposition or inhabit any type.
+否定并不编码为归纳类型；{lean}`¬P` 定义为 {lean}`P → False`。
+换言之，要证明否定，只需假设被否定的陈述并推出矛盾。
+这也意味着，可以从某命题及其否定的证明立即推出 {lean}`False`，再用它证明任意命题或构造任意类型的元素。
 ```lean -show
 end
 ```
@@ -151,14 +151,14 @@ end
 section
 variable {A B : Prop}
 ```
-Implication is represented using {ref "function-types"}[function types] in the {tech}[universe] of {tech}[propositions].
-To prove {lean}`A → B`, it is enough to prove {lean}`B` after assuming {lean}`A`.
-This corresponds to the typing rule for {keywordOf Lean.Parser.Term.fun}`fun`.
-Similarly, the typing rule for function application corresponds to {deftech}_modus ponens_: given a proof of {lean}`A → B` and a proof of {lean}`A`, {lean}`B` can be proved.
+蕴含使用 {tech}[命题] {tech}[宇宙]中的{ref "function-types"}[函数类型]表示。
+要证明 {lean}`A → B`，只需假设 {lean}`A` 后证明 {lean}`B`。
+这对应于 {keywordOf Lean.Parser.Term.fun}`fun` 的类型规则。
+类似地，函数应用的类型规则对应于{deftech}_肯定前件_：给定 {lean}`A → B` 的证明和 {lean}`A` 的证明，就可以证明 {lean}`B`。
 
-:::example "Truth-Functional Implication"
-The representation of implication as functions in the universe of propositions is equivalent to the traditional definition in which {lean}`A → B` is defined as {lean}`(¬A) ∨ B`.
-This can be proved using {tech}[propositional extensionality] and the law of the excluded middle:
+:::example "真值函数蕴含"
+将蕴含表示为命题宇宙中的函数，等价于传统定义 {lean}`A → B` 为 {lean}`(¬A) ∨ B`。
+这可以使用{tech}[命题外延]和排中律证明：
 ```lean
 theorem truth_functional_imp {A B : Prop} :
     ((¬ A) ∨ B) = (A → B) := by
@@ -177,14 +177,14 @@ end
 ```
 
 
-Logical equivalence, or “if and only if”, is represented using a structure that is equivalent to the conjunction of both directions of the implication.
+逻辑等价（即“当且仅当”）使用一个结构表示，该结构等价于两个方向蕴含的合取。
 
 {docstring Iff}
 
 {docstring Iff.elim}
 
-:::syntax term (title := "Propositional Connectives")
-The logical connectives other than implication are typically referred to using dedicated syntax, rather than via their defined names:
+:::syntax term (title := "命题连接词")
+除蕴含外，逻辑连接词通常使用专用语法，而不是使用它们的定义名称：
 ```grammar
 $_ ∧ $_
 ```
@@ -200,14 +200,14 @@ $_ ↔ $_
 :::
 
 
-# Quantifiers
+# 量词
 
-Just as implication is implemented as ordinary function types in {lean}`Prop`, universal quantification is implemented as dependent function types in {lean}`Prop`.
-Because {lean}`Prop` is {tech}[impredicative], any function type in which the {tech}[codomain] is a {lean}`Prop` is itself a {lean}`Prop`, even if the {tech}[domain] is a {lean}`Type`.
-The typing rules for dependent functions precisely match the introduction and elimination rules for universal quantification: if a predicate holds for any arbitrarily chosen element of a type, then it holds universally.
-If a predicate holds universally, then it can be instantiated to a proof for any individual.
+正如蕴含在 {lean}`Prop` 中实现为普通函数类型，全称量化在 {lean}`Prop` 中实现为依赖函数类型。
+由于 {lean}`Prop` 是{tech}[非直谓的]，任何{tech}[陪域]为 {lean}`Prop` 的函数类型本身也是 {lean}`Prop`，即使{tech}[定义域]是 {lean}`Type`。
+依赖函数的类型规则与全称量化的引入、消去规则完全对应：若谓词对类型中任意选取的元素都成立，则它对所有元素成立。
+若谓词对所有元素都成立，则可将其实例化为任意个体的证明。
 
-:::syntax term (title := "Universal Quantification")
+:::syntax term (title := "全称量化")
 
 ```grammar
 ∀ $x:ident $[$_:ident]* $[: $t]?, $_
@@ -224,35 +224,35 @@ forall $x:ident $[$_:ident]* $[: $t]?, $_
 forall $_ $[$_]*, $_
 ```
 
-Universal quantifiers bind one or more variables, which are then in scope in the final term.
-The identifiers may also be `_`.
-With parenthesized type annotations, multiple bound variables may have different types, while the unparenthesized variant requires that all have the same type.
+全称量词绑定一个或多个变量，这些变量随后在最终项中处于作用域内。
+标识符也可以是 `_`。
+带括号的类型注解允许多个绑定变量具有不同类型，而不带括号的形式要求它们类型相同。
 :::
 
-Even though universal quantifiers are represented by functions, their proofs should not be thought of as computations.
-Because of proof irrelevance and the elimination restriction for propositions, there's no way to actually compute data using these proofs.
-As a result, they are free to use reasoning principles that are not readily computed, such as the classical Axiom of Choice.
+尽管全称量词由函数表示，其证明也不应被视为计算。
+由于证明无关性以及命题的消去限制，无法实际使用这些证明计算数据。
+因此，它们可以自由使用不易计算的推理原则，例如经典选择公理。
 
 
-Existential quantification is implemented as a structure that is similar to {name}`Subtype` and {name}`Sigma`: it contains a {deftech}_witness_, which is a value that satisfies the predicate, along with a proof that the witness does in fact satisfy the predicate.
-In other words, it is a form of dependent pair type.
-Unlike both {name}`Subtype` and {name}`Sigma`, it is a {tech}[proposition]; this means that programs cannot in general use a proof of an existential statement to obtain a value that satisfies the predicate.
+存在量化实现为类似于 {name}`Subtype` 和 {name}`Sigma` 的结构：它包含一个{deftech}_见证_（满足谓词的值），以及该见证确实满足谓词的证明。
+换言之，它是一种依赖对类型。
+与 {name}`Subtype` 和 {name}`Sigma` 不同，它是一个{tech}[命题]；这意味着程序通常不能使用存在性陈述的证明来取得满足谓词的值。
 
-When writing a proof, the {tactic}`exists` tactic allows one (or more) witness(es) to be specified for a (potentially nested) existential statement.
-The {tactic}`constructor` tactic, on the other hand, creates a {tech}[metavariable] for the witness; providing a proof of the predicate may solve the metavariable as well.
-The components of an existential assumption can be made available individually by pattern matching with {tactic}`let` or {tactic (show := "match")}`Lean.Parser.Tactic.match`, as well as by using {tactic}`cases` or {tactic}`rcases`.
+编写证明时，{tactic}`exists` 策略允许为（可能嵌套的）存在性陈述指定一个或多个见证。
+另一方面，{tactic}`constructor` 策略会为见证创建一个{tech}[元变量]；提供谓词证明也可能同时解出该元变量。
+可以使用 {tactic}`let` 或 {tactic (show := "match")}`Lean.Parser.Tactic.match` 进行模式匹配，或使用 {tactic}`cases`、{tactic}`rcases`，分别取得存在性假设的各个组成部分。
 
-:::example "Proving Existential Statements"
+:::example "证明存在性陈述"
 
-When proving that there exists some natural number that is the sum of four and five, the {tactic}`exists` tactic expects the sum to be provided, constructing the equality proof using {tactic}`trivial`:
+证明存在某个自然数等于四与五之和时，{tactic}`exists` 策略要求提供该和，并使用 {tactic}`trivial` 构造等式证明：
 
 ```lean
 theorem ex_four_plus_five : ∃ n, 4 + 5 = n := by
   exists 9
 ```
 
-The {tactic}`constructor` tactic, on the other hand, expects a proof.
-The {tactic}`rfl` tactic causes the sum to be determined as a side effect of checking definitional equality.
+另一方面，{tactic}`constructor` 策略要求提供证明。
+{tactic}`rfl` 策略在检查定义等价时会顺带确定该和。
 
 ```lean
 theorem ex_four_plus_five' : ∃ n, 4 + 5 = n := by
@@ -265,7 +265,7 @@ theorem ex_four_plus_five' : ∃ n, 4 + 5 = n := by
 
 {docstring Exists}
 
-:::syntax term (title := "Existential Quantification")
+:::syntax term (title := "存在量化")
 
 ```grammar
 ∃ $x:ident $[$_:ident]* $[: $t]?, $_
@@ -282,38 +282,38 @@ exists $x:ident $[$_:ident]* $[: $t]?, $_
 exists $_ $[$_]*, $_
 ```
 
-Existential quantifiers bind one or more variables, which are then in scope in the final term.
-The identifiers may also be `_`.
-With parenthesized type annotations, multiple bound variables may have different types, while the unparenthesized variant requires that all have the same type.
-If more than one variable is bound, then the result is multiple instances of {name}`Exists`, nested to the right.
+存在量词绑定一个或多个变量，这些变量随后在最终项中处于作用域内。
+标识符也可以是 `_`。
+带括号的类型注解允许多个绑定变量具有不同类型，而不带括号的形式要求它们类型相同。
+如果绑定了多个变量，结果就是多个向右嵌套的 {name}`Exists` 实例。
 :::
 
 {docstring Exists.choose}
 
-# Propositional Equality
+# 命题等式
 %%%
 tag := "propositional-equality"
 %%%
 
-{deftech}_Propositional equality_ is the operator that allows the equality of two terms to be stated as a proposition.
-{tech}[Definitional equality] is checked automatically where necessary.
-As a result, its expressive power is limited in order to keep the algorithm that checks it fast and understandable.
-Propositional equality, on the other hand, must be explicitly proved and explicitly used—Lean checks the validity of the proofs, rather than determining whether the statement is true.
-In exchange, it is much more expressive: many terms are propositionally equal without being definitionally equal.
+{deftech}_命题等式_是允许将两个项相等表述为命题的运算符。
+{tech}[定义等价]会在必要时自动检查。
+因此，为了使检查算法快速且易于理解，其表达能力受到限制。
+另一方面，命题等式必须显式证明并显式使用——Lean 检查证明的有效性，而不是判断陈述是否为真。
+作为交换，它的表达能力强得多：许多项在命题上相等，却不定义等价。
 
-Propositional equality is defined as an inductive type.
-Its sole constructor {name}`Eq.refl` requires that both of the equated values be the same; this is implicitly an appeal to {tech}[definitional equality].
-Propositional equality can also be thought of as the least reflexive relation modulo definitional equality.
-In addition to {name}`Eq.refl`, equality proofs are generated by the {name}`propext` and {name}`Quot.sound` axioms.
+命题等式定义为归纳类型。
+其唯一构造器 {name}`Eq.refl` 要求等式两边的值相同；这隐含地使用了{tech}[定义等价]。
+命题等式也可以看作模定义等价的最小自反关系。
+除 {name}`Eq.refl` 外，等式证明还由 {name}`propext` 和 {name}`Quot.sound` 公理生成。
 
 
 {docstring Eq}
 
-:::syntax term (title := "Propositional Equality")
+:::syntax term (title := "命题等式")
 ```grammar
 $_ = $_
 ```
-Propositional equality is typically denoted by the infix `=` operator.
+命题等式通常用中缀运算符 `=` 表示。
 :::
 
 {docstring rfl}
@@ -336,22 +336,22 @@ Propositional equality is typically denoted by the infix `=` operator.
 
 {docstring Eq.mpr}
 
-:::syntax term (title := "Casting")
+:::syntax term (title := "强制转换")
 ```grammar
 $_ ▸ $_
 ```
-When a term's type includes one side of an equality as a sub-term, it can be rewritten using the `▸` operator.
-If both sides of the equality occur in the term's type, then the left side is rewritten to the right.
+当项的类型包含等式一侧作为子项时，可以使用 `▸` 运算符进行重写。
+如果等式两侧都出现在项的类型中，则将左侧重写为右侧。
 :::
 
-## Uniqueness of Equality Proofs
+## 等式证明的唯一性
 %%%
 tag := "UIP"
 %%%
 
 :::keepEnv
 
-Because of definitional proof irrelevance, propositional equality proofs are _unique_: two mathematical objects cannot be equal in different ways.
+由于定义证明无关性，命题等式证明是_唯一的_：两个数学对象不可能以不同方式相等。
 
 ```lean
 theorem Eq.unique {α : Sort u}
@@ -361,8 +361,8 @@ theorem Eq.unique {α : Sort u}
   rfl
 ```
 
-Streicher's axiom K{citep streicher1993}[] is also a consequence of definitional proof irrelevance, as is its computation rule.
-Axiom K is a principle that's logically equivalent to {name}`Eq.unique`, implemented as an alternative {tech}[recursor] for propositional equality.
+Streicher 的 K 公理{citep streicher1993}[]及其计算规则同样是定义证明无关性的结果。
+K 公理是与 {name}`Eq.unique` 逻辑等价的原则，实现为命题等式的另一种{tech}[递归器]。
 ```lean
 def K {α : Sort u}
     {motive : {x : α} → x = x → Sort v}
@@ -380,24 +380,24 @@ example {α : Sort u} {a : α}
 
 :::
 
-## Heterogeneous Equality
+## 异构等式
 %%%
 tag := "HEq"
 %%%
 
-{deftech}_Heterogeneous equality_ is a version of {tech}[propositional equality] that does not require that the two equated terms have the same type.
-However, _proving_ that the terms are equal using its version of {name}`rfl` requires that both the types and the terms are definitionally equal.
-In other words, it allows more statements to be formulated.
+{deftech}_异构等式_是{tech}[命题等式]的一种形式，不要求等式两项具有相同类型。
+不过，使用它的 {name}`rfl` 版本_证明_两项相等时，仍要求类型和项都定义等价。
+换言之，它允许表述更多陈述。
 
-Heterogeneous equality is typically less convenient in practice than ordinary propositional equality.
-The greater flexibility afforded by not requiring both sides of the equality to have the same type means that it has fewer useful properties.
-It is often encountered as a result of dependent pattern matching: the {tactic}`split` tactic and functional induction{TODO}[xref] add heterogeneous equality assumptions to the context when the ordinary equality assumptions that are needed to accurate reflect the corresponding control flow would not be type correct.
-In these cases, the built-in automation has no choice but to use heterogeneous equality.
+异构等式在实践中通常不如普通命题等式方便。
+不要求等式两侧类型相同所带来的灵活性，也意味着它有更少的有用性质。
+它常因依赖模式匹配而出现：当准确反映相应控制流所需的普通等式假设不满足类型要求时，{tactic}`split` 策略和函数归纳{TODO}[xref]会向上下文加入异构等式假设。
+在这些情况下，内置自动化只能使用异构等式。
 
 
 {docstring HEq}
 
-:::syntax term (title := "Heterogeneous Equality")
+:::syntax term (title := "异构等式")
 ```grammar
 $_ ≍ $_
 ```
@@ -406,7 +406,7 @@ $_ ≍ $_
 section
 variable (x : α) (y : β)
 ```
-Heterogeneous equality {lean}`HEq x y` can be written {lean}`x ≍ y`.
+异构等式 {lean}`HEq x y` 可写作 {lean}`x ≍ y`。
 ```lean -show
 end
 ```
@@ -417,13 +417,13 @@ end
 
 
 :::::leanSection
-::::example "Heterogeneous Equality"
+::::example "异构等式"
 ```lean -show
 variable {α : Type u} {n k l₁ l₂ l₃ : Nat}
 ```
 
-The type {lean}`Vector α n` is a wrapper around an {lean}`Array α` that includes a proof that the array has size {lean}`n`.
-Appending {name}`Vector`s is associative, but this fact cannot be straightforwardly stated using ordinary propositional equality:
+类型 {lean}`Vector α n` 是 {lean}`Array α` 的包装器，其中包含数组大小为 {lean}`n` 的证明。
+{name}`Vector` 的追加满足结合律，但无法直接用普通命题等式表述这一事实：
 ```lean
 variable
   {xs : Vector α l₁} {ys : Vector α l₂} {zs : Vector α l₃}
@@ -433,7 +433,7 @@ set_option linter.unusedVariables false
 theorem Vector.append_associative :
     xs ++ (ys ++ zs) = (xs ++ ys) ++ zs := by sorry
 ```
-The problem is that the associativity of addition of natural numbers holds propositionally, but not definitionally:
+问题在于自然数加法的结合律在命题上成立，但不定义等价：
 ```leanOutput assocFail
 Type mismatch
   xs ++ ys ++ zs
@@ -444,26 +444,26 @@ but is expected to have type
 ```
 
 :::paragraph
-One solution to this problem is to use the associativity of natural number addition in the statement:
+一种解决方案是在陈述中使用自然数加法的结合律：
 ```lean
 theorem Vector.append_associative' :
     xs ++ (ys ++ zs) =
     Nat.add_assoc _ _ _ ▸ ((xs ++ ys) ++ zs) := by
   sorry
 ```
-However, such proof statements can be difficult to work with in certain circumstances.
+不过，在某些情况下，这样的证明陈述很难处理。
 :::
 
 :::paragraph
-Another is to use heterogeneous equality:
+另一种方案是使用异构等式：
 ```lean -keep
 theorem Vector.append_associative :
     HEq (xs ++ (ys ++ zs)) ((xs ++ ys) ++ zs) := by sorry
 ```
 :::
 
-In this case, {ref "the-simplifier"}[the simplifier] can rewrite both sides of the equation without having to preserve their types.
-However, proving the theorem does require eventually proving that the lengths nonetheless match.
+此时，{ref "the-simplifier"}[简化器]可以重写等式两侧，而无需保持它们的类型。
+不过，证明该定理最终仍需证明长度相匹配。
 ```lean -keep
 theorem Vector.append_associative :
     HEq (xs ++ (ys ++ zs)) ((xs ++ ys) ++ zs) := by

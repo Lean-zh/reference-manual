@@ -9,7 +9,7 @@ import Manual.Meta.ErrorExplanation
 open Lean
 open Verso.Genre Manual InlineLean
 
-#doc (Manual) "About: `propRecLargeElim`" =>
+#doc (Manual) "关于：`propRecLargeElim`" =>
 %%%
 shortTitle := "propRecLargeElim"
 %%%
@@ -17,24 +17,21 @@ shortTitle := "propRecLargeElim"
 {errorExplanationHeader lean.propRecLargeElim}
 
 
-This error occurs when attempting to eliminate a proof of a proposition into a higher type universe.
-Because Lean's type theory does not allow large elimination from {lean}`Prop`, it is invalid to
-pattern-match on such values—e.g., by using {keywordOf Lean.Parser.Term.let}`let` or
-{keywordOf Lean.Parser.Term.match}`match`—to produce a piece of data in a non-propositional universe
-(i.e., `Type u`). More precisely, the motive of a propositional recursor must be a proposition.
-(See the manual section on {ref "subsingleton-elimination"}[Subsingleton Elimination] for exceptions
-to this rule.)
+当尝试将命题证明消去到更高的类型宇宙时，会产生此错误。
+由于 Lean 的类型论不允许从 {lean}`Prop` 进行大消去，因此不能对这类值进行模式匹配，
+例如使用 {keywordOf Lean.Parser.Term.let}`let` 或
+{keywordOf Lean.Parser.Term.match}`match` 来在非命题宇宙（即 `Type u`）中生成数据。
+更准确地说，命题递归子的动机必须是命题。（此规则的例外情况请参阅手册中的
+{ref "subsingleton-elimination"}[单例消去]一节。）
 
-Note that this error will arise in any expression that eliminates from a proof into a
-non-propositional universe, even if that expression occurs within another expression of
-propositional type (e.g., in a {keywordOf Lean.Parser.Term.let}`let` binding in a proof). The
-“Defining an intermediate data value within a proof” example below demonstrates such an occurrence.
-Errors of this kind can usually be resolved by moving the recursor application “outward,” so that
-its motive is the proposition being proved rather than the type of data-valued term.
+注意，任何将证明消去到非命题宇宙的表达式都会引发此错误，即使该表达式位于另一个
+命题类型的表达式中（例如证明中的 {keywordOf Lean.Parser.Term.let}`let` 绑定）。
+下方“在证明中定义中间数据值”的示例展示了这种情况。此类错误通常可以通过将递归子应用
+“向外”移动来解决，使其动机成为正在证明的命题，而不是数据值项的类型。
 
-# Examples
+# 示例
 
-:::errorExample "Defining an Intermediate Data Value Within a Proof"
+:::errorExample "在证明中定义中间数据值"
 ```broken
 example {α : Type} [inst : Nonempty α] (p : α → Prop) :
     ∃ x, p x ∨ ¬ p x :=
@@ -64,17 +61,15 @@ example {α : Type} [inst : Nonempty α] (p : α → Prop) :
   match inst with
   | .intro x => ⟨x, Classical.em (p x)⟩
 ```
-Even though the {keywordOf Lean.Parser.Command.example}`example` being defined has a propositional
-type, the body of `val` does not; it has type `α : Type`. Thus, pattern-matching on the proof of
-`Nonempty α` (a proposition) to produce `val` requires eliminating that proof into a
-non-propositional type and is disallowed. Instead, the {keywordOf Lean.Parser.Term.match}`match`
-expression must be moved to the top level of the `example`, where the result is a
-{lean}`Prop`-valued proof of the existential claim stated in the example's header. This
-restructuring could also be done using a pattern-matching {keywordOf Lean.Parser.Term.let}`let`
-binding.
+尽管所定义的 {keywordOf Lean.Parser.Command.example}`example` 具有命题类型，
+`val` 的主体却不是；它的类型是 `α : Type`。因此，对 `Nonempty α`（一个命题）的证明进行
+模式匹配以生成 `val`，需要将该证明消去到非命题类型中，这是不允许的。相反，必须将
+{keywordOf Lean.Parser.Term.match}`match` 表达式移到 `example` 的顶层，此时结果是对示例
+标题中所述存在性断言的 {lean}`Prop` 值证明。也可以使用模式匹配的
+{keywordOf Lean.Parser.Term.let}`let` 绑定来完成这种重构。
 :::
 
-:::errorExample "Extracting the Witness from an Existential Proof"
+:::errorExample "从存在性证明中提取见证"
 
 ```broken
 def getWitness {α : Type u} {p : α → Prop} (h : ∃ x, p x) : α :=
@@ -98,7 +93,7 @@ the dependent pattern matcher can solve the following kinds of equations
 - <constructor> = <constructor>, examples: List.cons x xs = List.cons y ys, and List.cons x xs = List.nil
 ```
 ```fixed "in Prop"
--- This is `Exists.elim`
+-- 这是 `Exists.elim`
 theorem useWitness {α : Type u} {p : α → Prop} {q : Prop}
     (h : ∃ x, p x) (hq : (x : α) → p x → q) : q :=
   match h with
@@ -110,24 +105,22 @@ def getWitness {α : Type u} {p : α → Prop}
   match h with
   | .mk x _ => x
 ```
-In this example, simply relocating the pattern-match is insufficient; the attempted definition
-`getWitness` is fundamentally unsound. (Consider the case where `p` is
-{lean}`fun (n : Nat) => n > 0`: if `h` and `h'` are proofs of {lean}`∃ x, x > 0`, with `h` using
-witness `1` and `h'` witness `2`, then since `h = h'` by proof irrelevance, it follows that
-`getWitness h = getWitness h'`—i.e., `1 = 2`.)
+在此示例中，简单地移动模式匹配并不够；尝试定义的 `getWitness` 从根本上是不健全的。
+（考虑 `p` 为 {lean}`fun (n : Nat) => n > 0` 的情况：如果 `h` 和 `h'` 是
+{lean}`∃ x, x > 0` 的证明，其中 `h` 使用见证 `1`，而 `h'` 使用见证 `2`，
+那么根据证明无关性 `h = h'`，可推出 `getWitness h = getWitness h'`——即 `1 = 2`。）
 
-Instead, `getWitness` must be rewritten: either the resulting type of the function must be a
-proposition (the first fixed example above), or `h` must not be a proposition (the second).
+因此，必须重写 `getWitness`：函数的结果类型必须是命题（上面的第一个修正示例），
+或者 `h` 不能是命题（第二个修正示例）。
 
-In the first corrected example, the resulting type of `useWitness` is now a proposition `q`. This
-allows us to pattern-match on `h`—since we are eliminating into a propositional type—and pass the
-unpacked values to `hq`. From a programmatic perspective, one can view `useWitness` as rewriting
-`getWitness` in continuation-passing style, restricting subsequent computations to use its result
-only to construct values in {lean}`Prop`, as required by the prohibition on propositional large
-elimination. Note that `useWitness` is the existential elimination principle {name}`Exists.elim`.
+在第一个修正示例中，`useWitness` 的结果类型现在是命题 `q`。这允许我们对 `h` 进行模式匹配
+（因为我们将其消去到命题类型中），并将解包后的值传递给 `hq`。从编程角度看，可以将
+`useWitness` 视为以延续传递风格重写 `getWitness`，限制后续计算仅使用其结果来构造
+{lean}`Prop` 中的值，正如禁止命题大消去所要求的那样。注意，`useWitness` 就是存在性消去
+原理 {name}`Exists.elim`。
 
-The second corrected example changes the type of `h` from an existential proposition to a
-{lean}`Type`-valued dependent pair (corresponding to the {name}`PSigma` type constructor). Since
-this type is not propositional, eliminating into `α : Type u` is no longer invalid, and the
-previously attempted pattern match now type-checks.
+第二个修正示例将 `h` 的类型从存在性命题改为一个取
+{lean}`Type` 值的依赖对（对应于 {name}`PSigma` 类型构造器）。
+由于该类型不是命题，将其消去到 `α : Type u` 不再无效，之前尝试的模式匹配现在可以通过
+类型检查。
 :::

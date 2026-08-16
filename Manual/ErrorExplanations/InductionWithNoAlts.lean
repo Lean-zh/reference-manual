@@ -10,20 +10,19 @@ import Manual.Meta.ErrorExplanation
 open Lean
 open Verso.Genre Manual InlineLean
 
-#doc (Manual) "About: `inductionWithNoAlts`" =>
+#doc (Manual) "关于：`inductionWithNoAlts`" =>
 %%%
 shortTitle := "inductionWithNoAlts"
 %%%
 
 {errorExplanationHeader lean.inductionWithNoAlts}
 
-Tactic-based proofs using induction in Lean need to use a pattern-matching-like notation to describe
-individual cases of the proof. However, the `induction'` tactic in Mathlib and the specialized
-`induction` tactic for natural numbers used in the Natural Number Game follows a different pattern.
+在 Lean 中使用归纳的策略证明需要用类似模式匹配的记法描述证明的各个情形。
+不过，Mathlib 中的 `induction'` 策略以及自然数游戏使用的专用 `induction` 策略遵循不同的模式。
 
-# Examples
+# 示例
 
-:::errorExample "Adding Explicit Cases to an Induction Proof"
+:::errorExample "为归纳证明添加显式情形"
 ```broken
 theorem zero_mul (m : Nat) : 0 * m = 0 := by
   induction m with n n_ih
@@ -45,9 +44,7 @@ theorem zero_mul (m : Nat) : 0 * m = 0 := by
     rw [Nat.add_zero]
     rw [n_ih]
 ```
-The broken example has the structure of a correct proof in the Natural Numbers Game, and this
-proof will work if you `import Mathlib` and replace `induction` with `induction'`. Induction tactics
-in basic Lean expect the {keyword}`with` keyword to be followed by a series of cases, and the names
-for the inductive case are provided in the {name Nat.succ}`succ` case rather than being provided
-up-front.
+这个错误例子具有自然数游戏中正确证明的结构；如果 `import Mathlib` 并将 `induction` 替换为 `induction'`，
+该证明就能工作。基础 Lean 中的归纳策略要求 {keyword}`with` 关键字后跟一系列情形，
+归纳情形的名称应在 {name Nat.succ}`succ` 情形中提供，而不是预先提供。
 :::

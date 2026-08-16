@@ -10,22 +10,20 @@ import Manual.Meta.ErrorExplanation
 open Lean Doc
 open Verso.Genre Manual InlineLean
 
-#doc (Manual) "About: `ctorResultingTypeMismatch`" =>
+#doc (Manual) "关于：`ctorResultingTypeMismatch`" =>
 %%%
 shortTitle := "ctorResultingTypeMismatch"
 %%%
 
 {errorExplanationHeader lean.ctorResultingTypeMismatch}
 
-In an inductive declaration, the resulting type of each constructor must match the type being
-declared; if it does not, this error is raised. That is, every constructor of an inductive type must
-return a value of that type. See the {ref "inductive-types"}[Inductive Types] manual section for
-additional details. Note that it is possible to omit the resulting type for a constructor if the
-inductive type being defined has no indices.
+在归纳声明中，每个构造器的结果类型必须与所声明的类型匹配；否则就会产生此错误。也就是说，
+归纳类型的每个构造器都必须返回该类型的值。更多信息请参阅{ref "inductive-types"}[归纳类型]。
+注意，如果所定义的归纳类型没有索引，可以省略构造器的结果类型。
 
-# Examples
+# 示例
 
-:::errorExample "Typo in Resulting Type"
+:::errorExample "结果类型中的拼写错误"
 ```broken
 inductive Tree (α : Type) where
   | leaf : Tree α
@@ -44,7 +42,7 @@ inductive Tree (α : Type) where
 ```
 :::
 
-:::errorExample "Missing Resulting Type After Constructor Parameter"
+:::errorExample "构造器参数后缺少结果类型"
 ```broken
 inductive Credential where
   | pin      : Nat
@@ -67,7 +65,6 @@ inductive Credential where
   | password (str : String)
 ```
 
-If the type of a constructor is annotated, the full type—including the resulting type—must be
-provided. Alternatively, constructor parameters can be written using named binders; this allows the
-omission of the constructor's resulting type because it contains no indices.
+如果标注了构造器类型，就必须提供完整类型（包括结果类型）。另一种方式是使用命名绑定项书写构造器参数；
+这样便可省略不含索引的构造器结果类型。
 :::

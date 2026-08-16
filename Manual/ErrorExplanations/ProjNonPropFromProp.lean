@@ -9,28 +9,26 @@ import Manual.Meta.ErrorExplanation
 open Lean
 open Verso.Genre Manual InlineLean
 
-#doc (Manual) "About: `projNonPropFromProp`" =>
+#doc (Manual) "关于：`projNonPropFromProp`" =>
 %%%
 shortTitle := "projNonPropFromProp"
 %%%
 
 {errorExplanationHeader lean.projNonPropFromProp}
-This error occurs when attempting to project a piece of data from a proof of a proposition using an
-index projection. For example, if `h` is a proof of an existential proposition, attempting to
-extract the witness `h.1` is an example of this error. Such projections are disallowed because they
-may violate Lean's prohibition of large elimination from {lean}`Prop` (refer to the
-{ref "propositions"}[Propositions] manual section for further details).
+当尝试使用索引投影从命题证明中投影数据时，会产生此错误。
+例如，如果 `h` 是存在性命题的证明，尝试提取见证 `h.1` 就是此错误的一个例子。
+不允许此类投影，因为它们可能违反 Lean 禁止从 {lean}`Prop` 进行大消去的规定
+（详见手册中的{ref "propositions"}[命题]一节）。
 
-Instead of an index projection, consider using a pattern-matching
-{keywordOf Lean.Parser.Term.let}`let`, {keywordOf Lean.Parser.Term.match}`match` expression, or a
-destructuring tactic like {tactic}`cases` to eliminate from one propositional type to another. Note
-that such elimination is only valid if the resulting value is also in {lean}`Prop`; if it is not,
-the error {ref "lean.propRecLargeElim" (domain := Manual.errorExplanation)}[`lean.propRecLargeElim`]
-will be raised.
+不要使用索引投影，而应考虑使用模式匹配
+{keywordOf Lean.Parser.Term.let}`let`、{keywordOf Lean.Parser.Term.match}`match` 表达式，或
+{tactic}`cases` 之类的解构策略，将一个命题类型消去到另一个命题类型。注意，只有当结果值也
+位于 {lean}`Prop` 中时，这种消去才有效；否则将引发错误
+{ref "lean.propRecLargeElim" (domain := Manual.errorExplanation)}[`lean.propRecLargeElim`]。
 
-# Examples
+# 示例
 
-:::errorExample "Attempting to Use Index Projection on Existential Proof"
+:::errorExample "尝试对存在性证明使用索引投影"
 
 ```broken
 example (a : Nat) (h : ∃ x : Nat, x > a + 1) : ∃ x : Nat, x > 0 :=
@@ -57,7 +55,6 @@ example (a : Nat) (h : ∃ x : Nat, x > a + 1) : ∃ x : Nat, x > a := by
     omega
 ```
 
-The witness associated with a proof of an existential proposition cannot be extracted using an
-index projection. Instead, it is necessary to use a pattern match: either a term like a
-{keywordOf Lean.Parser.Term.let}`let` binding or a tactic like {tactic}`cases`.
+不能使用索引投影提取存在性命题证明所关联的见证。必须使用模式匹配：
+可以使用类似 {keywordOf Lean.Parser.Term.let}`let` 的项绑定，或类似 {tactic}`cases` 的策略。
 :::

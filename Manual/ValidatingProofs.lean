@@ -19,7 +19,7 @@ open Verso.Code.External (lit)
 
 open Lean (Syntax SourceInfo)
 
-#doc (Manual) "Validating a Lean Proof" =>
+#doc (Manual) "验证 Lean 证明" =>
 %%%
 file := "ValidatingProofs"
 tag := "validating-proofs"
@@ -27,72 +27,72 @@ number := false
 htmlSplit := .never
 %%%
 
-This section discusses how to validate a proof expressed in Lean.
+本节讨论如何验证用 Lean 表达的证明。
 
-Depending on the circumstances, additional steps may be recommended to rule out misleading proofs.
-In particular, it matters a lot whether one is dealing with an {tech}[honest] proof attempt, and needs protection against only benign mistakes, or a possibly-{tech}[malicious] proof attempt that actively tries to mislead.
+根据具体情况，可能需要额外步骤来排除误导性的证明。
+尤其重要的是区分 {tech}[诚实]的证明尝试（只需防范无害错误）与可能的 {tech}[恶意]证明尝试（主动试图误导用户）。
 
-In particular, we use {deftech}_honest_ when the goal is to create a valid proof.
-This allows for mistakes and bugs in proofs and meta-code (tactics, attributes, commands, etc.), but not for code that clearly only serves to circumvent the system (such as using the {option}`debug.skipKernelTC`).
-Note that the {keyword}`unsafe` marker on API functions is unrelated to whether this API can be used in an dishonest way.
+特别地，当目标是创建有效证明时，我们使用 {deftech}_诚实_ 一词。
+这允许证明和元代码（策略、属性、命令等）中存在错误和缺陷，但不允许明显只用于绕过系统的代码（例如使用 {option}`debug.skipKernelTC`）。
+注意，API 函数上的 {keyword}`unsafe` 标记与该 API 是否可被不诚实地使用无关。
 
-In contrast, we use {deftech}_malicious_ to describe code that goes out of its way to trick or mislead the user, exploit bugs or compromise the system.
-This includes un-reviewed AI-generated proofs and programs.
+相反，我们用 {deftech}_恶意_ 描述刻意欺骗或误导用户、利用缺陷或破坏系统的代码。
+这包括未经审查的 AI 生成证明和程序。
 
-Furthermore it is important to distinguish the question “does the theorem have a valid proof” from “what does the theorem statement mean”.
+此外，区分“定理是否有有效证明”和“定理陈述是什么意思”这两个问题也很重要。
 
-Below, an escalating sequence of checks are presented, with instructions on how to perform them, an explanation of what they entail and the mistakes or attacks they guard against.
+下面给出一系列逐步加强的检查，并说明如何执行、检查的含义，以及它们防范的错误或攻击。
 
-# The Blue Double Check Marks
+# 蓝色双勾
 %%%
 tag := "validating-blue-check-marks"
 %%%
 
-In regular everyday use of Lean, it suffices to check the blue double check marks next to the theorem statement for assurance that the theorem is proved.
+在日常使用 Lean 时，只需检查定理陈述旁的蓝色双勾，即可确认定理已被证明。
 
-## Instructions
+## 操作说明
 
-While working interactively with Lean, once the theorem is proved, blue double check marks appear in the gutter to the left of the code.
+在 Lean 交互工作时，定理证明完成后，代码左侧的槽中会出现蓝色双勾。
 
-:::figure "A double blue check mark"
-![A theorem with double blue check marks appearing in the editor gutter](/static/screenshots/doublecheckmarks.png)
+:::figure "蓝色双勾"
+![编辑器槽中显示蓝色双勾的定理](/static/screenshots/doublecheckmarks.png)
 :::
 
-## Significance
+## 含义
 
-The blue ticks indicate that the theorem statement has been successfully elaborated, according to the syntax and type class instances defined in the current file and its imports, and that the Lean kernel has accepted a proof of that theorem statement that follows from the definitions, theorems and axioms declared in the current file and its imports.
+蓝色勾号表示定理陈述已依据当前文件及其导入文件中定义的语法和类型类实例成功精译，并且 Lean 内核已接受一个由当前文件及其导入文件中声明的定义、定理和公理推出的该定理证明。
 
-## Trust
+## 信任
 
-This check is meaningful if one believes the formal theorem statement corresponds to its intended informal meanings and trusts the authors of the imported libraries to be {tech}[honest], that they checked that the theorems in their libraries express their intended informal meanings, and that no unsound axioms have been declared and used.
+如果相信形式化定理陈述符合其预期的非形式含义，相信导入库的作者是{tech}[诚实]的、已检查库中定理表达了预期含义，且没有声明和使用不健全的公理，则此检查有意义。
 
-## Protection
+## 防护
 
 :::listBullet "🛡️"
-This check protects against
+此检查可防范：
 
-* Incomplete proof (missing goals, tactic error) *of the current theorem*
-* Explicit use of {lean}`sorry` *in the current theorem*
-* {tech}[Honest] bugs in meta-programs and tactics
-* Proofs still being checked in the background
+* 当前定理的未完成证明（缺少目标、策略错误）
+* 当前定理中显式使用 {lean}`sorry`
+* {tech}[诚实]的元程序和策略缺陷
+* 仍在后台检查的证明
 :::
 
-## Comments
+## 备注
 
-In the Visual Studio Code extension settings, the symbol can be changed.
-Editors other than VS Code may have a different indication.
+可以在 Visual Studio Code 扩展设置中更改该符号。
+非 VS Code 编辑器可能使用不同的指示方式。
 
-Running {lake}`build`{lit}` +Module`, where {lit}`Module` refers to the file containing the theorem, and observing success without error messages or warnings provides the same guarantees.
+运行 {lake}`build`{lit}` +Module`（其中 {lit}`Module` 指包含定理的文件），并确认成功且没有错误消息或警告，可提供相同保证。
 
-# Printing Axioms
+# 打印公理
 %%%
 tag := "validating-printing-axioms"
 %%%
 
-The blue double check marks appear  even when there are explicit uses of {lean}`sorry` or incomplete proofs in the dependencies of the theorem.
-Because both {lean}`sorry` and incomplete proofs are elaborated to axioms, their presence can be detected by listing the axioms that a proof relies on.
+即使定理依赖项中显式使用了 {lean}`sorry` 或存在未完成证明，蓝色双勾仍会出现。
+由于 {lean}`sorry` 和未完成证明都会被精译为公理，可以列出证明所依赖的公理来检测它们。
 
-## Instructions
+## 操作说明
 
 :::keepEnv
 ```lean -show
@@ -100,138 +100,136 @@ inductive TheoremStatement : Prop where | intro
 theorem thmName : TheoremStatement := .intro
 ```
 
-Write {leanCommand}`#print axioms thmName` after the theorem declaration, with {lean}`thmName` replaced by the name of the theorem and check that it reports only the built-in axioms {name}`propext`, {name}`Classical.choice`, and {name}`Quot.sound`.
+在定理声明后写入 {leanCommand}`#print axioms thmName`，将 {lean}`thmName` 替换为定理名称，并确认报告中只有内置公理 {name}`propext`、{name}`Classical.choice` 和 {name}`Quot.sound`。
 
 :::
 
-## Significance
+## 含义
 
-This command prints the set of axioms used by the theorem and the theorems it depends on.
-The three axioms above are standard axioms of Lean's logic, and benign.
+该命令打印定理及其依赖定理所使用的公理集合。
+上面的三个公理是 Lean 逻辑的标准公理，没有危害。
 
-* If {name}`sorryAx` is reported, then this theorem or one of its dependencies uses {lean}`sorry` or is otherwise incomplete.
-* If {name}`Lean.trustCompiler` is reported, then native evaluation is used; see below for a discussion.
-* Any other axiom means that a custom axiom was declared and used, and the theorem is only valid relative to the soundness of these axioms.
+* 如果报告 {name}`sorryAx`，则该定理或其某个依赖使用了 {lean}`sorry`，或以其他方式未完成。
+* 如果报告 {name}`Lean.trustCompiler`，则使用了本地求值；说明见下文。
+* 任何其他公理都表示声明并使用了自定义公理，此时定理只相对于这些公理的可靠性有效。
 
-## Trust
+## 信任
 
-This check is meaningful if one believes the formal theorem statement corresponds to its intended informal meanings and one trusts the authors of the imported libraries to be {tech}[honest].
+如果相信形式化定理陈述符合其预期的非形式含义，并相信导入库的作者是{tech}[诚实]的，则此检查有意义。
 
-## Protection
+## 防护
 
 :::listBullet "🛡️"
-(In addition to the list above)
+（除上述列表外）
 
-* Incomplete proofs
-* Explicit use of {lean}`sorry`
-* Custom axioms
+* 未完成的证明
+* 显式使用 {lean}`sorry`
+* 自定义公理
 :::
 
-# Re-Checking Proofs with `lean4checker`
+# 使用 `lean4checker` 重新检查证明
 %%%
 tag := "validating-lean4checker"
 %%%
 
-There is a small class of bugs and some dishonest ways of presenting proofs that can be caught by re-checking the proofs that are stored in {tech}[`.olean` files] when building the project.
+重新检查构建项目时存储在 {tech}[`.olean` 文件]中的证明，可以捕获一小类缺陷以及某些不诚实的证明呈现方式。
 
-## Instructions
+## 操作说明
 
-Build your project using {lake}`build`, run `lean4checker --fresh` on the module that contains the theorem of interest, and check that no error is reported.
+使用 {lake}`build` 构建项目，在包含目标定理的模块上运行 `lean4checker --fresh`，并确认没有报告错误。
 
-## Significance
+## 含义
 
-The `lean4checker` tool reads the declarations and proofs as they are stored by `lean` during building (the {tech}[`.olean` files]), and replays them through the kernel.
-It trusts that the {tech}[`.olean` files] are structurally correct.
+`lean4checker` 工具读取 `lean` 构建时存储的声明和证明（即 {tech}[`.olean` 文件]），并通过内核重放它们。
+它信任 {tech}[`.olean` 文件]在结构上是正确的。
 
-## Trust
+## 信任
 
-This check is meaningful if one believes the formal theorem statement corresponds to its intended informal meanings and believes the authors of the imported libraries to not be very cunningly {tech}[malicious], and to neither compromise the user’s system nor use Lean’s extensibility to change the interpretation of the theorem statement.
+如果相信形式化定理陈述符合其预期的非形式含义，并相信导入库的作者不会非常狡猾地{tech}[恶意]行事、不会破坏用户系统，也不会利用 Lean 的可扩展性改变定理陈述的解释，则此检查有意义。
 
-## Protection
+## 防护
 
 :::listBullet "🛡️"
-(In addition to the list above)
+（除上述列表外）
 
-* Bugs in Lean’s core handling of the kernel’s state (e.g. due to parallel proof processing, or import handling)
-* Meta-programs or tactics intentionally bypassing that state (e.g. using low-level functionality to add unchecked theorems)
+* Lean 核心处理内核状态时的缺陷（例如并行处理证明或处理导入时的缺陷）
+* 有意绕过该状态的元程序或策略（例如使用低级功能添加未经检查的定理）
 :::
 
-## Comments
+## 备注
 
-Since `lean4checker` reads the {tech}[`.olean` files] without validating their format, this check is  prone to an attacker crafting invalid `.olean` files (e.g. invalid pointers, invalid data in strings).
+由于 `lean4checker` 读取 {tech}[`.olean` 文件]时不验证格式，此检查容易受到攻击者制作无效 `.olean` 文件的影响（例如无效指针、字符串中的无效数据）。
+Lean 策略和其他元代码运行时可以执行任意操作。
+导入决意{tech}[恶意]攻击者创建的库并在没有进一步保护的情况下构建它们，可能危及用户系统，此后就不再有有意义的检查可做。
+我们建议在 CI 中运行 `lean4checker`，以额外防范 Lean 处理声明时的缺陷，并遏制简单攻击。
+[lean-action](https://github.com/leanprover/lean-action) GitHub Action 可通过设置 `lean4checker: true` 提供此功能。
 
-Lean tactics and other meta-code can perform arbitrary actions when run.
-Importing libraries created by a determined {tech}[malicious] attacker and building them without further protection can compromise the user's system, after which no further meaningful checks are possible.
+不使用 `--fresh` 标志时，可以让工具只检查部分模块，并假定其他模块正确（例如受信任的库），以加快处理。
 
-We recommend running `lean4checker` as part of CI for the additional protection against bugs in Lean's handling of declaration and as a deterrent against simple attacks.
-The [lean-action](https://github.com/leanprover/lean-action) GitHub Action provides this functionality by setting `lean4checker: true`.
-
-Without the `--fresh` flag the tool can be instructed to only check some modules, and assume others to be correct (e.g. trusted libraries), for faster processing.
-
-# Gold Standard: `comparator` and external checkers
+# 黄金标准：`comparator` 与外部检查器
 %%%
 tag := "validating-comparator"
 %%%
 
-To protect against a seriously {tech}[malicious] proof compromising how Lean interprets a theorem statement or the user's system, additional steps are necessary.
-This should only be necessary for high risk scenarios (proof marketplaces, high-reward proof competitions, unaligned AI).
+为了防止极其{tech}[恶意]的证明破坏 Lean 对定理陈述的解释或用户系统，还需要额外步骤。
+这只应在高风险场景（证明市场、高奖励证明竞赛、未对齐 AI）中必要。
 
-## Instructions
+## 操作说明
 
-In a trusted environment, write the theorem *statement* (the “challenge”), and then feed the challenge as well as the proposed proof to the [`comparator`](https://github.com/leanprover/comparator) tool, with external checkers enabled, as documented there.
+在受信任环境中写下定理*陈述*（即“挑战”），然后按其文档启用外部检查器，将挑战和拟议证明一并交给 [`comparator`](https://github.com/leanprover/comparator) 工具。
 
-## Significance
+## 含义
 
-Comparator will build the proof in a sandboxed environment, to protect against {tech}[malicious] code in the build step.
-The proof term is exported to a serialized format.
-Outside the sandbox and out of the reach of possibly malicious code, it validates the exported format, replays the proofs using both Lean's kernel and/or an external checker and also ensures that the proved theorem statements match those in the trusted challenge file.
+Comparator 会在沙箱环境中构建证明，以防范构建步骤中的{tech}[恶意]代码。
+证明项会导出为序列化格式。
+在沙箱外、远离可能的恶意代码时，它验证导出格式，使用 Lean 内核和/或外部检查器重放证明，并确保已证明的定理陈述与受信任挑战文件中的陈述一致。
 
-## Trust
+## 信任
 
-This check is meaningful if the theorem statement in the trusted challenge file is correct and the sandbox used to build the possibly-{tech}[malicious] code is safe.
+如果受信任挑战文件中的定理陈述正确，且用于构建可能{tech}[恶意]代码的沙箱安全，则此检查有意义。
 
-## Protection
+## 防护
 
 :::listBullet "🛡️"
-(In addition to the list above)
+（除上述列表外）
 
-* Actively {tech}[malicious] proofs
-* Implementation bugs present in some (but not simulatenously in all) of the used checkers.
+* 主动实施{tech}[恶意]行为的证明
+* 某些所用检查器中存在、但并非同时存在于所有检查器中的实现缺陷。
 :::
 
-## Comments
+## 备注
 
-At the time of writing, `comparator` supports using the official Lean kernel and the external checker [`nanoda`](https://github.com/ammkrn/nanoda_lib), which is developed independently and implemented in Rust. The [Lean Kernel Arena](https://arena.lean-lang.org/) features more external checkers that can be used manually for even more confidence.
+在本文撰写时，`comparator` 支持使用官方 Lean 内核和独立开发、以 Rust 实现的外部检查器 [`nanoda`](https://github.com/ammkrn/nanoda_lib)。[Lean Kernel Arena](https://arena.lean-lang.org/) 提供更多外部检查器，可手动使用以获得更高信心。
 
-# Remaining Issues
+# 遗留问题
 
-When following the gold standard of checking proofs using comparator, some assumptions remain:
+即使遵循使用 comparator 检查证明的黄金标准，仍有一些假设：
 
-* The soundness of Lean’s logic.
-* The plumbing provided by the `comparator` tool is correct.
-* The sandbox used by `comparator` is secure.
-* There is no implementation bug affecting all of the used checkers simultaneously.
-* No human error or misleading presentation of the theorem statement in the trusted challenge file.
+* Lean 逻辑是可靠的。
+* `comparator` 工具提供的连接机制正确。
+* `comparator` 使用的沙箱安全。
+* 不存在同时影响所有所用检查器的实现缺陷。
+* 受信任挑战文件中的定理陈述不存在人为错误或误导性呈现。
 
-  If there are doubts that the theorem means what it appears to mean, its statement and all referenced definitions must be investigated carefully, in particular with regard to custom notation and type classes.
-  Some external checkers offer raw pretty-printing capabilities that are not affected by changes to parser or notation in the source file.
+  如果怀疑定理的含义并非表面所示，就必须仔细调查其陈述和所有引用的定义，尤其要注意自定义记法和类型类。
+  一些外部检查器提供原始美化打印能力，不受源文件中解析器或记法变化的影响。
 
-# On `Lean.trustCompiler` (up to Lean 4.28.0)
+# 关于 `Lean.trustCompiler`（截至 Lean 4.28.0）
 %%%
 tag := "validating-trustCompiler"
 %%%
 
-Lean supports proofs by native evaluation.
-This is used by the {tactic}`decide`{keywordOf Lean.Parser.Tactic.decide}` +native` tactic or internally by specific tactics ({tactic}`bv_decide` in particular) and produces proof terms that call compiled Lean code to do a calculation that is then trusted by the kernel.
+Lean 支持通过本地求值进行证明。
+{tactic}`decide`{keywordOf Lean.Parser.Tactic.decide}` +native` 策略或特定策略（尤其是 {tactic}`bv_decide`）会使用此功能，生成调用已编译 Lean 代码进行计算的证明项，而内核信任该计算。
 
-Specific uses wrapped in {tech}[honest] tactics (e.g. {tactic}`bv_decide`) are generally trustworthy.
-The trusted code base is larger (it includes Lean's compilation toolchain and library annotations in the standard library), but still fixed and vetted.
+封装在{tech}[诚实]策略中的特定用法（例如 {tactic}`bv_decide`）通常值得信任。
+受信任代码库更大（包括 Lean 的编译工具链和标准库中的库注解），但仍是固定且经过审查的。
 
-General use ({tactic}`decide`{keywordOf Lean.Parser.Tactic.decide}` +native` or direct use of {name}`Lean.ofReduceBool`) can be used to create invalid proofs whenever the native evaluation of a term disagrees with the kernel's evaluation.
-In particular, for every {attr}`implemented_by`/{attr}`extern` attribute in libraries it becomes part of the trusted code base that the replacement is semantically equivalent.
+一般使用（{tactic}`decide`{keywordOf Lean.Parser.Tactic.decide}` +native` 或直接使用 {name}`Lean.ofReduceBool`）时，只要项的本地求值与内核求值不一致，就可能创建无效证明。
+特别地，对于库中的每个 {attr}`implemented_by`/{attr}`extern` 属性，替代实现与原实现语义等价这一点都会成为受信任代码库的一部分。
 
-All these uses show up as an axiom {name}`Lean.trustCompiler` in {keywordOf Lean.Parser.Command.printAxioms}`#print axioms`.
-External checkers (`lean4checker`, `comparator`) cannot check such proofs, as they do not have access to the Lean compiler.
-When that level of checking is needed, proofs have to avoid using native evaluation.
+所有这些用法都会在 {keywordOf Lean.Parser.Command.printAxioms}`#print axioms` 中显示为公理 {name}`Lean.trustCompiler`。
+外部检查器（`lean4checker`、`comparator`）无法检查此类证明，因为它们无法访问 Lean 编译器。
+需要这种级别的检查时，证明必须避免使用本地求值。
 
-Since Lean 4.29.0, the {tactic}`decide`{keywordOf Lean.Parser.Tactic.decide}` +native` and {tactic}`bv_decide` tactics no longer use {name}`Lean.trustCompiler`, but instead introduce one dedicated axiom for each computation that is asserted by native computation. The {name}`Lean.trustCompiler` machinery is deprecated and will eventually be removed.
+从 Lean 4.29.0 起，{tactic}`decide`{keywordOf Lean.Parser.Tactic.decide}` +native` 和 {tactic}`bv_decide` 策略不再使用 {name}`Lean.trustCompiler`，而是为本地计算断言的每次计算引入一个专用公理。{name}`Lean.trustCompiler` 机制已弃用，最终会被移除。

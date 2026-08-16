@@ -9,40 +9,32 @@ import Manual.Meta.ErrorExplanation
 open Lean
 open Verso.Genre Manual InlineLean
 
-#doc (Manual) "About: `unknownIdentifier`" =>
+#doc (Manual) "关于：`unknownIdentifier`" =>
 %%%
 shortTitle := "unknownIdentifier"
 %%%
 
 {errorExplanationHeader lean.unknownIdentifier}
 
-This error means that Lean was unable to find a variable or constant matching the given name. More
-precisely, this means that the name could not be *resolved*, as described in the manual section on
-{ref "identifiers-and-resolution"}[Identifiers]: no interpretation of the input as
-the name of a local or section variable (if applicable), a previously declared global constant, or a
-projection of either of the preceding was valid. (“If applicable” refers to the fact that in some
-cases—e.g., the {keywordOf Lean.Parser.Command.print}`#print` command's argument—names are resolved
-only to global constants.)
+此错误表示 Lean 无法找到与给定名称匹配的变量或常量。更确切地说，这意味着该名称无法被
+*解析*，如手册的 {ref "identifiers-and-resolution"}[标识符]章节所述：无法将输入解释为局部变量
+或节变量（如果适用）、之前声明的全局常量，或前述任一项的投影。（“如果适用”是指在某些情况下——
+例如 {keywordOf Lean.Parser.Command.print}`#print` 命令的参数——名称只解析为全局常量。）
 
-Note that this error message will display only one possible resolution of the identifier, but the
-presence of this error indicates failures for *all* possible names to which it might refer. For
-example, if the identifier `x` is entered with the namespaces `A` and `B` are open, the error
-message “Unknown identifier \`x\`” indicates that none of `x`, `A.x`, or `B.x` could be found (or
-that `A.x` or `B.x`, if either exists, is a protected declaration).
+请注意，此错误消息只会显示该标识符的一种可能解析，但出现此错误表示它可能指代的*所有*名称都解析失败。
+例如，如果输入标识符 `x` 时命名空间 `A` 和 `B` 已打开，错误消息“未知标识符 \`x\`”表示找不到
+`x`、`A.x` 或 `B.x` 中的任何一个（或者如果 `A.x` 或 `B.x` 存在，其中之一是受保护声明）。
 
-Common causes of this error include forgetting to import the module in which a constant is defined,
-omitting a constant's namespace when that namespace is not open, or attempting to refer to a local
-variable that is not in scope.
+此错误的常见原因包括忘记导入定义常量的模块、命名空间未打开时省略常量的命名空间，或尝试引用
+不在作用域内的局部变量。
 
-To help resolve some of these common issues, this error message is accompanied by a code action that
-suggests constant names similar to the one provided. These include constants in the environment as
-well as those that can be imported from other modules. Note that these suggestions are available
-only through supported code editors' built-in code action mechanisms and not as a hint in the error
-message itself.
+为帮助解决其中一些常见问题，此错误消息附带一个代码操作，用于建议与所提供名称相似的常量名称。
+这些名称包括环境中的常量，以及可以从其他模块导入的常量。请注意，这些建议只能通过受支持代码
+编辑器的内置代码操作机制获得，不会作为错误消息本身中的提示出现。
 
-# Examples
+# 示例
 
-:::errorExample "Variable Not in Scope"
+:::errorExample "变量不在作用域内"
 ```broken
 example (s : IO.FS.Stream) := do
   IO.withStdout s do
@@ -60,15 +52,13 @@ example (s : IO.FS.Stream) := do
     IO.println text
   IO.println s!"Wrote '{text}' to stream"
 ```
-An unknown identifier error occurs on the last line of this example because the variable `text` is
-not in scope. The {keywordOf Lean.Parser.Term.let}`let`-binding on the third line is scoped to the
-inner {keywordOf Lean.Parser.Term.do}`do` block and cannot be
-accessed in the outer {keywordOf Lean.Parser.Term.do}`do` block. Moving this binding to the outer
-{keywordOf Lean.Parser.Term.do}`do` block—from which it remains
-in scope in the inner block as well—resolves the issue.
+此示例最后一行会产生未知标识符错误，因为变量 `text` 不在作用域内。第三行的
+{keywordOf Lean.Parser.Term.let}`let` 绑定的作用域是内部 {keywordOf Lean.Parser.Term.do}`do` 块，
+无法在外部 {keywordOf Lean.Parser.Term.do}`do` 块中访问。将此绑定移到外部
+{keywordOf Lean.Parser.Term.do}`do` 块后，它在内部块中也仍处于作用域内，从而解决此问题。
 :::
 
-:::errorExample "Missing Namespace"
+:::errorExample "缺少命名空间"
 ```broken
 inductive Color where
   | rgb (r g b : Nat)
@@ -80,7 +70,7 @@ def red : Color :=
 ```output
 Unknown identifier `rgb`
 ```
-```fixed "qualified name"
+```fixed "限定名称"
 inductive Color where
   | rgb (r g b : Nat)
   | grayscale (k : Nat)
@@ -88,7 +78,7 @@ inductive Color where
 def red : Color :=
   Color.rgb 255 0 0
 ```
-```fixed "open namespace"
+```fixed "打开命名空间"
 inductive Color where
   | rgb (r g b : Nat)
   | grayscale (k : Nat)
@@ -98,18 +88,16 @@ def red : Color :=
   rgb 255 0 0
 ```
 
-In this example, the identifier `rgb` on the last line does not resolve to the `Color` constructor
-of that name. This is because the constructor's name is actually `Color.rgb`: all constructors of an
-inductive type have names in that type's namespace. Because the `Color` namespace is not open, the
-identifier `rgb` cannot be used without its namespace prefix.
+在此示例中，最后一行的标识符 `rgb` 无法解析为同名的 `Color` 构造器。这是因为构造器的名称实际
+上是 `Color.rgb`：归纳类型的所有构造器都在该类型的命名空间中命名。由于 `Color` 命名空间未打开，
+标识符 `rgb` 不能不带命名空间前缀使用。
 
-One way to resolve this error is to provide the fully qualified constructor name `Color.rgb`; the
-dotted-identifier notation `.rgb` can also be used, since the expected type of `.rgb 255 0 0` is
-`Color`. Alternatively, one can open the `Color` namespace and continue to omit the `Color` prefix
-from the identifier.
+解决此错误的一种方法是提供完整限定的构造器名称 `Color.rgb`；也可以使用点标识符记法 `.rgb`，
+因为 `.rgb 255 0 0` 的预期类型是 `Color`。或者，可以打开 `Color` 命名空间，继续省略标识符
+中的 `Color` 前缀。
 :::
 
-:::errorExample "Protected Constant Name Without Namespace Prefix"
+:::errorExample "受保护常量名称缺少命名空间前缀"
 
 ```broken
 protected def A.x := ()
@@ -121,14 +109,14 @@ example := x
 ```output
 Unknown identifier `x`
 ```
-```fixed "qualified name"
+```fixed "限定名称"
 protected def A.x := ()
 
 open A
 
 example := A.x
 ```
-```fixed "restricted open"
+```fixed "受限打开"
 protected def A.x := ()
 
 open A (x)
@@ -136,16 +124,14 @@ open A (x)
 example := x
 ```
 
-In this example, because the constant `A.x` is {keyword}`protected`, it cannot be referred to by the suffix
-`x` even with the namespace `A` open. Therefore, the identifier `x` fails to resolve. Instead, to
-refer to a {keyword}`protected` constant, it is necessary to include at least its innermost namespace—in this
-case, `A`. Alternatively, the *restricted opening* syntax—demonstrated in the second corrected
-example—allows a {keyword}`protected` constant to be referred to by its unqualified name, without opening the
-remainder of the namespace in which it occurs (see the manual section on
-{ref "namespaces-sections"}[Namespaces and Sections] for details).
+在此示例中，由于常量 `A.x` 是 {keyword}`protected`，即使打开了 `A` 命名空间，也不能通过后缀
+`x` 引用它。因此，标识符 `x` 解析失败。相反，要引用 {keyword}`protected` 常量，必须至少包含
+其最内层命名空间——在本例中是 `A`。或者，第二个修正示例所展示的*受限打开*语法允许通过未限定
+名称引用 {keyword}`protected` 常量，而无需打开它所在命名空间的其余部分（详情请参阅手册中的
+{ref "namespaces-sections"}[命名空间和节]章节）。
 :::
 
-:::errorExample "Unresolvable Name Inferred by Dotted-Identifier Notation"
+:::errorExample "点标识符记法推断出不可解析名称"
 
 ```broken
 def disjoinToNat (b₁ b₂ : Bool) : Nat :=
@@ -157,25 +143,22 @@ Unknown constant `Nat.toNat`
 Note: Inferred this name from the expected resulting type of `.toNat`:
   Nat
 ```
-```fixed "generalized field notation"
+```fixed "广义字段记法"
 def disjoinToNat (b₁ b₂ : Bool) : Nat :=
   (b₁ || b₂).toNat
 ```
-```fixed "qualified name"
+```fixed "限定名称"
 def disjoinToNat (b₁ b₂ : Bool) : Nat :=
   Bool.toNat (b₁ || b₂)
 ```
 
-In this example, the dotted-identifier notation `.toNat` causes Lean to infer an unresolvable
-name (`Nat.toNat`). The namespace used by dotted-identifier notation is always inferred from
-the expected type of the expression in which it occurs, which—due to the type annotation on
-`disjoinToNat`—is `Nat` in this example. To use the namespace of an argument's type—as the author of
-this code seemingly intended—use *generalized field notation* as shown in the first corrected
-example. Alternatively, the correct namespace can be explicitly specified by writing the fully
-qualified function name.
+在此示例中，点标识符记法 `.toNat` 使 Lean 推断出无法解析的名称（`Nat.toNat`）。点标识符记法
+所使用的命名空间总是根据其所在表达式的预期类型推断；由于 `disjoinToNat` 上的类型注解，在本例中
+该类型是 `Nat`。若要使用参数类型的命名空间——这似乎是代码作者的意图——请使用第一个修正示例
+所示的*广义字段记法*。或者，也可以通过书写完整限定的函数名称来显式指定正确的命名空间。
 :::
 
-:::errorExample "Auto-bound variables"
+:::errorExample "自动绑定变量"
 
 ```broken
 set_option relaxedAutoImplicit false in
@@ -189,14 +172,14 @@ Unknown identifier `size₁`
 
 Note: It is not possible to treat `size₁` as an implicitly bound variable here because it has multiple characters while the `relaxedAutoImplicit` option is set to `false`.
 ```
-```fixed "modifying options"
+```fixed "修改选项"
 set_option relaxedAutoImplicit true in
 def thisWorks (x : α₁) (y : size₁) := ()
 
 set_option autoImplicit true in
 def thisAlsoWorks (x : α₂) (y : size₂) := ()
 ```
-```fixed "add implicit bindings for the unknown identifiers"
+```fixed "为未知标识符添加隐式绑定"
 set_option relaxedAutoImplicit false in
 def thisWorks {size₁} (x : α₁) (y : size₁) := ()
 
@@ -204,12 +187,11 @@ set_option autoImplicit false in
 def thisAlsoWorks {α₂ size₂} (x : α₂) (y : size₂) := ()
 ```
 
-Lean's default behavior, when it encounters an identifier it can't identify in the type of a
-definition, is to add {ref "automatic-implicit-parameters"}[automatic implicit parameters]
-for those unknown identifiers. However, many files or projects disable this feature by setting the
-{option}`autoImplicit` or {option}`relaxedAutoImplicit` options to {name}`false`.
+Lean 遇到定义类型中无法识别的标识符时，默认会为这些未知标识符添加
+{ref "automatic-implicit-parameters"}[自动隐式参数]。然而，许多文件或项目会将
+{option}`autoImplicit` 或 {option}`relaxedAutoImplicit` 选项设为 {name}`false`，从而禁用此功能。
 
-Without re-enabling the {option}`autoImplicit` or {option}`relaxedAutoImplicit` options, the easiest
-way to fix this error is to add the unknown identifiers as
-{ref "implicit-functions"}[ordinary implicit parameters] as shown in the example above.
+如果不重新启用 {option}`autoImplicit` 或 {option}`relaxedAutoImplicit` 选项，修复此错误最简单的
+方法就是像上面的示例一样，将未知标识符添加为
+{ref "implicit-functions"}[普通隐式参数]。
 :::

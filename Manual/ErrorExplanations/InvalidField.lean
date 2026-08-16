@@ -9,25 +9,23 @@ import Manual.Meta.ErrorExplanation
 open Lean
 open Verso.Genre Manual InlineLean
 
-#doc (Manual) "About: `invalidField`" =>
+#doc (Manual) "关于：`invalidField`" =>
 %%%
 shortTitle := "invalidField"
 %%%
 
 {errorExplanationHeader lean.invalidField}
 
-This error indicates that an expression containing a dot followed by an identifier was encountered,
-and that it wasn't possible to understand the identifier as a field.
+此错误表示遇到了包含点号后跟标识符的表达式，但无法将该标识符理解为字段。
 
-Lean's field notation is very powerful, but this can also make it confusing: the expression
-`color.value` can either be a single {ref "identifiers-and-resolution"}[identifier].
-it can be a reference to the {ref "structure-fields"}[field of a structure], and it
-and be a calling a function on the value `color` with
-{ref "generalized-field-notation"}[generalized field notation].
+Lean 的字段表示法非常强大，但这也可能令人困惑：表达式
+`color.value` 可以是单个 {ref "identifiers-and-resolution"}[标识符]，
+也可以是对{ref "structure-fields"}[结构体字段]的引用，
+还可以使用{ref "generalized-field-notation"}[广义字段表示法]对值 `color` 调用函数。
 
-# Examples
+# 示例
 
-:::errorExample "Incorrect Field Name"
+:::errorExample "错误的字段名称"
 
 ```broken
 #eval (4 + 2).suc
@@ -41,11 +39,10 @@ of type `Nat`
 #eval (4 + 1).succ
 ```
 
-The simplest reason for an invalid field error is that the function being sought, like `Nat.suc`,
-does not exist.
+无效字段错误最简单的原因是所查找的函数（例如 `Nat.suc`）不存在。
 :::
 
-:::errorExample "Projecting from the Wrong Expression"
+:::errorExample "从错误表达式投影"
 ```broken
 #eval '>'.leftpad 10 ['a', 'b', 'c']
 ```
@@ -58,12 +55,11 @@ of type `Char`
 #eval ['a', 'b', 'c'].leftpad 10 '>'
 ```
 
-The type of the expression before the dot entirely determines the function being called by the field
-projection. There is no `Char.leftpad`, and the only way to invoke `List.leftpad` with generalized
-field notation is to have the list come before the dot.
+点号前表达式的类型完全决定字段投影所调用的函数。不存在 `Char.leftpad`，
+而使用广义字段表示法调用 `List.leftpad` 的唯一方式是让列表出现在点号之前。
 :::
 
-:::errorExample "Type is Not Specific"
+:::errorExample "类型不够具体"
 ```broken
 def double_plus_one {α} [Add α] (x : α) :=
    (x + x).succ
@@ -78,11 +74,11 @@ def double_plus_one (x : Nat) :=
    (x + x).succ
 ```
 
-The `Add` type class is sufficient for performing the addition `x + x`, but the `.succ` field notation
-cannot operate without knowing more about the actual type from which `succ` is being projected.
+`Add` 类型类足以执行加法 `x + x`，但 `.succ` 字段表示法必须知道更多信息，
+才能确定实际要从哪个类型投影 `succ`，否则无法工作。
 :::
 
-:::errorExample "Insufficient Type Information"
+:::errorExample "类型信息不足"
 
 ```broken
 example := fun (n) => n.succ.succ
@@ -104,6 +100,6 @@ Hint: Consider replacing the field projection with a call to one of the followin
 example := fun (n : Nat) => n.succ.succ
 ```
 
-Generalized field notation can only be used when it is possible to determine the type that is being
-projected. Type annotations may need to be added to make generalized field notation work.
+只有能够确定被投影的类型时，才能使用广义字段表示法。可能需要添加类型注解，
+才能使广义字段表示法正常工作。
 :::
