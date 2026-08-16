@@ -30,13 +30,13 @@ htmlSplit := .never
 本节讨论如何验证用 Lean 表达的证明。
 
 根据具体情况，可能需要额外步骤来排除误导性的证明。
-尤其重要的是区分 {tech}[诚实]的证明尝试（只需防范无害错误）与可能的 {tech}[恶意]证明尝试（主动试图误导用户）。
+尤其重要的是区分 {tech (key := "honest")}[诚实]的证明尝试（只需防范无害错误）与可能的 {tech (key := "malicious")}[恶意]证明尝试（主动试图误导用户）。
 
-特别地，当目标是创建有效证明时，我们使用 {deftech}_诚实_ 一词。
+特别地，当目标是创建有效证明时，我们使用 {deftech (key := "honest")}_诚实_ 一词。
 这允许证明和元代码（策略、属性、命令等）中存在错误和缺陷，但不允许明显只用于绕过系统的代码（例如使用 {option}`debug.skipKernelTC`）。
 注意，API 函数上的 {keyword}`unsafe` 标记与该 API 是否可被不诚实地使用无关。
 
-相反，我们用 {deftech}_恶意_ 描述刻意欺骗或误导用户、利用缺陷或破坏系统的代码。
+相反，我们用 {deftech (key := "malicious")}_恶意_ 描述刻意欺骗或误导用户、利用缺陷或破坏系统的代码。
 这包括未经审查的 AI 生成证明和程序。
 
 此外，区分“定理是否有有效证明”和“定理陈述是什么意思”这两个问题也很重要。
@@ -73,7 +73,7 @@ tag := "Lean-__________________--Validating-a-Lean-Proof--The-Blue-Double-Check-
 %%%
 tag := "Lean-__________________--Validating-a-Lean-Proof--The-Blue-Double-Check-Marks--Trust"
 %%%
-如果相信形式化定理陈述符合其预期的非形式含义，相信导入库的作者是{tech}[诚实]的、已检查库中定理表达了预期含义，且没有声明和使用不健全的公理，则此检查有意义。
+如果相信形式化定理陈述符合其预期的非形式含义，相信导入库的作者是{tech (key := "honest")}[诚实]的、已检查库中定理表达了预期含义，且没有声明和使用不健全的公理，则此检查有意义。
 
 ## 防护
 
@@ -85,7 +85,7 @@ tag := "Lean-__________________--Validating-a-Lean-Proof--The-Blue-Double-Check-
 
 * 当前定理的未完成证明（缺少目标、策略错误）
 * 当前定理中显式使用 {lean}`sorry`
-* {tech}[诚实]的元程序和策略缺陷
+* {tech (key := "Honest")}[诚实]的元程序和策略缺陷
 * 仍在后台检查的证明
 :::
 
@@ -139,7 +139,7 @@ tag := "Lean-__________________--Validating-a-Lean-Proof--Printing-Axioms--Signi
 %%%
 tag := "Lean-__________________--Validating-a-Lean-Proof--Printing-Axioms--Trust"
 %%%
-如果相信形式化定理陈述符合其预期的非形式含义，并相信导入库的作者是{tech}[诚实]的，则此检查有意义。
+如果相信形式化定理陈述符合其预期的非形式含义，并相信导入库的作者是{tech (key := "honest")}[诚实]的，则此检查有意义。
 
 ## 防护
 
@@ -159,7 +159,7 @@ tag := "Lean-__________________--Validating-a-Lean-Proof--Printing-Axioms--Prote
 tag := "validating-lean4checker"
 %%%
 
-重新检查构建项目时存储在 {tech}[`.olean` 文件]中的证明，可以捕获一小类缺陷以及某些不诚实的证明呈现方式。
+重新检查构建项目时存储在 {tech (key := ".olean files")}[`.olean` 文件]中的证明，可以捕获一小类缺陷以及某些不诚实的证明呈现方式。
 
 ## 操作说明
 
@@ -173,15 +173,15 @@ tag := "Lean-__________________--Validating-a-Lean-Proof--Re-Checking-Proofs-wit
 %%%
 tag := "Lean-__________________--Validating-a-Lean-Proof--Re-Checking-Proofs-with--lean4checker--Significance"
 %%%
-`lean4checker` 工具读取 `lean` 构建时存储的声明和证明（即 {tech}[`.olean` 文件]），并通过内核重放它们。
-它信任 {tech}[`.olean` 文件]在结构上是正确的。
+`lean4checker` 工具读取 `lean` 构建时存储的声明和证明（即 {tech (key := ".olean files")}[`.olean` 文件]），并通过内核重放它们。
+它信任 {tech (key := ".olean files")}[`.olean` 文件]在结构上是正确的。
 
 ## 信任
 
 %%%
 tag := "Lean-__________________--Validating-a-Lean-Proof--Re-Checking-Proofs-with--lean4checker--Trust"
 %%%
-如果相信形式化定理陈述符合其预期的非形式含义，并相信导入库的作者不会非常狡猾地{tech}[恶意]行事、不会破坏用户系统，也不会利用 Lean 的可扩展性改变定理陈述的解释，则此检查有意义。
+如果相信形式化定理陈述符合其预期的非形式含义，并相信导入库的作者不会非常狡猾地{tech (key := "malicious")}[恶意]行事、不会破坏用户系统，也不会利用 Lean 的可扩展性改变定理陈述的解释，则此检查有意义。
 
 ## 防护
 
@@ -200,9 +200,9 @@ tag := "Lean-__________________--Validating-a-Lean-Proof--Re-Checking-Proofs-wit
 %%%
 tag := "Lean-__________________--Validating-a-Lean-Proof--Re-Checking-Proofs-with--lean4checker--Comments"
 %%%
-由于 `lean4checker` 读取 {tech}[`.olean` 文件]时不验证格式，此检查容易受到攻击者制作无效 `.olean` 文件的影响（例如无效指针、字符串中的无效数据）。
+由于 `lean4checker` 读取 {tech (key := ".olean files")}[`.olean` 文件]时不验证格式，此检查容易受到攻击者制作无效 `.olean` 文件的影响（例如无效指针、字符串中的无效数据）。
 Lean 策略和其他元代码运行时可以执行任意操作。
-导入由决意实施{tech}[恶意]行为的攻击者创建的库，并在没有进一步保护的情况下构建它们，可能危及用户系统；此后就不再有有意义的检查可做。
+导入由决意实施{tech (key := "malicious")}[恶意]行为的攻击者创建的库，并在没有进一步保护的情况下构建它们，可能危及用户系统；此后就不再有有意义的检查可做。
 我们建议在 CI 中运行 `lean4checker`，以额外防范 Lean 处理声明时的缺陷，并遏制简单攻击。
 [lean-action](https://github.com/leanprover/lean-action) GitHub Action 可通过设置 `lean4checker: true` 提供此功能。
 
@@ -213,7 +213,7 @@ Lean 策略和其他元代码运行时可以执行任意操作。
 tag := "validating-comparator"
 %%%
 
-为了防止极其{tech}[恶意]的证明破坏 Lean 对定理陈述的解释或用户系统，还需要额外步骤。
+为了防止极其{tech (key := "malicious")}[恶意]的证明破坏 Lean 对定理陈述的解释或用户系统，还需要额外步骤。
 只有在高风险场景（证明市场、高奖励证明竞赛、未对齐 AI）中，才应需要这些额外步骤。
 
 ## 操作说明
@@ -228,7 +228,7 @@ tag := "Lean-__________________--Validating-a-Lean-Proof--Gold-Standard___--comp
 %%%
 tag := "Lean-__________________--Validating-a-Lean-Proof--Gold-Standard___--comparator--and-external-checkers--Significance"
 %%%
-Comparator 会在沙箱环境中构建证明，以防范构建步骤中的{tech}[恶意]代码。
+Comparator 会在沙箱环境中构建证明，以防范构建步骤中的{tech (key := "malicious")}[恶意]代码。
 证明项会导出为序列化格式。
 在沙箱外、远离可能的恶意代码时，它验证导出格式，使用 Lean 内核和/或外部检查器重放证明，并确保已证明的定理陈述与受信任挑战文件中的陈述一致。
 
@@ -237,7 +237,7 @@ Comparator 会在沙箱环境中构建证明，以防范构建步骤中的{tech}
 %%%
 tag := "Lean-__________________--Validating-a-Lean-Proof--Gold-Standard___--comparator--and-external-checkers--Trust"
 %%%
-如果受信任挑战文件中的定理陈述正确，且用于构建可能{tech}[恶意]代码的沙箱安全，则此检查有意义。
+如果受信任挑战文件中的定理陈述正确，且用于构建可能{tech (key := "malicious")}[恶意]代码的沙箱安全，则此检查有意义。
 
 ## 防护
 
@@ -247,7 +247,7 @@ tag := "Lean-__________________--Validating-a-Lean-Proof--Gold-Standard___--comp
 :::listBullet "🛡️"
 （除上述列表外）
 
-* 主动实施{tech}[恶意]行为的证明
+* 主动实施{tech (key := "malicious")}[恶意]行为的证明
 * 某些所用检查器中存在、但并非同时存在于所有检查器中的实现缺陷。
 :::
 
@@ -282,7 +282,7 @@ tag := "validating-trustCompiler"
 Lean 支持通过本地求值进行证明。
 {tactic}`decide`{keywordOf Lean.Parser.Tactic.decide}` +native` 策略或特定策略（尤其是 {tactic}`bv_decide`）会使用此功能，生成调用已编译 Lean 代码进行计算的证明项，而内核信任该计算。
 
-封装在{tech}[诚实]策略中的特定用法（例如 {tactic}`bv_decide`）通常值得信任。
+封装在{tech (key := "honest")}[诚实]策略中的特定用法（例如 {tactic}`bv_decide`）通常值得信任。
 受信任代码库更大（包括 Lean 的编译工具链和标准库中的库注解），但仍是固定且经过审查的。
 
 一般使用（{tactic}`decide`{keywordOf Lean.Parser.Tactic.decide}` +native` 或直接使用 {name}`Lean.ofReduceBool`）时，只要项的本地求值与内核求值不一致，就可能创建无效证明。

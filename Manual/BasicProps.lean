@@ -25,7 +25,7 @@ tag := "basic-props"
 file := "Basic-Propositions"
 %%%
 
-除了蕴含和全称量词外，逻辑连接词和量词都在 {lean}`Prop` 宇宙中实现为 {tech}[归纳类型]。
+除了蕴含和全称量词外，逻辑连接词和量词都在 {lean}`Prop` 宇宙中实现为 {tech (key := "inductive types")}[归纳类型]。
 从某种意义上说，本章介绍的连接词并不特殊——任何用户都可以实现它们。
 不过，标准库和内置证明自动化工具广泛使用了这些基本连接词。
 
@@ -101,7 +101,7 @@ file := "Logical-Connectives"
 合取实现为归纳定义的命题 {name}`And`。
 构造器 {name}`And.intro` 表示合取的引入规则：要证明合取，只需分别证明两个合取项。
 类似地，{name}`And.elim` 表示消去规则：给定合取的证明，以及一个假设两个合取项成立的其他命题的证明，就可以证明该命题。
-由于 {name}`And` 是 {tech}[至多单元素类型]，{name}`And.elim` 也可参与数据计算。
+由于 {name}`And` 是 {tech (key := "subsingleton")}[至多单元素类型]，{name}`And.elim` 也可参与数据计算。
 但它不应与 {name}`PProd` 混淆：使用选择公理等不可计算的推理原则定义数据（包括 {lean}`Prod`）会使 Lean 无法编译和运行所得程序，而在命题证明中使用它们则没有这个问题。
 
 在 {ref "tactics"}[策略]证明中，可以显式使用 {name}`And.intro`，并通过 {tactic}`apply` 证明合取，但更常见的是使用 {tactic}`constructor`。
@@ -117,7 +117,7 @@ file := "Logical-Connectives"
 虽然 {lean}`Or` 的定义与 {lean}`Sum` 类似，但实际使用时差异很大。
 由于 {lean}`Sum` 是类型，可以检查给定值由哪一个构造器创建。
 另一方面，{lean}`Or` 构成命题：无法检查证明析取的项来确定哪一项为真。
-换言之，由于 {lean}`Or` 不是 {tech}[至多单元素类型]，其证明不能参与计算。
+换言之，由于 {lean}`Or` 不是 {tech (key := "subsingleton")}[至多单元素类型]，其证明不能参与计算。
 
 在 {ref "tactics"}[策略]证明中，可以显式使用任一构造器（{name}`Or.inl` 或 {name}`Or.inr`），并通过 {tactic}`apply` 证明析取。
 {tactic}`left` 和 {tactic}`right` 策略分别选择左、右析取项。
@@ -125,7 +125,7 @@ file := "Logical-Connectives"
 
 {zhdocstring Or Manual.ZhDocString.Ch19Ch20.G2.c164}
 
-当任一析取项是 {tech}[可判定的]时，就可以使用 {lean}`Or` 计算数据。
+当任一析取项是 {tech (key := "decidable")}[可判定的]时，就可以使用 {lean}`Or` 计算数据。
 这是因为判定过程的结果提供了合适的分支条件。
 
 {zhdocstring Or.by_cases Manual.ZhDocString.Ch19Ch20.G2.c165}
@@ -158,14 +158,14 @@ end
 section
 variable {A B : Prop}
 ```
-蕴含使用 {tech}[命题] {tech}[宇宙]中的{ref "function-types"}[函数类型]表示。
+蕴含使用 {tech (key := "universe")}[命题] {tech (key := "propositions")}[宇宙]中的{ref "function-types"}[函数类型]表示。
 要证明 {lean}`A → B`，只需证明 {lean}`B`，同时假设 {lean}`A`。
 这对应于 {keywordOf Lean.Parser.Term.fun}`fun` 的类型规则。
-类似地，函数应用的类型规则对应于{deftech}_肯定前件_：给定 {lean}`A → B` 的证明和 {lean}`A` 的证明，就可以证明 {lean}`B`。
+类似地，函数应用的类型规则对应于{deftech (key := "modus ponens")}_肯定前件_：给定 {lean}`A → B` 的证明和 {lean}`A` 的证明，就可以证明 {lean}`B`。
 
 :::example "真值函数蕴含"
 将蕴含表示为命题宇宙中的函数，等价于传统定义 {lean}`A → B` 为 {lean}`(¬A) ∨ B`。
-这可以使用{tech}[命题外延]和排中律证明：
+这可以使用{tech (key := "propositional extensionality")}[命题外延]和排中律证明：
 ```lean
 theorem truth_functional_imp {A B : Prop} :
     ((¬ A) ∨ B) = (A → B) := by
@@ -214,7 +214,7 @@ tag := "Lean-__________________--Basic-Propositions--Quantifiers"
 file := "Quantifiers"
 %%%
 正如蕴含在 {lean}`Prop` 中实现为普通函数类型，全称量化在 {lean}`Prop` 中实现为依赖函数类型。
-由于 {lean}`Prop` 是{tech}[非直谓的]，任何{tech}[陪域]为 {lean}`Prop` 的函数类型本身也是 {lean}`Prop`，即使{tech}[定义域]是 {lean}`Type`。
+由于 {lean}`Prop` 是{tech (key := "impredicative")}[非直谓的]，任何{tech (key := "codomain")}[陪域]为 {lean}`Prop` 的函数类型本身也是 {lean}`Prop`，即使{tech (key := "domain")}[定义域]是 {lean}`Type`。
 依赖函数的类型规则与全称量化的引入、消去规则完全对应：若谓词对类型中任意选取的元素都成立，则它对所有元素成立。
 若谓词对所有元素都成立，则可将其实例化为任意个体的证明。
 
@@ -245,12 +245,12 @@ forall $_ $[$_]*, $_
 因此，它们可以自由使用不易计算的推理原则，例如经典选择公理。
 
 
-存在量化实现为类似于 {name}`Subtype` 和 {name}`Sigma` 的结构：它包含一个{deftech}_见证_（满足谓词的值），以及该见证确实满足谓词的证明。
+存在量化实现为类似于 {name}`Subtype` 和 {name}`Sigma` 的结构：它包含一个{deftech (key := "witness")}_见证_（满足谓词的值），以及该见证确实满足谓词的证明。
 换言之，它是一种依赖对类型。
-与 {name}`Subtype` 和 {name}`Sigma` 不同，它是一个{tech}[命题]；这意味着程序通常不能使用存在性陈述的证明来取得满足谓词的值。
+与 {name}`Subtype` 和 {name}`Sigma` 不同，它是一个{tech (key := "proposition")}[命题]；这意味着程序通常不能使用存在性陈述的证明来取得满足谓词的值。
 
 编写证明时，{tactic}`exists` 策略允许为（可能嵌套的）存在性陈述指定一个或多个见证。
-另一方面，{tactic}`constructor` 策略会为见证创建一个{tech}[元变量]；提供谓词证明也可能同时解出该元变量。
+另一方面，{tactic}`constructor` 策略会为见证创建一个{tech (key := "metavariable")}[元变量]；提供谓词证明也可能同时解出该元变量。
 可以使用 {tactic}`let` 或 {tactic (show := "match")}`Lean.Parser.Tactic.match` 进行模式匹配，或使用 {tactic}`cases`、{tactic}`rcases`，分别取得存在性假设的各个组成部分。
 
 :::example "证明存在性陈述"
@@ -307,14 +307,14 @@ tag := "propositional-equality"
 file := "Propositional-Equality"
 %%%
 
-{deftech}_命题等式_是允许将两个项相等表述为命题的运算符。
-{tech}[定义等价]会在必要时自动检查。
+{deftech (key := "Propositional equality")}_命题等式_是允许将两个项相等表述为命题的运算符。
+{tech (key := "Definitional equality")}[定义等价]会在必要时自动检查。
 因此，为了使检查算法快速且易于理解，其表达能力受到限制。
 另一方面，命题等式必须显式证明并显式使用——Lean 检查证明的有效性，而不是判断陈述是否为真。
 作为交换，它的表达能力强得多：许多项在命题上相等，却不定义等价。
 
 命题等式定义为归纳类型。
-其唯一构造器 {name}`Eq.refl` 要求等式两边的值相同；这隐含地使用了{tech}[定义等价]。
+其唯一构造器 {name}`Eq.refl` 要求等式两边的值相同；这隐含地使用了{tech (key := "definitional equality")}[定义等价]。
 命题等式也可以看作模定义等价的最小自反关系。
 除 {name}`Eq.refl` 外，等式证明还由 {name}`propext` 和 {name}`Quot.sound` 公理生成。
 
@@ -374,7 +374,7 @@ theorem Eq.unique {α : Sort u}
 ```
 
 Streicher 的 K 公理{citep streicher1993}[]及其计算规则同样是定义证明无关性的结果。
-K 公理是与 {name}`Eq.unique` 逻辑等价的原则，实现为命题等式的另一种{tech}[递归器]。
+K 公理是与 {name}`Eq.unique` 逻辑等价的原则，实现为命题等式的另一种{tech (key := "recursor")}[递归器]。
 ```lean
 def K {α : Sort u}
     {motive : {x : α} → x = x → Sort v}
@@ -397,7 +397,7 @@ example {α : Sort u} {a : α}
 tag := "HEq"
 %%%
 
-{deftech}_异构等式_是{tech}[命题等式]的一种形式，不要求等式两项具有相同类型。
+{deftech (key := "Heterogeneous equality")}_异构等式_是{tech (key := "propositional equality")}[命题等式]的一种形式，不要求等式两项具有相同类型。
 不过，使用它的 {name}`rfl` 版本_证明_两项相等时，仍要求类型和项都定义等价。
 换言之，它允许表述更多陈述。
 
