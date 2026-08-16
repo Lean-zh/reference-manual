@@ -51,7 +51,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___20___0-_LPAR_2025-0
   抽取任何新的局部声明。选项 `extract_lets +lift`
   结合了这两种行为。
 
-* [#7806](https://github.com/leanprover/lean4/pull/7806) 修改了 `ext`、`intro` 和 `enter` 这几个 `conv`
+* [#7806](https://github.com/leanprover/lean4/pull/7806) 修改了 `ext`、`intro` 和 `enter` 这几个 conv
   策略的语法，使其接受 `_`。引入的绑定器会是一个不可访问名。
 
 * [#7830](https://github.com/leanprover/lean4/pull/7830) 修改了 `induction`、`cases` 以及其他使用
@@ -260,7 +260,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___20___0-_LPAR_2025-0
 
 * [#7967](https://github.com/leanprover/lean4/pull/7967) 为 Lake 增加了一个 `bootstrap`
   选项，用于标识 Lean 核心包。这使得 Lake 在用 Lean
-  编译 `core` 中的 Lean 代码时，可以使用当前阶段的 `include`
+  编译 core 中的 Lean 代码时，可以使用当前阶段的 include
   目录，而不是 Lean 工具链中的目录。
 
   **破坏性变更：** Lean 库目录不再属于
@@ -298,7 +298,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___20___0-_LPAR_2025-0
 
 * [#7803](https://github.com/leanprover/lean4/pull/7803) 为 `grind` 增加了函数组合的规范化规则。
 
-* [#7806](https://github.com/leanprover/lean4/pull/7806) 修改了 `ext`、`intro` 和 `enter` 这几个 `conv`
+* [#7806](https://github.com/leanprover/lean4/pull/7806) 修改了 `ext`、`intro` 和 `enter` 这几个 conv
   策略的语法，使其接受 `_`。引入的绑定器会是一个不可访问名。
 
 * [#7808](https://github.com/leanprover/lean4/pull/7808) 为 `grind` 补上了缺失的全称量词规范化规则。
@@ -316,7 +316,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___20___0-_LPAR_2025-0
     存储在 `cutsat` 的内部状态中。
   - 现在所有 `Nat` 项都共用同一个上下文。
 
-* [#7829](https://github.com/leanprover/lean4/pull/7829) 修复了 `cutsat` 反例中的一个问题。它移除了
+* [#7829](https://github.com/leanprover/lean4/pull/7829) 修复了 cutsat 反例中的一个问题。它移除了
   为绕开新定理 `eq_def` 而使用的优化（`Cutsat.State.terms`）。在新增的两个测试中，
   此 PR 之前 `cutsat` 会给出一个伪造的反例，其中 `b := 2`。
 
@@ -378,7 +378,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___20___0-_LPAR_2025-0
   用来记录环特征的 mixin 类型类，并为 `Int`、`IntX`、
   `UIntX` 和 `BitVec` 构造了实例。
 
-* [#7885](https://github.com/leanprover/lean4/pull/7885) 修复了 `grind` 中 `cutsat`
+* [#7885](https://github.com/leanprover/lean4/pull/7885) 修复了 `grind` 中 cutsat
   过程在包含 `Nat` 项的示例里产生反例的问题。
 
 * [#7892](https://github.com/leanprover/lean4/pull/7892) 改进了 `grind` 对 `funext` 的支持。
@@ -413,7 +413,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___20___0-_LPAR_2025-0
 * [#7949](https://github.com/leanprover/lean4/pull/7949) 增加了属性 `[grind ext]`。
   它用于选择哪些 `[ext]` 定理应由 `grind` 使用。选项 `grind +extAll`
   则会指示 `grind` 使用环境中所有可用的 `[ext]` 定理。
-  在更新 `stage0` 之后，我们需要为 `funext` 之类的关键定理
+  在更新 stage0 之后，我们需要为 `funext` 之类的关键定理
   添加内建的 `[grind ext]` 标注。
 
 * [#7950](https://github.com/leanprover/lean4/pull/7950) 修改了 `all_goals`，使其在恢复模式下
@@ -435,8 +435,8 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___20___0-_LPAR_2025-0
   表达式时出错。
 
 * [#7961](https://github.com/leanprover/lean4/pull/7961) 修复了 `bv_decide` 中的一个缺陷：
-  当它遇到对某个枚举的 `match`，其分支数与构造子数相同，但最后一个分支是
-  默认分支时，它会错误地放弃处理该 `match`。
+  当它遇到对某个枚举的 match，其分支数与构造子数相同，但最后一个分支是
+  默认分支时，它会错误地放弃处理该 match。
 
 * [#7975](https://github.com/leanprover/lean4/pull/7975) 降低了 `Lean.Grind.CommRing`
   父投影的优先级，以避免它们在 Mathlib 的类型类推断中被使用。
@@ -467,7 +467,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___20___0-_LPAR_2025-0
 
 * [#8012](https://github.com/leanprover/lean4/pull/8012) 增加了选项
   `debug.terminalTacticsAsSorry`。启用后，`grind`、`omega` 等终结型策略
-  会被替换为 `sorry`。这对调试和修复 `bootstrap` 问题很有用。
+  会被替换为 `sorry`。这对调试和修复 bootstrap 问题很有用。
 
 * [#8014](https://github.com/leanprover/lean4/pull/8014) 让 `RArray` 成为宇宙多态。
 
@@ -519,7 +519,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___20___0-_LPAR_2025-0
   用于演示其用法。
 
 * [#8064](https://github.com/leanprover/lean4/pull/8064) 新增了一个会失败的 `grind` 测试，
-  用来展示 `grind` 错误赋值某个元变量的缺陷。
+  用来展示 grind 错误赋值某个元变量的缺陷。
 
 * [#8065](https://github.com/leanprover/lean4/pull/8065) 为在给 `HashMap` 配置 `grind`
   时遇到的一个障碍增加了一个（失败的）测试用例。
@@ -530,10 +530,10 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___20___0-_LPAR_2025-0
 * [#8076](https://github.com/leanprover/lean4/pull/8076) 修复了 `simp?!`、`simp_all?!` 和 `dsimp?!`，
   使其执行自动展开。
 
-* [#8077](https://github.com/leanprover/lean4/pull/8077) 增加了 `simproc`，用于化简互不重叠的
-  位向量加法拼接。之所以添加 `simproc` 而不只是 `simp` 引理，
+* [#8077](https://github.com/leanprover/lean4/pull/8077) 增加了 simproc，用于化简互不重叠的
+  位向量加法拼接。之所以添加 simproc 而不只是 `simp` 引理，
   是为了确保能正确重写位向量拼接。由于位向量拼接会在
-  位向量宽度层面引发计算，因此使用 `simproc` 看起来更稳妥。
+  位向量宽度层面引发计算，因此使用 simproc 看起来更稳妥。
 
 * [#8083](https://github.com/leanprover/lean4/pull/8083) 修复了 #8081。
 
@@ -593,7 +593,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___20___0-_LPAR_2025-0
 * [#8128](https://github.com/leanprover/lean4/pull/8128) 在 `grind` 新的交换环过程中实现了
   等式传播。思路是把蕴含出来的等式回传给执行同余闭包的 `grind`
   核心模块。在下面的例子中，等式 `x^2*y = 1` 与 `x*y^2 - y = 0`
-  蕴含 `y*x = y*x*y`，进而由同余可知
+  蕴含 `y*x` 等于 `y*x*y`，进而由同余可知
   `f (y*x) = f (y*x*y)`。
   ```lean
   example [CommRing α] (x y : α) (f : α → Nat) : x^2*y = 1 → x*y^2 - y = 0 → f (y*x) = f (y*x*y) := by
@@ -679,8 +679,8 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___20___0-_LPAR_2025-0
   证书的替代表示，旨在缓解证书构造中常见的**最坏情况下指数级复杂度**问题。
 
 * [#8231](https://github.com/leanprover/lean4/pull/8231) 修改了 `apply?` 的行为，使其用于
-  关闭目标的 `sorry` 变为非 `synthetic`。（请记住，正确使用 `synthetic`
-  `sorry` 要求策略同时生成一条错误消息，而在这个场景下我们并不希望如此。）
+  关闭目标的 `sorry` 变为非 synthetic。（请记住，正确使用 synthetic
+  sorry 要求策略同时生成一条错误消息，而在这个场景下我们并不希望如此。）
   此 PR 或 #8230 任意一个都足以防御 #8212 中报告的问题。
 
 * [#8254](https://github.com/leanprover/lean4/pull/8254) 修复了 `ToJson`、`FromJson` 和 `Repr`
@@ -709,16 +709,12 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___20___0-_LPAR_2025-0
   的定义，为检测溢出增加了 SMT-LIB 运算符
   `BitVec.(umul_overflow, smul_overflow)`，并证明了这些定义与
   `BitVec` 库函数（`umulOverflow_eq`、`smulOverflow_eq`）等价。
-  这些证明所需的辅助定理包括 `BitVec.toInt_one_of_lt`、
-  `BitVec.toInt_mul_toInt_lt`、`BitVec.le_toInt_mul_toInt`、
-  `BitVec.toNat_mul_toNat_lt`、`BitVec.two_pow_le_toInt_mul_toInt_iff`、
-  `BitVec.toInt_mul_toInt_lt_neg_two_pow_iff`，以及 `Int.neg_mul_le_mul`、
-  `Int.bmod_eq_self_of_le_mul_two`、`Int.mul_le_mul_of_natAbs_le`、
-  `Int.mul_le_mul_of_le_of_le_of_nonneg_of_nonpos`、`Int.pow_lt_pow`。
+  这些证明所需的辅助定理包括 `BitVec.toInt_one_of_lt, BitVec.toInt_mul_toInt_lt, BitVec.le_toInt_mul_toInt, BitVec.toNat_mul_toNat_lt, BitVec.two_pow_le_toInt_mul_toInt_iff, BitVec.toInt_mul_toInt_lt_neg_two_pow_iff`
+  以及 `Int.neg_mul_le_mul, Int.bmod_eq_self_of_le_mul_two, Int.mul_le_mul_of_natAbs_le, Int.mul_le_mul_of_le_of_le_of_nonneg_of_nonpos, Int.pow_lt_pow`。
   该 PR 还包含一组测试。
 
 * [#7671](https://github.com/leanprover/lean4/pull/7671) 包含了一个定理，证明有符号除法
-  `x.toInt / y.toInt` 只有在 `x = intMin w` 且 `y = allOnes w`
+  x.toInt / y.toInt 只有在 `x = intMin w` 且 `y = allOnes w`
   （其中 `0 < w`）时才会溢出。
   为了说明这是溢出的*唯一*情形，我们会借助关于取负溢出的结论
   （`BitVec.sdivOverflow_eq_negOverflow_of_neg_one`）：事实上，
@@ -820,9 +816,9 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___20___0-_LPAR_2025-0
   将置换限制到子列表 / 子数组上。
 
 * [#7913](https://github.com/leanprover/lean4/pull/7913) 补充了一些缺失的
-  `List/Array/Vector` 引理，涉及 `isSome_idxOf?`、
-  `isSome_finIdxOf?`、`isSome_findFinIdx?`、`isSome_findIdx?`
-  及其对应的 `isNone` 版本。
+  `List/Array/Vector lemmas`，涉及 `isSome_idxOf?`、
+  `isSome_finIdxOf?`、`isSome_findFinIdx?, ` isSome_findIdx?，
+  `and the corresponding` isNone 版本。
 
 * [#7933](https://github.com/leanprover/lean4/pull/7933) 增加了关于 `Int.bmod` 的引理，
   以使 `Int.bmod` 与 `Int.emod`/`Int.fmod`/`Int.tmod` 保持对齐。
@@ -908,7 +904,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___20___0-_LPAR_2025-0
   `eraseDups_append : (as ++ bs).eraseDups = as.eraseDups ++ (bs.removeAll as).eraseDups`。
 
 * [#8150](https://github.com/leanprover/lean4/pull/8150) 是 #8055 的后续工作，
-  为 `Std.Channel` 实现了 `Selector`，从而允许使用 channel 进行多路复用。
+  为 `Std.Channel` 实现了 Selector，从而允许使用 channel 进行多路复用。
 
 * [#8154](https://github.com/leanprover/lean4/pull/8154) 为
   `HashMap.getElem?_insertMany_list` 增加了无条件引理，作为现有那些
@@ -933,10 +929,10 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___20___0-_LPAR_2025-0
 * [#6063](https://github.com/leanprover/lean4/pull/6063) 将 Lean 使用并随附发布的
   LLVM 与 clang 版本更新到了 19.1.2。
 
-* [#7824](https://github.com/leanprover/lean4/pull/7824) 修复了对 `'noncomputable'` 定义的使用
-  可能被错误编译的问题，同时也彻底移除了对 `'noncomputable'`
-  定义的使用方式。某些 `'noncomputable'` 定义的用法（例如
-  `Classical.propDecidable`）在类型擦除后不会被正确编译。
+* [#7824](https://github.com/leanprover/lean4/pull/7824) 修复了对 'noncomputable' 定义的使用
+  可能被错误编译的问题，同时也彻底移除了对 'noncomputable'
+  定义的使用方式。某些 'noncomputable' 定义的用法（例如
+  Classical.propDecidable）在类型擦除后不会被正确编译。
   对结果运行优化器可能会把它们优化掉，从而绕过稍后 IR 层面对
   noncomputable 定义使用情况的检查。
 
@@ -950,7 +946,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___20___0-_LPAR_2025-0
   与相应任务结束之间潜在的竞态条件，否则会导致未定义行为。
 
 * [#7958](https://github.com/leanprover/lean4/pull/7958) 确保在 `main` 结束后，
-  仍会等待专用任务完成，而不是强行退出。若用户确实希望在 `main`
+  仍会等待专用任务完成，而不是强行退出。若用户确实希望在 main
   结束时直接杀掉这些专用任务，则可在 `main` 末尾调用
   `IO.Process.exit`。
 
@@ -972,43 +968,43 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___20___0-_LPAR_2025-0
 * [#8008](https://github.com/leanprover/lean4/pull/8008) 修改了新代码生成器中的 specialization，
   使其将被调函数参数视为 ground 变量，从而改进多态函数的特化效果。
 
-* [#8009](https://github.com/leanprover/lean4/pull/8009) 限制了对 `Decidable` 类型值上的
-  `cases` 表达式向外提升的行为，因为在编译器后续阶段我们无法正确表示
+* [#8009](https://github.com/leanprover/lean4/pull/8009) 限制了对 Decidable 类型值上的
+  cases 表达式向外提升的行为，因为在编译器后续阶段我们无法正确表示
   对已擦除命题的依赖。
 
-* [#8010](https://github.com/leanprover/lean4/pull/8010) 修复了带有 `implemented_by` 的
-  `caseOn` 表达式与哈希共享的协作问题，即使精译器生成的是
+* [#8010](https://github.com/leanprover/lean4/pull/8010) 修复了带有 implemented_by 的
+  caseOn 表达式与哈希共享的协作问题，即使精译器生成的是
   重构判别式的项，而非仅复用一个变量，也能正确工作。
 
-* [#8015](https://github.com/leanprover/lean4/pull/8015) 修复了 IR `elim_dead_branches` pass，
+* [#8015](https://github.com/leanprover/lean4/pull/8015) 修复了 IR elim_dead_branches pass，
   使其能正确处理没有参数的汇合点；此前这类汇合点
   会被当成不可达。虽然不容易在旧编译器上找到简单复现，
-  但在用新编译器 `bootstrap` Lean 时确实会发生。
+  但在用新编译器 bootstrap Lean 时确实会发生。
 
-* [#8017](https://github.com/leanprover/lean4/pull/8017) 让 IR `elim_dead_branches` pass
+* [#8017](https://github.com/leanprover/lean4/pull/8017) 让 IR elim_dead_branches pass
   通过将 extern 函数视为拥有 top 返回值，来正确处理它们。
-  这一修复是使用新编译器 `bootstrap` `Init/` 目录所必需的。
+  这一修复是使用新编译器 bootstrap Init/ 目录所必需的。
 
-* [#8023](https://github.com/leanprover/lean4/pull/8023) 修复了 IR `expand_reset_reuse` pass，
+* [#8023](https://github.com/leanprover/lean4/pull/8023) 修复了 IR expand_reset_reuse pass，
   使其能正确处理来自相同 base/index 的重复投影。这在旧编译器下
-  至少不太容易出现，但在使用新编译器 `bootstrap` Lean 时会出现。
+  至少不太容易出现，但在使用新编译器 bootstrap Lean 时会出现。
 
-* [#8124](https://github.com/leanprover/lean4/pull/8124) 在 LCNF `elimDeadBranches` pass 中，
+* [#8124](https://github.com/leanprover/lean4/pull/8124) 在 LCNF elimDeadBranches pass 中，
   通过将所有参数设为 top 而非可能保留为默认的 bottom 值，
   正确处理了逃逸函数。
 
 * [#8125](https://github.com/leanprover/lean4/pull/8125) 为新编译器增加了对 `init` 属性的支持。
 
 * [#8127](https://github.com/leanprover/lean4/pull/8127) 为新编译器增加了对 borrowed 参数的支持，
-  这要求在 LCNF 类型处理中增加对 `.mdata` 表达式的支持。
+  这要求在 LCNF 类型处理中增加对 .mdata 表达式的支持。
 
 * [#8132](https://github.com/leanprover/lean4/pull/8132) 为新编译器增加了对内建类型
   `casesOn` 降低的支持。
 
 * [#8156](https://github.com/leanprover/lean4/pull/8156) 修复了旧编译器中 LCNF 转换
-  `expr` 缓存的一个缺陷：其键未包含所有相关信息，导致项会被意外擦除。
+  expr 缓存的一个缺陷：其键未包含所有相关信息，导致项会被意外擦除。
   `root` 变量用于决定应用中的 lambda 参数是否应获得 let 绑定，
-  这又会影响后续关于类型擦除的决策（`erase_irrelevant` 假定任何非原子参数
+  这又会影响后续关于类型擦除的决策（erase_irrelevant 假定任何非原子参数
   都是无关的）。
 
 * [#8236](https://github.com/leanprover/lean4/pull/8236) 修复了 `extern_lib` 与
@@ -1087,7 +1083,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___20___0-_LPAR_2025-0
 * [#7882](https://github.com/leanprover/lean4/pull/7882) 修复了一个回归问题：
   文档发生变化时，先前版本文档的精译不会被取消。
 
-* [#8242](https://github.com/leanprover/lean4/pull/8242) 修复了 `'goals accomplished'`
+* [#8242](https://github.com/leanprover/lean4/pull/8242) 修复了 'goals accomplished'
   诊断。它们在 #7902 中被意外破坏了。
 
 ````
@@ -1126,7 +1122,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___20___0-_LPAR_2025-0
 
 * [#7967](https://github.com/leanprover/lean4/pull/7967) 为 Lake 增加了一个 `bootstrap`
   选项，用于标识 Lean 核心包。这使得 Lake 在用 Lean
-  编译 `core` 中的 Lean 代码时，可以使用当前阶段的 `include`
+  编译 core 中的 Lean 代码时，可以使用当前阶段的 include
   目录，而不是 Lean 工具链中的目录。
 
 * [#7987](https://github.com/leanprover/lean4/pull/7987) 修复了 #7967 中破坏外部库链接的一个缺陷。

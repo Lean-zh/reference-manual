@@ -30,7 +30,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___22___0-_LPAR_2025-0
 ````markdown
 
 ````
-## `grind` 正式发布！
+## grind 正式发布！
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___22___0-_LPAR_2025-08-14_RPAR_--Highlights--Grind-is-released___"
 %%%
@@ -38,7 +38,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___22___0-_LPAR_2025-0
 ````markdown
 
 Lean 现在内置了新的 SMT 风格策略 `grind`，并为 Lean 标准库配套提供了相应标注。
-`grind` 附带按理论划分的求解器，包括 `cutsat`（取代 `omega`，并支持模型构造）
+`grind` 附带按理论划分的求解器，包括 cutsat（取代 `omega`，并支持模型构造）
 以及一个新的 Gröbner 基求解器。
 
 另请参见[参考手册中关于 grind 的章节](https://lean-lang.org/doc/reference/latest//The--grind--tactic/#grind)。
@@ -97,7 +97,7 @@ VS Code 中增加了一个新的模块层级组件，可用于同时导航模块
 导入树和被导入树。
 
 ````
-## `have`/`let` 语义重构
+## have/let 语义重构
 %%%
 tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___22___0-_LPAR_2025-08-14_RPAR_--Highlights--Refactor-of-have___let-semantics"
 %%%
@@ -161,12 +161,12 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___22___0-_LPAR_2025-0
   让它始终执行。该检查默认未开启，因为它开销不小，
   而且可能会对实际上仍能工作的 simp 调用发出警告。
 
-* **通过复用缓存加速 `simp`**
+* **通过复用缓存加速 simp**
 
   [#8880](https://github.com/leanprover/lean4/pull/8880) 让 `simp`
   更频繁地查询自己的缓存，以避免重复工作。
 
-* **为 `dsimp` 提供显式 `defeq` 属性**
+* **为 dsimp 提供显式 `defeq` 属性**
 
   [#8419](https://github.com/leanprover/lean4/pull/8419) 引入了显式 `defeq` 属性，
   用于标记可供 `dsimp` 使用的定理。与先前通过查看证明体的逻辑相比，
@@ -318,7 +318,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___22___0-_LPAR_2025-0
   增加了服务端支持。
 
   破坏性变更：为了实现 `$/lean/moduleHierarchy/importedBy` 请求，
-  此 PR 在 `.ilean` 格式中加入了文件的直接导入，并提升了 `.ilean` 格式版本。
+  此 PR 在 .ilean 格式中加入了文件的直接导入，并提升了 .ilean 格式版本。
 
 * [#8804](https://github.com/leanprover/lean4/pull/8804) 在精译器中实现了对
   非依赖 `let` 表达式的一等支持。
@@ -346,7 +346,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___22___0-_LPAR_2025-0
   而不再仅限于 `Type u`。
 
 * [#8337](https://github.com/leanprover/lean4/pull/8337) 调整了实验性模块系统，
-  使其不再从模块中导出任何 `private` 声明。
+  使其不再从模块中导出任何 private 声明。
 
 * [#8373](https://github.com/leanprover/lean4/pull/8373) 在多种上下文中启用了将
   非依赖 `let` 转换为 `have` 的机制：包括非递归定义体、方程引理、
@@ -363,12 +363,12 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___22___0-_LPAR_2025-0
   显式属性的好处是我们可以可靠地在跨模块边界时省略定理体。
   它也有助于文件内并行化。
 
-* [#8519](https://github.com/leanprover/lean4/pull/8519) 将未暴露定义的等式定理设为 `private`。
+* [#8519](https://github.com/leanprover/lean4/pull/8519) 将未暴露定义的等式定理设为 private。
   如果模块作者选择不暴露某个函数的函数体，那么通常也不希望其实现
   通过等式定理泄露出来。这也有助于 #8419。
 
 * [#8543](https://github.com/leanprover/lean4/pull/8543) 为 `grind` 增加了将类型嵌入到
-  `Int` 中、供 `cutsat` 使用的类型类。例如，这使得 `Fin n` 或
+  `Int` 中、供 cutsat 使用的类型类。例如，这使得 `Fin n` 或
   Mathlib 的 `ℕ+` 都能以统一且可扩展的方式处理。
 
 * [#8568](https://github.com/leanprover/lean4/pull/8568) 修改了 `structure` 精译器，
@@ -454,7 +454,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___22___0-_LPAR_2025-0
 * [#8645](https://github.com/leanprover/lean4/pull/8645) 为 `grind` 未来的 `IntModule`
   线性算术过程增加了许多辅助定理。
   它还为输入原子的规范化增加了辅助定理，并在 `grind` 新的线性算术过程中
-  加入了对不相等约束（`disequality`）的支持。
+  加入了对不相等约束（disequality）的支持。
 
 * [#8650](https://github.com/leanprover/lean4/pull/8650) 为系数规范化和等式检测增加了辅助定理。
   这些定理将用于 `grind` 的线性算术过程。
@@ -466,7 +466,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___22___0-_LPAR_2025-0
 * [#8670](https://github.com/leanprover/lean4/pull/8670) 增加了若干辅助定理，
   供 `grind` 中 `CommRing` 模块与 linarith 过程对接时使用。
 
-* [#8671](https://github.com/leanprover/lean4/pull/8671) 允许 `structure` 使用不带括号的绑定器，
+* [#8671](https://github.com/leanprover/lean4/pull/8671) 允许 structure 使用不带括号的绑定器，
   从而与 `inductive` 保持一致。
 
 * [#8677](https://github.com/leanprover/lean4/pull/8677) 为 `grind` 中的 linarith 模块
@@ -496,7 +496,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___22___0-_LPAR_2025-0
   对接 ring 与 linarith 模块的语义函数。
 
 * [#8694](https://github.com/leanprover/lean4/pull/8694) 当结构是有序环时，
-  为 `linarith` 实现了对 `One.one` 的特殊支持。它还修复了初始化期间的缺陷。
+  为 linarith 实现了对 `One.one` 的特殊支持。它还修复了初始化期间的缺陷。
 
 * [#8697](https://github.com/leanprover/lean4/pull/8697) 在 `grind` 线性算术过程中
   实现了对不等式的支持，并简化了其设计。已经可以解决的示例如下：
@@ -506,7 +506,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___22___0-_LPAR_2025-0
       : a + d < c → b = a + (2:Int)*d → b - d > c → False := by
     grind
 
-* [#8708](https://github.com/leanprover/lean4/pull/8708) 修复了 `grind` 中 `linarith` 与 `ring` 模块
+* [#8708](https://github.com/leanprover/lean4/pull/8708) 修复了 `grind` 中 linarith 与 ring 模块
   接口里的一个内部化缺陷。`CommRing` 模块在规范化过程中可能会创建新项。
 
 * [#8713](https://github.com/leanprover/lean4/pull/8713) 修复了 `grind` 所用交换环模块中的一个缺陷。
@@ -544,7 +544,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___22___0-_LPAR_2025-0
 * [#8753](https://github.com/leanprover/lean4/pull/8753) 修复了 `simp` 的一个缺陷：
   它在不同 `simp` 调用之间不会重置已做 zeta-delta 归约的 let 定义集合。
   它还修复了另一个缺陷：`simp` 会报告那些并未作为 simp 参数给出的
-  ζ-δ 归约 `let` 定义（这些多余的 let 定义是由于某些过程临时将
+  ζ-δ 归约 let 定义（这些多余的 let 定义是由于某些过程临时将
   `zetaDelta := true` 而出现的）。该 PR 还修改了 zeta-delta 跟踪函数的
   元编程接口，使其可重入，并防止这类“不重置”缺陷再次出现。关闭了 #6655。
 
@@ -658,7 +658,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___22___0-_LPAR_2025-0
   非依赖 let 表达式的一等支持。回忆一下，若 `fun x : t => b` 能通过类型检查，
   则 let 表达式 `let x : t := v; b` 被称为*非依赖*，其对应记法是
   `have x := v; b`。此前我们用 `letFun` 函数来编码 `have`，
-  现在则改用 `Expr.letE` 构造子中的 `nondep` 标志来编码。
+  现在则改用 `Expr.letE` 构造子中的 nondep 标志来编码。
   这一能力已经在元编程接口与精译器中得到完整支持。元编程接口中的关键变化如下：
   - 在局部上下文中，带 `nondep := true` 的 `ldecl` 通常会被当作
     `cdecl` 处理。这是因为在 `have` 表达式的函数体中，该变量是 opaque 的。
@@ -760,7 +760,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___22___0-_LPAR_2025-0
   （空格跑到了符号右侧，而不是左侧）。这一改动修复了属性的美观打印，
   并保留了 `grind?` 输出中符号后空格的存在。
 
-* [#8893](https://github.com/leanprover/lean4/pull/8893) 修复了 `cutsat` 中 `dvd`
+* [#8893](https://github.com/leanprover/lean4/pull/8893) 修复了 cutsat 中 `dvd`
   传播函数的一个缺陷。
 
 * [#8901](https://github.com/leanprover/lean4/pull/8901) 增加了一个检查器（`linter.unusedSimpArgs`），当
@@ -862,7 +862,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___22___0-_LPAR_2025-0
   内核中求值的证明项增加了 `@[expose]` 属性。
 
 * [#8965](https://github.com/leanprover/lean4/pull/8965) 修订了 Nat 按位运算上的
-  `@[grind]` 标注。
+  @[grind] 标注。
 
 * [#8968](https://github.com/leanprover/lean4/pull/8968) 为 `simp` 增加了以下特性：
   - 一种化简 `have` telescope 的例程，可避免局部无名表达式表示带来的
@@ -887,7 +887,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___22___0-_LPAR_2025-0
   宏背后的 `simp` 调用误报。修复了 #8969。
 
 * [#8973](https://github.com/leanprover/lean4/pull/8973) 重构了线性
-  `noConfusionType` 构造中对宇宙层级的处理：不再使用 `PUnit.{…} →`
+  `noConfusionType` 构造中对宇宙层级的处理：不再使用 `PUnit.{…} → `
   来把 `withCtorType` 的各个分支拉到同一宇宙层级，而是改用 `PULift`。
 
 * [#8978](https://github.com/leanprover/lean4/pull/8978) 更新了 `monotonicity`
@@ -929,7 +929,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___22___0-_LPAR_2025-0
 * [#9005](https://github.com/leanprover/lean4/pull/9005) 修改了 `Lean.Grind.ToInt.OfNat`
   的定义，在右侧引入了一个 `wrap`。
 
-* [#9008](https://github.com/leanprover/lean4/pull/9008) 为 cutsat 中通用 `ToInt`
+* [#9008](https://github.com/leanprover/lean4/pull/9008) 为 `cutsat` 中通用 `ToInt`
   支持实现了基础设施。
 
 * [#9022](https://github.com/leanprover/lean4/pull/9022) 补全了通用 `toInt`
@@ -942,7 +942,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___22___0-_LPAR_2025-0
     grind
 
 * [#9030](https://github.com/leanprover/lean4/pull/9030) 修复了新加入的 `Std.Do`
-  模块中几个与 `bootstrap` 有关的小故障。更具体地说，
+  模块中几个与 bootstrap 有关的小故障。更具体地说，
 
 * [#9035](https://github.com/leanprover/lean4/pull/9035) 扩展了可接受字符列表，
   纳入了所有法语字符以及一些其他字符，具体做法是加入
@@ -961,7 +961,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___22___0-_LPAR_2025-0
   之后仍应通过逐声明重新审查可见性来取代这种过渡手段。
 
 * [#9045](https://github.com/leanprover/lean4/pull/9045) 修复了 `mvcgen` 中的一个类型错误，
-  并减少了它把自然目标转成 `synthetic opaque` 目标的数量，
+  并减少了它把自然目标转成 synthetic opaque 目标的数量，
   使得 `trivial` 等策略更容易对其进行实例化。
 
 * [#9048](https://github.com/leanprover/lean4/pull/9048) 为 `grind cutsat` 所用的
@@ -1010,7 +1010,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___22___0-_LPAR_2025-0
     grind
 
 * [#9073](https://github.com/leanprover/lean4/pull/9073) 参照 #9069 同样处理了 `ReflCmp`；
-  我们需要在 `propagateUp` 而非 `propagateDown` 中调用它。
+  我们需要在 propagateUp 而非 propagateDown 中调用它。
 
 * [#9074](https://github.com/leanprover/lean4/pull/9074) 使用交换环模块来规范化
   `grind cutsat` 中的非线性多项式。示例如下：
@@ -1185,7 +1185,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___22___0-_LPAR_2025-0
   `SPred`，用于支持对单子程序进行推理。它附带一个专用证明模式，
   其策略可通过导入 `Std.Tactic.Do` 使用。
 
-* [#8747](https://github.com/leanprover/lean4/pull/8747) 为 `List/Array/Vector.finRange`
+* [#8747](https://github.com/leanprover/lean4/pull/8747) 为 List/Array/Vector.finRange
   的定理增加了 grind 标注。
 
 * [#8748](https://github.com/leanprover/lean4/pull/8748) 为 `Array/Vector.mapIdx`
@@ -1273,7 +1273,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___22___0-_LPAR_2025-0
 
 * [#8928](https://github.com/leanprover/lean4/pull/8928) 在 `Std.Do` 中增加了有状态谓词逻辑
   `SPred`，用于支持对单子程序进行推理。它附带一个专用证明模式，
-  其策略可通过导入 `Std.Tactic.Do` 使用。
+  其策略可通过导入 Std.Tactic.Do 使用。
 
 * [#8941](https://github.com/leanprover/lean4/pull/8941) 增加了
   `BitVec.(getElem, getLsbD, getMsbD)_(smod, sdiv, srem)` 定理，
@@ -1317,11 +1317,11 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___22___0-_LPAR_2025-0
 
 * [#9027](https://github.com/leanprover/lean4/pull/9027) 提供了一个迭代器组合子，
   可通过 `ULift` 将发出的值提升到更高的宇宙层级。随后利用这一组合子，
-  使 `subarray` 迭代器成为宇宙多态。此前它们只对 `α : Type`
+  使 subarray 迭代器成为宇宙多态。此前它们只对 `α : Type`
   的 `Subarray α` 可用。
 
 * [#9030](https://github.com/leanprover/lean4/pull/9030) 修复了新加入的 `Std.Do`
-  模块中几个与 `bootstrap` 有关的小故障。更具体地说，
+  模块中几个与 bootstrap 有关的小故障。更具体地说，
 
 * [#9038](https://github.com/leanprover/lean4/pull/9038) 为 VC 生成器增加了测试用例，
   并做了若干细小但繁琐的修复，以确保测试通过。
@@ -1405,14 +1405,14 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___22___0-_LPAR_2025-0
   因为对这类类型的大多数引用都会更早地被替换成 `lcErased`。
 
 * [#8712](https://github.com/leanprover/lean4/pull/8712) 将被擦除类型的 let 声明优化为
-  擦除值。specialization 可能会生成返回 `Prop` 的局部函数，
+  擦除值。specialization 可能会生成返回 Prop 的局部函数，
   把它们保留下来并没有意义。
 
 * [#8716](https://github.com/leanprover/lean4/pull/8716) 使得已擦除项上的任何类型应用
   也都会被擦除。在 Lean 自身的实现中，这种情况比想象中更常见。
 
 * [#8717](https://github.com/leanprover/lean4/pull/8717) 使用 fvar 替换机制来替换已擦除代码。
-  这还不算完全令人满意，因为 LCNF 的 `.return` 并不支持一般的 `Arg`
+  这还不算完全令人满意，因为 LCNF 的 `.return` 并不支持一般的 Arg
   （而 `Arg` 有 `.erased` 构造子），它只支持 `FVarId`。
   这与 IR 的 `.ret` 不同，后者支持一般的 `Arg`。
 
@@ -1448,7 +1448,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___22___0-_LPAR_2025-0
   尽管合法，却不会被一并提升进去。此前这会在
   `Lean.Elab.Tactic.BVDecide.LRAT.trim.useAnalysis` 中造成虚假的数组线性性问题。
 
-* [#8816](https://github.com/leanprover/lean4/pull/8816) 在 LCNF simp 中为 `Char.ofNat`
+* [#8816](https://github.com/leanprover/lean4/pull/8816) 在 LCNF simp 中为 Char.ofNat
   增加了常量折叠。这隐式依赖于把 `Char` 表示为 `UInt32`，
   而不是单独引入 `.char` 字面量类型；考虑到 `Char` 会在 `toMono`
   的平凡结构优化中被擦除，这样做是合理的。
@@ -1497,7 +1497,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___22___0-_LPAR_2025-0
   续写部分目前还没有用于查看未截断语法的功能。关闭了 #3681。
 
 * [#8617](https://github.com/leanprover/lean4/pull/8617) 修复了以下问题：
-  1. `private` 名称在美观打印时不会被正确反解析；
+  1. private 名称在美观打印时不会被正确反解析；
   2. 在 `pp.universes` 模式下，名称可能遮蔽局部名；
   3. 在 `match` 模式中，遮蔽局部名的常量不会使用 `_root_`；
   4. 当设置 `pp.fullNames` 时，策略可能给出错误的 “try this”。
@@ -1519,7 +1519,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___22___0-_LPAR_2025-0
 ````markdown
 
 * [#8934](https://github.com/leanprover/lean4/pull/8934) 为若干错误增加了解释，
-  包括与 noncomputability、冗余 `match` 分支以及非法归纳声明有关的错误。
+  包括与 noncomputability、冗余 match 分支以及非法归纳声明有关的错误。
 
 * [#8990](https://github.com/leanprover/lean4/pull/8990) 为 `grind` 内部代数类型类
   补充了缺失的文档字符串，以纳入参考手册。
@@ -1639,7 +1639,7 @@ tag := "The-Lean-Language-Reference--Release-Notes--Lean-4___22___0-_LPAR_2025-0
 
 * [#8702](https://github.com/leanprover/lean4/pull/8702) 增强了 PR 发布工作流，
   使其同时创建短格式与带 SHA 后缀的发布标签。它会同时创建
-  `pr-release-{PR_NUMBER}` 和 `pr-release-{PR_NUMBER}-{SHORT_SHA}` 两类标签，
+  pr-release-{PR_NUMBER} 和 pr-release-{PR_NUMBER}-{SHORT_SHA} 两类标签，
   分别生成对应发布，增加独立的 GitHub 状态检查，并更新
   Batteries/Mathlib 的测试分支，使其使用带 SHA 后缀的标签以精确追踪提交。
 
