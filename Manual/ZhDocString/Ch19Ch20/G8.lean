@@ -54,7 +54,7 @@ noncomputable def c002 := @String.toSlice
 noncomputable def c003 := @String.sliceFrom
 
 /--
-从开头的切片 up to （独家）。
+从 `s` 的开头到 `p`（不含该位置）的切片。
 -/
 noncomputable def c004 := @String.sliceTo
 
@@ -72,7 +72,7 @@ structure c005 (s : String.Slice) where
   isValidForSlice : offset.IsValidForSlice s
 
 /--
-创建一个  from a 通过复制字节。
+通过复制字节创建一个 `String`，字节来自 `String.Slice`。
 -/
 noncomputable def c006 := @String.Slice.copy
 
@@ -98,7 +98,7 @@ noncomputable def c008 := @String.Slice.utf8ByteSize
 noncomputable def c009 := @String.Slice.pos
 
 /--
-从一个位置构造一个有效的位置 `s`，如果该位置无效则引发恐慌。
+从一个位置构造一个有效的位置 `s`，如果该位置无效则引发运行时错误。
 -/
 noncomputable def c010 := @String.Slice.pos!
 
@@ -138,7 +138,7 @@ noncomputable def c016 := @String.Slice.sliceTo
 noncomputable def c017 := @String.Slice.slice
 
 /--
-给定一个切片和切片内的两个有效位置，获取由新边界形成的相同底层字符串上的新切片，如果给定的结束位置严格小于给定的起始位置，则触发恐慌。
+给定一个切片和切片内的两个有效位置，获取由新边界形成的相同底层字符串上的新切片，如果给定的结束位置严格小于给定的起始位置，则触发运行时错误。
 -/
 noncomputable def c018 := @String.Slice.slice!
 
@@ -186,11 +186,11 @@ noncomputable def c020 := @String.Slice.dropEnd
 noncomputable def c021 := @String.Slice.dropEndWhile
 
 /--
-如果 `pat` 与 `s` 的前缀匹配，则返回剩余部分。否则返回未修改的 `s`。
+如果 `pat` 匹配 `s` 的前缀，则返回剩余部分；否则原样返回 `s`。
 
-使用  to return 当 does not match a prefix.
+可使用 `String.Slice.dropPrefix?` 返回 `none`，以处理 `pat` 不匹配前缀的情况。
 
-此函数适用于所有当前支持的模式。
+此函数适用于当前支持的所有模式。
 
 示例：
 
@@ -205,12 +205,11 @@ noncomputable def c021 := @String.Slice.dropEndWhile
 noncomputable def c022 := @String.Slice.dropPrefix
 
 /--
-如果 `pat` 匹配 `s` 的前缀，则返回剩余部分。否则返回 `none`。
+如果 `pat` 匹配 `s` 的前缀，则返回剩余部分；否则返回 `none`。
 
-使用  to return the slice
-unchanged when 与前缀不匹配。
+可使用 `String.Slice.dropPrefix` 原样返回切片，以处理 `pat` 不匹配前缀的情况。
 
-此函数适用于所有当前支持的模式。
+此函数适用于当前支持的所有模式。
 
 示例：
 
@@ -225,12 +224,11 @@ unchanged when 与前缀不匹配。
 noncomputable def c023 := @String.Slice.dropPrefix?
 
 /--
-如果 `pat` 与 `s` 的后缀匹配，则返回剩余部分。否则返回未修改的 `s`。
+如果 `pat` 匹配 `s` 的后缀，则返回剩余部分；否则原样返回 `s`。
 
-使用  to return 当 does not match a
-prefix.
+可使用 `String.Slice.dropSuffix?` 返回 `none`，以处理 `pat` 不匹配后缀的情况。
 
-此函数适用于所有当前支持的模式。
+此函数适用于当前支持的所有模式。
 
 示例：
 
@@ -245,12 +243,11 @@ prefix.
 noncomputable def c024 := @String.Slice.dropSuffix
 
 /--
-如果 `pat` 匹配 `s` 的后缀，则返回剩余部分。否则返回 `none`。
+如果 `pat` 匹配 `s` 的后缀，则返回剩余部分；否则返回 `none`。
 
-使用  to return the slice
-unchanged when 与后缀不匹配。
+可使用 `String.Slice.dropSuffix` 原样返回切片，以处理 `pat` 不匹配后缀的情况。
 
-此函数适用于所有当前支持的模式。
+此函数适用于当前支持的所有模式。
 
 示例：
 
@@ -280,7 +277,7 @@ noncomputable def c025 := @String.Slice.dropSuffix?
 noncomputable def c026 := @String.Slice.dropWhile
 
 /--
-创建一个包含前几个元素的新切片 characters \(Unicode code points\) of .
+创建一个包含前 `n` 个字符（即 `s` 中的 Unicode 码点）的新切片。
 
 如果 `n` 大于 `s` 中的字符数，则返回 `s`。
 
@@ -297,7 +294,7 @@ noncomputable def c026 := @String.Slice.dropWhile
 noncomputable def c027 := @String.Slice.take
 
 /--
-创建一个包含最后部分的新切片 characters \(Unicode code points\) of .
+创建一个包含后 `n` 个字符（即 `s` 中的 Unicode 码点）的新切片。
 
 如果 `n` 大于 `s` 中的字符数，则返回 `s`。
 
@@ -427,9 +424,9 @@ noncomputable def c038 := @String.Slice.posGT
 noncomputable def c039 := @String.Slice.contains
 
 /--
-检查切片 \（`s`\） 是否以 \（`pat`\\ 开头）。
+检查切片 \(`s`\) 是否以模式 \(`pat`\) 开头。
 
-此函数适用于所有当前支持的模式。
+此函数适用于当前支持的所有模式。
 
 示例：
 
@@ -446,9 +443,9 @@ noncomputable def c039 := @String.Slice.contains
 noncomputable def c040 := @String.Slice.startsWith
 
 /--
-检查切片 \（`s`\） 是否以 \（`pat`\\ 结尾）。
+检查切片 \(`s`\) 是否以模式 \(`pat`\) 结尾。
 
-此函数适用于所有当前支持的模式。
+此函数适用于当前支持的所有模式。
 
 示例：
 
@@ -684,11 +681,11 @@ noncomputable def c055 := @String.Slice.bytes
 noncomputable def c056 := @String.Slice.revBytes
 
 /--
-从切片末端开始遍历至开头，在每个与模式 `pat` 匹配的子切片处拆分切片。
+从切片末端向开头遍历，在每个与模式 `pat` 匹配的子切片处拆分切片。
 
-匹配模式的子切片不会包含在任何结果子切片中。如果多 个子切片连续匹配该模式，结果列表将包含空切片。
+与模式匹配的子切片不会包含在任何结果子切片中。如果多个连续子切片匹配该模式，结果列表将包含空切片。
 
-此函数对当前支持的所有模式都是通用的，除了`String`/`String.Slice`。
+此函数适用于当前支持的所有模式，但 `String`/`String.Slice` 除外。
 
 示例：
 
@@ -725,13 +722,11 @@ noncomputable def c058 := @String.Slice.foldl
 noncomputable def c059 := @String.Slice.foldr
 
 /--
-检查切片是否可以被解释为自然数的十进制表示形式。
+检查切片能否解释为自然数的十进制表示。
 
-如果一个切片不是空的，且所有字符都为
-它是数字。为了可读性，允许下划线 \（`_`\） 作为数字分隔符，但不能出现
-无论是在开始、结尾，还是连续的。
+切片非空且其中所有字符都是数字时，便可解释为十进制自然数。为便于阅读，可以使用下划线 \(`_`\) 分隔数字，但下划线不能位于开头或结尾，也不能连续出现。
 
-使用 `toNat?` 或 `toNat!` 将这样的切片转换为自然数。
+使用 `toNat?` 或 `toNat!` 将此类切片转换为自然数。
 
 示例：
 
@@ -766,11 +761,11 @@ noncomputable def c059 := @String.Slice.foldr
 noncomputable def c060 := @String.Slice.isNat
 
 /--
-将切片解释为自然数的十进制表示，并返回它。如果切片不包含十进制自然数，则会触发恐慌。
+将切片解释为自然数的十进制表示并返回该自然数。如果切片不包含十进制自然数，则引发运行时错误。
 
-如果一个切片不为空且其中的所有字符都是数字，则可以将其解释为十进制自然数。在解析过程中，下划线（`_`）作为数字分隔符是允许的，并会被忽略。
+切片非空且其中所有字符都是数字时，便可解释为十进制自然数。可以使用下划线 \(`_`\) 分隔数字；解析时会忽略下划线。
 
-使用 `isNat` 来检查 `toNat!` 是否会返回一个值。`toNat?` 是更安全的替代方法，当字符串不是自然数时，它会返回 `none` 而不是引发恐慌。
+使用 `isNat` 检查 `toNat!` 是否会返回值。更安全的替代方案是 `toNat?`：当字符串不是自然数时，它返回 `none`，而不会引发运行时错误。
 
 示例：
 
@@ -785,12 +780,12 @@ noncomputable def c060 := @String.Slice.isNat
 noncomputable def c061 := @String.Slice.toNat!
 
 /--
-将切片解释为自然数的十进制表示，并返回它。如果切片不包含十进制自然数，则返回`none`。
+将切片解释为自然数的十进制表示并返回该自然数。如果切片不包含十进制自然数，则返回 `none`。
 
-如果一个切片不为空且其中的所有字符都是数字，则可以将其解释为十进制自然数。在解析过程中，下划线（`_`）作为数字分隔符是允许的，并会被忽略。
+切片非空且其中所有字符都是数字时，便可解释为十进制自然数。可以使用下划线 \(`_`\) 分隔数字；解析时会忽略下划线。
 
-使用 `isNat` 来检查 `toNat?` 是否会返回 `some`。
-`toNat!` 是一个替代方案，当切片不是自然数时，它会触发 panic，而不是返回 `none`。
+使用 `isNat` 检查 `toNat?` 是否会返回 `some`。
+另一种方案是 `toNat!`：当切片不是自然数时，它会引发运行时错误，而不是返回 `none`。
 
 示例：
 
@@ -829,20 +824,17 @@ noncomputable def c063 := @String.Slice.beq
 noncomputable def c064 := @String.Slice.eqIgnoreAsciiCase
 
 /--
-提供从一个模式到`SearchStep`迭代器的转换，该迭代器从开始到结束搜索`Slice`中模式的匹配项。
+提供从模式到 `SearchStep` 迭代器的转换；该迭代器从 `Slice` 的开头向末尾搜索模式匹配项。
 
-虽然这些操作可以在……之上实现, some patterns allow
-for more efficient implementations. For example, a searcher for 源自于 instance on strings would try to match the pattern at every
-position in the string, but more efficient string matching routines are known. Indeed, the Lean
-standard library uses the Knuth-Morris-Pratt algorithm. See the module
-用于实施。
+这些操作可以基于 `ForwardPattern` 实现，但某些模式可以采用更高效的实现。例如，`String` 模式搜索器若由字符串的 `ForwardPattern` 实例派生，就会尝试在字符串的每个位置匹配模式，而已有更高效的字符串匹配方法。Lean 标准库实际使用 Knuth–Morris–Pratt 算法；实现见模块 `Init.Data.String.Pattern.String`。
 
-这个类可以用来提供这样一个高效的实现。如果没有必要以这种方式进行专门化，那么`ToForwardSearcher.defaultImplementation`可以用来自动派生一个实例。
+此类型类可用于提供这样的高效实现。如果不需要这种专门实现，可以使用 `ToForwardSearcher.defaultImplementation` 自动派生实例。
 -/
 class c065 {ρ : Type} (pat : ρ) (σ : outParam (String.Slice → Type)) where
   /--
-  构建一个迭代器 corresponding to matches of 沿着切片. The 由这个迭代器返回的 s 必须包含相邻、不重叠并覆盖所有的范围.
-    
+  构建一个迭代器，其产生的 `SearchStep` 对应于模式 `pat` 在切片
+    `s` 中的各次匹配。该迭代器返回的 `SearchStep` 所含范围必须
+    彼此相邻、互不重叠，并覆盖整个 `s`。
   -/
   toSearcher : (s : String.Slice) → @Std.Iter (σ s) (String.Slice.Pattern.SearchStep s)
 
@@ -864,20 +856,17 @@ class c066 {ρ : Type} (pat : ρ) where
   startsWith : String.Slice → Bool
 
 /--
-提供从模式到`SearchStep`迭代器的转换，从结束向开始搜索`Slice`的模式匹配。
+提供从模式到 `SearchStep` 迭代器的转换；该迭代器从 `Slice` 的末尾向开头搜索模式匹配项。
 
-虽然这些操作可以在……之上实现, some patterns allow
-for more efficient implementations. For example, a searcher for 源自于……的模式 instance on strings would try to match the pattern at every
-position in the string, but more efficient string matching routines are known. Indeed, the Lean
-standard library uses the Knuth-Morris-Pratt algorithm. See the module
-用于实施。
+这些操作可以基于 `BackwardPattern` 实现，但某些模式可以采用更高效的实现。例如，`String` 模式搜索器若由字符串的 `BackwardPattern` 实例派生，就会尝试在字符串的每个位置匹配模式，而已有更高效的字符串匹配方法。Lean 标准库实际使用 Knuth–Morris–Pratt 算法；实现见模块 `Init.Data.String.Pattern.String`。
 
-这个类可以用来提供这样一个高效的实现。如果没有必要以这种方式进行专门化，那么`ToBackwardSearcher.defaultImplementation`可以用来自动派生一个实例。
+此类型类可用于提供这样的高效实现。如果不需要这种专门实现，可以使用 `ToBackwardSearcher.defaultImplementation` 自动派生实例。
 -/
 class c067 {ρ : Type} (pat : ρ) (σ : outParam (String.Slice → Type)) where
   /--
-  构建一个迭代器 corresponding to matches of 沿着切片. The 由这个迭代器返回的 s 必须包含相邻的、不重叠的范围，并覆盖所有的.
-    
+  构建一个迭代器，其产生的 `SearchStep` 对应于模式 `pat` 在切片
+    `s` 中的各次匹配。该迭代器返回的 `SearchStep` 所含范围必须
+    彼此相邻、互不重叠，并覆盖整个 `s`。
   -/
   toSearcher : (s : String.Slice) → @Std.Iter (σ s) (String.Slice.Pattern.SearchStep s)
 
@@ -909,7 +898,7 @@ noncomputable def c069 := @String.Slice.Pos.byte
 noncomputable def c070 := @String.Slice.Pos.get
 
 /--
-返回字符串中给定位置的字节，如果位置是结束位置则会引发恐慌。
+返回字符串中给定位置的字节；如果该位置是结束位置，则引发运行时错误。
 -/
 noncomputable def c071 := @String.Slice.Pos.get!
 
@@ -924,7 +913,7 @@ noncomputable def c072 := @String.Slice.Pos.get?
 noncomputable def c073 := @String.Slice.Pos.prev
 
 /--
-返回给定位置之前的上一个有效位置，如果该位置是起始位置，则会触发恐慌。
+返回给定位置之前的上一个有效位置；如果给定位置是起始位置，则引发运行时错误。
 -/
 noncomputable def c074 := @String.Slice.Pos.prev!
 
@@ -946,7 +935,7 @@ noncomputable def c076 := @String.Slice.Pos.prevn
 noncomputable def c077 := @String.Slice.Pos.next
 
 /--
-将有效位置在切片上向下一个有效位置推进，如果给定位置是超出末端的位置，则引发恐慌。
+将切片上的有效位置推进到下一个有效位置；如果给定位置是末端之后的位置，则引发运行时错误。
 -/
 noncomputable def c078 := @String.Slice.Pos.next!
 
@@ -963,7 +952,7 @@ noncomputable def c079 := @String.Slice.Pos.next?
 noncomputable def c080 := @String.Slice.Pos.nextn
 
 /--
-构建一个有效的位置于 from a valid position on 以及一个证明，. 
+为 `t` 构造有效位置，依据是 `s` 上的有效位置以及证明 `s.copy = t.copy`。
 -/
 noncomputable def c081 := @String.Slice.Pos.cast
 
@@ -1005,7 +994,8 @@ structure c087 (w : Nat) where
   toFin : Fin (2^w)
 
 /--
-构建一个 from a number less than .O(1)，因为我们使用 as the internal representation of a bitvector. 
+构造一个 `BitVec w`，其数值小于 `2^w`。
+O(1)，因为位向量以 `Fin` 作为内部表示。
 -/
 add_decl_doc c087.ofFin
 
@@ -1020,7 +1010,7 @@ noncomputable def c088 := @BitVec.intMax
 noncomputable def c089 := @BitVec.intMin
 
 /--
-填充一个位向量，其值为  copies of the bit . 
+用 `w` 个位 `b` 填充位向量。
 -/
 noncomputable def c090 := @BitVec.fill
 
@@ -1076,10 +1066,9 @@ noncomputable def c098 := @BitVec.ofBoolListBE
 noncomputable def c099 := @BitVec.ofBoolListLE
 
 /--
-将一个整数转换为其二进制补码表示，作为给定宽度 `n` 的位向量，必要时进行溢出和下溢。
+将整数转换为给定宽度 `n` 的二进制补码位向量，并按需上溢或下溢。
 
-潜在的 is . 将位向量转换回一个 
-with 导致该值.
+底层 `Nat` 为 `(2^n + (i mod 2^n)) mod 2^n`。将位向量转回 `Int` 时，使用 `BitVec.toInt` 所得值为 `i.bmod (2^n)`。
 -/
 noncomputable def c100 := @BitVec.ofInt
 
@@ -1096,7 +1085,7 @@ noncomputable def c100 := @BitVec.ofInt
 noncomputable def c101 := @BitVec.ofNat
 
 /--
-这 with value ，给出一个证明，说明. 
+构造 `BitVec`，其值为 `i`，前提是有证明 `i < 2^w`。
 -/
 noncomputable def c102 := @BitVec.ofNatLT
 
@@ -1225,7 +1214,7 @@ SMT-LIB 名称：`concat`。
 noncomputable def c117 := @BitVec.append
 
 /--
-连接 copies of 进入一个新的长度为. 
+连接 `i` 个 `x`，得到长度为 `w * i` 的新向量。
 -/
 noncomputable def c118 := @BitVec.replicate
 
@@ -1264,7 +1253,7 @@ noncomputable def c121 := @BitVec.rotateRight
 noncomputable def c122 := @BitVec.msb
 
 /--
-返回 th most significant bit, or 如果. 
+返回第 `i` 个最高有效位，或返回 `false`（若 `i ≥ w`）。
 -/
 noncomputable def c123 := @BitVec.getMsbD
 
@@ -1274,12 +1263,12 @@ noncomputable def c123 := @BitVec.getMsbD
 noncomputable def c124 := @BitVec.getMsb
 
 /--
-返回 th most significant bit or 如果. 
+返回第 `i` 个最高有效位，或返回 `none`（若 `i ≥ w`）。
 -/
 noncomputable def c125 := @BitVec.getMsb?
 
 /--
-返回 th least significant bit or 如果. 
+返回第 `i` 个最低有效位，或返回 `false`（若 `i ≥ w`）。
 -/
 noncomputable def c126 := @BitVec.getLsbD
 
@@ -1289,7 +1278,7 @@ noncomputable def c126 := @BitVec.getLsbD
 noncomputable def c127 := @BitVec.getLsb
 
 /--
-返回 th least significant bit, or 如果. 
+返回第 `i` 个最低有效位，或返回 `none`（若 `i ≥ w`）。
 -/
 noncomputable def c128 := @BitVec.getLsb?
 
@@ -1303,8 +1292,7 @@ SMT-LIB 名称：`extract`。
 noncomputable def c129 := @BitVec.extractLsb
 
 /--
-提取位 to 从一个大小为的位向量 to yield a
-new bitvector of size . 如果, then the bitvector is zero-extended.
+提取第 `start` 位到第 `start + len - 1` 位，来源是大小为 `n` 的位向量，并得到大小为 `len` 的新位向量。如果 `start + len > n`，则对位向量进行零扩展。
 -/
 noncomputable def c130 := @BitVec.extractLsb'
 
@@ -1480,7 +1468,7 @@ SMT-LIB 名称：`bvneg`。
 noncomputable def c151 := @BitVec.neg
 
 /--
-带符号的T除法（使用截断舍入约定）用于位向量。此函数遵循Lean约定，即除以零返回零。
+位向量的带符号 T 除法（采用向零截断的舍入约定）。此函数遵循 Lean 的约定：除以零返回零。
 
 示例：
 * `(7#4).sdiv 2 = 3#4`
@@ -1528,11 +1516,12 @@ SMT-Lib 名称：`bvssubo`。
 noncomputable def c157 := @BitVec.ssubOverflow
 
 /--
-通过对每个位使用函数 `f` 迭代计算状态来构建位向量，从初始状态 `s` 开始。在每一步中，将先前的状态和当前位索引传递给 `f`，它会生成该位以及下一个状态值。这些位被组装成最终的位向量。
+使用函数 `f` 为每一位迭代计算状态，并从初始状态 `s` 开始，从而构造位向量。每一步都把前一状态和当前位索引传给 `f`，由它生成一个位以及下一状态。这些位随后组合成最终的位向量。
 
-它产生一系列状态值 and a bitvector 其中 `f i s_i = (s_{i+1}, b_i)b_i我vgetLsb v i = b_i`).
+它生成状态序列 `[s_0, s_1 .. s_w]` 和位向量 `v`，其中 `f i s_i =
+(s_{i+1}, b_i)`，并且 `b_i` 表示第 `i` 个最低有效位，它位于 `v` 中（例如 `getLsb v i = b_i`）。
 
-定理 `iunfoldr_replace` 允许将 `BitVec.iunfoldr` 的用法替换为更易于推理的声明性规范。
+定理 `iunfoldr_replace` 可将 `BitVec.iunfoldr` 的使用替换为更便于推理的声明式规范。
 -/
 noncomputable def c158 := @BitVec.iunfoldr
 
@@ -1554,7 +1543,7 @@ noncomputable def c160 := @BitVec.adc
 noncomputable def c161 := @BitVec.adcb
 
 /--
-carry i x y c 如果…返回 true carry bit is true when computing . 
+如果第 `i` 个进位在计算 `x + y + c` 时为真，则 carry i x y c 返回 true。
 -/
 noncomputable def c162 := @BitVec.carry
 
@@ -1578,34 +1567,34 @@ noncomputable def c164 := @BitVec.divRec
 noncomputable def c165 := @BitVec.divSubtractShift
 
 /--
-班次 to the left by the first 一些.
+将 `x` 左移前 `n` 位的 `y` 所表示的位数。
 
-定理 `BitVec.shiftLeft_eq_shiftLeftRec` 证明了 `(x <<< y)` 与 `BitVec.shiftLeftRec x y` 的等价性。
+定理 `BitVec.shiftLeft_eq_shiftLeftRec` 证明 `(x <<< y)` 与 `BitVec.shiftLeftRec x y` 等价。
 
-结合方程 `BitVec.shiftLeftRec_zero` 和 `BitVec.shiftLeftRec_succ`，这允许 `BitVec.shiftLeft` 展开为位爆破电路。
+结合方程 `BitVec.shiftLeftRec_zero` 和 `BitVec.shiftLeftRec_succ`，可将 `BitVec.shiftLeft` 展开为用于位级展开的电路。
 -/
 noncomputable def c166 := @BitVec.shiftLeftRec
 
 /--
-班次 arithmetically (signed) to the right by the first 碎片.
+将 `x` 以算术（有符号）方式右移前 `n` 位的 `y` 所表示的位数。
 
-定理 `BitVec.sshiftRight_eq_sshiftRightRec` 证明了 `(x.sshiftRight y)` 与 `BitVec.sshiftRightRec x y` 的等价性。结合方程 `BitVec.sshiftRightRec_zero` 和 `BitVec.sshiftRightRec_succ`，这允许将 `BitVec.sshiftRight` 展开为一个用于位爆破的电路。
+定理 `BitVec.sshiftRight_eq_sshiftRightRec` 证明 `(x.sshiftRight y)` 与 `BitVec.sshiftRightRec x y` 等价。结合方程 `BitVec.sshiftRightRec_zero` 和 `BitVec.sshiftRightRec_succ`，可将 `BitVec.sshiftRight` 展开为用于位级展开的电路。
 -/
 noncomputable def c167 := @BitVec.sshiftRightRec
 
 /--
-班次 logically to the right by the first 一些.
+将 `x` 以逻辑方式右移前 `n` 位的 `y` 所表示的位数。
 
-定理 `BitVec.shiftRight_eq_ushiftRightRec` 证明了 `(x >>> y)` 与 `BitVec.ushiftRightRec` 的等价性。
+定理 `BitVec.shiftRight_eq_ushiftRightRec` 证明 `(x >>> y)` 与 `BitVec.ushiftRightRec` 等价。
 
-结合方程 `BitVec.ushiftRightRec_zero` 和 `BitVec.ushiftRightRec_succ`，这允许将 `BitVec.ushiftRight` 展开成用于位爆破的电路。
+结合方程 `BitVec.ushiftRightRec_zero` 和 `BitVec.ushiftRightRec_succ`，可将 `BitVec.ushiftRight` 展开为用于位级展开的电路。
 -/
 noncomputable def c168 := @BitVec.ushiftRightRec
 
 /--
-`α` 的一系列元素，具有闭合的下界和开放的上界。
+`α` 中具有闭下界和开上界的区间。
 
-`a...b` 或 `a...<b` 是所有大于或等于 `a : α` 且小于 `b : α` 的值的范围。这是 `Rco.mk a b` 的表示法。
+`a...b` 或 `a...<b` 表示所有大于等于 `a : α` 且小于 `b : α` 的值。这是 `Rco.mk a b` 的记法。
 -/
 structure c169 (α : Type u) where
   /--
@@ -1687,9 +1676,9 @@ noncomputable def c179 := @Std.Rcc.size
 noncomputable def c180 := @Std.Rcc.isEmpty
 
 /--
-具有闭合下界的`α`元素的向上无界范围。
+`α` 中具有闭下界、向上无界的区间。
 
-`a...*` 是所有大于或等于 `a : α` 的值的范围。这是 `Rci.mk a` 的表示法。
+`a...*` 表示所有大于等于 `a : α` 的值。这是 `Rci.mk a` 的记法。
 -/
 structure c181 (α : Type u) where
   /--
@@ -1725,9 +1714,9 @@ noncomputable def c185 := @Std.Rci.size
 noncomputable def c186 := @Std.Rci.isEmpty
 
 /--
-`α` 的一系列元素，具有开放的下界和上界。
+`α` 中下界和上界均为开的区间。
 
-`a<...b` 或 `a<...<b` 是所有大于 `a : α` 且小于 `b : α` 的数值范围。这是 `Roo.mk a b` 的表示方法。
+`a<...b` 或 `a<...<b` 表示所有大于 `a : α` 且小于 `b : α` 的值。这是 `Roo.mk a b` 的记法。
 -/
 structure c187 (α : Type u) where
   /--
@@ -1809,9 +1798,9 @@ noncomputable def c197 := @Std.Roc.size
 noncomputable def c198 := @Std.Roc.isEmpty
 
 /--
-`α` 的一个元素的上无界范围，具有开放的下界。
+`α` 中具有开下界、向上无界的区间。
 
-`a<...*` 是所有大于 `a : α` 的值的范围。这是 `Roi.mk a` 的表示法。
+`a<...*` 表示所有大于 `a : α` 的值。这是 `Roi.mk a` 的记法。
 -/
 structure c199 (α : Type u) where
   /--
@@ -1847,9 +1836,9 @@ noncomputable def c203 := @Std.Roi.size
 noncomputable def c204 := @Std.Roi.isEmpty
 
 /--
-`α` 的一个元素范围向下无限，下界开放的上界。
+`α` 中具有开上界、向下无界的区间。
 
-`*...b` 或 `*...<b` 是所有小于 `b : α` 的数值的范围。这是 `Rio.mk b` 的表示法。
+`*...b` 或 `*...<b` 表示所有小于 `b : α` 的值。这是 `Rio.mk b` 的记法。
 -/
 structure c205 (α : Type u) where
   /--
@@ -1885,9 +1874,9 @@ noncomputable def c209 := @Std.Rio.size
 noncomputable def c210 := @Std.Rio.isEmpty
 
 /--
-具有封闭上界的 `α` 元素的向下无界范围。
+`α` 中具有闭上界、向下无界的区间。
 
-`*...=b` 是所有小于或等于 `b : α` 的值的范围。这是 `Ric.mk b` 的表示法。
+`*...=b` 表示所有小于等于 `b : α` 的值。这是 `Ric.mk b` 的记法。
 -/
 structure c211 (α : Type u) where
   /--
@@ -1921,7 +1910,7 @@ noncomputable def c215 := @Std.Ric.size
 noncomputable def c216 := @Std.Ric.isEmpty
 
 /--
-所有元素的完整范围. Its only inhabitant is the range ，它是……的符号.
+`α` 所有元素构成的全区间。它唯一的值是区间 `*...*`，这是 `Rii.mk` 的记法。
 -/
 structure c217 (α : Type u) : Type where
 
@@ -1953,36 +1942,36 @@ noncomputable def c221 := @Std.Rii.size
 noncomputable def c222 := @Std.Rii.isEmpty
 
 /--
-这个类型类提供了函数 `succ? : α → Option α`，用于计算 `α` 元素的后继，如果不存在后继则返回无。它还提供了函数 `succMany?`，用于计算第 `n` 个后继。
+此类型类提供函数 `succ? : α → Option α`，用于计算 `α` 中元素的后继；不存在后继时返回 none。
+它还提供函数 `succMany?`，用于计算第 `n` 个后继。
 
-`succ?` 预计是无环的：没有元素是其自身的传递后继。 如果 `α` 是有序的，那么每个比 `a : α` 大的元素都应该是 `a` 的传递后继。 这些属性以及 `succ?` 与 `succMany?` 的兼容性被编码在类型类 `LawfulUpwardEnumerable`、`LawfulUpwardEnumerableLE` 和 `LawfulUpwardEnumerableLT` 中。
+`succ?` 应当无环：任何元素都不是自身的传递后继。如果 `α` 有序，则每个大于 `a : α` 的元素都应是 `a` 的传递后继。这些性质以及 `succ?` 与 `succMany?` 的兼容性由类型类 `LawfulUpwardEnumerable`、`LawfulUpwardEnumerableLE` 和 `LawfulUpwardEnumerableLT` 编码。
 
 -/
 class c223 (α : Type u) where
   /--
-  将 `α` 的元素映射到它们的后继，如果不存在后继则为无。
+  将 `α` 中的元素映射到其后继；若不存在后继，则返回空值。
   -/
   succ? : α → Option α
   /--
-  将 `α` 的元素映射到它们的第 `n` 个后继，如果没有后继则为无。
+  将 `α` 中的元素映射到其第 `n` 个后继；若该后继不存在，则返回空值。
   这在语义上应表现得像重复应用 `succ?`，但可能更高效。
-  
+
   `LawfulUpwardEnumerable` 确保与 `succ?` 的兼容性。
-  
+
   如果在 `UpwardEnumerable` 实例中没有提供其他实现，`succMany?` 会重复应用 `succ?`。
   -/
   succMany? : Nat → α → Option α
 
 /--
-根据, 小于或等于 if 是 or a transitive
-successor of .
+按照 `UpwardEnumerable.LE`，`a` 小于等于 `b`，当且仅当 `b` 等于 `a` 或是 `a` 的传递后继。
 -/
 noncomputable def c224 := @Std.PRange.UpwardEnumerable.LE
 
 /--
-根据, 小于 if 是…的适当及物后继者. 'Proper' means that 是-th successor of ，在哪里.
+按照 `UpwardEnumerable.LT`，`a` 小于 `b`，当且仅当 `b` 是 `a` 的真传递后继。“真”表示 `b` 是第 `n` 个后继，起点为 `a`，其中 `n > 0`。
 
-给定 `LawfulUpwardEnumerable α`，`α` 中没有元素小于它自身。
+给定 `LawfulUpwardEnumerable α`，`α` 中没有元素小于自身。
 -/
 noncomputable def c225 := @Std.PRange.UpwardEnumerable.LT
 
@@ -1991,16 +1980,16 @@ noncomputable def c225 := @Std.PRange.UpwardEnumerable.LT
 -/
 class c226 (α : Type u) [Std.PRange.UpwardEnumerable α] : Prop where
   /--
-  不存在循环的继承链。
+  后继链中不存在环。
   -/
   ne_of_lt : ∀ a b : α, Std.PRange.UpwardEnumerable.LT a b → a ≠ b
   /--
-  这-th successor of 是 itself. 
+  `0` 阶后继对于 `a` 就是 `a` 自身。
   -/
   succMany?_zero : ∀ a : α, Std.PRange.succMany? 0 a = some a
   /--
-  这-th successor of 是……的继任者-th successor, given that said
-  successors actually exist.
+  `n + 1` 阶后继对于 `a`，等于其第 `n` 阶后继的后继，前提是这些
+  后继确实存在。
   -/
   succMany?_add_one : ∀ (n : Nat) (a : α), Std.PRange.succMany? (n + 1) a = (Std.PRange.succMany? n a).bind Std.PRange.succ?
 
@@ -2011,8 +2000,8 @@ class c226 (α : Type u) [Std.PRange.UpwardEnumerable α] : Prop where
 -/
 class c227 (α : Type u) where
   /--
-  返回 `α` 中最小的元素，如果 `α` 为空则返回无。
-  
+  返回 `α` 中最小的元素；如果 `α` 为空，则返回空值。
+
   仅允许空类型定义 `least? := none`。如果 `α` 有序且非空，则 `least?` 的值应为根据 `α` 上的顺序确定的最小元素。
   -/
   least? : Option α
@@ -2031,7 +2020,7 @@ class c228 (α : Type u) [Std.PRange.UpwardEnumerable α] : Prop where
 -/
 class c229 (α : Type u) [Std.PRange.UpwardEnumerable α] : Prop where
   /--
-  实施 for 是单射的。
+  `UpwardEnumerable.succ?` 在 `α` 上的实现是单射函数。
   -/
   eq_of_succ?_eq : ∀ a b : α, Std.PRange.succ? a = Std.PRange.succ? b → a = b
 
@@ -2045,12 +2034,9 @@ class c230 (α : Type u) [Std.PRange.UpwardEnumerable α] : Prop where
   finite : ∀ init : α, ∃ n : Nat, Std.PRange.succMany? n init = none
 
 /--
-该类型类支持封闭下界范围的大小函数
-\（`Ric.size`，
-`Rio.size` 和
-`Rii.size`\）。
+此类型类为下界无界的区间（`Ric.size`、`Rio.size` 和 `Rii.size`）提供大小函数。
 
-返回的大小应等于 `toList` 返回的元素数量。这个条件由类型类 `LawfulHasSize` 捕获。
+返回的大小应等于 `toList` 返回的元素数量。此条件由类型类 `LawfulHasSize` 描述。
 -/
 class c231 (α : Type u) where
   /--
@@ -2059,7 +2045,7 @@ class c231 (α : Type u) where
   size : α → Nat
 
 /--
-这种类型类确保右闭区间（即，对于边界 `a` 和 `b`, `a...=b`, `a<...=b` 和 `*...=b`）始终是有限的。这是许多函数和实例的前提条件，例如 `Rcc.toList` 或 `ForIn'`。
+此类型类确保 `UpwardEnumerable α` 实例与 `≤` 兼容。在这种情况下，`UpwardEnumerable α` 完全刻画 `LE α` 实例。
 -/
 class c232 (α : Type u) [Std.PRange.UpwardEnumerable α] [LE α] : Prop where
   /--
@@ -2068,12 +2054,9 @@ class c232 (α : Type u) [Std.PRange.UpwardEnumerable α] [LE α] : Prop where
   finite : ∀ init hi : α, ∃ n : Nat, (Std.PRange.succMany? n init).elim True (fun x => ¬ x ≤ hi)
 
 /--
-该类型类支持封闭下界范围的大小函数
-\（`Rcc.size`，
-`Rco.size` 和
-`Rci.size`\）。
+此类型类为具有闭下界的区间（`Rcc.size`、`Rco.size` 和 `Rci.size`）提供大小函数。
 
-返回的大小应等于 `toList` 返回的元素数量。这个条件由类型类 `LawfulHasSize` 捕获。
+返回的大小应等于 `toList` 返回的元素数量。此条件由类型类 `LawfulHasSize` 描述。
 -/
 class c233 (α : Type u) where
   /--
@@ -2082,15 +2065,13 @@ class c233 (α : Type u) where
   size : α → α → Nat
 
 /--
-这个类型类指示如何获取元素的切片 over ranges in the index type
-，这些区间是左闭右开。
+此类型类说明如何按索引类型中的左闭右开区间取得元素切片。
 
-结果切片的类型是 `γ`。
+结果切片的类型为 `γ`。
 -/
 class c234 (α : Type u) (β : outParam (Type v)) (γ : outParam (Type w)) where
   /--
-  切片 from （包含）至 \(exclusive\).
-    
+  将 `carrier` 切取为从 `range.lower`（含）到 `range.upper`（不含）的切片。
   -/
   mkSlice : α → Std.Rco β → γ
 
@@ -2101,94 +2082,84 @@ class c234 (α : Type u) (β : outParam (Type v)) (γ : outParam (Type w)) where
 -/
 class c235 (α : Type u) (β : outParam (Type v)) (γ : outParam (Type w)) where
   /--
-  切片 from 到, both inclusive.
-    
+  将 `carrier` 切取为从 `range.lower` 到 `range.upper`（两端均含）的切片。
   -/
   mkSlice : α → Std.Rcc β → γ
 
 /--
-这个类型类指示如何获取元素的切片 over ranges in the index type
-，这些范围是左闭右开区间。
+此类型类说明如何按索引类型中左闭、右端无界的区间取得元素切片。
 
-结果切片的类型是 `γ`。
+结果切片的类型为 `γ`。
 -/
 class c236 (α : Type u) (β : outParam (Type v)) (γ : outParam (Type w)) where
   /--
-  切片 from （包含）
+  对 `carrier` 从 `range.lower`（含）开始切取。
   -/
   mkSlice : α → Std.Rci β → γ
 
 /--
-这个类型类指示如何获取元素的切片 over ranges in the index type
-，范围是开放的。
+此类型类说明如何按索引类型中的开区间取得元素切片。
 
-结果切片的类型是 `γ`。
+结果切片的类型为 `γ`。
 -/
 class c237 (α : Type u) (β : outParam (Type v)) (γ : outParam (Type w)) where
   /--
-  切片 from 到, both exclusive.
-    
+  将 `carrier` 切取为从 `range.lower` 到 `range.upper`（两端均不含）的切片。
   -/
   mkSlice : α → Std.Roo β → γ
 
 /--
-这个类型类指示如何获取元素的切片 over ranges in the index type
-，范围是左开右闭的。
+此类型类说明如何按索引类型中的左开右闭区间取得元素切片。
 
-结果切片的类型是 `γ`。
+结果切片的类型为 `γ`。
 -/
 class c238 (α : Type u) (β : outParam (Type v)) (γ : outParam (Type w)) where
   /--
-  切片 from 专属于 \(inclusive\).
-    
+  将 `carrier` 切取为从 `range.lower`（不含）到 `range.upper`（含）的切片。
   -/
   mkSlice : α → Std.Roc β → γ
 
 /--
-这个类型类指示如何获取元素的切片 over ranges in the index type
-，这些范围左端开，右端无界。
+此类型类说明如何按索引类型中左开、右端无界的区间取得元素切片。
 
-结果切片的类型是 `γ`。
+结果切片的类型为 `γ`。
 -/
 class c239 (α : Type u) (β : outParam (Type v)) (γ : outParam (Type w)) where
   /--
-  切片 from （独家）。
+  对 `carrier` 从 `range.lower`（不含）开始切取。
   -/
   mkSlice : α → Std.Roi β → γ
 
 /--
-这个类型类指示如何获取元素的切片 over ranges in the index type
-，这些范围是左边不设界、右边开区间的。
+此类型类说明如何按索引类型中左端无界、右开的区间取得元素切片。
 
-结果切片的类型是 `γ`。
+结果切片的类型为 `γ`。
 -/
 class c240 (α : Type u) (β : outParam (Type v)) (γ : outParam (Type w)) where
   /--
-  切片 up to （独家）。
+  将 `carrier` 切取到 `range.upper`（不含）为止。
   -/
   mkSlice : α → Std.Rio β → γ
 
 /--
-这个类型类指示如何获取元素的切片 over ranges in the index type
-，范围左不封闭右封闭。
+此类型类说明如何按索引类型中左端无界、右闭的区间取得元素切片。
 
-结果切片的类型是 `γ`。
+结果切片的类型为 `γ`。
 -/
 class c241 (α : Type u) (β : outParam (Type v)) (γ : outParam (Type w)) where
   /--
-  切片 `carrier` 到 `range.upper`（包括在内）。
+  将 `carrier` 切取到 `range.upper`（含）为止。
   -/
   mkSlice : α → Std.Ric β → γ
 
 /--
-这个类型类指示如何获取元素的切片 over the full range in the
-index type .
+此类型类说明如何按索引类型中的全区间取得元素切片。
 
-结果切片的类型是 `γ`。
+结果切片的类型为 `γ`。
 -/
 class c242 (α : Type u) (β : outParam (Type v)) (γ : outParam (Type w)) where
   /--
-  切片 `carrier` 没有界限。
+  切取整个 `carrier`，不设边界。
   -/
   mkSlice : α → Std.Rii β → γ
 
