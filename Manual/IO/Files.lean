@@ -22,7 +22,7 @@ set_option linter.unusedVariables false
 
 #doc (Manual) "文件、文件句柄与流" =>
 %%%
-tag := "Files___-File-Handles___-and-Streams"
+tag := "Lean-__________________--IO--Files___-File-Handles___-and-Streams"
 file := "Files___-File-Handles___-and-Streams"
 %%%
 
@@ -56,7 +56,7 @@ Lean 在所有受支持的平台上提供一致的文件系统 API。
   相对路径不以根目录开头，需要把另一个目录作为起点。
   除普通目录外，路径还可以包含特殊目录名 `.` 和 `..`：前者指其所在目录，后者指路径中的上一级目录。
 
-  文件名乃至路径可以一个或多个标识文件类型的{deftech (key := "extensions")}_扩展名_结尾。
+  文件名乃至路径可以以一个或多个标识文件类型的{deftech (key := "extensions")}_扩展名_结尾。
   扩展名由字符 {name}`System.FilePath.extSeparator` 分隔。
   在某些平台上，可执行文件具有特殊扩展名（{name}`System.FilePath.exeExtension`）。
 

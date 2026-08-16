@@ -23,7 +23,7 @@ set_option linter.unusedVariables false
 
 #doc (Manual) "可变引用" =>
 %%%
-tag := "Mutable-References"
+tag := "Lean-__________________--IO--Mutable-References"
 file := "Mutable-References"
 %%%
 
@@ -50,7 +50,7 @@ tag := "mutable-st-references"
 
 {lean}`ST` 单子是 {lean}`IO` 的受限版本，其中可变状态是唯一的副作用，且可变引用不能逃逸。{margin}[{lean}`ST` 最早由 {citehere launchbury94}[] 描述。]
 {lean}`ST` 接受一个从不用于归类任何项的类型参数。
-允许从 {lean}`ST` 中逃逸的 {lean}`runST` 函数要求：传给它的 {lean}`ST` 动作必须能把该类型参数实例化为_任意_类型。
+{lean}`runST` 可执行 {lean}`ST` 动作并将其纯结果带出；它要求传入的动作能把该类型参数实例化为_任意_类型。
 这个未知类型只作为函数参数存在，因此类型被它“标记”的值无法逃出其作用域。
 
 {zhdocstring ST Manual.ZhDocString.IO.c147}

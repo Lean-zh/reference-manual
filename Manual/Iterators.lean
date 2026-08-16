@@ -275,8 +275,8 @@ tag := "Lean-__________________--Iterators--Iterator-Definitions--Finite-and-Pro
 
 {zhdocstring Productive Manual.ZhDocString.Iterators.c012}
 
-Lean 标准库提供了许多遍历迭代器的函数。这些消费者函数通常不会
-对底层迭代器作任何假设。尤其是，对某些迭代器而言，这类函数可能永远运行下去。
+Lean 标准库提供了许多遍历迭代器的函数。
+这些消费者函数通常不会对底层迭代器作任何假设。尤其是，对某些迭代器而言，这类函数可能永远运行下去。
 
 有时，确保函数确实终止至关重要。
 在这些情况下，组合子 {name}`Iter.ensureTermination` 会得到一种迭代器，它提供保证终止的消费者变体。
@@ -363,8 +363,7 @@ def f : IO Unit := do
   for x in Nats.iter do
     IO.println s!"{x}"
 ```
-该函数永不终止，它会按递增顺序打印所有自然数，一个接
-一个。
+该函数永不终止，它会按递增顺序逐个打印所有自然数。
 :::
 
 :::paragraph
@@ -522,8 +521,8 @@ def abc : Triple Char := ⟨'a', 'b', 'c'⟩
 #['a', 'b', 'c']
 ```
 
-一般而言，`Iter.toArray` 可能永远运行。可以通过构造 `Finite (Triple Char) Id` 实例来
-证明 `abc` 是有限的，并证明上例会在有限步后终止。
+一般而言，`Iter.toArray` 可能永远运行。
+可以通过构造 `Finite (Triple Char) Id` 实例来证明 `abc` 是有限的，并证明上例会在有限步后终止。
 最简单的做法是从 {name}`TriplePos.done` 开始，反向推至 {name}`TriplePos.fst`，依次证明每个位置都只有有限长的后继链：
 
 ```lean
@@ -1016,7 +1015,7 @@ it            ---a--b--c--d-e--⊥
 it.filter     ---a-----c-------⊥
 ```
 该图需要一条说明：
-> （假定 `f a = f c = true` 且 `f b = f d = d e = false`）
+> （假定 `f a = f c = true` 且 `f b = f d = f e = false`）
 :::
 :::paragraph
 {name}`Iter.zip` 的弹珠图展示了消费组合后的迭代器时如何消费底层迭代器：

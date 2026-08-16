@@ -57,7 +57,7 @@ axiom α : Type
 
 # 逻辑模型
 %%%
-tag := "Logical-Model"
+tag := "Lean-__________________--IO--Logical-Model"
 file := "Logical-Model"
 %%%
 
@@ -110,7 +110,7 @@ tag := "io-monad"
 
 {zhdocstring IO Manual.ZhDocString.IO.c002}
 
-{lean}`IO` 是 {lean}`EIO` 的一个实例，其中错误类型是一个参数。
+{lean}`IO` 是 {lean}`EIO` 在错误类型取 {lean}`IO.Error` 时的特例。
 具体而言，{lean}`IO` 被定义为 {lean}`EIO IO.Error`。
 在某些场合（例如绑定非 Lean 库），为 {lean}`EIO` 使用自定义错误类型会很方便；这样可确保错误在这些动作与其他 {lean}`IO` 动作的边界处得到处理。
 
@@ -288,7 +288,7 @@ tag := "Lean-__________________--IO--Processes--Running-Processes"
 
 在 Lean 中运行其他程序主要有三种方式：
 
- 1. {lean}`IO.Process.run` 同步执行另一个程序，并以字符串形式返回其标准输出。若该进程以非 `0` 错误码退出，它会抛出错误。
+ 1. {lean}`IO.Process.run` 同步执行另一个程序，并以字符串形式返回其标准输出。若该进程以非 `0` 退出码退出，它会抛出错误。
  2. {lean}`IO.Process.output` 以空标准输入同步执行另一个程序，并捕获其标准输出、标准错误和退出码。即使进程执行失败，也不会抛出错误。
  3. {lean}`IO.Process.spawn` 异步启动另一个程序，并返回一个可访问该进程标准输入流、标准输出流和标准错误流的数据结构。
 
@@ -356,7 +356,7 @@ There are 90 four-digit palindromes.
 {zhdocstring IO.Process.output Manual.ZhDocString.IO.c033}
 
 ::::example "检查退出码" (file := "Checking Exit Codes")
-运行时，该程序先对一个不存在的文件调用 `cat`，并显示由此得到的错误码。
+运行时，该程序先对一个不存在的文件调用 `cat`，并显示由此得到的退出码。
 然后，它使用 Unix 工具 `cat` 将自身源代码连续拼接两次。
 
 :::ioExample
@@ -521,7 +521,7 @@ There are 90 four-digit palindromes.
 
 # 随机数
 %%%
-tag := "Random-Numbers"
+tag := "Lean-__________________--IO--Random-Numbers"
 file := "Random-Numbers"
 %%%
 

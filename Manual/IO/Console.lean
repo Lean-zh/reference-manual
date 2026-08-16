@@ -22,7 +22,7 @@ set_option linter.unusedVariables false
 
 #doc (Manual) "控制台输出" =>
 %%%
-tag := "Console-Output"
+tag := "Lean-__________________--IO--Console-Output"
 file := "Console-Output"
 %%%
 
