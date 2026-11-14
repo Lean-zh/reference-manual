@@ -1,16 +1,11 @@
-<!-- Generated from commit 45ec05042b9e2c6e91cc047cbdab71acfa685358 at 2026-08-16T16:54:18Z -->
+<!-- Generated from commit d4c75b53cfe67fb366adef337d27fdb70aa7c091 at 2026-11-14T18:36:55Z -->
 <!DOCTYPE html>
-<html>
-  <head>
-    <script>
-      (function(){
+<html><head><script>(function(){
   const {protocol:proto, host:hostName, pathname:path, search:srch, hash:hsh} = window.location;
   if (!(path.endsWith("/") || path.endsWith(".html"))) {
     window.location.replace(`${proto}//${hostName}${path}/${srch}${hsh}`);
   }
-})()</script>
-    <script>
-      // Enable TypeScript checking.
+})()</script><script>// Enable TypeScript checking.
 // @ts-check
 
 // Applies a saved table-of-contents width before the first paint.
@@ -34,30 +29,7 @@
         // Leave the default width in place when local storage is unavailable.
     }
 })();
-</script>
-    <base href="./../../"><meta charset="utf-8">
-    <meta name="viewport" content="height=device-height, width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
-    <title>Lean 4.0.0-m4 (2022-03-27)</title><link rel="stylesheet" href="book.css">
-    <link rel="stylesheet" href="verso-vars.css">
-    <script src="https://cdn.jsdelivr.net/npm/marked@11.1.1/marked.min.js" integrity="sha384-zbcZAIxlvJtNE3Dp5nxLXdXtXyxwOdnILY1TDPVmKFhl4r4nSUG1r8bcFXGVa4Te" crossorigin="anonymous"></script>
-    <script defer="defer" src="-verso-search/elasticlunr.min.js"></script>
-    <script defer="defer" src="-verso-search/fuzzysort.min.js"></script>
-    <script defer="defer" src="-verso-search/searchIndex.js"></script>
-    <script defer="defer" src="-verso-search/search-config.js"></script>
-    <script type="module" src="-verso-search/search-init.js"></script>
-    <link rel="stylesheet" href="-verso-search/search-box.css">
-    <link rel="stylesheet" href="-verso-search/search-page.css">
-    <link rel="stylesheet" href="-verso-search/search-highlight.css">
-    <link rel="stylesheet" href="-verso-search/domain-display.css">
-    <script src="-verso-search/search-highlight.js" defer="defer"></script>
-    <script src="toc-resize.js" defer="defer"></script>
-    <script src="-verso-data/katex/katex.js"></script>
-    <script src="-verso-data/katex/math.js"></script>
-    <script src="-verso-data/popper.min.js"></script>
-    <script src="-verso-data/tippy-bundle.umd.min.js"></script>
-    <link rel="stylesheet" href="-verso-data/tippy-border.css">
-    <link rel="stylesheet" href="-verso-data/katex/katex.css">
-    <style>
+</script><base href="./../../"/><meta charset="utf-8"/><meta name="viewport" content="height=device-height, width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1"/><title>Lean 4.0.0-m4 (2022-03-27)</title><link rel="stylesheet" href="book.css"/><link rel="stylesheet" href="verso-vars.css"/><script src="https://cdn.jsdelivr.net/npm/marked@11.1.1/marked.min.js" integrity="sha384-zbcZAIxlvJtNE3Dp5nxLXdXtXyxwOdnILY1TDPVmKFhl4r4nSUG1r8bcFXGVa4Te" crossorigin="anonymous"></script><script defer="defer" src="-verso-search/elasticlunr.min.js"></script><script defer="defer" src="-verso-search/fuzzysort.min.js"></script><script defer="defer" src="-verso-search/searchIndex.js"></script><script defer="defer" src="-verso-search/search-config.js"></script><script type="module" src="-verso-search/search-init.js"></script><link rel="stylesheet" href="-verso-search/search-box.css"/><link rel="stylesheet" href="-verso-search/search-page.css"/><link rel="stylesheet" href="-verso-search/search-highlight.css"/><link rel="stylesheet" href="-verso-search/domain-display.css"/><script src="-verso-search/search-highlight.js" defer="defer"></script><script src="toc-resize.js" defer="defer"></script><script src="-verso-data/katex/katex.js"></script><script src="-verso-data/katex/math.js"></script><script src="-verso-data/popper.min.js"></script><script src="-verso-data/tippy-bundle.umd.min.js"></script><link rel="stylesheet" href="-verso-data/tippy-border.css"/><link rel="stylesheet" href="-verso-data/katex/katex.css"/><style>
 .field-category > :first-child {
 }
 
@@ -100,6 +72,954 @@
   transition: visibility 0s;
 }
   </style><style>
+.marginalia-note {
+  box-sizing: border-box;
+  padding: 0.5rem;
+  font-family: var(--verso-text-font-family);
+  font-size: 1rem;
+  font-weight: normal;
+  font-style: normal;
+  line-height: 1.45;
+  color: var(--verso-text-color);
+  text-align: left;
+  white-space: normal;
+}
+
+/* Neutralize the user-agent popover box when the note is participating in document layout.
+   The user agent makes popovers scroll containers, which would clip the number that ::before
+   places to the left of the note. */
+.marginalia-note[popover] {
+  border: 0;
+  background: transparent;
+  color: inherit;
+  box-shadow: none;
+  overflow: visible;
+}
+
+/*
+The margin-note layout responds to the width of <main>, not the viewport, because the
+ToC is resizable: a wider ToC leaves less room beside the text for notes. <main> is a
+query container (see Html/Style.lean), so the container queries below track the actual
+content width.
+
+There are two "in the margin" regimes, split at the same width where the content stops
+being left-aligned and becomes centered (1112px and 1212px of content width; at the
+default ToC width these are the old 1400px and 1500px viewport breakpoints):
+
+  * While the content is left-aligned there is a large area to its right, so a fixed
+    13rem note with a fixed 16rem overhang fits comfortably.
+  * Once the content is centered the note must fit the symmetric right gap, whose width
+    is (content - text column) / 2. A fixed overhang would overflow the page for content
+    widths just above the centering threshold, so the note and its overhang are sized in
+    container units, which always fit that gap.
+*/
+
+/* Narrow viewport (e.g. phone): the ToC is hidden and the note spans the text column. */
+@media screen and (width <= 700px) {
+  .marginalia-note[popover] {
+    position: static;
+    float: left;
+    clear: left;
+    width: 90%;
+    margin: 1rem 5%;
+  }
+}
+
+/* Wider than a phone: by default float the note at the right of the text column,
+   overlapping the content. The container queries below lift it into the true margin
+   once there is room. */
+@media screen and (min-width: 701px) {
+  .marginalia-note[popover] {
+    display: block;
+    position: relative;
+    inset: auto;
+    float: right;
+    clear: right;
+    width: 40%;
+    margin: 1rem 0;
+    margin-left: 10%;
+  }
+
+  /* The first note moved immediately before a barrier starts at the barrier's position. */
+  .marginalia-note[data-verso-hoisted="before"]:not(.marginalia-note + .marginalia-note) {
+    margin-top: 0;
+  }
+}
+
+/* Left-aligned content: a fixed-size note in the wide area to its right. */
+@container main (width >= 1112px) {
+  .marginalia-note[popover] {
+    float: right;
+    clear: right;
+    width: 13rem;
+    margin: 1rem -16rem 0 0;
+  }
+}
+
+/* Centered content: size the note in container units so it always fits the symmetric
+   right gap. The threshold matches the content-centering threshold in Html/Style.lean,
+   so the fixed-overhang note above is only ever used while the content is left-aligned.
+   The overhang (18cqi) stays below the gap, (100cqi - text column) / 2, for every
+   content width at which the content is centered. */
+@container main (width >= 1212px) {
+  .marginalia-note[popover] {
+    width: 15cqi;
+    margin-right: -18cqi;
+  }
+}
+
+.marginalia-reference.marginalia-highlight, .marginalia-note.marginalia-highlight {
+  background-color: var(--verso-selected-color, #def);
+  border-radius: 0.2rem;
+}
+
+/* The counter must be established inside <main>, whose container declaration (see
+   Html/Style.lean) applies style containment: a counter established outside the
+   containment boundary cannot be incremented by the notes within it. */
+.content-wrapper {
+  counter-reset: margin-note-reference-counter margin-note-body-counter;
+}
+
+.content-wrapper::after {
+  content: "";
+  display: block;
+  clear: both;
+  height: 1rem;
+}
+
+.marginalia-reference {
+  counter-increment: margin-note-reference-counter;
+}
+.marginalia-note {
+  counter-increment: margin-note-body-counter;
+}
+.marginalia-note::before {
+  content: counter(margin-note-body-counter) ".";
+  position: absolute;
+  vertical-align: baseline;
+  font-size: 0.9em;
+  font-weight: bold;
+  left: -3rem;
+  width: 3rem;
+  text-align: right;
+}
+.marginalia-marker::after {
+  content: counter(margin-note-reference-counter);
+  vertical-align: super;
+  font-size: 0.7em;
+  font-weight: bold;
+  margin-right: 0.5em;
+}
+
+.marginalia-marker-mobile {
+  display: none;
+}
+
+.marginalia-accessible-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@supports selector(:popover-open) {
+  @media screen and (width <= 700px) {
+    .marginalia-marker-desktop {
+      display: none;
+    }
+
+    .marginalia-marker-mobile {
+      display: inline;
+      appearance: none;
+      border: 0;
+      padding: 0;
+      color: inherit;
+      background: transparent;
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .marginalia-marker-mobile:focus-visible {
+      outline: 2px solid currentColor;
+      outline-offset: 2px;
+    }
+
+    .marginalia-note[popover] {
+      position: fixed;
+      float: none;
+      inset: 50% auto auto 50%;
+      width: calc(100vw - 2rem);
+      max-width: min(32rem, calc(100vw - 2rem));
+      max-height: calc(100vh - 2rem);
+      margin: 0;
+      transform: translate(-50%, -50%);
+      overflow: auto;
+      border: 1px solid currentColor;
+      background: var(--verso-code-background-color, white);
+      color: inherit;
+      box-shadow: 0 0.5rem 2rem rgb(0 0 0 / 30%);
+    }
+
+    .marginalia-note[popover]::before {
+      content: none;
+    }
+
+    .marginalia-note[popover]::backdrop {
+      background: rgb(0 0 0 / 18%);
+    }
+  }
+}
+</style><style>
+
+.hl.lean {
+  white-space: pre;
+  font-weight: normal;
+  font-style: normal;
+  font-size: inherit;
+}
+
+.hl.lean .keyword {
+  color: var(--verso-code-keyword-color,);
+  font-weight: var(--verso-code-keyword-weight, bold);
+  font-style: var(--verso-code-keyword-style, normal);
+  font-family: var(--verso-code-keyword-font-family,);
+}
+
+.hl.lean .const {
+  color: var(--verso-code-const-color,);
+  font-weight: var(--verso-code-const-weight, normal);
+  font-style: var(--verso-code-const-style, normal);
+  font-family: var(--verso-code-const-font-family,);
+}
+
+.hl.lean .var {
+  color: var(--verso-code-var-color,);
+  font-weight: var(--verso-code-var-weight, normal);
+  font-style: var(--verso-code-var-style, italic);
+  font-family: var(--verso-code-var-font-family,);
+
+  position: relative;
+}
+
+.hl.lean .literal, .hl.lean .unknown {
+  color: var(--verso-code-color,);
+  font-weight: normal;
+  font-style: normal;
+  font-family: var(--verso-code-font-family,);
+}
+
+/* These lexically-classified token kinds default to the `.unknown` appearance. The rule follows
+   `.const` so it wins for the `anon-ctor` tokens, which also carry the `const` class. */
+.hl.lean .anon-ctor,
+.hl.lean .number,
+.hl.lean .char,
+.hl.lean .comment,
+.hl.lean .punctuation,
+.hl.lean .delim,
+.hl.lean .wildcard {
+  color: var(--verso-code-color,);
+  font-weight: normal;
+  font-style: normal;
+  font-family: var(--verso-code-font-family,);
+}
+
+.hover-container {
+  width: 0;
+  height: 0;
+  position: relative;
+  display: inline;
+}
+
+.hl.lean a {
+  color: inherit;
+  text-decoration: currentcolor underline dotted;
+}
+
+.hl.lean a:hover {
+  text-decoration: currentcolor underline solid;
+}
+
+/* Links inside tooltips show their underline only when hovered. */
+.tippy-box .hl.lean a {
+  text-decoration: none;
+}
+
+.hl.lean .hover-info {
+  white-space: normal;
+}
+
+.hl.lean .token .hover-info {
+  display: none;
+  position: absolute;
+  color: var(--verso-tooltip-color, black);
+  background-color: var(--verso-tooltip-bg-color, #e5e5e5);
+  border: 1px solid var(--verso-tooltip-border-color, black);
+  padding: 0.5rem;
+  z-index: 300;
+}
+
+.hl.lean .hover-info.messages {
+  max-height: 10rem;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-gutter: stable;
+  padding: 0 0.5rem 0 0;
+  display: block;
+}
+
+.hl.lean .hover-info code {
+  white-space: pre-wrap;
+  background: none;
+}
+
+.hl.lean .hover-info code:not(.verso-message) {
+  color: var(--verso-tooltip-color, black);
+}
+
+.hl.lean .hover-info.messages > code {
+  padding: 0.5rem;
+  display: block;
+  width: fit-content;
+}
+
+.hl.lean .hover-info.messages > code:only-child {
+  margin: 0;
+}
+
+.hl.lean .hover-info.messages > code {
+  margin: 0.1rem;
+}
+
+.hl.lean .hover-info.messages > code:not(:first-child) {
+  margin-top: 0rem;
+}
+
+.hl.lean {
+}
+
+.hl.lean.block {
+  display: block;
+}
+
+.hl.lean.inline {
+  display: inline;
+  white-space: pre-wrap;
+}
+
+.hl.lean * {
+}
+
+.hl.lean .token {
+  transition: all 0.25s; /* Slight fade for highlights */
+}
+
+@media (hover: hover) {
+  /* Hovered content nested in a collapsed tactic region keeps its plain background: the
+     region's proof state is the tooltip that appears there, and its label is what
+     highlights. `:where` keeps the exclusion out of the specificity computation. */
+  .hl.lean .token.binding-hl,
+  .hl.lean :is(.literal, .token.typed, .token[data-verso-hover]):hover:not(:where(.tactic:has(> .tactic-toggle:not(:checked)) > label *)) {
+    background-color: var(--verso-code-hover-bg-color, #eeeeee);
+    border-radius: 2px;
+    transition: none;
+  }
+
+  /* Within a hovered message span, token hover backgrounds are removed so the span's own
+     hover background shows across the whole span. The exception is a hovered documented
+     token, which keeps its background because its tooltip is the one shown. */
+  .hl.lean .has-info:hover .token.binding-hl:not(:hover),
+  .hl.lean .has-info:hover .token.binding-hl:not([data-verso-hover]),
+  .hl.lean .has-info:hover .literal:hover:not([data-verso-hover]),
+  .hl.lean .has-info:hover .token.typed:hover:not([data-verso-hover]) {
+    background-color: transparent;
+  }
+}
+
+
+.hl.lean .has-info .token:not(.tactic-state):not(.tactic-state *), .hl.lean .has-info .inter-text:not(.tactic-state):not(.tactic-state *) {
+  text-decoration-style: wavy;
+  text-decoration-line: underline;
+  text-decoration-thickness: from-font;
+  text-decoration-skip-ink: none;
+}
+
+/*
+The underline color comes from the nearest enclosing message span: each severity's span rule
+sets `--verso--region-indicator-color`, which inherits, so a region nested inside one of
+another severity keeps its own indicator color.
+*/
+.hl.lean .has-info :not(.tactic-state):not(.tactic-state *) {
+  text-decoration-color: var(--verso--region-indicator-color);
+}
+
+.hl.lean .has-info .hover-info {
+  display: none;
+  position: absolute;
+  transform: translate(0.25rem, 0.3rem);
+  color: var(--verso-tooltip-color, black);
+  border: 1px solid var(--verso-tooltip-border-color, black);
+  padding: 0.5rem;
+  z-index: 400;
+  text-align: left;
+}
+
+.hl.lean .has-info.error {
+  --verso--region-indicator-color: var(--verso-error-indicator-color, #ff0000);
+  --verso--region-hover-color: var(--verso-code-error-hover-color, currentcolor);
+  --verso--region-hover-bg-color: var(--verso-code-error-hover-bg-color, #ffb3b3);
+  color: var(--verso-code-error-color, currentcolor);
+  background-color: var(--verso-code-error-bg-color, transparent);
+}
+
+/*
+The hover highlight follows the tooltip: a message span highlights only when its own tooltip
+is the one that appears. When a hovered nested message span, a hovered documented token, or
+a hovered collapsed tactic label shows its own tooltip instead, the message span does not
+highlight. A span nested in a collapsed tactic region likewise stays plain, because hovering
+it shows the region's proof state; `:where` keeps that exclusion out of the specificity
+computation.
+
+The hover colors come from `--verso--region-hover-color` and `--verso--region-hover-bg-color`,
+which each severity's span rule sets. This keeps the hover conditions in this one rule, and
+because the properties inherit, a region nested inside one of another severity keeps its own
+hover colors.
+*/
+@media (hover: hover) {
+  .hl.lean .has-info:hover:not(:has(.has-info:hover)):not(:has([data-verso-hover]:hover)):not(:has(.tactic > label:hover + .tactic-toggle:not(:checked))):not(:where(.tactic:has(> .tactic-toggle:not(:checked)) > label *)) {
+    color: var(--verso--region-hover-color, currentcolor);
+    background-color: var(--verso--region-hover-bg-color, transparent);
+  }
+}
+
+.hl.lean .hover-info.messages > code.error {
+  background-color: var(--verso-tooltip-error-bg-color, #e5e5e5);
+  border-left: 0.2rem solid var(--verso-tooltip-error-border-color, #ffb3b3);
+}
+
+/*
+A tooltip that shows only messages of the box's own severity leaves severity styling to the
+box itself. When messages of several severities share the tooltip, or a `mixed` tooltip
+combines messages with other content (such as documentation), each message keeps its
+severity accent to distinguish them.
+*/
+.tippy-box .hl.lean.mixed > .hover-info.messages {
+  margin-bottom: 0.5rem;
+}
+
+.tippy-box[data-theme~='error'] .hl.lean:not(.mixed) .hover-info.messages:not(:has(> code.warning)):not(:has(> code.information)) > code.error {
+  background: none;
+  border: none;
+}
+
+.error .verso-message, .error .verso-message .token, .error .verso-message label {
+  color: var(--verso-message-error-color, #cc0000);
+}
+
+.error .verso-message .case-label:has(input[type="checkbox"])::before {
+  background-color: var(--verso-message-error-color, #cc0000) !important;
+}
+
+.hl.lean .has-info.warning {
+  --verso--region-indicator-color: var(--verso-warning-indicator-color, #e7a71d);
+  --verso--region-hover-color: var(--verso-code-warning-hover-color, currentcolor);
+  --verso--region-hover-bg-color: var(--verso-code-warning-hover-bg-color, #ffd580);
+  color: var(--verso-code-warning-color, currentcolor);
+  background-color: var(--verso-code-warning-bg-color, transparent);
+}
+
+.hl.lean .hover-info.messages > code.warning {
+  background-color: var(--verso-tooltip-warning-bg-color, #e5e5e5);
+  border-left: 0.2rem solid var(--verso-tooltip-warning-border-color, #ffd580);
+}
+
+.lean-output {
+  border-left: 0.2em solid transparent;
+  padding: 0 0 0 0.5em;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.lean-output.error {
+  border-color: var(--verso-output-error-color, var(--verso-error-indicator-color, #ff0000));
+}
+
+.lean-output.information {
+  border-color: var(--verso-output-info-color, var(--verso-info-indicator-color, #4777ff));
+}
+
+.lean-output.warning {
+  border-color: var(--verso-output-warning-color, var(--verso-warning-indicator-color, #e7a71d));
+}
+
+.tippy-box[data-theme~='warning'] .hl.lean:not(.mixed) .hover-info.messages:not(:has(> code.error)):not(:has(> code.information)) > code.warning {
+  background: none;
+  border: none;
+}
+
+.warning .verso-message, .warning .verso-message .token, .warning .verso-message label {
+  color: var(--verso-message-warning-color, currentcolor);
+}
+
+.warning .verso-message .case-label:has(input[type="checkbox"])::before {
+  background-color: var(--verso-message-warning-color, currentcolor) !important;
+}
+
+
+.hl.lean .has-info.information {
+  --verso--region-indicator-color: var(--verso-info-indicator-color, #4777ff);
+  --verso--region-hover-color: var(--verso-code-info-hover-color, currentcolor);
+  --verso--region-hover-bg-color: var(--verso-code-info-hover-bg-color, #4777ff);
+  color: var(--verso-code-info-color, currentcolor);
+  background-color: var(--verso-code-info-bg-color, transparent);
+}
+
+
+.hl.lean .hover-info.messages > code.information {
+  background-color: var(--verso-tooltip-info-bg-color, #e5e5e5);
+  border-left: 0.2rem solid var(--verso-tooltip-info-border-color, #4777ff);
+}
+
+.tippy-box[data-theme~='info'] .hl.lean:not(.mixed) .hover-info.messages:not(:has(> code.error)):not(:has(> code.warning)) > code.information {
+  background: none;
+  border: none;
+}
+
+.information .verso-message, .information .verso-message .token, .information .verso-message label {
+  color: var(--verso-message-info-color, currentcolor);
+}
+
+.information .verso-message .case-label:has(input[type="checkbox"])::before {
+  background-color: var(--verso-message-info-color, currentcolor) !important;
+}
+
+.hl.lean div.docstring {
+  font-family: var(--verso-text-font-family, sans-serif);
+  white-space: normal;
+  max-width: calc(min(40rem, 90vw));
+  width: max-content;
+}
+
+.hl.lean div.docstring > :last-child {
+  margin-bottom: 0;
+}
+
+.hl.lean div.docstring > :first-child {
+  margin-top: 0;
+}
+
+.hl.lean .hover-info .sep {
+  display: block;
+  width: auto;
+  margin-left: 1rem;
+  margin-right: 1rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  padding: 0;
+  height: 1px;
+  border-top: 1px solid var(--verso-tooltip-separator-color, #ccc);
+}
+
+.hl.lean code {
+  font-family: var(--verso-code-font-family);
+}
+
+.hl.lean .tactic-state {
+  display: none;
+  position: relative;
+  width: fit-content;
+  border: 1px solid var(--verso-tactic-state-border-color, #888888);
+  border-radius: 0.1rem;
+  padding: 0.5rem;
+  font-family: sans-serif;
+  color: var(--verso-tactic-state-color, black);
+  background-color: var(--verso-tactic-state-bg-color, white);
+}
+
+.hl.lean.popup .tactic-state {
+  position: static;
+  display: block;
+  width: auto;
+  border: none;
+  padding: 0.5rem;
+  font-family: sans-serif;
+  background-color: var(--verso-tactic-state-bg-color, white);
+}
+
+
+.hl.lean .tactic {
+  position: relative;
+  display: inline;
+  vertical-align: top;
+  /* Without these, mobile Safari will start making font sizes inconsistent when its text size adjustment feature is triggered.*/
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+.hl.lean .tactic:has(> .tactic-toggle:checked) {
+  display: inline-grid;
+  grid-template-columns: 1fr;
+}
+
+.hl.lean .tactic-toggle:checked ~ .tactic-state {
+  display: inline-block;
+  vertical-align: top;
+  grid-row: 2;
+  justify-self: start;
+}
+
+.hl.lean .tactic > label {
+  position: relative;
+  grid-row: 1;
+  display: inline;
+}
+
+@media (hover: hover) {
+  /* Highlight a region on hover only when its own toggle is unchecked, and only the innermost
+     hovered region: `label:hover` bubbles to ancestor labels, so suppress the highlight on a region
+     whose label contains a more deeply nested hovered tactic label. The region's proof state is the
+     tooltip for everything else in its label, so the label keeps its highlight while any of that
+     content is hovered. */
+  .hl.lean .tactic:has(> .tactic-toggle:not(:checked)) > label:hover:not(:has(.tactic > label:hover)) {
+    background-color: var(--verso-code-hover-bg-color, #eeeeee);
+  }
+}
+
+.hl.lean .tactic-toggle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  height: 0;
+  width: 0;
+  z-index: -10;
+}
+
+.hl.lean .tactic > label::after {
+  content: "";
+  border: 1px solid var(--verso-tactic-toggle-color, #bbbbbb);
+  /* These need to be em, not rem, to scale with the font */
+  border-radius: 1em;
+  height: 0.25em;
+  vertical-align: middle;
+  width: 0.6em;
+  margin-left: 0.1em;
+  margin-right: 0.1em;
+  display: inline-block;
+  transition: all 0.5s;
+}
+
+/*
+@media (hover: hover) {
+  .hl.lean .tactic > label:hover::after {
+    border: 1px solid #aaaaaa;
+    background-color: #aaaaaa;
+    transition: all 0.5s;
+  }
+}
+*/
+
+.hl.lean .tactic > label:has(+ .tactic-toggle:checked)::after {
+  border: 1px solid var(--verso-tactic-toggle-checked-color, #999999);
+  background-color: var(--verso-tactic-toggle-checked-color, #999999);
+  transition: all 0.5s;
+}
+
+.hl.lean .tactic-state .goal + .goal {
+  margin-top: 1.5em;
+}
+
+/*
+Some CSS frameworks customize details/summary in ways not compatible with Verso's output.
+*/
+
+.hl.lean details {
+  display: block !important;
+  margin: 0;
+}
+
+.hl.lean details summary {
+  display: list-item !important;
+  margin: 0;
+}
+
+.hl.lean details summary:focus {
+  outline: none;
+  outline-offset: none;
+  color: inherit;
+}
+
+.hl.lean ul > li {
+  margin-bottom: 0;
+}
+
+.hl.lean details summary::marker {
+  display: inline !important;
+}
+
+.hl.lean details > summary:first-of-type {
+  list-style-type: disclosure-closed;
+  list-style-position: inside;
+}
+
+.hl.lean details[open] > summary:first-of-type {
+  list-style-type: disclosure-open;
+}
+
+.hl.lean details summary::before, .hl.lean details summary::after {
+  content: "" !important;
+  background: none;
+  display: none;
+}
+
+.hl.lean .tactic-state summary {
+  /* These need to be em, not rem, to scale with the font */
+  margin-left: -0.5em;
+}
+
+.hl.lean .tactic-state details {
+  /* These need to be em, not rem, to scale with the font */
+  padding-left: 0.5em;
+}
+
+.hl.lean .case-label {
+  display: block;
+  position: relative;
+}
+
+.hl.lean .case-label input[type="checkbox"] {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  height: 0;
+  width: 0;
+  z-index: -10;
+}
+
+.hl.lean .case-label:has(input[type="checkbox"])::before {
+  display: inline-block;
+  background-color: currentcolor;
+  content: ' ';
+  transition: ease 0.2s;
+  margin-right: 0.7em;
+  clip-path: polygon(100% 0, 0 0, 50% 100%);
+  width: 0.6em;
+  height: 0.6em;
+  vertical-align: middle;
+}
+
+.hl.lean .case-label:has(input[type="checkbox"]:not(:checked))::before {
+  transform: rotate(-90deg);
+}
+
+.hl.lean .case-label:has(input[type="checkbox"]) {
+
+}
+
+.hl.lean .case-label:has(input[type="checkbox"]:checked) {
+
+}
+
+
+.hl.lean .labeled-case > :not(:first-child) {
+  max-height: 0px;
+  display: block;
+  overflow: hidden;
+  transition: max-height 0.1s ease-in;
+  /* These need to be em, not rem, to scale with the font */
+  margin-left: 0.5em;
+  margin-top: 0.1em;
+}
+
+.hl.lean .labeled-case:has(.case-label input[type="checkbox"]:checked) > :not(:first-child) {
+  max-height: 100%;
+}
+
+
+.hl.lean .goal-name::before {
+  font-style: normal;
+  content: "case ";
+}
+
+.hl.lean .goal-name {
+  font-style: italic;
+  font-family: var(--verso-code-font-family);
+  color: inherit;
+}
+
+.hl.lean .hypotheses {
+  display: table;
+}
+
+.hl.lean .hypothesis {
+  display: table-row;
+}
+
+.hl.lean .hypothesis > * {
+  display: table-cell;
+}
+
+
+.hl.lean .hypotheses .colon {
+  text-align: center;
+  /* This needs to be em, not rem, to scale with the font */
+  min-width: 1em;
+}
+
+.hl.lean .hypotheses .name {
+  text-align: right;
+}
+
+.hl.lean .hypotheses .name,
+.hl.lean .hypotheses .type,
+.hl.lean .conclusion .type {
+  font-family: var(--verso-code-font-family);
+}
+
+.tippy-box {
+  /* Without these, mobile Safari will start making font sizes inconsistent when its text size adjustment feature is triggered.*/
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+/*
+Tippy's stylesheet paints each arrow's fill triangle with the arrow element's `color` (its
+placement-specific `::before` rules use `border-color: initial`, which is `currentcolor`),
+and its border extension paints the outline triangle with the box's border color. Setting
+`color` on the arrow therefore matches it to the tooltip background for every placement.
+*/
+.tippy-box[data-theme~='lean'] {
+  background-color: var(--verso-tooltip-bg-color, #e5e5e5);
+  color: var(--verso-tooltip-color, black);
+  border: 1px solid var(--verso-tooltip-border-color, black);
+}
+.tippy-box[data-theme~='lean'] > .tippy-arrow {
+  color: var(--verso-tooltip-bg-color, #e5e5e5);
+}
+
+.tippy-box[data-theme~='message'][data-placement^='top'] > .tippy-arrow::before {
+  border-width: 11px 11px 0;
+}
+.tippy-box[data-theme~='message'][data-placement^='top'] > .tippy-arrow::after {
+  bottom: -11px;
+  border-width: 11px 11px 0;
+}
+.tippy-box[data-theme~='message'][data-placement^='bottom'] > .tippy-arrow::before {
+  border-width: 0 11px 11px;
+}
+.tippy-box[data-theme~='message'][data-placement^='bottom'] > .tippy-arrow::after {
+  top: -11px;
+  border-width: 0 11px 11px;
+}
+.tippy-box[data-theme~='message'][data-placement^='left'] > .tippy-arrow::before {
+  border-width: 11px 0 11px 11px;
+}
+.tippy-box[data-theme~='message'][data-placement^='left'] > .tippy-arrow::after {
+  right: -11px;
+  border-width: 11px 0 11px 11px;
+}
+
+.tippy-box[data-theme~='message'][data-placement^='right'] > .tippy-arrow::before {
+  border-width: 11px 11px 11px 0;
+}
+.tippy-box[data-theme~='message'][data-placement^='right'] > .tippy-arrow::after {
+  left: -11px;
+  border-width: 11px 11px 11px 0;
+}
+
+
+
+.tippy-box[data-theme~='warning'] {
+  background-color: var(--verso-tooltip-warning-bg-color, #e5e5e5);
+  color: var(--verso-tooltip-warning-color, black);
+  border: 3px solid var(--verso-tooltip-warning-border-color, #ffd580);
+}
+.tippy-box[data-theme~='warning'] > .tippy-arrow {
+  color: var(--verso-tooltip-warning-bg-color, #e5e5e5);
+}
+
+.tippy-box[data-theme~='error'] {
+  background-color: var(--verso-tooltip-error-bg-color, #e5e5e5);
+  color: var(--verso-tooltip-error-color, black);
+  border: 3px solid var(--verso-tooltip-error-border-color, #ffb3b3);
+}
+.tippy-box[data-theme~='error'] > .tippy-arrow {
+  color: var(--verso-tooltip-error-bg-color, #e5e5e5);
+}
+
+.tippy-box[data-theme~='info'] {
+  background-color: var(--verso-tooltip-info-bg-color, #e5e5e5);
+  color: var(--verso-tooltip-info-color, black);
+  border: 3px solid var(--verso-tooltip-info-border-color, #4777ff);
+}
+.tippy-box[data-theme~='info'] > .tippy-arrow {
+  color: var(--verso-tooltip-info-bg-color, #e5e5e5);
+}
+
+.tippy-box[data-theme~='tactic'] {
+  background-color: var(--verso-tactic-state-bg-color, white);
+  color: var(--verso-tactic-state-color, black);
+  border: 1px solid var(--verso-tactic-state-border-color, #888888);
+}
+.tippy-box[data-theme~='tactic'] > .tippy-arrow {
+  color: var(--verso-tactic-state-bg-color, white);
+}
+
+.extra-doc-links {
+  list-style-type: none;
+  margin-left: 0;
+  padding: 0;
+}
+
+.extra-doc-links > li {
+  display: inline-block;
+}
+
+.extra-doc-links > li:not(:last-child)::after {
+  content: '|';
+  display: inline-block;
+  margin: 0 0.25em;
+}
+
+.verso-message .trace {
+  display: block;
+}
+
+.verso-message .trace > summary::marker {
+  color: var(--verso-text-color, black);
+}
+
+.verso-message .trace-children {
+  margin: 0;
+  padding: 0;
+}
+
+.verso-message .trace-children > li {
+  list-style-type: none;
+  margin-left: 1.5em;
+}
+
+.verso-message .trace-children > li:not(:has(.trace)) {
+  margin-left: 0;
+}
+
+.verso-message .trace-class {
+  color: color-mix(in srgb, currentColor 70%, transparent);
+  font-weight: bold;
+  margin: 0;
+  padding: 0;
+}
+
+.verso-message .text {
+  white-space: pre-wrap;
+}
+
+</style><style>
 a.elan-command {
   color: inherit;
   text-decoration: currentcolor underline dotted;
@@ -1042,6 +1962,14 @@ pre.json {
 .namedocs:has(input[data-parent-idx="49"]:checked):has(.inheritance[data-inherited-from="49"]:hover) [data-inherited-from]:not([data-inherited-from="49"]) {
   opacity: 0.5;
 }
+</style><style>
+.executable a {
+  color: inherit;
+  text-decoration: currentcolor underline dotted;
+}
+.executable a:hover {
+  text-decoration: currentcolor underline solid;
+}
 </style><style>.keyword-of .kw {
   font-weight: 500;
 }
@@ -1052,103 +1980,66 @@ pre.json {
   background-color: #eee;
   border-radius: 2px;
 }
-</style><style>#toc .split-toc > ol .syntax .keyword { font-family: var(--verso-code-font-family); font-weight: 600; }</style><style>
-.marginalia .note {
-  position: relative;
-  padding: 0.5rem;
+</style><style>
+.export-format {
+  font-family: var(--verso-code-font-family);
 }
 
-/*
-The margin-note layout responds to the width of <main>, not the viewport, because the
-ToC is resizable: a wider ToC leaves less room beside the text for notes. <main> is a
-query container (see Html/Style.lean), so the container queries below track the actual
-content width.
-
-There are two "in the margin" regimes, split at the same width where the content stops
-being left-aligned and becomes centered (1112px and 1212px of content width; at the
-default ToC width these are the old 1400px and 1500px viewport breakpoints):
-
-  * While the content is left-aligned there is a large area to its right, so a fixed
-    13rem note with a fixed 16rem overhang fits comfortably.
-  * Once the content is centered the note must fit the symmetric right gap, whose width
-    is (content - text column) / 2. A fixed overhang would overflow the page for content
-    widths just above the centering threshold, so the note and its overhang are sized in
-    container units, which always fit that gap.
-*/
-
-/* Narrow viewport (e.g. phone): the ToC is hidden and the note spans the text column. */
-@media screen and (width <= 700px) {
-  .marginalia .note {
-    float: left;
-    clear: left;
-    width: 90%;
-    margin: 1rem 5%;
-  }
+figure.export-format {
+  margin: 1rem 0;
 }
 
-/* Wider than a phone: by default float the note at the right of the text column,
-   overlapping the content. The container queries below lift it into the true margin
-   once there is room. */
-@media screen and (min-width: 701px) {
-  .marginalia .note {
-    float: right;
-    clear: right;
-    width: 40%;
-    margin: 1rem 0;
-    margin-left: 10%;
-  }
+figure.export-format > figcaption {
+  font-family: var(--verso-structure-font-family);
+  font-weight: 600;
+  margin: 0 .75rem;
+  text-align: left;
 }
 
-/* Left-aligned content: a fixed-size note in the wide area to its right. */
-@container main (width >= 1112px) {
-  .marginalia .note {
-    float: right;
-    clear: right;
-    width: 13rem;
-    margin: 1rem -16rem 0 0;
-  }
+pre.export-format {
+  margin: 0.25rem .75rem 0.5rem;
+  padding: 0.1rem 0;
 }
 
-/* Centered content: size the note in container units so it always fits the symmetric
-   right gap. The threshold matches the content-centering threshold in Html/Style.lean,
-   so the fixed-overhang note above is only ever used while the content is left-aligned.
-   The overhang (18cqi) stays below the gap, (100cqi - text column) / 2, for every
-   content width at which the content is centered. */
-@container main (width >= 1212px) {
-  .marginalia .note {
-    width: 15cqi;
-    margin-right: -18cqi;
-  }
+.export-format .key, code.export-format.key {
+  color: #601020;
 }
 
-.marginalia:hover, .marginalia:hover .note, .marginalia:has(.note:hover) {
-  background-color: var(--lean-accent-light-blue);
+.export-format .lit {
+  color: #107040;
 }
 
-body {
-  counter-reset: margin-note-counter;
+
+.export-format {
+  --export-format-type-color: #3030c0;
 }
-.marginalia .note {
-  counter-increment: margin-note-counter;
+
+.export-format .type {
+  color: var(--export-format-type-color);
+  font-weight: 600;
 }
-.marginalia .note::before {
-  content: counter(margin-note-counter) ".";
-  position: absolute;
-  vertical-align: baseline;
-  font-size: 0.9em;
-  font-weight: bold;
-  left: -3rem;
-  width: 3rem;
-  text-align: right;
+
+/* Linked type names look exactly like unlinked ones, apart from the underline, in every link state. */
+.export-format .type a,
+.export-format .type a:link,
+.export-format .type a:visited,
+.export-format .type a:active,
+.export-format .type a:focus {
+  color: var(--export-format-type-color);
+  font: inherit;
+  text-decoration-line: underline;
+  text-decoration-style: dotted;
+  text-decoration-color: var(--export-format-type-color);
 }
-.marginalia::after {
-  content: counter(margin-note-counter);
-  vertical-align: super;
-  font-size: 0.7em;
-  font-weight: bold;
-  margin-right: 0.5em;
+
+.export-format .type a:hover {
+  text-decoration-style: solid;
 }
-</style><style>.example {
+
+.export-format .alt, .export-format .angle {
+  font-weight: 600;
+}
+</style><style>#toc .split-toc > ol .syntax .keyword { font-family: var(--verso-code-font-family); font-weight: 600; }</style><style>.example {
   border: 1px solid #98B2C0;
   border-radius: 0.5rem;
   margin-bottom: var(--verso--box-vertical-margin);
@@ -1200,685 +2091,6 @@ body {
   color: var(--lean-blue);
 }
 </style><style>
-
-.hl.lean {
-  white-space: pre;
-  font-weight: normal;
-  font-style: normal;
-  font-size: inherit;
-}
-
-.hl.lean .keyword {
-  color: var(--verso-code-keyword-color,);
-  font-weight: var(--verso-code-keyword-weight, bold);
-  font-style: var(--verso-code-keyword-style, normal);
-  font-family: var(--verso-code-keyword-font-family,);
-}
-
-.hl.lean .const {
-  color: var(--verso-code-const-color,);
-  font-weight: var(--verso-code-const-weight, normal);
-  font-style: var(--verso-code-const-style, normal);
-  font-family: var(--verso-code-const-font-family,);
-}
-
-.hl.lean .var {
-  color: var(--verso-code-var-color,);
-  font-weight: var(--verso-code-var-weight, normal);
-  font-style: var(--verso-code-var-style, italic);
-  font-family: var(--verso-code-var-font-family,);
-
-  position: relative;
-}
-
-.hl.lean .literal, .hl.lean .unknown {
-  color: var(--verso-code-color,);
-  font-weight: normal;
-  font-style: normal;
-  font-family: var(--verso-code-font-family,);
-}
-
-/* These lexically-classified token kinds default to the `.unknown` appearance. The rule follows
-   `.const` so it wins for the `anon-ctor` tokens, which also carry the `const` class. */
-.hl.lean .anon-ctor,
-.hl.lean .number,
-.hl.lean .char,
-.hl.lean .comment,
-.hl.lean .punctuation,
-.hl.lean .delim,
-.hl.lean .wildcard {
-  color: var(--verso-code-color,);
-  font-weight: normal;
-  font-style: normal;
-  font-family: var(--verso-code-font-family,);
-}
-
-.hover-container {
-  width: 0;
-  height: 0;
-  position: relative;
-  display: inline;
-}
-
-.hl.lean a {
-  color: inherit;
-  text-decoration: currentcolor underline dotted;
-}
-
-.hl.lean a:hover {
-  text-decoration: currentcolor underline solid;
-}
-
-.hl.lean .hover-info {
-  white-space: normal;
-}
-
-.hl.lean .token .hover-info {
-  display: none;
-  position: absolute;
-  background-color: #e5e5e5;
-  border: 1px solid black;
-  padding: 0.5rem;
-  z-index: 300;
-}
-
-.hl.lean .hover-info.messages {
-  max-height: 10rem;
-  overflow-y: auto;
-  overflow-x: hidden;
-  scrollbar-gutter: stable;
-  padding: 0 0.5rem 0 0;
-  display: block;
-}
-
-.hl.lean .hover-info code {
-  white-space: pre-wrap;
-  background: none;
-  color: black;
-}
-
-.hl.lean .hover-info.messages > code {
-  padding: 0.5rem;
-  display: block;
-  width: fit-content;
-}
-
-.hl.lean .hover-info.messages > code:only-child {
-  margin: 0;
-}
-
-.hl.lean .hover-info.messages > code {
-  margin: 0.1rem;
-}
-
-.hl.lean .hover-info.messages > code:not(:first-child) {
-  margin-top: 0rem;
-}
-
-.hl.lean {
-}
-
-.hl.lean.block {
-  display: block;
-}
-
-.hl.lean.inline {
-  display: inline;
-  white-space: pre-wrap;
-}
-
-.hl.lean * {
-}
-
-.hl.lean .token {
-  transition: all 0.25s; /* Slight fade for highlights */
-}
-
-@media (hover: hover) {
-  .hl.lean .token.binding-hl, .hl.lean .literal:hover, .hl.lean .token.typed:hover {
-    background-color: #eee;
-    border-radius: 2px;
-    transition: none;
-  }
-}
-
-
-.hl.lean .has-info .token:not(.tactic-state):not(.tactic-state *), .hl.lean .has-info .inter-text:not(.tactic-state):not(.tactic-state *) {
-  text-decoration-style: wavy;
-  text-decoration-line: underline;
-  text-decoration-thickness: from-font;
-  text-decoration-skip-ink: none;
-}
-
-.hl.lean .has-info .hover-info {
-  display: none;
-  position: absolute;
-  transform: translate(0.25rem, 0.3rem);
-  border: 1px solid black;
-  padding: 0.5rem;
-  z-index: 400;
-  text-align: left;
-}
-
-.hl.lean .has-info.error :not(.tactic-state):not(.tactic-state *){
-  text-decoration-color: red;
-}
-
-@media (hover: hover) {
-  .hl.lean .has-info.error:hover {
-    background-color: #ffb3b3;
-  }
-}
-
-.hl.lean .hover-info.messages > code.error {
-  background-color: #e5e5e5;
-  border-left: 0.2rem solid #ffb3b3;
-}
-
-.tippy-box[data-theme~='error'] .hl.lean .hover-info.messages > code.error {
-  background: none;
-  border: none;
-}
-
-.error .verso-message, .error .verso-message .token, .error .verso-message label {
-  color: var(--verso-error-color);
-}
-
-.error .verso-message .case-label:has(input[type="checkbox"])::before {
-  background-color: var(--verso-error-color) !important;
-}
-
-.hl.lean .has-info.warning :not(.tactic-state):not(.tactic-state *) {
-  text-decoration-color: var(--verso-warning-indicator-color);
-}
-
-@media (hover: hover) {
-  .hl.lean .has-info.warning:hover {
-    background-color:var(--verso-warning-color);
-  }
-}
-
-.hl.lean .hover-info.messages > code.warning {
-  background-color: var(--verso-warning-color);
-}
-
-.lean-output {
-  border-left: 0.2em solid transparent;
-  padding: 0 0 0 0.5em;
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
-}
-
-.lean-output.error {
-  border-color: var(--verso-error-indicator-color);
-}
-
-.lean-output.information {
-  border-color: var(--verso-info-indicator-color);
-}
-
-.lean-output.warning {
-  border-color: var(--verso-warning-indicator-color);
-}
-
-.hl.lean .hover-info.messages > code.error {
-  background-color: #e5e5e5;
-  border-left: 0.2rem solid var(--verso-warning-color);
-}
-
-.tippy-box[data-theme~='warning'] .hl.lean .hover-info.messages > code.warning {
-  background: none;
-  border: none;
-}
-
-
-.hl.lean .has-info.information :not(.tactic-state):not(.tactic-state *) {
-  text-decoration-color: var(--verso-info-indicator-color, blue);
-}
-
-@media (hover: hover) {
-  .hl.lean .has-info.information:hover {
-    background-color: #4777ff;
-  }
-}
-
-
-.hl.lean .hover-info.messages > code.information {
-  background-color: #e5e5e5;
-  border-left: 0.2rem solid #4777ff;
-}
-
-.tippy-box[data-theme~='info'] .hl.lean .hover-info.messages > code.information {
-  background: none;
-  border: none;
-}
-
-.hl.lean div.docstring {
-  font-family: var(--verso-text-font-family, sans-serif);
-  white-space: normal;
-  max-width: calc(min(40rem, 90vw));
-  width: max-content;
-}
-
-.hl.lean div.docstring > :last-child {
-  margin-bottom: 0;
-}
-
-.hl.lean div.docstring > :first-child {
-  margin-top: 0;
-}
-
-.hl.lean .hover-info .sep {
-  display: block;
-  width: auto;
-  margin-left: 1rem;
-  margin-right: 1rem;
-  margin-top: 0.5rem;
-  margin-bottom: 0.5rem;
-  padding: 0;
-  height: 1px;
-  border-top: 1px solid #ccc;
-}
-
-.hl.lean code {
-  font-family: var(--verso-code-font-family);
-}
-
-.hl.lean .tactic-state {
-  display: none;
-  position: relative;
-  width: fit-content;
-  border: 1px solid #888888;
-  border-radius: 0.1rem;
-  padding: 0.5rem;
-  font-family: sans-serif;
-  background-color: #ffffff;
-}
-
-.hl.lean.popup .tactic-state {
-  position: static;
-  display: block;
-  width: auto;
-  border: none;
-  padding: 0.5rem;
-  font-family: sans-serif;
-  background-color: #ffffff;
-}
-
-
-.hl.lean .tactic {
-  position: relative;
-  display: inline;
-  vertical-align: top;
-  /* Without these, mobile Safari will start making font sizes inconsistent when its text size adjustment feature is triggered.*/
-  -webkit-text-size-adjust: 100%;
-  text-size-adjust: 100%;
-}
-
-.hl.lean .tactic:has(> .tactic-toggle:checked) {
-  display: inline-grid;
-  grid-template-columns: 1fr;
-}
-
-.hl.lean .tactic-toggle:checked ~ .tactic-state {
-  display: inline-block;
-  vertical-align: top;
-  grid-row: 2;
-  justify-self: start;
-}
-
-.hl.lean .tactic > label {
-  position: relative;
-  grid-row: 1;
-  display: inline;
-}
-
-@media (hover: hover) {
-  /* Highlight a region on hover only when its own toggle is unchecked, and only the innermost
-     hovered region: `label:hover` bubbles to ancestor labels, so suppress the highlight on a region
-     whose label contains a more deeply nested hovered tactic label. */
-  .hl.lean .tactic:has(> .tactic-toggle:not(:checked)) > label:hover:not(:has(.tactic > label:hover)) {
-    background-color: #eeeeee;
-  }
-}
-
-.hl.lean .tactic-toggle {
-  position: absolute;
-  top: 0;
-  left: 0;
-  opacity: 0;
-  height: 0;
-  width: 0;
-  z-index: -10;
-}
-
-.hl.lean .tactic > label::after {
-  content: "";
-  border: 1px solid #bbbbbb;
-  /* These need to be em, not rem, to scale with the font */
-  border-radius: 1em;
-  height: 0.25em;
-  vertical-align: middle;
-  width: 0.6em;
-  margin-left: 0.1em;
-  margin-right: 0.1em;
-  display: inline-block;
-  transition: all 0.5s;
-}
-
-/*
-@media (hover: hover) {
-  .hl.lean .tactic > label:hover::after {
-    border: 1px solid #aaaaaa;
-    background-color: #aaaaaa;
-    transition: all 0.5s;
-  }
-}
-*/
-
-.hl.lean .tactic > label:has(+ .tactic-toggle:checked)::after {
-  border: 1px solid #999999;
-  background-color: #999999;
-  transition: all 0.5s;
-}
-
-.hl.lean .tactic-state .goal + .goal {
-  margin-top: 1.5em;
-}
-
-/*
-Some CSS frameworks customize details/summary in ways not compatible with Verso's output.
-*/
-
-.hl.lean details {
-  display: block !important;
-  margin: 0;
-}
-
-.hl.lean details summary {
-  display: list-item !important;
-  margin: 0;
-}
-
-.hl.lean details summary:focus {
-  outline: none;
-  outline-offset: none;
-  color: inherit;
-}
-
-.hl.lean ul > li {
-  margin-bottom: 0;
-}
-
-.hl.lean details summary::marker {
-  display: inline !important;
-}
-
-.hl.lean details > summary:first-of-type {
-  list-style-type: disclosure-closed;
-  list-style-position: inside;
-}
-
-.hl.lean details[open] > summary:first-of-type {
-  list-style-type: disclosure-open;
-}
-
-.hl.lean details summary::before, .hl.lean details summary::after {
-  content: "" !important;
-  background: none;
-  display: none;
-}
-
-.hl.lean .tactic-state summary {
-  /* These need to be em, not rem, to scale with the font */
-  margin-left: -0.5em;
-}
-
-.hl.lean .tactic-state details {
-  /* These need to be em, not rem, to scale with the font */
-  padding-left: 0.5em;
-}
-
-.hl.lean .case-label {
-  display: block;
-  position: relative;
-}
-
-.hl.lean .case-label input[type="checkbox"] {
-  position: absolute;
-  top: 0;
-  left: 0;
-  opacity: 0;
-  height: 0;
-  width: 0;
-  z-index: -10;
-}
-
-.hl.lean .case-label:has(input[type="checkbox"])::before {
-  display: inline-block;
-  background-color: black;
-  content: ' ';
-  transition: ease 0.2s;
-  margin-right: 0.7em;
-  clip-path: polygon(100% 0, 0 0, 50% 100%);
-  width: 0.6em;
-  height: 0.6em;
-  vertical-align: middle;
-}
-
-.hl.lean .case-label:has(input[type="checkbox"]:not(:checked))::before {
-  transform: rotate(-90deg);
-}
-
-.hl.lean .case-label:has(input[type="checkbox"]) {
-
-}
-
-.hl.lean .case-label:has(input[type="checkbox"]:checked) {
-
-}
-
-
-.hl.lean .labeled-case > :not(:first-child) {
-  max-height: 0px;
-  display: block;
-  overflow: hidden;
-  transition: max-height 0.1s ease-in;
-  /* These need to be em, not rem, to scale with the font */
-  margin-left: 0.5em;
-  margin-top: 0.1em;
-}
-
-.hl.lean .labeled-case:has(.case-label input[type="checkbox"]:checked) > :not(:first-child) {
-  max-height: 100%;
-}
-
-
-.hl.lean .goal-name::before {
-  font-style: normal;
-  content: "case ";
-}
-
-.hl.lean .goal-name {
-  font-style: italic;
-  font-family: var(--verso-code-font-family);
-  color: inherit;
-}
-
-.hl.lean .hypotheses {
-  display: table;
-}
-
-.hl.lean .hypothesis {
-  display: table-row;
-}
-
-.hl.lean .hypothesis > * {
-  display: table-cell;
-}
-
-
-.hl.lean .hypotheses .colon {
-  text-align: center;
-  /* This needs to be em, not rem, to scale with the font */
-  min-width: 1em;
-}
-
-.hl.lean .hypotheses .name {
-  text-align: right;
-}
-
-.hl.lean .hypotheses .name,
-.hl.lean .hypotheses .type,
-.hl.lean .conclusion .type {
-  font-family: var(--verso-code-font-family);
-}
-
-.tippy-box {
-  /* Without these, mobile Safari will start making font sizes inconsistent when its text size adjustment feature is triggered.*/
-  -webkit-text-size-adjust: 100%;
-  text-size-adjust: 100%;
-}
-
-.tippy-box[data-theme~='lean'] {
-  background-color: #e5e5e5;
-  color: black;
-  border: 1px solid black;
-}
-.tippy-box[data-theme~='lean'][data-placement^='top'] > .tippy-arrow::before {
-  border-top-color: #e5e5e5;
-}
-.tippy-box[data-theme~='lean'][data-placement^='bottom'] > .tippy-arrow::before {
-  border-bottom-color: #e5e5e5;
-}
-.tippy-box[data-theme~='lean'][data-placement^='left'] > .tippy-arrow::before {
-  border-left-color: #e5e5e5;
-}
-.tippy-box[data-theme~='lean'][data-placement^='right'] > .tippy-arrow::before {
-  border-right-color: #e5e5e5;
-}
-
-.tippy-box[data-theme~='message'][data-placement^='top'] > .tippy-arrow::before {
-  border-top-color: #e5e5e5;
-  border-width: 11px 11px 0;
-}
-.tippy-box[data-theme~='message'][data-placement^='top'] > .tippy-arrow::after {
-  bottom: -11px;
-  border-width: 11px 11px 0;
-}
-.tippy-box[data-theme~='message'][data-placement^='bottom'] > .tippy-arrow::before {
-  border-width: 0 11px 11px;
-}
-.tippy-box[data-theme~='message'][data-placement^='bottom'] > .tippy-arrow::after {
-  top: -11px;
-  border-width: 0 11px 11px;
-}
-.tippy-box[data-theme~='message'][data-placement^='left'] > .tippy-arrow::before {
-  border-left-color: #e5e5e5;
-  border-width: 11px 0 11px 11px;
-}
-.tippy-box[data-theme~='message'][data-placement^='left'] > .tippy-arrow::after {
-  right: -11px;
-  border-width: 11px 0 11px 11px;
-}
-
-.tippy-box[data-theme~='message'][data-placement^='right'] > .tippy-arrow::before {
-  border-right-color: #e5e5e5;
-  border-width: 11px 11px 11px 0;
-}
-.tippy-box[data-theme~='message'][data-placement^='right'] > .tippy-arrow::after {
-  left: -11px;
-  border-width: 11px 11px 11px 0;
-}
-
-
-
-.tippy-box[data-theme~='warning'] {
-  background-color: #e5e5e5;
-  color: black;
-  border: 3px solid var(--verso-warning-color);
-}
-
-.tippy-box[data-theme~='error'] {
-  background-color: #e5e5e5;
-  color: black;
-  border: 3px solid #f7a7af;
-}
-
-.tippy-box[data-theme~='info'] {
-  background-color: #e5e5e5;
-  color: black;
-  border: 3px solid #99b3c2;
-}
-
-.tippy-box[data-theme~='tactic'] {
-  background-color: white;
-  color: black;
-  border: 1px solid black;
-}
-.tippy-box[data-theme~='tactic'][data-placement^='top'] > .tippy-arrow::before {
-  border-top-color: white;
-}
-.tippy-box[data-theme~='tactic'][data-placement^='bottom'] > .tippy-arrow::before {
-  border-bottom-color: white;
-}
-.tippy-box[data-theme~='tactic'][data-placement^='left'] > .tippy-arrow::before {
-  border-left-color: white;
-}
-.tippy-box[data-theme~='tactic'][data-placement^='right'] > .tippy-arrow::before {
-  border-right-color: white;
-}
-
-.extra-doc-links {
-  list-style-type: none;
-  margin-left: 0;
-  padding: 0;
-}
-
-.extra-doc-links > li {
-  display: inline-block;
-}
-
-.extra-doc-links > li:not(:last-child)::after {
-  content: '|';
-  display: inline-block;
-  margin: 0 0.25em;
-}
-
-.verso-message .trace {
-  display: block;
-}
-
-.verso-message .trace > summary::marker {
-  color: var(--verso-text-color);
-}
-
-.verso-message .trace-children {
-  margin: 0;
-  padding: 0;
-}
-
-.verso-message .trace-children > li {
-  list-style-type: none;
-  margin-left: 1.5em;
-}
-
-.verso-message .trace-children > li:not(:has(.trace)) {
-  margin-left: 0;
-}
-
-.verso-message .trace-class {
-  color: color-mix(in srgb, currentColor 70%, transparent);
-  font-weight: bold;
-  margin: 0;
-  padding: 0;
-}
-
-.verso-message .text {
-  white-space: pre-wrap;
-}
-
-</style><style>
 .toml {
   font-family: var(--verso-code-font-family);
 }
@@ -1912,6 +2124,46 @@ pre.toml {
 
 .toml a:hover {
     border-bottom-style: solid;
+}
+</style><style>
+.syntax-error {
+  white-space: normal;
+}
+.syntax-error::before {
+  counter-reset: linenumber;
+}
+.syntax-error > .line {
+  display: block;
+  white-space: pre;
+  counter-increment: linenumber;
+  font-family: var(--verso-code-font-family);
+}
+.syntax-error > .line::before {
+  -webkit-user-select: none;
+  display: inline-block;
+  content: counter(linenumber);
+  border-right: 1px solid #ddd;
+  width: 2em;
+  padding-right: 0.25em;
+  margin-right: 0.25em;
+  font-family: var(--verso-code-font-family);
+  text-align: right;
+}
+
+:is(.syntax-error > .line):has(.parse-message)::before {
+  color: var(--verso-message-error-color);
+  font-weight: bold;
+}
+
+.syntax-error .parse-message > code.hover-info {
+  display:none;
+}
+
+.syntax-error .parse-message {
+  white-space: pre;
+  text-decoration-skip-ink: none;
+  color: var(--verso-message-error-color);
+  font-weight: 600;
 }
 </style><style>.grammar .keyword {
   font-weight: 500 !important;
@@ -1990,7 +2242,16 @@ span.TODO {
   text-decoration: currentcolor underline solid;
 }
 
-</style><style>.namedocs .label a { color: inherit; }</style><style>
+</style><style>
+a.lake-command {
+  color: inherit;
+  text-decoration: currentcolor underline dotted;
+}
+a.lake-command:hover {
+  text-decoration: currentcolor underline solid;
+}
+
+</style><style>
 .example-file {
   white-space: normal;
   font-family: var(--verso-structure-font-family);
@@ -2053,16 +2314,7 @@ span.TODO {
   font-family: var(--verso-code-font-family);
   text-align: right;
 }
-</style><style>
-a.lake-command {
-  color: inherit;
-  text-decoration: currentcolor underline dotted;
-}
-a.lake-command:hover {
-  text-decoration: currentcolor underline solid;
-}
-
-</style><style>
+</style><style>.namedocs .label a { color: inherit; }</style><style>
 dl.toml-table-field-spec {
 }
 </style><style>
@@ -2172,44 +2424,12 @@ table.tabular td > p:last-child, table.tabular th > p:first-child {
 }
 
 </style><style>
-.syntax-error {
-  white-space: normal;
+a.export-type {
+  color: inherit;
+  text-decoration: currentcolor underline dotted;
 }
-.syntax-error::before {
-  counter-reset: linenumber;
-}
-.syntax-error > .line {
-  display: block;
-  white-space: pre;
-  counter-increment: linenumber;
-  font-family: var(--verso-code-font-family);
-}
-.syntax-error > .line::before {
-  -webkit-user-select: none;
-  display: inline-block;
-  content: counter(linenumber);
-  border-right: 1px solid #ddd;
-  width: 2em;
-  padding-right: 0.25em;
-  margin-right: 0.25em;
-  font-family: var(--verso-code-font-family);
-  text-align: right;
-}
-
-:is(.syntax-error > .line):has(.parse-message)::before {
-  color: red;
-  font-weight: bold;
-}
-
-.syntax-error .parse-message > code.hover-info {
-  display:none;
-}
-
-.syntax-error .parse-message {
-  white-space: pre;
-  text-decoration-skip-ink: none;
-  color: red;
-  font-weight: 600;
+a.export-type:hover {
+  text-decoration: currentcolor underline solid;
 }
 </style><style>
 a.technical-term {
@@ -2233,7 +2453,303 @@ a.technical-term:hover {
 .namedocs.warn > .label { border-color: #cc3333; color: #a02020; }
 .namedocs.warn > .text { border-top: none; }
 </style><script>
-      function openDetailsForHashTarget() {
+window.onload = async () => {
+
+    // Don't show hovers inside of closed tactic states
+    function blockedByTactic(elem) {
+      let parent = elem.parentNode;
+      while (parent && "classList" in parent) {
+        if (parent.classList.contains("tactic")) {
+          const toggle = parent.querySelector(":scope > input.tactic-toggle");
+          if (toggle) {
+            return !toggle.checked;
+          }
+        }
+        parent = parent.parentNode;
+      }
+      return false;
+    }
+
+    // The innermost element under the pointer, used to show only the most specific hover
+    let hoverTarget = null;
+    document.addEventListener('mouseover', (e) => { hoverTarget = e.target; }, true);
+
+    // Visible tippy references; a tooltip is blocked while an unrelated one is visible
+    const visibleTippies = new Set();
+    function blockedByTippy(elem) {
+      for (const ref of visibleTippies) {
+        if (!ref.contains(elem) && !elem.contains(ref)) return true;
+      }
+      return false;
+    }
+
+    // Whether the element's tooltip would have content to show. Content nested in a
+    // collapsed tactic region is covered by the region's proof-state tooltip, whether or
+    // not a tippy instance is currently attached to it.
+    function showsContent(el) {
+      if (!el._tippy) return false;
+      if (el.classList.contains('tactic')) {
+        const toggle = el.querySelector(':scope > input.tactic-toggle');
+        return !!toggle && !toggle.checked;
+      }
+      return (!!el.querySelector('.hover-info') || 'versoHover' in el.dataset) &&
+        !blockedByTactic(el);
+    }
+
+    // The nearest enclosing element whose tooltip has content
+    function innermostShowable(el) {
+      while (el && el.nodeType === Node.ELEMENT_NODE) {
+        if (showsContent(el)) return el;
+        el = el.parentElement;
+      }
+      return null;
+    }
+
+    // Binding highlights via event delegation with cached lookups
+    const bindingCache = new Map(); // context+binding -> [token elements]
+    let highlightedTokens = [];
+    function getBindingTokens(context, binding) {
+      const key = context + "\0" + binding;
+      let tokens = bindingCache.get(key);
+      if (!tokens) {
+        tokens = [];
+        for (const example of document.querySelectorAll(".hl.lean")) {
+          if (example.dataset.leanContext == context) {
+            for (const tok of example.querySelectorAll(".token[data-binding=\"" + CSS.escape(binding) + "\"]")) {
+              tokens.push(tok);
+            }
+          }
+        }
+        bindingCache.set(key, tokens);
+      }
+      return tokens;
+    }
+    for (const container of document.querySelectorAll(".hl.lean")) {
+      container.addEventListener("mouseover", (event) => {
+        const c = event.target.closest(".token");
+        if (!c || !c.dataset.binding || c.dataset.binding === "" || !container.contains(c)) return;
+        if (blockedByTactic(c)) return;
+        const tokens = getBindingTokens(container.dataset.leanContext, c.dataset.binding);
+        for (const tok of tokens) {
+          tok.classList.add("binding-hl");
+        }
+        highlightedTokens = tokens;
+      });
+      container.addEventListener("mouseout", (event) => {
+        const c = event.target.closest(".token");
+        if (!c || !container.contains(c)) return;
+        for (const tok of highlightedTokens) {
+          tok.classList.remove("binding-hl");
+        }
+        highlightedTokens = [];
+      });
+    }
+    /* Render docstrings */
+    if ('undefined' !== typeof marked) {
+        for (const d of document.querySelectorAll("code.docstring, pre.docstring")) {
+            const str = d.innerText;
+            const html = marked.parse(str);
+            const rendered = document.createElement("div");
+            rendered.classList.add("docstring");
+            rendered.innerHTML = html;
+            d.parentNode.replaceChild(rendered, d);
+        }
+    }
+    // Add hovers
+    const versoDocData = await (fetch("-verso-docs.json").then((resp) => resp.json()));
+
+    function hideParentTooltips(element) {
+      let parent = element.parentElement;
+      while (parent) {
+        const tippyInstance = parent._tippy;
+        if (tippyInstance) {
+          tippyInstance.hide();
+        }
+        parent = parent.parentElement;
+      }
+    }
+
+    function hideDescendantTooltips(element) {
+      for (const ref of visibleTippies) {
+        if (ref !== element && element.contains(ref)) {
+          ref._tippy.hide();
+        }
+      }
+    }
+
+    // Renders the documentation for a hover ID from the doc table
+    function docHoverContent(hoverId) {
+      const info = document.createElement('span');
+      info.className = 'hover-info';
+      info.style.display = 'block';
+      const data = versoDocData[hoverId];
+      if (data) {
+        info.innerHTML = data;
+        /* Render docstrings - TODO server-side */
+        if ('undefined' !== typeof marked) {
+          for (const d of info.querySelectorAll('code.docstring, pre.docstring')) {
+            const str = d.innerText;
+            const html = marked.parse(str);
+            const rendered = document.createElement('div');
+            rendered.classList.add('docstring');
+            rendered.innerHTML = html;
+            d.parentNode.replaceChild(rendered, d);
+          }
+        }
+      } else {
+        info.innerHTML = 'Failed to load doc ID: ' + hoverId;
+      }
+      return info;
+    }
+
+
+
+
+    const defaultTippyProps = {
+      /* DEBUG -- remove the space: * /
+      onHide(any) { return false; },
+      trigger: "click",
+      // */
+      /* theme: "lean", */
+      maxWidth: "none",
+      appendTo: () => document.body,
+      interactive: true,
+      delay: [100, null],
+      /* ignoreAttributes: true, */
+      followCursor: 'initial',
+      onShow(inst) {
+        const ref = inst.reference;
+        if (ref.className == 'tactic') {
+          const toggle = ref.querySelector(":scope > input.tactic-toggle");
+          if (toggle && toggle.checked) {
+            return false;
+          }
+        } else if (ref.querySelector(".hover-info") || "versoHover" in ref.dataset) {
+          if (blockedByTactic(ref)) { return false };
+        } else { // Nothing to show here!
+          return false;
+        }
+        // Show only the most specific hover under the pointer
+        if (hoverTarget && ref.contains(hoverTarget) && innermostShowable(hoverTarget) !== ref) {
+          return false;
+        }
+        hideParentTooltips(ref);
+        hideDescendantTooltips(ref);
+        if (blockedByTippy(ref)) { return false; }
+      },
+      onShown(inst) { visibleTippies.add(inst.reference); },
+      onHidden(inst) { visibleTippies.delete(inst.reference); },
+      content (tgt) {
+        const content = document.createElement("span");
+        if (tgt.className == 'tactic') {
+          const state = tgt.querySelector(":scope > .tactic-state").cloneNode(true);
+          state.style.display = "block";
+          content.appendChild(state);
+          content.style.display = "block";
+          content.className = "hl lean popup";
+        } else {
+          content.className = "hl lean";
+          content.style.display = "block";
+          content.style.maxHeight = "300px";
+          content.style.overflowY = "auto";
+          content.style.overflowX = "hidden";
+          // Messages come from the inline hover-info; documentation comes from the doc
+          // table. An element with both (a message span sharing a documented token's
+          // extent) shows both in one tooltip.
+          const hoverId = tgt.dataset.versoHover;
+          const hoverInfo = tgt.querySelector(".hover-info");
+          if (hoverInfo) {
+            content.appendChild(hoverInfo.cloneNode(true));
+          }
+          if (hoverId) {
+            // TODO stop doing an implicit conversion from string to number here
+            content.appendChild(docHoverContent(hoverId));
+          }
+          if (hoverInfo && hoverId) {
+            content.classList.add('mixed');
+          }
+          const extraLinks = tgt.dataset['versoLinks'] || tgt.parentElement.dataset['versoLinks'];
+          if (extraLinks) {
+            try {
+              const extras = JSON.parse(extraLinks);
+              const links = document.createElement('ul');
+              links.className = 'extra-doc-links';
+              extras.forEach((l) => {
+                const li = document.createElement('li');
+                li.innerHTML = "<a href=\"" + l['href'] + "\" title=\"" + l.long + "\">" + l.short + "</a>";
+                links.appendChild(li);
+              });
+              content.appendChild(links);
+            } catch (error) {
+              console.error(error);
+            }
+          }
+        }
+        return content;
+      }
+    };
+
+
+    document.querySelectorAll('.hl.lean .const.token, .hl.lean .keyword.token, .hl.lean .literal.token, .hl.lean .option.token, .hl.lean .var.token, .hl.lean .typed.token, .hl.lean .level-var, .hl.lean .level-const, .hl.lean .level-op, .hl.lean .sort').forEach(element => {
+      element.setAttribute('data-tippy-theme', 'lean');
+    });
+    document.querySelectorAll('.hl.lean .has-info.warning').forEach(element => {
+      element.setAttribute('data-tippy-theme', 'warning message');
+    });
+    document.querySelectorAll('.hl.lean .has-info.information').forEach(element => {
+      element.setAttribute('data-tippy-theme', 'info message');
+    });
+    document.querySelectorAll('.hl.lean .has-info.error').forEach(element => {
+      element.setAttribute('data-tippy-theme', 'error message');
+    });
+    document.querySelectorAll('.hl.lean .tactic').forEach(element => {
+      element.setAttribute('data-tippy-theme', 'tactic');
+    });
+    // Skip tokens inside closed tactics — they interfere with tactic tippys
+    const closedTactics = new Set();
+    document.querySelectorAll('.hl.lean .tactic').forEach(tactic => {
+      const toggle = tactic.querySelector(':scope > input.tactic-toggle');
+      if (toggle && !toggle.checked) closedTactics.add(tactic);
+    });
+    function isInsideClosedTactic(el) {
+      const tactic = el.closest('.tactic');
+      return tactic && tactic !== el && closedTactics.has(tactic);
+    }
+
+    const tokenSelector = '.hl.lean .const.token, .hl.lean .keyword.token, .hl.lean .literal.token, .hl.lean .option.token, .hl.lean .var.token, .hl.lean .typed.token, .hl.lean .has-info, .hl.lean .tactic, .hl.lean .level-var, .hl.lean .level-const, .hl.lean .level-op, .hl.lean .sort';
+    tippy(Array.from(document.querySelectorAll(tokenSelector)).filter(el => !isInsideClosedTactic(el)), defaultTippyProps);
+
+    // Create/destroy token tippys when tactic checkbox toggles
+    const tacticTippySelector = '.const.token, .keyword.token, .literal.token, .option.token, .var.token, .typed.token, .has-info, .level-var, .level-const, .level-op, .sort';
+    document.querySelectorAll('.hl.lean .tactic').forEach(tactic => {
+      const toggle = tactic.querySelector(':scope > input.tactic-toggle');
+      if (toggle) toggle.addEventListener('change', () => {
+        if (toggle.checked) {
+          closedTactics.delete(tactic);
+          tactic.querySelectorAll(tacticTippySelector).forEach(el => {
+            if (!el._tippy) {
+              tippy(el, defaultTippyProps);
+            }
+          });
+        } else {
+          closedTactics.add(tactic);
+          tactic.querySelectorAll(tacticTippySelector).forEach(el => {
+            if (el._tippy) el._tippy.destroy();
+          });
+        }
+        // The toggle changes which element's tooltip belongs to the pointer's position,
+        // but the pointer stays put, so no hover event announces the change. Show the
+        // right tooltip once the click that flipped the toggle has hidden the old one.
+        setTimeout(() => {
+          if (hoverTarget && hoverTarget.isConnected) {
+            const showable = innermostShowable(hoverTarget);
+            if (showable && showable._tippy) showable._tippy.show();
+          }
+        }, 0);
+      });
+  });
+}
+</script><script>function openDetailsForHashTarget() {
   // Get the current hash from the URL
   const hash = window.location.hash;
 
@@ -2306,9 +2822,7 @@ if (document.readyState === 'loading') {
 } else {
   pageInit();
 }
-</script>
-    <script>
-      
+</script><script>
 window.addEventListener("load", () => {
   const innerProps = {
     onShow(inst) { console.log(inst); },
@@ -2355,9 +2869,7 @@ window.addEventListener("load", () => {
   };
   tippy.createSingleton(tippy('pre.grammar.hl.lean .nonterminal.documented, pre.grammar.hl.lean .from-nonterminal.documented, pre.grammar.hl.lean .local-name.documented', innerProps), outerProps);
 });
-</script>
-    <script>
-      
+</script><script>
 window.addEventListener('DOMContentLoaded', () => {
   const tabLists = document.querySelectorAll('.error-example-tab-list')
   tabLists.forEach(tabList => {
@@ -2394,245 +2906,7 @@ window.addEventListener('DOMContentLoaded', () => {
     })
   })
 })
-  </script>
-    <script>
-      
-window.onload = async () => {
-
-    // Don't show hovers inside of closed tactic states
-    function blockedByTactic(elem) {
-      let parent = elem.parentNode;
-      while (parent && "classList" in parent) {
-        if (parent.classList.contains("tactic")) {
-          const toggle = parent.querySelector(":scope > input.tactic-toggle");
-          if (toggle) {
-            return !toggle.checked;
-          }
-        }
-        parent = parent.parentNode;
-      }
-      return false;
-    }
-
-    // Track whether any tippy is visible (O(1) check instead of DOM scan)
-    let visibleTippyCount = 0;
-    function blockedByTippy(elem) {
-      return visibleTippyCount > 0;
-    }
-
-    // Binding highlights via event delegation with cached lookups
-    const bindingCache = new Map(); // context+binding -> [token elements]
-    let highlightedTokens = [];
-    function getBindingTokens(context, binding) {
-      const key = context + "\0" + binding;
-      let tokens = bindingCache.get(key);
-      if (!tokens) {
-        tokens = [];
-        for (const example of document.querySelectorAll(".hl.lean")) {
-          if (example.dataset.leanContext == context) {
-            for (const tok of example.querySelectorAll(".token[data-binding=\"" + CSS.escape(binding) + "\"]")) {
-              tokens.push(tok);
-            }
-          }
-        }
-        bindingCache.set(key, tokens);
-      }
-      return tokens;
-    }
-    for (const container of document.querySelectorAll(".hl.lean")) {
-      container.addEventListener("mouseover", (event) => {
-        const c = event.target.closest(".token");
-        if (!c || !c.dataset.binding || c.dataset.binding === "" || !container.contains(c)) return;
-        if (blockedByTactic(c)) return;
-        const tokens = getBindingTokens(container.dataset.leanContext, c.dataset.binding);
-        for (const tok of tokens) {
-          tok.classList.add("binding-hl");
-        }
-        highlightedTokens = tokens;
-      });
-      container.addEventListener("mouseout", (event) => {
-        const c = event.target.closest(".token");
-        if (!c || !container.contains(c)) return;
-        for (const tok of highlightedTokens) {
-          tok.classList.remove("binding-hl");
-        }
-        highlightedTokens = [];
-      });
-    }
-    /* Render docstrings */
-    if ('undefined' !== typeof marked) {
-        for (const d of document.querySelectorAll("code.docstring, pre.docstring")) {
-            const str = d.innerText;
-            const html = marked.parse(str);
-            const rendered = document.createElement("div");
-            rendered.classList.add("docstring");
-            rendered.innerHTML = html;
-            d.parentNode.replaceChild(rendered, d);
-        }
-    }
-    // Add hovers
-    const versoDocData = await (fetch("-verso-docs.json").then((resp) => resp.json()));
-
-    function hideParentTooltips(element) {
-      let parent = element.parentElement;
-      while (parent) {
-        const tippyInstance = parent._tippy;
-        if (tippyInstance) {
-          tippyInstance.hide();
-        }
-        parent = parent.parentElement;
-      }
-    }
-
-
-
-    const defaultTippyProps = {
-      /* DEBUG -- remove the space: * /
-      onHide(any) { return false; },
-      trigger: "click",
-      // */
-      /* theme: "lean", */
-      maxWidth: "none",
-      appendTo: () => document.body,
-      interactive: true,
-      delay: [100, null],
-      /* ignoreAttributes: true, */
-      followCursor: 'initial',
-      onShow(inst) {
-        if (inst.reference.className == 'tactic') {
-          const toggle = inst.reference.querySelector(":scope > input.tactic-toggle");
-          if (toggle && toggle.checked) {
-            return false;
-          }
-          hideParentTooltips(inst.reference);
-          if (blockedByTippy(inst.reference)) { return false; }
-
-        } else if (inst.reference.querySelector(".hover-info") || "versoHover" in inst.reference.dataset) {
-          if (blockedByTactic(inst.reference)) { return false };
-          if (blockedByTippy(inst.reference)) { return false; }
-        } else { // Nothing to show here!
-          return false;
-        }
-      },
-      onShown(inst) { visibleTippyCount++; },
-      onHidden(inst) { visibleTippyCount = Math.max(0, visibleTippyCount - 1); },
-      content (tgt) {
-        const content = document.createElement("span");
-        if (tgt.className == 'tactic') {
-          const state = tgt.querySelector(":scope > .tactic-state").cloneNode(true);
-          state.style.display = "block";
-          content.appendChild(state);
-          content.style.display = "block";
-          content.className = "hl lean popup";
-        } else {
-          content.className = "hl lean";
-          content.style.display = "block";
-          content.style.maxHeight = "300px";
-          content.style.overflowY = "auto";
-          content.style.overflowX = "hidden";
-          const hoverId = tgt.dataset.versoHover;
-          const hoverInfo = tgt.querySelector(".hover-info");
-          if (hoverId) { // Docstrings from the table
-            // TODO stop doing an implicit conversion from string to number here
-            let data = versoDocData[hoverId];
-            if (data) {
-              const info = document.createElement("span");
-              info.className = "hover-info";
-              info.style.display = "block";
-              info.innerHTML = data;
-              content.appendChild(info);
-              /* Render docstrings - TODO server-side */
-              if ('undefined' !== typeof marked) {
-                  for (const d of content.querySelectorAll("code.docstring, pre.docstring")) {
-                      const str = d.innerText;
-                      const html = marked.parse(str);
-                      const rendered = document.createElement("div");
-                      rendered.classList.add("docstring");
-                      rendered.innerHTML = html;
-                      d.parentNode.replaceChild(rendered, d);
-                  }
-              }
-            } else {
-              content.innerHTML = "Failed to load doc ID: " + hoverId;
-            }
-          } else if (hoverInfo) { // The inline info, still used for compiler messages
-            content.appendChild(hoverInfo.cloneNode(true));
-          }
-          const extraLinks = tgt.parentElement.dataset['versoLinks'];
-          if (extraLinks) {
-            try {
-              const extras = JSON.parse(extraLinks);
-              const links = document.createElement('ul');
-              links.className = 'extra-doc-links';
-              extras.forEach((l) => {
-                const li = document.createElement('li');
-                li.innerHTML = "<a href=\"" + l['href'] + "\" title=\"" + l.long + "\">" + l.short + "</a>";
-                links.appendChild(li);
-              });
-              content.appendChild(links);
-            } catch (error) {
-              console.error(error);
-            }
-          }
-        }
-        return content;
-      }
-    };
-
-
-    document.querySelectorAll('.hl.lean .const.token, .hl.lean .keyword.token, .hl.lean .literal.token, .hl.lean .option.token, .hl.lean .var.token, .hl.lean .typed.token, .hl.lean .level-var, .hl.lean .level-const, .hl.lean .level-op, .hl.lean .sort').forEach(element => {
-      element.setAttribute('data-tippy-theme', 'lean');
-    });
-    document.querySelectorAll('.hl.lean .has-info.warning').forEach(element => {
-      element.setAttribute('data-tippy-theme', 'warning message');
-    });
-    document.querySelectorAll('.hl.lean .has-info.information').forEach(element => {
-      element.setAttribute('data-tippy-theme', 'info message');
-    });
-    document.querySelectorAll('.hl.lean .has-info.error').forEach(element => {
-      element.setAttribute('data-tippy-theme', 'error message');
-    });
-    document.querySelectorAll('.hl.lean .tactic').forEach(element => {
-      element.setAttribute('data-tippy-theme', 'tactic');
-    });
-    // Skip tokens inside closed tactics — they interfere with tactic tippys
-    const closedTactics = new Set();
-    document.querySelectorAll('.hl.lean .tactic').forEach(tactic => {
-      const toggle = tactic.querySelector(':scope > input.tactic-toggle');
-      if (toggle && !toggle.checked) closedTactics.add(tactic);
-    });
-    function isInsideClosedTactic(el) {
-      const tactic = el.closest('.tactic');
-      return tactic && tactic !== el && closedTactics.has(tactic);
-    }
-
-    const tokenSelector = '.hl.lean .const.token, .hl.lean .keyword.token, .hl.lean .literal.token, .hl.lean .option.token, .hl.lean .var.token, .hl.lean .typed.token, .hl.lean .has-info, .hl.lean .tactic, .hl.lean .level-var, .hl.lean .level-const, .hl.lean .level-op, .hl.lean .sort';
-    tippy(Array.from(document.querySelectorAll(tokenSelector)).filter(el => !isInsideClosedTactic(el)), defaultTippyProps);
-
-    // Create/destroy token tippys when tactic checkbox toggles
-    const tacticTippySelector = '.const.token, .keyword.token, .literal.token, .option.token, .var.token, .typed.token, .has-info, .level-var, .level-const, .level-op, .sort';
-    document.querySelectorAll('.hl.lean .tactic').forEach(tactic => {
-      const toggle = tactic.querySelector(':scope > input.tactic-toggle');
-      if (toggle) toggle.addEventListener('change', () => {
-        if (toggle.checked) {
-          closedTactics.delete(tactic);
-          tactic.querySelectorAll('.token').forEach(tok => {
-            if (!tok._tippy && tok.matches(tacticTippySelector)) {
-              tippy(tok, defaultTippyProps);
-            }
-          });
-        } else {
-          closedTactics.add(tactic);
-          tactic.querySelectorAll('.token').forEach(tok => {
-            if (tok._tippy) tok._tippy.destroy();
-          });
-        }
-      });
-  });
-}
-</script>
-    <script>
-      
+  </script><script>
 window.addEventListener("load", () => {
   tippy('.keyword-of.hl.lean', {
     allowHtml: true,
@@ -2666,70 +2940,45 @@ window.addEventListener("load", () => {
     }
   });
 });
-</script>
-    <script defer="defer" data-domain="www.leanprover.cn" src="https://plausible.io/js/script.outbound-links.js"></script>
-    <script src="static/metadata.js"></script>
-    <script src="static/print.js"></script>
-    <link rel="stylesheet" href="static/colors.css">
-    <link rel="stylesheet" href="static/theme.css">
-    <link rel="stylesheet" href="static/print.css">
-    <link rel="stylesheet" href="static/fonts/source-serif/source-serif-text.css">
-    <link rel="stylesheet" href="static/fonts/source-code-pro/source-code-pro.css">
-    <link rel="stylesheet" href="static/fonts/source-sans/source-sans-3.css">
-    <link rel="stylesheet" href="static/fonts/noto-sans-mono/noto-sans-mono.css">
-    </head>
-  <body>
-    <header>
-      <div class="header-logo-wrapper">
-        <a href="" id="logo"><img src="static/lean_logo.svg"></a></div>
-      <div class="header-title-wrapper">
-        <a href="" class="header-title"><h1>
-            Lean 语言参考手册</h1>
-          </a></div>
-      </header>
-    <label for="toggle-toc" id="toggle-toc-click"><span class="line line1"></span><span class="line line2"></span><span class="line line3"></span></label><div class="with-toc">
-      <div class="toc-backdrop" onclick="document.getElementById('toggle-toc-click')?.click()"></div>
-      <nav id="toc">
-        <input type="checkbox" id="toggle-toc"><div class="first">
-          <a href="" class="toc-title"><h1>
-              Lean 语言参考手册</h1>
-            </a><div class="split-tocs">
-            <div class="split-toc book">
-              <div class="title">
-                <label for="--verso-manual-toc-----bookRoot" class="toggle-split-toc"><input type="checkbox" class="toggle-split-toc" id="--verso-manual-toc-----bookRoot"></label><span class="">目录</span></div>
-              <table><tr class="numbered"><td class="num">1.</td><td><a href="Introduction/#introduction">简介</a></td></tr><tr class="numbered"><td class="num">2.</td><td><a href="Elaboration and Compilation/#elaboration-and-compilation">精译与编译</a></td></tr><tr class="numbered"><td class="num">3.</td><td><a href="Interacting-with-Lean/#interaction">与 Lean 交互</a></td></tr><tr class="numbered"><td class="num">4.</td><td><a href="The Type System/#type-system">类型系统</a></td></tr><tr class="numbered"><td class="num">5.</td><td><a href="Source Files and Modules/#files">源文件与模块</a></td></tr><tr class="numbered"><td class="num">6.</td><td><a href="Namespaces and Sections/#namespaces-sections">命名空间与区段</a></td></tr><tr class="numbered"><td class="num">7.</td><td><a href="Definitions/#definitions">定义</a></td></tr><tr class="numbered"><td class="num">8.</td><td><a href="Axioms/#axioms">公理</a></td></tr><tr class="numbered"><td class="num">9.</td><td><a href="Attributes/#attributes">属性</a></td></tr><tr class="numbered"><td class="num">10.</td><td><a href="Type-Classes/#type-classes">类型类</a></td></tr><tr class="numbered"><td class="num">11.</td><td><a href="Coercions/#coercions">强制转换</a></td></tr><tr class="numbered"><td class="num">12.</td><td><a href="Run-Time-Code/#runtime">运行时代码</a></td></tr><tr class="numbered"><td class="num">13.</td><td><a href="Terms/#terms">项</a></td></tr><tr class="numbered"><td class="num">14.</td><td><a href="Tactic-Proofs/#tactics">策略证明</a></td></tr><tr class="numbered"><td class="num">15.</td><td><a href="The-Simplifier/#the-simplifier">简化器</a></td></tr><tr class="numbered"><td class="num">16.</td><td><a href="The--grind--tactic/#grind-tactic"><code>grind</code> 策略</a></td></tr><tr class="numbered"><td class="num">17.</td><td><a href="The--mvcgen--tactic/#mvcgen-tactic"><code>mvcgen</code> 策略</a></td></tr><tr class="numbered"><td class="num">18.</td><td><a href="Functors___-Monads-and--do--Notation/#monads-and-do">函子、单子与 <code>do</code> 记法</a></td></tr><tr class="numbered"><td class="num">19.</td><td><a href="Basic-Propositions/#basic-props">基本命题</a></td></tr><tr class="numbered"><td class="num">20.</td><td><a href="Basic-Types/#basic-types">基本类型</a></td></tr><tr class="numbered"><td class="num">21.</td><td><a href="IO/#io">IO</a></td></tr><tr class="numbered"><td class="num">22.</td><td><a href="Iterators/#iterators">迭代器</a></td></tr><tr class="numbered"><td class="num">23.</td><td><a href="Notations-and-Macros/#language-extension">记法与宏</a></td></tr><tr class="numbered"><td class="num">24.</td><td><a href="Build-Tools-and-Distribution/#build-tools-and-distribution">构建工具与发行</a></td></tr><tr class="unnumbered"><td class="num"><td><a href="ValidatingProofs/#validating-proofs">验证 Lean 证明</a></td></tr><tr class="unnumbered"><td class="num"><td><a href="Error-Explanations/#Lean-__________________--Error-Explanations">错误说明</a></td></tr><tr class="current unnumbered"><td class="num"><td><a href="releases/#release-notes">发行说明</a></td></tr><tr class="unnumbered"><td class="num"><td><a href="platforms/#platforms">支持的平台</a></td></tr><tr class="unnumbered"><td class="num"><td><a href="the-index/#index">索引</a></td></tr></table></div>
-            <div class="split-toc">
-              <div class="title">
-                <label for="--verso-manual-toc-release-notes" class="toggle-split-toc"><input type="checkbox" class="toggle-split-toc" id="--verso-manual-toc-release-notes" checked="checked"></label><span class="unnumbered"></span><span class=""><a href="releases/#release-notes">发行说明</a></span></div>
-              <table><tr class="unnumbered"><td class="num"><td><a href="releases/v4.34.0/#release-v4___34___0">Lean4.34.0-rc1 (2026-08-10)</a></td></tr><tr class="unnumbered"><td class="num"><td><a href="releases/v4.33.0/#release-v4___33___0">Lean4.33.0 (2026-08-10)</a></td></tr><tr class="unnumbered"><td class="num"><td><a href="releases/v4.32.2/#release-v4___32___2">Lean4.32.2 (2026-07-28)</a></td></tr><tr class="unnumbered"><td class="num"><td><a href="releases/v4.32.1/#release-v4___32___1">Lean4.32.1 (2026-07-22)</a></td></tr><tr class="unnumbered"><td class="num"><td><a href="releases/v4.32.0/#release-v4___32___0">Lean4.32.0 (2026-07-13)</a></td></tr><tr class="unnumbered"><td class="num"><td><a href="releases/v4.31.0/#release-v4___31___0">Lean4.31.0 (2026-06-13)</a></td></tr><tr class="unnumbered"><td class="num"><td><a href="releases/v4.30.0/#release-v4___30___0">Lean4.30.0 (2026-05-26)</a></td></tr><tr class="unnumbered"><td class="num"><td><a href="releases/v4.29.1/#release-v4___29___1">Lean4.29.1 (2026-04-14)</a></td></tr><tr class="unnumbered"><td class="num"><td><a href="releases/v4.29.0/#release-v4___29___0">Lean4.29.0 (2026-03-27)</a></td></tr><tr class="unnumbered"><td class="num"><td><a href="releases/v4.28.1/#release-v4___28___1">Lean4.28.1 (2026-04-14)</a></td></tr><tr class="unnumbered"><td class="num"><td><a href="releases/v4.28.0/#release-v4___28___0">Lean4.28.0 (2026-02-17)</a></td></tr><tr class="unnumbered"><td class="num"><td><a href="releases/v4.27.0/#release-v4___27___0">Lean 4.27.0 (2026-01-24)</a></td></tr><tr class="unnumbered"><td class="num"><td><a href="releases/v4.26.0/#release-v4___26___0">Lean 4.26.0 (2025-12-13)</a></td></tr><tr class="unnumbered"><td class="num"><td><a href="releases/v4.25.1/#release-v4___25___1">Lean 4.25.1 (2025-11-18)</a></td></tr><tr class="unnumbered"><td class="num"><td><a href="releases/v4.25.0/#release-v4___25___0">Lean 4.25.0 (2025-11-14)</a></td></tr><tr class="unnumbered"><td class="num"><td><a href="releases/v4.24.0/#release-v4___24___0">Lean 4.24.0 (2025-10-14)</a></td></tr><tr class="unnumbered"><td class="num"><td><a href="releases/v4.23.0/#release-v4___23___0">Lean 4.23.0 (2025-09-15)</a></td></tr><tr class="unnumbered"><td class="num"><td><a href="releases/v4.22.0/#release-v4___22___0">Lean 4.22.0 (2025-08-14)</a></td></tr><tr class="unnumbered"><td class="num"><td><a href="releases/v4.21.0/#release-v4___21___0">Lean 4.21.0 (2025-06-30)</a></td></tr><tr class="unnumbered"><td class="num"><td><a href="releases/v4.20.0/#release-v4___20___0">Lean 4.20.0 (2025-06-02)</a></td></tr><tr class="unnumbered"><td class="num"><td><a href="releases/v4.19.0/#release-v4___19___0">Lean 4.19.0 (2025-05-01)</a></td></tr><tr class="unnumbered"><td class="num"><td><a href="releases/v4.18.0/#release-v4___18___0">Lean 4.18.0 (2025-04-02)</a></td></tr><tr class="unnumbered"><td class="num"><td><a href="releases/v4.17.0/#release-v4___17___0">Lean 4.17.0 (2025-03-03)</a></td></tr><tr class="unnumbered"><td class="num"><td><a href="releases/v4.16.0/#release-v4___16___0">Lean 4.16.0 (2025-02-03)</a></td></tr><tr class="unnumbered"><td class="num"><td><a href="releases/v4.15.0/#release-v4___15___0">Lean 4.15.0 (2025-01-04)</a></td></tr><tr class="unnumbered"><td class="num"><td><a href="releases/v4.14.0/#release-v4___14___0">Lean 4.14.0 (2024-12-02)</a></td></tr><tr class="unnumbered"><td class="num"><td><a href="releases/v4.13.0/#release-v4___13___0">Lean 4.13.0 (2024-11-01)</a></td></tr><tr class="unnumbered"><td class="num"><td><a href="releases/v4.12.0/#release-v4___12___0">Lean 4.12.0 (2024-10-01)</a></td></tr><tr class="unnumbered"><td class="num"><td><a href="releases/v4.11.0/#release-v4___11___0">Lean 4.11.0 (2024-09-02)</a></td></tr><tr class="unnumbered"><td class="num"><td><a href="releases/v4.10.0/#release-v4___10___0">Lean 4.10.0 (2024-07-31)</a></td></tr><tr class="unnumbered"><td class="num"><td><a href="releases/v4.9.0/#release-v4___9___0">Lean 4.9.0 (2024-07-01)</a></td></tr><tr class="unnumbered"><td class="num"><td><a href="releases/v4.8.0/#release-v4___8___0">Lean 4.8.0 (2024-06-05)</a></td></tr><tr class="unnumbered"><td class="num"><td><a href="releases/v4.7.0/#release-v4___7___0">Lean 4.7.0 (2024-04-03)</a></td></tr><tr class="unnumbered"><td class="num"><td><a href="releases/v4.6.0/#release-v4___6___0">Lean 4.6.0 (2024-02-29)</a></td></tr><tr class="unnumbered"><td class="num"><td><a href="releases/v4.5.0/#release-v4___5___0">Lean 4.5.0 (2024-02-01)</a></td></tr><tr class="unnumbered"><td class="num"><td><a href="releases/v4.4.0/#release-v4___4___0">Lean 4.4.0 (2023-12-31)</a></td></tr><tr class="unnumbered"><td class="num"><td><a href="releases/v4.3.0/#release-v4___3___0">Lean 4.3.0 (2023-11-30)</a></td></tr><tr class="unnumbered"><td class="num"><td><a href="releases/v4.2.0/#release-v4___2___0">Lean 4.2.0 (2023-10-31)</a></td></tr><tr class="unnumbered"><td class="num"><td><a href="releases/v4.1.0/#release-v4___1___0">Lean 4.1.0 (2023-09-26)</a></td></tr><tr class="unnumbered"><td class="num"><td><a href="releases/v4.0.0/#release-v4___0___0">Lean 4.0.0 (2023-09-08)</a></td></tr><tr class="unnumbered"><td class="num"><td><a href="releases/v4.0.0-m5/#release-v4___0___0-m5">Lean 4.0.0-m5 (2022-08-22)</a></td></tr><tr class="current unnumbered"><td class="num"><td><a href="releases/v4.0.0-m4/#release-v4___0___0-m4">Lean 4.0.0-m4 (2022-03-27)</a></td></tr><tr class="unnumbered"><td class="num"><td><a href="releases/v4.0.0-m3/#release-v4___0___0-m3">Lean 4.0.0-m3 (2022-01-31)</a></td></tr><tr class="unnumbered"><td class="num"><td><a href="releases/v4.0.0-m2/#release-v4___0___0-m2">Lean 4.0.0-m2 (2021-03-02)</a></td></tr><tr class="unnumbered"><td class="num"><td><a href="releases/v4.0.0-m1/#release-v4___0___0-m1">Lean 4.0.0-m1 (2021-01-04)</a></td></tr></table></div>
-            <div class="split-toc">
-              <div class="title">
-                <span class="no-toggle"></span><span class="unnumbered"></span><span class="current"><a href="releases/v4.0.0-m4/#release-v4___0___0-m4">Lean 4.0.0-m4 (2022-03-27)</a></span></div>
-              </div>
-            </div>
-          </div>
-        <div class="last">
-          <ul id="meta-links">
-            <li>
-              <a href="https://github.com/Lean-zh/reference-manual">Source Code</a></li>
-            <li>
-              <a href="https://github.com/Lean-zh/reference-manual/issues">Report Issues</a></li>
-            </ul>
-          </div>
-        </nav>
-      <div class="toc-resize-handle"></div>
-      <main><div class="content-wrapper">
-          <nav class="prev-next-buttons">
-            <a class="local-button active" href="releases/v4.0.0-m5/#release-v4___0___0-m5" rel="prev" title="Lean 4.0.0-m5 (2022-08-22)"><span class="arrow">←</span><span class="where">Lean 4.0.0-m5 (2022-08-22)</span></a><a class="local-button active" href="releases/v4.0.0-m3/#release-v4___0___0-m3" rel="next" title="Lean 4.0.0-m3 (2022-01-31)"><span class="where">Lean 4.0.0-m3 (2022-01-31)</span><span class="arrow">→</span></a></nav>
-          <section>
-            <h1>
-              Lean 4.0.0-m4 (2022-03-27)<span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=release-v4___0___0-m4" title="永久链接">🔗</a></span></h1>
-            <p>
-              这是 Lean 4 的第四个里程碑版本。它包含许多改进和许多新特性。
-自上一个里程碑以来，我们已有 600 多次提交。</p>
-            <p>
-              贡献者：</p>
-            <pre>$ git shortlog -s -n v4.0.0-m3..v4.0.0-m4
+</script><script>
+(() => {
+  const setupHover = () => {
+    document.querySelectorAll(".marginalia-reference").forEach(reference => {
+      const marker = reference.querySelector("[aria-details]");
+      const note = marker && document.getElementById(marker.getAttribute("aria-details"));
+      if (!note) return;
+
+      const highlight = () => {
+        reference.classList.add("marginalia-highlight");
+        note.classList.add("marginalia-highlight");
+      };
+      const unhighlight = () => {
+        reference.classList.remove("marginalia-highlight");
+        note.classList.remove("marginalia-highlight");
+      };
+      reference.addEventListener("pointerenter", highlight);
+      reference.addEventListener("pointerleave", unhighlight);
+      note.addEventListener("pointerenter", highlight);
+      note.addEventListener("pointerleave", unhighlight);
+    });
+  };
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", setupHover, {once: true});
+  } else {
+    setupHover();
+  }
+
+  const mobile = matchMedia("(width <= 700px)");
+  mobile.addEventListener("change", event => {
+    if (!event.matches) {
+      document.querySelectorAll(".marginalia-note:popover-open")
+        .forEach(note => note.hidePopover());
+    }
+  });
+})();
+</script><script defer="defer" data-domain="www.leanprover.cn" src="https://plausible.io/js/script.outbound-links.js"></script><script src="static/metadata.js"></script><script src="static/print.js"></script><link rel="stylesheet" href="static/colors.css"/><link rel="stylesheet" href="static/theme.css"/><link rel="stylesheet" href="static/print.css"/><link rel="stylesheet" href="static/fonts/source-serif/source-serif-text.css"/><link rel="stylesheet" href="static/fonts/source-code-pro/source-code-pro.css"/><link rel="stylesheet" href="static/fonts/source-sans/source-sans-3.css"/><link rel="stylesheet" href="static/fonts/noto-sans-mono/noto-sans-mono.css"/></head><body><header><div class="header-logo-wrapper"><a href id="logo"><img src="static/lean_logo.svg"/></a></div><div class="header-title-wrapper"><a href class="header-title"><h1>Lean 语言参考手册</h1></a></div></header><label for="toggle-toc" id="toggle-toc-click"><span class="line line1"></span><span class="line line2"></span><span class="line line3"></span></label><div class="with-toc"><div class="toc-backdrop" onclick="document.getElementById('toggle-toc-click')?.click()"></div><nav id="toc"><input type="checkbox" id="toggle-toc"/><div class="first"><a href class="toc-title"><h1>Lean 语言参考手册</h1></a><div class="split-tocs"><div class="split-toc book"><div class="title"><label for="--verso-manual-toc-----bookRoot" class="toggle-split-toc"><input type="checkbox" class="toggle-split-toc" id="--verso-manual-toc-----bookRoot"/></label><span class>目录</span></div><table><tr class="numbered"><td class="num">1.</td><td><a href="Introduction/#introduction">简介</a></td></tr><tr class="numbered"><td class="num">2.</td><td><a href="Elaboration and Compilation/#elaboration-and-compilation">精译与编译</a></td></tr><tr class="numbered"><td class="num">3.</td><td><a href="Interacting-with-Lean/#interaction">与 Lean 交互</a></td></tr><tr class="numbered"><td class="num">4.</td><td><a href="The Type System/#type-system">类型系统</a></td></tr><tr class="numbered"><td class="num">5.</td><td><a href="Source Files and Modules/#files">源文件与模块</a></td></tr><tr class="numbered"><td class="num">6.</td><td><a href="Namespaces and Sections/#namespaces-sections">命名空间与区段</a></td></tr><tr class="numbered"><td class="num">7.</td><td><a href="Definitions/#definitions">定义</a></td></tr><tr class="numbered"><td class="num">8.</td><td><a href="Axioms/#axioms">公理</a></td></tr><tr class="numbered"><td class="num">9.</td><td><a href="Attributes/#attributes">属性</a></td></tr><tr class="numbered"><td class="num">10.</td><td><a href="Type-Classes/#type-classes">类型类</a></td></tr><tr class="numbered"><td class="num">11.</td><td><a href="Coercions/#coercions">强制转换</a></td></tr><tr class="numbered"><td class="num">12.</td><td><a href="Run-Time-Code/#runtime">运行时代码</a></td></tr><tr class="numbered"><td class="num">13.</td><td><a href="Terms/#terms">项</a></td></tr><tr class="numbered"><td class="num">14.</td><td><a href="Tactic-Proofs/#tactics">策略证明</a></td></tr><tr class="numbered"><td class="num">15.</td><td><a href="The-Simplifier/#the-simplifier">简化器</a></td></tr><tr class="numbered"><td class="num">16.</td><td><a href="The--grind--tactic/#grind-tactic"><code>grind</code> 策略</a></td></tr><tr class="numbered"><td class="num">17.</td><td><a href="The--vcgen--tactic/#vcgen-tactic"><code>vcgen</code> 策略</a></td></tr><tr class="numbered"><td class="num">18.</td><td><a href="The--mvcgen--tactic/#mvcgen-tactic"><code>mvcgen</code> 策略</a></td></tr><tr class="numbered"><td class="num">19.</td><td><a href="Functors___-Monads-and--do--Notation/#monads-and-do">函子、单子与 <code>do</code> 记法</a></td></tr><tr class="numbered"><td class="num">20.</td><td><a href="Basic-Propositions/#basic-props">基本命题</a></td></tr><tr class="numbered"><td class="num">21.</td><td><a href="Basic-Types/#basic-types">基本类型</a></td></tr><tr class="numbered"><td class="num">22.</td><td><a href="IO/#io">IO</a></td></tr><tr class="numbered"><td class="num">23.</td><td><a href="Iterators/#iterators">迭代器</a></td></tr><tr class="numbered"><td class="num">24.</td><td><a href="Notations-and-Macros/#language-extension">记法与宏</a></td></tr><tr class="numbered"><td class="num">25.</td><td><a href="Build-Tools-and-Distribution/#build-tools-and-distribution">构建工具与发行</a></td></tr><tr class="numbered"><td class="num">26.</td><td><a href="Linters-and-Code-Quality/#linters">代码检查器与代码质量</a></td></tr><tr class="numbered"><td class="num">27.</td><td><a href="External-Kernels/#external-kernels">外部内核</a></td></tr><tr class="unnumbered"><td class="num"></td><td><a href="ValidatingProofs/#validating-proofs">验证 Lean 证明</a></td></tr><tr class="unnumbered"><td class="num"></td><td><a href="Error-Explanations/#Lean-__________________--Error-Explanations">错误说明</a></td></tr><tr class="current unnumbered"><td class="num"></td><td><a href="releases/#release-notes">发行说明</a></td></tr><tr class="unnumbered"><td class="num"></td><td><a href="platforms/#platforms">支持的平台</a></td></tr><tr class="unnumbered"><td class="num"></td><td><a href="the-index/#index">索引</a></td></tr></table></div><div class="split-toc"><div class="title"><label for="--verso-manual-toc-release-notes" class="toggle-split-toc"><input type="checkbox" class="toggle-split-toc" id="--verso-manual-toc-release-notes" checked="checked"/></label><span class="unnumbered"></span><span class><a href="releases/#release-notes">发行说明</a></span></div><table><tr class="unnumbered"><td class="num"></td><td><a href="releases/v4.36.0/#release-v4___36___0">Lean 4.36.0-rc2 (2026-10-27)</a></td></tr><tr class="unnumbered"><td class="num"></td><td><a href="releases/v4.35.0/#release-v4___35___0">Lean 4.35.0 (2026-10-12)</a></td></tr><tr class="unnumbered"><td class="num"></td><td><a href="releases/v4.34.1/#release-v4___34___1">Lean 4.34.1 (2026-09-24)</a></td></tr><tr class="unnumbered"><td class="num"></td><td><a href="releases/v4.34.0/#release-v4___34___0">Lean 4.34.0 (2026-09-14)</a></td></tr><tr class="unnumbered"><td class="num"></td><td><a href="releases/v4.33.1/#release-v4___33___1">Lean 4.33.1 (2026-08-21)</a></td></tr><tr class="unnumbered"><td class="num"></td><td><a href="releases/v4.33.0/#release-v4___33___0">Lean4.33.0 (2026-08-10)</a></td></tr><tr class="unnumbered"><td class="num"></td><td><a href="releases/v4.32.2/#release-v4___32___2">Lean4.32.2 (2026-07-28)</a></td></tr><tr class="unnumbered"><td class="num"></td><td><a href="releases/v4.32.1/#release-v4___32___1">Lean4.32.1 (2026-07-22)</a></td></tr><tr class="unnumbered"><td class="num"></td><td><a href="releases/v4.32.0/#release-v4___32___0">Lean4.32.0 (2026-07-13)</a></td></tr><tr class="unnumbered"><td class="num"></td><td><a href="releases/v4.31.0/#release-v4___31___0">Lean4.31.0 (2026-06-13)</a></td></tr><tr class="unnumbered"><td class="num"></td><td><a href="releases/v4.30.0/#release-v4___30___0">Lean4.30.0 (2026-05-26)</a></td></tr><tr class="unnumbered"><td class="num"></td><td><a href="releases/v4.29.1/#release-v4___29___1">Lean4.29.1 (2026-04-14)</a></td></tr><tr class="unnumbered"><td class="num"></td><td><a href="releases/v4.29.0/#release-v4___29___0">Lean4.29.0 (2026-03-27)</a></td></tr><tr class="unnumbered"><td class="num"></td><td><a href="releases/v4.28.1/#release-v4___28___1">Lean4.28.1 (2026-04-14)</a></td></tr><tr class="unnumbered"><td class="num"></td><td><a href="releases/v4.28.0/#release-v4___28___0">Lean4.28.0 (2026-02-17)</a></td></tr><tr class="unnumbered"><td class="num"></td><td><a href="releases/v4.27.0/#release-v4___27___0">Lean 4.27.0 (2026-01-24)</a></td></tr><tr class="unnumbered"><td class="num"></td><td><a href="releases/v4.26.0/#release-v4___26___0">Lean 4.26.0 (2025-12-13)</a></td></tr><tr class="unnumbered"><td class="num"></td><td><a href="releases/v4.25.1/#release-v4___25___1">Lean 4.25.1 (2025-11-18)</a></td></tr><tr class="unnumbered"><td class="num"></td><td><a href="releases/v4.25.0/#release-v4___25___0">Lean 4.25.0 (2025-11-14)</a></td></tr><tr class="unnumbered"><td class="num"></td><td><a href="releases/v4.24.0/#release-v4___24___0">Lean 4.24.0 (2025-10-14)</a></td></tr><tr class="unnumbered"><td class="num"></td><td><a href="releases/v4.23.0/#release-v4___23___0">Lean 4.23.0 (2025-09-15)</a></td></tr><tr class="unnumbered"><td class="num"></td><td><a href="releases/v4.22.0/#release-v4___22___0">Lean 4.22.0 (2025-08-14)</a></td></tr><tr class="unnumbered"><td class="num"></td><td><a href="releases/v4.21.0/#release-v4___21___0">Lean 4.21.0 (2025-06-30)</a></td></tr><tr class="unnumbered"><td class="num"></td><td><a href="releases/v4.20.0/#release-v4___20___0">Lean 4.20.0 (2025-06-02)</a></td></tr><tr class="unnumbered"><td class="num"></td><td><a href="releases/v4.19.0/#release-v4___19___0">Lean 4.19.0 (2025-05-01)</a></td></tr><tr class="unnumbered"><td class="num"></td><td><a href="releases/v4.18.0/#release-v4___18___0">Lean 4.18.0 (2025-04-02)</a></td></tr><tr class="unnumbered"><td class="num"></td><td><a href="releases/v4.17.0/#release-v4___17___0">Lean 4.17.0 (2025-03-03)</a></td></tr><tr class="unnumbered"><td class="num"></td><td><a href="releases/v4.16.0/#release-v4___16___0">Lean 4.16.0 (2025-02-03)</a></td></tr><tr class="unnumbered"><td class="num"></td><td><a href="releases/v4.15.0/#release-v4___15___0">Lean 4.15.0 (2025-01-04)</a></td></tr><tr class="unnumbered"><td class="num"></td><td><a href="releases/v4.14.0/#release-v4___14___0">Lean 4.14.0 (2024-12-02)</a></td></tr><tr class="unnumbered"><td class="num"></td><td><a href="releases/v4.13.0/#release-v4___13___0">Lean 4.13.0 (2024-11-01)</a></td></tr><tr class="unnumbered"><td class="num"></td><td><a href="releases/v4.12.0/#release-v4___12___0">Lean 4.12.0 (2024-10-01)</a></td></tr><tr class="unnumbered"><td class="num"></td><td><a href="releases/v4.11.0/#release-v4___11___0">Lean 4.11.0 (2024-09-02)</a></td></tr><tr class="unnumbered"><td class="num"></td><td><a href="releases/v4.10.0/#release-v4___10___0">Lean 4.10.0 (2024-07-31)</a></td></tr><tr class="unnumbered"><td class="num"></td><td><a href="releases/v4.9.0/#release-v4___9___0">Lean 4.9.0 (2024-07-01)</a></td></tr><tr class="unnumbered"><td class="num"></td><td><a href="releases/v4.8.0/#release-v4___8___0">Lean 4.8.0 (2024-06-05)</a></td></tr><tr class="unnumbered"><td class="num"></td><td><a href="releases/v4.7.0/#release-v4___7___0">Lean 4.7.0 (2024-04-03)</a></td></tr><tr class="unnumbered"><td class="num"></td><td><a href="releases/v4.6.0/#release-v4___6___0">Lean 4.6.0 (2024-02-29)</a></td></tr><tr class="unnumbered"><td class="num"></td><td><a href="releases/v4.5.0/#release-v4___5___0">Lean 4.5.0 (2024-02-01)</a></td></tr><tr class="unnumbered"><td class="num"></td><td><a href="releases/v4.4.0/#release-v4___4___0">Lean 4.4.0 (2023-12-31)</a></td></tr><tr class="unnumbered"><td class="num"></td><td><a href="releases/v4.3.0/#release-v4___3___0">Lean 4.3.0 (2023-11-30)</a></td></tr><tr class="unnumbered"><td class="num"></td><td><a href="releases/v4.2.0/#release-v4___2___0">Lean 4.2.0 (2023-10-31)</a></td></tr><tr class="unnumbered"><td class="num"></td><td><a href="releases/v4.1.0/#release-v4___1___0">Lean 4.1.0 (2023-09-26)</a></td></tr><tr class="unnumbered"><td class="num"></td><td><a href="releases/v4.0.0/#release-v4___0___0">Lean 4.0.0 (2023-09-08)</a></td></tr><tr class="unnumbered"><td class="num"></td><td><a href="releases/v4.0.0-m5/#release-v4___0___0-m5">Lean 4.0.0-m5 (2022-08-22)</a></td></tr><tr class="current unnumbered"><td class="num"></td><td><a href="releases/v4.0.0-m4/#release-v4___0___0-m4">Lean 4.0.0-m4 (2022-03-27)</a></td></tr><tr class="unnumbered"><td class="num"></td><td><a href="releases/v4.0.0-m3/#release-v4___0___0-m3">Lean 4.0.0-m3 (2022-01-31)</a></td></tr><tr class="unnumbered"><td class="num"></td><td><a href="releases/v4.0.0-m2/#release-v4___0___0-m2">Lean 4.0.0-m2 (2021-03-02)</a></td></tr><tr class="unnumbered"><td class="num"></td><td><a href="releases/v4.0.0-m1/#release-v4___0___0-m1">Lean 4.0.0-m1 (2021-01-04)</a></td></tr></table></div><div class="split-toc"><div class="title"><span class="no-toggle"></span><span class="unnumbered"></span><span class="current"><a href="releases/v4.0.0-m4/#release-v4___0___0-m4">Lean 4.0.0-m4 (2022-03-27)</a></span></div></div></div></div><div class="last"><ul id="meta-links"><li><a href="https://github.com/Lean-zh/reference-manual">Source Code</a></li><li><a href="https://github.com/Lean-zh/reference-manual/issues">Report Issues</a></li></ul></div></nav><div class="toc-resize-handle"></div><main><div class="content-wrapper"><nav class="prev-next-buttons"><a class="local-button active" href="releases/v4.0.0-m5/#release-v4___0___0-m5" rel="prev" title="Lean 4.0.0-m5 (2022-08-22)"><span class="arrow">←</span><span class="where">Lean 4.0.0-m5 (2022-08-22)</span></a><a class="local-button active" href="releases/v4.0.0-m3/#release-v4___0___0-m3" rel="next" title="Lean 4.0.0-m3 (2022-01-31)"><span class="where">Lean 4.0.0-m3 (2022-01-31)</span><span class="arrow">→</span></a></nav><section><h1 id="release-v4___0___0-m4">Lean 4.0.0-m4 (2022-03-27)<span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=release-v4.0.0-m4" title="永久链接">🔗</a></span></h1><p>这是 Lean 4 的第四个里程碑版本。它包含许多改进和许多新特性。
+自上一个里程碑以来，我们已有 600 多次提交。</p><p>贡献者：</p><pre>$ git shortlog -s -n v4.0.0-m3..v4.0.0-m4
    501  Leonardo de Moura
     65  Sebastian Ullrich
     11  Daniel Fabian
@@ -2749,23 +2998,15 @@ window.addEventListener("load", () => {
      1  Xubai Wang
      1  casavaca
      1  zygi
-</pre><ul>
-              <li>
-                <p>
-                  <code>simp</code> 现在接受用户自定义的 simp 属性。你可以创建一个文件（例如 <code>MySimp.lean</code>），其中包含如下内容，以定义新的 <code>simp</code> 属性</p>
-                <pre>import Lean
+</pre><ul><li><p><code>simp</code> 现在接受用户自定义的 simp 属性。你可以创建一个文件（例如 <code>MySimp.lean</code>），其中包含如下内容，以定义新的 <code>simp</code> 属性</p><pre>import Lean
 open Lean.Meta
 
 initialize my_ext : SimpExtension ← registerSimpAttr `my_simp "my own simp attribute"
-</pre><p>
-                  如果你不需要访问 <code>my_ext</code>，也可以使用如下宏</p>
-                <pre>import Lean
+</pre><p>如果你不需要访问 <code>my_ext</code>，也可以使用如下宏</p><pre>import Lean
 
 register_simp_attr my_simp "my own simp attribute"
-</pre><p>
-                  请注意，新的 <code>simp</code> 属性在定义它的那个 Lean 文件中并不会启用。
-下面是一个使用这一新特性的小例子。</p>
-                <pre>import MySimp
+</pre><p>请注意，新的 <code>simp</code> 属性在定义它的那个 Lean 文件中并不会启用。
+下面是一个使用这一新特性的小例子。</p><pre>import MySimp
 
 def f (x : Nat) := x + 2
 def g (x : Nat) := x + 1
@@ -2775,142 +3016,48 @@ def g (x : Nat) := x + 1
 
 example : f x + g x = 2*x + 3 := by
   simp_arith [my_simp]
-</pre></li>
-              <li>
-                <p>
-                  扩展 <code>match</code> 语法：单个分支中可以有多个左侧模式。例如：</p>
-                <pre>def fib : Nat → Nat
+</pre></li><li><p>扩展 <code>match</code> 语法：单个分支中可以有多个左侧模式。例如：</p><pre>def fib : Nat → Nat
 | 0 | 1 =&gt; 1
 | n+2 =&gt; fib n + fib (n+1)
-</pre><p>
-                  这一特性曾在 <a href="https://github.com/leanprover/lean4/issues/371">issue 371</a> 中讨论。它通过宏展开实现，因此下面这样的写法现在会被接受。</p>
-                <pre>inductive StrOrNum where
+</pre><p>这一特性曾在 <a href="https://github.com/leanprover/lean4/issues/371">issue 371</a> 中讨论。它通过宏展开实现，因此下面这样的写法现在会被接受。</p><pre>inductive StrOrNum where
   | S (s : String)
   | I (i : Int)
 
 def StrOrNum.asString (x : StrOrNum) :=
   match x with
   | I a | S a =&gt; toString a
-</pre></li>
-              <li>
-                <p>
-                  改进 <code>#eval</code> 命令。现在，当它无法为结果类型合成 <code>Lean.MetaEval</code> 实例时，会先对类型做归约再重试。下面的例子现在无需额外注解即可工作</p>
-                <pre>def Foo := List Nat
+</pre></li><li><p>改进 <code>#eval</code> 命令。现在，当它无法为结果类型合成 <code>Lean.MetaEval</code> 实例时，会先对类型做归约再重试。下面的例子现在无需额外注解即可工作</p><pre>def Foo := List Nat
 
 def test (x : Nat) : Foo :=
   [x, x+1, x+2]
 
 #eval test 4
-</pre></li>
-              <li>
-                <p>
-                  <code>rw</code> 策略现在可以对给定定义应用自动生成的等式定理。例如：</p>
-                <pre>example (a : Nat) (h : n = 1) : [a].length = n := by
+</pre></li><li><p><code>rw</code> 策略现在可以对给定定义应用自动生成的等式定理。例如：</p><pre>example (a : Nat) (h : n = 1) : [a].length = n := by
   rw [List.length]
   trace_state -- .. |- [].length + 1 = n
   rw [List.length]
   trace_state -- .. |- 0 + 1 = n
   rw [h]
-</pre></li>
-              <li>
-                <p>
-                  <a href="https://github.com/leanprover/lean4/pull/1023">自动补全的模糊匹配</a></p>
-                </li>
-              <li>
-                <p>
-                  将点记法 <code>x.field</code> 扩展到箭头类型。如果 <code>x</code> 的类型是箭头类型，我们会查找 <code>Function.field</code>。
-例如，给定 <code>f : Nat → Nat</code> 和 <code>g : Nat → Nat</code>，<code>f.comp g</code> 现在表示 <code>Function.comp f g</code>。</p>
-                </li>
-              <li>
-                <p>
-                  新的 <code>.&lt;identifier&gt;</code> 记法现在也可用于期望函数类型的位置。</p>
-                <pre>example (xs : List Nat) : List Nat := .map .succ xs
+</pre></li><li><p><a href="https://github.com/leanprover/lean4/pull/1023">自动补全的模糊匹配</a></p></li><li><p>将点记法 <code>x.field</code> 扩展到箭头类型。如果 <code>x</code> 的类型是箭头类型，我们会查找 <code>Function.field</code>。
+例如，给定 <code>f : Nat → Nat</code> 和 <code>g : Nat → Nat</code>，<code>f.comp g</code> 现在表示 <code>Function.comp f g</code>。</p></li><li><p>新的 <code>.&lt;identifier&gt;</code> 记法现在也可用于期望函数类型的位置。</p><pre>example (xs : List Nat) : List Nat := .map .succ xs
 example (xs : List α) : Std.RBTree α ord := xs.foldl .insert ∅
-</pre></li>
-              <li>
-                <p>
-                  <a href="https://github.com/leanprover/lean4/pull/1014">为语言服务器添加代码折叠支持</a>。</p>
-                </li>
-              <li>
-                <p>
-                  在 <code>do</code> 块中支持记法 <code>let &lt;pattern&gt; := &lt;expr&gt; | &lt;else-case&gt;</code>。</p>
-                </li>
-              <li>
-                <p>
-                  移除对“自动” <code>pure</code> 的支持。在这条 <a href="https://leanprover.zulipchat.com/#narrow/stream/270676-lean4/topic/for.2C.20unexpected.20need.20for.20type.20ascription/near/269083574">Zulip 讨论串</a>中，大家的共识似乎是“自动” <code>pure</code> 带来的困惑大于价值。</p>
-                </li>
-              <li>
-                <p>
-                  移除 <code>congr</code> 定理中“左侧所有函数参数都必须是自由变量”的限制。例如，下面的定理现在是合法的 <code>congr</code> 定理。</p>
-                <pre>@[congr]
+</pre></li><li><p><a href="https://github.com/leanprover/lean4/pull/1014">为语言服务器添加代码折叠支持</a>。</p></li><li><p>在 <code>do</code> 块中支持记法 <code>let &lt;pattern&gt; := &lt;expr&gt; | &lt;else-case&gt;</code>。</p></li><li><p>移除对“自动” <code>pure</code> 的支持。在这条 <a href="https://leanprover.zulipchat.com/#narrow/stream/270676-lean4/topic/for.2C.20unexpected.20need.20for.20type.20ascription/near/269083574">Zulip 讨论串</a>中，大家的共识似乎是“自动” <code>pure</code> 带来的困惑大于价值。</p></li><li><p>移除 <code>congr</code> 定理中“左侧所有函数参数都必须是自由变量”的限制。例如，下面的定理现在是合法的 <code>congr</code> 定理。</p><pre>@[congr]
 theorem dep_congr [DecidableEq ι] {p : ι → Set α} [∀ i, Inhabited (p i)] :
                   ∀ {i j} (h : i = j) (x : p i) (y : α) (hx : x = y), Pi.single (f := (p ·)) i x = Pi.single (f := (p ·)) j ⟨y, hx ▸ h ▸ x.2⟩ :=
-</pre></li>
-              <li>
-                <p>
-                  <a href="https://github.com/leanprover/lean4/issues/988">部分应用的 congruence 定理。</a></p>
-                </li>
-              <li>
-                <p>
-                  在期望类型是元变量时，改进精译延后启发式。Lean 现在会先归约期望类型，再执行测试。</p>
-                </li>
-              <li>
-                <p>
-                  <a href="https://github.com/leanprover/lean4/pull/985">移除已弃用的 leanpkg</a>，改用现已随 Lean 一起提供的 <a href="https://github.com/leanprover/lake">Lake</a>。</p>
-                </li>
-              <li>
-                <p>
-                  对“跳转到定义”和“查找所有引用”的准确性做了多项改进。</p>
-                </li>
-              <li>
-                <p>
-                  自动生成的 congruence lemma 现已支持对证明和 <code>Decidable</code> 实例进行 cast（见 <a href="https://github.com/leanprover/lean4/issues/988">wishlist</a>）。</p>
-                </li>
-              <li>
-                <p>
-                  将选项 <code>autoBoundImplicitLocal</code> 重命名为 <code>autoImplicit</code>。</p>
-                </li>
-              <li>
-                <p>
-                  <a href="https://github.com/leanprover/lean4/pull/1011">放宽 auto-implicit 限制</a>。命令 <code>set_option relaxedAutoImplicit false</code> 可关闭这些放宽规则。</p>
-                </li>
-              <li>
-                <p>
-                  如果目标中存在 <code>False.elim</code> 应用，<code>contradiction</code> 策略现在会直接关闭该目标。</p>
-                </li>
-              <li>
-                <p>
-                  将策略 <code>byCases</code> 重命名为 <code>by_cases</code>（动机：统一命名约定）。</p>
-                </li>
-              <li>
-                <p>
-                  模式中出现的局部实例现在会被类型类解析过程纳入考虑。例如：</p>
-                <pre>def concat : List ((α : Type) × ToString α × α) → String
+</pre></li><li><p><a href="https://github.com/leanprover/lean4/issues/988">部分应用的 congruence 定理。</a></p></li><li><p>在期望类型是元变量时，改进精译延后启发式。Lean 现在会先归约期望类型，再执行测试。</p></li><li><p><a href="https://github.com/leanprover/lean4/pull/985">移除已弃用的 leanpkg</a>，改用现已随 Lean 一起提供的 <a href="https://github.com/leanprover/lake">Lake</a>。</p></li><li><p>对“跳转到定义”和“查找所有引用”的准确性做了多项改进。</p></li><li><p>自动生成的 congruence lemma 现已支持对证明和 <code>Decidable</code> 实例进行 cast（见 <a href="https://github.com/leanprover/lean4/issues/988">wishlist</a>）。</p></li><li><p>将选项 <code>autoBoundImplicitLocal</code> 重命名为 <code>autoImplicit</code>。</p></li><li><p><a href="https://github.com/leanprover/lean4/pull/1011">放宽 auto-implicit 限制</a>。命令 <code>set_option relaxedAutoImplicit false</code> 可关闭这些放宽规则。</p></li><li><p>如果目标中存在 <code>False.elim</code> 应用，<code>contradiction</code> 策略现在会直接关闭该目标。</p></li><li><p>将策略 <code>byCases</code> 重命名为 <code>by_cases</code>（动机：统一命名约定）。</p></li><li><p>模式中出现的局部实例现在会被类型类解析过程纳入考虑。例如：</p><pre>def concat : List ((α : Type) × ToString α × α) → String
   | [] =&gt; ""
   | ⟨_, _, a⟩ :: as =&gt; toString a ++ concat as
-</pre></li>
-              <li>
-                <p>
-                  为 <code>match</code> 表达式提供 motive 的记法已更改。
-之前：</p>
-                <pre>match x, rfl : (y : Nat) → x = y → Nat with
+</pre></li><li><p>为 <code>match</code> 表达式提供 motive 的记法已更改。
+之前：</p><pre>match x, rfl : (y : Nat) → x = y → Nat with
 | 0,   h =&gt; ...
 | x+1, h =&gt; ...
-</pre><p>
-                  现在：</p>
-                <pre>match (motive := (y : Nat) → x = y → Nat) x, rfl with
+</pre><p>现在：</p><pre>match (motive := (y : Nat) → x = y → Nat) x, rfl with
 | 0,   h =&gt; ...
 | x+1, h =&gt; ...
-</pre><p>
-                  有了这一变化，在 <code>match</code> 表达式中为等式证明命名的记法不再对空白敏感。也就是说，
-现在可以写成</p>
-                <pre>match h : sort.swap a b with
+</pre><p>有了这一变化，在 <code>match</code> 表达式中为等式证明命名的记法不再对空白敏感。也就是说，
+现在可以写成</p><pre>match h : sort.swap a b with
 | (r₁, r₂) =&gt; ... -- `h : sort.swap a b = (r₁, r₂)`
-</pre></li>
-              <li>
-                <p>
-                  即使期望类型不是命题，<code>match</code> 表达式的默认行为现在也是 <code>(generalizing := true)</code>。在下面的例子中，过去我们必须手动写出 <code>(generalizing := true)</code>。</p>
-                <pre>inductive Fam : Type → Type 1 where
+</pre></li><li><p>即使期望类型不是命题，<code>match</code> 表达式的默认行为现在也是 <code>(generalizing := true)</code>。在下面的例子中，过去我们必须手动写出 <code>(generalizing := true)</code>。</p><pre>inductive Fam : Type → Type 1 where
   | any : Fam α
   | nat : Nat → Fam Nat
 
@@ -2918,104 +3065,40 @@ example (a : α) (x : Fam α) : α :=
   match x with
   | Fam.any   =&gt; a
   | Fam.nat n =&gt; n
-</pre></li>
-              <li>
-                <p>
-                  现在，在使用良基递归编译互递归定义时，我们使用 <code>PSum</code>（而不是 <code>Sum</code>）。</p>
-                </li>
-              <li>
-                <p>
-                  更好地支持参数化的良基关系。参见 <a href="https://github.com/leanprover/lean4/issues/1017">issue #1017</a>。这一变化会影响底层 <code>termination_by'</code> 提示，因为在构造良基关系类型时，函数参数的固定前缀不再被“打包”。例如，在下面的定义中，<code>as</code> 是固定前缀的一部分，因此不会再被打包。此前版本中，<code>termination_by'</code> 项会写作 <code>measure fun ⟨as, i, _⟩ =&gt; as.size - i</code></p>
-                <pre>def sum (as : Array Nat) (i : Nat) (s : Nat) : Nat :=
+</pre></li><li><p>现在，在使用良基递归编译互递归定义时，我们使用 <code>PSum</code>（而不是 <code>Sum</code>）。</p></li><li><p>更好地支持参数化的良基关系。参见 <a href="https://github.com/leanprover/lean4/issues/1017">issue #1017</a>。这一变化会影响底层 <code>termination_by'</code> 提示，因为在构造良基关系类型时，函数参数的固定前缀不再被“打包”。例如，在下面的定义中，<code>as</code> 是固定前缀的一部分，因此不会再被打包。此前版本中，<code>termination_by'</code> 项会写作 <code>measure fun ⟨as, i, _⟩ =&gt; as.size - i</code></p><pre>def sum (as : Array Nat) (i : Nat) (s : Nat) : Nat :=
   if h : i &lt; as.size then
     sum as (i+1) (s + as.get ⟨i, h⟩)
   else
     s
 termination_by' measure fun ⟨i, _⟩ =&gt; as.size - i
-</pre></li>
-              <li>
-                <p>
-                  为 <code>do</code> 块添加 <code>while &lt;cond&gt; do &lt;do-block&gt;</code>、<code>repeat &lt;do-block&gt;</code> 和 <code>repeat &lt;do-block&gt; until &lt;cond&gt;</code> 宏。这些宏基于 <code>partial</code> 定义，因此只适合用于编写那些我们并不打算证明其性质的程序。</p>
-                </li>
-              <li>
-                <p>
-                  为 <code>Simp.Config</code> 添加 <code>arith</code> 选项，宏 <code>simp_arith</code> 会展开为 <code>simp (config := { arith := true })</code>。目前仅支持 <code>Nat</code> 和线性算术。例如：</p>
-                <pre>example : 0 &lt; 1 + x ∧ x + y + 2 ≥ y + 1 := by
+</pre></li><li><p>为 <code>do</code> 块添加 <code>while &lt;cond&gt; do &lt;do-block&gt;</code>、<code>repeat &lt;do-block&gt;</code> 和 <code>repeat &lt;do-block&gt; until &lt;cond&gt;</code> 宏。这些宏基于 <code>partial</code> 定义，因此只适合用于编写那些我们并不打算证明其性质的程序。</p></li><li><p>为 <code>Simp.Config</code> 添加 <code>arith</code> 选项，宏 <code>simp_arith</code> 会展开为 <code>simp (config := { arith := true })</code>。目前仅支持 <code>Nat</code> 和线性算术。例如：</p><pre>example : 0 &lt; 1 + x ∧ x + y + 2 ≥ y + 1 := by
   simp_arith
-</pre></li>
-              <li>
-                <p>
-                  添加 <code>fail &lt;string&gt;?</code> 策略，它总是失败。</p>
-                </li>
-              <li>
-                <p>
-                  在依赖消去中添加对无环性的支持。参见 <a href="https://github.com/leanprover/lean4/issues/1022">issue #1022</a>。</p>
-                </li>
-              <li>
-                <p>
-                  添加 <code>trace &lt;string&gt;</code> 策略，用于调试。</p>
-                </li>
-              <li>
-                <p>
-                  为 <code>Unit → α</code> 类型添加非平凡的 <code>SizeOf</code> 实例，并让用户自定义归纳类型自动生成的 <code>SizeOf</code> 实例也支持它们。例如，给定归纳数据类型</p>
-                <pre>inductive LazyList (α : Type u) where
+</pre></li><li><p>添加 <code>fail &lt;string&gt;?</code> 策略，它总是失败。</p></li><li><p>在依赖消去中添加对无环性的支持。参见 <a href="https://github.com/leanprover/lean4/issues/1022">issue #1022</a>。</p></li><li><p>添加 <code>trace &lt;string&gt;</code> 策略，用于调试。</p></li><li><p>为 <code>Unit → α</code> 类型添加非平凡的 <code>SizeOf</code> 实例，并让用户自定义归纳类型自动生成的 <code>SizeOf</code> 实例也支持它们。例如，给定归纳数据类型</p><pre>inductive LazyList (α : Type u) where
   | nil                               : LazyList α
   | cons (hd : α) (tl : LazyList α)   : LazyList α
   | delayed (t : Thunk (LazyList α))  : LazyList α
-</pre><p>
-                  我们现在得到的是 <code>sizeOf (LazyList.delayed t) = 1 + sizeOf t</code>，而不再是 <code>sizeOf (LazyList.delayed t) = 2</code>。</p>
-                </li>
-              <li>
-                <p>
-                  在证明终止性时，添加对猜测（非常）简单良基关系的支持。例如，下面的函数不再需要 <code>termination_by</code> 注解。</p>
-                <pre>def Array.insertAtAux (i : Nat) (as : Array α) (j : Nat) : Array α :=
+</pre><p>我们现在得到的是 <code>sizeOf (LazyList.delayed t) = 1 + sizeOf t</code>，而不再是 <code>sizeOf (LazyList.delayed t) = 2</code>。</p></li><li><p>在证明终止性时，添加对猜测（非常）简单良基关系的支持。例如，下面的函数不再需要 <code>termination_by</code> 注解。</p><pre>def Array.insertAtAux (i : Nat) (as : Array α) (j : Nat) : Array α :=
   if h : i &lt; j then
     let as := as.swap! (j-1) j;
     insertAtAux i as (j-1)
   else
     as
-</pre></li>
-              <li>
-                <p>
-                  添加对 <code>for h : x in xs do ...</code> 记法的支持，其中 <code>h : x ∈ xs</code>。这主要对证明终止性有用。</p>
-                </li>
-              <li>
-                <p>
-                  归纳族的 auto implicit 行为已更改。出现在归纳族索引中的 auto implicit 参数，如非固定（见下一条），也会被视为索引。例如</p>
-                <pre>inductive HasType : Index n → Vector Ty n → Ty → Type where
-</pre><p>
-                  现在会被解释为</p>
-                <pre>inductive HasType : {n : Nat} → Index n → Vector Ty n → Ty → Type where
-</pre></li>
-              <li>
-                <p>
-                  为了让前一条特性更便于使用，我们会将归纳族索引中的固定前缀提升为参数。例如，Lean 现在接受下面的声明</p>
-                <pre>inductive Lst : Type u → Type u
+</pre></li><li><p>添加对 <code>for h : x in xs do ...</code> 记法的支持，其中 <code>h : x ∈ xs</code>。这主要对证明终止性有用。</p></li><li><p>归纳族的 auto implicit 行为已更改。出现在归纳族索引中的 auto implicit 参数，如非固定（见下一条），也会被视为索引。例如</p><pre>inductive HasType : Index n → Vector Ty n → Ty → Type where
+</pre><p>现在会被解释为</p><pre>inductive HasType : {n : Nat} → Index n → Vector Ty n → Ty → Type where
+</pre></li><li><p>为了让前一条特性更便于使用，我们会将归纳族索引中的固定前缀提升为参数。例如，Lean 现在接受下面的声明</p><pre>inductive Lst : Type u → Type u
   | nil  : Lst α
   | cons : α → Lst α → Lst α
-</pre><p>
-                  其中 <code>Lst α</code> 里的 <code>α</code> 是参数。实际参数个数可用命令 <code>#print Lst</code> 查看。该特性也确保我们仍然接受如下声明</p>
-                <pre>inductive Sublist : List α → List α → Prop
+</pre><p>其中 <code>Lst α</code> 里的 <code>α</code> 是参数。实际参数个数可用命令 <code>#print Lst</code> 查看。该特性也确保我们仍然接受如下声明</p><pre>inductive Sublist : List α → List α → Prop
   | slnil : Sublist [] []
   | cons l₁ l₂ a : Sublist l₁ l₂ → Sublist l₁ (a :: l₂)
   | cons2 l₁ l₂ a : Sublist l₁ l₂ → Sublist (a :: l₁) (a :: l₂)
-</pre></li>
-              <li>
-                <p>
-                  添加 auto implicit 的“链式传播”。出现在 auto implicit 类型中的未赋值元变量现在会变成新的 auto implicit 局部变量。考虑下面的例子：</p>
-                <pre>inductive HasType : Fin n → Vector Ty n → Ty → Type where
+</pre></li><li><p>添加 auto implicit 的“链式传播”。出现在 auto implicit 类型中的未赋值元变量现在会变成新的 auto implicit 局部变量。考虑下面的例子：</p><pre>inductive HasType : Fin n → Vector Ty n → Ty → Type where
   | stop : HasType 0 (ty :: ctx) ty
   | pop  : HasType k ctx ty → HasType k.succ (u :: ctx) ty
-</pre><p>
-                  <code>ctx</code> 在这两个构造子中都是 auto implicit 局部变量，其类型为 <code>ctx : Vector Ty ?m</code>。若没有 auto implicit 的“链式传播”，元变量 <code>?m</code> 会保持未赋值。新特性会再创建一个隐式局部变量 <code>n : Nat</code>，并将 <code>n</code> 赋给 <code>?m</code>。因此，上面的声明实际上是下面这一写法的简写</p>
-                <pre>inductive HasType : {n : Nat} → Fin n → Vector Ty n → Ty → Type where
+</pre><p><code>ctx</code> 在这两个构造子中都是 auto implicit 局部变量，其类型为 <code>ctx : Vector Ty ?m</code>。若没有 auto implicit 的“链式传播”，元变量 <code>?m</code> 会保持未赋值。新特性会再创建一个隐式局部变量 <code>n : Nat</code>，并将 <code>n</code> 赋给 <code>?m</code>。因此，上面的声明实际上是下面这一写法的简写</p><pre>inductive HasType : {n : Nat} → Fin n → Vector Ty n → Ty → Type where
   | stop : {ty : Ty} → {n : Nat} → {ctx : Vector Ty n} → HasType 0 (ty :: ctx) ty
   | pop  : {n : Nat} → {k : Fin n} → {ctx : Vector Ty n} → {ty : Ty} → HasType k ctx ty → HasType k.succ (u :: ctx) ty
-</pre></li>
-              <li>
-                <p>
-                  从 recursor 的次要前提与投影声明中移除辅助类型注解（例如 <code>autoParam</code> 与 <code>optParam</code>）。考虑下面的例子</p>
-                <pre>structure A :=
+</pre></li><li><p>从 recursor 的次要前提与投影声明中移除辅助类型注解（例如 <code>autoParam</code> 与 <code>optParam</code>）。考虑下面的例子</p><pre>structure A :=
   x : Nat
   h : x = 1 := by trivial
 
@@ -3029,11 +3112,7 @@ example (a : A) : a.x = 1 := by
   | mk x h =&gt;
     -- `h` has now type `x = 1` instead of `autoParam (x = 1) auto✝`
     assumption
-</pre></li>
-              <li>
-                <p>
-                  我们现在接受模式中的重载记法，但要求每个分支中的模式变量集合相同。例如：</p>
-                <pre>inductive Vector (α : Type u) : Nat → Type u
+</pre></li><li><p>我们现在接受模式中的重载记法，但要求每个分支中的模式变量集合相同。例如：</p><pre>inductive Vector (α : Type u) : Nat → Type u
   | nil : Vector α 0
   | cons : α → Vector α n → Vector α (n+1)
 
@@ -3046,11 +3125,7 @@ def head1 (x : List α) (h : x ≠ []) : α :=
 def head2 (x : Vector α (n+1)) : α :=
   match x with
   | a :: as =&gt; a -- `::` is `Vector.cons` here
-</pre></li>
-              <li>
-                <p>
-                  新增借鉴自 Swift 的 <code>.&lt;identifier&gt;</code> 记法。命名空间会从期望类型中推断。参见 <a href="https://github.com/leanprover/lean4/issues/944">issue #944</a>。例如：</p>
-                <pre>def f (x : Nat) : Except String Nat :=
+</pre></li><li><p>新增借鉴自 Swift 的 <code>.&lt;identifier&gt;</code> 记法。命名空间会从期望类型中推断。参见 <a href="https://github.com/leanprover/lean4/issues/944">issue #944</a>。例如：</p><pre>def f (x : Nat) : Except String Nat :=
   if x &gt; 0 then
     .ok x
   else
@@ -3071,13 +3146,4 @@ def isImplicit (bi : BinderInfo) : Bool :=
   bi matches .implicit
 
 end Lean.Elab
-</pre></li>
-              </ul>
-            </section>
-          <nav class="prev-next-buttons">
-            <a class="local-button active" href="releases/v4.0.0-m5/#release-v4___0___0-m5" rel="prev" title="Lean 4.0.0-m5 (2022-08-22)"><span class="arrow">←</span><span class="where">Lean 4.0.0-m5 (2022-08-22)</span></a><a class="local-button active" href="releases/v4.0.0-m3/#release-v4___0___0-m3" rel="next" title="Lean 4.0.0-m3 (2022-01-31)"><span class="where">Lean 4.0.0-m3 (2022-01-31)</span><span class="arrow">→</span></a></nav>
-          </div>
-        </main></div>
-    </body>
-  </html>
-
+</pre></li></ul></section><nav class="prev-next-buttons"><a class="local-button active" href="releases/v4.0.0-m5/#release-v4___0___0-m5" rel="prev" title="Lean 4.0.0-m5 (2022-08-22)"><span class="arrow">←</span><span class="where">Lean 4.0.0-m5 (2022-08-22)</span></a><a class="local-button active" href="releases/v4.0.0-m3/#release-v4___0___0-m3" rel="next" title="Lean 4.0.0-m3 (2022-01-31)"><span class="where">Lean 4.0.0-m3 (2022-01-31)</span><span class="arrow">→</span></a></nav></div></main></div></body></html>

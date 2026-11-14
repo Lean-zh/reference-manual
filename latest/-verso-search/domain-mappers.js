@@ -70,6 +70,43 @@ const Manual_DOT_envVar = {
 /**
  * @type {DomainMapper}
  */
+const Manual_DOT_examples = {
+    dataToSearchables:
+      (domainData) =>
+        Object.entries(domainData.contents).map(([key, value]) => ({
+          searchKey: value[0].data?.title ?? key,
+          address: `${value[0].address}#${value[0].id}`,
+          domainId: 'Manual.examples',
+          ref: value,
+        })),
+    className: "example-domain",
+    displayName: "Example",
+    customRender:
+      (searchable, matchedParts, document) => {
+          const result = document.createElement('p');
+          for (const { t, v } of matchedParts) {
+            if (t === 'text') {
+              result.append(v);
+            } else {
+              const emEl = document.createElement('em');
+              emEl.textContent = v;
+              result.append(emEl);
+            }
+          }
+          const context = searchable.ref?.[0]?.data?.context ?? [];
+          if (context.length > 0) {
+            result.append(document.createElement('br'));
+            const contextEl = document.createElement('small');
+            contextEl.textContent = context.join(' › ');
+            result.append(contextEl);
+          }
+          return result;
+        },
+    };
+
+/**
+ * @type {DomainMapper}
+ */
 const Manual_DOT_lakeOpt = {
     dataToSearchables:
       (domainData) =>
@@ -173,6 +210,22 @@ const Verso_DOT_Genre_DOT_Manual_DOT_doc_DOT_tactic = {
 /**
  * @type {DomainMapper}
  */
+const Manual_DOT_exportType = {
+    dataToSearchables:
+      (domainData) =>
+        Object.entries(domainData.contents).map(([key, value]) => ({
+          searchKey: key,
+          address: `${value[0].address}#${value[0].id}`,
+          domainId: 'Manual.exportType',
+          ref: value,
+        })),
+    className: "export-type-domain",
+    displayName: "Export Format Type",
+    };
+
+/**
+ * @type {DomainMapper}
+ */
 const Manual_DOT_lakeTomlTable = {
     dataToSearchables:
       (domainData) =>
@@ -204,6 +257,22 @@ const Manual_DOT_lakeCommand = {
         })),
     className: "lake-command-domain",
     displayName: "Lake Command",
+    };
+
+/**
+ * @type {DomainMapper}
+ */
+const Manual_DOT_executable = {
+    dataToSearchables:
+      (domainData) =>
+        Object.entries(domainData.contents).map(([key, value]) => ({
+          searchKey: key,
+          address: `${value[0].address}#${value[0].id}`,
+          domainId: 'Manual.executable',
+          ref: value,
+        })),
+    className: "executable-domain",
+    displayName: "Executable",
     };
 
 /**
@@ -241,6 +310,22 @@ const Verso_DOT_Genre_DOT_Manual_DOT_doc = {
 /**
  * @type {DomainMapper}
  */
+const Manual_DOT_tactic_DOT_grind = {
+    dataToSearchables:
+      (domainData) =>
+        Object.entries(domainData.contents).map(([key, value]) => ({
+          searchKey: value[0].data.userName,
+          address: `${value[0].address}#${value[0].id}`,
+          domainId: 'Manual.tactic.grind',
+          ref: value,
+        })),
+    className: "grind-tactic-domain",
+    displayName: "grind 策略",
+    };
+
+/**
+ * @type {DomainMapper}
+ */
 const Verso_DOT_Genre_DOT_Manual_DOT_doc_DOT_option = {
     dataToSearchables:
       (domainData) =>
@@ -252,22 +337,6 @@ const Verso_DOT_Genre_DOT_Manual_DOT_doc_DOT_option = {
         })),
     className: "doc-option-domain",
     displayName: "编译器选项",
-    };
-
-/**
- * @type {DomainMapper}
- */
-const Verso_DOT_Genre_DOT_Manual_DOT_doc_DOT_tactic_DOT_conv = {
-    dataToSearchables:
-      (domainData) =>
-        Object.entries(domainData.contents).map(([key, value]) => ({
-          searchKey: value[0].data.userName,
-          address: `${value[0].address}#${value[0].id}`,
-          domainId: 'Verso.Genre.Manual.doc.tactic.conv',
-          ref: value,
-        })),
-    className: "conv-tactic-domain",
-    displayName: "Conv Tactic",
     };
 
 /**
@@ -286,6 +355,22 @@ const Manual_DOT_Syntax_DOT_production = {
         })),
     className: "syntax-domain",
     displayName: "Syntax",
+    };
+
+/**
+ * @type {DomainMapper}
+ */
+const Verso_DOT_Genre_DOT_Manual_DOT_doc_DOT_tactic_DOT_conv = {
+    dataToSearchables:
+      (domainData) =>
+        Object.entries(domainData.contents).map(([key, value]) => ({
+          searchKey: value[0].data.userName,
+          address: `${value[0].address}#${value[0].id}`,
+          domainId: 'Verso.Genre.Manual.doc.tactic.conv',
+          ref: value,
+        })),
+    className: "conv-tactic-domain",
+    displayName: "Conv Tactic",
     };
 
 /**
@@ -340,6 +425,7 @@ export const domainMappers = {"Verso.Genre.Manual.doc.suggestion":
     Verso_DOT_Genre_DOT_Manual_DOT_doc_DOT_suggestion,
   "Manual.lakeTomlField": Manual_DOT_lakeTomlField,
   "Manual.envVar": Manual_DOT_envVar,
+  "Manual.examples": Manual_DOT_examples,
   "Manual.lakeOpt": Manual_DOT_lakeOpt,
   "Manual.configFile": Manual_DOT_configFile,
   "Verso.Genre.Manual.section":
@@ -348,15 +434,18 @@ export const domainMappers = {"Verso.Genre.Manual.doc.suggestion":
     Verso_DOT_Genre_DOT_Manual_DOT_example,
   "Verso.Genre.Manual.doc.tactic":
     Verso_DOT_Genre_DOT_Manual_DOT_doc_DOT_tactic,
+  "Manual.exportType": Manual_DOT_exportType,
   "Manual.lakeTomlTable": Manual_DOT_lakeTomlTable,
   "Manual.lakeCommand": Manual_DOT_lakeCommand,
+  "Manual.executable": Manual_DOT_executable,
   "Manual.elanOpt": Manual_DOT_elanOpt,
   "Verso.Genre.Manual.doc": Verso_DOT_Genre_DOT_Manual_DOT_doc,
+  "Manual.tactic.grind": Manual_DOT_tactic_DOT_grind,
   "Verso.Genre.Manual.doc.option":
     Verso_DOT_Genre_DOT_Manual_DOT_doc_DOT_option,
+  "Manual.Syntax.production": Manual_DOT_Syntax_DOT_production,
   "Verso.Genre.Manual.doc.tactic.conv":
     Verso_DOT_Genre_DOT_Manual_DOT_doc_DOT_tactic_DOT_conv,
-  "Manual.Syntax.production": Manual_DOT_Syntax_DOT_production,
   "Verso.Genre.Manual.doc.tech":
     Verso_DOT_Genre_DOT_Manual_DOT_doc_DOT_tech,
   "Manual.elanCommand": Manual_DOT_elanCommand,
@@ -371,6 +460,7 @@ export const searchPriorities = {
       "Verso.Genre.Manual.doc.tech": 65,
       "Verso.Genre.Manual.doc.tactic": 60,
       "Verso.Genre.Manual.doc": 60,
+      "Manual.examples": 60,
       "Verso.Genre.Manual.doc.option": 60
     }
   };

@@ -1,16 +1,11 @@
-<!-- Generated from commit 45ec05042b9e2c6e91cc047cbdab71acfa685358 at 2026-08-16T16:54:18Z -->
+<!-- Generated from commit d4c75b53cfe67fb366adef337d27fdb70aa7c091 at 2026-11-14T18:36:55Z -->
 <!DOCTYPE html>
-<html>
-  <head>
-    <script>
-      (function(){
+<html><head><script>(function(){
   const {protocol:proto, host:hostName, pathname:path, search:srch, hash:hsh} = window.location;
   if (!(path.endsWith("/") || path.endsWith(".html"))) {
     window.location.replace(`${proto}//${hostName}${path}/${srch}${hsh}`);
   }
-})()</script>
-    <script>
-      // Enable TypeScript checking.
+})()</script><script>// Enable TypeScript checking.
 // @ts-check
 
 // Applies a saved table-of-contents width before the first paint.
@@ -34,30 +29,7 @@
         // Leave the default width in place when local storage is unavailable.
     }
 })();
-</script>
-    <base href="./../../"><meta charset="utf-8">
-    <meta name="viewport" content="height=device-height, width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
-    <title>关于： inferBinderTypeFailed</title><link rel="stylesheet" href="book.css">
-    <link rel="stylesheet" href="verso-vars.css">
-    <script src="https://cdn.jsdelivr.net/npm/marked@11.1.1/marked.min.js" integrity="sha384-zbcZAIxlvJtNE3Dp5nxLXdXtXyxwOdnILY1TDPVmKFhl4r4nSUG1r8bcFXGVa4Te" crossorigin="anonymous"></script>
-    <script defer="defer" src="-verso-search/elasticlunr.min.js"></script>
-    <script defer="defer" src="-verso-search/fuzzysort.min.js"></script>
-    <script defer="defer" src="-verso-search/searchIndex.js"></script>
-    <script defer="defer" src="-verso-search/search-config.js"></script>
-    <script type="module" src="-verso-search/search-init.js"></script>
-    <link rel="stylesheet" href="-verso-search/search-box.css">
-    <link rel="stylesheet" href="-verso-search/search-page.css">
-    <link rel="stylesheet" href="-verso-search/search-highlight.css">
-    <link rel="stylesheet" href="-verso-search/domain-display.css">
-    <script src="-verso-search/search-highlight.js" defer="defer"></script>
-    <script src="toc-resize.js" defer="defer"></script>
-    <script src="-verso-data/katex/katex.js"></script>
-    <script src="-verso-data/katex/math.js"></script>
-    <script src="-verso-data/popper.min.js"></script>
-    <script src="-verso-data/tippy-bundle.umd.min.js"></script>
-    <link rel="stylesheet" href="-verso-data/tippy-border.css">
-    <link rel="stylesheet" href="-verso-data/katex/katex.css">
-    <style>
+</script><base href="./../../"/><meta charset="utf-8"/><meta name="viewport" content="height=device-height, width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1"/><title>关于： inferBinderTypeFailed</title><link rel="stylesheet" href="book.css"/><link rel="stylesheet" href="verso-vars.css"/><script src="https://cdn.jsdelivr.net/npm/marked@11.1.1/marked.min.js" integrity="sha384-zbcZAIxlvJtNE3Dp5nxLXdXtXyxwOdnILY1TDPVmKFhl4r4nSUG1r8bcFXGVa4Te" crossorigin="anonymous"></script><script defer="defer" src="-verso-search/elasticlunr.min.js"></script><script defer="defer" src="-verso-search/fuzzysort.min.js"></script><script defer="defer" src="-verso-search/searchIndex.js"></script><script defer="defer" src="-verso-search/search-config.js"></script><script type="module" src="-verso-search/search-init.js"></script><link rel="stylesheet" href="-verso-search/search-box.css"/><link rel="stylesheet" href="-verso-search/search-page.css"/><link rel="stylesheet" href="-verso-search/search-highlight.css"/><link rel="stylesheet" href="-verso-search/domain-display.css"/><script src="-verso-search/search-highlight.js" defer="defer"></script><script src="toc-resize.js" defer="defer"></script><script src="-verso-data/katex/katex.js"></script><script src="-verso-data/katex/math.js"></script><script src="-verso-data/popper.min.js"></script><script src="-verso-data/tippy-bundle.umd.min.js"></script><link rel="stylesheet" href="-verso-data/tippy-border.css"/><link rel="stylesheet" href="-verso-data/katex/katex.css"/><style>
 .field-category > :first-child {
 }
 
@@ -100,6 +72,954 @@
   transition: visibility 0s;
 }
   </style><style>
+.marginalia-note {
+  box-sizing: border-box;
+  padding: 0.5rem;
+  font-family: var(--verso-text-font-family);
+  font-size: 1rem;
+  font-weight: normal;
+  font-style: normal;
+  line-height: 1.45;
+  color: var(--verso-text-color);
+  text-align: left;
+  white-space: normal;
+}
+
+/* Neutralize the user-agent popover box when the note is participating in document layout.
+   The user agent makes popovers scroll containers, which would clip the number that ::before
+   places to the left of the note. */
+.marginalia-note[popover] {
+  border: 0;
+  background: transparent;
+  color: inherit;
+  box-shadow: none;
+  overflow: visible;
+}
+
+/*
+The margin-note layout responds to the width of <main>, not the viewport, because the
+ToC is resizable: a wider ToC leaves less room beside the text for notes. <main> is a
+query container (see Html/Style.lean), so the container queries below track the actual
+content width.
+
+There are two "in the margin" regimes, split at the same width where the content stops
+being left-aligned and becomes centered (1112px and 1212px of content width; at the
+default ToC width these are the old 1400px and 1500px viewport breakpoints):
+
+  * While the content is left-aligned there is a large area to its right, so a fixed
+    13rem note with a fixed 16rem overhang fits comfortably.
+  * Once the content is centered the note must fit the symmetric right gap, whose width
+    is (content - text column) / 2. A fixed overhang would overflow the page for content
+    widths just above the centering threshold, so the note and its overhang are sized in
+    container units, which always fit that gap.
+*/
+
+/* Narrow viewport (e.g. phone): the ToC is hidden and the note spans the text column. */
+@media screen and (width <= 700px) {
+  .marginalia-note[popover] {
+    position: static;
+    float: left;
+    clear: left;
+    width: 90%;
+    margin: 1rem 5%;
+  }
+}
+
+/* Wider than a phone: by default float the note at the right of the text column,
+   overlapping the content. The container queries below lift it into the true margin
+   once there is room. */
+@media screen and (min-width: 701px) {
+  .marginalia-note[popover] {
+    display: block;
+    position: relative;
+    inset: auto;
+    float: right;
+    clear: right;
+    width: 40%;
+    margin: 1rem 0;
+    margin-left: 10%;
+  }
+
+  /* The first note moved immediately before a barrier starts at the barrier's position. */
+  .marginalia-note[data-verso-hoisted="before"]:not(.marginalia-note + .marginalia-note) {
+    margin-top: 0;
+  }
+}
+
+/* Left-aligned content: a fixed-size note in the wide area to its right. */
+@container main (width >= 1112px) {
+  .marginalia-note[popover] {
+    float: right;
+    clear: right;
+    width: 13rem;
+    margin: 1rem -16rem 0 0;
+  }
+}
+
+/* Centered content: size the note in container units so it always fits the symmetric
+   right gap. The threshold matches the content-centering threshold in Html/Style.lean,
+   so the fixed-overhang note above is only ever used while the content is left-aligned.
+   The overhang (18cqi) stays below the gap, (100cqi - text column) / 2, for every
+   content width at which the content is centered. */
+@container main (width >= 1212px) {
+  .marginalia-note[popover] {
+    width: 15cqi;
+    margin-right: -18cqi;
+  }
+}
+
+.marginalia-reference.marginalia-highlight, .marginalia-note.marginalia-highlight {
+  background-color: var(--verso-selected-color, #def);
+  border-radius: 0.2rem;
+}
+
+/* The counter must be established inside <main>, whose container declaration (see
+   Html/Style.lean) applies style containment: a counter established outside the
+   containment boundary cannot be incremented by the notes within it. */
+.content-wrapper {
+  counter-reset: margin-note-reference-counter margin-note-body-counter;
+}
+
+.content-wrapper::after {
+  content: "";
+  display: block;
+  clear: both;
+  height: 1rem;
+}
+
+.marginalia-reference {
+  counter-increment: margin-note-reference-counter;
+}
+.marginalia-note {
+  counter-increment: margin-note-body-counter;
+}
+.marginalia-note::before {
+  content: counter(margin-note-body-counter) ".";
+  position: absolute;
+  vertical-align: baseline;
+  font-size: 0.9em;
+  font-weight: bold;
+  left: -3rem;
+  width: 3rem;
+  text-align: right;
+}
+.marginalia-marker::after {
+  content: counter(margin-note-reference-counter);
+  vertical-align: super;
+  font-size: 0.7em;
+  font-weight: bold;
+  margin-right: 0.5em;
+}
+
+.marginalia-marker-mobile {
+  display: none;
+}
+
+.marginalia-accessible-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@supports selector(:popover-open) {
+  @media screen and (width <= 700px) {
+    .marginalia-marker-desktop {
+      display: none;
+    }
+
+    .marginalia-marker-mobile {
+      display: inline;
+      appearance: none;
+      border: 0;
+      padding: 0;
+      color: inherit;
+      background: transparent;
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .marginalia-marker-mobile:focus-visible {
+      outline: 2px solid currentColor;
+      outline-offset: 2px;
+    }
+
+    .marginalia-note[popover] {
+      position: fixed;
+      float: none;
+      inset: 50% auto auto 50%;
+      width: calc(100vw - 2rem);
+      max-width: min(32rem, calc(100vw - 2rem));
+      max-height: calc(100vh - 2rem);
+      margin: 0;
+      transform: translate(-50%, -50%);
+      overflow: auto;
+      border: 1px solid currentColor;
+      background: var(--verso-code-background-color, white);
+      color: inherit;
+      box-shadow: 0 0.5rem 2rem rgb(0 0 0 / 30%);
+    }
+
+    .marginalia-note[popover]::before {
+      content: none;
+    }
+
+    .marginalia-note[popover]::backdrop {
+      background: rgb(0 0 0 / 18%);
+    }
+  }
+}
+</style><style>
+
+.hl.lean {
+  white-space: pre;
+  font-weight: normal;
+  font-style: normal;
+  font-size: inherit;
+}
+
+.hl.lean .keyword {
+  color: var(--verso-code-keyword-color,);
+  font-weight: var(--verso-code-keyword-weight, bold);
+  font-style: var(--verso-code-keyword-style, normal);
+  font-family: var(--verso-code-keyword-font-family,);
+}
+
+.hl.lean .const {
+  color: var(--verso-code-const-color,);
+  font-weight: var(--verso-code-const-weight, normal);
+  font-style: var(--verso-code-const-style, normal);
+  font-family: var(--verso-code-const-font-family,);
+}
+
+.hl.lean .var {
+  color: var(--verso-code-var-color,);
+  font-weight: var(--verso-code-var-weight, normal);
+  font-style: var(--verso-code-var-style, italic);
+  font-family: var(--verso-code-var-font-family,);
+
+  position: relative;
+}
+
+.hl.lean .literal, .hl.lean .unknown {
+  color: var(--verso-code-color,);
+  font-weight: normal;
+  font-style: normal;
+  font-family: var(--verso-code-font-family,);
+}
+
+/* These lexically-classified token kinds default to the `.unknown` appearance. The rule follows
+   `.const` so it wins for the `anon-ctor` tokens, which also carry the `const` class. */
+.hl.lean .anon-ctor,
+.hl.lean .number,
+.hl.lean .char,
+.hl.lean .comment,
+.hl.lean .punctuation,
+.hl.lean .delim,
+.hl.lean .wildcard {
+  color: var(--verso-code-color,);
+  font-weight: normal;
+  font-style: normal;
+  font-family: var(--verso-code-font-family,);
+}
+
+.hover-container {
+  width: 0;
+  height: 0;
+  position: relative;
+  display: inline;
+}
+
+.hl.lean a {
+  color: inherit;
+  text-decoration: currentcolor underline dotted;
+}
+
+.hl.lean a:hover {
+  text-decoration: currentcolor underline solid;
+}
+
+/* Links inside tooltips show their underline only when hovered. */
+.tippy-box .hl.lean a {
+  text-decoration: none;
+}
+
+.hl.lean .hover-info {
+  white-space: normal;
+}
+
+.hl.lean .token .hover-info {
+  display: none;
+  position: absolute;
+  color: var(--verso-tooltip-color, black);
+  background-color: var(--verso-tooltip-bg-color, #e5e5e5);
+  border: 1px solid var(--verso-tooltip-border-color, black);
+  padding: 0.5rem;
+  z-index: 300;
+}
+
+.hl.lean .hover-info.messages {
+  max-height: 10rem;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-gutter: stable;
+  padding: 0 0.5rem 0 0;
+  display: block;
+}
+
+.hl.lean .hover-info code {
+  white-space: pre-wrap;
+  background: none;
+}
+
+.hl.lean .hover-info code:not(.verso-message) {
+  color: var(--verso-tooltip-color, black);
+}
+
+.hl.lean .hover-info.messages > code {
+  padding: 0.5rem;
+  display: block;
+  width: fit-content;
+}
+
+.hl.lean .hover-info.messages > code:only-child {
+  margin: 0;
+}
+
+.hl.lean .hover-info.messages > code {
+  margin: 0.1rem;
+}
+
+.hl.lean .hover-info.messages > code:not(:first-child) {
+  margin-top: 0rem;
+}
+
+.hl.lean {
+}
+
+.hl.lean.block {
+  display: block;
+}
+
+.hl.lean.inline {
+  display: inline;
+  white-space: pre-wrap;
+}
+
+.hl.lean * {
+}
+
+.hl.lean .token {
+  transition: all 0.25s; /* Slight fade for highlights */
+}
+
+@media (hover: hover) {
+  /* Hovered content nested in a collapsed tactic region keeps its plain background: the
+     region's proof state is the tooltip that appears there, and its label is what
+     highlights. `:where` keeps the exclusion out of the specificity computation. */
+  .hl.lean .token.binding-hl,
+  .hl.lean :is(.literal, .token.typed, .token[data-verso-hover]):hover:not(:where(.tactic:has(> .tactic-toggle:not(:checked)) > label *)) {
+    background-color: var(--verso-code-hover-bg-color, #eeeeee);
+    border-radius: 2px;
+    transition: none;
+  }
+
+  /* Within a hovered message span, token hover backgrounds are removed so the span's own
+     hover background shows across the whole span. The exception is a hovered documented
+     token, which keeps its background because its tooltip is the one shown. */
+  .hl.lean .has-info:hover .token.binding-hl:not(:hover),
+  .hl.lean .has-info:hover .token.binding-hl:not([data-verso-hover]),
+  .hl.lean .has-info:hover .literal:hover:not([data-verso-hover]),
+  .hl.lean .has-info:hover .token.typed:hover:not([data-verso-hover]) {
+    background-color: transparent;
+  }
+}
+
+
+.hl.lean .has-info .token:not(.tactic-state):not(.tactic-state *), .hl.lean .has-info .inter-text:not(.tactic-state):not(.tactic-state *) {
+  text-decoration-style: wavy;
+  text-decoration-line: underline;
+  text-decoration-thickness: from-font;
+  text-decoration-skip-ink: none;
+}
+
+/*
+The underline color comes from the nearest enclosing message span: each severity's span rule
+sets `--verso--region-indicator-color`, which inherits, so a region nested inside one of
+another severity keeps its own indicator color.
+*/
+.hl.lean .has-info :not(.tactic-state):not(.tactic-state *) {
+  text-decoration-color: var(--verso--region-indicator-color);
+}
+
+.hl.lean .has-info .hover-info {
+  display: none;
+  position: absolute;
+  transform: translate(0.25rem, 0.3rem);
+  color: var(--verso-tooltip-color, black);
+  border: 1px solid var(--verso-tooltip-border-color, black);
+  padding: 0.5rem;
+  z-index: 400;
+  text-align: left;
+}
+
+.hl.lean .has-info.error {
+  --verso--region-indicator-color: var(--verso-error-indicator-color, #ff0000);
+  --verso--region-hover-color: var(--verso-code-error-hover-color, currentcolor);
+  --verso--region-hover-bg-color: var(--verso-code-error-hover-bg-color, #ffb3b3);
+  color: var(--verso-code-error-color, currentcolor);
+  background-color: var(--verso-code-error-bg-color, transparent);
+}
+
+/*
+The hover highlight follows the tooltip: a message span highlights only when its own tooltip
+is the one that appears. When a hovered nested message span, a hovered documented token, or
+a hovered collapsed tactic label shows its own tooltip instead, the message span does not
+highlight. A span nested in a collapsed tactic region likewise stays plain, because hovering
+it shows the region's proof state; `:where` keeps that exclusion out of the specificity
+computation.
+
+The hover colors come from `--verso--region-hover-color` and `--verso--region-hover-bg-color`,
+which each severity's span rule sets. This keeps the hover conditions in this one rule, and
+because the properties inherit, a region nested inside one of another severity keeps its own
+hover colors.
+*/
+@media (hover: hover) {
+  .hl.lean .has-info:hover:not(:has(.has-info:hover)):not(:has([data-verso-hover]:hover)):not(:has(.tactic > label:hover + .tactic-toggle:not(:checked))):not(:where(.tactic:has(> .tactic-toggle:not(:checked)) > label *)) {
+    color: var(--verso--region-hover-color, currentcolor);
+    background-color: var(--verso--region-hover-bg-color, transparent);
+  }
+}
+
+.hl.lean .hover-info.messages > code.error {
+  background-color: var(--verso-tooltip-error-bg-color, #e5e5e5);
+  border-left: 0.2rem solid var(--verso-tooltip-error-border-color, #ffb3b3);
+}
+
+/*
+A tooltip that shows only messages of the box's own severity leaves severity styling to the
+box itself. When messages of several severities share the tooltip, or a `mixed` tooltip
+combines messages with other content (such as documentation), each message keeps its
+severity accent to distinguish them.
+*/
+.tippy-box .hl.lean.mixed > .hover-info.messages {
+  margin-bottom: 0.5rem;
+}
+
+.tippy-box[data-theme~='error'] .hl.lean:not(.mixed) .hover-info.messages:not(:has(> code.warning)):not(:has(> code.information)) > code.error {
+  background: none;
+  border: none;
+}
+
+.error .verso-message, .error .verso-message .token, .error .verso-message label {
+  color: var(--verso-message-error-color, #cc0000);
+}
+
+.error .verso-message .case-label:has(input[type="checkbox"])::before {
+  background-color: var(--verso-message-error-color, #cc0000) !important;
+}
+
+.hl.lean .has-info.warning {
+  --verso--region-indicator-color: var(--verso-warning-indicator-color, #e7a71d);
+  --verso--region-hover-color: var(--verso-code-warning-hover-color, currentcolor);
+  --verso--region-hover-bg-color: var(--verso-code-warning-hover-bg-color, #ffd580);
+  color: var(--verso-code-warning-color, currentcolor);
+  background-color: var(--verso-code-warning-bg-color, transparent);
+}
+
+.hl.lean .hover-info.messages > code.warning {
+  background-color: var(--verso-tooltip-warning-bg-color, #e5e5e5);
+  border-left: 0.2rem solid var(--verso-tooltip-warning-border-color, #ffd580);
+}
+
+.lean-output {
+  border-left: 0.2em solid transparent;
+  padding: 0 0 0 0.5em;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.lean-output.error {
+  border-color: var(--verso-output-error-color, var(--verso-error-indicator-color, #ff0000));
+}
+
+.lean-output.information {
+  border-color: var(--verso-output-info-color, var(--verso-info-indicator-color, #4777ff));
+}
+
+.lean-output.warning {
+  border-color: var(--verso-output-warning-color, var(--verso-warning-indicator-color, #e7a71d));
+}
+
+.tippy-box[data-theme~='warning'] .hl.lean:not(.mixed) .hover-info.messages:not(:has(> code.error)):not(:has(> code.information)) > code.warning {
+  background: none;
+  border: none;
+}
+
+.warning .verso-message, .warning .verso-message .token, .warning .verso-message label {
+  color: var(--verso-message-warning-color, currentcolor);
+}
+
+.warning .verso-message .case-label:has(input[type="checkbox"])::before {
+  background-color: var(--verso-message-warning-color, currentcolor) !important;
+}
+
+
+.hl.lean .has-info.information {
+  --verso--region-indicator-color: var(--verso-info-indicator-color, #4777ff);
+  --verso--region-hover-color: var(--verso-code-info-hover-color, currentcolor);
+  --verso--region-hover-bg-color: var(--verso-code-info-hover-bg-color, #4777ff);
+  color: var(--verso-code-info-color, currentcolor);
+  background-color: var(--verso-code-info-bg-color, transparent);
+}
+
+
+.hl.lean .hover-info.messages > code.information {
+  background-color: var(--verso-tooltip-info-bg-color, #e5e5e5);
+  border-left: 0.2rem solid var(--verso-tooltip-info-border-color, #4777ff);
+}
+
+.tippy-box[data-theme~='info'] .hl.lean:not(.mixed) .hover-info.messages:not(:has(> code.error)):not(:has(> code.warning)) > code.information {
+  background: none;
+  border: none;
+}
+
+.information .verso-message, .information .verso-message .token, .information .verso-message label {
+  color: var(--verso-message-info-color, currentcolor);
+}
+
+.information .verso-message .case-label:has(input[type="checkbox"])::before {
+  background-color: var(--verso-message-info-color, currentcolor) !important;
+}
+
+.hl.lean div.docstring {
+  font-family: var(--verso-text-font-family, sans-serif);
+  white-space: normal;
+  max-width: calc(min(40rem, 90vw));
+  width: max-content;
+}
+
+.hl.lean div.docstring > :last-child {
+  margin-bottom: 0;
+}
+
+.hl.lean div.docstring > :first-child {
+  margin-top: 0;
+}
+
+.hl.lean .hover-info .sep {
+  display: block;
+  width: auto;
+  margin-left: 1rem;
+  margin-right: 1rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  padding: 0;
+  height: 1px;
+  border-top: 1px solid var(--verso-tooltip-separator-color, #ccc);
+}
+
+.hl.lean code {
+  font-family: var(--verso-code-font-family);
+}
+
+.hl.lean .tactic-state {
+  display: none;
+  position: relative;
+  width: fit-content;
+  border: 1px solid var(--verso-tactic-state-border-color, #888888);
+  border-radius: 0.1rem;
+  padding: 0.5rem;
+  font-family: sans-serif;
+  color: var(--verso-tactic-state-color, black);
+  background-color: var(--verso-tactic-state-bg-color, white);
+}
+
+.hl.lean.popup .tactic-state {
+  position: static;
+  display: block;
+  width: auto;
+  border: none;
+  padding: 0.5rem;
+  font-family: sans-serif;
+  background-color: var(--verso-tactic-state-bg-color, white);
+}
+
+
+.hl.lean .tactic {
+  position: relative;
+  display: inline;
+  vertical-align: top;
+  /* Without these, mobile Safari will start making font sizes inconsistent when its text size adjustment feature is triggered.*/
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+.hl.lean .tactic:has(> .tactic-toggle:checked) {
+  display: inline-grid;
+  grid-template-columns: 1fr;
+}
+
+.hl.lean .tactic-toggle:checked ~ .tactic-state {
+  display: inline-block;
+  vertical-align: top;
+  grid-row: 2;
+  justify-self: start;
+}
+
+.hl.lean .tactic > label {
+  position: relative;
+  grid-row: 1;
+  display: inline;
+}
+
+@media (hover: hover) {
+  /* Highlight a region on hover only when its own toggle is unchecked, and only the innermost
+     hovered region: `label:hover` bubbles to ancestor labels, so suppress the highlight on a region
+     whose label contains a more deeply nested hovered tactic label. The region's proof state is the
+     tooltip for everything else in its label, so the label keeps its highlight while any of that
+     content is hovered. */
+  .hl.lean .tactic:has(> .tactic-toggle:not(:checked)) > label:hover:not(:has(.tactic > label:hover)) {
+    background-color: var(--verso-code-hover-bg-color, #eeeeee);
+  }
+}
+
+.hl.lean .tactic-toggle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  height: 0;
+  width: 0;
+  z-index: -10;
+}
+
+.hl.lean .tactic > label::after {
+  content: "";
+  border: 1px solid var(--verso-tactic-toggle-color, #bbbbbb);
+  /* These need to be em, not rem, to scale with the font */
+  border-radius: 1em;
+  height: 0.25em;
+  vertical-align: middle;
+  width: 0.6em;
+  margin-left: 0.1em;
+  margin-right: 0.1em;
+  display: inline-block;
+  transition: all 0.5s;
+}
+
+/*
+@media (hover: hover) {
+  .hl.lean .tactic > label:hover::after {
+    border: 1px solid #aaaaaa;
+    background-color: #aaaaaa;
+    transition: all 0.5s;
+  }
+}
+*/
+
+.hl.lean .tactic > label:has(+ .tactic-toggle:checked)::after {
+  border: 1px solid var(--verso-tactic-toggle-checked-color, #999999);
+  background-color: var(--verso-tactic-toggle-checked-color, #999999);
+  transition: all 0.5s;
+}
+
+.hl.lean .tactic-state .goal + .goal {
+  margin-top: 1.5em;
+}
+
+/*
+Some CSS frameworks customize details/summary in ways not compatible with Verso's output.
+*/
+
+.hl.lean details {
+  display: block !important;
+  margin: 0;
+}
+
+.hl.lean details summary {
+  display: list-item !important;
+  margin: 0;
+}
+
+.hl.lean details summary:focus {
+  outline: none;
+  outline-offset: none;
+  color: inherit;
+}
+
+.hl.lean ul > li {
+  margin-bottom: 0;
+}
+
+.hl.lean details summary::marker {
+  display: inline !important;
+}
+
+.hl.lean details > summary:first-of-type {
+  list-style-type: disclosure-closed;
+  list-style-position: inside;
+}
+
+.hl.lean details[open] > summary:first-of-type {
+  list-style-type: disclosure-open;
+}
+
+.hl.lean details summary::before, .hl.lean details summary::after {
+  content: "" !important;
+  background: none;
+  display: none;
+}
+
+.hl.lean .tactic-state summary {
+  /* These need to be em, not rem, to scale with the font */
+  margin-left: -0.5em;
+}
+
+.hl.lean .tactic-state details {
+  /* These need to be em, not rem, to scale with the font */
+  padding-left: 0.5em;
+}
+
+.hl.lean .case-label {
+  display: block;
+  position: relative;
+}
+
+.hl.lean .case-label input[type="checkbox"] {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  height: 0;
+  width: 0;
+  z-index: -10;
+}
+
+.hl.lean .case-label:has(input[type="checkbox"])::before {
+  display: inline-block;
+  background-color: currentcolor;
+  content: ' ';
+  transition: ease 0.2s;
+  margin-right: 0.7em;
+  clip-path: polygon(100% 0, 0 0, 50% 100%);
+  width: 0.6em;
+  height: 0.6em;
+  vertical-align: middle;
+}
+
+.hl.lean .case-label:has(input[type="checkbox"]:not(:checked))::before {
+  transform: rotate(-90deg);
+}
+
+.hl.lean .case-label:has(input[type="checkbox"]) {
+
+}
+
+.hl.lean .case-label:has(input[type="checkbox"]:checked) {
+
+}
+
+
+.hl.lean .labeled-case > :not(:first-child) {
+  max-height: 0px;
+  display: block;
+  overflow: hidden;
+  transition: max-height 0.1s ease-in;
+  /* These need to be em, not rem, to scale with the font */
+  margin-left: 0.5em;
+  margin-top: 0.1em;
+}
+
+.hl.lean .labeled-case:has(.case-label input[type="checkbox"]:checked) > :not(:first-child) {
+  max-height: 100%;
+}
+
+
+.hl.lean .goal-name::before {
+  font-style: normal;
+  content: "case ";
+}
+
+.hl.lean .goal-name {
+  font-style: italic;
+  font-family: var(--verso-code-font-family);
+  color: inherit;
+}
+
+.hl.lean .hypotheses {
+  display: table;
+}
+
+.hl.lean .hypothesis {
+  display: table-row;
+}
+
+.hl.lean .hypothesis > * {
+  display: table-cell;
+}
+
+
+.hl.lean .hypotheses .colon {
+  text-align: center;
+  /* This needs to be em, not rem, to scale with the font */
+  min-width: 1em;
+}
+
+.hl.lean .hypotheses .name {
+  text-align: right;
+}
+
+.hl.lean .hypotheses .name,
+.hl.lean .hypotheses .type,
+.hl.lean .conclusion .type {
+  font-family: var(--verso-code-font-family);
+}
+
+.tippy-box {
+  /* Without these, mobile Safari will start making font sizes inconsistent when its text size adjustment feature is triggered.*/
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+/*
+Tippy's stylesheet paints each arrow's fill triangle with the arrow element's `color` (its
+placement-specific `::before` rules use `border-color: initial`, which is `currentcolor`),
+and its border extension paints the outline triangle with the box's border color. Setting
+`color` on the arrow therefore matches it to the tooltip background for every placement.
+*/
+.tippy-box[data-theme~='lean'] {
+  background-color: var(--verso-tooltip-bg-color, #e5e5e5);
+  color: var(--verso-tooltip-color, black);
+  border: 1px solid var(--verso-tooltip-border-color, black);
+}
+.tippy-box[data-theme~='lean'] > .tippy-arrow {
+  color: var(--verso-tooltip-bg-color, #e5e5e5);
+}
+
+.tippy-box[data-theme~='message'][data-placement^='top'] > .tippy-arrow::before {
+  border-width: 11px 11px 0;
+}
+.tippy-box[data-theme~='message'][data-placement^='top'] > .tippy-arrow::after {
+  bottom: -11px;
+  border-width: 11px 11px 0;
+}
+.tippy-box[data-theme~='message'][data-placement^='bottom'] > .tippy-arrow::before {
+  border-width: 0 11px 11px;
+}
+.tippy-box[data-theme~='message'][data-placement^='bottom'] > .tippy-arrow::after {
+  top: -11px;
+  border-width: 0 11px 11px;
+}
+.tippy-box[data-theme~='message'][data-placement^='left'] > .tippy-arrow::before {
+  border-width: 11px 0 11px 11px;
+}
+.tippy-box[data-theme~='message'][data-placement^='left'] > .tippy-arrow::after {
+  right: -11px;
+  border-width: 11px 0 11px 11px;
+}
+
+.tippy-box[data-theme~='message'][data-placement^='right'] > .tippy-arrow::before {
+  border-width: 11px 11px 11px 0;
+}
+.tippy-box[data-theme~='message'][data-placement^='right'] > .tippy-arrow::after {
+  left: -11px;
+  border-width: 11px 11px 11px 0;
+}
+
+
+
+.tippy-box[data-theme~='warning'] {
+  background-color: var(--verso-tooltip-warning-bg-color, #e5e5e5);
+  color: var(--verso-tooltip-warning-color, black);
+  border: 3px solid var(--verso-tooltip-warning-border-color, #ffd580);
+}
+.tippy-box[data-theme~='warning'] > .tippy-arrow {
+  color: var(--verso-tooltip-warning-bg-color, #e5e5e5);
+}
+
+.tippy-box[data-theme~='error'] {
+  background-color: var(--verso-tooltip-error-bg-color, #e5e5e5);
+  color: var(--verso-tooltip-error-color, black);
+  border: 3px solid var(--verso-tooltip-error-border-color, #ffb3b3);
+}
+.tippy-box[data-theme~='error'] > .tippy-arrow {
+  color: var(--verso-tooltip-error-bg-color, #e5e5e5);
+}
+
+.tippy-box[data-theme~='info'] {
+  background-color: var(--verso-tooltip-info-bg-color, #e5e5e5);
+  color: var(--verso-tooltip-info-color, black);
+  border: 3px solid var(--verso-tooltip-info-border-color, #4777ff);
+}
+.tippy-box[data-theme~='info'] > .tippy-arrow {
+  color: var(--verso-tooltip-info-bg-color, #e5e5e5);
+}
+
+.tippy-box[data-theme~='tactic'] {
+  background-color: var(--verso-tactic-state-bg-color, white);
+  color: var(--verso-tactic-state-color, black);
+  border: 1px solid var(--verso-tactic-state-border-color, #888888);
+}
+.tippy-box[data-theme~='tactic'] > .tippy-arrow {
+  color: var(--verso-tactic-state-bg-color, white);
+}
+
+.extra-doc-links {
+  list-style-type: none;
+  margin-left: 0;
+  padding: 0;
+}
+
+.extra-doc-links > li {
+  display: inline-block;
+}
+
+.extra-doc-links > li:not(:last-child)::after {
+  content: '|';
+  display: inline-block;
+  margin: 0 0.25em;
+}
+
+.verso-message .trace {
+  display: block;
+}
+
+.verso-message .trace > summary::marker {
+  color: var(--verso-text-color, black);
+}
+
+.verso-message .trace-children {
+  margin: 0;
+  padding: 0;
+}
+
+.verso-message .trace-children > li {
+  list-style-type: none;
+  margin-left: 1.5em;
+}
+
+.verso-message .trace-children > li:not(:has(.trace)) {
+  margin-left: 0;
+}
+
+.verso-message .trace-class {
+  color: color-mix(in srgb, currentColor 70%, transparent);
+  font-weight: bold;
+  margin: 0;
+  padding: 0;
+}
+
+.verso-message .text {
+  white-space: pre-wrap;
+}
+
+</style><style>
 a.elan-command {
   color: inherit;
   text-decoration: currentcolor underline dotted;
@@ -1042,6 +1962,14 @@ pre.json {
 .namedocs:has(input[data-parent-idx="49"]:checked):has(.inheritance[data-inherited-from="49"]:hover) [data-inherited-from]:not([data-inherited-from="49"]) {
   opacity: 0.5;
 }
+</style><style>
+.executable a {
+  color: inherit;
+  text-decoration: currentcolor underline dotted;
+}
+.executable a:hover {
+  text-decoration: currentcolor underline solid;
+}
 </style><style>.keyword-of .kw {
   font-weight: 500;
 }
@@ -1052,103 +1980,66 @@ pre.json {
   background-color: #eee;
   border-radius: 2px;
 }
-</style><style>#toc .split-toc > ol .syntax .keyword { font-family: var(--verso-code-font-family); font-weight: 600; }</style><style>
-.marginalia .note {
-  position: relative;
-  padding: 0.5rem;
+</style><style>
+.export-format {
+  font-family: var(--verso-code-font-family);
 }
 
-/*
-The margin-note layout responds to the width of <main>, not the viewport, because the
-ToC is resizable: a wider ToC leaves less room beside the text for notes. <main> is a
-query container (see Html/Style.lean), so the container queries below track the actual
-content width.
-
-There are two "in the margin" regimes, split at the same width where the content stops
-being left-aligned and becomes centered (1112px and 1212px of content width; at the
-default ToC width these are the old 1400px and 1500px viewport breakpoints):
-
-  * While the content is left-aligned there is a large area to its right, so a fixed
-    13rem note with a fixed 16rem overhang fits comfortably.
-  * Once the content is centered the note must fit the symmetric right gap, whose width
-    is (content - text column) / 2. A fixed overhang would overflow the page for content
-    widths just above the centering threshold, so the note and its overhang are sized in
-    container units, which always fit that gap.
-*/
-
-/* Narrow viewport (e.g. phone): the ToC is hidden and the note spans the text column. */
-@media screen and (width <= 700px) {
-  .marginalia .note {
-    float: left;
-    clear: left;
-    width: 90%;
-    margin: 1rem 5%;
-  }
+figure.export-format {
+  margin: 1rem 0;
 }
 
-/* Wider than a phone: by default float the note at the right of the text column,
-   overlapping the content. The container queries below lift it into the true margin
-   once there is room. */
-@media screen and (min-width: 701px) {
-  .marginalia .note {
-    float: right;
-    clear: right;
-    width: 40%;
-    margin: 1rem 0;
-    margin-left: 10%;
-  }
+figure.export-format > figcaption {
+  font-family: var(--verso-structure-font-family);
+  font-weight: 600;
+  margin: 0 .75rem;
+  text-align: left;
 }
 
-/* Left-aligned content: a fixed-size note in the wide area to its right. */
-@container main (width >= 1112px) {
-  .marginalia .note {
-    float: right;
-    clear: right;
-    width: 13rem;
-    margin: 1rem -16rem 0 0;
-  }
+pre.export-format {
+  margin: 0.25rem .75rem 0.5rem;
+  padding: 0.1rem 0;
 }
 
-/* Centered content: size the note in container units so it always fits the symmetric
-   right gap. The threshold matches the content-centering threshold in Html/Style.lean,
-   so the fixed-overhang note above is only ever used while the content is left-aligned.
-   The overhang (18cqi) stays below the gap, (100cqi - text column) / 2, for every
-   content width at which the content is centered. */
-@container main (width >= 1212px) {
-  .marginalia .note {
-    width: 15cqi;
-    margin-right: -18cqi;
-  }
+.export-format .key, code.export-format.key {
+  color: #601020;
 }
 
-.marginalia:hover, .marginalia:hover .note, .marginalia:has(.note:hover) {
-  background-color: var(--lean-accent-light-blue);
+.export-format .lit {
+  color: #107040;
 }
 
-body {
-  counter-reset: margin-note-counter;
+
+.export-format {
+  --export-format-type-color: #3030c0;
 }
-.marginalia .note {
-  counter-increment: margin-note-counter;
+
+.export-format .type {
+  color: var(--export-format-type-color);
+  font-weight: 600;
 }
-.marginalia .note::before {
-  content: counter(margin-note-counter) ".";
-  position: absolute;
-  vertical-align: baseline;
-  font-size: 0.9em;
-  font-weight: bold;
-  left: -3rem;
-  width: 3rem;
-  text-align: right;
+
+/* Linked type names look exactly like unlinked ones, apart from the underline, in every link state. */
+.export-format .type a,
+.export-format .type a:link,
+.export-format .type a:visited,
+.export-format .type a:active,
+.export-format .type a:focus {
+  color: var(--export-format-type-color);
+  font: inherit;
+  text-decoration-line: underline;
+  text-decoration-style: dotted;
+  text-decoration-color: var(--export-format-type-color);
 }
-.marginalia::after {
-  content: counter(margin-note-counter);
-  vertical-align: super;
-  font-size: 0.7em;
-  font-weight: bold;
-  margin-right: 0.5em;
+
+.export-format .type a:hover {
+  text-decoration-style: solid;
 }
-</style><style>.example {
+
+.export-format .alt, .export-format .angle {
+  font-weight: 600;
+}
+</style><style>#toc .split-toc > ol .syntax .keyword { font-family: var(--verso-code-font-family); font-weight: 600; }</style><style>.example {
   border: 1px solid #98B2C0;
   border-radius: 0.5rem;
   margin-bottom: var(--verso--box-vertical-margin);
@@ -1200,685 +2091,6 @@ body {
   color: var(--lean-blue);
 }
 </style><style>
-
-.hl.lean {
-  white-space: pre;
-  font-weight: normal;
-  font-style: normal;
-  font-size: inherit;
-}
-
-.hl.lean .keyword {
-  color: var(--verso-code-keyword-color,);
-  font-weight: var(--verso-code-keyword-weight, bold);
-  font-style: var(--verso-code-keyword-style, normal);
-  font-family: var(--verso-code-keyword-font-family,);
-}
-
-.hl.lean .const {
-  color: var(--verso-code-const-color,);
-  font-weight: var(--verso-code-const-weight, normal);
-  font-style: var(--verso-code-const-style, normal);
-  font-family: var(--verso-code-const-font-family,);
-}
-
-.hl.lean .var {
-  color: var(--verso-code-var-color,);
-  font-weight: var(--verso-code-var-weight, normal);
-  font-style: var(--verso-code-var-style, italic);
-  font-family: var(--verso-code-var-font-family,);
-
-  position: relative;
-}
-
-.hl.lean .literal, .hl.lean .unknown {
-  color: var(--verso-code-color,);
-  font-weight: normal;
-  font-style: normal;
-  font-family: var(--verso-code-font-family,);
-}
-
-/* These lexically-classified token kinds default to the `.unknown` appearance. The rule follows
-   `.const` so it wins for the `anon-ctor` tokens, which also carry the `const` class. */
-.hl.lean .anon-ctor,
-.hl.lean .number,
-.hl.lean .char,
-.hl.lean .comment,
-.hl.lean .punctuation,
-.hl.lean .delim,
-.hl.lean .wildcard {
-  color: var(--verso-code-color,);
-  font-weight: normal;
-  font-style: normal;
-  font-family: var(--verso-code-font-family,);
-}
-
-.hover-container {
-  width: 0;
-  height: 0;
-  position: relative;
-  display: inline;
-}
-
-.hl.lean a {
-  color: inherit;
-  text-decoration: currentcolor underline dotted;
-}
-
-.hl.lean a:hover {
-  text-decoration: currentcolor underline solid;
-}
-
-.hl.lean .hover-info {
-  white-space: normal;
-}
-
-.hl.lean .token .hover-info {
-  display: none;
-  position: absolute;
-  background-color: #e5e5e5;
-  border: 1px solid black;
-  padding: 0.5rem;
-  z-index: 300;
-}
-
-.hl.lean .hover-info.messages {
-  max-height: 10rem;
-  overflow-y: auto;
-  overflow-x: hidden;
-  scrollbar-gutter: stable;
-  padding: 0 0.5rem 0 0;
-  display: block;
-}
-
-.hl.lean .hover-info code {
-  white-space: pre-wrap;
-  background: none;
-  color: black;
-}
-
-.hl.lean .hover-info.messages > code {
-  padding: 0.5rem;
-  display: block;
-  width: fit-content;
-}
-
-.hl.lean .hover-info.messages > code:only-child {
-  margin: 0;
-}
-
-.hl.lean .hover-info.messages > code {
-  margin: 0.1rem;
-}
-
-.hl.lean .hover-info.messages > code:not(:first-child) {
-  margin-top: 0rem;
-}
-
-.hl.lean {
-}
-
-.hl.lean.block {
-  display: block;
-}
-
-.hl.lean.inline {
-  display: inline;
-  white-space: pre-wrap;
-}
-
-.hl.lean * {
-}
-
-.hl.lean .token {
-  transition: all 0.25s; /* Slight fade for highlights */
-}
-
-@media (hover: hover) {
-  .hl.lean .token.binding-hl, .hl.lean .literal:hover, .hl.lean .token.typed:hover {
-    background-color: #eee;
-    border-radius: 2px;
-    transition: none;
-  }
-}
-
-
-.hl.lean .has-info .token:not(.tactic-state):not(.tactic-state *), .hl.lean .has-info .inter-text:not(.tactic-state):not(.tactic-state *) {
-  text-decoration-style: wavy;
-  text-decoration-line: underline;
-  text-decoration-thickness: from-font;
-  text-decoration-skip-ink: none;
-}
-
-.hl.lean .has-info .hover-info {
-  display: none;
-  position: absolute;
-  transform: translate(0.25rem, 0.3rem);
-  border: 1px solid black;
-  padding: 0.5rem;
-  z-index: 400;
-  text-align: left;
-}
-
-.hl.lean .has-info.error :not(.tactic-state):not(.tactic-state *){
-  text-decoration-color: red;
-}
-
-@media (hover: hover) {
-  .hl.lean .has-info.error:hover {
-    background-color: #ffb3b3;
-  }
-}
-
-.hl.lean .hover-info.messages > code.error {
-  background-color: #e5e5e5;
-  border-left: 0.2rem solid #ffb3b3;
-}
-
-.tippy-box[data-theme~='error'] .hl.lean .hover-info.messages > code.error {
-  background: none;
-  border: none;
-}
-
-.error .verso-message, .error .verso-message .token, .error .verso-message label {
-  color: var(--verso-error-color);
-}
-
-.error .verso-message .case-label:has(input[type="checkbox"])::before {
-  background-color: var(--verso-error-color) !important;
-}
-
-.hl.lean .has-info.warning :not(.tactic-state):not(.tactic-state *) {
-  text-decoration-color: var(--verso-warning-indicator-color);
-}
-
-@media (hover: hover) {
-  .hl.lean .has-info.warning:hover {
-    background-color:var(--verso-warning-color);
-  }
-}
-
-.hl.lean .hover-info.messages > code.warning {
-  background-color: var(--verso-warning-color);
-}
-
-.lean-output {
-  border-left: 0.2em solid transparent;
-  padding: 0 0 0 0.5em;
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
-}
-
-.lean-output.error {
-  border-color: var(--verso-error-indicator-color);
-}
-
-.lean-output.information {
-  border-color: var(--verso-info-indicator-color);
-}
-
-.lean-output.warning {
-  border-color: var(--verso-warning-indicator-color);
-}
-
-.hl.lean .hover-info.messages > code.error {
-  background-color: #e5e5e5;
-  border-left: 0.2rem solid var(--verso-warning-color);
-}
-
-.tippy-box[data-theme~='warning'] .hl.lean .hover-info.messages > code.warning {
-  background: none;
-  border: none;
-}
-
-
-.hl.lean .has-info.information :not(.tactic-state):not(.tactic-state *) {
-  text-decoration-color: var(--verso-info-indicator-color, blue);
-}
-
-@media (hover: hover) {
-  .hl.lean .has-info.information:hover {
-    background-color: #4777ff;
-  }
-}
-
-
-.hl.lean .hover-info.messages > code.information {
-  background-color: #e5e5e5;
-  border-left: 0.2rem solid #4777ff;
-}
-
-.tippy-box[data-theme~='info'] .hl.lean .hover-info.messages > code.information {
-  background: none;
-  border: none;
-}
-
-.hl.lean div.docstring {
-  font-family: var(--verso-text-font-family, sans-serif);
-  white-space: normal;
-  max-width: calc(min(40rem, 90vw));
-  width: max-content;
-}
-
-.hl.lean div.docstring > :last-child {
-  margin-bottom: 0;
-}
-
-.hl.lean div.docstring > :first-child {
-  margin-top: 0;
-}
-
-.hl.lean .hover-info .sep {
-  display: block;
-  width: auto;
-  margin-left: 1rem;
-  margin-right: 1rem;
-  margin-top: 0.5rem;
-  margin-bottom: 0.5rem;
-  padding: 0;
-  height: 1px;
-  border-top: 1px solid #ccc;
-}
-
-.hl.lean code {
-  font-family: var(--verso-code-font-family);
-}
-
-.hl.lean .tactic-state {
-  display: none;
-  position: relative;
-  width: fit-content;
-  border: 1px solid #888888;
-  border-radius: 0.1rem;
-  padding: 0.5rem;
-  font-family: sans-serif;
-  background-color: #ffffff;
-}
-
-.hl.lean.popup .tactic-state {
-  position: static;
-  display: block;
-  width: auto;
-  border: none;
-  padding: 0.5rem;
-  font-family: sans-serif;
-  background-color: #ffffff;
-}
-
-
-.hl.lean .tactic {
-  position: relative;
-  display: inline;
-  vertical-align: top;
-  /* Without these, mobile Safari will start making font sizes inconsistent when its text size adjustment feature is triggered.*/
-  -webkit-text-size-adjust: 100%;
-  text-size-adjust: 100%;
-}
-
-.hl.lean .tactic:has(> .tactic-toggle:checked) {
-  display: inline-grid;
-  grid-template-columns: 1fr;
-}
-
-.hl.lean .tactic-toggle:checked ~ .tactic-state {
-  display: inline-block;
-  vertical-align: top;
-  grid-row: 2;
-  justify-self: start;
-}
-
-.hl.lean .tactic > label {
-  position: relative;
-  grid-row: 1;
-  display: inline;
-}
-
-@media (hover: hover) {
-  /* Highlight a region on hover only when its own toggle is unchecked, and only the innermost
-     hovered region: `label:hover` bubbles to ancestor labels, so suppress the highlight on a region
-     whose label contains a more deeply nested hovered tactic label. */
-  .hl.lean .tactic:has(> .tactic-toggle:not(:checked)) > label:hover:not(:has(.tactic > label:hover)) {
-    background-color: #eeeeee;
-  }
-}
-
-.hl.lean .tactic-toggle {
-  position: absolute;
-  top: 0;
-  left: 0;
-  opacity: 0;
-  height: 0;
-  width: 0;
-  z-index: -10;
-}
-
-.hl.lean .tactic > label::after {
-  content: "";
-  border: 1px solid #bbbbbb;
-  /* These need to be em, not rem, to scale with the font */
-  border-radius: 1em;
-  height: 0.25em;
-  vertical-align: middle;
-  width: 0.6em;
-  margin-left: 0.1em;
-  margin-right: 0.1em;
-  display: inline-block;
-  transition: all 0.5s;
-}
-
-/*
-@media (hover: hover) {
-  .hl.lean .tactic > label:hover::after {
-    border: 1px solid #aaaaaa;
-    background-color: #aaaaaa;
-    transition: all 0.5s;
-  }
-}
-*/
-
-.hl.lean .tactic > label:has(+ .tactic-toggle:checked)::after {
-  border: 1px solid #999999;
-  background-color: #999999;
-  transition: all 0.5s;
-}
-
-.hl.lean .tactic-state .goal + .goal {
-  margin-top: 1.5em;
-}
-
-/*
-Some CSS frameworks customize details/summary in ways not compatible with Verso's output.
-*/
-
-.hl.lean details {
-  display: block !important;
-  margin: 0;
-}
-
-.hl.lean details summary {
-  display: list-item !important;
-  margin: 0;
-}
-
-.hl.lean details summary:focus {
-  outline: none;
-  outline-offset: none;
-  color: inherit;
-}
-
-.hl.lean ul > li {
-  margin-bottom: 0;
-}
-
-.hl.lean details summary::marker {
-  display: inline !important;
-}
-
-.hl.lean details > summary:first-of-type {
-  list-style-type: disclosure-closed;
-  list-style-position: inside;
-}
-
-.hl.lean details[open] > summary:first-of-type {
-  list-style-type: disclosure-open;
-}
-
-.hl.lean details summary::before, .hl.lean details summary::after {
-  content: "" !important;
-  background: none;
-  display: none;
-}
-
-.hl.lean .tactic-state summary {
-  /* These need to be em, not rem, to scale with the font */
-  margin-left: -0.5em;
-}
-
-.hl.lean .tactic-state details {
-  /* These need to be em, not rem, to scale with the font */
-  padding-left: 0.5em;
-}
-
-.hl.lean .case-label {
-  display: block;
-  position: relative;
-}
-
-.hl.lean .case-label input[type="checkbox"] {
-  position: absolute;
-  top: 0;
-  left: 0;
-  opacity: 0;
-  height: 0;
-  width: 0;
-  z-index: -10;
-}
-
-.hl.lean .case-label:has(input[type="checkbox"])::before {
-  display: inline-block;
-  background-color: black;
-  content: ' ';
-  transition: ease 0.2s;
-  margin-right: 0.7em;
-  clip-path: polygon(100% 0, 0 0, 50% 100%);
-  width: 0.6em;
-  height: 0.6em;
-  vertical-align: middle;
-}
-
-.hl.lean .case-label:has(input[type="checkbox"]:not(:checked))::before {
-  transform: rotate(-90deg);
-}
-
-.hl.lean .case-label:has(input[type="checkbox"]) {
-
-}
-
-.hl.lean .case-label:has(input[type="checkbox"]:checked) {
-
-}
-
-
-.hl.lean .labeled-case > :not(:first-child) {
-  max-height: 0px;
-  display: block;
-  overflow: hidden;
-  transition: max-height 0.1s ease-in;
-  /* These need to be em, not rem, to scale with the font */
-  margin-left: 0.5em;
-  margin-top: 0.1em;
-}
-
-.hl.lean .labeled-case:has(.case-label input[type="checkbox"]:checked) > :not(:first-child) {
-  max-height: 100%;
-}
-
-
-.hl.lean .goal-name::before {
-  font-style: normal;
-  content: "case ";
-}
-
-.hl.lean .goal-name {
-  font-style: italic;
-  font-family: var(--verso-code-font-family);
-  color: inherit;
-}
-
-.hl.lean .hypotheses {
-  display: table;
-}
-
-.hl.lean .hypothesis {
-  display: table-row;
-}
-
-.hl.lean .hypothesis > * {
-  display: table-cell;
-}
-
-
-.hl.lean .hypotheses .colon {
-  text-align: center;
-  /* This needs to be em, not rem, to scale with the font */
-  min-width: 1em;
-}
-
-.hl.lean .hypotheses .name {
-  text-align: right;
-}
-
-.hl.lean .hypotheses .name,
-.hl.lean .hypotheses .type,
-.hl.lean .conclusion .type {
-  font-family: var(--verso-code-font-family);
-}
-
-.tippy-box {
-  /* Without these, mobile Safari will start making font sizes inconsistent when its text size adjustment feature is triggered.*/
-  -webkit-text-size-adjust: 100%;
-  text-size-adjust: 100%;
-}
-
-.tippy-box[data-theme~='lean'] {
-  background-color: #e5e5e5;
-  color: black;
-  border: 1px solid black;
-}
-.tippy-box[data-theme~='lean'][data-placement^='top'] > .tippy-arrow::before {
-  border-top-color: #e5e5e5;
-}
-.tippy-box[data-theme~='lean'][data-placement^='bottom'] > .tippy-arrow::before {
-  border-bottom-color: #e5e5e5;
-}
-.tippy-box[data-theme~='lean'][data-placement^='left'] > .tippy-arrow::before {
-  border-left-color: #e5e5e5;
-}
-.tippy-box[data-theme~='lean'][data-placement^='right'] > .tippy-arrow::before {
-  border-right-color: #e5e5e5;
-}
-
-.tippy-box[data-theme~='message'][data-placement^='top'] > .tippy-arrow::before {
-  border-top-color: #e5e5e5;
-  border-width: 11px 11px 0;
-}
-.tippy-box[data-theme~='message'][data-placement^='top'] > .tippy-arrow::after {
-  bottom: -11px;
-  border-width: 11px 11px 0;
-}
-.tippy-box[data-theme~='message'][data-placement^='bottom'] > .tippy-arrow::before {
-  border-width: 0 11px 11px;
-}
-.tippy-box[data-theme~='message'][data-placement^='bottom'] > .tippy-arrow::after {
-  top: -11px;
-  border-width: 0 11px 11px;
-}
-.tippy-box[data-theme~='message'][data-placement^='left'] > .tippy-arrow::before {
-  border-left-color: #e5e5e5;
-  border-width: 11px 0 11px 11px;
-}
-.tippy-box[data-theme~='message'][data-placement^='left'] > .tippy-arrow::after {
-  right: -11px;
-  border-width: 11px 0 11px 11px;
-}
-
-.tippy-box[data-theme~='message'][data-placement^='right'] > .tippy-arrow::before {
-  border-right-color: #e5e5e5;
-  border-width: 11px 11px 11px 0;
-}
-.tippy-box[data-theme~='message'][data-placement^='right'] > .tippy-arrow::after {
-  left: -11px;
-  border-width: 11px 11px 11px 0;
-}
-
-
-
-.tippy-box[data-theme~='warning'] {
-  background-color: #e5e5e5;
-  color: black;
-  border: 3px solid var(--verso-warning-color);
-}
-
-.tippy-box[data-theme~='error'] {
-  background-color: #e5e5e5;
-  color: black;
-  border: 3px solid #f7a7af;
-}
-
-.tippy-box[data-theme~='info'] {
-  background-color: #e5e5e5;
-  color: black;
-  border: 3px solid #99b3c2;
-}
-
-.tippy-box[data-theme~='tactic'] {
-  background-color: white;
-  color: black;
-  border: 1px solid black;
-}
-.tippy-box[data-theme~='tactic'][data-placement^='top'] > .tippy-arrow::before {
-  border-top-color: white;
-}
-.tippy-box[data-theme~='tactic'][data-placement^='bottom'] > .tippy-arrow::before {
-  border-bottom-color: white;
-}
-.tippy-box[data-theme~='tactic'][data-placement^='left'] > .tippy-arrow::before {
-  border-left-color: white;
-}
-.tippy-box[data-theme~='tactic'][data-placement^='right'] > .tippy-arrow::before {
-  border-right-color: white;
-}
-
-.extra-doc-links {
-  list-style-type: none;
-  margin-left: 0;
-  padding: 0;
-}
-
-.extra-doc-links > li {
-  display: inline-block;
-}
-
-.extra-doc-links > li:not(:last-child)::after {
-  content: '|';
-  display: inline-block;
-  margin: 0 0.25em;
-}
-
-.verso-message .trace {
-  display: block;
-}
-
-.verso-message .trace > summary::marker {
-  color: var(--verso-text-color);
-}
-
-.verso-message .trace-children {
-  margin: 0;
-  padding: 0;
-}
-
-.verso-message .trace-children > li {
-  list-style-type: none;
-  margin-left: 1.5em;
-}
-
-.verso-message .trace-children > li:not(:has(.trace)) {
-  margin-left: 0;
-}
-
-.verso-message .trace-class {
-  color: color-mix(in srgb, currentColor 70%, transparent);
-  font-weight: bold;
-  margin: 0;
-  padding: 0;
-}
-
-.verso-message .text {
-  white-space: pre-wrap;
-}
-
-</style><style>
 .toml {
   font-family: var(--verso-code-font-family);
 }
@@ -1912,6 +2124,46 @@ pre.toml {
 
 .toml a:hover {
     border-bottom-style: solid;
+}
+</style><style>
+.syntax-error {
+  white-space: normal;
+}
+.syntax-error::before {
+  counter-reset: linenumber;
+}
+.syntax-error > .line {
+  display: block;
+  white-space: pre;
+  counter-increment: linenumber;
+  font-family: var(--verso-code-font-family);
+}
+.syntax-error > .line::before {
+  -webkit-user-select: none;
+  display: inline-block;
+  content: counter(linenumber);
+  border-right: 1px solid #ddd;
+  width: 2em;
+  padding-right: 0.25em;
+  margin-right: 0.25em;
+  font-family: var(--verso-code-font-family);
+  text-align: right;
+}
+
+:is(.syntax-error > .line):has(.parse-message)::before {
+  color: var(--verso-message-error-color);
+  font-weight: bold;
+}
+
+.syntax-error .parse-message > code.hover-info {
+  display:none;
+}
+
+.syntax-error .parse-message {
+  white-space: pre;
+  text-decoration-skip-ink: none;
+  color: var(--verso-message-error-color);
+  font-weight: 600;
 }
 </style><style>.grammar .keyword {
   font-weight: 500 !important;
@@ -1990,7 +2242,16 @@ span.TODO {
   text-decoration: currentcolor underline solid;
 }
 
-</style><style>.namedocs .label a { color: inherit; }</style><style>
+</style><style>
+a.lake-command {
+  color: inherit;
+  text-decoration: currentcolor underline dotted;
+}
+a.lake-command:hover {
+  text-decoration: currentcolor underline solid;
+}
+
+</style><style>
 .example-file {
   white-space: normal;
   font-family: var(--verso-structure-font-family);
@@ -2053,16 +2314,7 @@ span.TODO {
   font-family: var(--verso-code-font-family);
   text-align: right;
 }
-</style><style>
-a.lake-command {
-  color: inherit;
-  text-decoration: currentcolor underline dotted;
-}
-a.lake-command:hover {
-  text-decoration: currentcolor underline solid;
-}
-
-</style><style>
+</style><style>.namedocs .label a { color: inherit; }</style><style>
 dl.toml-table-field-spec {
 }
 </style><style>
@@ -2172,44 +2424,12 @@ table.tabular td > p:last-child, table.tabular th > p:first-child {
 }
 
 </style><style>
-.syntax-error {
-  white-space: normal;
+a.export-type {
+  color: inherit;
+  text-decoration: currentcolor underline dotted;
 }
-.syntax-error::before {
-  counter-reset: linenumber;
-}
-.syntax-error > .line {
-  display: block;
-  white-space: pre;
-  counter-increment: linenumber;
-  font-family: var(--verso-code-font-family);
-}
-.syntax-error > .line::before {
-  -webkit-user-select: none;
-  display: inline-block;
-  content: counter(linenumber);
-  border-right: 1px solid #ddd;
-  width: 2em;
-  padding-right: 0.25em;
-  margin-right: 0.25em;
-  font-family: var(--verso-code-font-family);
-  text-align: right;
-}
-
-:is(.syntax-error > .line):has(.parse-message)::before {
-  color: red;
-  font-weight: bold;
-}
-
-.syntax-error .parse-message > code.hover-info {
-  display:none;
-}
-
-.syntax-error .parse-message {
-  white-space: pre;
-  text-decoration-skip-ink: none;
-  color: red;
-  font-weight: 600;
+a.export-type:hover {
+  text-decoration: currentcolor underline solid;
 }
 </style><style>
 a.technical-term {
@@ -2233,7 +2453,303 @@ a.technical-term:hover {
 .namedocs.warn > .label { border-color: #cc3333; color: #a02020; }
 .namedocs.warn > .text { border-top: none; }
 </style><script>
-      function openDetailsForHashTarget() {
+window.onload = async () => {
+
+    // Don't show hovers inside of closed tactic states
+    function blockedByTactic(elem) {
+      let parent = elem.parentNode;
+      while (parent && "classList" in parent) {
+        if (parent.classList.contains("tactic")) {
+          const toggle = parent.querySelector(":scope > input.tactic-toggle");
+          if (toggle) {
+            return !toggle.checked;
+          }
+        }
+        parent = parent.parentNode;
+      }
+      return false;
+    }
+
+    // The innermost element under the pointer, used to show only the most specific hover
+    let hoverTarget = null;
+    document.addEventListener('mouseover', (e) => { hoverTarget = e.target; }, true);
+
+    // Visible tippy references; a tooltip is blocked while an unrelated one is visible
+    const visibleTippies = new Set();
+    function blockedByTippy(elem) {
+      for (const ref of visibleTippies) {
+        if (!ref.contains(elem) && !elem.contains(ref)) return true;
+      }
+      return false;
+    }
+
+    // Whether the element's tooltip would have content to show. Content nested in a
+    // collapsed tactic region is covered by the region's proof-state tooltip, whether or
+    // not a tippy instance is currently attached to it.
+    function showsContent(el) {
+      if (!el._tippy) return false;
+      if (el.classList.contains('tactic')) {
+        const toggle = el.querySelector(':scope > input.tactic-toggle');
+        return !!toggle && !toggle.checked;
+      }
+      return (!!el.querySelector('.hover-info') || 'versoHover' in el.dataset) &&
+        !blockedByTactic(el);
+    }
+
+    // The nearest enclosing element whose tooltip has content
+    function innermostShowable(el) {
+      while (el && el.nodeType === Node.ELEMENT_NODE) {
+        if (showsContent(el)) return el;
+        el = el.parentElement;
+      }
+      return null;
+    }
+
+    // Binding highlights via event delegation with cached lookups
+    const bindingCache = new Map(); // context+binding -> [token elements]
+    let highlightedTokens = [];
+    function getBindingTokens(context, binding) {
+      const key = context + "\0" + binding;
+      let tokens = bindingCache.get(key);
+      if (!tokens) {
+        tokens = [];
+        for (const example of document.querySelectorAll(".hl.lean")) {
+          if (example.dataset.leanContext == context) {
+            for (const tok of example.querySelectorAll(".token[data-binding=\"" + CSS.escape(binding) + "\"]")) {
+              tokens.push(tok);
+            }
+          }
+        }
+        bindingCache.set(key, tokens);
+      }
+      return tokens;
+    }
+    for (const container of document.querySelectorAll(".hl.lean")) {
+      container.addEventListener("mouseover", (event) => {
+        const c = event.target.closest(".token");
+        if (!c || !c.dataset.binding || c.dataset.binding === "" || !container.contains(c)) return;
+        if (blockedByTactic(c)) return;
+        const tokens = getBindingTokens(container.dataset.leanContext, c.dataset.binding);
+        for (const tok of tokens) {
+          tok.classList.add("binding-hl");
+        }
+        highlightedTokens = tokens;
+      });
+      container.addEventListener("mouseout", (event) => {
+        const c = event.target.closest(".token");
+        if (!c || !container.contains(c)) return;
+        for (const tok of highlightedTokens) {
+          tok.classList.remove("binding-hl");
+        }
+        highlightedTokens = [];
+      });
+    }
+    /* Render docstrings */
+    if ('undefined' !== typeof marked) {
+        for (const d of document.querySelectorAll("code.docstring, pre.docstring")) {
+            const str = d.innerText;
+            const html = marked.parse(str);
+            const rendered = document.createElement("div");
+            rendered.classList.add("docstring");
+            rendered.innerHTML = html;
+            d.parentNode.replaceChild(rendered, d);
+        }
+    }
+    // Add hovers
+    const versoDocData = await (fetch("-verso-docs.json").then((resp) => resp.json()));
+
+    function hideParentTooltips(element) {
+      let parent = element.parentElement;
+      while (parent) {
+        const tippyInstance = parent._tippy;
+        if (tippyInstance) {
+          tippyInstance.hide();
+        }
+        parent = parent.parentElement;
+      }
+    }
+
+    function hideDescendantTooltips(element) {
+      for (const ref of visibleTippies) {
+        if (ref !== element && element.contains(ref)) {
+          ref._tippy.hide();
+        }
+      }
+    }
+
+    // Renders the documentation for a hover ID from the doc table
+    function docHoverContent(hoverId) {
+      const info = document.createElement('span');
+      info.className = 'hover-info';
+      info.style.display = 'block';
+      const data = versoDocData[hoverId];
+      if (data) {
+        info.innerHTML = data;
+        /* Render docstrings - TODO server-side */
+        if ('undefined' !== typeof marked) {
+          for (const d of info.querySelectorAll('code.docstring, pre.docstring')) {
+            const str = d.innerText;
+            const html = marked.parse(str);
+            const rendered = document.createElement('div');
+            rendered.classList.add('docstring');
+            rendered.innerHTML = html;
+            d.parentNode.replaceChild(rendered, d);
+          }
+        }
+      } else {
+        info.innerHTML = 'Failed to load doc ID: ' + hoverId;
+      }
+      return info;
+    }
+
+
+
+
+    const defaultTippyProps = {
+      /* DEBUG -- remove the space: * /
+      onHide(any) { return false; },
+      trigger: "click",
+      // */
+      /* theme: "lean", */
+      maxWidth: "none",
+      appendTo: () => document.body,
+      interactive: true,
+      delay: [100, null],
+      /* ignoreAttributes: true, */
+      followCursor: 'initial',
+      onShow(inst) {
+        const ref = inst.reference;
+        if (ref.className == 'tactic') {
+          const toggle = ref.querySelector(":scope > input.tactic-toggle");
+          if (toggle && toggle.checked) {
+            return false;
+          }
+        } else if (ref.querySelector(".hover-info") || "versoHover" in ref.dataset) {
+          if (blockedByTactic(ref)) { return false };
+        } else { // Nothing to show here!
+          return false;
+        }
+        // Show only the most specific hover under the pointer
+        if (hoverTarget && ref.contains(hoverTarget) && innermostShowable(hoverTarget) !== ref) {
+          return false;
+        }
+        hideParentTooltips(ref);
+        hideDescendantTooltips(ref);
+        if (blockedByTippy(ref)) { return false; }
+      },
+      onShown(inst) { visibleTippies.add(inst.reference); },
+      onHidden(inst) { visibleTippies.delete(inst.reference); },
+      content (tgt) {
+        const content = document.createElement("span");
+        if (tgt.className == 'tactic') {
+          const state = tgt.querySelector(":scope > .tactic-state").cloneNode(true);
+          state.style.display = "block";
+          content.appendChild(state);
+          content.style.display = "block";
+          content.className = "hl lean popup";
+        } else {
+          content.className = "hl lean";
+          content.style.display = "block";
+          content.style.maxHeight = "300px";
+          content.style.overflowY = "auto";
+          content.style.overflowX = "hidden";
+          // Messages come from the inline hover-info; documentation comes from the doc
+          // table. An element with both (a message span sharing a documented token's
+          // extent) shows both in one tooltip.
+          const hoverId = tgt.dataset.versoHover;
+          const hoverInfo = tgt.querySelector(".hover-info");
+          if (hoverInfo) {
+            content.appendChild(hoverInfo.cloneNode(true));
+          }
+          if (hoverId) {
+            // TODO stop doing an implicit conversion from string to number here
+            content.appendChild(docHoverContent(hoverId));
+          }
+          if (hoverInfo && hoverId) {
+            content.classList.add('mixed');
+          }
+          const extraLinks = tgt.dataset['versoLinks'] || tgt.parentElement.dataset['versoLinks'];
+          if (extraLinks) {
+            try {
+              const extras = JSON.parse(extraLinks);
+              const links = document.createElement('ul');
+              links.className = 'extra-doc-links';
+              extras.forEach((l) => {
+                const li = document.createElement('li');
+                li.innerHTML = "<a href=\"" + l['href'] + "\" title=\"" + l.long + "\">" + l.short + "</a>";
+                links.appendChild(li);
+              });
+              content.appendChild(links);
+            } catch (error) {
+              console.error(error);
+            }
+          }
+        }
+        return content;
+      }
+    };
+
+
+    document.querySelectorAll('.hl.lean .const.token, .hl.lean .keyword.token, .hl.lean .literal.token, .hl.lean .option.token, .hl.lean .var.token, .hl.lean .typed.token, .hl.lean .level-var, .hl.lean .level-const, .hl.lean .level-op, .hl.lean .sort').forEach(element => {
+      element.setAttribute('data-tippy-theme', 'lean');
+    });
+    document.querySelectorAll('.hl.lean .has-info.warning').forEach(element => {
+      element.setAttribute('data-tippy-theme', 'warning message');
+    });
+    document.querySelectorAll('.hl.lean .has-info.information').forEach(element => {
+      element.setAttribute('data-tippy-theme', 'info message');
+    });
+    document.querySelectorAll('.hl.lean .has-info.error').forEach(element => {
+      element.setAttribute('data-tippy-theme', 'error message');
+    });
+    document.querySelectorAll('.hl.lean .tactic').forEach(element => {
+      element.setAttribute('data-tippy-theme', 'tactic');
+    });
+    // Skip tokens inside closed tactics — they interfere with tactic tippys
+    const closedTactics = new Set();
+    document.querySelectorAll('.hl.lean .tactic').forEach(tactic => {
+      const toggle = tactic.querySelector(':scope > input.tactic-toggle');
+      if (toggle && !toggle.checked) closedTactics.add(tactic);
+    });
+    function isInsideClosedTactic(el) {
+      const tactic = el.closest('.tactic');
+      return tactic && tactic !== el && closedTactics.has(tactic);
+    }
+
+    const tokenSelector = '.hl.lean .const.token, .hl.lean .keyword.token, .hl.lean .literal.token, .hl.lean .option.token, .hl.lean .var.token, .hl.lean .typed.token, .hl.lean .has-info, .hl.lean .tactic, .hl.lean .level-var, .hl.lean .level-const, .hl.lean .level-op, .hl.lean .sort';
+    tippy(Array.from(document.querySelectorAll(tokenSelector)).filter(el => !isInsideClosedTactic(el)), defaultTippyProps);
+
+    // Create/destroy token tippys when tactic checkbox toggles
+    const tacticTippySelector = '.const.token, .keyword.token, .literal.token, .option.token, .var.token, .typed.token, .has-info, .level-var, .level-const, .level-op, .sort';
+    document.querySelectorAll('.hl.lean .tactic').forEach(tactic => {
+      const toggle = tactic.querySelector(':scope > input.tactic-toggle');
+      if (toggle) toggle.addEventListener('change', () => {
+        if (toggle.checked) {
+          closedTactics.delete(tactic);
+          tactic.querySelectorAll(tacticTippySelector).forEach(el => {
+            if (!el._tippy) {
+              tippy(el, defaultTippyProps);
+            }
+          });
+        } else {
+          closedTactics.add(tactic);
+          tactic.querySelectorAll(tacticTippySelector).forEach(el => {
+            if (el._tippy) el._tippy.destroy();
+          });
+        }
+        // The toggle changes which element's tooltip belongs to the pointer's position,
+        // but the pointer stays put, so no hover event announces the change. Show the
+        // right tooltip once the click that flipped the toggle has hidden the old one.
+        setTimeout(() => {
+          if (hoverTarget && hoverTarget.isConnected) {
+            const showable = innermostShowable(hoverTarget);
+            if (showable && showable._tippy) showable._tippy.show();
+          }
+        }, 0);
+      });
+  });
+}
+</script><script>function openDetailsForHashTarget() {
   // Get the current hash from the URL
   const hash = window.location.hash;
 
@@ -2306,9 +2822,7 @@ if (document.readyState === 'loading') {
 } else {
   pageInit();
 }
-</script>
-    <script>
-      
+</script><script>
 window.addEventListener("load", () => {
   const innerProps = {
     onShow(inst) { console.log(inst); },
@@ -2355,9 +2869,7 @@ window.addEventListener("load", () => {
   };
   tippy.createSingleton(tippy('pre.grammar.hl.lean .nonterminal.documented, pre.grammar.hl.lean .from-nonterminal.documented, pre.grammar.hl.lean .local-name.documented', innerProps), outerProps);
 });
-</script>
-    <script>
-      
+</script><script>
 window.addEventListener('DOMContentLoaded', () => {
   const tabLists = document.querySelectorAll('.error-example-tab-list')
   tabLists.forEach(tabList => {
@@ -2394,245 +2906,7 @@ window.addEventListener('DOMContentLoaded', () => {
     })
   })
 })
-  </script>
-    <script>
-      
-window.onload = async () => {
-
-    // Don't show hovers inside of closed tactic states
-    function blockedByTactic(elem) {
-      let parent = elem.parentNode;
-      while (parent && "classList" in parent) {
-        if (parent.classList.contains("tactic")) {
-          const toggle = parent.querySelector(":scope > input.tactic-toggle");
-          if (toggle) {
-            return !toggle.checked;
-          }
-        }
-        parent = parent.parentNode;
-      }
-      return false;
-    }
-
-    // Track whether any tippy is visible (O(1) check instead of DOM scan)
-    let visibleTippyCount = 0;
-    function blockedByTippy(elem) {
-      return visibleTippyCount > 0;
-    }
-
-    // Binding highlights via event delegation with cached lookups
-    const bindingCache = new Map(); // context+binding -> [token elements]
-    let highlightedTokens = [];
-    function getBindingTokens(context, binding) {
-      const key = context + "\0" + binding;
-      let tokens = bindingCache.get(key);
-      if (!tokens) {
-        tokens = [];
-        for (const example of document.querySelectorAll(".hl.lean")) {
-          if (example.dataset.leanContext == context) {
-            for (const tok of example.querySelectorAll(".token[data-binding=\"" + CSS.escape(binding) + "\"]")) {
-              tokens.push(tok);
-            }
-          }
-        }
-        bindingCache.set(key, tokens);
-      }
-      return tokens;
-    }
-    for (const container of document.querySelectorAll(".hl.lean")) {
-      container.addEventListener("mouseover", (event) => {
-        const c = event.target.closest(".token");
-        if (!c || !c.dataset.binding || c.dataset.binding === "" || !container.contains(c)) return;
-        if (blockedByTactic(c)) return;
-        const tokens = getBindingTokens(container.dataset.leanContext, c.dataset.binding);
-        for (const tok of tokens) {
-          tok.classList.add("binding-hl");
-        }
-        highlightedTokens = tokens;
-      });
-      container.addEventListener("mouseout", (event) => {
-        const c = event.target.closest(".token");
-        if (!c || !container.contains(c)) return;
-        for (const tok of highlightedTokens) {
-          tok.classList.remove("binding-hl");
-        }
-        highlightedTokens = [];
-      });
-    }
-    /* Render docstrings */
-    if ('undefined' !== typeof marked) {
-        for (const d of document.querySelectorAll("code.docstring, pre.docstring")) {
-            const str = d.innerText;
-            const html = marked.parse(str);
-            const rendered = document.createElement("div");
-            rendered.classList.add("docstring");
-            rendered.innerHTML = html;
-            d.parentNode.replaceChild(rendered, d);
-        }
-    }
-    // Add hovers
-    const versoDocData = await (fetch("-verso-docs.json").then((resp) => resp.json()));
-
-    function hideParentTooltips(element) {
-      let parent = element.parentElement;
-      while (parent) {
-        const tippyInstance = parent._tippy;
-        if (tippyInstance) {
-          tippyInstance.hide();
-        }
-        parent = parent.parentElement;
-      }
-    }
-
-
-
-    const defaultTippyProps = {
-      /* DEBUG -- remove the space: * /
-      onHide(any) { return false; },
-      trigger: "click",
-      // */
-      /* theme: "lean", */
-      maxWidth: "none",
-      appendTo: () => document.body,
-      interactive: true,
-      delay: [100, null],
-      /* ignoreAttributes: true, */
-      followCursor: 'initial',
-      onShow(inst) {
-        if (inst.reference.className == 'tactic') {
-          const toggle = inst.reference.querySelector(":scope > input.tactic-toggle");
-          if (toggle && toggle.checked) {
-            return false;
-          }
-          hideParentTooltips(inst.reference);
-          if (blockedByTippy(inst.reference)) { return false; }
-
-        } else if (inst.reference.querySelector(".hover-info") || "versoHover" in inst.reference.dataset) {
-          if (blockedByTactic(inst.reference)) { return false };
-          if (blockedByTippy(inst.reference)) { return false; }
-        } else { // Nothing to show here!
-          return false;
-        }
-      },
-      onShown(inst) { visibleTippyCount++; },
-      onHidden(inst) { visibleTippyCount = Math.max(0, visibleTippyCount - 1); },
-      content (tgt) {
-        const content = document.createElement("span");
-        if (tgt.className == 'tactic') {
-          const state = tgt.querySelector(":scope > .tactic-state").cloneNode(true);
-          state.style.display = "block";
-          content.appendChild(state);
-          content.style.display = "block";
-          content.className = "hl lean popup";
-        } else {
-          content.className = "hl lean";
-          content.style.display = "block";
-          content.style.maxHeight = "300px";
-          content.style.overflowY = "auto";
-          content.style.overflowX = "hidden";
-          const hoverId = tgt.dataset.versoHover;
-          const hoverInfo = tgt.querySelector(".hover-info");
-          if (hoverId) { // Docstrings from the table
-            // TODO stop doing an implicit conversion from string to number here
-            let data = versoDocData[hoverId];
-            if (data) {
-              const info = document.createElement("span");
-              info.className = "hover-info";
-              info.style.display = "block";
-              info.innerHTML = data;
-              content.appendChild(info);
-              /* Render docstrings - TODO server-side */
-              if ('undefined' !== typeof marked) {
-                  for (const d of content.querySelectorAll("code.docstring, pre.docstring")) {
-                      const str = d.innerText;
-                      const html = marked.parse(str);
-                      const rendered = document.createElement("div");
-                      rendered.classList.add("docstring");
-                      rendered.innerHTML = html;
-                      d.parentNode.replaceChild(rendered, d);
-                  }
-              }
-            } else {
-              content.innerHTML = "Failed to load doc ID: " + hoverId;
-            }
-          } else if (hoverInfo) { // The inline info, still used for compiler messages
-            content.appendChild(hoverInfo.cloneNode(true));
-          }
-          const extraLinks = tgt.parentElement.dataset['versoLinks'];
-          if (extraLinks) {
-            try {
-              const extras = JSON.parse(extraLinks);
-              const links = document.createElement('ul');
-              links.className = 'extra-doc-links';
-              extras.forEach((l) => {
-                const li = document.createElement('li');
-                li.innerHTML = "<a href=\"" + l['href'] + "\" title=\"" + l.long + "\">" + l.short + "</a>";
-                links.appendChild(li);
-              });
-              content.appendChild(links);
-            } catch (error) {
-              console.error(error);
-            }
-          }
-        }
-        return content;
-      }
-    };
-
-
-    document.querySelectorAll('.hl.lean .const.token, .hl.lean .keyword.token, .hl.lean .literal.token, .hl.lean .option.token, .hl.lean .var.token, .hl.lean .typed.token, .hl.lean .level-var, .hl.lean .level-const, .hl.lean .level-op, .hl.lean .sort').forEach(element => {
-      element.setAttribute('data-tippy-theme', 'lean');
-    });
-    document.querySelectorAll('.hl.lean .has-info.warning').forEach(element => {
-      element.setAttribute('data-tippy-theme', 'warning message');
-    });
-    document.querySelectorAll('.hl.lean .has-info.information').forEach(element => {
-      element.setAttribute('data-tippy-theme', 'info message');
-    });
-    document.querySelectorAll('.hl.lean .has-info.error').forEach(element => {
-      element.setAttribute('data-tippy-theme', 'error message');
-    });
-    document.querySelectorAll('.hl.lean .tactic').forEach(element => {
-      element.setAttribute('data-tippy-theme', 'tactic');
-    });
-    // Skip tokens inside closed tactics — they interfere with tactic tippys
-    const closedTactics = new Set();
-    document.querySelectorAll('.hl.lean .tactic').forEach(tactic => {
-      const toggle = tactic.querySelector(':scope > input.tactic-toggle');
-      if (toggle && !toggle.checked) closedTactics.add(tactic);
-    });
-    function isInsideClosedTactic(el) {
-      const tactic = el.closest('.tactic');
-      return tactic && tactic !== el && closedTactics.has(tactic);
-    }
-
-    const tokenSelector = '.hl.lean .const.token, .hl.lean .keyword.token, .hl.lean .literal.token, .hl.lean .option.token, .hl.lean .var.token, .hl.lean .typed.token, .hl.lean .has-info, .hl.lean .tactic, .hl.lean .level-var, .hl.lean .level-const, .hl.lean .level-op, .hl.lean .sort';
-    tippy(Array.from(document.querySelectorAll(tokenSelector)).filter(el => !isInsideClosedTactic(el)), defaultTippyProps);
-
-    // Create/destroy token tippys when tactic checkbox toggles
-    const tacticTippySelector = '.const.token, .keyword.token, .literal.token, .option.token, .var.token, .typed.token, .has-info, .level-var, .level-const, .level-op, .sort';
-    document.querySelectorAll('.hl.lean .tactic').forEach(tactic => {
-      const toggle = tactic.querySelector(':scope > input.tactic-toggle');
-      if (toggle) toggle.addEventListener('change', () => {
-        if (toggle.checked) {
-          closedTactics.delete(tactic);
-          tactic.querySelectorAll('.token').forEach(tok => {
-            if (!tok._tippy && tok.matches(tacticTippySelector)) {
-              tippy(tok, defaultTippyProps);
-            }
-          });
-        } else {
-          closedTactics.add(tactic);
-          tactic.querySelectorAll('.token').forEach(tok => {
-            if (tok._tippy) tok._tippy.destroy();
-          });
-        }
-      });
-  });
-}
-</script>
-    <script>
-      
+  </script><script>
 window.addEventListener("load", () => {
   tippy('.keyword-of.hl.lean', {
     allowHtml: true,
@@ -2666,237 +2940,99 @@ window.addEventListener("load", () => {
     }
   });
 });
-</script>
-    <script defer="defer" data-domain="www.leanprover.cn" src="https://plausible.io/js/script.outbound-links.js"></script>
-    <script src="static/metadata.js"></script>
-    <script src="static/print.js"></script>
-    <link rel="stylesheet" href="static/colors.css">
-    <link rel="stylesheet" href="static/theme.css">
-    <link rel="stylesheet" href="static/print.css">
-    <link rel="stylesheet" href="static/fonts/source-serif/source-serif-text.css">
-    <link rel="stylesheet" href="static/fonts/source-code-pro/source-code-pro.css">
-    <link rel="stylesheet" href="static/fonts/source-sans/source-sans-3.css">
-    <link rel="stylesheet" href="static/fonts/noto-sans-mono/noto-sans-mono.css">
-    </head>
-  <body>
-    <header>
-      <div class="header-logo-wrapper">
-        <a href="" id="logo"><img src="static/lean_logo.svg"></a></div>
-      <div class="header-title-wrapper">
-        <a href="" class="header-title"><h1>
-            Lean 语言参考手册</h1>
-          </a></div>
-      </header>
-    <label for="toggle-toc" id="toggle-toc-click"><span class="line line1"></span><span class="line line2"></span><span class="line line3"></span></label><div class="with-toc">
-      <div class="toc-backdrop" onclick="document.getElementById('toggle-toc-click')?.click()"></div>
-      <nav id="toc">
-        <input type="checkbox" id="toggle-toc"><div class="first">
-          <a href="" class="toc-title"><h1>
-              Lean 语言参考手册</h1>
-            </a><div class="split-tocs">
-            <div class="split-toc book">
-              <div class="title">
-                <label for="--verso-manual-toc-----bookRoot" class="toggle-split-toc"><input type="checkbox" class="toggle-split-toc" id="--verso-manual-toc-----bookRoot"></label><span class="">目录</span></div>
-              <table><tr class="numbered"><td class="num">1.</td><td><a href="Introduction/#introduction">简介</a></td></tr><tr class="numbered"><td class="num">2.</td><td><a href="Elaboration and Compilation/#elaboration-and-compilation">精译与编译</a></td></tr><tr class="numbered"><td class="num">3.</td><td><a href="Interacting-with-Lean/#interaction">与 Lean 交互</a></td></tr><tr class="numbered"><td class="num">4.</td><td><a href="The Type System/#type-system">类型系统</a></td></tr><tr class="numbered"><td class="num">5.</td><td><a href="Source Files and Modules/#files">源文件与模块</a></td></tr><tr class="numbered"><td class="num">6.</td><td><a href="Namespaces and Sections/#namespaces-sections">命名空间与区段</a></td></tr><tr class="numbered"><td class="num">7.</td><td><a href="Definitions/#definitions">定义</a></td></tr><tr class="numbered"><td class="num">8.</td><td><a href="Axioms/#axioms">公理</a></td></tr><tr class="numbered"><td class="num">9.</td><td><a href="Attributes/#attributes">属性</a></td></tr><tr class="numbered"><td class="num">10.</td><td><a href="Type-Classes/#type-classes">类型类</a></td></tr><tr class="numbered"><td class="num">11.</td><td><a href="Coercions/#coercions">强制转换</a></td></tr><tr class="numbered"><td class="num">12.</td><td><a href="Run-Time-Code/#runtime">运行时代码</a></td></tr><tr class="numbered"><td class="num">13.</td><td><a href="Terms/#terms">项</a></td></tr><tr class="numbered"><td class="num">14.</td><td><a href="Tactic-Proofs/#tactics">策略证明</a></td></tr><tr class="numbered"><td class="num">15.</td><td><a href="The-Simplifier/#the-simplifier">简化器</a></td></tr><tr class="numbered"><td class="num">16.</td><td><a href="The--grind--tactic/#grind-tactic"><code>grind</code> 策略</a></td></tr><tr class="numbered"><td class="num">17.</td><td><a href="The--mvcgen--tactic/#mvcgen-tactic"><code>mvcgen</code> 策略</a></td></tr><tr class="numbered"><td class="num">18.</td><td><a href="Functors___-Monads-and--do--Notation/#monads-and-do">函子、单子与 <code>do</code> 记法</a></td></tr><tr class="numbered"><td class="num">19.</td><td><a href="Basic-Propositions/#basic-props">基本命题</a></td></tr><tr class="numbered"><td class="num">20.</td><td><a href="Basic-Types/#basic-types">基本类型</a></td></tr><tr class="numbered"><td class="num">21.</td><td><a href="IO/#io">IO</a></td></tr><tr class="numbered"><td class="num">22.</td><td><a href="Iterators/#iterators">迭代器</a></td></tr><tr class="numbered"><td class="num">23.</td><td><a href="Notations-and-Macros/#language-extension">记法与宏</a></td></tr><tr class="numbered"><td class="num">24.</td><td><a href="Build-Tools-and-Distribution/#build-tools-and-distribution">构建工具与发行</a></td></tr><tr class="unnumbered"><td class="num"><td><a href="ValidatingProofs/#validating-proofs">验证 Lean 证明</a></td></tr><tr class="current unnumbered"><td class="num"><td><a href="Error-Explanations/#Lean-__________________--Error-Explanations">错误说明</a></td></tr><tr class="unnumbered"><td class="num"><td><a href="releases/#release-notes">发行说明</a></td></tr><tr class="unnumbered"><td class="num"><td><a href="platforms/#platforms">支持的平台</a></td></tr><tr class="unnumbered"><td class="num"><td><a href="the-index/#index">索引</a></td></tr></table></div>
-            <div class="split-toc">
-              <div class="title">
-                <label for="--verso-manual-toc-Lean-__________________--Error-Explanations" class="toggle-split-toc"><input type="checkbox" class="toggle-split-toc" id="--verso-manual-toc-Lean-__________________--Error-Explanations" checked="checked"></label><span class="unnumbered"></span><span class=""><a href="Error-Explanations/#Lean-__________________--Error-Explanations">错误说明</a></span></div>
-              <table><tr class="unnumbered"><td class="num"><td><a href="Error-Explanations/About___--ctorResultingTypeMismatch/#Lean-__________________--Error-Explanations--About___--ctorResultingTypeMismatch">ctorResultingTypeMismatch</a></td></tr><tr class="unnumbered"><td class="num"><td><a href="Error-Explanations/About___--dependsOnNoncomputable/#Lean-__________________--Error-Explanations--About___--dependsOnNoncomputable">dependsOnNoncomputable</a></td></tr><tr class="unnumbered"><td class="num"><td><a href="Error-Explanations/About___--inductionWithNoAlts/#Lean-__________________--Error-Explanations--About___--inductionWithNoAlts">inductionWithNoAlts</a></td></tr><tr class="unnumbered"><td class="num"><td><a href="Error-Explanations/About___--inductiveParamMismatch/#Lean-__________________--Error-Explanations--About___--inductiveParamMismatch">inductiveParamMismatch</a></td></tr><tr class="unnumbered"><td class="num"><td><a href="Error-Explanations/About___--inductiveParamMissing/#Lean-__________________--Error-Explanations--About___--inductiveParamMissing">inductiveParamMissing</a></td></tr><tr class="current unnumbered"><td class="num"><td><a href="Error-Explanations/About___--inferBinderTypeFailed/#Lean-__________________--Error-Explanations--About___--inferBinderTypeFailed">inferBinderTypeFailed</a></td></tr><tr class="unnumbered"><td class="num"><td><a href="Error-Explanations/About___--inferDefTypeFailed/#Lean-__________________--Error-Explanations--About___--inferDefTypeFailed">inferDefTypeFailed</a></td></tr><tr class="unnumbered"><td class="num"><td><a href="Error-Explanations/About___--invalidDottedIdent/#Lean-__________________--Error-Explanations--About___--invalidDottedIdent">invalidDottedIdent</a></td></tr><tr class="unnumbered"><td class="num"><td><a href="Error-Explanations/About___--invalidField/#Lean-__________________--Error-Explanations--About___--invalidField">invalidField</a></td></tr><tr class="unnumbered"><td class="num"><td><a href="Error-Explanations/About___--projNonPropFromProp/#Lean-__________________--Error-Explanations--About___--projNonPropFromProp">projNonPropFromProp</a></td></tr><tr class="unnumbered"><td class="num"><td><a href="Error-Explanations/About___--propRecLargeElim/#Lean-__________________--Error-Explanations--About___--propRecLargeElim">propRecLargeElim</a></td></tr><tr class="unnumbered"><td class="num"><td><a href="Error-Explanations/About___--redundantMatchAlt/#Lean-__________________--Error-Explanations--About___--redundantMatchAlt">redundantMatchAlt</a></td></tr><tr class="unnumbered"><td class="num"><td><a href="Error-Explanations/About___--synthInstanceFailed/#Lean-__________________--Error-Explanations--About___--synthInstanceFailed">synthInstanceFailed</a></td></tr><tr class="unnumbered"><td class="num"><td><a href="Error-Explanations/About___--unknownIdentifier/#Lean-__________________--Error-Explanations--About___--unknownIdentifier">unknownIdentifier</a></td></tr></table></div>
-            <div class="split-toc">
-              <div class="title">
-                <label for="--verso-manual-toc-Lean-__________________--Error-Explanations--About___--inferBinderTypeFailed" class="toggle-split-toc"><input type="checkbox" class="toggle-split-toc" id="--verso-manual-toc-Lean-__________________--Error-Explanations--About___--inferBinderTypeFailed" checked="checked"></label><span class="unnumbered"></span><span class="current"><a href="Error-Explanations/About___--inferBinderTypeFailed/#Lean-__________________--Error-Explanations--About___--inferBinderTypeFailed">inferBinderTypeFailed</a></span></div>
-              <table><tr class="unnumbered"><td class="num"><td><a href="Error-Explanations/About___--inferBinderTypeFailed/#Lean-__________________--Error-Explanations--About___--inferBinderTypeFailed--Examples">示例</a></td></tr></table></div>
-            </div>
-          </div>
-        <div class="last">
-          <ul id="meta-links">
-            <li>
-              <a href="https://github.com/Lean-zh/reference-manual">Source Code</a></li>
-            <li>
-              <a href="https://github.com/Lean-zh/reference-manual/issues">Report Issues</a></li>
-            </ul>
-          </div>
-        </nav>
-      <div class="toc-resize-handle"></div>
-      <main><div class="content-wrapper">
-          <nav class="prev-next-buttons">
-            <a class="local-button active" href="Error-Explanations/About___--inductiveParamMissing/#Lean-__________________--Error-Explanations--About___--inductiveParamMissing" rel="prev" title="关于：inductiveParamMissing"><span class="arrow">←</span><span class="where">关于：inductiveParamMissing</span></a><a class="local-button active" href="Error-Explanations/About___--inferDefTypeFailed/#Lean-__________________--Error-Explanations--About___--inferDefTypeFailed" rel="next" title="关于：inferDefTypeFailed"><span class="where">关于：inferDefTypeFailed</span><span class="arrow">→</span></a></nav>
-          <section>
-            <h1>
-              关于：<code>inferBinderTypeFailed</code><span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=Lean-__________________--Error-Explanations--About___--inferBinderTypeFailed" title="永久链接">🔗</a></span></h1>
-            <div class="error-explanation-metadata">
-              <p>
-                Error code: <code>lean.inferBinderTypeFailed</code></p>
-              <p>
-                <em>The type of a binder could not be inferred.</em></p>
-              <p>
-                <span class="error-explanation-metadatum"><strong>Severity: </strong>Error</span><span class="error-explanation-metadatum"><strong>Since: </strong>4.23.0</span></p>
-              </div>
-            <p>
-              当声明头或局部绑定中的绑定项类型未完全指定且 Lean 无法推断时，会产生此错误。通常可以通过提供更多
+</script><script>
+(() => {
+  const setupHover = () => {
+    document.querySelectorAll(".marginalia-reference").forEach(reference => {
+      const marker = reference.querySelector("[aria-details]");
+      const note = marker && document.getElementById(marker.getAttribute("aria-details"));
+      if (!note) return;
+
+      const highlight = () => {
+        reference.classList.add("marginalia-highlight");
+        note.classList.add("marginalia-highlight");
+      };
+      const unhighlight = () => {
+        reference.classList.remove("marginalia-highlight");
+        note.classList.remove("marginalia-highlight");
+      };
+      reference.addEventListener("pointerenter", highlight);
+      reference.addEventListener("pointerleave", unhighlight);
+      note.addEventListener("pointerenter", highlight);
+      note.addEventListener("pointerleave", unhighlight);
+    });
+  };
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", setupHover, {once: true});
+  } else {
+    setupHover();
+  }
+
+  const mobile = matchMedia("(width <= 700px)");
+  mobile.addEventListener("change", event => {
+    if (!event.matches) {
+      document.querySelectorAll(".marginalia-note:popover-open")
+        .forEach(note => note.hidePopover());
+    }
+  });
+})();
+</script><script defer="defer" data-domain="www.leanprover.cn" src="https://plausible.io/js/script.outbound-links.js"></script><script src="static/metadata.js"></script><script src="static/print.js"></script><link rel="stylesheet" href="static/colors.css"/><link rel="stylesheet" href="static/theme.css"/><link rel="stylesheet" href="static/print.css"/><link rel="stylesheet" href="static/fonts/source-serif/source-serif-text.css"/><link rel="stylesheet" href="static/fonts/source-code-pro/source-code-pro.css"/><link rel="stylesheet" href="static/fonts/source-sans/source-sans-3.css"/><link rel="stylesheet" href="static/fonts/noto-sans-mono/noto-sans-mono.css"/></head><body><header><div class="header-logo-wrapper"><a href id="logo"><img src="static/lean_logo.svg"/></a></div><div class="header-title-wrapper"><a href class="header-title"><h1>Lean 语言参考手册</h1></a></div></header><label for="toggle-toc" id="toggle-toc-click"><span class="line line1"></span><span class="line line2"></span><span class="line line3"></span></label><div class="with-toc"><div class="toc-backdrop" onclick="document.getElementById('toggle-toc-click')?.click()"></div><nav id="toc"><input type="checkbox" id="toggle-toc"/><div class="first"><a href class="toc-title"><h1>Lean 语言参考手册</h1></a><div class="split-tocs"><div class="split-toc book"><div class="title"><label for="--verso-manual-toc-----bookRoot" class="toggle-split-toc"><input type="checkbox" class="toggle-split-toc" id="--verso-manual-toc-----bookRoot"/></label><span class>目录</span></div><table><tr class="numbered"><td class="num">1.</td><td><a href="Introduction/#introduction">简介</a></td></tr><tr class="numbered"><td class="num">2.</td><td><a href="Elaboration and Compilation/#elaboration-and-compilation">精译与编译</a></td></tr><tr class="numbered"><td class="num">3.</td><td><a href="Interacting-with-Lean/#interaction">与 Lean 交互</a></td></tr><tr class="numbered"><td class="num">4.</td><td><a href="The Type System/#type-system">类型系统</a></td></tr><tr class="numbered"><td class="num">5.</td><td><a href="Source Files and Modules/#files">源文件与模块</a></td></tr><tr class="numbered"><td class="num">6.</td><td><a href="Namespaces and Sections/#namespaces-sections">命名空间与区段</a></td></tr><tr class="numbered"><td class="num">7.</td><td><a href="Definitions/#definitions">定义</a></td></tr><tr class="numbered"><td class="num">8.</td><td><a href="Axioms/#axioms">公理</a></td></tr><tr class="numbered"><td class="num">9.</td><td><a href="Attributes/#attributes">属性</a></td></tr><tr class="numbered"><td class="num">10.</td><td><a href="Type-Classes/#type-classes">类型类</a></td></tr><tr class="numbered"><td class="num">11.</td><td><a href="Coercions/#coercions">强制转换</a></td></tr><tr class="numbered"><td class="num">12.</td><td><a href="Run-Time-Code/#runtime">运行时代码</a></td></tr><tr class="numbered"><td class="num">13.</td><td><a href="Terms/#terms">项</a></td></tr><tr class="numbered"><td class="num">14.</td><td><a href="Tactic-Proofs/#tactics">策略证明</a></td></tr><tr class="numbered"><td class="num">15.</td><td><a href="The-Simplifier/#the-simplifier">简化器</a></td></tr><tr class="numbered"><td class="num">16.</td><td><a href="The--grind--tactic/#grind-tactic"><code>grind</code> 策略</a></td></tr><tr class="numbered"><td class="num">17.</td><td><a href="The--vcgen--tactic/#vcgen-tactic"><code>vcgen</code> 策略</a></td></tr><tr class="numbered"><td class="num">18.</td><td><a href="The--mvcgen--tactic/#mvcgen-tactic"><code>mvcgen</code> 策略</a></td></tr><tr class="numbered"><td class="num">19.</td><td><a href="Functors___-Monads-and--do--Notation/#monads-and-do">函子、单子与 <code>do</code> 记法</a></td></tr><tr class="numbered"><td class="num">20.</td><td><a href="Basic-Propositions/#basic-props">基本命题</a></td></tr><tr class="numbered"><td class="num">21.</td><td><a href="Basic-Types/#basic-types">基本类型</a></td></tr><tr class="numbered"><td class="num">22.</td><td><a href="IO/#io">IO</a></td></tr><tr class="numbered"><td class="num">23.</td><td><a href="Iterators/#iterators">迭代器</a></td></tr><tr class="numbered"><td class="num">24.</td><td><a href="Notations-and-Macros/#language-extension">记法与宏</a></td></tr><tr class="numbered"><td class="num">25.</td><td><a href="Build-Tools-and-Distribution/#build-tools-and-distribution">构建工具与发行</a></td></tr><tr class="numbered"><td class="num">26.</td><td><a href="Linters-and-Code-Quality/#linters">代码检查器与代码质量</a></td></tr><tr class="numbered"><td class="num">27.</td><td><a href="External-Kernels/#external-kernels">外部内核</a></td></tr><tr class="unnumbered"><td class="num"></td><td><a href="ValidatingProofs/#validating-proofs">验证 Lean 证明</a></td></tr><tr class="current unnumbered"><td class="num"></td><td><a href="Error-Explanations/#Lean-__________________--Error-Explanations">错误说明</a></td></tr><tr class="unnumbered"><td class="num"></td><td><a href="releases/#release-notes">发行说明</a></td></tr><tr class="unnumbered"><td class="num"></td><td><a href="platforms/#platforms">支持的平台</a></td></tr><tr class="unnumbered"><td class="num"></td><td><a href="the-index/#index">索引</a></td></tr></table></div><div class="split-toc"><div class="title"><label for="--verso-manual-toc-Lean-__________________--Error-Explanations" class="toggle-split-toc"><input type="checkbox" class="toggle-split-toc" id="--verso-manual-toc-Lean-__________________--Error-Explanations" checked="checked"/></label><span class="unnumbered"></span><span class><a href="Error-Explanations/#Lean-__________________--Error-Explanations">错误说明</a></span></div><table><tr class="unnumbered"><td class="num"></td><td><a href="Error-Explanations/About___--ctorResultingTypeMismatch/#Lean-__________________--Error-Explanations--About___--ctorResultingTypeMismatch">ctorResultingTypeMismatch</a></td></tr><tr class="unnumbered"><td class="num"></td><td><a href="Error-Explanations/About___--dependsOnNoncomputable/#Lean-__________________--Error-Explanations--About___--dependsOnNoncomputable">dependsOnNoncomputable</a></td></tr><tr class="unnumbered"><td class="num"></td><td><a href="Error-Explanations/About___--inductionWithNoAlts/#Lean-__________________--Error-Explanations--About___--inductionWithNoAlts">inductionWithNoAlts</a></td></tr><tr class="unnumbered"><td class="num"></td><td><a href="Error-Explanations/About___--inductiveParamMismatch/#Lean-__________________--Error-Explanations--About___--inductiveParamMismatch">inductiveParamMismatch</a></td></tr><tr class="unnumbered"><td class="num"></td><td><a href="Error-Explanations/About___--inductiveParamMissing/#Lean-__________________--Error-Explanations--About___--inductiveParamMissing">inductiveParamMissing</a></td></tr><tr class="current unnumbered"><td class="num"></td><td><a href="Error-Explanations/About___--inferBinderTypeFailed/#Lean-__________________--Error-Explanations--About___--inferBinderTypeFailed">inferBinderTypeFailed</a></td></tr><tr class="unnumbered"><td class="num"></td><td><a href="Error-Explanations/About___--inferDefTypeFailed/#Lean-__________________--Error-Explanations--About___--inferDefTypeFailed">inferDefTypeFailed</a></td></tr><tr class="unnumbered"><td class="num"></td><td><a href="Error-Explanations/About___--invalidDottedIdent/#Lean-__________________--Error-Explanations--About___--invalidDottedIdent">invalidDottedIdent</a></td></tr><tr class="unnumbered"><td class="num"></td><td><a href="Error-Explanations/About___--invalidField/#Lean-__________________--Error-Explanations--About___--invalidField">invalidField</a></td></tr><tr class="unnumbered"><td class="num"></td><td><a href="Error-Explanations/About___--projNonPropFromProp/#Lean-__________________--Error-Explanations--About___--projNonPropFromProp">projNonPropFromProp</a></td></tr><tr class="unnumbered"><td class="num"></td><td><a href="Error-Explanations/About___--propRecLargeElim/#Lean-__________________--Error-Explanations--About___--propRecLargeElim">propRecLargeElim</a></td></tr><tr class="unnumbered"><td class="num"></td><td><a href="Error-Explanations/About___--redundantMatchAlt/#Lean-__________________--Error-Explanations--About___--redundantMatchAlt">redundantMatchAlt</a></td></tr><tr class="unnumbered"><td class="num"></td><td><a href="Error-Explanations/About___--synthInstanceFailed/#Lean-__________________--Error-Explanations--About___--synthInstanceFailed">synthInstanceFailed</a></td></tr><tr class="unnumbered"><td class="num"></td><td><a href="Error-Explanations/About___--unknownIdentifier/#Lean-__________________--Error-Explanations--About___--unknownIdentifier">unknownIdentifier</a></td></tr></table></div><div class="split-toc"><div class="title"><label for="--verso-manual-toc-Lean-__________________--Error-Explanations--About___--inferBinderTypeFailed" class="toggle-split-toc"><input type="checkbox" class="toggle-split-toc" id="--verso-manual-toc-Lean-__________________--Error-Explanations--About___--inferBinderTypeFailed" checked="checked"/></label><span class="unnumbered"></span><span class="current"><a href="Error-Explanations/About___--inferBinderTypeFailed/#Lean-__________________--Error-Explanations--About___--inferBinderTypeFailed">inferBinderTypeFailed</a></span></div><table><tr class="unnumbered"><td class="num"></td><td><a href="Error-Explanations/About___--inferBinderTypeFailed/#Lean-__________________--Error-Explanations--About___--inferBinderTypeFailed--Examples">示例</a></td></tr></table></div></div></div><div class="last"><ul id="meta-links"><li><a href="https://github.com/Lean-zh/reference-manual">Source Code</a></li><li><a href="https://github.com/Lean-zh/reference-manual/issues">Report Issues</a></li></ul></div></nav><div class="toc-resize-handle"></div><main><div class="content-wrapper"><nav class="prev-next-buttons"><a class="local-button active" href="Error-Explanations/About___--inductiveParamMissing/#Lean-__________________--Error-Explanations--About___--inductiveParamMissing" rel="prev" title="关于：inductiveParamMissing"><span class="arrow">←</span><span class="where">关于：inductiveParamMissing</span></a><a class="local-button active" href="Error-Explanations/About___--inferDefTypeFailed/#Lean-__________________--Error-Explanations--About___--inferDefTypeFailed" rel="next" title="关于：inferDefTypeFailed"><span class="where">关于：inferDefTypeFailed</span><span class="arrow">→</span></a></nav><section><h1 id="Lean-__________________--Error-Explanations--About___--inferBinderTypeFailed">关于：<code>inferBinderTypeFailed</code><span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=Lean-__________________--Error-Explanations--About___--inferBinderTypeFailed" title="永久链接">🔗</a></span></h1><div class="error-explanation-metadata"><p>Error code: <code>lean.inferBinderTypeFailed</code></p><p><em>The type of a binder could not be inferred.</em></p><p><span class="error-explanation-metadatum"><strong>Severity: </strong>Error</span><span class="error-explanation-metadatum"><strong>Since: </strong>4.23.0</span></p></div><p>当声明头或局部绑定中的绑定项类型未完全指定且 Lean 无法推断时，会产生此错误。通常可以通过提供更多
 信息来帮助 Lean 确定绑定项类型来解决：显式标注其类型，或在使用处提供额外类型信息。当绑定项出现在
 声明头中时，此错误通常伴随
-<a href="Error-Explanations/About___--inferDefTypeFailed/#lean___inferDefTypeFailed"><code>lean.inferDefTypeFailed</code></a>.</p>
-            <p>
-              注意，如果声明带有显式结果类型（即使该类型包含空洞），Lean 也不会使用定义体的信息来推断参数类型。
+<a href="Error-Explanations/About___--inferDefTypeFailed/#lean___inferDefTypeFailed"><code>lean.inferDefTypeFailed</code></a>.</p><p>注意，如果声明带有显式结果类型（即使该类型包含空洞），Lean 也不会使用定义体的信息来推断参数类型。
 因此，原本无需结果类型注解即可推断的参数，可能必须显式指定其类型；详见下面“因结果类型注解而无法推断
 绑定项类型”的示例。在 <code class="plain-keyword">theorem</code> 声明中，定理体从不用于推断绑定项类型，因此无法从定理类型
-其余部分推断类型的绑定项必须包含类型注解。</p>
-            <p>
-              当原本用作声明名称的标识符被误写在绑定项位置时，也可能产生此错误。此时，错误标识符会被视为
+其余部分推断类型的绑定项必须包含类型注解。</p><p>当原本用作声明名称的标识符被误写在绑定项位置时，也可能产生此错误。此时，错误标识符会被视为
 类型未指定的绑定项，从而导致类型推断失败。这常见于尝试使用不支持该形式的语法，同时定义多个相同类型
-的常量。具体包括：</p>
-            <ul>
-              <li>
-                <p>
-                  在 <code class="plain-keyword">example</code> 关键字后写标识符，试图为示例命名；</p>
-                </li>
-              <li>
-                <p>
-                  在 <code class="plain-keyword">def</code>、<code class="plain-keyword">opaque</code> 或其他声明关键字后依次列出多个标识符，试图定义具有相同类型
-  （以及适用时相同值）的多个常量；</p>
-                </li>
-              <li>
-                <p>
-                  在结构声明同一行依次列出名称，试图定义多个相同类型的结构字段；以及</p>
-                </li>
-              <li>
-                <p>
-                  省略归纳构造器名称之间的竖线。</p>
-                </li>
-              </ul>
-            <p>
-              下面的示例展示了前三种情况。</p>
-            <section>
-              <h2 id="Lean-__________________--Error-Explanations--About___--inferBinderTypeFailed--Examples">
-                示例<span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=Lean-__________________--Error-Explanations--About___--inferBinderTypeFailed--Examples" title="永久链接">🔗</a></span></h2>
-              <details class="example" open=""><summary class="description">绑定项类型需要新的类型变量</summary><div class="example-content">
-                  <div class="error-example-container">
-                    <div class="error-example-tab-list" role="tablist" aria-label="Code Samples">
-                      <button type="button" role="tab" aria-selected="true" tabindex="0" id="error-example-next-next-next-next-next-next-next-next-button-0" aria-controls="error-example-next-next-next-next-next-next-next-next-panel-0">Original</button><button type="button" role="tab" aria-selected="false" tabindex="-1" id="error-example-next-next-next-next-next-next-next-next-button-1" aria-controls="error-example-next-next-next-next-next-next-next-next-panel-1">Fixed</button></div>
-                    <div class="error-example-tab-view">
-                      <div role="tabpanel" class="error-example-tabpanel" id="error-example-next-next-next-next-next-next-next-next-panel-0" aria-labelledby="error-example-next-next-next-next-next-next-next-next-button-0">
-                        <code class="hl lean block" data-lean-context="examples"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.definition-2411">def</span><span class="inter-text"> </span><span class="has-info error"><span class="hover-container"><span class="hover-info messages"><code class="verso-message error"><span class="text"></span><span class="text">Failed to infer type of </span><span class="text">definition `</span><span class="text">identity</span><span class="text">`</span><span class="text"></span></code></span></span><span class="unknown token" data-binding="">identity</span></span><span class="inter-text"> </span><span class="has-info error"><span class="hover-container"><span class="hover-info messages"><code class="verso-message error"><span class="text"></span><span class="text">Failed to infer </span><span class="text">type of binder `</span><span class="text">x</span><span class="text">`</span><span class="text"></span></code></span></span><span class="var token" data-binding="var-_uniq.3" data-verso-hover="116">x</span></span><span class="inter-text"> </span><span class="built-in delim token" data-binding="kw-occ-Lean.Parser.Command.declValSimple-2426">:=</span><span class="inter-text">
-  </span><span class="var token" data-binding="var-_uniq.3" data-verso-hover="116">x</span><span class="inter-text">
-</span><span class="unknown token" data-binding=""></span></code><pre class="hl lean lean-output error"><span class="verso-message"><span class="text"></span><span class="text"></span><span class="text">Failed to infer </span><span class="text">type of binder `</span><span class="text">x</span><span class="text">`</span><span class="text"></span></span></pre></div>
-                      <div role="tabpanel" class="error-example-tabpanel error-example-tabpanel-hidden" id="error-example-next-next-next-next-next-next-next-next-panel-1" aria-labelledby="error-example-next-next-next-next-next-next-next-next-button-1">
-                        <code class="hl lean block" data-lean-context="examples"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.definition-2495">def</span><span class="inter-text"> </span><span class="const token" data-binding="const-identity" data-verso-hover="9870" id="identity-_LPAR_in-________________________________________RPAR_">identity</span><span class="inter-text"> </span><span class="punctuation bracket token" data-binding="kw-occ-Lean.Parser.Term.explicitBinder-2508">(</span><span class="var token" data-binding="var-_uniq.6" data-verso-hover="50">x</span><span class="inter-text"> </span><span class="built-in delim token" data-binding="kw-occ-Lean.Parser.Term.explicitBinder-2508">:</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.4" data-verso-hover="153">α</span><span class="punctuation bracket token" data-binding="kw-occ-Lean.Parser.Term.explicitBinder-2508">)</span><span class="inter-text"> </span><span class="built-in delim token" data-binding="kw-occ-Lean.Parser.Command.declValSimple-2517">:=</span><span class="inter-text">
-  </span><span class="var token" data-binding="var-_uniq.6" data-verso-hover="50">x</span><span class="inter-text">
-</span><span class="unknown token" data-binding=""></span></code></div>
-                      </div>
-                    </div>
-                  <p>
-                    上面的代码中，<code>x</code> 的类型没有约束；如本例所示，Lean 不会自动为这类绑定项生成新的类型变量。
+的常量。具体包括：</p><ul><li><p>在 <code class="plain-keyword">example</code> 关键字后写标识符，试图为示例命名；</p></li><li><p>在 <code class="plain-keyword">def</code>、<code class="plain-keyword">opaque</code> 或其他声明关键字后依次列出多个标识符，试图定义具有相同类型
+（以及适用时相同值）的多个常量；</p></li><li><p>在结构声明同一行依次列出名称，试图定义多个相同类型的结构字段；以及</p></li><li><p>省略归纳构造器名称之间的竖线。</p></li></ul><p>下面的示例展示了前三种情况。</p><section><h2 id="Lean-__________________--Error-Explanations--About___--inferBinderTypeFailed--Examples">示例<span class="permalink-widget inline"><a href="find/?domain=Verso.Genre.Manual.section&amp;name=Lean-__________________--Error-Explanations--About___--inferBinderTypeFailed--Examples" title="永久链接">🔗</a></span></h2><details class="example" id="_______________________________________-next-next-next-next-next-next-next-next-next-next" open><summary class="description">绑定项类型需要新的类型变量</summary><div class="example-content"><div class="error-example-container"><div class="error-example-tab-list" role="tablist" aria-label="Code Samples"><button type="button" role="tab" aria-selected="true" tabindex="0" id="error-example-next-next-next-next-next-next-next-next-button-0" aria-controls="error-example-next-next-next-next-next-next-next-next-panel-0">Original</button><button type="button" role="tab" aria-selected="false" tabindex="-1" id="error-example-next-next-next-next-next-next-next-next-button-1" aria-controls="error-example-next-next-next-next-next-next-next-next-panel-1">Fixed</button></div><div class="error-example-tab-view"><div role="tabpanel" class="error-example-tabpanel" id="error-example-next-next-next-next-next-next-next-next-panel-0" aria-labelledby="error-example-next-next-next-next-next-next-next-next-button-0"><code class="hl lean block" data-lean-context="examples"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.definition-2394">def</span><span class="inter-text"> </span><span class="has-info error"><span class="hover-container"><span class="hover-info messages"><code class="verso-message error"><span class="text"></span><span class="text">Failed to infer type of </span><span class="text">definition `</span><span class="text">identity</span><span class="text">`</span><span class="text"></span></code></span></span><span class="unknown token" data-binding>identity</span></span><span class="inter-text"> </span><span class="has-info error" data-verso-hover="117"><span class="hover-container"><span class="hover-info messages"><code class="verso-message error"><span class="text"></span><span class="text">Failed to infer </span><span class="text">type of binder `</span><span class="text">x</span><span class="text">`</span><span class="text"></span></code></span></span><span class="var token" data-binding="var-_uniq.3">x</span></span><span class="inter-text"> </span><span class="built-in delim token" data-binding="kw-occ-Lean.Parser.Command.declValSimple-2409">:=</span><span class="inter-text">
+  </span><span class="var token" data-binding="var-_uniq.3" data-verso-hover="117">x</span><span class="inter-text">
+</span><span class="unknown token" data-binding></span></code><pre class="hl lean lean-output error"><span class="verso-message"><span class="text"></span><span class="text"></span><span class="text">Failed to infer </span><span class="text">type of binder `</span><span class="text">x</span><span class="text">`</span><span class="text"></span></span></pre></div><div role="tabpanel" class="error-example-tabpanel error-example-tabpanel-hidden" id="error-example-next-next-next-next-next-next-next-next-panel-1" aria-labelledby="error-example-next-next-next-next-next-next-next-next-button-1"><code class="hl lean block" data-lean-context="examples"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.definition-2478">def</span><span class="inter-text"> </span><span class="const token" data-binding="const-identity" data-verso-hover="10961" id="identity-_LPAR_in-________________________________________RPAR_">identity</span><span class="inter-text"> </span><span class="punctuation bracket token" data-binding="kw-occ-Lean.Parser.Term.explicitBinder-2491">(</span><span class="var token" data-binding="var-_uniq.6" data-verso-hover="51">x</span><span class="inter-text"> </span><span class="built-in delim token" data-binding="kw-occ-Lean.Parser.Term.explicitBinder-2491">:</span><span class="inter-text"> </span><span class="var token" data-binding="var-_uniq.4" data-verso-hover="153">α</span><span class="punctuation bracket token" data-binding="kw-occ-Lean.Parser.Term.explicitBinder-2491">)</span><span class="inter-text"> </span><span class="built-in delim token" data-binding="kw-occ-Lean.Parser.Command.declValSimple-2500">:=</span><span class="inter-text">
+  </span><span class="var token" data-binding="var-_uniq.6" data-verso-hover="51">x</span><span class="inter-text">
+</span><span class="unknown token" data-binding></span></code></div></div></div><p>上面的代码中，<code>x</code> 的类型没有约束；如本例所示，Lean 不会自动为这类绑定项生成新的类型变量。
 因此必须把类型 <code>α</code> 显式指定为 <code>x</code> 的类型。注意，如果启用了自动插入隐式参数（默认如此），则无需为 <code>α</code> 本身提供
-绑定项；Lean 会自动为该参数插入隐式绑定项。</p>
-                  </div>
-                </details><details class="example" open=""><summary class="description">因结果类型注解而无法推断绑定项类型</summary><div class="example-content">
-                  <div class="error-example-container">
-                    <div class="error-example-tab-list" role="tablist" aria-label="Code Samples">
-                      <button type="button" role="tab" aria-selected="true" tabindex="0" id="error-example-next-next-next-next-next-next-next-next-next-button-0" aria-controls="error-example-next-next-next-next-next-next-next-next-next-panel-0">Original</button><button type="button" role="tab" aria-selected="false" tabindex="-1" id="error-example-next-next-next-next-next-next-next-next-next-button-1" aria-controls="error-example-next-next-next-next-next-next-next-next-next-panel-1">Fixed</button></div>
-                    <div class="error-example-tab-view">
-                      <div role="tabpanel" class="error-example-tabpanel" id="error-example-next-next-next-next-next-next-next-next-next-panel-0" aria-labelledby="error-example-next-next-next-next-next-next-next-next-next-button-0">
-                        <code class="hl lean block" data-lean-context="examples"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.definition-2965">def</span><span class="inter-text"> </span><span class="const token" data-binding="const-plusTwo" data-verso-hover="9871">plusTwo</span><span class="inter-text"> </span><span class="has-info error"><span class="hover-container"><span class="hover-info messages"><code class="verso-message error"><span class="text"></span><span class="text">Failed to infer </span><span class="text">type of binder `</span><span class="text">x</span><span class="text">`</span><span class="text">
+绑定项；Lean 会自动为该参数插入隐式绑定项。</p></div></details><details class="example" id="___________________________________________________" open><summary class="description">因结果类型注解而无法推断绑定项类型</summary><div class="example-content"><div class="error-example-container"><div class="error-example-tab-list" role="tablist" aria-label="Code Samples"><button type="button" role="tab" aria-selected="true" tabindex="0" id="error-example-next-next-next-next-next-next-next-next-next-button-0" aria-controls="error-example-next-next-next-next-next-next-next-next-next-panel-0">Original</button><button type="button" role="tab" aria-selected="false" tabindex="-1" id="error-example-next-next-next-next-next-next-next-next-next-button-1" aria-controls="error-example-next-next-next-next-next-next-next-next-next-panel-1">Fixed</button></div><div class="error-example-tab-view"><div role="tabpanel" class="error-example-tabpanel" id="error-example-next-next-next-next-next-next-next-next-next-panel-0" aria-labelledby="error-example-next-next-next-next-next-next-next-next-next-button-0"><code class="hl lean block" data-lean-context="examples"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.definition-2948">def</span><span class="inter-text"> </span><span class="const token" data-binding="const-plusTwo" data-verso-hover="10962">plusTwo</span><span class="inter-text"> </span><span class="has-info error" data-verso-hover="12"><span class="hover-container"><span class="hover-info messages"><code class="verso-message error"><span class="text"></span><span class="text">Failed to infer </span><span class="text">type of binder `</span><span class="text">x</span><span class="text">`</span><span class="text">
 </span><span class="text">
-</span><span class="text">Note: </span><span class="text">Because this declaration's type has been explicitly provided, all parameter types and holes (e.g., `_`) in its header are resolved before its body is processed; information from the declaration body cannot be used to infer what these values should be</span><span class="text"></span></code></span></span><span class="var token" data-binding="var-_uniq.3" data-verso-hover="11">x</span></span><span class="inter-text"> </span><span class="built-in delim token" data-binding="kw-occ-Lean.Parser.Term.typeSpec-2979">:</span><span class="inter-text"> </span><a href="Basic-Types/Natural-Numbers/#Nat___zero" title="文档：Nat"><span class="const token" data-binding="const-Nat" data-verso-hover="zh-19">Nat</span></a><span class="inter-text"> </span><span class="built-in delim token" data-binding="kw-occ-Lean.Parser.Command.declValSimple-2985">:=</span><span class="inter-text">
-  </span><span class="var token" data-binding="var-_uniq.3" data-verso-hover="11">x</span><span class="inter-text"> </span><span class="punctuation operator token" data-binding="kw-occ-«term_+_»-2990">+</span><span class="inter-text"> </span><span class="literal number token" data-binding="" data-verso-hover="11">2</span><span class="inter-text">
-</span><span class="unknown token" data-binding=""></span></code><pre class="hl lean lean-output error"><span class="verso-message"><span class="text"></span><span class="text"></span><span class="text">Failed to infer </span><span class="text">type of binder `</span><span class="text">x</span><span class="text">`</span><span class="text">
+</span><span class="text">Note: </span><span class="text">Because this declaration's type has been explicitly provided, all parameter types and holes (e.g., `_`) in its header are resolved before its body is processed; information from the declaration body cannot be used to infer what these values should be</span><span class="text"></span></code></span></span><span class="var token" data-binding="var-_uniq.3">x</span></span><span class="inter-text"> </span><span class="built-in delim token" data-binding="kw-occ-Lean.Parser.Term.typeSpec-2962">:</span><span class="inter-text"> </span><a href="Basic-Types/Natural-Numbers/#Nat___zero" title="文档：Nat"><span class="const token" data-binding="const-Nat" data-verso-hover="zh-20">Nat</span></a><span class="inter-text"> </span><span class="built-in delim token" data-binding="kw-occ-Lean.Parser.Command.declValSimple-2968">:=</span><span class="inter-text">
+  </span><span class="var token" data-binding="var-_uniq.3" data-verso-hover="12">x</span><span class="inter-text"> </span><span class="punctuation operator token" data-binding="kw-occ-«term_+_»-2973">+</span><span class="inter-text"> </span><span class="literal number token" data-binding data-verso-hover="12">2</span><span class="inter-text">
+</span><span class="unknown token" data-binding></span></code><pre class="hl lean lean-output error"><span class="verso-message"><span class="text"></span><span class="text"></span><span class="text">Failed to infer </span><span class="text">type of binder `</span><span class="text">x</span><span class="text">`</span><span class="text">
 </span><span class="text">
-</span><span class="text">Note: </span><span class="text">Because this declaration's type has been explicitly provided, all parameter types and holes (e.g., `_`) in its header are resolved before its body is processed; information from the declaration body cannot be used to infer what these values should be</span><span class="text"></span></span></pre></div>
-                      <div role="tabpanel" class="error-example-tabpanel error-example-tabpanel-hidden" id="error-example-next-next-next-next-next-next-next-next-next-panel-1" aria-labelledby="error-example-next-next-next-next-next-next-next-next-next-button-1">
-                        <code class="hl lean block" data-lean-context="examples"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.definition-3316">def</span><span class="inter-text"> </span><span class="const token" data-binding="const-plusTwo" data-verso-hover="9871">plusTwo</span><span class="inter-text"> </span><span class="punctuation bracket token" data-binding="kw-occ-Lean.Parser.Term.explicitBinder-3328">(</span><span class="var token" data-binding="var-_uniq.2" data-verso-hover="11">x</span><span class="inter-text"> </span><span class="built-in delim token" data-binding="kw-occ-Lean.Parser.Term.explicitBinder-3328">:</span><span class="inter-text"> </span><a href="Basic-Types/Natural-Numbers/#Nat___zero" title="文档：Nat"><span class="const token" data-binding="const-Nat" data-verso-hover="zh-19">Nat</span></a><span class="punctuation bracket token" data-binding="kw-occ-Lean.Parser.Term.explicitBinder-3328">)</span><span class="inter-text"> </span><span class="built-in delim token" data-binding="kw-occ-Lean.Parser.Term.typeSpec-3338">:</span><span class="inter-text"> </span><a href="Basic-Types/Natural-Numbers/#Nat___zero" title="文档：Nat"><span class="const token" data-binding="const-Nat" data-verso-hover="zh-19">Nat</span></a><span class="inter-text"> </span><span class="built-in delim token" data-binding="kw-occ-Lean.Parser.Command.declValSimple-3344">:=</span><span class="inter-text">
-  </span><span class="var token" data-binding="var-_uniq.2" data-verso-hover="11">x</span><span class="inter-text"> </span><span class="punctuation operator token" data-binding="kw-occ-«term_+_»-3349">+</span><span class="inter-text"> </span><span class="literal number token" data-binding="" data-verso-hover="11">2</span><span class="inter-text">
-</span><span class="unknown token" data-binding=""></span></code></div>
-                      </div>
-                    </div>
-                  <p>
-                    尽管在定义体中可以推断 <code>x</code> 的类型为 <code>Nat</code>，但精译 <code>plusTwo</code> 的类型时无法使用这一信息，因为定义的结果类型（<code>Nat</code>）已显式指定。
+</span><span class="text">Note: </span><span class="text">Because this declaration's type has been explicitly provided, all parameter types and holes (e.g., `_`) in its header are resolved before its body is processed; information from the declaration body cannot be used to infer what these values should be</span><span class="text"></span></span></pre></div><div role="tabpanel" class="error-example-tabpanel error-example-tabpanel-hidden" id="error-example-next-next-next-next-next-next-next-next-next-panel-1" aria-labelledby="error-example-next-next-next-next-next-next-next-next-next-button-1"><code class="hl lean block" data-lean-context="examples"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.definition-3299">def</span><span class="inter-text"> </span><span class="const token" data-binding="const-plusTwo" data-verso-hover="10962">plusTwo</span><span class="inter-text"> </span><span class="punctuation bracket token" data-binding="kw-occ-Lean.Parser.Term.explicitBinder-3311">(</span><span class="var token" data-binding="var-_uniq.2" data-verso-hover="12">x</span><span class="inter-text"> </span><span class="built-in delim token" data-binding="kw-occ-Lean.Parser.Term.explicitBinder-3311">:</span><span class="inter-text"> </span><a href="Basic-Types/Natural-Numbers/#Nat___zero" title="文档：Nat"><span class="const token" data-binding="const-Nat" data-verso-hover="zh-20">Nat</span></a><span class="punctuation bracket token" data-binding="kw-occ-Lean.Parser.Term.explicitBinder-3311">)</span><span class="inter-text"> </span><span class="built-in delim token" data-binding="kw-occ-Lean.Parser.Term.typeSpec-3321">:</span><span class="inter-text"> </span><a href="Basic-Types/Natural-Numbers/#Nat___zero" title="文档：Nat"><span class="const token" data-binding="const-Nat" data-verso-hover="zh-20">Nat</span></a><span class="inter-text"> </span><span class="built-in delim token" data-binding="kw-occ-Lean.Parser.Command.declValSimple-3327">:=</span><span class="inter-text">
+  </span><span class="var token" data-binding="var-_uniq.2" data-verso-hover="12">x</span><span class="inter-text"> </span><span class="punctuation operator token" data-binding="kw-occ-«term_+_»-3332">+</span><span class="inter-text"> </span><span class="literal number token" data-binding data-verso-hover="12">2</span><span class="inter-text">
+</span><span class="unknown token" data-binding></span></code></div></div></div><p>尽管在定义体中可以推断 <code>x</code> 的类型为 <code>Nat</code>，但精译 <code>plusTwo</code> 的类型时无法使用这一信息，因为定义的结果类型（<code>Nat</code>）已显式指定。
 仅根据头部信息无法确定 <code>x</code> 的类型，于是产生所示错误。因此必须在
-其绑定项中包含 <code>x</code> 的类型。</p>
-                  </div>
-                </details><details class="example" open=""><summary class="description">尝试为 example 声明命名</summary><div class="example-content">
-                  <div class="error-example-container">
-                    <div class="error-example-tab-list" role="tablist" aria-label="Code Samples">
-                      <button type="button" role="tab" aria-selected="true" tabindex="0" id="error-example-next-next-next-next-next-next-next-next-next-next-button-0" aria-controls="error-example-next-next-next-next-next-next-next-next-next-next-panel-0">Original</button><button type="button" role="tab" aria-selected="false" tabindex="-1" id="error-example-next-next-next-next-next-next-next-next-next-next-button-1" aria-controls="error-example-next-next-next-next-next-next-next-next-next-next-panel-1">Fixed</button></div>
-                    <div class="error-example-tab-view">
-                      <div role="tabpanel" class="error-example-tabpanel" id="error-example-next-next-next-next-next-next-next-next-next-next-panel-0" aria-labelledby="error-example-next-next-next-next-next-next-next-next-next-next-button-0">
-                        <code class="hl lean block" data-lean-context="examples"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.example-3730">example</span><span class="inter-text"> </span><span class="has-info error"><span class="hover-container"><span class="hover-info messages"><code class="verso-message error"><span class="text"></span><span class="text">Failed to infer </span><span class="text">type of binder `</span><span class="text">trivial_proof</span><span class="text">`</span><span class="text">
+其绑定项中包含 <code>x</code> 的类型。</p></div></details><details class="example" id="_________-example-____________" open><summary class="description">尝试为 example 声明命名</summary><div class="example-content"><div class="error-example-container"><div class="error-example-tab-list" role="tablist" aria-label="Code Samples"><button type="button" role="tab" aria-selected="true" tabindex="0" id="error-example-next-next-next-next-next-next-next-next-next-next-button-0" aria-controls="error-example-next-next-next-next-next-next-next-next-next-next-panel-0">Original</button><button type="button" role="tab" aria-selected="false" tabindex="-1" id="error-example-next-next-next-next-next-next-next-next-next-next-button-1" aria-controls="error-example-next-next-next-next-next-next-next-next-next-next-panel-1">Fixed</button></div><div class="error-example-tab-view"><div role="tabpanel" class="error-example-tabpanel" id="error-example-next-next-next-next-next-next-next-next-next-next-panel-0" aria-labelledby="error-example-next-next-next-next-next-next-next-next-next-next-button-0"><code class="hl lean block" data-lean-context="examples"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.example-3713">example</span><span class="inter-text"> </span><span class="has-info error" data-verso-hover="75"><span class="hover-container"><span class="hover-info messages"><code class="verso-message error"><span class="text"></span><span class="text">Failed to infer </span><span class="text">type of binder `</span><span class="text">trivial_proof</span><span class="text">`</span><span class="text">
 </span><span class="text">
-</span><span class="text">Note: </span><span class="text">Examples do not have names. </span><span class="text">The identifier</span><span class="text"></span><span class="text"> </span><span class="text">`</span><span class="text">trivial_proof</span><span class="text">`</span><span class="text"> </span><span class="text">is</span><span class="text"> being interpreted as </span><span class="text">a parameter</span><span class="text"> </span><span class="text">`(</span><span class="text">trivial_proof</span><span class="text"> : _)`</span><span class="text">.</span><span class="text"></span></code></span></span><span class="var token" data-binding="var-_uniq.3" data-verso-hover="74">trivial_proof</span></span><span class="inter-text"> </span><span class="built-in delim token" data-binding="kw-occ-Lean.Parser.Term.typeSpec-3752">:</span><span class="inter-text"> </span><a href="Basic-Propositions/Truth/#True___intro" title="文档：True"><span class="const token" data-binding="const-True" data-verso-hover="zh-433">True</span></a><span class="inter-text"> </span><span class="built-in delim token" data-binding="kw-occ-Lean.Parser.Command.declValSimple-3759">:=</span><span class="inter-text">
-  </span><span class="const token" data-binding="const-trivial" data-verso-hover="zh-2770">trivial</span><span class="inter-text">
-</span><span class="unknown token" data-binding=""></span></code><pre class="hl lean lean-output error"><span class="verso-message"><span class="text"></span><span class="text"></span><span class="text">Failed to infer </span><span class="text">type of binder `</span><span class="text">trivial_proof</span><span class="text">`</span><span class="text">
+</span><span class="text">Note: </span><span class="text">Examples do not have names. </span><span class="text">The identifier</span><span class="text"></span><span class="text"> </span><span class="text">`</span><span class="text">trivial_proof</span><span class="text">`</span><span class="text"> </span><span class="text">is</span><span class="text"> being interpreted as </span><span class="text">a parameter</span><span class="text"> </span><span class="text">`(</span><span class="text">trivial_proof</span><span class="text"> : _)`</span><span class="text">.</span><span class="text"></span></code></span></span><span class="var token" data-binding="var-_uniq.3">trivial_proof</span></span><span class="inter-text"> </span><span class="built-in delim token" data-binding="kw-occ-Lean.Parser.Term.typeSpec-3735">:</span><span class="inter-text"> </span><a href="Basic-Propositions/Truth/#True___intro" title="文档：True"><span class="const token" data-binding="const-True" data-verso-hover="zh-434">True</span></a><span class="inter-text"> </span><span class="built-in delim token" data-binding="kw-occ-Lean.Parser.Command.declValSimple-3742">:=</span><span class="inter-text">
+  </span><span class="const token" data-binding="const-trivial" data-verso-hover="zh-2756">trivial</span><span class="inter-text">
+</span><span class="unknown token" data-binding></span></code><pre class="hl lean lean-output error"><span class="verso-message"><span class="text"></span><span class="text"></span><span class="text">Failed to infer </span><span class="text">type of binder `</span><span class="text">trivial_proof</span><span class="text">`</span><span class="text">
 </span><span class="text">
-</span><span class="text">Note: </span><span class="text">Examples do not have names. </span><span class="text">The identifier</span><span class="text"></span><span class="text"> </span><span class="text">`</span><span class="text">trivial_proof</span><span class="text">`</span><span class="text"> </span><span class="text">is</span><span class="text"> being interpreted as </span><span class="text">a parameter</span><span class="text"> </span><span class="text">`(</span><span class="text">trivial_proof</span><span class="text"> : _)`</span><span class="text">.</span><span class="text"></span></span></pre></div>
-                      <div role="tabpanel" class="error-example-tabpanel error-example-tabpanel-hidden" id="error-example-next-next-next-next-next-next-next-next-next-next-panel-1" aria-labelledby="error-example-next-next-next-next-next-next-next-next-next-next-button-1">
-                        <code class="hl lean block" data-lean-context="examples"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.example-3971">example</span><span class="inter-text"> </span><span class="built-in delim token" data-binding="kw-occ-Lean.Parser.Term.typeSpec-3979">:</span><span class="inter-text"> </span><a href="Basic-Propositions/Truth/#True___intro" title="文档：True"><span class="const token" data-binding="const-True" data-verso-hover="zh-433">True</span></a><span class="inter-text"> </span><span class="built-in delim token" data-binding="kw-occ-Lean.Parser.Command.declValSimple-3986">:=</span><span class="inter-text">
-  </span><span class="const token" data-binding="const-trivial" data-verso-hover="zh-2770">trivial</span><span class="inter-text">
-</span><span class="unknown token" data-binding=""></span></code></div>
-                      </div>
-                    </div>
-                  <p>
-                    这段代码无效，因为它试图为 <code>example</code> 声明命名。示例不能命名；在其他声明形式中应出现名称的位置写入
+</span><span class="text">Note: </span><span class="text">Examples do not have names. </span><span class="text">The identifier</span><span class="text"></span><span class="text"> </span><span class="text">`</span><span class="text">trivial_proof</span><span class="text">`</span><span class="text"> </span><span class="text">is</span><span class="text"> being interpreted as </span><span class="text">a parameter</span><span class="text"> </span><span class="text">`(</span><span class="text">trivial_proof</span><span class="text"> : _)`</span><span class="text">.</span><span class="text"></span></span></pre></div><div role="tabpanel" class="error-example-tabpanel error-example-tabpanel-hidden" id="error-example-next-next-next-next-next-next-next-next-next-next-panel-1" aria-labelledby="error-example-next-next-next-next-next-next-next-next-next-next-button-1"><code class="hl lean block" data-lean-context="examples"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.example-3954">example</span><span class="inter-text"> </span><span class="built-in delim token" data-binding="kw-occ-Lean.Parser.Term.typeSpec-3962">:</span><span class="inter-text"> </span><a href="Basic-Propositions/Truth/#True___intro" title="文档：True"><span class="const token" data-binding="const-True" data-verso-hover="zh-434">True</span></a><span class="inter-text"> </span><span class="built-in delim token" data-binding="kw-occ-Lean.Parser.Command.declValSimple-3969">:=</span><span class="inter-text">
+  </span><span class="const token" data-binding="const-trivial" data-verso-hover="zh-2756">trivial</span><span class="inter-text">
+</span><span class="unknown token" data-binding></span></code></div></div></div><p>这段代码无效，因为它试图为 <code>example</code> 声明命名。示例不能命名；在其他声明形式中应出现名称的位置写入
 标识符时，该标识符反而会被精译为绑定项，而其类型无法推断。如果声明必须命名，应使用支持命名的声明形式，
-例如 <code>def</code> 或 <code>theorem</code>。</p>
-                  </div>
-                </details><details class="example" open=""><summary class="description">尝试一次定义多个不透明常量</summary><div class="example-content">
-                  <div class="error-example-container">
-                    <div class="error-example-tab-list" role="tablist" aria-label="Code Samples">
-                      <button type="button" role="tab" aria-selected="true" tabindex="0" id="error-example-next-next-next-next-next-next-next-next-next-next-next-button-0" aria-controls="error-example-next-next-next-next-next-next-next-next-next-next-next-panel-0">Original</button><button type="button" role="tab" aria-selected="false" tabindex="-1" id="error-example-next-next-next-next-next-next-next-next-next-next-next-button-1" aria-controls="error-example-next-next-next-next-next-next-next-next-next-next-next-panel-1">Fixed</button></div>
-                    <div class="error-example-tab-view">
-                      <div role="tabpanel" class="error-example-tabpanel" id="error-example-next-next-next-next-next-next-next-next-next-next-next-panel-0" aria-labelledby="error-example-next-next-next-next-next-next-next-next-next-next-next-button-0">
-                        <code class="hl lean block" data-lean-context="examples"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.opaque-4401">opaque</span><span class="inter-text"> </span><span class="unknown token" data-binding="">m</span><span class="inter-text"> </span><span class="has-info error"><span class="hover-container"><span class="hover-info messages"><code class="verso-message error"><span class="text"></span><span class="text">Failed to infer </span><span class="text">type of binder `</span><span class="text">n</span><span class="text">`</span><span class="text">
+例如 <code>def</code> 或 <code>theorem</code>。</p></div></details><details class="example" id="_______________________________________-next-next-next-next-next-next-next-next-next-next-next" open><summary class="description">尝试一次定义多个不透明常量</summary><div class="example-content"><div class="error-example-container"><div class="error-example-tab-list" role="tablist" aria-label="Code Samples"><button type="button" role="tab" aria-selected="true" tabindex="0" id="error-example-next-next-next-next-next-next-next-next-next-next-next-button-0" aria-controls="error-example-next-next-next-next-next-next-next-next-next-next-next-panel-0">Original</button><button type="button" role="tab" aria-selected="false" tabindex="-1" id="error-example-next-next-next-next-next-next-next-next-next-next-next-button-1" aria-controls="error-example-next-next-next-next-next-next-next-next-next-next-next-panel-1">Fixed</button></div><div class="error-example-tab-view"><div role="tabpanel" class="error-example-tabpanel" id="error-example-next-next-next-next-next-next-next-next-next-next-next-panel-0" aria-labelledby="error-example-next-next-next-next-next-next-next-next-next-next-next-button-0"><code class="hl lean block" data-lean-context="examples"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.opaque-4384">opaque</span><span class="inter-text"> </span><span class="unknown token" data-binding>m</span><span class="inter-text"> </span><span class="has-info error" data-verso-hover="75"><span class="hover-container"><span class="hover-info messages"><code class="verso-message error"><span class="text"></span><span class="text">Failed to infer </span><span class="text">type of binder `</span><span class="text">n</span><span class="text">`</span><span class="text">
 </span><span class="text">
-</span><span class="text">Note: </span><span class="text">Multiple constants cannot be declared in a single declaration. </span><span class="text">The identifier</span><span class="text"></span><span class="text"> </span><span class="text">`</span><span class="text">n</span><span class="text">`</span><span class="text"> </span><span class="text">is</span><span class="text"> being interpreted as </span><span class="text">a parameter</span><span class="text"> </span><span class="text">`(</span><span class="text">n</span><span class="text"> : _)`</span><span class="text">.</span><span class="text"></span></code></span></span><span class="var token" data-binding="var-_uniq.3" data-verso-hover="74">n</span></span><span class="inter-text"> </span><span class="built-in delim token" data-binding="kw-occ-Lean.Parser.Term.typeSpec-4412">:</span><span class="inter-text"> </span><a href="Basic-Types/Natural-Numbers/#Nat___zero" title="文档：Nat"><span class="const token" data-binding="const-Nat" data-verso-hover="zh-19">Nat</span></a><span class="inter-text">
-</span><span class="unknown token" data-binding=""></span></code><pre class="hl lean lean-output error"><span class="verso-message"><span class="text"></span><span class="text"></span><span class="text">Failed to infer </span><span class="text">type of binder `</span><span class="text">n</span><span class="text">`</span><span class="text">
+</span><span class="text">Note: </span><span class="text">Multiple constants cannot be declared in a single declaration. </span><span class="text">The identifier</span><span class="text"></span><span class="text"> </span><span class="text">`</span><span class="text">n</span><span class="text">`</span><span class="text"> </span><span class="text">is</span><span class="text"> being interpreted as </span><span class="text">a parameter</span><span class="text"> </span><span class="text">`(</span><span class="text">n</span><span class="text"> : _)`</span><span class="text">.</span><span class="text"></span></code></span></span><span class="var token" data-binding="var-_uniq.3">n</span></span><span class="inter-text"> </span><span class="built-in delim token" data-binding="kw-occ-Lean.Parser.Term.typeSpec-4395">:</span><span class="inter-text"> </span><a href="Basic-Types/Natural-Numbers/#Nat___zero" title="文档：Nat"><span class="const token" data-binding="const-Nat" data-verso-hover="zh-20">Nat</span></a><span class="inter-text">
+</span><span class="unknown token" data-binding></span></code><pre class="hl lean lean-output error"><span class="verso-message"><span class="text"></span><span class="text"></span><span class="text">Failed to infer </span><span class="text">type of binder `</span><span class="text">n</span><span class="text">`</span><span class="text">
 </span><span class="text">
-</span><span class="text">Note: </span><span class="text">Multiple constants cannot be declared in a single declaration. </span><span class="text">The identifier</span><span class="text"></span><span class="text"> </span><span class="text">`</span><span class="text">n</span><span class="text">`</span><span class="text"> </span><span class="text">is</span><span class="text"> being interpreted as </span><span class="text">a parameter</span><span class="text"> </span><span class="text">`(</span><span class="text">n</span><span class="text"> : _)`</span><span class="text">.</span><span class="text"></span></span></pre></div>
-                      <div role="tabpanel" class="error-example-tabpanel error-example-tabpanel-hidden" id="error-example-next-next-next-next-next-next-next-next-next-next-next-panel-1" aria-labelledby="error-example-next-next-next-next-next-next-next-next-next-next-next-button-1">
-                        <code class="hl lean block" data-lean-context="examples"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.opaque-4616">opaque</span><span class="inter-text"> </span><span class="const token" data-binding="const-m" data-verso-hover="9872" id="m-_LPAR_in-________________________________________RPAR_">m</span><span class="inter-text"> </span><span class="built-in delim token" data-binding="kw-occ-Lean.Parser.Term.typeSpec-4625">:</span><span class="inter-text"> </span><a href="Basic-Types/Natural-Numbers/#Nat___zero" title="文档：Nat"><span class="const token" data-binding="const-Nat" data-verso-hover="zh-19">Nat</span></a><span class="inter-text">
-</span><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.opaque-4631">opaque</span><span class="inter-text"> </span><span class="const token" data-binding="const-n" data-verso-hover="9873" id="n-_LPAR_in-________________________________________RPAR_">n</span><span class="inter-text"> </span><span class="built-in delim token" data-binding="kw-occ-Lean.Parser.Term.typeSpec-4640">:</span><span class="inter-text"> </span><a href="Basic-Types/Natural-Numbers/#Nat___zero" title="文档：Nat"><span class="const token" data-binding="const-Nat" data-verso-hover="zh-19">Nat</span></a><span class="inter-text">
-</span><span class="unknown token" data-binding=""></span></code></div>
-                      </div>
-                    </div>
-                  <p>
-                    此示例错误地尝试用一个 <code>opaque</code> 声明定义多个常量。这类声明只能定义一个常量：不能在 <code>opaque</code> 或
+</span><span class="text">Note: </span><span class="text">Multiple constants cannot be declared in a single declaration. </span><span class="text">The identifier</span><span class="text"></span><span class="text"> </span><span class="text">`</span><span class="text">n</span><span class="text">`</span><span class="text"> </span><span class="text">is</span><span class="text"> being interpreted as </span><span class="text">a parameter</span><span class="text"> </span><span class="text">`(</span><span class="text">n</span><span class="text"> : _)`</span><span class="text">.</span><span class="text"></span></span></pre></div><div role="tabpanel" class="error-example-tabpanel error-example-tabpanel-hidden" id="error-example-next-next-next-next-next-next-next-next-next-next-next-panel-1" aria-labelledby="error-example-next-next-next-next-next-next-next-next-next-next-next-button-1"><code class="hl lean block" data-lean-context="examples"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.opaque-4599">opaque</span><span class="inter-text"> </span><span class="const token" data-binding="const-m" data-verso-hover="10963" id="m-_LPAR_in-________________________________________RPAR_">m</span><span class="inter-text"> </span><span class="built-in delim token" data-binding="kw-occ-Lean.Parser.Term.typeSpec-4608">:</span><span class="inter-text"> </span><a href="Basic-Types/Natural-Numbers/#Nat___zero" title="文档：Nat"><span class="const token" data-binding="const-Nat" data-verso-hover="zh-20">Nat</span></a><span class="inter-text">
+</span><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.opaque-4614">opaque</span><span class="inter-text"> </span><span class="const token" data-binding="const-n" data-verso-hover="10964" id="n-_LPAR_in-________________________________________RPAR_">n</span><span class="inter-text"> </span><span class="built-in delim token" data-binding="kw-occ-Lean.Parser.Term.typeSpec-4623">:</span><span class="inter-text"> </span><a href="Basic-Types/Natural-Numbers/#Nat___zero" title="文档：Nat"><span class="const token" data-binding="const-Nat" data-verso-hover="zh-20">Nat</span></a><span class="inter-text">
+</span><span class="unknown token" data-binding></span></code></div></div></div><p>此示例错误地尝试用一个 <code>opaque</code> 声明定义多个常量。这类声明只能定义一个常量：不能在 <code>opaque</code> 或
 <code>def</code> 后列出多个标识符，使它们都具有相同类型（或值）。该声明反而会被精译为定义一个常量（例如上面的
 <code>m</code>），后续标识符（<code>n</code>）成为其参数，而这些参数的类型未指定且无法推断。要定义多个全局常量，必须
-分别声明每个常量。</p>
-                  </div>
-                </details><details class="example" open=""><summary class="description">尝试在同一行定义多个结构字段</summary><div class="example-content">
-                  <div class="error-example-container">
-                    <div class="error-example-tab-list" role="tablist" aria-label="Code Samples">
-                      <button type="button" role="tab" aria-selected="true" tabindex="0" id="error-example-next-next-next-next-next-next-next-next-next-next-next-next-button-0" aria-controls="error-example-next-next-next-next-next-next-next-next-next-next-next-next-panel-0">Original</button><button type="button" role="tab" aria-selected="false" tabindex="-1" id="error-example-next-next-next-next-next-next-next-next-next-next-next-next-button-1" aria-controls="error-example-next-next-next-next-next-next-next-next-next-next-next-next-panel-1">Fixed (修复（分行）)</button><button type="button" role="tab" aria-selected="false" tabindex="-1" id="error-example-next-next-next-next-next-next-next-next-next-next-next-next-button-2" aria-controls="error-example-next-next-next-next-next-next-next-next-next-next-next-next-panel-2">Fixed (修复（加括号）)</button></div>
-                    <div class="error-example-tab-view">
-                      <div role="tabpanel" class="error-example-tabpanel" id="error-example-next-next-next-next-next-next-next-next-next-next-next-next-panel-0" aria-labelledby="error-example-next-next-next-next-next-next-next-next-next-next-next-next-button-0">
-                        <code class="hl lean block" data-lean-context="examples"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.structureTk-5170">structure</span><span class="inter-text"> </span><span class="const token" data-binding="const-Person" data-verso-hover="9837">Person</span><span class="inter-text"> </span><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.structure-5170">where</span><span class="inter-text">
-  </span><span class="unknown token" data-binding="">givenName</span><span class="inter-text"> </span><span class="has-info error"><span class="hover-container"><span class="hover-info messages"><code class="verso-message error"><span class="text"></span><span class="text">Failed to infer </span><span class="text">type of binder `</span><span class="text">familyName</span><span class="text">`</span><span class="text"></span></code></span></span><span class="var token" data-binding="var-_uniq.6" data-verso-hover="74">familyName</span></span><span class="inter-text"> </span><span class="built-in delim token" data-binding="kw-occ-Lean.Parser.Term.typeSpec-5216">:</span><span class="inter-text"> </span><a href="Basic-Types/Strings/#String___ofByteArray" title="文档：String"><span class="const token" data-binding="const-String" data-verso-hover="zh-18">String</span></a><span class="inter-text">
-  </span><span class="unknown token" data-binding="">age</span><span class="inter-text"> </span><span class="built-in delim token" data-binding="kw-occ-Lean.Parser.Term.typeSpec-5231">:</span><span class="inter-text"> </span><a href="Basic-Types/Natural-Numbers/#Nat___zero" title="文档：Nat"><span class="const token" data-binding="const-Nat" data-verso-hover="zh-19">Nat</span></a><span class="inter-text">
-</span><span class="unknown token" data-binding=""></span></code><pre class="hl lean lean-output error"><span class="verso-message"><span class="text"></span><span class="text"></span><span class="text">Failed to infer </span><span class="text">type of binder `</span><span class="text">familyName</span><span class="text">`</span><span class="text"></span></span></pre></div>
-                      <div role="tabpanel" class="error-example-tabpanel error-example-tabpanel-hidden" id="error-example-next-next-next-next-next-next-next-next-next-next-next-next-panel-1" aria-labelledby="error-example-next-next-next-next-next-next-next-next-next-next-next-next-button-1">
-                        <code class="hl lean block" data-lean-context="examples"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.structureTk-5329">structure</span><span class="inter-text"> </span><span class="const token" data-binding="const-Person" data-verso-hover="2089">Person</span><span class="inter-text"> </span><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.structure-5329">where</span><span class="inter-text">
-  </span><span class="const token" data-binding="const-Person.givenName" data-verso-hover="9874">givenName</span><span class="inter-text"> </span><span class="built-in delim token" data-binding="kw-occ-Lean.Parser.Term.typeSpec-5364">:</span><span class="inter-text"> </span><a href="Basic-Types/Strings/#String___ofByteArray" title="文档：String"><span class="const token" data-binding="const-String" data-verso-hover="zh-18">String</span></a><span class="inter-text">
-  </span><span class="const token" data-binding="const-Person.familyName" data-verso-hover="9875">familyName</span><span class="inter-text"> </span><span class="built-in delim token" data-binding="kw-occ-Lean.Parser.Term.typeSpec-5386">:</span><span class="inter-text"> </span><a href="Basic-Types/Strings/#String___ofByteArray" title="文档：String"><span class="const token" data-binding="const-String" data-verso-hover="zh-18">String</span></a><span class="inter-text">
-  </span><span class="const token" data-binding="const-Person.age" data-verso-hover="2091">age</span><span class="inter-text"> </span><span class="built-in delim token" data-binding="kw-occ-Lean.Parser.Term.typeSpec-5401">:</span><span class="inter-text"> </span><a href="Basic-Types/Natural-Numbers/#Nat___zero" title="文档：Nat"><span class="const token" data-binding="const-Nat" data-verso-hover="zh-19">Nat</span></a><span class="inter-text">
-</span><span class="unknown token" data-binding=""></span></code></div>
-                      <div role="tabpanel" class="error-example-tabpanel error-example-tabpanel-hidden" id="error-example-next-next-next-next-next-next-next-next-next-next-next-next-panel-2" aria-labelledby="error-example-next-next-next-next-next-next-next-next-next-next-next-next-button-2">
-                        <code class="hl lean block" data-lean-context="examples"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.structureTk-5444">structure</span><span class="inter-text"> </span><span class="const token" data-binding="const-Person" data-verso-hover="2089">Person</span><span class="inter-text"> </span><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.structure-5444">where</span><span class="inter-text">
-  </span><span class="punctuation bracket token" data-binding="kw-occ-Lean.Parser.Command.structExplicitBinder-5469">(</span><span class="const token" data-binding="const-Person.givenName" data-verso-hover="9874">givenName</span><span class="inter-text"> </span><span class="const token" data-binding="const-Person.familyName" data-verso-hover="9875">familyName</span><span class="inter-text"> </span><span class="built-in delim token" data-binding="kw-occ-Lean.Parser.Term.typeSpec-5491">:</span><span class="inter-text"> </span><a href="Basic-Types/Strings/#String___ofByteArray" title="文档：String"><span class="const token" data-binding="const-String" data-verso-hover="zh-18">String</span></a><span class="punctuation bracket token" data-binding="kw-occ-Lean.Parser.Command.structExplicitBinder-5469">)</span><span class="inter-text">
-  </span><span class="const token" data-binding="const-Person.age" data-verso-hover="2091">age</span><span class="inter-text"> </span><span class="built-in delim token" data-binding="kw-occ-Lean.Parser.Term.typeSpec-5507">:</span><span class="inter-text"> </span><a href="Basic-Types/Natural-Numbers/#Nat___zero" title="文档：Nat"><span class="const token" data-binding="const-Nat" data-verso-hover="zh-19">Nat</span></a><span class="inter-text">
-</span><span class="unknown token" data-binding=""></span></code></div>
-                      </div>
-                    </div>
-                  <p>
-                    此示例错误地尝试在同一行连续列出多个字段（<code>givenName</code> 和 <code>familyName</code>）来定义相同类型的结构字段。
+分别声明每个常量。</p></div></details><details class="example" id="__________________________________________-next-next-next" open><summary class="description">尝试在同一行定义多个结构字段</summary><div class="example-content"><div class="error-example-container"><div class="error-example-tab-list" role="tablist" aria-label="Code Samples"><button type="button" role="tab" aria-selected="true" tabindex="0" id="error-example-next-next-next-next-next-next-next-next-next-next-next-next-button-0" aria-controls="error-example-next-next-next-next-next-next-next-next-next-next-next-next-panel-0">Original</button><button type="button" role="tab" aria-selected="false" tabindex="-1" id="error-example-next-next-next-next-next-next-next-next-next-next-next-next-button-1" aria-controls="error-example-next-next-next-next-next-next-next-next-next-next-next-next-panel-1">Fixed (修复（分行）)</button><button type="button" role="tab" aria-selected="false" tabindex="-1" id="error-example-next-next-next-next-next-next-next-next-next-next-next-next-button-2" aria-controls="error-example-next-next-next-next-next-next-next-next-next-next-next-next-panel-2">Fixed (修复（加括号）)</button></div><div class="error-example-tab-view"><div role="tabpanel" class="error-example-tabpanel" id="error-example-next-next-next-next-next-next-next-next-next-next-next-next-panel-0" aria-labelledby="error-example-next-next-next-next-next-next-next-next-next-next-next-next-button-0"><code class="hl lean block" data-lean-context="examples"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.structureTk-5153">structure</span><span class="inter-text"> </span><span class="const token" data-binding="const-Person" data-verso-hover="1662">Person</span><span class="inter-text"> </span><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.structure-5153">where</span><span class="inter-text">
+  </span><span class="var token" data-binding="var-_uniq.8" data-verso-hover="10965">givenName</span><span class="inter-text"> </span><span class="has-info error" data-verso-hover="75"><span class="hover-container"><span class="hover-info messages"><code class="verso-message error"><span class="text"></span><span class="text">Failed to infer </span><span class="text">type of binder `</span><span class="text">familyName</span><span class="text">`</span><span class="text"></span></code></span></span><span class="var token" data-binding="var-_uniq.6">familyName</span></span><span class="inter-text"> </span><span class="built-in delim token" data-binding="kw-occ-Lean.Parser.Term.typeSpec-5199">:</span><span class="inter-text"> </span><a href="Basic-Types/Strings/#String___ofByteArray" title="文档：String"><span class="const token" data-binding="const-String" data-verso-hover="zh-19">String</span></a><span class="inter-text">
+  </span><span class="var token" data-binding="var-_uniq.10" data-verso-hover="12">age</span><span class="inter-text"> </span><span class="built-in delim token" data-binding="kw-occ-Lean.Parser.Term.typeSpec-5214">:</span><span class="inter-text"> </span><a href="Basic-Types/Natural-Numbers/#Nat___zero" title="文档：Nat"><span class="const token" data-binding="const-Nat" data-verso-hover="zh-20">Nat</span></a><span class="inter-text">
+</span><span class="unknown token" data-binding></span></code><pre class="hl lean lean-output error"><span class="verso-message"><span class="text"></span><span class="text"></span><span class="text">Failed to infer </span><span class="text">type of binder `</span><span class="text">familyName</span><span class="text">`</span><span class="text"></span></span></pre></div><div role="tabpanel" class="error-example-tabpanel error-example-tabpanel-hidden" id="error-example-next-next-next-next-next-next-next-next-next-next-next-next-panel-1" aria-labelledby="error-example-next-next-next-next-next-next-next-next-next-next-next-next-button-1"><code class="hl lean block" data-lean-context="examples"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.structureTk-5312">structure</span><span class="inter-text"> </span><span class="const token" data-binding="const-Person" data-verso-hover="2079">Person</span><span class="inter-text"> </span><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.structure-5312">where</span><span class="inter-text">
+  </span><span class="const token" data-binding="const-Person.givenName" data-verso-hover="10966">givenName</span><span class="inter-text"> </span><span class="built-in delim token" data-binding="kw-occ-Lean.Parser.Term.typeSpec-5347">:</span><span class="inter-text"> </span><a href="Basic-Types/Strings/#String___ofByteArray" title="文档：String"><span class="const token" data-binding="const-String" data-verso-hover="zh-19">String</span></a><span class="inter-text">
+  </span><span class="const token" data-binding="const-Person.familyName" data-verso-hover="10967">familyName</span><span class="inter-text"> </span><span class="built-in delim token" data-binding="kw-occ-Lean.Parser.Term.typeSpec-5369">:</span><span class="inter-text"> </span><a href="Basic-Types/Strings/#String___ofByteArray" title="文档：String"><span class="const token" data-binding="const-String" data-verso-hover="zh-19">String</span></a><span class="inter-text">
+  </span><span class="const token" data-binding="const-Person.age" data-verso-hover="2081">age</span><span class="inter-text"> </span><span class="built-in delim token" data-binding="kw-occ-Lean.Parser.Term.typeSpec-5384">:</span><span class="inter-text"> </span><a href="Basic-Types/Natural-Numbers/#Nat___zero" title="文档：Nat"><span class="const token" data-binding="const-Nat" data-verso-hover="zh-20">Nat</span></a><span class="inter-text">
+</span><span class="unknown token" data-binding></span></code></div><div role="tabpanel" class="error-example-tabpanel error-example-tabpanel-hidden" id="error-example-next-next-next-next-next-next-next-next-next-next-next-next-panel-2" aria-labelledby="error-example-next-next-next-next-next-next-next-next-next-next-next-next-button-2"><code class="hl lean block" data-lean-context="examples"><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.structureTk-5427">structure</span><span class="inter-text"> </span><span class="const token" data-binding="const-Person" data-verso-hover="2079">Person</span><span class="inter-text"> </span><span class="keyword token" data-binding="kw-occ-Lean.Parser.Command.structure-5427">where</span><span class="inter-text">
+  </span><span class="punctuation bracket token" data-binding="kw-occ-Lean.Parser.Command.structExplicitBinder-5452">(</span><span class="const token" data-binding="const-Person.givenName" data-verso-hover="10966">givenName</span><span class="inter-text"> </span><span class="const token" data-binding="const-Person.familyName" data-verso-hover="10967">familyName</span><span class="inter-text"> </span><span class="built-in delim token" data-binding="kw-occ-Lean.Parser.Term.typeSpec-5474">:</span><span class="inter-text"> </span><a href="Basic-Types/Strings/#String___ofByteArray" title="文档：String"><span class="const token" data-binding="const-String" data-verso-hover="zh-19">String</span></a><span class="punctuation bracket token" data-binding="kw-occ-Lean.Parser.Command.structExplicitBinder-5452">)</span><span class="inter-text">
+  </span><span class="const token" data-binding="const-Person.age" data-verso-hover="2081">age</span><span class="inter-text"> </span><span class="built-in delim token" data-binding="kw-occ-Lean.Parser.Term.typeSpec-5490">:</span><span class="inter-text"> </span><a href="Basic-Types/Natural-Numbers/#Nat___zero" title="文档：Nat"><span class="const token" data-binding="const-Nat" data-verso-hover="zh-20">Nat</span></a><span class="inter-text">
+</span><span class="unknown token" data-binding></span></code></div></div></div><p>此示例错误地尝试在同一行连续列出多个字段（<code>givenName</code> 和 <code>familyName</code>）来定义相同类型的结构字段。
 Lean 会将其解释为定义单个字段 <code>givenName</code>，其参数是类型未指定的绑定项 <code>familyName</code>。可以将每个字段
 分别列在单独一行，或将指定多个字段名称的行括在括号中，以实现预期行为（结构声明的更多详情请参阅
-<a href="The Type System/Inductive Types/#inductive-types">归纳类型</a>章节）。</p>
-                  </div>
-                </details></section>
-            </section>
-          <nav class="prev-next-buttons">
-            <a class="local-button active" href="Error-Explanations/About___--inductiveParamMissing/#Lean-__________________--Error-Explanations--About___--inductiveParamMissing" rel="prev" title="关于：inductiveParamMissing"><span class="arrow">←</span><span class="where">关于：inductiveParamMissing</span></a><a class="local-button active" href="Error-Explanations/About___--inferDefTypeFailed/#Lean-__________________--Error-Explanations--About___--inferDefTypeFailed" rel="next" title="关于：inferDefTypeFailed"><span class="where">关于：inferDefTypeFailed</span><span class="arrow">→</span></a></nav>
-          </div>
-        </main></div>
-    </body>
-  </html>
-
+<a href="The Type System/Inductive Types/#inductive-types">归纳类型</a>章节）。</p></div></details></section></section><nav class="prev-next-buttons"><a class="local-button active" href="Error-Explanations/About___--inductiveParamMissing/#Lean-__________________--Error-Explanations--About___--inductiveParamMissing" rel="prev" title="关于：inductiveParamMissing"><span class="arrow">←</span><span class="where">关于：inductiveParamMissing</span></a><a class="local-button active" href="Error-Explanations/About___--inferDefTypeFailed/#Lean-__________________--Error-Explanations--About___--inferDefTypeFailed" rel="next" title="关于：inferDefTypeFailed"><span class="where">关于：inferDefTypeFailed</span><span class="arrow">→</span></a></nav></div></main></div></body></html>
