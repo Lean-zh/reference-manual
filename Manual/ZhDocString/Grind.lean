@@ -188,26 +188,6 @@ class OrderedRing (R : Type u) [Semiring R] [LE R] [LT R] [Std.IsPreorder R]
   /-- 在严格有序半环中，可用正元素 `0 < c` 从右侧乘不等式 `a < b`，得到 `a * c < b * c`。 -/
   mul_lt_mul_of_pos_right : Prop
 
-/-- 整数区间，可以是有限、半无限或无限区间。 -/
-inductive IntInterval : Type where
-  | /-- 有限区间 `[lo, hi)`。 -/
-    co (lo hi : Int)
-  | /-- 半无限区间 `[lo, ∞)`。 -/
-    ci (lo : Int)
-  | /-- 半无限区间 `(-∞, hi)`。 -/
-    io (hi : Int)
-  | /-- 无限区间 `(-∞, ∞)`。 -/
-    ii
-
-/-- `ToInt α I` 表示可以将 `α` 忠实地嵌入整数区间 `I`。 -/
-class ToInt (α : Type u) (range : outParam Lean.Grind.IntInterval) where
-  /-- 嵌入函数。 -/
-  toInt : α → Int
-  /-- 嵌入函数是单射。 -/
-  toInt_inj : ∀ x y, toInt x = toInt y → x = y
-  /-- 嵌入函数的值落在指定区间内。 -/
-  toInt_mem : ∀ x, toInt x ∈ range
-
 namespace Parser.Attr
 
 /-- `cases` 修饰符将归纳定义的谓词标记为适合进行情形拆分。 -/

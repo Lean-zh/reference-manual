@@ -279,29 +279,29 @@ def discardElems : List α → List Unit
         ret x_2
       List.cons →
         let x_3 : tobj := proj[1] x_1;
-        block_4 (x_5 : tobj) (x_6 : u8) :=
-          let x_7 : tagged := ctor_0[PUnit.unit];
-          let x_8 : tobj := discardElems._redArg x_3;
-          block_9 (x_10 : obj) :=
-            ret x_10;
-          case x_6 : u8 of
+        block_1 (x_4 : tobj) (x_5 : u8) :=
+          let x_6 : tagged := ctor_0[PUnit.unit];
+          let x_7 : tobj := discardElems._redArg x_3;
+          block_2 (x_8 : obj) :=
+            ret x_8;
+          case x_5 : u8 of
           Bool.false →
-            set x_5[1] := x_8;
-            set x_5[0] := x_7;
-            jmp block_9 x_5
+            set x_4[1] := x_7;
+            set x_4[0] := x_6;
+            jmp block_2 x_4
           Bool.true →
-            let x_11 : obj := ctor_1[List.cons] x_7 x_8;
-            jmp block_9 x_11;
-        let x_12 : u8 := isShared x_1;
-        case x_12 : u8 of
+            let x_9 : obj := ctor_1[List.cons] x_6 x_7;
+            jmp block_2 x_9;
+        let x_10 : u8 := isShared x_1;
+        case x_10 : u8 of
         Bool.false →
-          let x_13 : tobj := proj[0] x_1;
-          dec x_13;
-          jmp block_4 x_1 x_12
+          let x_11 : tobj := proj[0] x_1;
+          dec x_11;
+          jmp block_1 x_1 x_10
         Bool.true →
           inc x_3;
           dec x_1;
-          jmp block_4 ◾ x_12
+          jmp block_1 ◾ x_10
 [Compiler.IR] [result]
     def discardElems (x_1 : ◾) (x_2 : tobj) : tobj :=
       let x_3 : tobj := discardElems._redArg x_2;
@@ -309,8 +309,8 @@ def discardElems : List α → List Unit
 ```
 
 在 IR 中，{name}`List.cons` 分支会显式检查参数值是否被共享（即其引用计数是否大于一）。
-如果引用唯一，则会递减被丢弃的列表元素 `x_5` 的引用计数，并复用构造器值。
-如果引用被共享，则会在 `x_11` 中为结果分配一个新的 {name}`List.cons`。
+如果引用唯一，则会递减被丢弃的列表元素 `x_11` 的引用计数，并复用构造器值。
+如果引用被共享，则会在 `x_9` 中为结果分配一个新的 {name}`List.cons`。
 :::
 
 
@@ -528,6 +528,8 @@ Lean 解释器可以运行符号存在于已加载共享库中的 Lean 声明，
 要运行此类代码（例如使用 {keywordOf Lean.Parser.Command.eval}`#eval`），必须完成以下步骤：
   1. 将包含该声明的模块及其依赖项编译为共享库
   1. 通过 `lean --load-dynlib=` 提供该共享库，以运行导入此模块的代码。
+
+`precompileModules` {ref "lake-config"}[配置选项]指示 Lake 自动完成上述步骤。
 
 仅加载包含外部符号的外部库并不足够，因为解释器还依赖于为每个 {attr}`extern` 声明生成的代码。
 因此，无法在同一文件中解释 {attr}`extern` 声明。

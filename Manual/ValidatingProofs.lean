@@ -131,7 +131,7 @@ tag := "Lean-__________________--Validating-a-Lean-Proof--Printing-Axioms--Signi
 上面的三个公理是 Lean 逻辑的标准公理，没有危害。
 
 * 如果报告 {name}`sorryAx`，则该定理或其某个依赖使用了 {lean}`sorry`，或以其他方式未完成。
-* 如果报告 {name}`Lean.trustCompiler`，则使用了本地求值；说明见下文。
+* 如果报告的公理名称中含有 {lit}`_native`，则使用了{ref "validating-trustCompiler"}[本地求值]。
 * 任何其他公理都表示声明并使用了自定义公理，此时定理只相对于这些公理的可靠性有效。
 
 ## 信任
@@ -221,7 +221,8 @@ tag := "validating-comparator"
 %%%
 tag := "Lean-__________________--Validating-a-Lean-Proof--Gold-Standard___--comparator--and-external-checkers--Instructions"
 %%%
-在受信任环境中写下定理*陈述*（即“挑战”），然后按其文档启用外部检查器，将挑战和拟议证明一并交给 [`comparator`](https://github.com/leanprover/comparator) 工具。
+在受信任环境中写下定理*陈述*（即“挑战”），再使用 {ref "lake-comparator"}[`lake comparator`] 并启用外部检查器，根据该陈述评判拟议证明。
+该命令是 [`comparator`](https://github.com/leanprover/comparator) 工具的前端。
 
 ## 含义
 
@@ -285,11 +286,12 @@ Lean 支持通过本地求值进行证明。
 封装在{tech (key := "honest")}[诚实]策略中的特定用法（例如 {tactic}`bv_decide`）通常值得信任。
 受信任代码库更大（包括 Lean 的编译工具链和标准库中的库注解），但仍是固定且经过审查的。
 
-一般使用（{tactic}`decide`{keywordOf Lean.Parser.Tactic.decide}` +native` 或直接使用 {name}`Lean.ofReduceBool`）时，只要项的本地求值与内核求值不一致，就可能创建无效证明。
+一般使用（{tactic}`decide`{keywordOf Lean.Parser.Tactic.decide}` +native` 或直接使用 {lit}`Lean.ofReduceBool`）时，只要项的本地求值与内核求值不一致，就可能创建无效证明。
 特别地，对于库中的每个 {attr}`implemented_by`/{attr}`extern` 属性，替代实现与原实现语义等价这一点都会成为受信任代码库的一部分。
 
-所有这些用法都会以公理 {name}`Lean.trustCompiler` 的形式显示在 {keywordOf Lean.Parser.Command.printAxioms}`#print axioms` 中。
+所有这些用法都会以公理 {lit}`Lean.trustCompiler` 的形式显示在 {keywordOf Lean.Parser.Command.printAxioms}`#print axioms` 中。
 外部检查器（`lean4checker`、`comparator`）无法检查此类证明，因为它们无法访问 Lean 编译器。
 需要这种级别的检查时，证明必须避免使用本地求值。
 
-从 Lean 4.29.0 起，{tactic}`decide`{keywordOf Lean.Parser.Tactic.decide}` +native` 和 {tactic}`bv_decide` 策略不再使用 {name}`Lean.trustCompiler`，而是为本地计算断言的每次计算引入一个专用公理。{name}`Lean.trustCompiler` 机制已弃用，最终会被移除。
+从 Lean 4.29.0 起，{tactic}`decide`{keywordOf Lean.Parser.Tactic.decide}` +native` 和 {tactic}`bv_decide` 策略会为本地计算所断言的每次计算引入一个专用公理。
+{lit}`Lean.trustCompiler` 机制已在 Lean 4.35.0 中移除。

@@ -15,10 +15,13 @@ import Manual.Grind.ConstraintPropagation
 import Manual.Grind.CongrClosure
 import Manual.Grind.CaseAnalysis
 import Manual.Grind.EMatching
+import Manual.Grind.AC
 import Manual.Grind.Cutsat
 import Manual.Grind.Algebra
 import Manual.Grind.Linarith
 import Manual.Grind.Annotation
+import Manual.Grind.Hom
+import Manual.Grind.Interactive
 import Manual.Grind.ExtendedExamples
 
 -- if-then-else 规范化示例需要此导入。
@@ -164,15 +167,61 @@ tag := "grind-errors"
 # 最小化 `grind` 调用
 %%%
 file := "Minimizing--grind--calls"
-tag := "grind-minimizing-grind-calls"
+tag := "grind-minimizing"
 %%%
 
 `grind only [...]` 策略使用受限的定理集合调用 {tactic}`grind`，从而可能提升性能。
-可以使用 {tactic}`grind?` 方便地构造 `grind only` 调用；它会自动记录 {tactic}`grind` 使用的定理，并建议合适的 `grind only`。
+可以使用 {tactic}`grind?` 方便地构造 `grind only` 调用；它会自动记录 {tactic}`grind` 使用的定理，并建议合适的 `grind only` 或{ref "grind-interactive"}[脚本]。
 
 这些定理通常带有 `=`、`←` 或 `→` 等符号前缀，用来表示
 触发实例化的模式。详情参见{ref "e-matching"}[关于 E-匹配的章节]。
 有些定理可能带有 `usr` 前缀，表示使用了自定义模式。
+
+# 局部定义
+%%%
+file := "Local-Definitions"
+tag := "Lean-__________________--grind--______--Local-Definitions"
+%%%
+
+{tactic}`grind` 有两个标志，用于控制它如何处理以 {keywordOf Lean.Parser.Term.let}`let` 引入的局部定义。
+这两个标志默认启用，但复制局部定义的值可能导致项的大小爆炸；处理包含多层嵌套 {keywordOf Lean.Parser.Term.let}`let` 的项时，可以考虑禁用它们。
+
+: `zeta` (default `true`)
+
+  此标志控制 {tactic}`grind` 是否执行{tech (key := "ζ")}[ζ-归约]。
+  除非禁用此标志，否则包含 {keywordOf Lean.Parser.Term.let}`let` 的项会先归约，再加入白板；例如，{lean}`let x := 5; x + x` 会先归约为 {lean}`5 + 5`，再做后续处理。
+  如果禁用此标志，则不对该项进行归约。
+  ```lean -show
+  example : (let x := 5; x + x) = 10 := by grind
+  /-- `grind` failed -/
+  #guard_msgs (substring := true) in
+  example : (let x := 5; x + x) = 10 := by grind -zeta
+  ```
+
+: `zetaDelta` (default `true`)
+
+  此标志控制 {tactic}`grind` 是否将项中那些在上下文中具有局部定义的变量替换为其定义。
+  :::tacticExample
+  若证明目标是 {goal}`let x := 5; (x + x = 10)`，运行
+  ```setup
+  intro x
+  ```
+  后，证明状态的上下文中会出现 `x` 的定义：
+  ```pre
+  x : Nat := 5
+  ⊢ x + x = 10
+  ```
+  运行 {tacticStep}`grind` 会成功，因为 `x` 被替换成了 {lean}`5`。
+  禁用 `zetaDelta` 标志后则会失败。
+  ```post -show
+  ```
+  :::
+  ```lean -show
+  example : let x := 5; (x + x = 10) := by intro x; grind
+  /-- `grind` failed -/
+  #guard_msgs (substring := true) in
+  example : let x := 5; (x + x = 10) := by intro x; grind -zetaDelta
+  ```
 
 {include 1 Manual.Grind.CongrClosure}
 
@@ -182,6 +231,8 @@ tag := "grind-minimizing-grind-calls"
 
 {include 1 Manual.Grind.EMatching}
 
+{include 1 Manual.Grind.AC}
+
 {include 1 Manual.Grind.Cutsat}
 
 {include 1 Manual.Grind.Algebra}
@@ -189,6 +240,8 @@ tag := "grind-minimizing-grind-calls"
 {include 1 Manual.Grind.Linarith}
 
 {include 1 Manual.Grind.Annotation}
+
+{include 1 Manual.Grind.Interactive}
 
 # 可约性
 %%%
@@ -316,5 +369,7 @@ tag := "grind-troubleshooting-faq"
 %%%
 待定
 ```
+
+{include 1 Manual.Grind.Hom}
 
 {include 1 Manual.Grind.ExtendedExamples}

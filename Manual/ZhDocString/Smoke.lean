@@ -1,4 +1,5 @@
 import Manual.ZhDocString
+import Manual.ZhDocString.UpstreamSmoke
 import VersoManual
 
 open Verso.Genre Manual

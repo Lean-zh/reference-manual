@@ -96,7 +96,7 @@ inductive WithCheck where
 ```
 
 :::paragraph
-This rose tree has a branching factor that's limited by its parameter:
+这棵玫瑰树的分支数受到其参数的限制：
 ```lean +error (name := brtree)
 inductive BRTree (branches : Nat) (α : Type u) : Type u where
   | mk :
@@ -104,18 +104,18 @@ inductive BRTree (branches : Nat) (α : Type u) : Type u where
     children.length < branches →
     BRTree branches α
 ```
-Only nested inductive types that can be translated to mutual inductive types are allowed.
-However, translating this type would require a translation of {name}`List.length` to the translated types, but function definitions may not occur in mutual blocks with inductive types.
-The resulting error message shows that the function was not translated, but was applied to a term of the translated type:
+只允许定义能够转换为互归纳类型的嵌套归纳类型。
+然而，要转换这个类型，就必须将 {name}`List.length` 也转换到转换后的类型上，而函数定义不能与归纳类型出现在同一个互递归块中。
+产生的错误消息表明，该函数没有被转换，却被应用到了转换后类型的项上：
 ```leanOutput brtree
 (kernel) application type mismatch
   List.length children
 argument has type
-  @_nested.List_1 branches α
+  _nested.List_1
 but function has type
-  List (@BRTree branches α) → Nat
+  List (BRTree branches α) → Nat
 ```
-It is acceptable to use the parameter with the nested occurrence with fully polymorphic functions, such as {name}`id`:
+嵌套出现的类型可以通过 {name}`id` 这样的完全多态函数使用其参数：
 ```lean (name := nondep)
 inductive RTree'' (α : Type u) : Type u where
   | mk :
@@ -123,7 +123,7 @@ inductive RTree'' (α : Type u) : Type u where
     id children = children →
     BRTree branches α
 ```
-In this case, the function applies equally well to the translated version as it does to the original.
+在这种情况下，该函数既适用于原类型，也同样适用于转换后的类型。
 :::
 :::::
 

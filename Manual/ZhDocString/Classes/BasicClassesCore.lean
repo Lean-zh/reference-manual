@@ -18,11 +18,13 @@ universe u v w
 `{_ : Decidable p}` 而不是 `[Decidable p]`，这样非典范实例可以通过合一找到，而不是通过
 实例合成找到。
 -/
-class inductive Decidable (p : Prop) where
-  /-- 通过提供 `¬p` 的证明来证明 `p` 可判定。 -/
-  | isFalse (h : Not p) : Decidable p
-  /-- 通过提供 `p` 的证明来证明 `p` 可判定。 -/
-  | isTrue (h : p) : Decidable p
+class Decidable (p : Prop) where
+  /-- 用布尔值以及该值为假时的 `¬p` 证明或为真时的 `p` 证明构造可判定实例。 -/
+  intro ::
+  /-- 将可判定命题转换为 `Bool`：`p` 为真时是 `true`，为假时是 `false`。 -/
+  decide : Bool
+  /-- `decide p` 反映命题 `p`；根据其布尔值归约为 `p` 或 `¬p` 的证明。 -/
+  reflects_decide (p) : decide.Reflects p
 
 /--
 可判定谓词。
@@ -52,14 +54,6 @@ def DecidableLT : Unit := ()
 def DecidableLE : Unit := ()
 
 namespace Decidable
-
-/--
-将可判定命题转换为 `Bool`。
-
-如果 `p : Prop` 可判定，那么 `decide p : Bool` 在 `p` 为真时是 `true`，在 `p` 为假时是
-`false`。
--/
-def decide : Unit := ()
 
 /--
 当命题 `p` 可判定，并且无论 `p` 为真还是为假都足以构造 `q` 时，构造一个 `q`。

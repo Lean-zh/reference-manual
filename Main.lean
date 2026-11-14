@@ -11,23 +11,20 @@ import Manual.ExtractExamples
 open Verso.Genre.Manual
 open Verso.Genre.Manual.InlineLean
 
-open Verso.Output.Html in
-def plausible := {{
+def plausible := html%{
     <script defer="defer" data-domain="www.leanprover.cn" src="https://plausible.io/js/script.outbound-links.js"></script>
-  }}
+  }
 
-open Verso.Output.Html in
-def staticJs := {{
+def staticJs := html%{
     <script src="static/metadata.js"></script>
     <script src="static/print.js"></script>
-    {{ if false then -- Flip this bit to test live links locally
-        {{ <script>"window.metadata = {'latest': true};"</script> }}
+    { if false then -- Flip this bit to test live links locally
+        html%{<script>{"window.metadata = {'latest': true};"}</script>}
       else
-        .empty }}
-  }}
+        .empty }
+  }
 
-open Verso.Output.Html in
-def staticCss := {{
+def staticCss := html%{
     <link rel="stylesheet" href="static/colors.css" />
     <link rel="stylesheet" href="static/theme.css" />
     <link rel="stylesheet" href="static/print.css" />
@@ -35,7 +32,7 @@ def staticCss := {{
     <link rel="stylesheet" href="static/fonts/source-code-pro/source-code-pro.css" />
     <link rel="stylesheet" href="static/fonts/source-sans/source-sans-3.css" />
     <link rel="stylesheet" href="static/fonts/noto-sans-mono/noto-sans-mono.css" />
-  }}
+  }
 
 def main :=
   manualMain (%doc Manual) (config := config) (extraSteps := [extractExamples])
@@ -56,6 +53,7 @@ where
         (`Verso.Genre.Manual.doc.tactic.conv, 60),
         (`Verso.Genre.Manual.doc.option,      60),
         (`Verso.Genre.Manual.example,         60),
+        (`Manual.examples,                    60),
       ]
     },
   }

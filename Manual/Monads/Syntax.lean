@@ -757,7 +757,7 @@ while $h : $e do
 :::syntax Lean.Parser.Term.doSeqItem (title := "后测试循环")
 ```grammar
 repeat
-  $e*
+  $e:doSeq
 until $_
 ```
 :::
@@ -769,7 +769,7 @@ until $_
 :::syntax Lean.Parser.Term.doSeqItem (title := "无条件循环")
 ```grammar
 repeat
-  $e*
+  $e:doSeq
 ```
 :::
 

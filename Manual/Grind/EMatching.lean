@@ -275,25 +275,14 @@ grind!? $[$_:grindMod]?
 open Lean Parser Attr
 open Lean Elab Command
 
-deriving instance Repr for ParserDescr
-
-def getName : ParserDescr → CommandElabM String
-  | .nodeWithAntiquot name .. => pure name
-  | other => throwError m!"Expected a {.ofConstName ``nodeWithAntiquot}, got {repr other}"
-
-def getOrElse (descr : ParserDescr) : CommandElabM (Array ParserDescr) := do
-  match descr with
-  | .binary `orelse x y => return (← getOrElse x) ++ (← getOrElse y)
-  | other => return #[other]
-
-def getGrindAlts (descr : ParserDescr) : CommandElabM (Array String) := do
-  if let .nodeWithAntiquot "grindMod" ``grindMod d' := descr then
-    let cases ← getOrElse d'
-    return (← cases.mapM getName).qsort
-  else throwError "Expected a {.ofConstName ``nodeWithAntiquot}, got {repr descr}"
+def getGrindAlts : CommandElabM (Array String) := do
+  let some cat := (parserExtension.getState (← getEnv)).categories.find? `grind_mod
+    | throwError "Syntax category `grind_mod` not found"
+  let kinds := cat.kinds.foldl (init := #[]) fun acc k _ => acc.push k.getString!
+  return kinds.qsort (· < ·)
 
 /--
-info: `grindMod` can be these:
+info: `grind_mod` can be these:
 grindBwd
 grindCases
 grindCasesEager
@@ -307,6 +296,7 @@ grindFunCC
 grindFwd
 grindGen
 grindHom
+grindHomFallback
 grindHomPred
 grindInj
 grindIntro
@@ -319,8 +309,8 @@ grindUsr
 -/
 #guard_msgs in
 #eval show CommandElabM Unit from do
-  let allMods ← getGrindAlts grindMod
-  IO.println "`grindMod` can be these:"
+  let allMods ← getGrindAlts
+  IO.println "`grind_mod` can be these:"
   for gmod in allMods do
     IO.println gmod
 
@@ -647,24 +637,9 @@ norm
 :::
 
 {tactic}`grind` 策略可以处理某些求解基础设施并不丰富的源代数（例如位向量），做法是把它“嵌入”到另一个求解基础设施更丰富的代数中（例如自然数或整数）。
-同态规则描述了这种从源到目标的嵌入，以及该嵌入如何与其他运算交换（例如在位向量情形下的加法或乘法）。
+{ref "grind-hom"}[同态规则]描述了这种从源到目标的嵌入，以及该嵌入如何与其他运算交换（例如在位向量情形下的加法或乘法）。
 同态谓词则给出了关于该嵌入的更多事实，供 {tactic}`grind` 使用（例如长度为 $`n` 的位向量对应于一个小于 $`2^n` 的自然数）。
 
-:::syntax Lean.Parser.Attr.grindMod (title := "同态规则")
-```grammar
-hom
-```
-{zhincludeDocstring Lean.Parser.Attr.grindHom ZhDoc.Parser.Attr.grindHom}
-:::
-
-:::syntax Lean.Parser.Attr.grindMod (title := "同态谓词")
-```grammar
-hom_pred
-```
-{zhincludeDocstring Lean.Parser.Attr.grindHomPred ZhDoc.Parser.Attr.grindHomPred}
-:::
-
-{TODO}[Grind 的同态基础设施值得补一个示例]
 
 {TODO}[为 `grind` 模式中的 `gen` 修饰符编写文档]
 
@@ -988,11 +963,12 @@ set_option diagnostics.threshold 10 in
 example : (iota 20).length > 10 := by
   grind (gen := 20) (ematch := 20)
 ```
-```leanOutput grindDiagnostics (expandTrace := grind) (expandTrace := thm)
+```leanOutput grindDiagnostics (expandTrace := grind) (expandTrace := thm) (expandTrace := ematch)
 [grind] Diagnostics
-  [thm] E-Matching instances
-    [thm] iota_succ ↦ 12
-    [thm] List.length_cons ↦ 11
+  [ematch] E-matching Diagnostics
+    [thm] Theorem Instance Count
+      [thm] iota_succ ↦ 12
+      [thm] List.length_cons ↦ 11
   [app] Applications
   [grind] Simplifier
     [simp] used theorems (max: 15, num: 2):
@@ -1016,10 +992,11 @@ theorem gt1 (x y : Nat) :
   set_option diagnostics true in
   grind
 ```
-```leanOutput gt1diag (expandTrace := grind) (expandTrace := thm)
+```leanOutput gt1diag (expandTrace := grind) (expandTrace := thm) (expandTrace := ematch)
 [grind] Diagnostics
-  [thm] E-Matching instances
-    [thm] gt1.match_1.congr_eq_2 ↦ 1
+  [ematch] E-matching Diagnostics
+    [thm] Theorem Instance Count
+      [thm] gt1.match_1.congr_eq_2 ↦ 1
   [app] Applications
 ```
 这个定理的类型如下：

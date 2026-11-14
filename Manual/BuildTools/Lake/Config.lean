@@ -101,20 +101,21 @@ tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Configu
 包中库、可执行文件和目标指定的其他路径均相对于这些目录。
 :::
 
-:::tomlFieldCategory "构建与运行" defaultTargets leanLibDir platformIndependent precompileModules moreServerOptions moreGlobalServerArgs buildType leanOptions moreLeanArgs weakLeanArgs moreLeancArgs weakLeancArgs moreLinkArgs weakLinkArgs extraDepTargets
+:::tomlFieldCategory "构建与运行" defaultTargets leanLibDir platformIndependent precompileModules precompileImports moreServerOptions moreGlobalServerArgs buildType leanOptions moreLeanArgs weakLeanArgs moreLeancArgs weakLeancArgs moreLinkArgs weakLinkArgs extraDepTargets
 
 这些选项配置如何在包中构建和运行代码。
 包中的库、可执行文件和其他{tech (key := "targets")}[目标]可以进一步扩充此配置的某些部分。
 
 :::
 
-:::tomlFieldCategory "测试与代码检查" testDriver testDriverArgs lintDriver lintDriverArgs builtinLint
+:::tomlFieldCategory "测试与代码检查" testDriver testDriverArgs lintDriver lintDriverArgs builtinLint checks
 
 命令行命令 {lake}`test` 和 {lake}`lint` 使用由{tech (key := "workspace")}[工作区]的{tech (key := "root package")}[根包]配置的定义来执行测试和代码检查。
 为执行测试和代码检查而运行的代码称为测试驱动或代码检查驱动。
 在 Lean 配置文件中，可以通过将 `@[test_driver]` 或 `@[lint_driver]` 属性应用于{tech (key := "Lake script")}[Lake 脚本]、可执行文件目标或库目标来指定它们。
 在 Lean 和 TOML 配置文件中，也可以通过设置这些选项来配置它们。
 可以使用字符串 `"PKG/TGT"` 将依赖项 `PKG` 中的目标或脚本 `TGT` 指定为测试或代码检查驱动。
+将 {tomlField Lake.PackageConfig}`builtinLint` 设为 {lean}`true` 会使 {lake}`lint` 同时运行{ref "running-lake-lint"}[Lean 内置代码检查器]；{tomlField Lake.PackageConfig}`checks` 则列出提供{ref "package-code-quality-checks"}[包代码质量检查]的模块。
 
 :::
 
@@ -163,6 +164,7 @@ name = "example-package"
           weakLinkArgs := #[],
           backend := Lake.Backend.default,
           platformIndependent := none,
+          precompileImports := false,
           dynlibs := #[],
           plugins := #[],
           requiresModuleSystem := false,
@@ -198,6 +200,7 @@ name = "example-package"
       libPrefixOnWindows := false,
       allowImportAll := false,
       builtinLint? := none,
+      checks := #[],
       fixedToolchain := false},
   configFile := FilePath.mk "lakefile",
   relConfigFile := FilePath.mk "lakefile",
@@ -254,6 +257,7 @@ name = "Sorting"
           weakLinkArgs := #[],
           backend := Lake.Backend.default,
           platformIndependent := none,
+          precompileImports := false,
           dynlibs := #[],
           plugins := #[],
           requiresModuleSystem := false,
@@ -289,6 +293,7 @@ name = "Sorting"
       libPrefixOnWindows := false,
       allowImportAll := false,
       builtinLint? := none,
+      checks := #[],
       fixedToolchain := false},
   configFile := FilePath.mk "lakefile",
   relConfigFile := FilePath.mk "lakefile",
@@ -318,6 +323,7 @@ name = "Sorting"
                     weakLinkArgs := #[],
                     backend := Lake.Backend.default,
                     platformIndependent := none,
+                    precompileImports := false,
                     dynlibs := #[],
                     plugins := #[],
                     requiresModuleSystem := false,
@@ -329,6 +335,7 @@ name = "Sorting"
                 libPrefixOnWindows := false,
                 needs := #[],
                 extraDepTargets := #[],
+                precompileLibrary := false,
                 precompileModules := false,
                 defaultFacets := #[`lean_lib.leanArts],
                 nativeFacets := #<fun>,
@@ -357,6 +364,7 @@ name = "Sorting"
                           weakLinkArgs := #[],
                           backend := Lake.Backend.default,
                           platformIndependent := none,
+                          precompileImports := false,
                           dynlibs := #[],
                           plugins := #[],
                           requiresModuleSystem := false,
@@ -368,6 +376,7 @@ name = "Sorting"
                       libPrefixOnWindows := false,
                       needs := #[],
                       extraDepTargets := #[],
+                      precompileLibrary := false,
                       precompileModules := false,
                       defaultFacets := #[`lean_lib.leanArts],
                       nativeFacets := #<fun>,
@@ -536,7 +545,7 @@ path = "../example"
 #[{name := `example,
     scope := "",
     version := Lake.InputVer.none,
-    src? := some (Lake.DependencySrc.path (FilePath.mk "../example")),
+    src? := some (Lake.DependencySrc.path (FilePath.mk "../example") false),
     opts := {}}]
 ```
 ::::
@@ -598,6 +607,7 @@ name = "TacticTools"
           weakLinkArgs := #[],
           backend := Lake.Backend.default,
           platformIndependent := none,
+          precompileImports := false,
           dynlibs := #[],
           plugins := #[],
           requiresModuleSystem := false,
@@ -609,6 +619,7 @@ name = "TacticTools"
       libPrefixOnWindows := false,
       needs := #[],
       extraDepTargets := #[],
+      precompileLibrary := false,
       precompileModules := false,
       defaultFacets := #[`lean_lib.leanArts],
       nativeFacets := #<fun>,
@@ -643,6 +654,7 @@ precompileModules = true
           weakLinkArgs := #[],
           backend := Lake.Backend.default,
           platformIndependent := none,
+          precompileImports := false,
           dynlibs := #[],
           plugins := #[],
           requiresModuleSystem := false,
@@ -654,6 +666,7 @@ precompileModules = true
       libPrefixOnWindows := false,
       needs := #[],
       extraDepTargets := #[],
+      precompileLibrary := false,
       precompileModules := true,
       defaultFacets := #[`lean_lib.leanArts],
       nativeFacets := #<fun>,
@@ -699,6 +712,7 @@ name = "trustworthytool"
           weakLinkArgs := #[],
           backend := Lake.Backend.default,
           platformIndependent := none,
+          precompileImports := false,
           dynlibs := #[],
           plugins := #[],
           requiresModuleSystem := false,
@@ -749,6 +763,7 @@ exeName = "tt"
           weakLinkArgs := #[],
           backend := Lake.Backend.default,
           platformIndependent := none,
+          precompileImports := false,
           dynlibs := #[],
           plugins := #[],
           requiresModuleSystem := false,
@@ -991,7 +1006,7 @@ tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Configu
 
 由于外部库可以用任意语言编写并需要任意构建步骤，它们被定义为在 {name Lake.FetchM}`FetchM` 单子中编写、生成 {name Lake.Job}`Job` 的程序。
 外部库目标应生成一个执行构建并返回所得静态库位置的构建作业。
-要使外部库在启用 {name Lake.PackageConfig.precompileModules}`precompileModules` 时正确链接，{keyword}`extern_lib` 目标生成的静态库必须遵循平台的库命名约定（即在 Windows 上命名为 foo.a，在类 Unix 系统上命名为 libfoo.a）。
+要使外部库在启用 {name Lake.LeanConfig.precompileImports}`precompileImports` 或 {name Lake.PackageConfig.precompileModules}`precompileModules` 时正确链接，{keyword}`extern_lib` 目标生成的静态库必须遵循平台的库命名约定（即在 Windows 上命名为 foo.a，在类 Unix 系统上命名为 libfoo.a）。
 实用函数 {name}`Lake.nameToStaticLib` 将库名称转换为适合当前平台的文件名。
 
 :::syntax command (title := "外部库目标")
@@ -1009,7 +1024,7 @@ $[where $_*]?
 
 ### 自定义目标
 %%%
-tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Configuration-File-Format--Lean-Format--Targets--Custom-Targets"
+tag := "lake-config-custom-target"
 %%%
 
 可以使用 Lake 接口，以自定义目标定义任意增量构建的产物。

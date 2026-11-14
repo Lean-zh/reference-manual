@@ -245,7 +245,7 @@ Lean 没有专门的浮点数字面量。
 
 项
 ```leanTerm
-(-2.523 : Float)
+(-2.2523 : Float)
 ```
 是下列写法的语法糖：
 ```leanTerm
@@ -385,7 +385,7 @@ tag := "Lean-__________________--Basic-Types--Floating-Point-Numbers--API-Refere
 tag := "Lean-__________________--Basic-Types--Floating-Point-Numbers--API-Reference--Comparisons--Inequalities"
 %%%
 不等关系的判定过程在逻辑中是不透明常量。
-它们只能借助 {name}`Lean.ofReduceBool` 公理来使用，例如通过 {tactic}`native_decide` 策略。
+它们只能借助本地求值来使用，例如通过 {tactic}`native_decide` 策略。
 
 {zhdocstring Float.le Manual.ZhDocString.Ch19Ch20.G2.c089}
 

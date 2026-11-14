@@ -182,7 +182,7 @@ def nextOdd (k : Nat) :
 tag := "standard-axioms"
 %%%
 
-Lean 中有七个标准公理。前三个公理是使用 Lean 开展数学工作的重要组成部分：
+Lean 中有四个标准公理。前三个公理是使用 Lean 开展数学工作的重要组成部分：
  * ```signature
    Classical.choice.{u} {α : Sort u} : Nonempty α → α
    ```
@@ -204,42 +204,12 @@ Lean 中有七个标准公理。前三个公理是使用 Lean 开展数学工作
    ```
 第二个参数标记该占位证明是否由错误恢复生成：普通的 `sorry` 使用 `false`，错误恢复生成的合成 `sorry` 使用 `true`。
 
-最后三个公理并非真正因其_数学_内容而存在；从数学角度看，它们证明的都是平凡命题：
-
- * ```signature
-    Lean.trustCompiler : True
-   ```
-
- * ```signature
-    Lean.ofReduceBool (a b : Bool) : Lean.reduceBool a = b → a = b
-   ```
- * ```signature
-    Lean.ofReduceNat (a b : Nat) : Lean.reduceNat a = b → a = b
-   ```
-
-相反，这些公理用于追踪依赖整个编译器正确性的证明，而不只是依赖小得多的{tech (key := "kernel")}[内核]。
-
-:::example "创建并追踪信任编译器的证明"
-调用函数 {name}`Lean.reduceBool` 和 {name}`Lean.reduceNat` 可以让编译器执行计算；这能大幅提升反射式证明实现的性能。
-
-```lean
-set_option linter.deprecated false in
-def largeNumber : Nat := Lean.reduceNat (230_000 + 4_500 + 1_000_067)
-```
-
-所得项依赖公理 {name}`Lean.trustCompiler`，以追踪该计算依赖编译器正确性这一事实。
-
-```lean (name := printAxExC1)
-#print axioms largeNumber
-```
-```leanOutput printAxExC1
-'largeNumber' depends on axioms: [Lean.trustCompiler]
-```
-:::
+除标准公理外，本地求值证明还会为编译后的代码所断言的每次计算引入一个专用公理。
+这些公理用于追踪依赖整个编译器正确性的证明，而不只是依赖小得多的{tech (key := "kernel")}[内核]。
 
 :::example "公理与 `native_decide` 策略"
-{tactic}`native_decide` 策略并不诉诸 {name}`Lean.trustCompiler`，而是为每次调用创建一个专用公理。
-这样就能针对每个公理所证明的确切命题进行审查。
+{tactic}`native_decide` 策略为每次调用创建一个专用公理。
+这样就能针对各个公理所证明的确切命题进行审查。
 
 ```lean (name := printAxExC2)
 set_option linter.defProp false in

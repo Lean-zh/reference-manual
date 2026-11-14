@@ -10,7 +10,7 @@ open System (FilePath)
 
 require versowebcomponents from git "https://github.com/leanprover/verso-web-components"@"main"
 require illuminate from git "https://github.com/leanprover/illuminate"@"main"
-require verso from git "https://github.com/leanprover/verso.git"@"nightly-testing"
+require verso from git "https://github.com/leanprover/verso.git"@"main"
 
 
 open Lean System in
@@ -31,6 +31,9 @@ elab "lakePluginArgs%" : term => do
 
 
 package "verso-manual" where
+  -- The highlighting tools read `.olean` files from the build directory, which the local artifact
+  -- cache leaves empty unless artifacts are restored
+  restoreAllArtifacts := true
   -- building the C code cost much more than the optimizations save
   moreLeancArgs := #["-O0"]
   -- work around clang emitting invalid linker optimization hints that lld rejects
@@ -55,9 +58,20 @@ lean_lib IndexMap where
 lean_lib IndexMapGrind where
   srcDir := "extended-examples"
 
+-- `include_str` reads this table during elaboration; track it as an input so that changing
+-- translations also rebuilds the affected documentation instead of reusing stale oleans.
+input_file upstreamDocTranslations where
+  text := true
+  path := "Manual/ZhDocString/UpstreamDocs.json"
+
 @[default_target]
 lean_lib Manual where
   weakLeanArgs := lakePluginArgs%
+  -- These executables run during elaboration
+  needs := #[`@/subversoExtractMod, `@/«extract-lakefile», upstreamDocTranslations]
+
+/-- Rendering of elaborated Lake configurations, shared by `Manual` and `extract-lakefile`. -/
+lean_lib ManualLakeTest where
 
 /--
 Elaborates Lean-format `lakefile.lean` examples for the manual, emitting both the elaborated

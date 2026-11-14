@@ -4,17 +4,27 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Author: David Thrane Christiansen
 -/
 
-import VersoManual
-import Manual.Meta.Figure
+module
+public import Verso.Doc.ArgParse
+public meta import Verso.Doc.Elab.Block
+public meta import Verso.Doc.Elab.Inline
+public meta import Verso.Doc.PointOfInterest
+public import VersoManual.Basic
 import Manual.Meta.LzCompress
-import Lean.Elab.InfoTree.Types
+import VersoManual.Imports
+import VersoManual.InlineLean
+meta import VersoManual.InlineLean
+public import Verso.Doc.Elab
+public meta import VersoManual.InlineLean
+
+public section
 
 open Verso Doc Elab
 open Verso.Genre Manual
 open Verso.ArgParse
-open Lean.Doc.Syntax
 
 open Lean Elab
+open Lean.Doc (CodeBlockView VersoBlock VersoInline)
 
 namespace Manual
 
@@ -23,15 +33,14 @@ def Block.example (descriptionString : String) (name : Option String) (opened : 
   -- FIXME: This should be a double-backtickable name
   name := `Manual.example
   data := ToJson.toJson (descriptionString, name, opened, (none : Option Tag), liveText)
-  properties := (({} : Verso.NameMap String)
-    |>.insert `Verso.Genre.Manual.exampleDefContext descriptionString)
-    |>.insert `Manual.exampleExtractionContext (file.getD descriptionString)
+  properties := ((.empty : Verso.NameMap String) |>.insert (.ofName `Verso.Genre.Manual.exampleDefContext) descriptionString)
+    |>.insert (.ofName `Manual.exampleExtractionContext) (file.getD descriptionString)
 
 /-- The type of the Json stored with Block.example -/
 abbrev ExampleBlockJson := String × Option String × Bool × Option Tag × Option String
 
 structure ExampleConfig where
-  description : TSyntaxArray `inline
+  description : Array VersoInline
   /-- Name for refs -/
   tag : Option String := none
   /-- Stable source-extraction path component, independent of the displayed title. -/
@@ -43,18 +52,18 @@ structure ExampleConfig where
 section
 variable [Monad m] [MonadInfoTree m] [MonadLiftT CoreM m] [MonadEnv m] [MonadError m] [MonadFileMap m]
 
-def ExampleConfig.parse  : ArgParse m ExampleConfig :=
+meta def ExampleConfig.parse  : ArgParse m ExampleConfig :=
   ExampleConfig.mk <$> .positional `description .inlinesString
                    <*> .named `tag .string true
                    <*> .named `file .string true
                    <*> (.named `keep .bool true <&> (·.getD false))
                    <*> (.named `open .bool true <&> (·.getD false))
 
-instance : FromArgs ExampleConfig m where
+meta instance : FromArgs ExampleConfig m where
   fromArgs := ExampleConfig.parse
 end
 
-def prioritizedElab [Monad m] (prioritize : α → m Bool) (act : α  → m β) (xs : Array α) : m (Array β) := do
+private meta def prioritizedElab [Monad m] (prioritize : α → m Bool) (act : α  → m β) (xs : Array α) : m (Array β) := do
   let mut out := #[]
   let mut later := #[]
   for h:i in [0:xs.size] do
@@ -67,29 +76,32 @@ def prioritizedElab [Monad m] (prioritize : α → m Bool) (act : α  → m β) 
   out := out.qsort (fun (i, _) (j, _) => i < j)
   return out.map (·.2)
 
-def isLeanBlock : TSyntax `block → CoreM Bool
-  | `(block|```$nameStx:ident $_args*|$_contents:str```) => do
-    let name ← realizeGlobalConstNoOverload nameStx
-    return name == ``Verso.Genre.Manual.InlineLean.lean
-  | _ => pure false
+private meta def isLeanBlock (blk : VersoBlock) : CoreM Bool := do
+  let some { name? := some nameStx, .. } := CodeBlockView.of blk
+    | return false
+  let name ← realizeGlobalConstNoOverload nameStx
+  return name == ``Verso.Genre.Manual.InlineLean.lean
 
-structure LeanBlockContent where
+private structure LeanBlockContent where
   content : Option String
   shouldElab : Bool
 
-def getLeanBlockContents? : TSyntax `block → DocElabM (LeanBlockContent)
-  | `(block|```$nameStx:ident $args*|$contents:str```) => do
-    let name ← realizeGlobalConstNoOverload nameStx
-    if name == ``Verso.Genre.Manual.imports then
-      return { content := some contents.getString, shouldElab := false }
-    if name != ``Verso.Genre.Manual.InlineLean.lean then
-      return { content := none, shouldElab := false }
-    let args ← Verso.Doc.Elab.parseArgs args
-    let args ← parseThe InlineLean.LeanBlockConfig args
-    if !args.keep || args.error then
-      return { content := none, shouldElab := true }
-    pure <| { content := some contents.getString, shouldElab := true }
-  | _ => pure { content := none, shouldElab := false }
+meta section
+
+private def getLeanBlockContents? (blk : VersoBlock) :
+    DocElabM LeanBlockContent := do
+  let some { name? := some nameStx, args, content := contents, .. } := CodeBlockView.of blk
+    | return { content := none, shouldElab := false }
+  let name ← realizeGlobalConstNoOverload nameStx
+  if name == ``Verso.Genre.Manual.imports then
+    return { content := some contents.getVersoCodeBlock, shouldElab := false }
+  if name != ``Verso.Genre.Manual.InlineLean.lean then
+    return { content := none, shouldElab := false }
+  let args ← Verso.Doc.Elab.parseArgs args
+  let args ← parseThe InlineLean.LeanBlockConfig args
+  if !args.keep || args.error then
+    return { content := none, shouldElab := true }
+  pure <| { content := some contents.getVersoCodeBlock, shouldElab := true }
 
 /--
 Elaborates all Lean blocks first, enabling local forward references
@@ -103,8 +115,10 @@ def leanFirst : DirectiveExpander
     prioritizedElab (isLeanBlock ·) elabBlock contents
 
 /-- Turn a list of lean blocks into one string with the appropriate amount of whitespace -/
-def renderExampleContent (exampleBlocks : List String) : String :=
+private def renderExampleContent (exampleBlocks : List String) : String :=
   "\n\n".intercalate <| exampleBlocks.map (·.trimAscii.copy)
+
+end
 
 /-- info: "a\n\nb\n\nc" -/
 #guard_msgs in
@@ -113,8 +127,42 @@ def renderExampleContent (exampleBlocks : List String) : String :=
 /-- A domain for named examples -/
 def examples : Domain := {}
 
+open Verso.Search in
+private def examplesDomainMapper : DomainMapper := {
+  displayName := "Example",
+  className := "example-domain",
+  dataToSearchables :=
+    "(domainData) =>
+  Object.entries(domainData.contents).map(([key, value]) => ({
+    searchKey: value[0].data?.title ?? key,
+    address: `${value[0].address}#${value[0].id}`,
+    domainId: 'Manual.examples',
+    ref: value,
+  }))",
+  customRender := "(searchable, matchedParts, document) => {
+    const result = document.createElement('p');
+    for (const { t, v } of matchedParts) {
+      if (t === 'text') {
+        result.append(v);
+      } else {
+        const emEl = document.createElement('em');
+        emEl.textContent = v;
+        result.append(emEl);
+      }
+    }
+    const context = searchable.ref?.[0]?.data?.context ?? [];
+    if (context.length > 0) {
+      result.append(document.createElement('br'));
+      const contextEl = document.createElement('small');
+      contextEl.textContent = context.join(' › ');
+      result.append(contextEl);
+    }
+    return result;
+  }"
+  : DomainMapper }.setFont { family := .structure }
+
 @[directive]
-def «example» : DirectiveExpanderOf ExampleConfig
+meta def «example» : DirectiveExpanderOf ExampleConfig
   | cfg, contents => do
     let description ← cfg.description.mapM elabInline
     let descriptionString := inlinesToString (← getEnv) cfg.description
@@ -123,7 +171,7 @@ def «example» : DirectiveExpanderOf ExampleConfig
       (kind := Lsp.SymbolKind.interface)
       (detail? := some "Example")
 
-    let accumulate (b : TSyntax `block) : StateT (List String) DocElabM Bool := do
+    let accumulate b : StateT (List String) DocElabM Bool := do
       let {content, shouldElab} ← getLeanBlockContents? b
       if let some x := content then
         modify (· ++ [x])
@@ -144,23 +192,51 @@ def «example» : DirectiveExpanderOf ExampleConfig
          $(quote liveLinkContent) $(quote cfg.file))
          #[Block.para #[$description,*], $blocks,*])
 
+/--
+The name under which an example is registered in the {name}`examples` domain. This is the
+external tag assigned to it, so that cross-references use the same name as the generated
+HTML anchor.
+-/
+private def exampleKey [Monad m] [MonadStateOf TraverseState m]
+    (id : InternalId) (descrString : String) : m String := do
+  match (← get).externalTags[id]? with
+  | some l => pure (toString l.htmlId)
+  | none => pure descrString
+
 @[block_extension «example»]
 def example.descr : BlockDescr where
+  init st := st
+    |>.setDomainTitle ``examples "Examples"
+    |>.setDomainDescription ``examples "Worked examples of Lean features"
+    |>.addQuickJumpMapper ``examples examplesDomainMapper
+
   traverse id data contents := do
     match FromJson.fromJson? data (α := ExampleBlockJson) with
     | .error e => reportError s!"Error deserializing example tag: {e}"; pure none
-    | .ok (descrString, none, _, _, _) => do
-      modify (·.saveDomainObject ``examples descrString id)
-      pure none
-    | .ok (descrString, some x, opened, none, liveText) =>
-      modify (·.saveDomainObject ``examples descrString id)
+    | .ok (descrString, tag?, opened, none, liveText) => do
       let path ← (·.path) <$> read
-      let tag ← Verso.Genre.Manual.externalTag id path x
-      pure <| some <| Block.other {Block.example descrString none false liveText with
+      -- Examples are tagged using the same steps as sections: a user-provided
+      -- tag is respected as written once sluggified, and otherwise a tag is
+      -- derived from the description and uniquified.
+      let tag ←
+        match tag? with
+        | some x =>
+          match ← Verso.Genre.Manual.providedTag id path x with
+          | some t => pure t
+          | none => Verso.Genre.Manual.externalTag id path descrString
+        | none => Verso.Genre.Manual.externalTag id path descrString
+      let key ← exampleKey id descrString
+      -- The document root is in the header stack during traversal; drop it so that
+      -- context starts at the chapter level, as in section search results.
+      let context := ((← read).headers.map (·.titleString))[1:].toArray
+      modify (·.saveDomainObject ``examples key id |>.saveDomainObjectData ``examples key (json%{"title": $descrString, "context": $context}))
+      pure <| some <| Block.other {Block.example descrString tag? opened liveText with
         id := some id,
-        data := toJson (some x, opened, some tag)} contents -- Is this line reachable?
-    | .ok (descrString, some _, _, some _, liveText) =>
-      modify (·.saveDomainObject ``examples descrString id)
+        data := toJson (descrString, tag?, opened, some tag, liveText)} contents
+    | .ok (descrString, _, _, some _, _) =>
+      let key ← exampleKey id descrString
+      let context := ((← read).headers.map (·.titleString))[1:].toArray
+      modify (·.saveDomainObject ``examples key id |>.saveDomainObjectData ``examples key (json%{"title": $descrString, "context": $context}))
       pure none
   toTeX :=
     some <| fun _ go _ _ content => do
@@ -168,7 +244,6 @@ def example.descr : BlockDescr where
         pure <| .seq #[← go b, .raw "\n"]
   toHtml :=
     open Verso.Doc.Html in
-    open Verso.Output.Html in
     some <| fun goI goB id data blocks => do
       if h : blocks.size < 1 then
         reportError "Malformed example"
@@ -193,16 +268,16 @@ def example.descr : BlockDescr where
             -- This link is `display: none` hidden by default, and enabled by maybeShowLiveLinks,
             -- assuming we detect that we're a sufficiently recent version of the manual
             -- to be compatible with the versions served by https://live.lean-lang.org
-            {{ <div class="live-link"><a href={{href}}>"在线查看 ↪"</a></div> }}
-          pure {{
-            <details class="example" {{attrs}}>
-              <summary class="description">{{← description.mapM goI}}</summary>
+            html%{<div class="live-link"><a href={href}>在线查看 ↪</a></div>}
+          pure html%{
+            <details class="example" {...attrs}>
+              <summary class="description">{← description.mapM goI}</summary>
               <div class="example-content">
-                {{← blocks.extract 1 blocks.size |>.mapM goB}}
-                  {{liveLink}}
+                {← blocks.extract 1 blocks.size |>.mapM goB}
+                  {liveLink}
               </div>
             </details>
-          }}
+          }
   extraJs := [
 r#"function openDetailsForHashTarget() {
   // Get the current hash from the URL
@@ -340,7 +415,7 @@ def Block.keepEnv : Block where
 
 -- TODO rename to `withoutModifyingEnv` or something more clear
 @[directive_expander keepEnv]
-def keepEnv : DirectiveExpander
+meta def keepEnv : DirectiveExpander
   | args, contents => do
     let () ← ArgParse.done.run args
     PointOfInterest.save (← getRef) "keepEnv" (kind := .package)
@@ -353,6 +428,5 @@ def keepEnv.descr : BlockDescr where
   toTeX := none
   toHtml :=
     open Verso.Doc.Html in
-    open Verso.Output.Html in
     some <| fun _ goB _ _ blocks => do
       blocks.mapM goB

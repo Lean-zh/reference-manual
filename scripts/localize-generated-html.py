@@ -187,6 +187,23 @@ TARGET_PAGES = (
     "releases/v4.9.0/index.html",
 )
 
+# The newly translated chapters keep their upstream ASCII routes.
+UPSTREAM_TRANSLATED_PREFIXES = (
+    "IO/Async/",
+    "External-Kernels/",
+    "Linters-and-Code-Quality/",
+    "The--vcgen--tactic/",
+    "The--mvcgen--tactic/",
+    "The--grind--tactic/Homomorphism-Annotations/",
+    "The--grind--tactic/Interactive-Mode/",
+    "The--grind--tactic/Associativity-and-Commutativity/",
+    "Build-Tools-and-Distribution/Lake/",
+    "releases/v4.33.1/",
+    "releases/v4.34.1/",
+    "releases/v4.35.0/",
+    "releases/v4.36.0/",
+)
+
 HOVER_ATTR_RE = re.compile(r'data-verso-hover="([^"]+)"')
 VERSO_LINKS_RE = re.compile(r'data-verso-links="([^"]+)"')
 NAMEDOCS_TEXT_RE = re.compile(
@@ -202,6 +219,7 @@ TITLE_REPLACEMENTS = (
     (re.compile(r'title="Permalink"'), 'title="永久链接"'),
 )
 GENERATED_UI_REPLACEMENTS = (
+    (">Inherited from <", ">继承自 <"),
     ('<span class="label">tactic</span>', '<span class="label">策略</span>'),
     ('<span class="label">conv tactic</span>', '<span class="label">conv 策略</span>'),
     ('title="文档：tactic"', 'title="文档：策略"'),
@@ -342,6 +360,35 @@ def strip_english_inline_docstrings(text: str) -> str:
     return DOCSTRING_RE.sub(replace, text)
 
 
+def load_upstream_inline_translations() -> dict[str, str]:
+    paths = (
+        Path(__file__).resolve().parent.parent / "Manual/ZhDocString/UpstreamDocs.json",
+        Path(__file__).with_name("upstream-inline-docs-zh.json"),
+    )
+    translations: dict[str, str] = {}
+    for path in paths:
+        for record in json.loads(path.read_text(encoding="utf-8")):
+            key = record["source"].strip()
+            value = record["translation"]
+            if key in translations and translations[key] != value:
+                raise SystemExit(f"conflicting inline documentation translation: {key[:80]!r}")
+            translations[key] = value
+    return translations
+
+
+def localize_upstream_inline_docstrings(text: str, translations: dict[str, str]) -> str:
+    def replace(match: re.Match[str]) -> str:
+        source = html.unescape(re.sub(r"<[^>]+>", "", match.group(0))).strip()
+        if re.search(r"[\u3400-\u9fff]", source) or not re.search(r"[A-Za-z]{3}", source):
+            return match.group(0)
+        if source not in translations:
+            raise SystemExit(f"untranslated upstream inline documentation: {source[:120]!r}")
+        separator = '<span class="sep"></span>' if match.group(0).startswith('<span') else ""
+        return separator + '<code class="docstring">' + html.escape(translations[source]) + '</code>'
+
+    return DOCSTRING_RE.sub(replace, text)
+
+
 def add_stable_alias_anchor(text: str, stable_id: str, generated_id: str) -> str:
     """Preserve an upstream fragment when duplicate definitions receive a `-next` ID."""
     if f'id="{stable_id}"' in text or f'id="{generated_id}"' not in text:
@@ -361,19 +408,29 @@ def localize_generated_html(root: Path) -> tuple[int, int, int, int]:
 
     page_text: dict[Path, str] = {}
     namedocs_translations = load_namedocs_translations()
+    upstream_inline_translations = load_upstream_inline_translations()
     title_count = 0
     hover_ids: set[str] = set()
     translated_hovers: dict[str, str] = {}
-    for rel in TARGET_PAGES:
+    extra_pages = sorted(
+        path.relative_to(root).as_posix()
+        for path in root.rglob("index.html")
+        if path.relative_to(root).as_posix().startswith(UPSTREAM_TRANSLATED_PREFIXES)
+    )
+    for rel in dict.fromkeys((*TARGET_PAGES, *extra_pages)):
         path = root / rel
         if not path.is_file():
             raise SystemExit(f"missing translated page: {path}")
         text = path.read_text(encoding="utf-8")
-        text = text.replace(">Table of Contents<", ">目录<")
+        text = text.replace(">Table of Contents<", ">目录<").replace(">Tutorials<", ">教程<")
         text = localize_link_metadata(text)
         text = add_stable_alias_anchor(text, "ELAN_HOME", "ELAN_HOME-next")
-        if rel.startswith(("Tactic-Proofs/", "Notations-and-Macros/")):
+        if rel.startswith(UPSTREAM_TRANSLATED_PREFIXES):
+            text = localize_upstream_inline_docstrings(text, upstream_inline_translations)
+        if rel.startswith(("Tactic-Proofs/", "Notations-and-Macros/", *UPSTREAM_TRANSLATED_PREFIXES)):
             text = localize_tactic_namedocs(text, namedocs_translations)
+        for source, replacement in GENERATED_UI_REPLACEMENTS:
+            text = text.replace(source, replacement)
         parser = NamedDocsParser()
         parser.feed(text)
         translated_hovers.update(parser.translations)
@@ -381,8 +438,6 @@ def localize_generated_html(root: Path) -> tuple[int, int, int, int]:
         for pattern, replacement in TITLE_REPLACEMENTS:
             text, count = pattern.subn(replacement, text)
             title_count += count
-        for source, replacement in GENERATED_UI_REPLACEMENTS:
-            text = text.replace(source, replacement)
         page_text[path] = text
         hover_ids.update(HOVER_ATTR_RE.findall(text))
 

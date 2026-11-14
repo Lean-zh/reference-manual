@@ -21,6 +21,7 @@ open Lean.Elab.Tactic.GuardMsgs.WhitespaceMode
 
 #doc (Manual) "命令行界面" =>
 %%%
+file := "Command-Line-Interface"
 tag := "lake-cli"
 %%%
 
@@ -35,6 +36,7 @@ COMMANDS:
   build <targets>...    build targets
   query <targets>...    build targets and output results
   exe <exe> <args>...   build an exe and run it in Lake's environment
+  samply <exe>          profile an exe with samply and demangle Lean names
   check-build           check if any default build targets are configured
   test                  test the package using the configured test driver
   check-test            check if there is a properly configured test driver
@@ -42,6 +44,8 @@ COMMANDS:
   check-lint            check if there is a properly configured lint driver
   clean                 remove build outputs
   shake                 minimize imports in source files
+  comparator            judge a solution against a challenge
+  check                 check this project against external checker(s)
   env <cmd> <args>...   execute a command in Lake's environment
   lean <file>           elaborate a Lean file in Lake's context
   update                update dependencies and save them to the manifest
@@ -69,6 +73,7 @@ BASIC OPTIONS:
   --keep-toolchain      do not update toolchain on workspace update
   --allow-empty         accept bare builds with no default targets configured
   --no-build            exit immediately if a build target is not up-to-date
+  --fail-fast           stop scheduling new build jobs after the first required failure
   --no-cache            build packages locally; do not download build caches
   --try-cache           attempt to download build caches for supported packages
   --json, -J            output JSON-formatted results (in `lake query`)
@@ -101,12 +106,14 @@ Lake 的命令行界面结构分为一系列子命令。
  * 访问 Git 依赖项需要 `git`。
  * 创建或提取云构建归档文件需要 `tar`，获取它们需要 `curl`。
  * 将构建工件上传到 GitHub 发布版需要 `gh`。
+ * 记录 CPU 性能剖析需要 `samply`，以及 `curl` 和 `gzip`。
 
 Lean 发行版包含了 C 编译器工具链。
 :::
 
 # 环境变量
 %%%
+file := "Environment-Variables"
 tag := "lake-environment"
 %%%
 
@@ -191,7 +198,7 @@ using the form NAME=VALUE like the POSIX `env` command.
 可以使用以下环境变量配置 Lake 本身：
 :::table (align := left) -header
 *
-  * {envVar +def}`ELAN_HOME`
+  * {envVar}`ELAN_HOME`
   * {ref "elan"}[Elan] 安装的位置，用于{ref "automatic-toolchain-updates"}[自动更新工具链]。
 
 *
@@ -263,6 +270,7 @@ fun o =>
 
 # 选项
 %%%
+file := "Options"
 tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Options"
 %%%
 
@@ -330,6 +338,11 @@ Lake 的命令行界面提供了许多全局选项以及执行重要任务的子
 
   如果构建目标不是最新的，Lake 会立即退出，并返回非零的退出代码。
 
+: {lakeOptDef flag}`--fail-fast`
+
+  第一个必需的构建作业失败后，Lake 就不再调度新的构建作业。
+  已经运行的作业仍可执行至结束。
+
 : {lakeOptDef flag}`--no-cache`
 
   不使用可用的云构建缓存，而是在本地构建所有包。
@@ -341,6 +354,7 @@ Lake 的命令行界面提供了许多全局选项以及执行重要任务的子
 
 # 控制输出
 %%%
+file := "Controlling-Output"
 tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Controlling-Output"
 %%%
 
@@ -385,6 +399,7 @@ tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Command
 
 # 自动更新工具链
 %%%
+file := "Automatic-Toolchain-Updates"
 tag := "automatic-toolchain-updates"
 %%%
 
@@ -413,6 +428,7 @@ tag := "automatic-toolchain-updates"
 
 # 创建包
 %%%
+file := "Creating-Packages"
 tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Creating-Packages"
 %%%
 
@@ -467,7 +483,7 @@ version of the configuration file, respectively. The default is TOML.
 
   创建一个包含依赖于 [Mathlib](https://github.com/leanprover-community/mathlib4) 库的包。
 
-{lakeMeta}`language` 选择用于{tech (key := "package configuration")}[包配置]文件的文件格式，可以是 `lean`（默认）或 `toml`。
+{lakeMeta}`language` 选择用于{tech (key := "package configuration")}[包配置]文件的文件格式，可以是 `lean` 或 `toml`（默认）。
 :::
 
 :::TODO
@@ -476,6 +492,7 @@ version of the configuration file, respectively. The default is TOML.
 
 # 构建与运行
 %%%
+file := "Building-and-Running"
 tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Building-and-Running"
 %%%
 
@@ -483,7 +500,7 @@ tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Command
 Build targets
 
 USAGE:
-  lake build [<targets>...] [-o <mappings>]
+  lake build [<targets>...] [-o <mappings>] [--package <name>]
 
 A target is specified with a string of the form:
 
@@ -500,13 +517,15 @@ The `@` and `+` markers can be used to disambiguate packages and modules
 from file paths or other kinds of targets (e.g., executables or libraries).
 
 LIBRARY FACETS:         build the library's ...
-  leanArts (default)    Lean artifacts (*.olean, *.ilean, *.c files)
+  elabArts              elaboration artifacts (*.olean, *.ilean files)
+  irArts (default)      compilation artifacts (*.ir, *.ir.sig, *.c files)
   static                static artifact (*.a file)
   shared                shared artifact (*.so, *.dll, or *.dylib file)
 
 MODULE FACETS:          build the module's ...
   deps                  dependencies (e.g., imports, shared libraries, etc.)
-  leanArts (default)    Lean artifacts (*.olean, *.ilean, *.c files)
+  elabArts              elaboration artifacts (*.olean, *.ilean files)
+  irArts (default)      compilation artifacts (*.ir, *.ir.sig, *.c files)
   olean                 OLean (binary blob of Lean data for importers)
   ilean                 ILean (binary blob of metadata for the Lean LSP server)
   c                     compiled C file
@@ -528,14 +547,16 @@ TARGET EXAMPLES:        build the ...
 A bare `lake build` command will build the default target(s) of the root
 package. Package dependencies are not updated during a build.
 
-With the Lake cache enabled, the `-o` option will cause Lake to track the
-input-to-outputs mappings of targets in the root package touched during the
-build and write them to the specified file at the end of the build. These
-mappings can then be used to upload build artifacts to a remote cache with
-`lake cache put`.
+With the Lake cache enabled, Lake can track the targets the build covers
+(both those up-to-date and those newly built) and write the input-to-outputs
+mappings of each to a file specified by the `-o` option. By default, with `-o`,
+Lake will track the targets of the root package, use `--package` to select a
+different one. These mappings can then be used to upload the build artifacts
+to a remote cache with `lake cache put`. This will only include the artifacts
+from the covered targets. Other targets in the package will not be tracked.
 ```
 
-::::lake build "[targets...] [\"-o\" mappings]"
+::::lake build "[targets...] [\"-o\" mappings] [\"--package\" name]"
 
 构建指定的目标的指定分面。
 
@@ -551,9 +572,13 @@ mappings can then be used to upload build artifacts to a remote cache with
 可用的{tech (key := "facets")}[分面]取决于要构建的是包、库、可执行文件还是模块。
 它们在{ref "lake-facets"}[关于分面的部分]中列出。
 
-当使用{ref "lake-cache"}[本地工件缓存]时，{lakeOptDef option}`-o` 选项将保存一个跟踪构建每一步的输入和输出的{tech (key := "mappings file")}[映射文件]。
-此文件可与 {lake}`cache get` 和 {lake}`cache put` 一起使用以与远程缓存进行交互。
-映射文件采用 JSON Lines 格式，每行一个有效的 JSON 对象，通常文件扩展名为 `.jsonl`。
+当使用{ref "lake-cache-local"}[本地工件缓存]时，{lakeOptDef option}`-o` 选项会保存一个跟踪构建各步输入和输出的{tech (key := "mappings file")}[映射文件]。
+该映射文件描述构建中包含的某个包的目标，默认仅包含{tech (key := "root package")}[根包]中的目标。
+已经是最新状态的目标也会包含在映射文件中。
+{lakeOptDef option}`--package` 选项会改为将指定包的目标写入映射文件，从而允许上传依赖包的构建输出。
+未参与此次构建的目标不会被跟踪。
+此文件可与 {lake}`cache get` 和 {lake}`cache put` 一起使用，以与远程缓存交互。
+映射文件采用 JSON Lines 格式，每行一个有效的 JSON 对象，文件扩展名通常为 `.jsonl`。
 ::::
 
 ::::example "目标和分面规范" (file := "Target and Facet Specifications")
@@ -567,7 +592,7 @@ mappings can then be used to upload build artifacts to a remote cache with
   - {tech (key := "package")}[包] `a` 的{tech (key := "default targets")}[默认目标]
 *
   - `+A`
-  -  模块 `A` 的 Lean 工件（因为模块的默认分面是 `leanArts`）
+  -  模块 `A` 的 编译工件（因为模块的默认分面是 `irArts`）
 *
   - `@a/b`
   - 包 `a` 的目标 `b` 的默认分面
@@ -727,6 +752,7 @@ the workspace's root package's additional Lean arguments and the given args
 
 # 模块导入
 %%%
+file := "Module-Imports"
 tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Module-Imports"
 %%%
 
@@ -752,6 +778,16 @@ OPTIONS:
   --keep-public         Preserve all `public` imports for API stability
   --add-public          Add new imports as `public` if they were in the
                         original public closure
+  --add-downstream <MODULE>
+                        Add the module as an `import` to every checked
+                        module that does not reach it yet, except where
+                        that would create an import cycle
+  --add-public-downstream <MODULE>
+                        Like `--add-downstream`, but add the module as a
+                        `public import` wherever it is not reached through
+                        public imports yet. As these are passed on to
+                        importing modules, this adds far fewer imports.
+                        Only one of these two options can be used, once
   --explain             Show which constants require each import
   --fix                 Apply suggested fixes directly to source files
   --gh-style            Output in GitHub problem matcher format
@@ -814,6 +850,16 @@ ANNOTATIONS:
 
   如果新导入原本在公开闭包中，则将其添加为 `public`
 
+: `--add-downstream <MODULE>`
+
+  将该模块以 `import` 的形式添加到每个尚未传递导入它的待检查模块中，但会形成导入环的情况除外
+
+: `--add-public-downstream <MODULE>`
+
+  与 `--add-downstream` 类似，但对于尚未通过公开导入传递导入该模块的模块，使用 `public import` 添加它。
+  由于公开导入会传递给导入当前模块的模块，这样需要添加的导入要少得多。
+  这两个选项只能选择一个，且只能使用一次
+
 : `--explain`
 
   显示哪些常量需要每次导入
@@ -829,9 +875,304 @@ ANNOTATIONS:
 
 ::::
 
+# 挑战与外部检查器
+%%%
+file := "Challenges-and-External-Checkers"
+tag := "lake-comparator"
+%%%
+
+Lake 支持调用 {ref "validating-comparator"}[`comparator`] 和 {ref "validating-lean4checker"}[`lean4checker`]，以{ref "validating-proofs"}[对证明进行额外验证]。
+这通常仅在高风险场景中才有必要，例如证明交易市场、高额奖励竞赛，或需要处理可能不符合预期目标的 AI 系统时。
+
+```lakeHelp comparator
+Judge a solution against a challenge
+
+USAGE:
+  lake comparator [--config <FILE>] [--challenge-from-export <FILE>]
+                  [--solution-from-export <FILE>] [--paranoid]
+                  [--inadvisably-no-sandbox]
+
+Establishes that every named theorem in the solution proves the same statement
+as the challenge, uses no axiom outside the permitted list, and is accepted by
+the kernel.
+
+The project is untrusted input: its configuration is evaluated, and its code
+built and exported, inside a `bwrap` sandbox, and none of its `.olean` files
+is ever loaded into Lake's own address space. `bubblewrap` is required, and
+needs either unprivileged user namespaces or to be installed setuid root.
+
+The project has to carry a `lake-manifest.json`, because dependencies are
+resolved inside the sandbox and it cannot write to the project directory.
+Building the project once, before distributing it, is enough to write one.
+
+OPTIONS:
+  --config=<file>            JSON file describing the challenge (see below)
+                             (default: `comparator.json` in the current
+                             directory)
+  --challenge-from-export=<file>
+                             judge this export as the challenge, instead of
+                             building and exporting `challenge_module`
+  --solution-from-export=<file>
+                             judge this export as the solution, instead of
+                             building and exporting `solution_module`
+  --paranoid                 also run all external checkers bundled with Lean
+                             besides Lean's own kernel: `leanchecker-paranoid`,
+                             `lean4lean`, `nanoda`, `con-leche` and `con-ron`
+  --inadvisably-no-sandbox   disable the built-in sandbox. This can compromise
+                             the result fully and is only advised for expert
+                             users.
+
+CONFIGURATION:
+  The challenge author writes the file and distributes it with the project, so
+  that a solver need only point `lake comparator` at it:
+
+  {
+    "challenge_module": "Challenge",
+    "solution_module": "Solution",
+    "theorem_names": ["imo2024_p1"],
+    "definition_names": [],
+    "permitted_axioms": ["propext", "Quot.sound", "Classical.choice"],
+    "external_kernels": {"nanoda": ["nanoda_bin"]}
+  }
+
+  `challenge_module`, `solution_module`, `theorem_names` and
+  `permitted_axioms` are required; the rest may be omitted.
+  `definition_names` lists the challenge's definition holes.
+  `permitted_axioms` is deliberately not defaulted: it is what the verdict
+  means, so the challenge author states it. The three above are the ones
+  `#print axioms` treats as a clean proof.
+
+  `external_kernels` names additional checkers to run over the export, each as
+  the command to execute; the solution must satisfy every one of them as well
+  as Lean's own kernel. `enable_nanoda: true` is still accepted and is
+  equivalent to a "nanoda" entry of ["nanoda_bin"]; name the command in
+  `external_kernels` instead to run it from elsewhere.
+
+EXIT CODES:
+  0                     accepted
+  1                     rejected: statement mismatch, forbidden axiom, kernel
+                        rejection, or a build that did not succeed
+  2                     could not start: `bwrap` or the manifest is missing,
+                        or the configuration is missing, unreadable or
+                        malformed
+
+EXPORTS:
+  The `--*-from-export` options take an NDJSON export as generated by
+  `leanexport` instead of building and exporting either the challenge or the
+  solution. Note that this option does not check that the provided export
+  matches the challenge or solution in the project this command is being run
+  in. This is useful for several scenarios:
+  - Using export files built in virtual machines for extra isolation.
+  - Using export files built by third parties, e.g. because they require
+    extensive computational resources to generate.
+  - Using export files generated through means other than a standard
+    `lake build`.
+
+ENVIRONMENT:
+  COMPARATOR_BWRAP      sandbox executable (default: `bwrap` on PATH)
+
+  The exporter is always the `leanexport` of this toolchain, and deliberately
+  not configurable: the export format has to match the compiler that produced
+  the `.olean` files being exported.
+
+HARDENING:
+  `comparator` uses `bwrap` for sandboxing. `/` is bound read-only and the home directories are then
+  covered, so the code being judged builds against the system it expects and reads none of the
+  invoking user's files. Only `.lake` is writable. Only dependency resolution has a network, because
+  it has to fetch git dependencies; the build, the export and any external kernels run in an empty
+  network namespace.
+```
+
+::::lake comparator "[\"--config=\" file] [\"--challenge-from-export=\" file] [\"--solution-from-export=\" file] [\"--paranoid\"] [\"--inadvisably-no-sandbox\"]"
+
+根据{deftech (key := "challenge")}_挑战_评判一个解答：挑战是可信配置，说明必须证明哪些定理，以及允许使用哪些公理。
+{lake}`comparator` 确认解答中的每个指定定理证明的陈述与挑战相同，解答仅使用允许的公理，并且能通过 Lean 内核及每个配置的外部内核的检查。
+
+当前 Lake 工作区被视为{deftech (key := "solution")}_解答_项目：它应满足挑战给出的规约。
+解答被视为不可信输入。
+其配置的求值以及代码的构建和导出都在 [`bubblewrap`](https://github.com/containers/bubblewrap) 沙箱内进行，其{tech (key := ".olean files")}[`.olean` 文件]不会进入 Lake 自身的地址空间。
+由于使用 Linux 专有功能，该沙箱仅在 Linux 上可用。
+沙箱可执行文件的名称由 {envVar +def}`COMPARATOR_BWRAP` 环境变量指定；未设置时默认为 `bwrap`。
+该可执行文件通过 {envVar}`PATH` 查找。
+导出使用工具链自身的 `leanexport` 可执行文件，因此导出格式与生成这些{tech (key := ".olean files")}[`.olean` 文件]的编译器相匹配。
+
+挑战作者使用 JSON 格式编写{ref "lake-comparator-config"}[配置文件]，并将其与挑战一起分发。
+默认从当前目录中的 `comparator.json` 读取配置。
+{lakeOptDef option}`--config=FILE` 选项可指定其他文件。
+
+{lakeOptDef flag}`--paranoid` 标志会加入随 Lean 分发的所有外部检查器：`leanchecker-paranoid`、`lean4lean`、`nanoda`、`con-leche` 和 `con-ron`。
+除配置的外部内核和 Lean 内核外，解答还必须被上述每个检查器接受。
+
+:::paragraph
+{lake}`comparator` 可以直接评判由 `leanexport` 生成的 NDJSON 格式导出文件，而无需构建和导出挑战与解答模块。
+{lakeOptDef option}`--challenge-from-export=FILE` 选项提供挑战的导出文件，{lakeOptDef option}`--solution-from-export=FILE` 提供解答的导出文件。
+Lake 按原样评判提供的导出文件，不会将它与工作区中相应的模块关联起来。
+同时提供 {lakeOpt}`--challenge-from-export` 和 {lakeOpt}`--solution-from-export` 时，工作区无需包含清单文件。
+使用导出文件的理由包括：
+
+* 在虚拟机中构建导出文件可以提供额外隔离。
+* 导出文件可以由第三方构建，例如由拥有足够计算资源来生成超大证明的第三方构建。
+* 导出文件可以通过 {lake}`build` 以外的方式生成。
+:::
+
+{lakeOptDef flag}`--inadvisably-no-sandbox` 标志使构建、导出和检查器直接运行，不使用 `bubblewrap`。
+虽然这样可以在 Linux 以外的平台上运行 {lake}`comparator`，但不可信项目的代码将拥有调用用户的全部权限，因此结果不可信。
+此选项仅供通过其他方式提供隔离的专家使用。
+
+退出码用于区分解答被接受（`0`）、被拒绝（`1`）以及运行环境导致评判根本无法执行（`2`）的情形。
+
+本命令是 [`comparator`](https://github.com/leanprover/comparator) 证明检查流程的前端；{ref "validating-comparator"}[验证证明一节]介绍了安全模型及仍需信任的假设。
+::::
+
+```lakeHelp check
+Check this project against external checker(s)
+
+USAGE:
+  lake check [--from-export <FILE>] [--paranoid] [--inadvisably-no-sandbox]
+
+Builds the default build targets, exports them, and replays the result through
+the kernel, erroring on any use of non-standard axioms.
+
+The project is untrusted input: its configuration is evaluated, and its code
+built and exported, inside a `bwrap` sandbox, and none of its `.olean` files
+is ever loaded into Lake's own address space. `bubblewrap` is required, and
+needs either unprivileged user namespaces or to be installed setuid root.
+
+The project has to carry a `lake-manifest.json`, because dependencies are
+resolved inside the sandbox and it cannot write to the project directory.
+Building the project once is enough to write one.
+
+OPTIONS:
+  --from-export=<file>       check this export, instead of building and
+                             exporting the project (see below)
+  --paranoid                 also run all external checkers bundled with Lean
+                             besides Lean's own kernel: `leanchecker-paranoid`,
+                             `lean4lean`, `nanoda`, `con-leche` and `con-ron`
+  --inadvisably-no-sandbox   disable the built-in sandbox. This can compromise
+                             the result fully and is only advised for expert
+                             users.
+
+EXPORTS:
+  The `--from-export` option takes an NDJSON export as generated by
+  `leanexport` instead of building and exporting the entire project. Note that
+  using this option only establishes that the export file is accepted and
+  nothing about the project this command is being run in. This is useful for
+  several scenarios:
+  - Using export files built in virtual machines for extra isolation.
+  - Using export files built by third parties, e.g. because they require
+    extensive computational resources to generate.
+  - Using export files generated through means other than a standard
+    `lake build`.
+
+EXIT CODES:
+  0                     every selected checker accepts the project and it uses
+                        only the permitted axioms
+  1                     a checker rejects it, an axiom is not permitted, or a
+                        build did not succeed
+  2                     could not start: `bwrap` is missing, the project has
+                        no `lake-manifest.json`, or it has no default targets
+
+ENVIRONMENT:
+  COMPARATOR_BWRAP      sandbox executable (default: `bwrap` on PATH)
+
+  The exporter is always the `leanexport` of this toolchain, and deliberately
+  not configurable: the export format has to match the compiler that produced
+  the `.olean` files being exported.
+
+HARDENING:
+  The sandbox bounds writes and the network exactly as `lake comparator`'s
+  does, and its limits apply here too. See the HARDENING section of
+  `lake help comparator`.
+
+See `lake help comparator` to judge a solution against a challenge instead.
+```
+
+::::lake check "[\"--from-export=\" file] [\"--paranoid\"] [\"--inadvisably-no-sandbox\"]"
+
+{lake}`check` 构建{tech (key := "root package")}[根包]的{tech (key := "default targets")}[默认目标]，将其导出，并在 Lean 内核中重放结果。
+随后报告被检查代码使用的公理；若任何公理不属于{ref "standard-axioms"}[标准公理]，则检查失败。
+
+与 {lake}`comparator` 一样，它将工作区视为不可信输入，在相同的{ref "lake-comparator-sandbox"}[沙箱]中运行，并要求项目具有清单文件。
+沙箱要求使用 Linux。
+与 {lake}`comparator` 不同，它不使用专门的{ref "lake-comparator-config"}[配置文件]。
+同 {lake}`comparator` 一样，{lakeOpt}`--paranoid` 标志要求随 Lean 分发的所有外部检查器均接受该项目，{lakeOpt}`--inadvisably-no-sandbox` 则禁用沙箱。
+只有通过其他方式提供隔离的专家用户才应禁用沙箱。
+
+{lakeOptDef option}`--from-export=FILE` 选项检查现有的 `leanexport` 导出文件，而不构建和导出项目，此时无需清单文件。
+这仅表明检查器接受该导出文件，并不对工作区中的项目作出任何保证。
+
+若所有检查器均接受项目且只使用标准公理，退出码为 `0`；若检查器拒绝项目、使用了非标准公理或构建失败，退出码为 `1`；若检查根本无法运行，则为 `2`。
+::::
+
+## 配置
+%%%
+file := "Configuration"
+tag := "lake-comparator-config"
+%%%
+
+:::paragraph
+挑战配置是一个 JSON 文件，包含具有下列键的对象：
+
+: `challenge_module`（必填）
+
+  {tech (key := "challenge")}[挑战]模块的名称。
+
+: `solution_module`（必填）
+
+  待检查的{tech (key := "solution")}[解答]模块的名称。
+
+: `theorem_names`（必填）
+
+  定理名称数组。
+  这些定理在解答中应完整证明，而在挑战中应使用 {lean}`sorry`。
+
+: `permitted_axioms`（必填）
+
+  解答中允许使用的公理名称数组。
+
+: `definition_names`
+
+  解答中需要补全的定义的名称数组。
+
+: `external_kernels`
+
+  一个对象，其中每个键指定一个外部检查器。
+  键对应的值是待运行的命令，必须是非空字符串数组。
+  数组的首个元素是可执行文件（通过 {envVar}`PATH` 查找），其余元素是命令行实参。
+
+  每个检查器都在沙箱内运行，并在其命令后追加一个实参。
+  名称中含 `noda` 的检查器接收生成的 `nanoda` 风格配置文件路径，该文件指定导出文件与允许的公理；其他检查器接收包含{tech (key := "solution")}[解答]导出内容的文件路径。
+  检查器通过成功退出来表示接受；除 Lean 内核外，解答还必须被每个配置的检查器接受。
+
+: `enable_nanoda`
+
+  一个布尔值；`true` 等价于 `external_kernels` 中将 `"nanoda"` 映射到 `["nanoda_bin"]` 的条目。
+  仅当 `external_kernels` 为空或省略时，该值才可为 `true`。
+
+:::
+
+## 沙箱
+%%%
+file := "Sandbox"
+tag := "lake-comparator-sandbox"
+%%%
+
+:::paragraph
+除非指定 {lakeOpt}`--inadvisably-no-sandbox`，否则 {lake}`comparator` 和 {lake}`check` 都使用 `bubblewrap` 限制不可信代码访问文件和网络：
+
+* 根文件系统为只读，因此代码可以正常使用工具和库，但不能修改系统。
+* 用户主目录被隐藏，因此无法读取调用用户的任何文件、凭据或缓存。
+* 写入仅限于项目的 `.lake` 目录。
+* 只有依赖解析阶段可以访问网络，以获取 `git` 依赖。
+  构建、导出以及所有外部检查器均在无网络的环境中运行。
+:::
+
+由于主目录被隐藏，仅能通过用户自身凭据获取的依赖在沙箱内不可用。
+
 # 开发工具
 %%%
-tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Development-Tools"
+file := "Development-Tools"
+tag := "Lean-__________________--_____________________--Lake--_______________--____________"
 %%%
 
 Lake 包含了对指定标准开发工具和工作流的支持。
@@ -839,6 +1180,7 @@ Lake 包含了对指定标准开发工具和工作流的支持。
 
 ## 测试和代码检查
 %%%
+file := "Tests-and-Linters"
 tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Development-Tools--Tests-and-Linters"
 %%%
 
@@ -915,6 +1257,9 @@ OPTIONS:
   --code-quality        records each linter warning as a code quality check result
                         and runs the registered code quality checks.
                         Setting this flag will skip lint driver.
+  --checks <mods>       comma-separated list of workspace modules providing
+                        package code quality checks; they are imported
+                        alongside each linted module (implies --code-quality)
 
 A lint driver can be configured by either setting the `lintDriver` package
 configuration option or by tagging a script or executable `@[lint_driver]`.
@@ -943,7 +1288,7 @@ built and then run like a script.
 它可以通过 {lakeOpt}`--builtin-lint`、{lakeOpt}`--builtin-only`、{lakeOpt}`--linters`、{lakeOpt}`--lint-only`，或者在包配置中将 `builtinLint` 设置为 {name}`true` 来触发。
 相比之下，运行 代码检查驱动程序本身并不会自动触发除了 代码检查驱动程序自身以外的任何构建。
 
-要在某个声明上运行的一组环境代码检查器 由构建该声明时生效的 代码检查器选项决定，不论是通过源文件中的 `set_option` 还是命令行设置的。
+要在某个声明上运行的一组{tech (key := "environment linters")}[环境代码检查器] 由构建该声明时生效的 代码检查器选项决定，不论是通过源文件中的 `set_option` 还是命令行设置的。
 {lakeOpt}`--linters` 和 {lakeOpt}`--lint-only` 都在执行 代码检查构建时覆盖了这些选项。
 
 {lakeMeta}`options` 可以是：
@@ -1034,9 +1379,75 @@ package or its dependencies. It merely verifies that one is specified.
 这对于区分失败的代码检查和配置不正确的包很有用。
 :::
 
+## 性能剖析
+%%%
+file := "Profiling"
+tag := "Lean-__________________--_____________________--Lake--_______________--____________--____________"
+%%%
+
+```lakeHelp samply
+Profile an executable target with samply and demangle Lean names
+
+USAGE:
+  lake samply [OPTIONS] <exe-target> [-- [<samply-args>...] [-- <exe-args>...]]
+
+Builds the executable target, records a CPU profile using samply, symbolicates
+the raw addresses, demangles Lean compiler names, and writes a Firefox Profiler
+JSON file.
+
+OPTIONS:
+  -o FILE               output path (default: ./profile-demangled.json.gz)
+  --raw                 save the raw profile without serving (default: ./profile-raw.json.gz)
+  --no-serve            write output file and exit without serving it
+
+Anything after `--` is forwarded verbatim to `samply record`. An inner `--`
+separates samply's own flags from the profiled executable's arguments, e.g.:
+
+  lake samply mergeSort                          # no samply or exe args
+  lake samply mergeSort -- --rate 2000           # only samply args
+  lake samply mergeSort -- -- 10                 # only exe args
+  lake samply mergeSort -- --rate 2000 -- 10     # both
+
+Run `samply record --help` to see samply's flags.
+
+REQUIREMENTS:
+  samply                cargo install samply
+  curl, gzip            standard on most Linux/macOS systems
+
+Open the output file in Firefox Profiler at https://profiler.firefox.com/from-file/
+```
+
+:::lake samply "[options...] «exe-target» [\"--\" [«samply-args»...] [\"--\" «exe-args»...]]"
+
+构建可执行目标 {lakeMeta}`exe-target`，并在 `samply` 性能剖析器下运行。
+随后对性能剖析结果进行后处理，解析地址及 Lean 编译器生成的内部 C 符号名（称为{deftech (key := "mangled")}_修饰后的名称_），将其替换为源代码中的原始名称。
+结果保存为 Firefox Profiler JSON 文件，`samply` 使用 [Firefox Profiler](https://profiler.firefox.com/from-file/) 提供查看服务。
+
+目标规约的语法见 {lake}`build`。
+
+`--` 后的实参原样传给 `samply record`。
+若存在第二个 `--`，则它将 samply 自身的标志与传给被剖析可执行文件的实参分开。
+`samply record --help` 介绍 samply 的标志。
+
+{lakeMeta}`options` 可以是：
+
+: {lakeOptDef option}`-o` {lakeMeta}`file`
+
+  将性能剖析结果写入 {lakeMeta}`file`，而不是 `./profile-demangled.json.gz`。
+
+: {lakeOptDef flag}`--raw`
+
+  将原始结果保存为 `./profile-raw.json.gz`，不进行名称还原，也不启动查看服务。
+
+: {lakeOptDef flag}`--no-serve`
+
+  写入输出文件后退出，不启动查看服务。
+
+:::
 
 ## 脚本
 %%%
+file := "Scripts"
 tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Development-Tools--Scripts"
 %%%
 
@@ -1099,6 +1510,7 @@ A bare `lake run` command will run the default script(s) of the root package
 
 ## 语言服务器
 %%%
+file := "Language-Server"
 tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Development-Tools--Language-Server"
 %%%
 
@@ -1121,6 +1533,7 @@ with the package configuration's `moreServerArgs` field and `args`.
 
 # 依赖管理
 %%%
+file := "Dependency-Management"
 tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Dependency-Management"
 %%%
 
@@ -1158,6 +1571,7 @@ A bare `lake update` will upgrade all dependencies.
 
 # 打包和分发
 %%%
+file := "Packaging-and-Distribution"
 tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Packaging-and-Distribution"
 %%%
 
@@ -1178,6 +1592,7 @@ then uploads the asset to the pre-existing GitHub release `tag` using `gh`.
 
 ## 缓存的云端构建
 %%%
+file := "Cached-Cloud-Builds"
 tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Packaging-and-Distribution--Cached-Cloud-Builds"
 %%%
 
@@ -1224,11 +1639,12 @@ the package's `buildArchive` in its Lake directory (`.lake`).
 
 # 本地缓存
 %%%
+file := "Local-Caches"
 tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Local-Caches"
 %%%
 
 {lake}`cache get`、{lake}`cache put` 和 {lake}`cache add` 用于与远程缓存服务器交互。
-这些命令是*实验性的*，并且仅在启用了{ref "lake-cache"}[本地缓存]时有用。
+这些命令是*实验性的*，并且仅在启用了{ref "lake-cache-local"}[本地缓存]时有用。
 
 可以配置这些命令使用{deftech (key := "cache scope")}[缓存作用域]，它是特定于服务器的一个包的一组构建输出的标识符。
 在 Reservoir 上，作用域当前与 GitHub 仓库相同，但将来可能包含工具链和平台信息。
@@ -1323,7 +1739,7 @@ if any download failed, Lake will exit with a nonzero status code.
 默认情况下，Lake 将使用 Reservoir 按顺序下载根依赖项树中每个包的输出。
 非 Reservoir 依赖将被跳过。
 如果提供了输入到输出 {lakeMeta}`mappings` 文件、{lakeMeta}`remote-scope` 或是 {lakeMeta}`github-repo`，Lake 默认将下载根包的构建输出。
-无论是哪种情况，{lakeOptDef option}`--package` 都会将下载限制在命名的包的输出上。
+无论是哪种情况，{lakeOpt}`--package` 都会将下载限制在命名的包的输出上。
 
 对于 Reservoir，设置 {lakeOpt}`--repo` 将使 Lake 按仓库名称而不是包名称查找包的输出。
 这可以用来下载 Reservoir 包的一个分支的输出（如果此类工件可用的话）。
@@ -1351,6 +1767,7 @@ USAGE:
   lake cache put <mappings>
 
 OPTIONS:
+  --package=<name>                upload for set package
   --service=<name>                upload to set cache service
   --scope=<remote-scope>          upload under set scope verbatim
   --repo=<github-repo>            scope w/ repository + toolchain & platform
@@ -1382,8 +1799,12 @@ full scope). As such, the command will warn if the work tree currently
 has changes.
 ```
 
-::::lake cache put "mappings [\"--service=\" «name»] [\"--scope=\" «remote-scope»] [\"--repo=\" «github-repo»] [\"--toolchain=\" «name»] [\"--platform=\" «target-triple»]"
+::::lake cache put "mappings [\"--package=\" «name»] [\"--service=\" «name»] [\"--scope=\" «remote-scope»] [\"--repo=\" «github-repo»] [\"--toolchain=\" «name»] [\"--platform=\" «target-triple»]"
 将指定文件中包含的输入到输出映射连同相应的输出工件一起上传到远程缓存。
+默认上传{tech (key := "root package")}[根包]的输出。
+{lakeOpt}`--package` 选项可指定工作区中的另一个包。
+与 {lake}`build` 的 {lakeOpt}`--package` 选项配合，可上传依赖包的构建输出。
+
 使用的缓存服务可以通过 {lakeOpt}`--service` 选项指定。
 如果未指定，Lake 将使用系统默认服务；如果未配置，则会报错。
 请参阅 {lake}`cache services` 了解有关如何配置服务的更多信息。
@@ -1588,27 +2009,24 @@ instead of the Lake cache.
 Does not configure the workspace and thus does not execute arbitrary user
 code. However, because of this, the package's platform and toolchain settings
 will not be automatically detected for `--repo` and must be specified manually
-via `--platform` and `--toolchain` (if needed).
-
-Lake will still, by default, detect the target revision from the workspace
-directory's current Git revision. To upload outputs for a different revision,
-specify it with `--rev`.
+via `--platform` and `--toolchain` (if needed). Similarly, the source revision
+the outputs correspond to must be manually specified via `--rev`.
 ```
 
-::::lake cache «put-staged» "«staging-directory» [\"--rev=\" «commit-hash»] [\"--service=\" «name»] [\"--scope=\" «remote-scope»] [\"--repo=\" «github-repo»] [\"--toolchain=\" «name»] [\"--platform=\" «target-triple»]"
+::::lake cache «put-staged» "«staging-directory» \"--rev=\" «commit-hash» [\"--service=\" «name»] [\"--scope=\" «remote-scope»] [\"--repo=\" «github-repo»] [\"--toolchain=\" «name»] [\"--platform=\" «target-triple»]"
 将存储在 {lakeMeta}`staging-directory` 中的映射和工件（例如，通过 {lake}`cache stage` 生成的）上传到远程服务。
 这与 {lake}`cache put` 工作原理类似，区别在于输出取自暂存目录，而不是来自 Lake {tech (key:="local cache")}[工件缓存]。
 
 此命令不配置工作区，因此它不执行任意用户代码。
 因此，包的平台和工具链设置对于 {lakeOpt}`--repo` 是无法自动检测到的，如果需要，必须通过 {lakeOpt}`--platform` 和 {lakeOpt}`--toolchain` 指定。
 
-默认情况下，Lake 将从工作区目录的当前 Git 版本中检测目标版本。
-通过使用 {lakeOptDef option}`--rev` 指定不同的版本，可以上传不同版本的输出。
+必须使用 {lakeOptDef option}`--rev` 指定这些输出所对应的 Git 修订版本。
 ::::
 
 
 # 配置文件
 %%%
+file := "Configuration-Files"
 tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Configuration-Files"
 %%%
 

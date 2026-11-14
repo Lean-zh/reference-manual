@@ -12,7 +12,7 @@ open Verso.Genre Manual
 open Verso.Genre.Manual.InlineLean
 
 /-
-#doc (Manual) "Namespaces" =>
+#doc (Manual) "命名空间" =>
 -/
 
 #doc (Manual) "命名空间" =>
@@ -358,6 +358,12 @@ Unknown identifier `three`
 ```
 :::
 ::::
+
+# 导出名称
+%%%
+file := "Exporting-Names"
+tag := "exporting-names"
+%%%
 
 
 # 导出名称

@@ -457,17 +457,19 @@ structure MutVar where
   ident : Ident
   /-- `let mut` 所产生的初始绑定的 `FVarId`。 -/
   baseId : FVarId
+  /-- 是否来自 `erased mut` 声明。 -/
+  erased : Bool
   deriving Inhabited
 
 /-- 将给定名称注册为一个 `mut` 变量。 -/
-def declareMutVar (x : Ident) (k : _root_.Lean.Elab.Do.DoElabM α) :
+def declareMutVar (x : Ident) (erased : Bool) (k : _root_.Lean.Elab.Do.DoElabM α) :
     _root_.Lean.Elab.Do.DoElabM α :=
-  _root_.Lean.Elab.Do.declareMutVar x k
+  _root_.Lean.Elab.Do.declareMutVar x erased k
 
 /-- 将给定的各个名称注册为 `mut` 变量。 -/
-def declareMutVars (xs : Array Ident) (k : _root_.Lean.Elab.Do.DoElabM α) :
+def declareMutVars (xs : Array Ident) (erased : Bool) (k : _root_.Lean.Elab.Do.DoElabM α) :
     _root_.Lean.Elab.Do.DoElabM α :=
-  _root_.Lean.Elab.Do.declareMutVars xs k
+  _root_.Lean.Elab.Do.declareMutVars xs erased k
 
 /-- 如果给定名称不是已声明的 `mut` 变量，则抛出错误。 -/
 def throwUnlessMutVarDeclared (x : Ident) : _root_.Lean.Elab.Do.DoElabM Unit :=

@@ -97,6 +97,8 @@ structure LeanConfig where
   此处不会检查正确性，因此配置可以作出不实声明而 Lake 不会发现。默认为 `none`。
   -/
   platformIndependent : Option Bool := none
+  /-- 将模块的导入编译为原生共享库，并在构建模块时加载，以加速元程序求值并支持 `@[extern]` 函数。默认为 `false`。 -/
+  precompileImports : Bool := false
   /--
   在模块精译期间（通过 `lean --load-dynlib`）加载的动态库目标数组。
   -/
@@ -401,6 +403,9 @@ structure PackageConfig (p : Name) (n : Name) extends WorkspaceConfig, LeanConfi
   -/
   builtinLint? : Option Bool := none
 
+  /-- 运行代码质量检查时，向每个环境额外导入的模块。 -/
+  checks : Array Name := #[]
+
   /--
   此包是否预期仅在单一工具链（包的工具链）上工作。
 
@@ -486,6 +491,8 @@ structure LeanLibConfig (name : Name) extends LeanConfig where
   在库模块之前构建的目标名称 `Array`。
   -/
   extraDepTargets : Array Name := #[]
+  /-- 将库编译为原生共享库，并在库外模块导入其模块时加载，以加速元程序求值并支持 `@[extern]` 函数。默认为 `false`。 -/
+  precompileLibrary : Bool := false
   /--
   是否将库的每个模块编译为原生共享库，并在每次导入该模块时加载。这会加速元程序求值，并让
   解释器能够运行标记为 `@[extern]` 的函数。
