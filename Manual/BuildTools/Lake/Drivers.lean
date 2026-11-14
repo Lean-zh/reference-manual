@@ -785,9 +785,9 @@ error: p: only one script or executable can be tagged @[lint_driver]
 lake lint -- --warnings-as-errors
 ```
 
-Lake also has a separate {deftech}_builtin linter_ that runs Lean's {ref "kinds-of-linters"}[own linters] on Lean modules directly, independent of any configured driver.
+Lake 还提供单独的{deftech (key := "builtin linter")}_内置检查器_，直接在 Lean 模块上运行 Lean {ref "kinds-of-linters"}[自身的检查器]，不依赖任何已配置的驱动程序。
 内置代码检查可以通过 `--builtin-lint` 及相关标志（见 {lake}`lint`）启用，或通过在包配置中将 {tomlField Lake.PackageConfig}`builtinLint` 设置为 `true` 来启用。
-The section on {ref "running-lake-lint"}[running `lake lint`] describes how to select which linters are run.
+{ref "running-lake-lint"}[运行 `lake lint`] 一节介绍了如何选择要运行的检查器。
 当内置代码检查启用时，`--` 之前的位置参数 `MODULE` 用于选择要检查的模块，而且它们*不会*被传递给已配置的驱动程序。
 因此 `lake lint Mathlib` 会触发对 `Mathlib` 的内置代码检查，而 `lake lint -- Mathlib` 则会将 `Mathlib` 传递给驱动程序。
 这两种机制相互独立且可同时运行：当它们同时适用时，Lake 将先运行内置检查器，然后再运行驱动程序。

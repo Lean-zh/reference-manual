@@ -1,0 +1,1672 @@
+[
+    {
+        "name": "Lean.Linter.logLintIf",
+        "source": "If `linterOption` is enabled, print a linter warning message at the position determined by `stx`.\n\nWhether a linter option is enabled or not is determined by the following sequence:\n1. If it is set, then the value determines whether or not it is enabled.\n2. Otherwise, if `linter.all` is set, then its value determines whether or not the option is enabled.\n3. Otherwise, if any of the linter sets containing the option is enabled, it is enabled.\n  (Only enabled linter sets are considered: explicitly disabling a linter set\n  will revert the linters it contains to their default behavior.)\n4. Otherwise, the default value determines whether or not it is enabled.",
+        "translation": "如果启用了 `linterOption`，就在 `stx` 指定的位置输出一条代码检查警告。\n\n是否启用某个代码检查选项，按以下顺序确定：\n1. 如果显式设置了该选项，则由其值决定是否启用。\n2. 否则，如果设置了 `linter.all`，则由它的值决定是否启用。\n3. 否则，如果包含该选项的任一检查器集合已启用，则启用该选项。（只考虑启用的检查器集合：显式禁用一个集合，会使其中的检查器恢复默认行为。）\n4. 否则，由该选项的默认值决定是否启用。"
+    },
+    {
+        "name": "Lean.withSetOptionIn",
+        "source": "Given a function `cmd` on command syntax, returns a new function that\nfirst peels off and evaluates `set_option ... in ...` syntax recursively, updating the options\naccordingly, and then invokes `cmd` on the inner syntax. The result type is arbitrary, so that\nbesides `CommandElab`s this can also wrap functions that return values, such as the phases of a\nstateful linter.\n\nThis is expected to be used in linters, after elaboration is complete. It is not appropriate for\nordinary elaboration of outer `set_option`s, since it\n* does not update the infotrees with info for the `set_option` commands\n* silently ignores failures in setting the given options (e.g. we do not error if the option is\n  unknown or the wrong type of value is provided), as these should have been reported during\n  original elaboration.",
+        "translation": "给定一个处理命令语法的函数 `cmd`，返回一个新函数：先递归剥离并求值 `set_option ... in ...` 语法，相应地更新选项，再对内层语法调用 `cmd`。\n结果类型任意，因此除了 `CommandElab`，也能包装返回值的函数，例如有状态检查器的各个阶段。\n\n预期在精译完成后的代码检查器中使用它。\n它不适用于外层 `set_option` 的常规精译，因为它：\n* 不会在信息树中记录 `set_option` 命令的信息；\n* 会静默忽略设置选项时的失败（例如选项未知或值的类型不正确时不会报错），因为这些问题应当已在原始精译过程中报告。"
+    },
+    {
+        "name": "Lean.Elab.Command.StatefulLinter",
+        "source": "A handle to a registered stateful linter, returned by `registerStatefulLinter`.\n`σ` is the linter's persistent state, and `τ` is the pre-phase output type.",
+        "translation": "已注册的有状态检查器的句柄，由 `registerStatefulLinter` 返回。\n`σ` 是检查器的持久状态类型，`τ` 是前置阶段的输出类型。"
+    },
+    {
+        "name": "Lean.Elab.Command.registerStatefulLinter",
+        "source": "Registers a stateful linter and returns its handle (used by other linters to read its state).\nMust be called during initialization.\n\n### Lifecycle Phases\n* **`pre`**: Reads the previous command's persistant state (via `readPrevPostState`)\nand optionally outputs a pre-phase state (type `Option τ`).\n* **`post`**: Reads the previous command's state and all current pre-phase outputs\n(via `readPrevPostState` and `readCurrentPreState`), then produces the new state (type `σ`)\nfor the next command.\n\n### State Access Rules\n* **Self**: Access its own persistent and pre-phase states directly via `selfPrevPostState` and\n`selfCurrentPreState`.\n* **Others**: Access other linters' states only via the `readPrevPostState` and\n`readCurrentPreState` closures that take typed handles of other linters.\n\n### Commands with Parse Errors\nUnlike regular linters, stateful linters also run on commands with parse errors. Their messages are\ndiscarded there (unless `showPartialSyntaxErrors` is set), but their info trees are kept, so code\nactions from `MessageData.hint` would be offered without the corresponding message. Linters should\nnot produce hints when `(← read).suppressElabErrors` is set.",
+        "translation": "注册一个有状态检查器，并返回它的句柄（其他检查器可用该句柄读取它的状态）。\n必须在初始化期间调用。\n\n### 生命周期阶段\n* **`pre`**：通过 `readPrevPostState` 读取上一条命令的持久状态，并可输出一个前置阶段状态（类型为 `Option τ`）。\n* **`post`**：通过 `readPrevPostState` 和 `readCurrentPreState` 读取上一条命令的状态与当前所有前置阶段的输出，然后为下一条命令生成新的状态（类型为 `σ`）。\n\n### 状态访问规则\n* **自身**：通过 `selfPrevPostState` 和 `selfCurrentPreState` 直接访问自己的持久状态和前置阶段状态。\n* **其他检查器**：只能通过 `readPrevPostState` 和 `readCurrentPreState` 闭包访问；这些闭包接受其他检查器的带类型句柄。\n\n### 含解析错误的命令\n与普通检查器不同，有状态检查器也会在含解析错误的命令上运行。\n其消息会被丢弃（除非设置了 `showPartialSyntaxErrors`），但信息树会保留，因此 `MessageData.hint` 提供的代码操作仍会出现，却没有对应的消息。\n当 `(← read).suppressElabErrors` 为真时，检查器不应生成提示。"
+    },
+    {
+        "name": "Lean.Elab.Command.PrevStateFn",
+        "source": "A typed accessor to a linter's previous state.",
+        "translation": "访问检查器上一次状态的带类型访问器。"
+    },
+    {
+        "name": "Lean.Elab.Command.PreStateFn",
+        "source": "A typed accessor to a linter's pre-phase output.",
+        "translation": "访问检查器前置阶段输出的带类型访问器。"
+    },
+    {
+        "name": "Lean.Linter.EnvLinter.EnvLinter",
+        "source": "An environment linting test for the `lake builtin-lint` command.",
+        "translation": "供 `lake builtin-lint` 命令使用的环境代码检查测试。"
+    },
+    {
+        "name": "Lean.Linter.logCodeQualityEntry",
+        "source": "Records the code quality entry `e` into `codeQualityLogExt` so that it is persisted into the\n`.olean` and can be recovered by consumers via `getAllCodeQualityEntries`.\n\nThis can be safely used in Linters. While regular `Lean.Linter`s, module linters, and stateful\nlinters all have their environment changes discarded after running, entries they log are\ncaptured per command (see `Command.State.codeQualityEntryTasks`) and merged into the final\nenvironment in `runFrontend`.\n\nThe entry is recorded without a linter attribution, so it is recorded unconditionally and no\nlinter selection flag (e.g. `lake lint --lint-only`) can suppress it. Inside a linter guarded by\nan option, use `logCodeQualityEntryIf` instead; this variant is meant for unconditional metrics\nnot tied to any linter option.",
+        "translation": "将代码质量条目 `e` 记录到 `codeQualityLogExt` 中，使其持久化到 `.olean` 文件，并可由使用方通过 `getAllCodeQualityEntries` 恢复。\n\n可以安全地在代码检查器中使用它。\n虽然普通 `Lean.Linter`、模块检查器和有状态检查器运行后对环境的修改都会被丢弃，但它们记录的条目会按命令捕获（参见 `Command.State.codeQualityEntryTasks`），并在 `runFrontend` 中合并到最终环境。\n\n此条目不归属于任何检查器，因此会无条件记录，任何检查器选择标志（例如 `lake lint --lint-only`）都无法抑制它。\n在由选项控制的检查器中，应改用 `logCodeQualityEntryIf`；此变体用于不依附于任何检查选项的无条件度量。"
+    },
+    {
+        "name": "Lean.Linter.logCodeQualityEntryIf",
+        "source": "Similar to `logLintIf`, but for `logCodeQualityEntry` - i.e. it logs an entry only if the\nprovided linter option is enabled, taking `linter.all` and linter sets into account. The entry\nis recorded with `linterOption.name` as its attribution, so consumers can filter it by linter\nselection (e.g. `lake lint --lint-only`).",
+        "translation": "类似于 `logLintIf`，但针对 `logCodeQualityEntry`：只有启用了给定的检查选项时才记录条目，同时会考虑 `linter.all` 和检查器集合。\n条目以 `linterOption.name` 标识所属检查器，因此使用方可以按检查器选择进行筛选（例如 `lake lint --lint-only`）。"
+    },
+    {
+        "name": "Lean.Linter.findMatchingDecl?",
+        "source": "Find the declaration in the current file that `stx` belongs to.\n\nSearches the info trees of the current command for declarations (see `getNewDecls`) whose\ndeclaration range contains the range of `stx`, and returns the one whose range starts earliest.\nReturns `none` if `stx` has no position or no declaration's range contains it (e.g. for commands\nsuch as `#check` or `open`).",
+        "translation": "查找当前文件中 `stx` 所属的声明。\n\n在当前命令的信息树中搜索声明（参见 `getNewDecls`），找出声明范围包含 `stx` 范围的声明，并返回其中范围起点最早的一个。\n如果 `stx` 没有位置信息，或没有声明的范围包含它（例如 `#check` 或 `open` 命令），则返回 `none`。"
+    },
+    {
+        "name": "Lean.Linter.findCodeQualitySource",
+        "source": "Build a code-quality `Source` attributing `stx` to the declaration it belongs to\n(see `findMatchingDecl?`), falling back to the current module if no declaration matches.",
+        "translation": "构造一个代码质量 `Source`，将 `stx` 归属于它所在的声明（参见 `findMatchingDecl?`）；如果没有匹配声明，则归属于当前模块。"
+    },
+    {
+        "name": "Lean.Linter.findCodeQualitySource?",
+        "source": "Build a code-quality `Source` attributing `stx` to the declaration it belongs to\n(see `findMatchingDecl?`), or `none` if no declaration matches.",
+        "translation": "构造一个代码质量 `Source`，将 `stx` 归属于它所在的声明（参见 `findMatchingDecl?`）；如果没有匹配声明，则返回 `none`。"
+    },
+    {
+        "name": "Lean.Linter.CodeQuality.PackageCheckContext",
+        "source": "Global inputs provided by the driver to every code quality check.",
+        "translation": "驱动程序提供给每项代码质量检查的全局输入。"
+    },
+    {
+        "name": "Lean.Linter.EnvLinter.EnvLinter.noErrorsFound",
+        "source": "`noErrorsFound` is the message printed when all tests are negative",
+        "translation": "`noErrorsFound` 是所有测试结果均为阴性时打印的消息。"
+    },
+    {
+        "name": "Lean.Linter.EnvLinter.EnvLinter.errorsFound",
+        "source": "`errorsFound` is printed when at least one test is positive",
+        "translation": "至少一项测试结果为阳性时打印 `errorsFound`。"
+    },
+    {
+        "name": "Lean.Linter.EnvLinter.EnvLinter.test",
+        "source": "`test` defines a test to perform on every declaration. It should never fail. Returning `none`\nsignifies a passing test. Returning `some msg` reports a failing test with error `msg`.",
+        "translation": "`test` 定义对每个声明执行的测试。\n该测试本身不应失败。\n返回 `none` 表示测试通过；返回 `some msg` 则以错误 `msg` 报告测试未通过。"
+    },
+    {
+        "name": "Lean.Linter.EnvLinter.EnvLinter.isDefault",
+        "source": "If `isDefault` is false, this linter is only run when `--extra` is passed.",
+        "translation": "如果 `isDefault` 为假，只有传入 `--extra` 时才运行此检查器。"
+    },
+    {
+        "name": "option:linter.all",
+        "source": "enable all linters",
+        "translation": "启用所有代码检查器。"
+    },
+    {
+        "name": "option:linter.extra",
+        "source": "enables the set of extra linters — linters that are turned off by default and only available via `lake lint`. An extra linter early-returns unless this option is true.",
+        "translation": "启用额外检查器集合：这些检查器默认关闭，只能通过 `lake lint` 使用。\n除非此选项为真，否则额外检查器会提前返回。"
+    },
+    {
+        "name": "option:linter.coreInternal",
+        "source": "enables the set of core-internal linters — linters that enforce conventions of the Lean repository itself and are not intended for use by non-core projects.",
+        "translation": "启用核心内部检查器集合：这些检查器用于强制执行 Lean 仓库自身的约定，不供非核心项目使用。"
+    },
+    {
+        "name": "Std.WP.Assertion",
+        "source": "An assertion type is equipped with a `CompleteLattice` structure,\nused as the carrier for pre- and postconditions.",
+        "translation": "断言类型配备 `CompleteLattice` 结构，用作前置条件和后置条件的载体。"
+    },
+    {
+        "name": "Lean.Order.CompleteLattice.ofProp",
+        "source": "Embedding of propositions into an CompleteLattice type. `⌜p⌝` embeds `p : Prop` as `⊤` if `p` holds\nand `⊥` otherwise.",
+        "translation": "将命题嵌入完全格类型。\n当 `p : Prop` 成立时，`⌜p⌝` 将其嵌入为 `⊤`；否则嵌入为 `⊥`。"
+    },
+    {
+        "name": "Lean.Order.PredTrans",
+        "source": "A predicate transformer from postconditions to preconditions.\n\nGiven a return type `α`, a lattice `Pred` for assertions, and an exception assertion type `EPosts`,\n`PredTrans Pred EPosts α` wraps a function `(α → Pred) → EPosts → Pred`.",
+        "translation": "从后置条件到前置条件的谓词变换器。\n\n给定返回类型 `α`、断言的格 `Pred` 和异常断言类型 `EPosts`，`PredTrans Pred EPosts α` 包装一个函数 `(α → Pred) → EPosts → Pred`。"
+    },
+    {
+        "name": "Lean.Order.PredTrans.Monotone",
+        "source": "Monotonicity property for a predicate transformer: if both `post` and `eposts` grow,\nthen the resulting precondition grows.",
+        "translation": "谓词变换器的单调性：如果 `post` 和 `eposts` 都增大，则得到的前置条件也增大。"
+    },
+    {
+        "name": "Lean.Order.PredTrans.pure",
+        "source": "`pure a` applies the postcondition to `a`.",
+        "translation": "`pure a` 将后置条件应用于 `a`。"
+    },
+    {
+        "name": "Lean.Order.PredTrans.bind",
+        "source": "`bind x f` threads the postcondition through the continuation `f`.",
+        "translation": "`bind x f` 通过后续计算 `f` 传递后置条件。"
+    },
+    {
+        "name": "Lean.Order.PredTrans.pushArg",
+        "source": "Adds a state argument to a predicate transformer.\n\nGiven a state-dependent transformer `σ → PredTrans Pred EPosts (α × σ)`, produces a transformer\nover `σ → Pred` that threads the state through postconditions.",
+        "translation": "为谓词变换器添加一个状态参数。\n\n给定依赖状态的变换器 `σ → PredTrans Pred EPosts (α × σ)`，生成作用于 `σ → Pred` 的变换器，使状态通过后置条件传递。"
+    },
+    {
+        "name": "Lean.Order.PredTrans.pushExceptT",
+        "source": "Adds an exception postcondition layer to a predicate transformer, mirroring `ExceptT`.\n\nGiven a transformer over `Except ε α`, produces one over `α` with an additional exception\npostcondition for `ε`. The normal and error postconditions are combined via `pushExcept`.",
+        "translation": "为谓词变换器添加一层异常后置条件，对应 `ExceptT`。\n\n给定作用于 `Except ε α` 的变换器，生成作用于 `α` 的变换器，并为 `ε` 增加异常后置条件。\n正常后置条件与错误后置条件通过 `pushExcept` 组合。"
+    },
+    {
+        "name": "Lean.Order.PredTrans.pushOptionT",
+        "source": "Adds an early-termination layer to a predicate transformer, mirroring `OptionT`.\n\nGiven a transformer over `Option α`, produces one over `α` with an additional exception\npostcondition for the `none` case.",
+        "translation": "为谓词变换器添加一层提前终止处理，对应 `OptionT`。\n\n给定作用于 `Option α` 的变换器，生成作用于 `α` 的变换器，并为 `none` 情形增加异常后置条件。"
+    },
+    {
+        "name": "Std.WP.WP",
+        "source": "Weakest precondition interpretation of a program type `Prog` whose results have type `Value`,\nas a monotone predicate transformer over assertion language `Pred` with exception postconditions\n`EPosts`.",
+        "translation": "程序类型 `Prog` 的最弱前置条件解释，其中结果类型为 `Value`；该解释是断言语言 `Pred` 上的单调谓词变换器，带有异常后置条件 `EPosts`。"
+    },
+    {
+        "name": "Std.WP.WP.wp",
+        "source": "Weakest precondition of `x` for normal postcondition `post` and exception postcondition `eposts`.\nThe `WP` interpretation can be supplied explicitly via dot notation (`inst.wp x post eposts`).",
+        "translation": "对于正常后置条件 `post` 和异常后置条件 `eposts`，`x` 的最弱前置条件。\n可以通过点记法显式提供 `WP` 解释（`inst.wp x post eposts`）。"
+    },
+    {
+        "name": "Std.WP.WPConjunctive",
+        "source": "`wp x` is sub-conjunctive: the meet of the weakest preconditions of two postconditions lies\nbelow the weakest precondition of the componentwise meet of the postconditions. A healthiness\ncondition of the `WP` interpretation for the individual program `x`; it holds for the base\ninterpretations and lifts through the transformers.",
+        "translation": "`wp x` 是次合取的：两个后置条件各自最弱前置条件的交，小于或等于这些后置条件逐分量取交所得的最弱前置条件。\n这是单个程序 `x` 的 `WP` 解释的一项良构性条件；基础解释满足它，且它可通过变换器提升。"
+    },
+    {
+        "name": "Std.WP.WPMonad",
+        "source": "Weakest precondition monad: a monad `m` whose weakest precondition interpretation is sound for\n`pure` and `bind`. The interpretation for every result type is carried as the `toWP` field; an\ninstance exposes it as a `WP (m α) …` interpretation.",
+        "translation": "最弱前置条件单子：其最弱前置条件解释对 `pure` 和 `bind` 可靠的单子 `m`。\n每种结果类型的解释由字段 `toWP` 承载；实例将其暴露为 `WP (m α) …` 解释。"
+    },
+    {
+        "name": "Std.WP.Id.of_run_eq_wp",
+        "source": "Soundness for `Id`: if `wp prog P` holds, then `P` holds of `Id.run prog`.",
+        "translation": "`Id` 的可靠性：若 `wp prog P` 成立，则 `Id.run prog` 满足 `P`。"
+    },
+    {
+        "name": "Std.WP.StateM.of_run_eq_wp",
+        "source": "Soundness for `StateM`: if `wp prog P s` holds, then `P` holds of the value and final state of\n`StateT.run prog s`.",
+        "translation": "`StateM` 的可靠性：若 `wp prog P s` 成立，则 `StateT.run prog s` 的返回值和最终状态满足 `P`。"
+    },
+    {
+        "name": "Std.WP.StateM.of_run'_eq_wp",
+        "source": "Soundness for `StateM`, at the value alone: if `wp prog P s` holds, then `P` holds of\n`StateT.run' prog s`.",
+        "translation": "仅针对返回值的 `StateM` 可靠性：若 `wp prog P s` 成立，则 `StateT.run' prog s` 满足 `P`。"
+    },
+    {
+        "name": "Std.WP.ReaderM.of_run_eq_wp",
+        "source": "Soundness for `ReaderM`: if `wp prog P r` holds, then `P` holds of `ReaderT.run prog r`.",
+        "translation": "`ReaderM` 的可靠性：若 `wp prog P r` 成立，则 `ReaderT.run prog r` 满足 `P`。"
+    },
+    {
+        "name": "Std.WP.Except.of_eq_wp",
+        "source": "Soundness for `Except`: the postcondition takes an `ok` case and an `error` case, and\n`wp prog` holds of `prog` itself.",
+        "translation": "`Except` 的可靠性：后置条件接受 `ok` 和 `error` 两种情形，且 `prog` 自身满足 `wp prog`。"
+    },
+    {
+        "name": "Std.WP.Option.of_eq_wp",
+        "source": "Soundness for `Option`: the postcondition takes a `some` case and a `none` case, and `wp prog`\nholds of `prog` itself.",
+        "translation": "`Option` 的可靠性：后置条件接受 `some` 和 `none` 两种情形，且 `prog` 自身满足 `wp prog`。"
+    },
+    {
+        "name": "Std.WP.EStateM.of_run_eq_wp",
+        "source": "Soundness for `EStateM`: if `wp prog P s` holds, then `P` holds of `(prog.run s)`.",
+        "translation": "`EStateM` 的可靠性：若 `wp prog P s` 成立，则 `(prog.run s)` 满足 `P`。"
+    },
+    {
+        "name": "Std.WP.Triple",
+        "source": "A Hoare triple for reasoning about programs. A Hoare triple `Triple x pre post eposts`\nis a *specification* for `x`: if assertion `pre` holds before `x`, then postcondition `post` holds\nafter running `x` (and `eposts` handles any errors).",
+        "translation": "用于推理程序的霍尔三元组。\n霍尔三元组 `Triple x pre post eposts` 是 `x` 的一个*规约*：若在运行 `x` 前断言 `pre` 成立，则运行后后置条件 `post` 成立（`eposts` 处理可能的错误）。"
+    },
+    {
+        "name": "Std.WP.Triple.and",
+        "source": "Conjunction of two Hoare triple specifications for a program `x`. This theorem decomposes proofs:\nprove unrelated facts about `x` separately, then combine them here.",
+        "translation": "程序 `x` 的两个霍尔三元组规约的合取。\n此定理用于分解证明：分别证明关于 `x` 的互不相关事实，然后在此将它们组合。"
+    },
+    {
+        "name": "Std.WP.Triple.mp",
+        "source": "Modus ponens for two Hoare triple specifications of a program `x`. This theorem separates proofs.\nLet `h₁` establish a basic postcondition `post₁` for `x`, and let `h₂` establish the advanced\npostcondition `post₂` under the assumption `post₁`. Then `mp h₁ h₂` establishes `post₂` for `x`.",
+        "translation": "程序 `x` 的两个霍尔三元组规约的肯定前件规则。\n此定理用于拆分证明。\n设 `h₁` 证明 `x` 的基本后置条件 `post₁`，`h₂` 则在假设 `post₁` 的前提下证明更进一步的后置条件 `post₂`。\n则 `mp h₁ h₂` 证明 `x` 的后置条件 `post₂`。"
+    },
+    {
+        "name": "Lean.Parser.Attr.spec",
+        "source": "Marks a specification for the `vcgen` tactic.\n\n* On a theorem `foo_spec : ⦃P⦄ foo a b c ⦃Q⦄`, `vcgen` uses `foo_spec` for calls to `foo`.\n* On a definition `foo` or an equation that `@[simp]` accepts, `vcgen` rewrites calls with its\n  equations.",
+        "translation": "标记供 `vcgen` 策略使用的规约。\n\n* 用于定理 `foo_spec : ⦃P⦄ foo a b c ⦃Q⦄` 时，`vcgen` 对 `foo` 的调用使用 `foo_spec`。\n* 用于定义 `foo` 或 `@[simp]` 接受的等式时，`vcgen` 使用其等式重写调用。"
+    },
+    {
+        "name": "Std.WP.Invariant",
+        "source": "The type of loop invariants used by the specifications of `for ... in ...` loops.\nA loop invariant maps the elements consumed so far, the elements remaining, and the accumulator\nstate to an assertion.",
+        "translation": "`for ... in ...` 循环规约所使用的循环不变式类型。\n循环不变式将已消费的元素、剩余元素以及累加器状态映射为一个断言。"
+    },
+    {
+        "name": "Std.WP.Invariant.withEarlyReturnNewDo",
+        "source": "An invariant combinator for loops with early return, for the new `do` elaborator which\nuses `Prod` for the state tuple: `onContinue` is the invariant while iterating, `onReturn`\nholds once the loop returned early with a value.",
+        "translation": "用于带提前返回的循环的不变式组合子，适用于使用 `Prod` 表示状态元组的新 `do` 精译器：`onContinue` 是迭代期间的不变式，`onReturn` 在循环提前返回一个值后成立。"
+    },
+    {
+        "name": "Lean.Order.PredTrans.apply",
+        "source": "Apply the predicate transformer to a postcondition and exception postcondition.",
+        "translation": "将谓词变换器应用于后置条件和异常后置条件。"
+    },
+    {
+        "name": "Std.WP.WP.trans",
+        "source": "The weakest precondition transformer for a program.",
+        "translation": "程序的最弱前置条件变换器。"
+    },
+    {
+        "name": "Std.WP.WP.wpTrans",
+        "source": "Deprecated alias for `trans`; provide either field when defining an instance.",
+        "translation": "`trans` 的弃用别名；定义实例时提供任一字段即可。"
+    },
+    {
+        "name": "Std.WP.WP.wp_trans_monotone",
+        "source": "Deprecated alias for `trans_monotone`; provide either field when defining an instance.",
+        "translation": "`trans_monotone` 的弃用别名；定义实例时提供任一字段即可。"
+    },
+    {
+        "name": "Std.WP.WP.trans_monotone",
+        "source": "Monotonicity: weaker postconditions yield weaker preconditions.",
+        "translation": "单调性：较弱的后置条件产生较弱的前置条件。"
+    },
+    {
+        "name": "Std.WP.WPConjunctive.wp_meet_wp_le",
+        "source": "The meet of the weakest preconditions `wp x Q₁ E₁` and `wp x Q₂ E₂` lies below the weakest\nprecondition `wp x (Q₁ ⊓ Q₂) (E₁ ⊓ E₂)` of the componentwise meet of the postconditions.",
+        "translation": "最弱前置条件 `wp x Q₁ E₁` 与 `wp x Q₂ E₂` 的交，小于或等于后置条件逐分量取交所得的最弱前置条件 `wp x (Q₁ ⊓ Q₂) (E₁ ⊓ E₂)`。"
+    },
+    {
+        "name": "Std.WP.WPMonad.bind_le_wp_bind",
+        "source": "Soundness of `bind`: composing weakest preconditions is at least as strong as the weakest\nprecondition of `>>=`.",
+        "translation": "`bind` 的可靠性：组合最弱前置条件所得的条件至少与 `>>=` 的最弱前置条件一样强。"
+    },
+    {
+        "name": "Std.WP.WPMonad.pure_le_wp_pure",
+        "source": "Soundness of `pure`: the postcondition applied to `x` implies the weakest precondition of\n`pure x`.",
+        "translation": "`pure` 的可靠性：将后置条件应用于 `x`，蕴含 `pure x` 的最弱前置条件。"
+    },
+    {
+        "name": "Std.WP.WPMonad.toWP",
+        "source": "The weakest precondition interpretation of `m` at every result type.",
+        "translation": "`m` 在每种结果类型下的最弱前置条件解释。"
+    },
+    {
+        "name": "Std.WP.Triple.le_wp",
+        "source": "The weakest precondition entailment witnessing the triple.",
+        "translation": "为该三元组提供依据的最弱前置条件蕴含关系。"
+    },
+    {
+        "name": "Std.WP.Triple.intro",
+        "source": "Construct a triple from a weakest precondition entailment.",
+        "translation": "由最弱前置条件的蕴含关系构造一个三元组。"
+    },
+    {
+        "name": "Lean.Parser.Attr.grindHom",
+        "source": "The `hom` modifier marks a theorem as a homomorphism rule for `grind`.\n\nHomomorphism rules translate terms from a source domain into a target domain that has a\ndedicated solver. A collection of homomorphism rules encodes an algebra homomorphism\n`h : A → B`: each rule states how `h` commutes with a source-domain operation, as in\n`h (f x y) = g (h x) (h y)`. Example: injecting bitvector operations into integer\narithmetic using `BitVec.toNat`:\n```\n@[grind hom] theorem toNat_add (x y : BitVec w) :\n    (x + y).toNat = (x.toNat + y.toNat) % 2^w\n```\nThe rules must be unconditional equations (or `Iff`s). They are applied to fixpoint\noutside the E-graph, and only the final result is internalized.",
+        "translation": "`hom` 修饰符将定理标记为 `grind` 的同态规则。\n\n同态规则把项从源域转换到具有专用求解器的目标域。\n一组同态规则编码一个代数同态 `h : A → B`：每条规则描述 `h` 如何与源域运算交换，例如 `h (f x y) = g (h x) (h y)`。\n例如，使用 `BitVec.toNat` 将位向量运算嵌入整数算术：\n```\n@[grind hom] theorem toNat_add (x y : BitVec w) :\n    (x + y).toNat = (x.toNat + y.toNat) % 2^w\n```\n规则必须是无条件等式（或 `Iff`）。\n这些规则在 E-图之外反复应用，直到达到不动点，且只有最终结果才会被内部化。"
+    },
+    {
+        "name": "Lean.Parser.Attr.grindHomFallback",
+        "source": "The `hom fallback` modifier marks a homomorphism rule that is tried only when no other\n`[grind hom]` rule applies to the term. It is meant for rules whose left-hand side matches\nevery application of an injection, such as the bridge `x.toInt = x.toBitVec.toInt` between\nthe two images of `Int64`: as an ordinary rule it would take precedence over the direct\nrules like `Int64.toInt_add`, since the rewriter applies the first matching rule.",
+        "translation": "`hom fallback` 修饰符标记一种同态规则，只有没有其他 `[grind hom]` 规则适用于该项时，才会尝试它。\n它适用于左端能够匹配某个嵌入的所有应用的规则，例如连接 `Int64` 两种像的桥接等式 `x.toInt = x.toBitVec.toInt`：若将其设为普通规则，由于重写器应用第一条匹配的规则，它就会优先于 `Int64.toInt_add` 这样的直接规则。"
+    },
+    {
+        "name": "Lean.Parser.Attr.grindHomPred",
+        "source": "The `hom_pred` modifier marks a theorem as a homomorphism predicate for `grind`.\n\nHomomorphism predicates are facts that `grind` instantiates eagerly for the terms it\ninternalizes. The conclusion of the theorem must contain an application `f a₁ … aₙ`\nwhose trailing arguments are exactly the theorem's explicit parameters; the head\nsymbol `f` becomes the trigger. Whenever `grind` internalizes a term with head `f`,\nthe theorem is instantiated with the term's trailing arguments, and the resulting\nfact is asserted. Typical uses are range facts for injection functions, and\ntranslations of relations into a target domain. Examples:\n```\n@[grind hom_pred] theorem BitVec.toNat_range (x : BitVec w) : x.toNat < 2^w\n@[grind hom_pred] theorem UInt8.le_iff (a b : UInt8) : a ≤ b ↔ a.toBitVec ≤ b.toBitVec\n```\nThe first theorem is triggered by terms of the form `BitVec.toNat x`, and the second\none by `a ≤ b` applications. `grind` uses the types of `a` and `b` to discard\nirrelevant instantiations.",
+        "translation": "`hom_pred` 修饰符将定理标记为 `grind` 的同态谓词。\n\n同态谓词是 `grind` 对其内部化的项积极实例化的事实。\n定理结论必须包含一个应用 `f a₁ … aₙ`，其末尾参数恰好是定理的显式参数；头符号 `f` 随即成为触发器。\n每当 `grind` 内部化头符号为 `f` 的项时，就会用该项的末尾参数实例化定理，并断言得到的事实。\n典型用途包括嵌入函数的取值范围事实，以及将关系转换到目标域。\n例如：\n```\n@[grind hom_pred] theorem BitVec.toNat_range (x : BitVec w) : x.toNat < 2^w\n@[grind hom_pred] theorem UInt8.le_iff (a b : UInt8) : a ≤ b ↔ a.toBitVec ≤ b.toBitVec\n```\n第一个定理由形如 `BitVec.toNat x` 的项触发，第二个由 `a ≤ b` 应用触发。\n`grind` 使用 `a` 和 `b` 的类型排除无关的实例化。"
+    },
+    {
+        "name": "option:trace.grind.hom",
+        "source": "enable/disable tracing for the given module and submodules",
+        "translation": "启用或禁用给定模块及其子模块的跟踪。"
+    },
+    {
+        "name": "option:trace.grind.hom.pred",
+        "source": "enable/disable tracing for the given module and submodules",
+        "translation": "启用或禁用给定模块及其子模块的跟踪。"
+    },
+    {
+        "name": "Std.Associative",
+        "source": "`Associative op` indicates `op` is an associative operation,\ni.e. `(a ∘ b) ∘ c = a ∘ (b ∘ c)`.",
+        "translation": "`Associative op` 表示 `op` 是满足结合律的运算，即 `(a ∘ b) ∘ c = a ∘ (b ∘ c)`。"
+    },
+    {
+        "name": "Std.Commutative",
+        "source": "`Commutative op` says that `op` is a commutative operation,\ni.e. `a ∘ b = b ∘ a`.",
+        "translation": "`Commutative op` 表示 `op` 是满足交换律的运算，即 `a ∘ b = b ∘ a`。"
+    },
+    {
+        "name": "Std.IdempotentOp",
+        "source": "`IdempotentOp op` indicates `op` is an idempotent binary operation.\ni.e. `a ∘ a = a`.",
+        "translation": "`IdempotentOp op` 表示 `op` 是幂等的二元运算，即 `a ∘ a = a`。"
+    },
+    {
+        "name": "Std.LawfulIdentity",
+        "source": "`LawfulIdentity op o` indicates `o` is a verified left and right\nidentity of `op`.",
+        "translation": "`LawfulIdentity op o` 表示 `o` 是 `op` 的经验证的左、右单位元。"
+    },
+    {
+        "name": "Std.Associative.assoc",
+        "source": "An associative operation satisfies `(a ∘ b) ∘ c = a ∘ (b ∘ c)`.",
+        "translation": "满足结合律的运算满足 `(a ∘ b) ∘ c = a ∘ (b ∘ c)`。"
+    },
+    {
+        "name": "Std.Commutative.comm",
+        "source": "A commutative operation satisfies `a ∘ b = b ∘ a`.",
+        "translation": "满足交换律的运算满足 `a ∘ b = b ∘ a`。"
+    },
+    {
+        "name": "Std.IdempotentOp.idempotent",
+        "source": "An idempotent operation satisfies `a ∘ a = a`.",
+        "translation": "幂等运算满足 `a ∘ a = a`。"
+    },
+    {
+        "name": "option:trace.grind.ac",
+        "source": "enable/disable tracing for the given module and submodules",
+        "translation": "启用或禁用给定模块及其子模块的跟踪。"
+    },
+    {
+        "name": "option:trace.grind.ac.assert",
+        "source": "enable/disable tracing for the given module and submodules",
+        "translation": "启用或禁用给定模块及其子模块的跟踪。"
+    },
+    {
+        "name": "option:trace.grind.ac.internalize",
+        "source": "enable/disable tracing for the given module and submodules",
+        "translation": "启用或禁用给定模块及其子模块的跟踪。"
+    },
+    {
+        "name": "option:trace.grind.ac.basis",
+        "source": "enable/disable tracing for the given module and submodules",
+        "translation": "启用或禁用给定模块及其子模块的跟踪。"
+    },
+    {
+        "name": "Std.Async.Async",
+        "source": "An asynchronous computation that may produce an error of type `IO.Error`..",
+        "translation": "可能产生 `IO.Error` 类型错误的异步计算。"
+    },
+    {
+        "name": "Std.Async.EAsync",
+        "source": "An asynchronous computation that may produce an error of type `ε`.",
+        "translation": "可能产生 `ε` 类型错误的异步计算。"
+    },
+    {
+        "name": "Std.Async.BaseAsync",
+        "source": "An asynchronous computation that never fails.",
+        "translation": "永不失败的异步计算。"
+    },
+    {
+        "name": "Std.Async.ETask",
+        "source": "A `Task` that may resolve to either a value of type `α` or an error value of type `ε`.",
+        "translation": "一个 `Task`，其结果可能是 `α` 类型的值，也可能是 `ε` 类型的错误值。"
+    },
+    {
+        "name": "Std.Async.AsyncTask",
+        "source": "A `Task` that may resolve to a value or an error value of type `IO.Error`. Alias for `ETask IO.Error`.",
+        "translation": "一个 `Task`，其结果可能是正常值，也可能是 `IO.Error` 类型的错误值。\n它是 `ETask IO.Error` 的别名。"
+    },
+    {
+        "name": "Std.Async.MaybeTask",
+        "source": "A `MaybeTask α` represents a computation that either:\n\n- Is immediately available as an `α` value, or\n- Is an asynchronous computation that will eventually produce an `α` value.",
+        "translation": "`MaybeTask α` 表示以下两种计算之一：\n\n- 立即可用的 `α` 值；\n- 最终将产生 `α` 值的异步计算。"
+    },
+    {
+        "name": "Std.Async.EAsync.wait",
+        "source": "Waits for the result of the `EAsync` computation, blocking if necessary.",
+        "translation": "等待 `EAsync` 计算的结果，必要时阻塞。"
+    },
+    {
+        "name": "Std.Async.BaseAsync.wait",
+        "source": "Waits for the result of the `BaseAsync` computation, blocking if necessary.",
+        "translation": "等待 `BaseAsync` 计算的结果，必要时阻塞。"
+    },
+    {
+        "name": "Std.Async.Async.block",
+        "source": "Block until the `Async` finishes and returns its value. Propagates any error encountered during execution.",
+        "translation": "阻塞直到 `Async` 完成，并返回其值。\n传播执行期间遇到的任何错误。"
+    },
+    {
+        "name": "Std.Async.EAsync.block",
+        "source": "Block until the `EAsync` finishes and returns its value. Propagates any error encountered during execution.",
+        "translation": "阻塞直到 `EAsync` 完成，并返回其值。\n传播执行期间遇到的任何错误。"
+    },
+    {
+        "name": "Std.Async.ETask.block",
+        "source": "Block until the `ETask` in `x` finishes and returns its value. Propagates any error encountered\nduring execution.",
+        "translation": "阻塞直到 `x` 中的 `ETask` 完成，并返回其值。\n传播执行期间遇到的任何错误。"
+    },
+    {
+        "name": "Std.Async.AsyncTask.block",
+        "source": "Block until the `AsyncTask` in `x` finishes.",
+        "translation": "阻塞直到 `x` 中的 `AsyncTask` 完成。"
+    },
+    {
+        "name": "Std.Async.Async.toIO",
+        "source": "Converts a `Async` to a `AsyncTask`.",
+        "translation": "将 `Async` 转换为 `AsyncTask`。"
+    },
+    {
+        "name": "Std.Async.EAsync.toEIO",
+        "source": "Converts a `BaseAsync` to a `EIO ETask`.",
+        "translation": "将 `BaseAsync` 转换为 `EIO ETask`。"
+    },
+    {
+        "name": "Std.Async.BaseAsync.toBaseIO",
+        "source": "Converts a `BaseAsync` to a `BaseIO Task`.",
+        "translation": "将 `BaseAsync` 转换为 `BaseIO Task`。"
+    },
+    {
+        "name": "Std.Async.EAsync.asTask",
+        "source": "Lifts an `EAsync` computation into an `ETask` that can be awaited and joined.",
+        "translation": "将 `EAsync` 计算提升为一个可以等待和汇合的 `ETask`。"
+    },
+    {
+        "name": "Std.Async.BaseAsync.asTask",
+        "source": "Lifts a `BaseAsync` computation into a `Task` that can be awaited and joined.",
+        "translation": "将 `BaseAsync` 计算提升为一个可以等待和汇合的 `Task`。"
+    },
+    {
+        "name": "Std.Async.MonadAwait",
+        "source": "Typeclass for monads that can \"await\" a computation of type `t α` in a monad `m` until the result is\navailable.",
+        "translation": "适用于以下单子的类型类：可以在单子 `m` 中“等待”类型为 `t α` 的计算，直到结果可用。"
+    },
+    {
+        "name": "Std.Async.MonadAsync",
+        "source": "Represents monads that can launch computations asynchronously of type `t` in a monad `m`.",
+        "translation": "表示能够在单子 `m` 中异步启动 `t` 类型计算的单子。"
+    },
+    {
+        "name": "Std.Async.background",
+        "source": "This function transforms the operation inside the monad `m` into a task and let it run in the background.",
+        "translation": "将单子 `m` 中的操作转换为任务，并使其在后台运行。"
+    },
+    {
+        "name": "Std.Async.AsyncTask.map",
+        "source": "Create a new `AsyncTask` that will run after `x` has finished.\nIf `x`:\n- errors, return an `AsyncTask` that resolves to the error.\n- succeeds, return an `AsyncTask` that resolves to `f x`.",
+        "translation": "创建一个在 `x` 完成后运行的新 `AsyncTask`。\n如果 `x`：\n- 出错，则返回一个以该错误为结果的 `AsyncTask`；\n- 成功，则返回一个以 `f x` 为结果的 `AsyncTask`。"
+    },
+    {
+        "name": "Std.Async.AsyncTask.bindIO",
+        "source": "Similar to `bind`, however `f` has access to the `IO` monad. If `f` throws an error, the returned\n`AsyncTask` resolves to that error.",
+        "translation": "类似于 `bind`，但 `f` 可以访问 `IO` 单子。\n如果 `f` 抛出错误，返回的 `AsyncTask` 将以该错误为结果。"
+    },
+    {
+        "name": "Std.Async.AsyncTask.mapTaskIO",
+        "source": "Similar to `map`, however `f` has access to the `IO` monad. If `f` throws an error, the returned\n`AsyncTask` resolves to that error.",
+        "translation": "类似于 `map`，但 `f` 可以访问 `IO` 单子。\n如果 `f` 抛出错误，返回的 `AsyncTask` 将以该错误为结果。"
+    },
+    {
+        "name": "Std.Async.ETask.getState",
+        "source": "Obtain the `IO.TaskState` of `x`.",
+        "translation": "获取 `x` 的 `IO.TaskState`。"
+    },
+    {
+        "name": "Std.Async.AsyncTask.getState",
+        "source": "Obtain the `IO.TaskState` of `x`.",
+        "translation": "获取 `x` 的 `IO.TaskState`。"
+    },
+    {
+        "name": "Std.Async.MaybeTask.toTask",
+        "source": "Constructs an `Task` from a `MaybeTask`.",
+        "translation": "从 `MaybeTask` 构造 `Task`。"
+    },
+    {
+        "name": "Std.Async.MaybeTask.get",
+        "source": "Gets the value of the `MaybeTask` by blocking.",
+        "translation": "通过阻塞获取 `MaybeTask` 的值。"
+    },
+    {
+        "name": "Std.Async.MaybeTask.map",
+        "source": "Maps a function over a `MaybeTask`.",
+        "translation": "在 `MaybeTask` 上映射一个函数。"
+    },
+    {
+        "name": "Std.Async.MaybeTask.joinTask",
+        "source": "Join the `MaybeTask` to an `Task`.",
+        "translation": "将 `MaybeTask` 汇合为 `Task`。"
+    },
+    {
+        "name": "Std.Async.Async.ofTask",
+        "source": "Converts `Task` to `Async`.",
+        "translation": "将 `Task` 转换为 `Async`。"
+    },
+    {
+        "name": "Std.Async.EAsync.ofTask",
+        "source": "Creates a new `EAsync` out of a `RTask`.",
+        "translation": "从 `RTask` 创建新的 `EAsync`。"
+    },
+    {
+        "name": "Std.Async.EAsync.ofETask",
+        "source": "Creates a new `EAsync` out of a `ETask`.",
+        "translation": "从 `ETask` 创建新的 `EAsync`。"
+    },
+    {
+        "name": "Std.Async.BaseAsync.ofTask",
+        "source": "Creates a new `BaseAsync` out of a `Task`.",
+        "translation": "从 `Task` 创建新的 `BaseAsync`。"
+    },
+    {
+        "name": "Std.Async.Async.ofIOTask",
+        "source": "Converts `IO (Task α)` into `Async`.",
+        "translation": "将 `IO (Task α)` 转换为 `Async`。"
+    },
+    {
+        "name": "Std.Async.Async.ofAsyncTask",
+        "source": "Converts `AsyncTask` into `Async`.",
+        "translation": "将 `AsyncTask` 转换为 `Async`。"
+    },
+    {
+        "name": "Std.Async.Async.ofPromise",
+        "source": "Converts `Promise` into `Async`.",
+        "translation": "将 `Promise` 转换为 `Async`。"
+    },
+    {
+        "name": "Std.Async.Async.ofPurePromise",
+        "source": "Converts `IO (IO.Promise α)` to `Async`.",
+        "translation": "将 `IO (IO.Promise α)` 转换为 `Async`。"
+    },
+    {
+        "name": "Std.Async.ETask.ofPromise!",
+        "source": "Create an `ETask` that resolves to the value of the promise `x`. If the promise gets dropped then it\npanics.",
+        "translation": "创建一个以承诺 `x` 的值为结果的 `ETask`。\n如果该承诺被丢弃，则触发 panic。"
+    },
+    {
+        "name": "Std.Async.Async.ofExcept",
+        "source": "Converts `Except` to `Async`.",
+        "translation": "将 `Except` 转换为 `Async`。"
+    },
+    {
+        "name": "Std.Async.EAsync.ofExcept",
+        "source": "Converts `Except` to `EAsync`.",
+        "translation": "将 `Except` 转换为 `EAsync`。"
+    },
+    {
+        "name": "Std.Async.BaseAsync.ofExcept",
+        "source": "Converts `Except` to `BaseAsync`.",
+        "translation": "将 `Except` 转换为 `BaseAsync`。"
+    },
+    {
+        "name": "Std.Async.Async.concurrently",
+        "source": "Runs two computations concurrently and returns both results as a pair.",
+        "translation": "并发运行两个计算，并将两个结果以有序对的形式返回。"
+    },
+    {
+        "name": "Std.Async.EAsync.concurrently",
+        "source": "Runs two computations concurrently and returns both results as a pair.",
+        "translation": "并发运行两个计算，并将两个结果以有序对的形式返回。"
+    },
+    {
+        "name": "Std.Async.BaseAsync.concurrently",
+        "source": "Runs two computations concurrently and returns both results as a pair.",
+        "translation": "并发运行两个计算，并将两个结果以有序对的形式返回。"
+    },
+    {
+        "name": "Std.Async.Async.concurrentlyAll",
+        "source": "Runs all computations in an `Array` concurrently and returns all results as an array.",
+        "translation": "并发运行 `Array` 中的所有计算，并将所有结果以数组的形式返回。"
+    },
+    {
+        "name": "Std.Async.EAsync.concurrentlyAll",
+        "source": "Runs all computations in an `Array` concurrently and returns all results as an array.",
+        "translation": "并发运行 `Array` 中的所有计算，并将所有结果以数组的形式返回。"
+    },
+    {
+        "name": "Std.Async.BaseAsync.concurrentlyAll",
+        "source": "Runs all computations in an `Array` concurrently and returns all results as an array.",
+        "translation": "并发运行 `Array` 中的所有计算，并将所有结果以数组的形式返回。"
+    },
+    {
+        "name": "Std.Async.Async.race",
+        "source": "Runs two computations concurrently and returns the result of the one that finishes first.\nThe other result is lost and the other task is not cancelled, so the task will continue the execution\nuntil the end.",
+        "translation": "并发运行两个计算，返回先完成者的结果。\n另一个结果会丢失，且另一个任务不会被取消，因此它会继续执行直到结束。"
+    },
+    {
+        "name": "Std.Async.EAsync.race",
+        "source": "Runs two computations concurrently and returns the result of the one that finishes first.\nThe other result is lost and the other task is not cancelled, so the task will continue the execution\nuntil the end.",
+        "translation": "并发运行两个计算，返回先完成者的结果。\n另一个结果会丢失，且另一个任务不会被取消，因此它会继续执行直到结束。"
+    },
+    {
+        "name": "Std.Async.BaseAsync.race",
+        "source": "Runs two computations concurrently and returns the result of the one that finishes first.\nThe other result is lost and the other task is not cancelled, so the task will continue the execution\nuntil the end.",
+        "translation": "并发运行两个计算，返回先完成者的结果。\n另一个结果会丢失，且另一个任务不会被取消，因此它会继续执行直到结束。"
+    },
+    {
+        "name": "Std.Async.Async.raceAll",
+        "source": "Runs all computations concurrently and returns the result of the first one to finish.\nAll other results are lost, and the tasks are not cancelled, so they'll continue their execution\nuntil the end.",
+        "translation": "并发运行所有计算，返回最先完成者的结果。\n所有其他结果会丢失，且其任务不会被取消，因此它们会继续执行直到结束。"
+    },
+    {
+        "name": "Std.Async.EAsync.raceAll",
+        "source": "Runs all computations concurrently and returns the result of the first one to finish.\nAll other results are lost, and the tasks are not cancelled, so they'll continue their execution\nuntil the end.",
+        "translation": "并发运行所有计算，返回最先完成者的结果。\n所有其他结果会丢失，且其任务不会被取消，因此它们会继续执行直到结束。"
+    },
+    {
+        "name": "Std.Async.BaseAsync.raceAll",
+        "source": "Runs all computations concurrently and returns the result of the first one to finish.\nAll other results are lost, and the tasks are not cancelled, so they'll continue their execution\nuntil the end.",
+        "translation": "并发运行所有计算，返回最先完成者的结果。\n所有其他结果会丢失，且其任务不会被取消，因此它们会继续执行直到结束。"
+    },
+    {
+        "name": "Std.Async.Selector",
+        "source": "An event source that can be multiplexed using `Selectable.one`, see the documentation of\n`Selectable.one` for how the protocol of communicating with a `Selector` works.",
+        "translation": "可使用 `Selectable.one` 进行多路复用的事件源。\n与 `Selector` 通信的协议见 `Selectable.one` 的文档。"
+    },
+    {
+        "name": "Std.Async.Selectable",
+        "source": "An event source together with a continuation to call on data obtained from that event source,\nusually used together in conjunction with `Selectable.one`.",
+        "translation": "一个事件源，以及在从该事件源获取数据后调用的后续计算；通常与 `Selectable.one` 配合使用。"
+    },
+    {
+        "name": "Std.Async.Selectable.one",
+        "source": "Performs fair multiplexing on the `Selectable`s in `selectables`, which loses no data from\nselectors that keep the contract of `Selector.registerFn`.\n\n`selectables` is combined into a single `Selector` via `Selectable.combine`:\n1. If `Selector.tryFn` immediately yields a value, the corresponding `Selectable.cont` is\n   executed and its result is returned immediately.\n2. Otherwise, a single `Waiter` is registered with the combined `Selector` using\n   `Selector.registerFn`. Once the `Waiter` is resolved, `Selector.unregisterFn` is called\n   unconditionally, cleaning up every entry of `selectables`, before the result (or error) is\n   returned to the caller. This holds no matter how the race is decided: a winning result, an\n   error raised while resolving the `Waiter`, or a `registerFn` that throws mid-registration.",
+        "translation": "对 `selectables` 中的 `Selectable` 执行公平的多路复用；对于遵守 `Selector.registerFn` 契约的选择器，不会丢失任何数据。\n\n通过 `Selectable.combine` 将 `selectables` 合并为一个 `Selector`：\n1. 如果 `Selector.tryFn` 立即产生一个值，则执行对应的 `Selectable.cont` 并立即返回其结果。\n2. 否则，通过 `Selector.registerFn` 向组合后的 `Selector` 注册一个 `Waiter`。一旦 `Waiter` 就绪，就会无条件调用 `Selector.unregisterFn`，在向调用方返回结果（或错误）前清理 `selectables` 中的每一项。无论竞争如何决出结果，此行为均成立：得到获胜结果、在使 `Waiter` 就绪时抛出错误，或 `registerFn` 在注册途中抛出错误。"
+    },
+    {
+        "name": "Std.Async.Selectable.tryOne",
+        "source": "Performs fair and data-loss free non-blocking multiplexing on the `Selectable`s in `selectables`.\n\nThis function only tries the non-blocking `tryFn` for each `Selectable` without registering\nwaiters or blocking. It returns `some result` if any `Selectable` is immediately available,\nor `none` if all would block.\n\nThe protocol for this is as follows:\n1. The `selectables` are shuffled randomly for fairness.\n2. Run `Selector.tryFn` for each element in `selectables`. If any succeed, the corresponding\n   `Selectable.cont` is executed and its result is returned as `some result`.\n3. If none succeed, `none` is returned immediately without blocking.",
+        "translation": "对 `selectables` 中的 `Selectable` 执行公平、无数据丢失且非阻塞的多路复用。\n\n此函数仅尝试每个 `Selectable` 的非阻塞 `tryFn`，不会注册等待器或发生阻塞。\n若有任一 `Selectable` 立即可用，则返回 `some result`；若所有可选项都需要阻塞，则返回 `none`。\n\n协议如下：\n1. 将 `selectables` 随机打乱以保证公平性。\n2. 对 `selectables` 中的每个元素运行 `Selector.tryFn`。若有任一调用成功，就执行对应的 `Selectable.cont`，并将其结果作为 `some result` 返回。\n3. 若均未成功，则立即返回 `none`，不会阻塞。"
+    },
+    {
+        "name": "Std.Async.Selectable.combine",
+        "source": "Creates a `Selector` that performs fair multiplexing on multiple `Selectable`s, which loses no data\nfrom selectors that keep the contract of `Selector.registerFn`.\nThis allows the multiplexing operation to be composed with other selectors.\n\nThe returned `Selector` polls and registers the `selectables` in random order for fairness. If\nregistering with one of them fails, the error is reported through the `Waiter` unless the race\nwas already won, in which case the winner's result takes priority.",
+        "translation": "创建一个在多个 `Selectable` 上执行公平多路复用的 `Selector`；对于遵守 `Selector.registerFn` 契约的选择器，不会丢失任何数据。\n这使得多路复用操作能够与其他选择器组合。\n\n返回的 `Selector` 以随机顺序轮询和注册 `selectables`，以保证公平性。\n若向其中某个可选项注册失败，则通过 `Waiter` 报告错误；但如果已有竞争获胜者，则优先返回获胜者的结果。"
+    },
+    {
+        "name": "Std.Async.Waiter",
+        "source": "The core data structure for racing on winning a `Selectable.one` if multiple event sources are ready\nat the same time. A `Task` can try to finish the waiter by calling `Waiter.race`.",
+        "translation": "多个事件源同时就绪时，用于竞争 `Selectable.one` 获胜资格的核心数据结构。\n`Task` 可以通过调用 `Waiter.race` 尝试完成等待器。"
+    },
+    {
+        "name": "Std.Async.Waiter.race",
+        "source": "Try to atomically finish the `Waiter`. If the race for finishing it is won, `win` is executed\nwith the internal `IO.Promise` of the `Waiter`. This promise must under all circumstances be\nresolved by `win`. If the race is lost some cleanup work can be done in `lose`.",
+        "translation": "尝试原子地完成 `Waiter`。\n若赢得完成竞争，则以 `Waiter` 内部的 `IO.Promise` 为参数执行 `win`。\n`win` 在任何情况下都必须兑现该承诺。\n若竞争失败，可在 `lose` 中执行清理工作。"
+    },
+    {
+        "name": "Std.Async.Waiter.withPromise",
+        "source": "Swap out the `IO.Promise` within the `Waiter`. Note that the part which determines whether the\n`Waiter` is finished is not swapped out.",
+        "translation": "替换 `Waiter` 内的 `IO.Promise`。\n注意，用于确定 `Waiter` 是否完成的部分不会被替换。"
+    },
+    {
+        "name": "Std.Async.Waiter.checkFinished",
+        "source": "Atomically checks whether the `Waiter` has already finished. Note that right after this function\ncall ends this might have already changed.",
+        "translation": "原子地检查 `Waiter` 是否已完成。\n注意，此函数调用结束后，状态可能立即发生变化。"
+    },
+    {
+        "name": "Std.Async.Sleep.selector",
+        "source": "Create a `Selector` that resolves once `s` has finished. `s` only starts when it runs inside of a\nSelectable. Every select or `Selectable.tryOne` that checks `s` before it has finished starts it again\nfrom `duration`, so a `Sleep` that is checked more often than `duration` never finishes.",
+        "translation": "创建一个在 `s` 完成后就绪的 `Selector`。\n`s` 只会在 `Selectable` 内运行时才启动。\n每次在 `s` 完成前检查它的选择操作或 `Selectable.tryOne`，都会从 `duration` 开始重新计时，因此检查间隔短于 `duration` 的 `Sleep` 永远不会完成。"
+    },
+    {
+        "name": "Std.Channel.recvSelector",
+        "source": "Creates a `Selector` that resolves once `ch` has data available and provides that data.",
+        "translation": "创建一个在 `ch` 有可用数据时就绪并提供该数据的 `Selector`。"
+    },
+    {
+        "name": "Std.CloseableChannel.recvSelector",
+        "source": "Creates a `Selector` that resolves once `ch` has data available and provides that data.\nIn particular if `ch` is closed while waiting on this `Selector` and no data is available already\nthis will resolve to `none`.",
+        "translation": "创建一个在 `ch` 有可用数据时就绪并提供该数据的 `Selector`。\n特别地，如果等待此 `Selector` 期间 `ch` 关闭，且没有已可用的数据，则以 `none` 为结果。"
+    },
+    {
+        "name": "Std.Broadcast.Receiver.recvSelector",
+        "source": "Creates a `Selector` that resolves once the broadcast channel `ch` has data available and provides that data.",
+        "translation": "创建一个在广播通道 `ch` 有可用数据时就绪并提供该数据的 `Selector`。"
+    },
+    {
+        "name": "Std.Notify.selector",
+        "source": "Creates a selector that waits for notifications",
+        "translation": "创建一个等待通知的选择器。"
+    },
+    {
+        "name": "Std.CancellationToken.selector",
+        "source": "Creates a selector that waits for cancellation.",
+        "translation": "创建一个等待取消的选择器。"
+    },
+    {
+        "name": "Std.CancellationContext.doneSelector",
+        "source": "Creates a selector that waits for cancellation.",
+        "translation": "创建一个等待取消的选择器。"
+    },
+    {
+        "name": "Std.Async.Selector.cancelled",
+        "source": "Returns a selector that completes when the current context is cancelled.\nThis is useful for selecting on cancellation alongside other asynchronous operations.",
+        "translation": "返回一个在当前上下文被取消时完成的选择器。\n可用于同时等待取消事件与其他异步操作。"
+    },
+    {
+        "name": "Std.Async.TCP.Socket.Server.acceptSelector",
+        "source": "Creates a `Selector` that resolves once `s` has a connection available. Calling this function\ndoes not start the connection wait, so it must not be called in parallel with `accept`.",
+        "translation": "创建一个在 `s` 有可接受连接时就绪的 `Selector`。\n调用此函数不会开始等待连接，且不得与 `accept` 并行调用。"
+    },
+    {
+        "name": "Std.Async.TCP.Socket.Client.recvSelector",
+        "source": "Creates a `Selector` that resolves once `s` has data available, up to at most `size` bytes,\nand provides that data. Calling this function does not starts the data wait, so it must not be called\nin parallel with `recv?`.",
+        "translation": "创建一个在 `s` 有可用数据时就绪并提供该数据的 `Selector`，数据最多为 `size` 字节。\n调用此函数不会开始等待数据，且不得与 `recv?` 并行调用。"
+    },
+    {
+        "name": "Std.Async.UDP.Socket.recvSelector",
+        "source": "Creates a `Selector` that resolves once `s` has data available, up to at most `size` bytes,\nand provides that data. If the socket has not been previously bound with `bind`, it is\nautomatically bound to `0.0.0.0` (all interfaces) with a random port.\nCalling this function does starts the data wait, only when it's used with `Selectable.one` or `combine`.\nIt must not be called in parallel with `recv`.\n\nFails with an `IO.Error.resourceExhausted` if the datagram is larger than `size`, like `recv`.",
+        "translation": "创建一个在 `s` 有可用数据时就绪并提供该数据的 `Selector`，数据最多为 `size` 字节。\n如果此前未使用 `bind` 绑定套接字，则自动将其绑定到 `0.0.0.0`（所有接口）及随机端口。\n只有在 `Selectable.one` 或 `combine` 中使用时，此函数才会开始等待数据。\n不得与 `recv` 并行调用。\n\n与 `recv` 一样，若数据报大于 `size`，则以 `IO.Error.resourceExhausted` 失败。"
+    },
+    {
+        "name": "Std.Async.Signal.Waiter.selector",
+        "source": "Create a `Selector` that resolves once `s` has received the signal. Calling this function does not\nstart the signal waiter: a select starts it when it checks it, and it may not check it at all if\nanother selector is already ready.\n\nA select that checks `s` without picking it leaves it listening until `stop` is called or `s` is\ndropped, and a signal that arrives afterwards is kept and reported by the next select that checks\n`s`. For a repeating `s`, a signal that arrives while another selector wins the same select may be\nlost.",
+        "translation": "创建一个在 `s` 收到信号后就绪的 `Selector`。\n调用此函数不会启动信号等待器：选择操作检查它时才会启动它；如果另一个选择器已就绪，也可能根本不检查它。\n\n如果选择操作检查了 `s` 却没有选中它，`s` 会持续监听，直到调用 `stop` 或 `s` 被丢弃。\n之后到达的信号会被保留，并由下一次检查 `s` 的选择操作报告。\n对于重复使用的 `s`，如果信号到达时另一个选择器赢得了同一次选择，该信号可能丢失。"
+    },
+    {
+        "name": "Std.StreamMap.selector",
+        "source": "Get a combined selector that returns the stream name and value",
+        "translation": "获取一个组合选择器，返回流的名称和值。"
+    },
+    {
+        "name": "Std.Async.sleep",
+        "source": "Return an `Async` computation that completes after `duration`.",
+        "translation": "返回一个经过 `duration` 后完成的 `Async` 计算。"
+    },
+    {
+        "name": "Std.Async.Sleep",
+        "source": "`Sleep` can be used to sleep for some duration once.\nThe underlying timer has millisecond resolution.",
+        "translation": "`Sleep` 可用于进行一次指定时长的休眠。\n底层计时器的分辨率为毫秒。"
+    },
+    {
+        "name": "Std.Async.Sleep.mk",
+        "source": "Set up a `Sleep` that waits for `duration` milliseconds.\nThis function only initializes but does not yet start the timer.",
+        "translation": "设置一个等待 `duration` 毫秒的 `Sleep`。\n此函数仅初始化计时器，尚不启动它。"
+    },
+    {
+        "name": "Std.Async.Sleep.wait",
+        "source": "If:\n- `s` is not yet running start it and return an `Async` computation that will complete once the previously\n   configured `duration` has elapsed.\n- `s` is already running, or finished after completing, return the same\n  `Async` computation as the last call to `wait`. A select that checks `s` before it completes\n  restarts it, and the computations from earlier calls then fail.\n- `s` was stopped with `stop` before completing, return an `Async` computation that fails.",
+        "translation": "分情况处理：\n- 若 `s` 尚未运行，则启动它，并返回一个在此前配置的 `duration` 经过后完成的 `Async` 计算。\n- 若 `s` 正在运行，或已正常完成，则返回上一次调用 `wait` 所返回的同一个 `Async` 计算。选择操作在 `s` 完成前检查它会重新启动计时，此前调用得到的计算随后会失败。\n- 若 `s` 在完成前被 `stop` 停止，则返回一个会失败的 `Async` 计算。"
+    },
+    {
+        "name": "Std.Async.Sleep.reset",
+        "source": "If:\n- `s` is still running the timer restarts counting from now and completes after `duration`\n  milliseconds.\n- `s` is not yet or not anymore running this is a no-op.",
+        "translation": "分情况处理：\n- 若 `s` 仍在运行，计时器从现在起重新计时，并在 `duration` 毫秒后完成。\n- 若 `s` 尚未运行或已不再运行，则不执行任何操作。"
+    },
+    {
+        "name": "Std.Async.Sleep.stop",
+        "source": "If:\n- `s` is still running this stops `s` without completing any remaining `Async` computations that\n  were created through `wait`. Those computations fail once the last reference to their promise is\n  dropped, rather than producing a value.\n- `s` is not yet or not anymore running this is a no-op.",
+        "translation": "分情况处理：\n- 若 `s` 仍在运行，则停止 `s`，但不完成任何通过 `wait` 创建的剩余 `Async` 计算。这些计算会在其承诺的最后一个引用被丢弃时失败，而不会产生值。\n- 若 `s` 尚未运行或已不再运行，则不执行任何操作。"
+    },
+    {
+        "name": "Std.Async.Interval",
+        "source": "`Interval` can be used to repeatedly wait for some duration like a clock.\nThe underlying timer has millisecond resolution.",
+        "translation": "`Interval` 可用于像时钟一样反复等待指定的时长。\n底层计时器的分辨率为毫秒。"
+    },
+    {
+        "name": "Std.Async.Interval.mk",
+        "source": "Setup up an `Interval` that waits for `duration` milliseconds.\nThis function only initializes but does not yet start the timer.",
+        "translation": "设置一个等待 `duration` 毫秒的 `Interval`。\n此函数仅初始化计时器，尚不启动它。"
+    },
+    {
+        "name": "Std.Async.Interval.tick",
+        "source": "If:\n- `i` is not yet running start it and return an `Async` computation that completes right away as the 0th\n  multiple of `duration` has elapsed.\n- `i` is already running and:\n  - the tick from the last call of `i` has not yet finished return the same `Async` computation as the last\n    call\n  - the tick from the last call of `i` has finished return a new `Async` computation that waits for the\n    closest next tick from the time of calling this function.\n- `i` is not running anymore, the returned `Async` computation fails, as `stop` dropped the promise\n  it would have completed.",
+        "translation": "分情况处理：\n- 若 `i` 尚未运行，则启动它，并返回一个立即完成的 `Async` 计算，因为此时已到达 `duration` 的第 0 倍。\n- 若 `i` 已在运行：\n  - 如果上一次调用 `i` 对应的时刻尚未到达，则返回上一次调用所返回的同一个 `Async` 计算；\n  - 如果上一次调用 `i` 对应的时刻已经到达，则返回一个新的 `Async` 计算，等待自调用此函数起最近的下一个时刻。\n- 若 `i` 已不再运行，则返回的 `Async` 计算会失败，因为 `stop` 已丢弃本应由它兑现的承诺。"
+    },
+    {
+        "name": "Std.Async.Interval.reset",
+        "source": "If:\n- `Interval.tick` was called on `i` before the timer restarts counting from now and the next tick\n   happens in `duration`.\n- `i` is not yet or not anymore running this is a no-op.",
+        "translation": "分情况处理：\n- 若此前对 `i` 调用过 `Interval.tick`，则计时器从现在起重新计时，下一个时刻在 `duration` 后到达。\n- 若 `i` 尚未运行或已不再运行，则不执行任何操作。"
+    },
+    {
+        "name": "Std.Async.Interval.stop",
+        "source": "If:\n- `i` is still running this stops `i` without completing any remaining `Async` computations that\n  were created through `tick`. Those computations fail once the last reference to their promise is\n  dropped, rather than producing a value.\n- `i` is not yet or not anymore running this is a no-op.",
+        "translation": "分情况处理：\n- 若 `i` 仍在运行，则停止 `i`，但不完成任何通过 `tick` 创建的剩余 `Async` 计算。这些计算会在其承诺的最后一个引用被丢弃时失败，而不会产生值。\n- 若 `i` 尚未运行或已不再运行，则不执行任何操作。"
+    },
+    {
+        "name": "Std.Async.Selector.sleep",
+        "source": "Return a `Selector` that completes after `duration`.",
+        "translation": "返回一个在 `duration` 后完成的 `Selector`。"
+    },
+    {
+        "name": "Std.Async.IO.AsyncRead",
+        "source": "Interface for asynchronous reading operations.",
+        "translation": "异步读取操作的接口。"
+    },
+    {
+        "name": "Std.Async.IO.AsyncWrite",
+        "source": "Interface for asynchronous writing operations.",
+        "translation": "异步写入操作的接口。"
+    },
+    {
+        "name": "Std.Async.IO.AsyncStream",
+        "source": "Interface for asynchronous streaming with selector-based iteration.",
+        "translation": "异步流的接口，支持基于选择器的迭代。"
+    },
+    {
+        "name": "Std.Async.TCP.Socket.Server",
+        "source": "Represents a TCP server socket, managing incoming client connections.",
+        "translation": "表示管理传入客户端连接的 TCP 服务器套接字。"
+    },
+    {
+        "name": "Std.Async.TCP.Socket.Server.mk",
+        "source": "Creates a new TCP server socket.",
+        "translation": "创建新的 TCP 服务器套接字。"
+    },
+    {
+        "name": "Std.Async.TCP.Socket.Server.bind",
+        "source": "Binds the server socket to the specified address. Address reuse is enabled to allow rebinding the\nsame address.",
+        "translation": "将套接字绑定到指定地址。\n启用地址复用，以允许重新绑定同一地址。"
+    },
+    {
+        "name": "Std.Async.TCP.Socket.Server.listen",
+        "source": "Listens for incoming connections with the given backlog.",
+        "translation": "使用给定的连接积压队列长度监听传入连接。"
+    },
+    {
+        "name": "Std.Async.TCP.Socket.Server.accept",
+        "source": "Accepts an incoming connection.",
+        "translation": "接受传入连接。"
+    },
+    {
+        "name": "Std.Async.TCP.Socket.Server.tryAccept",
+        "source": "Tries to accept an incoming connection.",
+        "translation": "尝试接受传入连接。"
+    },
+    {
+        "name": "Std.Async.TCP.Socket.Server.getSockName",
+        "source": "Gets the local address of the server socket.",
+        "translation": "获取服务器套接字的本地地址。"
+    },
+    {
+        "name": "Std.Async.TCP.Socket.Server.noDelay",
+        "source": "Enables the Nagle algorithm for all client sockets accepted by this server socket.",
+        "translation": "为该服务器套接字接受的所有客户端套接字设置 TCP_NODELAY（禁用 Nagle 算法）。"
+    },
+    {
+        "name": "Std.Async.TCP.Socket.Server.keepAlive",
+        "source": "Enables TCP keep-alive for all client sockets accepted by this server socket.",
+        "translation": "为该服务器套接字接受的所有客户端套接字启用 TCP 保活。"
+    },
+    {
+        "name": "Std.Async.TCP.Socket.Client",
+        "source": "Represents a TCP client socket, used to connect to a server.",
+        "translation": "表示用于连接服务器的 TCP 客户端套接字。"
+    },
+    {
+        "name": "Std.Async.TCP.Socket.Client.mk",
+        "source": "Creates a new TCP client socket.",
+        "translation": "创建新的 TCP 客户端套接字。"
+    },
+    {
+        "name": "Std.Async.TCP.Socket.Client.bind",
+        "source": "Binds the server socket to the specified address. Address reuse is enabled to allow rebinding the\nsame address.",
+        "translation": "将套接字绑定到指定地址。\n启用地址复用，以允许重新绑定同一地址。"
+    },
+    {
+        "name": "Std.Async.TCP.Socket.Client.connect",
+        "source": "Connects the client socket to the given address.",
+        "translation": "将客户端套接字连接到给定地址。"
+    },
+    {
+        "name": "Std.Async.TCP.Socket.Client.send",
+        "source": "Sends data through the client socket.",
+        "translation": "通过客户端套接字发送数据。"
+    },
+    {
+        "name": "Std.Async.TCP.Socket.Client.sendAll",
+        "source": "Sends multiple data buffers through the client socket.",
+        "translation": "通过客户端套接字发送多个数据缓冲区。"
+    },
+    {
+        "name": "Std.Async.TCP.Socket.Client.recv?",
+        "source": "Receives data from the client socket. If data is received, it’s wrapped in .some. If EOF is reached,\nthe result is .none, indicating no more data is available. Receiving data in parallel on the same\nsocket is not supported. Instead, we recommend binding multiple sockets to the same address.\nFurthermore calling this function in parallel with `recvSelector` is not supported.",
+        "translation": "从客户端套接字接收数据。\n若收到数据，则将其包装在 `.some` 中。\n若到达 EOF，则结果为 `.none`，表示没有更多可用数据。\n不支持在同一套接字上并行接收数据；建议将多个套接字绑定到同一地址。\n此外，不支持与 `recvSelector` 并行调用此函数。"
+    },
+    {
+        "name": "Std.Async.TCP.Socket.Client.shutdown",
+        "source": "Shuts down the write side of the client socket.",
+        "translation": "关闭客户端套接字的写入端。"
+    },
+    {
+        "name": "Std.Async.TCP.Socket.Client.getPeerName",
+        "source": "Gets the remote address of the client socket.",
+        "translation": "获取客户端套接字的远端地址。"
+    },
+    {
+        "name": "Std.Async.TCP.Socket.Client.getSockName",
+        "source": "Gets the local address of the client socket.",
+        "translation": "获取客户端套接字的本地地址。"
+    },
+    {
+        "name": "Std.Async.TCP.Socket.Client.noDelay",
+        "source": "Enables the Nagle algorithm for the client socket.",
+        "translation": "为客户端套接字设置 TCP_NODELAY（禁用 Nagle 算法）。"
+    },
+    {
+        "name": "Std.Async.TCP.Socket.Client.keepAlive",
+        "source": "Enables TCP keep-alive with a specified delay for the client socket.",
+        "translation": "为客户端套接字启用 TCP 保活，并指定延迟。"
+    },
+    {
+        "name": "Std.Async.UDP.Socket.mk",
+        "source": "Creates a new UDP socket.",
+        "translation": "创建新的 UDP 套接字。"
+    },
+    {
+        "name": "Std.Async.UDP.Socket.bind",
+        "source": "Binds the UDP socket to the given address. Address reuse is enabled to allow rebinding the\nsame address.",
+        "translation": "将 UDP 套接字绑定到给定地址。\n启用地址复用，以允许重新绑定同一地址。"
+    },
+    {
+        "name": "Std.Async.UDP.Socket.connect",
+        "source": "Associates the UDP socket with the given address and port, so every message sent by this socket is\nautomatically sent to that destination.",
+        "translation": "将 UDP 套接字与给定地址和端口关联，使通过该套接字发送的每条消息都自动发送到该目的地。"
+    },
+    {
+        "name": "Std.Async.UDP.Socket.send",
+        "source": "Sends data through an UDP socket. The `addr` parameter specifies the destination address. If `addr`\nis `none`, the data is sent to the default peer address set by `connect`.",
+        "translation": "通过 UDP 套接字发送数据。\n`addr` 参数指定目的地址。\n若 `addr` 为 `none`，则将数据发送到通过 `connect` 设置的默认对端地址。"
+    },
+    {
+        "name": "Std.Async.UDP.Socket.sendAll",
+        "source": "Sends multiple data buffers through an UDP socket. The `addr` parameter specifies the destination\naddress. If `addr` is `none`, the data is sent to the default peer address set by `connect`.",
+        "translation": "通过 UDP 套接字发送多个数据缓冲区。\n`addr` 参数指定目的地址。\n若 `addr` 为 `none`，则将数据发送到通过 `connect` 设置的默认对端地址。"
+    },
+    {
+        "name": "Std.Async.UDP.Socket.recv",
+        "source": "Receives data from an UDP socket. `size` is for the maximum bytes to receive.\nThe promise resolves when some data is available or an error occurs. If the socket\nhas not been previously bound with `bind`, it is automatically bound to `0.0.0.0`\n(all interfaces) with a random port.\nFurthermore calling this function in parallel with `recvSelector` is not supported.\n\nA datagram larger than `size` is discarded in its entirety, and this throws an\n`IO.Error.resourceExhausted` instead of returning a truncated prefix. The socket stays usable, so a\nreceive loop should catch the error per datagram.",
+        "translation": "从 UDP 套接字接收数据。\n`size` 是要接收的最大字节数。\n当有数据可用或发生错误时，承诺就绪。\n如果此前未使用 `bind` 绑定套接字，则自动将其绑定到 `0.0.0.0`（所有接口）及随机端口。\n此外，不支持与 `recvSelector` 并行调用此函数。\n\n大于 `size` 的数据报会被整体丢弃，并抛出 `IO.Error.resourceExhausted`，而不是返回被截断的前缀。\n套接字仍可使用，因此接收循环应对每个数据报分别捕获该错误。"
+    },
+    {
+        "name": "Std.Async.UDP.Socket.getSockName",
+        "source": "Gets the local address of the UDP socket.",
+        "translation": "获取 UDP 套接字的本地地址。"
+    },
+    {
+        "name": "Std.Async.UDP.Socket.getPeerName",
+        "source": "Gets the remote address of the UDP socket. On unconnected handles, it throws the `.invalidArgument`.\nerror.",
+        "translation": "获取 UDP 套接字的远端地址。\n对未连接的句柄，会抛出 `.invalidArgument` 错误。"
+    },
+    {
+        "name": "Std.Async.UDP.Socket.setBroadcast",
+        "source": "Enables or disables broadcasting for the UDP socket.",
+        "translation": "启用或禁用 UDP 套接字的广播。"
+    },
+    {
+        "name": "Std.Async.UDP.Socket.setTTL",
+        "source": "Sets the TTL for outgoing packets.",
+        "translation": "设置出站数据包的生存时间（TTL）。"
+    },
+    {
+        "name": "Std.Async.UDP.Socket.setMulticastLoop",
+        "source": "Enables or disables multicast loopback for the UDP socket.",
+        "translation": "启用或禁用 UDP 套接字的多播回环。"
+    },
+    {
+        "name": "Std.Async.UDP.Socket.setMulticastTTL",
+        "source": "Sets the time-to-live (TTL) for multicast packets.",
+        "translation": "设置多播数据包的生存时间（TTL）。"
+    },
+    {
+        "name": "Std.Async.UDP.Socket.setMulticastInterface",
+        "source": "Sets the multicast interface for sending packets.",
+        "translation": "设置发送数据包的多播接口。"
+    },
+    {
+        "name": "Std.Async.UDP.Socket.setMembership",
+        "source": "Sets the membership for joining or leaving a multicast group.",
+        "translation": "设置加入或离开多播组的成员关系。"
+    },
+    {
+        "name": "Std.Async.UDP.Membership",
+        "source": "Membership type for multicast operations.",
+        "translation": "多播操作的成员关系类型。"
+    },
+    {
+        "name": "Std.Async.DNS.getAddrInfo",
+        "source": "Asynchronously resolves a hostname and service to an array of socket addresses.",
+        "translation": "异步将主机名和服务解析为套接字地址数组。"
+    },
+    {
+        "name": "Std.Async.DNS.getNameInfo",
+        "source": "Performs a reverse DNS lookup on a `SocketAddress`.",
+        "translation": "对 `SocketAddress` 执行反向 DNS 查询。"
+    },
+    {
+        "name": "Std.Async.DNS.NameInfo",
+        "source": "Represents a resolved hostname and service name from a socket address.",
+        "translation": "表示从套接字地址解析出的主机名和服务名。"
+    },
+    {
+        "name": "Std.Async.Signal",
+        "source": "Unix style signals for Unix and Windows.\nSIGKILL and SIGSTOP are missing because they cannot be caught.\nSIGBUS, SIGFPE, SIGILL, and SIGSEGV are missing because they cannot be caught safely.\nSIGPIPE is not present because the runtime ignores the signal.",
+        "translation": "用于 Unix 和 Windows 的 Unix 风格信号。\n不包含 SIGKILL 和 SIGSTOP，因为无法捕获它们。\n不包含 SIGBUS、SIGFPE、SIGILL 和 SIGSEGV，因为无法安全地捕获它们。\n不包含 SIGPIPE，因为运行时会忽略该信号。"
+    },
+    {
+        "name": "Std.Async.Signal.Waiter",
+        "source": "`Signal.Waiter` can be used to wait for a specific signal.",
+        "translation": "`Signal.Waiter` 可用于等待指定的信号。"
+    },
+    {
+        "name": "Std.Async.Signal.Waiter.mk",
+        "source": "Set up a `Signal.Waiter` that waits for the specified `signum`.\nThis function only initializes but does not yet start listening for the signal.\n\nWhile the waiter listens for the signal, the default action of the signal is replaced. A waiter\nthat is no longer referenced can keep listening if the last operation that reached it was `wait`: a\none-shot waiter until the signal arrives, a repeating one for the rest of the process. After a\nselect that checked it, it stops listening once it is dropped. `stop` stops it in every case.",
+        "translation": "设置一个等待指定 `signum` 的 `Signal.Waiter`。\n此函数仅初始化等待器，尚不开始监听信号。\n\n等待器监听信号期间，会替换该信号的默认动作。\n如果最后一个访问等待器的操作是 `wait`，那么即使不再有引用指向它，它也可能继续监听：一次性等待器监听到信号到达为止，重复等待器则监听到进程结束。\n如果此前是一次检查过它的选择操作，则等待器被丢弃后会停止监听。\n`stop` 在所有情况下都会停止它。"
+    },
+    {
+        "name": "Std.Async.Signal.Waiter.wait",
+        "source": "If:\n- `s` is not yet running start listening and return an `AsyncTask` that will resolve once the\n   previously configured signal is received.\n- `s` is running, or is a one-shot `s` that finished after receiving the signal, return an\n  `AsyncTask` for the pending signal, which is the one returned by the previous call unless that one\n  resolved (for a repeating `s`) or a select that did not find the signal already received dropped\n  it. Tasks whose promise was dropped fail.\n- `s` was stopped with `stop`, and is repeating or had not received the signal, return an\n  `AsyncTask` that fails.\n\nThe resolved `AsyncTask` contains the number that `Signal` assigns to the received signal, which is\nthe same on every platform (the x86 Linux numbering).",
+        "translation": "分情况处理：\n- 若 `s` 尚未运行，则开始监听，并返回一个在收到此前配置的信号时就绪的 `AsyncTask`。\n- 若 `s` 正在运行，或是收到信号后已完成的一次性等待器，则返回等待信号的 `AsyncTask`。除非上一次调用的任务已就绪（对于重复等待器），或一次未发现信号已到达的选择操作丢弃了它，否则返回的就是上次调用返回的同一个任务。其承诺被丢弃的任务会失败。\n- 若 `s` 已被 `stop` 停止，且为重复等待器或此前尚未收到信号，则返回一个会失败的 `AsyncTask`。\n\n就绪的 `AsyncTask` 包含 `Signal` 为接收到的信号分配的编号，各平台使用相同的编号（x86 Linux 编号）。"
+    },
+    {
+        "name": "Std.Async.Signal.Waiter.stop",
+        "source": "If:\n- `s` is still running this stops `s` without resolving any remaining `AsyncTask`s that were created\n  through `wait`. Those tasks fail once the last reference to their promise is dropped, rather than\n  producing a value.\n- `s` is not yet or not anymore running this is a no-op.",
+        "translation": "分情况处理：\n- 若 `s` 仍在运行，则停止 `s`，但不使任何通过 `wait` 创建的剩余 `AsyncTask` 就绪。这些任务会在其承诺的最后一个引用被丢弃时失败，而不会产生值。\n- 若 `s` 尚未运行或已不再运行，则不执行任何操作。"
+    },
+    {
+        "name": "Std.Async.ContextAsync",
+        "source": "An asynchronous computation with cooperative cancellation support via a `CancellationContext`. `ContextAsync α`\nis equivalent to `ReaderT CancellationContext Async α`, providing a `CancellationContext` value to async\ncomputations.",
+        "translation": "通过 `CancellationContext` 支持协作取消的异步计算。\n`ContextAsync α` 等价于 `ReaderT CancellationContext Async α`，为异步计算提供一个 `CancellationContext` 值。"
+    },
+    {
+        "name": "Std.Async.ContextAsync.async",
+        "source": "Launches a `ContextAsync` computation as an asynchronous task with a forked child context.\nThe child context is automatically cancelled when the task completes or fails.",
+        "translation": "以派生的子上下文，将 `ContextAsync` 计算启动为异步任务。\n任务完成或失败时，会自动取消该子上下文。"
+    },
+    {
+        "name": "Std.Async.ContextAsync.cancel",
+        "source": "Cancels the current context with the given reason, cascading to all child contexts.\nCancellation is cooperative, operations must explicitly check `isCancelled` or use `awaitCancellation` to respond.",
+        "translation": "以给定原因取消当前上下文，并将取消传播到所有子上下文。\n取消是协作式的，操作必须显式检查 `isCancelled` 或使用 `awaitCancellation` 才能响应。"
+    },
+    {
+        "name": "Std.Async.ContextAsync.run",
+        "source": "Runs a `ContextAsync` computation with a new context that cancels after the execution of the computation.\nSee also `ContextAsync.runIn` for running with an existing context.",
+        "translation": "使用新上下文运行 `ContextAsync` 计算，并在计算执行结束后取消该上下文。\n如需使用已有上下文运行，另见 `ContextAsync.runIn`。"
+    },
+    {
+        "name": "Std.Async.ContextAsync.runIn",
+        "source": "Runs a `ContextAsync` computation with a given context. See also `ContextAsync.run` for running with a new\ncontext that automatically cancels after execution.",
+        "translation": "使用给定上下文运行 `ContextAsync` 计算。\n如需创建执行结束后自动取消的新上下文，另见 `ContextAsync.run`。"
+    },
+    {
+        "name": "Std.Async.ContextAsync.getContext",
+        "source": "Returns the current context for inspection or to pass to other functions.",
+        "translation": "返回当前上下文，以供检查或传给其他函数。"
+    },
+    {
+        "name": "Std.Async.ContextAsync.background",
+        "source": "Launches a `ContextAsync` computation in the background, discarding its result.\n\nThe computation runs independently in the background in its own child context. The parent computation does not wait\nfor background tasks to complete. This means that if the parent finishes its execution it will cause\nthe cancellation of the background functions. See also `disown` for launching tasks that continue independently\neven after parent cancellation.",
+        "translation": "在后台启动 `ContextAsync` 计算，并丢弃其结果。\n\n计算在自己的子上下文中独立地在后台运行。\n父计算不会等待后台任务完成。\n这意味着父计算执行结束时，会导致后台函数被取消。\n如需启动即使父上下文取消后仍继续独立运行的任务，另见 `disown`。"
+    },
+    {
+        "name": "Std.Async.ContextAsync.disown",
+        "source": "Launches a `ContextAsync` computation in the background, discarding its result. It's similar to `background`,\nbut the child context is not automatically cancelled when the action completes. This allows the disowned\ncomputation to continue running independently, even if the parent context is cancelled. The child context\nwill remain alive as long as the computation needs it. See also `background` for launching tasks that are\ncancelled when the parent finishes.",
+        "translation": "在后台启动 `ContextAsync` 计算，并丢弃其结果。\n与 `background` 类似，但动作完成时不会自动取消子上下文。\n这使得脱离父上下文的计算即使在父上下文被取消后，也能继续独立运行。\n只要计算仍需要它，子上下文就会保持存活。\n如需启动父计算结束时即被取消的任务，另见 `background`。"
+    },
+    {
+        "name": "Std.Async.ContextAsync.concurrently",
+        "source": "Runs two computations concurrently and returns both results. Each computation runs in its own child context;\nif either fails or is cancelled, both are cancelled immediately and the exception is propagated.",
+        "translation": "并发运行两个计算，并返回两个结果。\n每个计算在自己的子上下文中运行；若任一计算失败或被取消，则立即取消两者，并传播异常。"
+    },
+    {
+        "name": "Std.Async.ContextAsync.concurrentlyAll",
+        "source": "Runs all computations concurrently and collects results in the same order. Each runs in its own child context;\nif any computation fails, all others are cancelled and the exception is propagated.",
+        "translation": "并发运行所有计算，并按原顺序收集结果。\n每个计算在自己的子上下文中运行；若任一计算失败，则取消所有其他计算，并传播异常。"
+    },
+    {
+        "name": "Std.Async.ContextAsync.race",
+        "source": "Runs two computations concurrently and returns the result of the first to complete. Each computation\nruns in its own child context; once the first completes, both of these contexts are cancelled.",
+        "translation": "并发运行两个计算，返回先完成者的结果。\n每个计算在自己的子上下文中运行；第一个计算完成后，就会取消这两个上下文。"
+    },
+    {
+        "name": "Std.Async.ContextAsync.raceAll",
+        "source": "Runs all computations concurrently and returns the result of the first to complete, which is an\nexception if that computation failed. Each computation runs in its own child context; once the first\ncompletes, all of these contexts are cancelled.",
+        "translation": "并发运行所有计算，返回最先完成者的结果；若该计算失败，则结果为异常。\n每个计算在自己的子上下文中运行；第一个计算完成后，就会取消所有这些上下文。"
+    },
+    {
+        "name": "Std.Async.ContextAsync.isCancelled",
+        "source": "Checks if the current context is cancelled. Returns `true` if the context (or any ancestor) has been cancelled.\nLong-running operations should periodically check this and exit gracefully when cancelled.",
+        "translation": "检查当前上下文是否已取消。\n若当前上下文或任一祖先上下文已取消，则返回 `true`。\n长时间运行的操作应定期检查它，并在取消时有序退出。"
+    },
+    {
+        "name": "Std.Async.ContextAsync.awaitCancellation",
+        "source": "Waits for the current context to be cancelled.",
+        "translation": "等待当前上下文被取消。"
+    },
+    {
+        "name": "Std.Async.ContextAsync.doneSelector",
+        "source": "Returns a selector that completes when the current context is cancelled.",
+        "translation": "返回一个在当前上下文被取消时完成的选择器。"
+    },
+    {
+        "name": "Std.Async.ContextAsync.getCancellationReason",
+        "source": "Gets the cancellation reason if the context is cancelled. Returns `some reason` if cancelled, `none` otherwise,\nallowing you to distinguish between different cancellation types.",
+        "translation": "若上下文已取消，则获取取消原因。\n已取消时返回 `some reason`，否则返回 `none`，从而可以区分不同的取消类型。"
+    },
+    {
+        "name": "Std.CancellationContext",
+        "source": "A cancellation context that allows multiple consumers to wait until cancellation is requested. Forms\na tree structure where cancelling a parent cancels all children.",
+        "translation": "允许多个使用方等待取消请求的取消上下文。\n上下文形成树状结构，取消父上下文会取消所有子上下文。"
+    },
+    {
+        "name": "Std.CancellationContext.new",
+        "source": "Creates a new root cancellation context.",
+        "translation": "创建新的根取消上下文。"
+    },
+    {
+        "name": "Std.CancellationContext.fork",
+        "source": "Forks a child context from a parent. If the parent is already cancelled, returns the parent context.\nOtherwise, creates a new child that will be cancelled when the parent is cancelled.",
+        "translation": "从父上下文派生一个子上下文。\n若父上下文已取消，则返回父上下文。\n否则创建一个新子上下文，它将在父上下文取消时被取消。"
+    },
+    {
+        "name": "Std.CancellationContext.cancel",
+        "source": "Cancels this context and all child contexts with the given reason.",
+        "translation": "以给定原因取消此上下文及所有子上下文。"
+    },
+    {
+        "name": "Std.CancellationContext.isCancelled",
+        "source": "Checks if the context is cancelled.",
+        "translation": "检查上下文是否已取消。"
+    },
+    {
+        "name": "Std.CancellationContext.getCancellationReason",
+        "source": "Returns the cancellation reason if the context is cancelled.",
+        "translation": "若上下文已取消，则返回取消原因。"
+    },
+    {
+        "name": "Std.CancellationContext.done",
+        "source": "Waits for cancellation. Returns a task that completes when the context is cancelled.",
+        "translation": "等待取消。\n返回一个在上下文被取消时完成的任务。"
+    },
+    {
+        "name": "Std.CancellationReason",
+        "source": "Reasons for cancellation.",
+        "translation": "取消的原因。"
+    },
+    {
+        "name": "Std.CancellationToken",
+        "source": "A cancellation token is a synchronization primitive that allows multiple consumers to wait\nuntil cancellation is requested.",
+        "translation": "取消令牌是一种同步原语，允许多个使用方等待取消请求。"
+    },
+    {
+        "name": "Std.CancellationToken.State",
+        "source": "The central state structure for a `CancellationToken`.",
+        "translation": "`CancellationToken` 的核心状态结构。"
+    },
+    {
+        "name": "Std.Async.MonadAwait.await",
+        "source": "Awaits the result of `t α` and returns it inside the `m` monad.",
+        "translation": "等待 `t α` 的结果，并在单子 `m` 中返回它。"
+    },
+    {
+        "name": "Std.Async.MonadAsync.async",
+        "source": "Starts an asynchronous computation in another monad.",
+        "translation": "在另一个单子中启动异步计算。"
+    },
+    {
+        "name": "Std.Async.Selector.tryFn",
+        "source": "Attempts to retrieve a piece of data from the event source in a non-blocking fashion, returning\n`some` if data is available and `none` otherwise.",
+        "translation": "尝试以非阻塞方式从事件源获取一份数据。\n有数据可用时返回 `some`，否则返回 `none`。"
+    },
+    {
+        "name": "Std.Async.Selector.registerFn",
+        "source": "Registers a `Waiter` with the event source. Once data is available, the event source should\nattempt to call `Waiter.race` and resolve the `Waiter`'s promise if it wins. It is crucial that\ndata is never actually consumed from the event source unless `Waiter.race` wins in order to\nprevent data loss.",
+        "translation": "向事件源注册一个 `Waiter`。\n一旦数据可用，事件源应尝试调用 `Waiter.race`，并在获胜时兑现 `Waiter` 的承诺。\n关键是，除非 `Waiter.race` 获胜，否则绝不能真正消费事件源中的数据，以防止数据丢失。"
+    },
+    {
+        "name": "Std.Async.Selector.unregisterFn",
+        "source": "A cleanup function that is called once any `Selector` has won the `Selectable.one` race.",
+        "translation": "清理函数，在任一 `Selector` 赢得 `Selectable.one` 的竞争后调用。"
+    },
+    {
+        "name": "Std.Async.Selectable.cont",
+        "source": "The continuation that is called on results from the event source.",
+        "translation": "对事件源的结果调用的后续计算。"
+    },
+    {
+        "name": "Std.Async.Selectable.selector",
+        "source": "The event source.",
+        "translation": "事件源。"
+    },
+    {
+        "name": "Std.Async.DNS.NameInfo.host",
+        "source": "The resolved hostname (e.g., \"example.com\").",
+        "translation": "解析得到的主机名（例如 \"example.com\"）。"
+    },
+    {
+        "name": "Std.Async.DNS.NameInfo.service",
+        "source": "The service name (e.g., \"http\" for port 80).",
+        "translation": "服务名（例如端口 80 对应的 \"http\"）。"
+    },
+    {
+        "name": "Std.Async.Signal.sighup",
+        "source": "Hangup detected on controlling terminal or death of controlling process.\n\nOn Windows:\n- SIGHUP is generated when the user closes the console window. The program is given ~10 seconds to\n  perform cleanup before Windows unconditionally terminates it.",
+        "translation": "检测到控制终端挂断，或控制进程终止。\n\n在 Windows 上：\n- 用户关闭控制台窗口时会产生 SIGHUP。程序约有 10 秒时间执行清理，之后 Windows 会无条件终止它。"
+    },
+    {
+        "name": "Std.Async.Signal.sigint",
+        "source": "Interrupt program.\n\nNotes:\n- Normally delivered when the user presses CTRL+C. Not generated when terminal raw mode is enabled.",
+        "translation": "中断程序。\n\n注意：\n- 通常在用户按下 CTRL+C 时发送。终端启用原始模式时不会产生此信号。"
+    },
+    {
+        "name": "Std.Async.Signal.sigquit",
+        "source": "Quit program.",
+        "translation": "退出程序。"
+    },
+    {
+        "name": "Std.Async.Signal.sigtrap",
+        "source": "Trace/breakpoint trap.",
+        "translation": "跟踪或断点陷阱。"
+    },
+    {
+        "name": "Std.Async.Signal.sigabrt",
+        "source": "Abort signal.\n\nNotes:\n- SIGABRT is not catchable if generated by certain runtime functions, such as abort or assertion failure.\n- On Windows, watchers can be created for SIGABRT, but they never receive the signal.",
+        "translation": "异常终止信号。\n\n注意：\n- 若由某些运行时函数（例如 abort 或断言失败）产生，则无法捕获 SIGABRT。\n- 在 Windows 上，可以为 SIGABRT 创建监听器，但它们永远不会收到此信号。"
+    },
+    {
+        "name": "Std.Async.Signal.sigusr1",
+        "source": "User-defined signal 1.",
+        "translation": "用户定义信号 1。"
+    },
+    {
+        "name": "Std.Async.Signal.sigusr2",
+        "source": "User-defined signal 2.",
+        "translation": "用户定义信号 2。"
+    },
+    {
+        "name": "Std.Async.Signal.sigalrm",
+        "source": "Real-time timer expired.",
+        "translation": "实时计时器到期。"
+    },
+    {
+        "name": "Std.Async.Signal.sigterm",
+        "source": "Termination signal.\n\nNotes:\n- On Windows, watchers can be created for SIGTERM, but they never receive the signal.",
+        "translation": "终止信号。\n\n注意：\n- 在 Windows 上，可以为 SIGTERM 创建监听器，但它们永远不会收到此信号。"
+    },
+    {
+        "name": "Std.Async.Signal.sigchld",
+        "source": "Child status has changed.",
+        "translation": "子进程状态发生变化。"
+    },
+    {
+        "name": "Std.Async.Signal.sigcont",
+        "source": "Continue after stop.",
+        "translation": "停止后继续。"
+    },
+    {
+        "name": "Std.Async.Signal.sigtstp",
+        "source": "Stop typed at terminal.",
+        "translation": "在终端输入停止指令。"
+    },
+    {
+        "name": "Std.Async.Signal.sigttin",
+        "source": "Background read attempted from control terminal.",
+        "translation": "后台进程尝试从控制终端读取。"
+    },
+    {
+        "name": "Std.Async.Signal.sigttou",
+        "source": "Background write attempted to control terminal.",
+        "translation": "后台进程尝试向控制终端写入。"
+    },
+    {
+        "name": "Std.Async.Signal.sigurg",
+        "source": "Urgent condition on socket.",
+        "translation": "套接字出现紧急情况。"
+    },
+    {
+        "name": "Std.Async.Signal.sigxcpu",
+        "source": "CPU time limit exceeded.",
+        "translation": "超出 CPU 时间限制。"
+    },
+    {
+        "name": "Std.Async.Signal.sigxfsz",
+        "source": "File size limit exceeded.",
+        "translation": "超出文件大小限制。"
+    },
+    {
+        "name": "Std.Async.Signal.sigvtalrm",
+        "source": "Virtual alarm clock.",
+        "translation": "虚拟闹钟。"
+    },
+    {
+        "name": "Std.Async.Signal.sigprof",
+        "source": "Profiling timer expired.",
+        "translation": "性能分析计时器到期。"
+    },
+    {
+        "name": "Std.Async.Signal.sigwinch",
+        "source": "Window size change.\n\nNotes:\n- SIGWINCH is raised whenever the runtime detects the console has been resized.\n- Under console emulators, or on 32-bit apps on 64-bit systems, SIGWINCH is emulated.\n- In these cases, signals may not be delivered timely.",
+        "translation": "窗口大小发生变化。\n\n注意：\n- 每当运行时检测到控制台大小改变，就会产生 SIGWINCH。\n- 在控制台模拟器中，或在 64 位系统上运行的 32 位应用中，SIGWINCH 是模拟的。\n- 这些情况下，信号可能无法及时送达。"
+    },
+    {
+        "name": "Std.Async.Signal.sigio",
+        "source": "I/O now possible.",
+        "translation": "现在可以执行 I/O。"
+    },
+    {
+        "name": "Std.Async.Signal.sigsys",
+        "source": "Bad system call.",
+        "translation": "无效的系统调用。"
+    },
+    {
+        "name": "_private.Std.Sync.CancellationContext.0.Std.CancellationContext.parent?",
+        "source": "The ID of the context this one was forked from.",
+        "translation": "当前上下文派生自的上下文 ID。"
+    },
+    {
+        "name": "Std.CancellationContext.State.tokens",
+        "source": "Map of token IDs to optional tokens and their children.",
+        "translation": "令牌 ID 到可选令牌及其子节点的映射。"
+    },
+    {
+        "name": "Std.CancellationContext.State.id",
+        "source": "Next available ID",
+        "translation": "下一个可用 ID。"
+    },
+    {
+        "name": "Std.CancellationReason.deadline",
+        "source": "Cancelled due to a deadline or timeout",
+        "translation": "由于截止时间或超时而取消。"
+    },
+    {
+        "name": "Std.CancellationReason.shutdown",
+        "source": "Cancelled due to shutdown",
+        "translation": "由于关闭而取消。"
+    },
+    {
+        "name": "Std.CancellationReason.cancel",
+        "source": "Explicitly cancelled",
+        "translation": "显式取消。"
+    },
+    {
+        "name": "Std.CancellationReason.custom",
+        "source": "Custom cancellation reason",
+        "translation": "自定义取消原因。"
+    },
+    {
+        "name": "Std.CancellationToken.State.reason",
+        "source": "The cancellation reason if cancelled, none otherwise.",
+        "translation": "已取消时的取消原因，否则为 none。"
+    },
+    {
+        "name": "Std.CancellationToken.State.consumers",
+        "source": "Consumers that are blocked waiting for cancellation.\n-",
+        "translation": "阻塞等待取消的使用方。"
+    },
+    {
+        "name": "Lean.Parser.Command.registerSymSimp",
+        "source": "Register a named `Sym.simp` variant.\n\n```\nregister_sym_simp myVariant where\n  pre  := telescope\n  post := ground >> rewrite [thm1, thm2] with self\n  discharger := grind\n  maxSteps := 50000\n```",
+        "translation": "注册一个具名的 `Sym.simp` 变体。\n\n```\nregister_sym_simp myVariant where\n  pre  := telescope\n  post := ground >> rewrite [thm1, thm2] with self\n  discharger := grind\n  maxSteps := 50000\n```"
+    },
+    {
+        "name": "Lean.Parser.Command.registerSymDSimp",
+        "source": "Register a named `Sym.dsimp` variant.\n\n```\nregister_sym_dsimp myVariant where\n  pre  := match\n  post := ground >> zeta_delta\n  maxSteps := 50000\n```",
+        "translation": "注册一个具名的 `Sym.dsimp` 变体。\n\n```\nregister_sym_dsimp myVariant where\n  pre  := match\n  post := ground >> zeta_delta\n  maxSteps := 50000\n```"
+    },
+    {
+        "name": "Lean.Parser.Tactic.Grind.skip",
+        "source": "`skip` does nothing.",
+        "translation": "`skip` 不执行任何操作。"
+    },
+    {
+        "name": "Lean.Parser.Tactic.Grind.done",
+        "source": "`done` succeeds iff there are no remaining goals.",
+        "translation": "当且仅当没有剩余目标时，`done` 成功。"
+    },
+    {
+        "name": "Lean.Parser.Tactic.Grind.case",
+        "source": "* `case tag => tac` focuses on the goal with case name `tag` and solves it using `tac`,\n  or else fails.\n* `case tag x₁ ... xₙ => tac` additionally renames the `n` most recent hypotheses\n  with inaccessible names to the given names.\n* `case tag₁ | tag₂ => tac` is equivalent to `(case tag₁ => tac); (case tag₂ => tac)`.",
+        "translation": "* `case tag => tac` 聚焦情形名为 `tag` 的目标，并使用 `tac` 解决它，否则失败。\n* `case tag x₁ ... xₙ => tac` 还会将最近的 `n` 个具有不可访问名称的假设重命名为给定名称。\n* `case tag₁ | tag₂ => tac` 等价于 `(case tag₁ => tac); (case tag₂ => tac)`。"
+    },
+    {
+        "name": "Lean.Parser.Tactic.Grind.focus",
+        "source": "`focus tac` focuses on the main goal, suppressing all other goals, and runs `tac` on it.\nUsually `· tac`, which enforces that the goal is closed by `tac`, should be preferred.",
+        "translation": "`focus tac` 聚焦主目标，暂时隐藏所有其他目标，并在主目标上运行 `tac`。\n通常应优先使用 `· tac`，它要求 `tac` 完全解决该目标。"
+    },
+    {
+        "name": "Lean.Parser.Tactic.Grind.next",
+        "source": "`next => tac` focuses on the next goal and solves it using `tac`, or else fails.\n`next x₁ ... xₙ => tac` additionally renames the `n` most recent hypotheses with\ninaccessible names to the given names.",
+        "translation": "`next => tac` 聚焦下一个目标，并使用 `tac` 解决它，否则失败。\n`next x₁ ... xₙ => tac` 还会将最近的 `n` 个具有不可访问名称的假设重命名为给定名称。"
+    },
+    {
+        "name": "Lean.Parser.Tactic.Grind.«grind·_»",
+        "source": "`· grindSeq` focuses on the main `grind` goal and tries to solve it using the given\nsequence of `grind` tactics.",
+        "translation": "`· grindSeq` 聚焦主要的 `grind` 目标，并尝试使用给定的 `grind` 策略序列解决它。"
+    },
+    {
+        "name": "Lean.Parser.Tactic.Grind.allGoals",
+        "source": "`all_goals tac` runs `tac` on each goal, concatenating the resulting goals.\nIf the tactic fails on any goal, the entire `all_goals` tactic fails.",
+        "translation": "`all_goals tac` 对每个目标运行 `tac`，并串接产生的目标。\n如果策略在任一目标上失败，则整个 `all_goals` 策略失败。"
+    },
+    {
+        "name": "Lean.Parser.Tactic.Grind.anyGoals",
+        "source": "`any_goals tac` applies the tactic `tac` to every goal,\nconcatenating the resulting goals for successful tactic applications.\nIf the tactic fails on all of the goals, the entire `any_goals` tactic fails.\n\nThis tactic is like `all_goals try tac` except that it fails if none of the applications of `tac` succeeds.",
+        "translation": "`any_goals tac` 对每个目标应用策略 `tac`，并串接所有成功应用产生的目标。\n如果策略在所有目标上都失败，则整个 `any_goals` 策略失败。\n\n此策略类似于 `all_goals try tac`，但如果没有一次 `tac` 应用成功，它就会失败。"
+    },
+    {
+        "name": "Lean.Parser.Tactic.Grind.first",
+        "source": "`first (tac) ...` runs each `tac` until one succeeds, or else fails.",
+        "translation": "`first (tac) ...` 依次运行各个 `tac`，直到有一个成功；如果全部失败，则失败。"
+    },
+    {
+        "name": "Lean.Parser.Tactic.Grind.grindTry_",
+        "source": "`try tac` runs `tac` and succeeds even if `tac` failed.",
+        "translation": "`try tac` 运行 `tac`，即使 `tac` 失败也会成功。"
+    },
+    {
+        "name": "Lean.Parser.Tactic.Grind.grindRepeat_",
+        "source": "`repeat tac` repeatedly applies `tac` so long as it succeeds.\nThe tactic `tac` may be a tactic sequence, and if `tac` fails at any point in its execution,\n`repeat` will revert any partial changes that `tac` made to the tactic state.\nThe tactic `tac` should eventually fail, otherwise `repeat tac` will run indefinitely.",
+        "translation": "`repeat tac` 只要 `tac` 成功，就会反复应用它。\n`tac` 可以是策略序列；若它在执行期间的任何位置失败，`repeat` 都会撤销它对策略状态所做的全部部分修改。\n策略 `tac` 应最终失败，否则 `repeat tac` 会无限运行。"
+    },
+    {
+        "name": "Lean.Parser.Tactic.Grind.failIfSuccess",
+        "source": "`fail_if_success t` fails if the tactic `t` succeeds.",
+        "translation": "如果策略 `t` 成功，则 `fail_if_success t` 失败。"
+    },
+    {
+        "name": "Lean.Parser.Tactic.Grind.fail",
+        "source": "`fail msg` is a tactic that always fails, and produces an error using the given message.",
+        "translation": "`fail msg` 总是失败，并使用给定消息产生错误。"
+    },
+    {
+        "name": "Lean.Parser.Tactic.Grind.«grind_<;>_»",
+        "source": "`tac <;> tac'` runs `tac` on the main goal and `tac'` on each produced goal,\nconcatenating all goals produced by `tac'`.",
+        "translation": "`tac <;> tac'` 对主目标运行 `tac`，再对产生的每个目标运行 `tac'`，并串接 `tac'` 产生的所有目标。"
+    },
+    {
+        "name": "Lean.Parser.Tactic.Grind.finish",
+        "source": "`finish` tries to close the current goal using `grind`'s default strategy",
+        "translation": "`finish` 尝试使用 `grind` 的默认策略解决当前目标。"
+    },
+    {
+        "name": "Lean.Parser.Tactic.Grind.finishTrace",
+        "source": "`finish?` tries to close the current goal using `grind`'s default strategy and suggests a tactic script.",
+        "translation": "`finish?` 尝试使用 `grind` 的默认策略解决当前目标，并建议一个策略脚本。"
+    },
+    {
+        "name": "Lean.Parser.Tactic.Grind.sorry",
+        "source": "The `sorry` tactic is a temporary placeholder for an incomplete tactic proof.",
+        "translation": "`sorry` 策略是未完成策略证明的临时占位符。"
+    },
+    {
+        "name": "Lean.Parser.Tactic.Grind.grindAdmit",
+        "source": "`admit` is a synonym for `sorry`.",
+        "translation": "`admit` 是 `sorry` 的同义词。"
+    },
+    {
+        "name": "Lean.Parser.Tactic.Grind.nestedTacticCore",
+        "source": "Executes the given tactic block to close the current goal.",
+        "translation": "执行给定的策略块，以解决当前目标。"
+    },
+    {
+        "name": "Lean.Parser.Tactic.Grind.grindExact_",
+        "source": "`exact e` closes the main goal if its target type matches that of `e`.",
+        "translation": "若主目标的目标类型与 `e` 的类型匹配，则 `exact e` 解决该目标。"
+    },
+    {
+        "name": "Lean.Parser.Tactic.Grind.lia",
+        "source": "`lia` linear integer arithmetic.",
+        "translation": "`lia`：线性整数算术。"
+    },
+    {
+        "name": "Lean.Parser.Tactic.Grind.linarith",
+        "source": "`linarith` linear arithmetic.",
+        "translation": "`linarith`：线性算术。"
+    },
+    {
+        "name": "Lean.Parser.Tactic.Grind.ring",
+        "source": "`ring` (commutative) rings and fields.",
+        "translation": "`ring`：（交换）环和域。"
+    },
+    {
+        "name": "Lean.Parser.Tactic.Grind.ac",
+        "source": "`ac` associativity and commutativity procedure.",
+        "translation": "`ac`：结合律与交换律过程。"
+    },
+    {
+        "name": "Lean.Parser.Tactic.Grind.instantiate",
+        "source": "Instantiates theorems using E-matching.\nThe `approx` modifier is just a marker for users to easily identify automatically generated `instantiate` tactics\nthat may have redundant arguments.",
+        "translation": "使用 E-匹配实例化定理。\n`approx` 修饰符只是一个标记，方便用户识别自动生成、可能带有冗余参数的 `instantiate` 策略。"
+    },
+    {
+        "name": "Lean.Parser.Tactic.Grind.use",
+        "source": "Shorthand for `instantiate only`",
+        "translation": "`instantiate only` 的简写。"
+    },
+    {
+        "name": "Lean.Parser.Tactic.Grind.mbtc",
+        "source": "Adds new case-splits using model-based theory combination.",
+        "translation": "使用基于模型的理论组合添加新的分类讨论。"
+    },
+    {
+        "name": "Lean.Parser.Tactic.Grind.cases",
+        "source": "Performs a case-split on a logical connective, `match`-expression, `if-then-else`-expression,\nor inductive predicate. The argument is an anchor referencing one of the case-split candidates\nin the `grind` state. You can use `cases?` to select a specific candidate using a code action.\nIf multiple candidates match the anchor (e.g., they differ only in inaccessible variables),\nan ordinal reference such as `#a56e/2` selects the second matching candidate.",
+        "translation": "对逻辑连接词、`match` 表达式、`if-then-else` 表达式或归纳谓词进行分类讨论。\n参数是一个锚点，引用 `grind` 状态中的一个分类讨论候选项。\n可使用 `cases?` 通过代码操作选择具体候选项。\n若多个候选项匹配该锚点（例如它们仅在不可访问变量上不同），则可用 `#a56e/2` 这样的序号引用选择第二个匹配项。"
+    },
+    {
+        "name": "Lean.Parser.Tactic.Grind.casesTrace",
+        "source": "A variant of `cases` that provides a code-action for selecting one of the candidate case-splits\navailable in the `grind` state.",
+        "translation": "`cases` 的变体，提供代码操作，以选择 `grind` 状态中某个可用的分类讨论候选项。"
+    },
+    {
+        "name": "Lean.Parser.Tactic.Grind.casesNext",
+        "source": "Performs the next case-split. The case-split is selected using the same heuristic used by `finish`.",
+        "translation": "执行下一次分类讨论。\n使用与 `finish` 相同的启发式方法选择分类讨论。"
+    },
+    {
+        "name": "Lean.Parser.Tactic.Grind.showState",
+        "source": "Show `grind` state.",
+        "translation": "显示 `grind` 状态。"
+    },
+    {
+        "name": "Lean.Parser.Tactic.Grind.showAsserted",
+        "source": "Shows asserted facts.",
+        "translation": "显示已断言的事实。"
+    },
+    {
+        "name": "Lean.Parser.Tactic.Grind.showTrue",
+        "source": "Shows propositions known to be `True`.",
+        "translation": "显示已知为 `True` 的命题。"
+    },
+    {
+        "name": "Lean.Parser.Tactic.Grind.showFalse",
+        "source": "Shows propositions known to be `False`.",
+        "translation": "显示已知为 `False` 的命题。"
+    },
+    {
+        "name": "Lean.Parser.Tactic.Grind.showEqcs",
+        "source": "Shows equivalence classes of terms.",
+        "translation": "显示项的等价类。"
+    },
+    {
+        "name": "Lean.Parser.Tactic.Grind.showCases",
+        "source": "Show case-split candidates.",
+        "translation": "显示分类讨论候选项。"
+    },
+    {
+        "name": "Lean.Parser.Tactic.Grind.showLocalThms",
+        "source": "Show active local theorems and their anchors for heuristic instantiation.",
+        "translation": "显示活动的局部定理及其用于启发式实例化的锚点。"
+    },
+    {
+        "name": "Lean.Parser.Tactic.Grind.showGoals",
+        "source": "Shows the pending goals.",
+        "translation": "显示待解决的目标。"
+    },
+    {
+        "name": "Lean.Parser.Tactic.Grind.showTerm",
+        "source": "`show_term tac` runs `tac`, then displays the generated proof in the InfoView.",
+        "translation": "`show_term tac` 运行 `tac`，然后在信息视图中显示生成的证明。"
+    },
+    {
+        "name": "Lean.Parser.Tactic.Grind.have",
+        "source": "The `have` tactic is for adding opaque definitions and hypotheses to the local context of the main goal.\nThe definitions forget their associated value and cannot be unfolded.\n\n* `have h : t := e` adds the hypothesis `h : t` if `e` is a term of type `t`.\n* `have h := e` uses the type of `e` for `t`.\n* `have : t := e` and `have := e` use `this` for the name of the hypothesis.",
+        "translation": "`have` 策略用于向主目标的局部上下文添加不透明定义和假设。\n定义会遗忘其关联的值，无法展开。\n\n* 若 `e` 是类型为 `t` 的项，则 `have h : t := e` 添加假设 `h : t`。\n* `have h := e` 使用 `e` 的类型作为 `t`。\n* `have : t := e` 和 `have := e` 使用 `this` 作为假设名称。"
+    },
+    {
+        "name": "Lean.Parser.Tactic.Grind.haveSilent",
+        "source": "Proves `<term>` using the current `grind` state and default search strategy.",
+        "translation": "使用当前 `grind` 状态与默认搜索策略证明 `<term>`。"
+    },
+    {
+        "name": "Lean.Parser.Tactic.Grind.renameI",
+        "source": "`rename_i x_1 ... x_n` renames the last `n` inaccessible names using the given names.",
+        "translation": "`rename_i x_1 ... x_n` 将最后 `n` 个不可访问名称重命名为给定名称。"
+    },
+    {
+        "name": "Lean.Parser.Tactic.Grind.exposeNames",
+        "source": "`expose_names` renames all inaccessible variables with accessible names, making them available\nfor reference in generated tactics. However, this renaming introduces machine-generated names\nthat are not fully under user control. `expose_names` is primarily intended as a preamble for\ngenerated `grind` tactic scripts.",
+        "translation": "`expose_names` 用可访问名称重命名所有不可访问变量，使它们能被生成的策略引用。\n但这种重命名会引入机器生成、并非完全由用户控制的名称。\n`expose_names` 主要用作自动生成的 `grind` 策略脚本的前导步骤。"
+    },
+    {
+        "name": "Lean.Parser.Tactic.Grind.setOption",
+        "source": "`set_option opt val in tacs` (the tactic) acts like `set_option opt val` at the command level,\nbut it sets the option only within the tactics `tacs`.",
+        "translation": "策略 `set_option opt val in tacs` 的作用类似命令级的 `set_option opt val`，但只在策略 `tacs` 内设置该选项。"
+    },
+    {
+        "name": "Lean.Parser.Tactic.Grind.setConfig",
+        "source": "`set_config configItem+ in tacs` executes `tacs` with the updated configuration options `configItem+`",
+        "translation": "`set_config configItem+ in tacs` 使用更新后的配置选项 `configItem+` 执行 `tacs`。"
+    },
+    {
+        "name": "Lean.Parser.Tactic.Grind.symIntro",
+        "source": "`intro x₁ ... xₙ` introduces binders and internalizes them into the E-graph.\nOnly available in `sym =>` mode.\n`intro` with no arguments introduces one binder with an inaccessible name.\nUse `intro (internalize := false)` or `intro~` to skip internalization.",
+        "translation": "`intro x₁ ... xₙ` 引入绑定器，并将它们内部化到 E-图中。\n仅在 `sym =>` 模式下可用。\n不带参数的 `intro` 引入一个名称不可访问的绑定器。\n使用 `intro (internalize := false)` 或 `intro~` 可跳过内部化。"
+    },
+    {
+        "name": "Lean.Parser.Tactic.Grind.symIntros",
+        "source": "`intros` introduces all remaining binders and internalizes them.\nOnly available in `sym =>` mode.\nUse `intros (internalize := false)` or `intros~` to skip internalization.",
+        "translation": "`intros` 引入所有剩余绑定器，并将它们内部化。\n仅在 `sym =>` 模式下可用。\n使用 `intros (internalize := false)` 或 `intros~` 可跳过内部化。"
+    },
+    {
+        "name": "Lean.Parser.Tactic.Grind.symApply",
+        "source": "`apply t` applies theorem `t` as a backward rule.\nOnly available in `sym =>` mode.\nWhen used with `repeat`, the backward rule is cached for efficiency.",
+        "translation": "`apply t` 将定理 `t` 作为反向规则应用。\n仅在 `sym =>` 模式下可用。\n与 `repeat` 配合使用时，会缓存该反向规则以提高效率。"
+    },
+    {
+        "name": "Lean.Parser.Tactic.Grind.symInternalize",
+        "source": "`internalize` internalizes hypotheses into the grind E-graph.\nOnly available in `sym =>` mode.\n- `internalize` internalizes the next hypothesis.\n- `internalize <num>` internalizes the next `<num>` hypotheses.",
+        "translation": "`internalize` 将假设内部化到 grind 的 E-图中。\n仅在 `sym =>` 模式下可用。\n- `internalize` 内部化下一个假设。\n- `internalize <num>` 内部化接下来的 `<num>` 个假设。"
+    },
+    {
+        "name": "Lean.Parser.Tactic.Grind.symInternalizeAll",
+        "source": "`internalize_all` internalizes all pending hypotheses into the grind E-graph.\nOnly available in `sym =>` mode.",
+        "translation": "`internalize_all` 将所有待处理假设内部化到 grind 的 E-图中。\n仅在 `sym =>` 模式下可用。"
+    },
+    {
+        "name": "Lean.Parser.Tactic.Grind.symByContra",
+        "source": "`by_contra` applies proof by contradiction, negating the target and making it `False`.\nOnly available in `sym =>` mode.",
+        "translation": "`by_contra` 使用反证法，将目标取反，并将新目标设为 `False`。\n仅在 `sym =>` 模式下可用。"
+    },
+    {
+        "name": "Lean.Parser.Tactic.Grind.symRw",
+        "source": "`rw [h₁, ..., hₙ]` rewrites the goal target using the given equations or iffs, left to right.\nUse `← h` to rewrite right to left. Only available in `sym =>` mode, and it only rewrites the\ntarget: in `sym =>` mode hypotheses are never modified.\n\nPremises of a conditional rewrite rule that cannot be resolved by unification or type class\nresolution become new goals.\n\n`rw` is **not** a high-performance tactic: it does not exploit the maximal sharing maintained\nby `sym =>` mode, and should be used for surgical changes to the goal, not for bulk\nsimplification. Use `simp`/`dsimp` variants for that.",
+        "translation": "`rw [h₁, ..., hₙ]` 使用给定的等式或当且仅当命题，从左到右重写目标。\n使用 `← h` 可从右到左重写。\n仅在 `sym =>` 模式下可用，且只重写目标：`sym =>` 模式永不修改假设。\n\n条件重写规则中无法通过合一或类型类解析解决的前提，会成为新的目标。\n\n`rw` **不是**高性能策略：它不利用 `sym =>` 模式维护的最大共享，应只用于对目标做局部精细修改，而不适合批量化简。\n批量化简应使用 `simp`/`dsimp` 变体。"
+    },
+    {
+        "name": "Lean.Parser.Tactic.Grind.symCbv",
+        "source": "`cbv` performs simplification that closely mimics call-by-value evaluation.\nIt reduces terms by unfolding definitions using their defining equations and\napplying matcher equations. The unfolding is propositional, so `cbv` also works\nwith functions defined via well-founded recursion or partial fixpoints.\n\n`cbv` reduces the goal target using call-by-value evaluation. For equation goals\n(`lhs = rhs`), `cbv` automatically attempts `refl` after reduction to close the goal.\n\nUnlike the standalone `cbv` tactic, this variant does not support the `at` location\nsyntax: in `sym =>` mode it only reduces the goal target.\n\n`cbv` is not a finishing tactic in general: it may leave a new (simpler) goal.\n\nThe proofs produced by `cbv` only use the three standard axioms.\nIn particular, they do not require trust in the correctness of the code\ngenerator.\n\nThis is a variant of `cbv` that only works in `sym =>` mode.",
+        "translation": "`cbv` 执行紧密模拟按值求值的化简。\n它通过定义等式展开定义，并应用匹配器等式来归约项。\n展开基于命题等式，因此 `cbv` 也适用于通过良基递归或部分不动点定义的函数。\n\n`cbv` 使用按值求值归约目标。\n对于等式目标（`lhs = rhs`），归约后它会自动尝试 `refl` 来解决目标。\n\n与独立的 `cbv` 策略不同，此变体不支持 `at` 位置语法：在 `sym =>` 模式下，它只归约目标。\n\n一般而言，`cbv` 并非收尾策略：它可能留下一个新的、更简单的目标。\n\n`cbv` 生成的证明仅使用三个标准公理。\n特别地，无需信任代码生成器的正确性。\n\n此 `cbv` 变体仅在 `sym =>` 模式下可用。"
+    },
+    {
+        "name": "Lean.Parser.Tactic.Grind.symSimp",
+        "source": "`simp` applies the structural simplifier to the goal target.\nOnly available in `sym =>` mode.\n\n- `simp` — uses the default (identity) variant\n- `simp myVariant` — uses a named variant registered via `register_sym_simp`\n- `simp [thm₁, thm₂, ...]` — default variant with extra rewrite theorems appended to `post`\n- `simp myVariant [thm₁, thm₂, ...]` — named variant with extra theorems\n\nThe extra parameters may be theorems, local hypotheses, or definitions. For a definition `f`,\nits equational theorems are used, and a non-recursive `f` is unfolded when none of them applies,\nso `simp [f]` unfolds `f` applications like the default simplifier does. The side conditions\nof conditional extra theorems are discharged by the variant's `discharger`. The default variant\ndischarges them using `grind`.",
+        "translation": "`simp` 对目标应用结构化简器。\n仅在 `sym =>` 模式下可用。\n\n- `simp`：使用默认（恒等）变体。\n- `simp myVariant`：使用通过 `register_sym_simp` 注册的具名变体。\n- `simp [thm₁, thm₂, ...]`：使用默认变体，并将额外的重写定理追加到 `post`。\n- `simp myVariant [thm₁, thm₂, ...]`：使用具名变体和额外定理。\n\n额外参数可以是定理、局部假设或定义。\n对于定义 `f`，使用其等式定理；若没有任何等式定理适用且 `f` 非递归，则展开 `f`。\n因此，`simp [f]` 与默认化简器一样会展开 `f` 的应用。\n额外条件定理的附带条件由该变体的 `discharger` 解决；默认变体使用 `grind` 解决它们。"
+    },
+    {
+        "name": "Lean.Parser.Tactic.Grind.symDSimp",
+        "source": "`dsimp` applies the definitional simplifier to the goal target.\nOnly available in `sym =>` mode.\n\n- `dsimp` — uses the default (identity) variant\n- `dsimp myVariant` — uses a named variant registered via `register_sym_dsimp`\n- `dsimp [id₁, id₂, ...]` — default variant with extra declarations\n- `dsimp myVariant [id₁, id₂, ...]` — named variant with extra declarations\n\nThe extra declarations may be local definitions to unfold, or `*` to unfold all of them,\n`rfl`-theorems, or definitions. A definition `f` is unfolded under the same conditions as in the\ndefault simplifier: a structurally recursive `f` only when its recursion argument reduces, and\nany other `f` only when it is fully applied.",
+        "translation": "`dsimp` 对目标应用定义化简器。\n仅在 `sym =>` 模式下可用。\n\n- `dsimp`：使用默认（恒等）变体。\n- `dsimp myVariant`：使用通过 `register_sym_dsimp` 注册的具名变体。\n- `dsimp [id₁, id₂, ...]`：使用默认变体和额外声明。\n- `dsimp myVariant [id₁, id₂, ...]`：使用具名变体和额外声明。\n\n额外声明可以是待展开的局部定义、用于展开所有局部定义的 `*`、`rfl` 定理或定义。\n定义 `f` 的展开条件与默认化简器相同：结构递归的 `f` 只有在其递归参数可归约时才展开，其他 `f` 则只有在完全应用时才展开。"
+    },
+    {
+        "name": "Lean.Parser.Tactic.Grind.bvDecide",
+        "source": "Close fixed-width `BitVec` and `Bool` goals by obtaining a proof from an external SAT solver and\nverifying it inside Lean. The solvable goals are currently limited to\n- the Lean equivalent of [`QF_BV`](https://smt-lib.org/logics-all.shtml#QF_BV)\n- automatically splitting up `structure`s that contain information about `BitVec` or `Bool`\n```lean\nexample : ∀ (a b : BitVec 64), (a &&& b) + (a ^^^ b) = a ||| b := by\n  intros\n  bv_decide\n```\n\nIf `bv_decide` encounters an unknown definition it will be treated like an unconstrained `BitVec`\nvariable. Sometimes this enables solving goals despite not understanding the definition because\nthe precise properties of the definition do not matter in the specific proof.\n\nIf `bv_decide` fails to close a goal it provides a counter-example, containing assignments for all\nterms that were considered as variables.\n\nIn order to avoid calling a SAT solver every time, the proof can be cached with `bv_decide?`.\n\nIf solving your problem relies inherently on using associativity or commutativity, consider enabling\nthe `bv.ac_nf` option.\n\n`bv_decide types [T₁, ..., Tₙ]` restricts the analysis of structures and enum inductives to\n`T₁, ..., Tₙ`, treating all other ones as opaque variables.\n\nNote: `bv_decide` trusts the correctness of the code generator and adds a axioms asserting its result.\n\nNote: include `import Std.Tactic.BVDecide`",
+        "translation": "通过从外部 SAT 求解器获取证明并在 Lean 内验证，解决固定位宽的 `BitVec` 和 `Bool` 目标。\n目前可解决的目标限于：\n- Lean 中对应于 [`QF_BV`](https://smt-lib.org/logics-all.shtml#QF_BV) 的目标；\n- 自动拆分包含 `BitVec` 或 `Bool` 信息的结构体。\n```lean\nexample : ∀ (a b : BitVec 64), (a &&& b) + (a ^^^ b) = a ||| b := by\n  intros\n  bv_decide\n```\n\n如果 `bv_decide` 遇到未知定义，会将它视为不受约束的 `BitVec` 变量。\n有时即使不了解该定义，也能解决目标，因为该定义的具体性质与此证明无关。\n\n如果 `bv_decide` 无法解决目标，会给出一个反例，包含所有被视为变量的项的赋值。\n\n为避免每次都调用 SAT 求解器，可以使用 `bv_decide?` 缓存证明。\n\n如果求解问题本质上依赖结合律或交换律，可以考虑启用 `bv.ac_nf` 选项。\n\n`bv_decide types [T₁, ..., Tₙ]` 将结构体和枚举归纳类型的分析限制为 `T₁, ..., Tₙ`，将其他类型视为不透明变量。\n\n注意：`bv_decide` 信任代码生成器的正确性，并添加断言其结果的公理。\n\n注意：需包含 `import Std.Tactic.BVDecide`。"
+    },
+    {
+        "name": "Lean.Parser.Tactic.Grind.bvTrace",
+        "source": "Suggest a proof script for a `bv_decide` tactic call. Useful for caching LRAT proofs.\n\nNote: include `import Std.Tactic.BVDecide`",
+        "translation": "为 `bv_decide` 策略调用建议证明脚本。\n可用于缓存 LRAT 证明。\n\n注意：需包含 `import Std.Tactic.BVDecide`。"
+    },
+    {
+        "name": "Lean.Parser.Tactic.Grind.bvNormalize",
+        "source": "Run the normalization procedure of `bv_decide` only. Sometimes this is enough to solve basic\n`BitVec` goals already.\n\nNote: include `import Std.Tactic.BVDecide`",
+        "translation": "仅运行 `bv_decide` 的规范化过程。\n有时仅此就足以解决基本的 `BitVec` 目标。\n\n注意：需包含 `import Std.Tactic.BVDecide`。"
+    },
+    {
+        "name": "Lean.Parser.Tactic.Grind.bvCheck",
+        "source": "This tactic works just like `bv_decide` but skips calling a SAT solver by using a proof that is\nalready stored on disk. It is called with the name of an LRAT file in the same directory as the\ncurrent Lean file:\n```\nbv_check \"proof.lrat\"\n```",
+        "translation": "此策略与 `bv_decide` 类似，但通过使用已存储在磁盘上的证明，跳过 SAT 求解器调用。\n调用时传入与当前 Lean 文件位于同一目录的 LRAT 文件名：\n```\nbv_check \"proof.lrat\"\n```"
+    }
+]

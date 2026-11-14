@@ -160,7 +160,7 @@ end
 
 {zhdocstring Lake.getAugmentedLeanPath ZhDoc.BuildTools.Lake.getAugmentedLeanPath}
 
-{docstring Lake.getAugmentedLeanSrcPath }
+{zhdocstring Lake.getAugmentedLeanSrcPath ZhDoc.BuildTools.Lake.getAugmentedLeanSrcPath}
 
 {zhdocstring Lake.getAugmentedSharedLibPath ZhDoc.BuildTools.Lake.getAugmentedSharedLibPath}
 

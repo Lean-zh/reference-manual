@@ -297,14 +297,14 @@ file := "SMT-Inspired Automation"
 :::tactic "grind"
 :::
 
-:::syntax tactic (title := "Interactive `grind`")
+:::syntax tactic (title := "交互式 `grind`")
 ```grammar
 grind $_:optConfig $[only]? $[ [ $[$p],* ] ]? => $steps
 ```
 :::
 
-Following {tactic}`grind` with {keywordOf Lean.Parser.Tactic.grind}`=>` and a sequence of steps enters interactive mode, in which {tactic}`grind`'s engines are driven by hand.
-The {ref "grind-interactive"}[section on interactive mode] describes the available steps.
+在 {tactic}`grind` 后接 {keywordOf Lean.Parser.Tactic.grind}`=>` 和一系列步骤，就会进入交互模式，由用户手动驱动 {tactic}`grind` 的各个引擎。
+{ref "grind-interactive"}[交互模式一节]介绍了可用的步骤。
 
 :::tactic "grind?"
 :::

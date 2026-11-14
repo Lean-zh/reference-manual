@@ -10,6 +10,7 @@ import Lean.Linter.CodeQuality
 import Lean.Linter.EnvLinter
 
 import Manual.Meta
+import Manual.ZhDocString.Upstream
 
 open Manual
 open Verso.Genre
@@ -20,38 +21,40 @@ set_option pp.rawOnError true
 
 open Verso.Code.External
 
-#doc (Manual) "Linters and Code Quality" =>
+#doc (Manual) "代码检查器与代码质量" =>
 %%%
+file := "Linters-and-Code-Quality"
 tag := "linters"
-shortContextTitle := "Linters"
+shortContextTitle := "代码检查器"
 %%%
 
-A {deftech}[linter] is a check that identifies problematic or error-prone patterns in code.
-Linters can also be used to enforce project-specific standards for documentation, code style, or file structure.
-Lean includes a number of linters, along with a framework for defining custom linters and extracting metrics from them.
+{deftech (key := "linter")}[代码检查器]是一种用于识别代码中有问题或易出错模式的检查机制。
+代码检查器也可用于强制执行项目特定的文档、代码风格或文件结构标准。
+Lean 提供多种代码检查器，以及用于定义自定义检查器和从中提取度量的框架。
 
-{ref "linters-editor"}[Linters] are useful for individuals working on small problems in order to catch mistakes early.
-For larger problems or groups working together, configuring the different kinds of available {ref "linting-workflows"}[linter workflows] allow the team to improve their collaboration.
-As a projects needs evolve, it may even become necessary to write {ref "implementing-linters"}[custom linters].
+对于独立处理小问题的用户，{ref "linters-editor"}[代码检查器]有助于尽早发现错误。
+对于较大问题或团队合作，配置不同的{ref "linting-workflows"}[代码检查工作流]可以改善协作。
+随着项目需求演进，甚至可能需要编写{ref "implementing-linters"}[自定义代码检查器]。
 
-# Linters and Warnings
+# 代码检查器与警告
 %%%
+file := "Linters-and-Warnings"
 tag := "linters-editor"
 %%%
 
-When using Lean interactively, linters are run after each {tech}[command] is {tech (key := "Lean elaborator")}[elaborated].
-Linters run on a separate thread, so their warnings may arrive after the command has been processed and elaboration has proceeded to the next command.
+交互使用 Lean 时，每个{tech (key := "command")}[命令]经过{tech (key := "Lean elaborator")}[精译]后，都会运行代码检查器。
+检查器在单独线程上运行，因此其警告可能在该命令处理完成、精译已进入下一条命令后才到达。
 
 :::paragraph
-Linter warnings have a standarized format.
-Each ends with instructions for disabling the linter.
-For example, the unused variable linter issues a warning on this code:
+代码检查警告具有标准格式。
+每条警告都以禁用对应检查器的说明结尾。
+例如，未使用变量检查器会对以下代码发出警告：
 ```lean (name := lintWarn)
 example :=
   let y := 2
   "hello"
 ```
-The warning explains that {option}`linter.unusedVariables` can be used to disable it:
+警告说明可以使用 {option}`linter.unusedVariables` 禁用它：
 ```leanOutput lintWarn (severity := Lean.MessageSeverity.warning)
 Variable name `y` is not explicitly referenced.
 
@@ -60,7 +63,7 @@ Hint: The binding can be removed (if unused) or named `_` (if used implicitly). 
 
 Note: This linter can be disabled with `set_option linter.unusedVariables false`
 ```
-Setting the option as instructed disables the linter:
+按说明设置选项即可禁用该检查器：
 ```lean
 set_option linter.unusedVariables false in
 example :=
@@ -70,155 +73,160 @@ example :=
 :::
 
 :::paragraph
-Linter options can be set in three scopes:
+检查器选项可以在三个作用域中设置：
 
-: Command scope
+: 命令作用域
 
-  Use {keywordOf Lean.Parser.Command.set_option}`set_option`{lit}` linter.x ... `{keywordOf Lean.Parser.Command.in}`in`{lit}` ...` to enable or disable a linter in single command.
+  使用 {keywordOf Lean.Parser.Command.set_option}`set_option`{lit}` linter.x ... `{keywordOf Lean.Parser.Command.in}`in`{lit}` ...`，可在单个命令中启用或禁用检查器。
 
-: Section scope
+: 节作用域
 
-  The {keywordOf Lean.Parser.Command.set_option}`set_option` command can be used to enable or disable a linter for the remainder of the current {tech}[section scope].
+  {keywordOf Lean.Parser.Command.set_option}`set_option` 命令可以在当前{tech (key := "section scope")}[节作用域]的剩余部分启用或禁用检查器。
 
-: Package scope
+: 包作用域
 
-  Lean options, including linter options, can be set in the {tomlField Lake.PackageConfig}`leanOptions` field in a {ref "lake-config"}[Lake configuration file].
+  Lean 选项（包括检查器选项）可以通过{ref "lake-config"}[Lake 配置文件]的 {tomlField Lake.PackageConfig}`leanOptions` 字段设置。
 :::
 
-Linters are organized into {deftech}_linter sets_.
-All the linters in a set may be enabled together with a single option.
-Linters may be a part of arbitrarily many linter sets, and they are enabled if any of their sets are enabled.
+检查器被组织为{deftech (key := "linter sets")}_检查器集合_。
+一个选项就能同时启用集合内所有检查器。
+一个检查器可以属于任意多个集合，任一所属集合启用时，它就会启用。
 
-Whether a given linter is enabled is determined by multiple options.
-Even though every option has a default value, Lean still tracks whether they've been explicitly set.
-If the linter's own option has been set, then that value is used.
-If the linter's option has not been set, but {option}`linter.all` has been, then its value is used.
-If neither the linter's own option nor {option}`linter.all` has been set, then the linter is enabled if its default value is {name}`true` or if any linter set that contains it has been explicitly enabled.
+某个检查器是否启用由多个选项共同决定。
+尽管每个选项都有默认值，Lean 仍会记录它是否被显式设置。
+如果检查器自己的选项已设置，则使用该值。
+若其自身选项未设置，但 {option}`linter.all` 已设置，则使用后者的值。
+若自身选项和 {option}`linter.all` 都未设置，则在默认值为 {name}`true` 或任一包含它的检查器集合被显式启用时，启用该检查器。
 
-There are a few consequences of this prioritization.
-First, linter sets can only ever enable linters, not disable them.
-Setting a linter set's option to {lean}`false` has no effect.
-Second, setting {option}`linter.all` to either {name}`true` or {name}`false` takes precedence over all linter sets.
-{option}`linter.all` also takes precedence over a linter option's default value, but not over an explicit value.
+这种优先级安排有几个结果。
+首先，检查器集合只能启用检查器，不能禁用它们。
+将集合的选项设为 {lean}`false` 没有效果。
+其次，无论将 {option}`linter.all` 设为 {name}`true` 还是 {name}`false`，它都优先于所有检查器集合。
+{option}`linter.all` 也优先于检查器选项的默认值，但不优先于显式设置的值。
 
-{optionDocs linter.all}
+{zhOptionDocsFrom linter.all}
 
-{optionDocs linter.extra}
+{zhOptionDocsFrom linter.extra}
 
-{optionDocs linter.coreInternal}
+{zhOptionDocsFrom linter.coreInternal}
 
-# Linting Workflows
+# 代码检查工作流
 %%%
+file := "Linting-Workflows"
 tag := "linting-workflows"
 %%%
 
-In addition to providing feedback on individual commands while a module is under development, linters can be applied at the package level.
-When modules are elaborated, their linter warnings are stored in their {tech}[`.olean` files] for replay.
-In addition to collecting these interactive results, linting a package provides the opportunity to run {deftech}_environment linters_, which are linters that report potential problems in a the environment that results from importing a collection of modules, rather than in source files themselves.
+除在模块开发期间对各个命令提供反馈外，代码检查器也可以应用于包级别。
+模块精译时，检查警告会保存在其{tech (key := ".olean files")}[`.olean` 文件]中，以供重放。
+对包进行代码检查，除收集这些交互结果外，还能运行{deftech (key := "environment linters")}_环境代码检查器_；它们报告导入一组模块后所得环境中的潜在问题，而非源文件本身的问题。
 
-## Kinds of Linters
+## 代码检查器的种类
 %%%
+file := "Kinds-of-Linters"
 tag := "kinds-of-linters"
 %%%
 
-Linters run in two contexts:
-: Interactive linters
+检查器在两种上下文中运行：
+: 交互式代码检查器
 
-  These linters are run in the context of the Lean elaborator and language server while checking a single Lean file.
-  Lean invokes these linters when the corresponding options are enabled.
+  检查单个 Lean 文件时，在 Lean 精译器和语言服务器的上下文中运行。
+  启用对应选项后，Lean 会调用这些检查器。
 
-: Environment linters
+: 环境代码检查器
 
-  These linters are run after a collection of modules have been built, in an environment that results from importing their modules.
-  Environment linters are only invoked by {lake}`lint`.
+  在一组模块构建完成后，于导入这些模块所得的环境中运行。
+  环境检查器仅由 {lake}`lint` 调用。
 
 :::paragraph
-There are three kinds of interactive linters:
+交互式代码检查器分为三类：
 
-: Command linters
+: 命令检查器
 
-  Command linters are run once for each top-level command.
+  对每个顶层命令运行一次。
 
-: Module linters
+: 模块检查器
 
-  Module linters are run at the end of the module.
+  在模块末尾运行。
 
-: Stateful linters
+: 有状态检查器
 
-  Stateful linters are a special kind of command linter that can modify a shared state from one command to the next.
-  They can be used to enforce non-local invariants, such as those governing file structure, while still providing feedback before the entire file has elaborated.
+  有状态检查器是一类特殊的命令检查器，可以在相邻命令之间修改共享状态。
+  它们可以检查文件结构等非局部不变量，同时在整个文件精译完毕前就提供反馈。
 :::
 
 
-## Running `lake lint`
+## 运行 `lake lint`
 %%%
+file := "Running--lake-lint"
 tag := "running-lake-lint"
 %%%
 
-Linting via {lake}`lint` can invoke either the current project's {tech}[lint driver], Lake's built-in support for linting, or both.
-The linters described in this chapter are built-in; a lint driver is a way to run additional linting tools that do not fit this paradigm.
-Built-in linting occurs when {tomlField Lake.PackageConfig}`builtinLint` is {lean}`true` in the Lake configuration or when the {lakeOpt}`--builtin-lint` or {lakeOpt}`--builtin-only` command-line options are passed to {lake}`lint`.
+通过 {lake}`lint` 进行检查时，可以调用当前项目的{tech (key := "lint driver")}[代码检查驱动程序]、Lake 的内置检查支持，或同时使用二者。
+本章介绍的是内置检查器；驱动程序则用于运行不符合这一范式的额外检查工具。
+当 Lake 配置中的 {tomlField Lake.PackageConfig}`builtinLint` 为 {lean}`true`，或向 {lake}`lint` 传入 {lakeOpt}`--builtin-lint` 或 {lakeOpt}`--builtin-only` 命令行选项时，会进行内置检查。
 
-The {lakeOptDef option}`--linters` and {lakeOptDef option}`--lint-only` options take a comma-separated list of linter option names.
-{lakeOpt}`--linters` sets the indicated linter options, while {lakeOpt}`--lint-only` also disables all other linters.
-Within this list, a `-` prefix disables the linter and a leading period abbreviates `linter.`, so `.XYZ` is equivalent to `linter.XYZ`.
-Later entries take precedence over earlier entries.
-Positional module arguments restrict built-in linting to the indicated modules; otherwise, linting begins at the module roots of all default targets.
-The {lakeOptDef flag}`--record-exceptions` flag causes {keywordOf Lean.Parser.Command.set_option}`set_option` commands to be added to files to suppress warnings.
+{lakeOptDef option}`--linters` 和 {lakeOptDef option}`--lint-only` 接受以逗号分隔的检查器选项名称列表。
+{lakeOpt}`--linters` 设置指定选项；{lakeOpt}`--lint-only` 还会禁用所有其他检查器。
+列表中的 `-` 前缀禁用该检查器，开头的句点是 `linter.` 的缩写，因此 `.XYZ` 等价于 `linter.XYZ`。
+后面的条目优先于前面的条目。
+位置模块实参将内置检查限制到指定模块；否则，检查从所有默认目标的模块根开始。
+{lakeOptDef flag}`--record-exceptions` 标志会向文件添加 {keywordOf Lean.Parser.Command.set_option}`set_option` 命令以抑制警告。
 
 
-## Environment Linters and the Import Hierarchy
+## 环境检查器与导入层次
 %%%
+file := "Environment-Linters-and-the-Import-Hierarchy"
 tag := "env-linters-imports"
 %%%
 
-Environment linters typically consist of two modules.
-One module defines the linter's option, and it must be imported by every module that will be checked with the linter.
-Modules that don't transitively import the linter's option are not checked.
-This allows the modules to override the linter option's value as needed.
-The other module defines the linter itself; this module only needs to be imported publicly by the root module from which linting is initiated.
-The environment linter runs only when it is transitively imported by the root module, but it can be applied to code in modules that the linter itself imports.
-Only modules that share a prefix with the root module are linted.
+环境检查器通常由两个模块组成。
+一个模块定义检查器选项；每个要由此检查器检查的模块都必须导入它。
+未传递导入该选项的模块不会被检查。
+这样各模块就可以按需覆盖选项值。
+另一个模块定义检查器本身；只有发起检查的根模块需要公开导入它。
+环境检查器仅在被根模块传递导入时运行，但它可以检查自己导入的模块中的代码。
+仅检查与根模块共享前缀的模块。
 
-## Code Quality Metrics
+## 代码质量度量
 %%%
+file := "Code-Quality-Metrics"
 tag := "code-quality-metrics"
 %%%
 
-In addition to emitting warnings, linters can save {deftech}_code quality metrics_, which are named values that are associated either with a module or with a particular declaration.
-The values may be either {name}`Float` or mappings from {name}`String` to {name}`Float`, and arbitrarily many values with a given name may be associated with a module or declaration.
-These associations are referred to as {deftech (key := "code quality metric entry")}_entries_.
+除发出警告外，检查器还可以保存{deftech (key := "code quality metrics")}_代码质量度量_，即与模块或特定声明关联的具名值。
+值可以是 {name}`Float`，也可以是从 {name}`String` 到 {name}`Float` 的映射；同一模块或声明可以关联任意多个具有同一名称的值。
+这些关联称为{deftech (key := "code quality metric entry")}_条目_。
 
-Every linter is already implicitly a metric.
-The metric's name is the linter option's name, and the metric's value is the number of times that the linter's warning was issued in a given module.
+每个检查器已经隐式地是一项度量。
+度量名称为检查器选项名，度量值为该检查器在给定模块中发出警告的次数。
 
-Code quality metrics are emitted in JSON format and can be processed by arbitrary scripts.
-For example, they can be used to track the number of linter warnings in a codebase over time, or to ensure that no new lints are introduced in a change.
-Custom metrics can be used to track features such as the number of times each {tactic}`simp` lemma is used, making it easier to gain insights into a codebase that are not immediately available by inspecting the code itself.
+代码质量度量以 JSON 格式输出，可由任意脚本处理。
+例如，可以据此跟踪代码库的检查警告数随时间的变化，或确保一次修改没有引入新的检查问题。
+自定义度量还可以跟踪每个 {tactic}`simp` 引理的使用次数等信息，从而获得仅检查代码本身无法直接得到的见解。
 
 :::paragraph
-When {lake}`lint` is run with the {lakeOpt}`--code-quality` flag, it emits a JSON representation of the metrics entries to standard output as a sequence of JSON objects.
-The {tech}[lint driver] is skipped.
-Each entry is an object with three fields:
+以 {lakeOpt}`--code-quality` 标志运行 {lake}`lint` 时，会将度量条目的 JSON 表示以 JSON 对象序列输出到标准输出。
+{tech (key := "lint driver")}[代码检查驱动程序]会被跳过。
+每个条目是包含三个字段的对象：
 
-* `name` contains the metric name,
-* `value` contains the metric value, as a single-field object whose key name determines the field's interpretation,
-* `source` contains the location for which the metric was saved, also as a single-field object.
+* `name` 包含度量名称；
+* `value` 包含度量值，是只有一个字段的对象，键名决定该字段的解释方式；
+* `source` 包含该度量保存时对应的位置，也是只有一个字段的对象。
 
-Metric values contain either the key `scalar` with a numeric value or the key `dict` with an object that maps arbitrary strings to numbers.
-Sources are either the key `module` with an object that maps `name` to a string or the key `declaration` together with an object that maps `module` and `name` to strings.
-The JSON output may include newlines, and should be parsed with an actual JSON parser.
+度量值要么包含数值键 `scalar`，要么包含键 `dict`，后者的值为将任意字符串映射到数字的对象。
+来源要么是键 `module`，对应将 `name` 映射到字符串的对象；要么是键 `declaration`，对应将 `module` 和 `name` 映射到字符串的对象。
+JSON 输出可能包含换行，应使用真正的 JSON 解析器解析。
 :::
 
-:::example "Metrics Entries as JSON"
-A scalar value attributed to a module, as produced for replayed linter warnings:
+:::example "度量条目的 JSON 表示"
+归属于模块的标量值，重放检查警告时会产生此类条目：
 ```codeQualityEntries
 {"name": "linter.unusedVariables",
  "source": {"module": {"name": "Proj.Basic"}},
  "value": {"scalar": {"value": 2}}}
 ```
 
-A dictionary value attributed to a declaration, as logged by a linter:
+归属于声明的字典值，由检查器记录：
 ```codeQualityEntries
 {"name": "linter.simpUsage.lemmas",
  "source": {"declaration": {"module": "Proj.Lemmas", "name": "t3"}},
@@ -228,13 +236,13 @@ A dictionary value attributed to a declaration, as logged by a linter:
 
 
 
-When {lake}`lint` is run with the {lakeOpt}`--code-quality` flag, it additionally runs the code quality checks specified in the Lake configuration's {tomlField Lake.PackageConfig}`checks` field and on the command line via the {lakeOpt}`--checks` option.
-Both the configuration field and the command-line option point at modules; all {ref "package-code-quality-checks"}[registered checks] in all specified modules are run.
-These checks are Lean functions that can add additional metrics that require more than a single command or module's state.
-Checks can replace _ad hoc_ data collection mechanisms for CI and reporting with a single consistent mechanism.
+以 {lakeOpt}`--code-quality` 标志运行 {lake}`lint` 时，还会执行 Lake 配置的 {tomlField Lake.PackageConfig}`checks` 字段及命令行 {lakeOpt}`--checks` 选项指定的代码质量检查。
+配置字段和命令行选项都指向模块；会运行所有指定模块中全部{ref "package-code-quality-checks"}[已注册的检查]。
+这些检查是 Lean 函数，可添加需要超出单个命令或模块状态的信息才能计算的额外度量。
+这些检查可以用统一机制，取代 CI 和报告中的各种特设数据收集机制。
 
 
-::::example "Existing Warnings as Metrics" (tag := "example-warnings-as-metrics")
+::::example "将现有警告用作度量" (tag := "example-warnings-as-metrics")
 :::lakeSession
 ```toml -show
 name = "metrics"
@@ -243,8 +251,8 @@ defaultTargets = ["Code"]
 [[lean_lib]]
 name = "Code"
 ```
-Without any further configuration, running {lake}`lint` with the {lakeOpt}`--code-quality` flag on a project returns a metric for each linter that tracks the number of warnings it issues in each module.
-This module contains two unused variable warnings:
+无需额外配置，以 {lakeOpt}`--code-quality` 标志对项目运行 {lake}`lint`，就会为每个检查器返回一项度量，跟踪其在各模块中发出警告的次数。
+此模块包含两条未使用变量警告：
 ```lean (file := "Code/Basic.lean")
 module
 
@@ -258,7 +266,7 @@ public import Code.Basic
 ```
 ```lakeCmd "lake build" +ignoreOutput -show
 ```
-Linting the package shows these messages:
+对包执行检查会显示以下消息：
 ```lakeCmd "lake lint --builtin-only" +error
 -- Text linter diagnostics in Code.Basic:
 ⟨project⟩/Code/Basic.lean:3:20: warning: Variable name `y` is not explicitly referenced.
@@ -275,7 +283,7 @@ Hint: The binding can be removed (if unused) or named `_` (if used implicitly). 
 Note: This linter can be disabled with `set_option linter.unusedVariables false`
 -- No environment linters were run for Code.
 ```
-The module `Code.Basic` itself is annotated with two instances of {option}`linter.unusedVariables`:
+模块 `Code.Basic` 本身带有两条 {option}`linter.unusedVariables` 记录：
 ```lakeCmd "lake lint --code-quality"
 {"value": {"scalar": {"value": 2}},
  "source": {"module": {"name": "Code.Basic"}},
@@ -284,53 +292,55 @@ The module `Code.Basic` itself is annotated with two instances of {option}`linte
 :::
 ::::
 
-# Implementing Linters
+# 实现代码检查器
 %%%
+file := "Implementing-Linters"
 tag := "implementing-linters"
 %%%
 
-Many large-scale projects require custom linters that enforce project-specific standards.
-The steps for defining a new linter are:
-1. Registering an option to control the new linter.
-2. Determining whether the linter should be a command linter, module linter, stateful linter, or environment linter.
-3. Deciding which code quality metrics, if any, should be saved.
-4. Implementing any package-level code quality checks that are needed.
+许多大型项目需要自定义检查器来落实项目特定标准。
+定义新检查器的步骤是：
+1. 注册控制新检查器的选项。
+2. 确定它应是命令检查器、模块检查器、有状态检查器还是环境检查器。
+3. 决定需要保存哪些代码质量度量（若有）。
+4. 实现所需的包级代码质量检查。
 
-The first step in defining a linter is to register the option that controls it.
-Options are registered using {keywordOf Lean.Option.registerOption}`register_option`, which takes a default value and a description for the new option.
-The default value determines whether the linter is enabled or disabled by default.
-In a module, this option should be both public and in the {tech}[meta phase].
-Linters should be controlled by a {name}`Bool` option.
-Further options that configure a linter, such as options that set thresholds, may be added within the linter's own namespace.
+定义检查器首先要注册控制它的选项。
+使用 {keywordOf Lean.Option.registerOption}`register_option` 注册选项，需要提供新选项的默认值和说明。
+默认值决定检查器是否默认启用。
+在模块中，该选项应公开并位于{tech (key := "meta phase")}[元阶段]。
+检查器应由 {name}`Bool` 选项控制。
+用于配置检查器的其他选项（例如阈值）可以添加到检查器自身的命名空间中。
 
-Linters should use {name Lean.Linter.logLint}`logLint` or {name}`Lean.Linter.logLintIf` instead of {name}`Lean.logWarning` to display lint warnings.
-These helpers ensure that the linter warning's message is formatted consistently.
-They also internally tag it as a linter message, which causes Lake and Lean to include it in {lake}`lint`'s output.
-{name Lean.Linter.logLintIf}`logLintIf` additionally resolves the linter option's value correctly, taking {option}`linter.all` and linter sets into consideration.
-{name Lean.Linter.logLint}`logLint` should be used in contexts where the linter's option has already been checked.
+检查器应使用 {name Lean.Linter.logLint}`logLint` 或 {name}`Lean.Linter.logLintIf` 显示检查警告，而不是使用 {name}`Lean.logWarning`。
+这些辅助函数确保检查警告格式统一。
+它们还会在内部将消息标记为检查器消息，使 Lake 和 Lean 将其包含在 {lake}`lint` 的输出中。
+{name Lean.Linter.logLintIf}`logLintIf` 还会正确解析检查器选项值，考虑 {option}`linter.all` 和检查器集合。
+{name Lean.Linter.logLint}`logLint` 应用于已经检查过该检查器选项的上下文。
 
-Some linters need to check whether they are enabled before they are ready to log a warning.
-For example, computationally expensive linters that do not compute any useful code quality metrics may wish to terminate early if they are not enabled.
-These linters should check whether they are enabled using helpers that correctly take linter sets and {option}`linter.all` into account.
-This is done by first calling {name}`Lean.Linter.getLinterOptions`, and then checking the option's value using {name}`Lean.Linter.getLinterValue`.
+一些检查器在准备记录警告前，就需要检查自己是否启用。
+例如，计算开销大且不产生有用代码质量度量的检查器，可能希望在未启用时尽早退出。
+这些检查器应使用正确考虑检查器集合及 {option}`linter.all` 的辅助函数判断是否启用。
+具体做法是先调用 {name}`Lean.Linter.getLinterOptions`，再用 {name}`Lean.Linter.getLinterValue` 检查选项值。
 
-Finally, the implementation of each linter should wrap command-specific checks with {name}`Lean.withSetOptionIn`.
-Without this wrapper, uses of {keywordOf Lean.Parser.Command.set_option}`set_option`{lit}` ... `{keywordOf Lean.Parser.Command.in}`in`{lit}` ...` around the command being linted are not taken into account.
-Command linters and stateful linters should wrap it around their entire implementation, while module linters should wrap operations on single commands.
+最后，每个检查器实现都应使用 {name}`Lean.withSetOptionIn` 包裹针对具体命令的检查。
+缺少这个包装时，针对被检查命令设置的 {keywordOf Lean.Parser.Command.set_option}`set_option`{lit}` ... `{keywordOf Lean.Parser.Command.in}`in`{lit}` ...` 将不会被考虑。
+命令和有状态检查器应包装整个实现，模块检查器则应包装对单个命令的操作。
 
 
-{docstring Lean.Linter.logLintIf}
+{zhdocstringFrom Lean.Linter.logLintIf}
 
-{docstring Lean.Linter.logLint +allowMissing}
+{zhdocstringFrom Lean.Linter.logLint +allowMissing}
 
-{docstring Lean.Linter.getLinterValue +allowMissing}
+{zhdocstringFrom Lean.Linter.getLinterValue +allowMissing}
 
-{docstring Lean.Linter.getLinterOptions +allowMissing}
+{zhdocstringFrom Lean.Linter.getLinterOptions +allowMissing}
 
-{docstring Lean.withSetOptionIn}
+{zhdocstringFrom Lean.withSetOptionIn}
 
-## Command Linters
+## 命令检查器
 %%%
+file := "Command-Linters"
 tag := "command-linters"
 %%%
 
@@ -339,27 +349,27 @@ tag := "command-linters"
 open Lean Elab Command
 ```
 
-Command linters are the simplest form of linter.
-A command linter is a value of type {name Lean.Elab.Command.Linter}`Lean.Elab.Command.Linter`, which is a structure with a {name Lean.Elab.Command.Linter.run}`run` field of type {lean}`Syntax → CommandElabM Unit`.
-The {name}`addLinter` function saves a new command linter, and must be run in an {keywordOf Lean.Parser.Command.initialize}`initialize` block.
-The {keywordOf Lean.Parser.Command.initialize}`initialize` block must be in the {tech}[meta phase] when used in a {tech}[module].
+命令检查器是最简单的检查器形式。
+命令检查器是 {name Lean.Elab.Command.Linter}`Lean.Elab.Command.Linter` 类型的值；该结构体有一个类型为 {lean}`Syntax → CommandElabM Unit` 的 {name Lean.Elab.Command.Linter.run}`run` 字段。
+{name}`addLinter` 保存一个新命令检查器，必须在 {keywordOf Lean.Parser.Command.initialize}`initialize` 块中运行。
+在{tech (key := "module")}[模块]中使用时，{keywordOf Lean.Parser.Command.initialize}`initialize` 块必须位于{tech (key := "meta phase")}[元阶段]。
 
-Command linters are run after the elaboration of each command, concurrently with the elaboration of the rest of the file.
-The linter's {name Lean.Elab.Command.Linter.run}`run` function is applied to the command's syntax in a context where the command's info tree is available.
-Any environment modifications made by the linter are discarded, but new message log entries, code actions, and {ref "code-quality-metrics"}[code quality metrics] are saved.
+每条命令精译后都会运行命令检查器，与文件剩余部分的精译并发执行。
+检查器的 {name Lean.Elab.Command.Linter.run}`run` 函数应用于命令语法，所在上下文可访问命令的信息树。
+检查器对环境所作的修改会被丢弃，但新消息日志条目、代码操作及{ref "code-quality-metrics"}[代码质量度量]会被保存。
 :::
 
 
-{docstring Lean.Elab.Command.Linter +allowMissing}
+{zhdocstringFrom Lean.Elab.Command.Linter +allowMissing}
 
-{docstring Lean.Elab.Command.addLinter +allowMissing}
+{zhdocstringFrom Lean.Elab.Command.addLinter +allowMissing}
 
 
-::::example "Counting Tactics" (tag := "example-linter-enabled")
-This custom linter issues a warning when the number of tactics in a command exceeds a configurable threshold.
-Tactics are found by processing the command's info tree, recording the unique starting positions of {tech}[original] syntax with tactic info whose kind is a tactic kind.
-Deduplication is needed because tactic info is saved for macro expansion steps and repeated executions of the same tactic.
-The linter terminates early if it is disabled, rather than waiting until it is time to log the message to make the decision.
+::::example "统计策略数量" (tag := "example-linter-enabled")
+此自定义检查器在命令的策略数超过可配置阈值时发出警告。
+它处理命令的信息树，记录具有策略信息且种类为策略种类的{tech (key := "original")}[原始]语法的唯一开始位置，以找到策略。
+由于宏展开步骤及同一策略的重复执行都会保存策略信息，因此需要去重。
+检查器未启用时会尽早退出，而不是到准备记录消息时才作决定。
 
 
 :::leanModules (moduleRoot := Steps)
@@ -434,7 +444,7 @@ def tacticCount : Linter where
 initialize addLinter tacticCount
 ```
 
-This module demonstrates that the linter runs and that it respects locally set options:
+此模块展示检查器确实运行，并且遵守局部设置的选项：
 ```leanModule (moduleName := Steps.Test) (name := tooMany)
 module
 import Steps.Linter
@@ -470,39 +480,40 @@ Note: This linter can be disabled with `set_option linter.tacticCount false`
 ::::
 
 
-## Module Linters
+## 模块检查器
 %%%
+file := "Module-Linters"
 tag := "module-linters"
 %%%
 :::leanSection
 ```lean -show
 open Lean Elab Command
 ```
-Module linters run after each module's elaboration is completed.
-Module linters have type {name}`Lean.Elab.Command.ModuleLinter`, which is a structure with a {name ModuleLinter.run}`run` function of type {lean}`Array Syntax → CommandElabM Unit`.
-The function is called on all the top-level commands from the module.
-Because the linter is invoked after the whole module is elaborated, its warnings do not appear until the very end of elaboration.
+模块检查器在每个模块精译完成后运行。
+模块检查器的类型为 {name}`Lean.Elab.Command.ModuleLinter`；该结构体具有类型为 {lean}`Array Syntax → CommandElabM Unit` 的 {name ModuleLinter.run}`run` 函数。
+调用时会将该模块中的所有顶层命令传给此函数。
+由于整个模块精译完毕后才调用检查器，警告要到精译末尾才会出现。
 
-Unlike command linters, module linters do not have access to the commands' info trees and cannot save code actions.
-They do, however, have access to the module's final environment.
-This means that they are primarily useful for syntactic checks.
-If info trees are needed for a whole-file check, consider using a {ref "stateful-linters"}[stateful linter] instead.
+与命令检查器不同，模块检查器不能访问命令的信息树，也不能保存代码操作。
+不过，它们可以访问模块的最终环境。
+因此，它们主要适合语法检查。
+若全文件检查需要信息树，应考虑使用{ref "stateful-linters"}[有状态检查器]。
 
-The {name}`addModuleLinter` function saves a new module linter, and must be run in an {keywordOf Lean.Parser.Command.initialize}`initialize` block.
-The {keywordOf Lean.Parser.Command.initialize}`initialize` block must be in the {tech}[meta phase] when used in a {tech}[module].
+{name}`addModuleLinter` 保存一个新模块检查器，必须在 {keywordOf Lean.Parser.Command.initialize}`initialize` 块中运行。
+在{tech (key := "module")}[模块]中使用时，{keywordOf Lean.Parser.Command.initialize}`initialize` 块必须位于{tech (key := "meta phase")}[元阶段]。
 :::
 
 
-{docstring Lean.Elab.Command.ModuleLinter +allowMissing}
+{zhdocstringFrom Lean.Elab.Command.ModuleLinter +allowMissing}
 
-{docstring Lean.Elab.Command.addModuleLinter +allowMissing}
+{zhdocstringFrom Lean.Elab.Command.addModuleLinter +allowMissing}
 
-:::::example "Limiting the Number of Declarations" (tag := "example-module-linter")
+:::::example "限制声明数量" (tag := "example-module-linter")
 
 ::::leanModules (moduleRoot := Limit)
-The module `Limit.Linter` contains a module linter that issues a warning when a module contains too many declarations.
-The limit is determined by the value of an option.
-Even though the warning is attached to the first declaration that exceeds the limit, it does not appear until the entire file is elaborated because it is implemented as a module linter.
+模块 `Limit.Linter` 包含一个模块检查器，在模块声明过多时发出警告。
+上限由选项值决定。
+虽然警告附着于首个超出限制的声明，但由于由模块检查器实现，它要到整个文件精译完成后才会出现。
 ```leanModule (moduleName := Limit.Linter)
 module
 public meta import Lean.Linter.Basic
@@ -534,7 +545,7 @@ def declarationLimit : ModuleLinter where
 
 initialize addModuleLinter declarationLimit
 ```
-This module sets the maximum declaration count to {lean}`2`:
+此模块将最大声明数设为 {lean}`2`：
 ```leanModule (moduleName := Limit.Test) (name := limitTest)
 module
 import Limit.Linter
@@ -545,10 +556,10 @@ def a := 1
 def b := 2
 def c := 3
 ```
-Building the file demonstrates the linter warning:
+构建文件时会显示检查警告：
 :::TODO
-The next codeblock should have `leanOutput limitTest`.
-This behavior is currently broken, see <https://github.com/leanprover/subverso/issues/245>.
+下一个代码块本应使用 `leanOutput limitTest`。
+该行为目前存在问题，见 <https://github.com/leanprover/subverso/issues/245>。
 :::
 ```
 this file contains 3 declarations, more than 2
@@ -560,8 +571,9 @@ Note: This linter can be disabled with `set_option linter.declarationLimit false
 
 
 
-## Stateful Linters
+## 有状态检查器
 %%%
+file := "Stateful-Linters"
 tag := "stateful-linters"
 %%%
 :::leanSection
@@ -569,44 +581,44 @@ tag := "stateful-linters"
 open Lean Elab Command
 ```
 
-Like command linters, stateful linters are invoked after each command is elaborated.
-Similarly, they also have access to the command's info tree and environment.
-Unlike command linters, they are not independent of the results of linting prior commands.
-Instead, they have a state that is accumulated throughout the module.
-This provides the opportunity to check non-local properties, while still emitting a warning as soon as the violation has occurred rather than waiting for the rest of the file to be processed.
+与命令检查器一样，每条命令精译后都会调用有状态检查器。
+它们同样可以访问命令的信息树与环境。
+不同之处在于，它们并不独立于此前命令的检查结果。
+相反，它们具有在整个模块中累积的状态。
+因此可以检查非局部性质，并在违规发生后立即发出警告，而无需等待文件剩余部分处理完毕。
 
-Furthermore, stateful linters are run in two phases, called the “early” and “late” phases.
-After command elaboration is complete, the early phases of all stateful linters are run, followed by all late phases.
-This allows cooperation: an early phase might compute data that is used in the late phases of multiple linters.
-The early phase is optional, and many useful stateful linters have no early phase.
-Stateful linters may read the saved state of any other stateful linter, not just their own, via handles returned by linter registration.
+此外，有状态检查器分为“早期”和“晚期”两个阶段运行。
+命令精译完成后，先运行所有有状态检查器的早期阶段，再运行所有晚期阶段。
+这样就可以协作：早期阶段可以计算多个检查器的晚期阶段要使用的数据。
+早期阶段是可选的，许多有用的有状态检查器并没有早期阶段。
+通过注册检查器返回的句柄，有状态检查器不仅可以读取自己的已保存状态，也可以读取其他任何有状态检查器的状态。
 
-Stateful linters are registered using {name}`Lean.Elab.Command.registerStatefulLinter`.
-Like the other linter registration functions, it must be invoked in an {keywordOf Lean.Parser.Command.initialize}`initialize` block in the {tech}[meta phase].
-The linter must be public.
-The registration function takes the implementations of the early and late phases as arguments.
-Unlike the other linter registrations, registration returns a useful value; this value is a handle by which the linter's state can be read.
-{name}`StatefulLinter` and {name}`registerStatefulLinter` both take two type parameters; the first is the state that is threaded between commands, the second is the data computed in the early phase.
+有状态检查器通过 {name}`Lean.Elab.Command.registerStatefulLinter` 注册。
+与其他检查器注册函数一样，必须在{tech (key := "meta phase")}[元阶段]的 {keywordOf Lean.Parser.Command.initialize}`initialize` 块中调用。
+检查器必须公开。
+注册函数以早期和晚期阶段的实现为实参。
+与其他检查器注册操作不同，该注册会返回一个有用的值，即可用于读取检查器状态的句柄。
+{name}`StatefulLinter` 和 {name}`registerStatefulLinter` 都接受两个类型参数：第一个是在命令间传递的状态，第二个是早期阶段计算的数据。
 
-Stateful linters are also run at the end of the module.
-Because they've had the opportunity to collect information from each command, they can provide feedback that module linters cannot.
+有状态检查器也会在模块末尾运行。
+由于它们已能从各命令中收集信息，因此可以提供模块检查器无法提供的反馈。
 :::
 
-{docstring Lean.Elab.Command.StatefulLinter}
+{zhdocstringFrom Lean.Elab.Command.StatefulLinter}
 
-{docstring Lean.Elab.Command.registerStatefulLinter}
+{zhdocstringFrom Lean.Elab.Command.registerStatefulLinter}
 
-{docstring Lean.Elab.Command.PrevStateFn}
+{zhdocstringFrom Lean.Elab.Command.PrevStateFn}
 
-{docstring Lean.Elab.Command.PreStateFn}
+{zhdocstringFrom Lean.Elab.Command.PreStateFn}
 
-::::example "Enforcing a File Layout" (tag := "example-file-layout")
+::::example "落实文件布局" (tag := "example-file-layout")
 :::leanModules (moduleRoot := Layout)
 
-This stateful linter checks that a module has a particular structure.
-It should start with a module docstring, then set any options that are needed, and then finally include declarations.
-The linter's state is a simple state machine that tracks this ordering.
-When it encounters a command, it checks the invariant locally and updates the state.
+此有状态检查器检查模块是否具有指定结构。
+模块应先有模块文档字符串，再设置所需选项，最后包含声明。
+检查器的状态是跟踪此顺序的简单状态机。
+每当遇到命令，它就局部检查不变量并更新状态。
 ```leanModule (moduleName := Layout.Linter)
 module
 public meta import Lean.Linter.Basic
@@ -671,7 +683,7 @@ public initialize fileLayoutLinter : StatefulLinter LayoutState Unit ←
   registerStatefulLinter {}
     (post := fun stx st _ _ _ => withSetOptionIn (checkLayout · st) stx)
 ```
-This file contains three violations: it begins without a module documentation comment, it sets an option after a declaration, and it places a module documentation comment after a command:
+此文件有三处违规：开头缺少模块文档注释，在声明后设置选项，以及在命令后放置模块文档注释：
 ```leanModule (moduleName := Layout.Test) (name := ordering)
 module
 import Layout.Linter
@@ -706,45 +718,46 @@ Note: This linter can be disabled with `set_option linter.fileLayout false`
 
 
 
-## Environment Linters
+## 环境检查器
 %%%
+file := "Environment-Linters"
 tag := "environment-linters"
 %%%
 
-Environment linters are run by {lake}`lint` after a project is built when {lakeOpt}`--builtin-lint` is enabled or the {tomlField Lake.PackageConfig}`builtinLint` field is enabled in the Lake configuration.
-After Lake builds the project, its built-in linter iterates over each library target's root module, importing the module and then running the configured environment linters on the resulting environment.
-Each environment linter consists of a test routine along with success and failure messages.
-Unlike command and module linters, environment linters do not need to be transitively imported by the modules that they check.
+项目构建完成后，若启用了 {lakeOpt}`--builtin-lint`，或在 Lake 配置中启用了 {tomlField Lake.PackageConfig}`builtinLint` 字段，{lake}`lint` 就会运行环境检查器。
+Lake 构建项目后，其内置检查器会遍历各库目标的根模块，导入模块，再对所得环境运行所配置的环境检查器。
+每个环境检查器由测试过程及成功、失败消息组成。
+与命令和模块检查器不同，环境检查器不需要被待检查模块传递导入。
 
-Like other linters, environment linters are controlled by options.
-Unlike the linter itself, the option declaration must be transitively imported.
-Options that control environment linters are specially registered, and the values of these options are stored during elaboration so that the linter can retrieve the option values from the imported environment, even those that are locally set using {keywordOf Lean.Parser.Command.in}`in`.
+与其他检查器一样，环境检查器由选项控制。
+与检查器本身不同，选项声明必须被传递导入。
+控制环境检查器的选项会被特别注册，并在精译期间保存其值；因此检查器能从导入环境中取得这些值，包括使用 {keywordOf Lean.Parser.Command.in}`in` 局部设置的值。
 
-To define an environment linter, do the following:
-1. In one module, register a public option in the {tech}[meta phase] that controls the linter.
-  In an {keywordOf Lean.Parser.Command.initialize}`initialize` block, run {name Lean.Linter.addEnvLinterOption}`addEnvLinterOption` to instruct Lean to track the option's value during elaboration.
-  This module should be transitively imported by every module in which the linter is to be used.
-  The initialize block must run in the meta phase.
-2. In a second module, define the linter itself.
-  Use the {attr}`builtin_env_linter` attribute to associate the linter with the option.
-  This module does not need to be imported by a module in order to check it, but it must be transitively imported by the root module of the target being linted.
+定义环境检查器的步骤如下：
+1. 在一个模块中，于{tech (key := "meta phase")}[元阶段]注册控制该检查器的公开选项。
+   在 {keywordOf Lean.Parser.Command.initialize}`initialize` 块中运行 {name Lean.Linter.addEnvLinterOption}`addEnvLinterOption`，指示 Lean 在精译期间跟踪该选项值。
+   每个需要使用此检查器的模块都应传递导入该模块。
+   初始化块必须在元阶段运行。
+2. 在第二个模块中定义检查器本身。
+   使用 {attr}`builtin_env_linter` 属性将检查器与选项关联。
+   待检查模块无需导入该模块，但被检查目标的根模块必须传递导入它。
 
-:::syntax attr (title := "Environment Linters")
+:::syntax attr (title := "环境代码检查器")
 ```grammar
 builtin_env_linter $_:ident
 ```
-Registers an environment linter that is controlled by the indicated option name.
+注册由指定选项名控制的环境检查器。
 :::
 
-{docstring Lean.Linter.EnvLinter.EnvLinter}
+{zhdocstringFrom Lean.Linter.EnvLinter.EnvLinter}
 
-{docstring Lean.Linter.addEnvLinterOption +allowMissing}
+{zhdocstringFrom Lean.Linter.addEnvLinterOption +allowMissing}
 
 
-::::example "API Completeness Linter" (tag := "example-env-linter")
-Generally speaking, a data structure that provides a `get!` function should also provide `get?` and `getD`.
-These functions need not be defined in the same module, however.
-An environment linter can ensure that every namespace in a project that defines any of these names also defines the others.
+::::example "API 完整性检查器" (tag := "example-env-linter")
+一般来说，提供 `get!` 函数的数据结构也应提供 `get?` 和 `getD`。
+不过，这些函数不必在同一模块中定义。
+环境检查器可以确保：项目中任何定义了这些名称之一的命名空间，也定义了其余名称。
 
 :::lakeSession
 ```toml -show
@@ -757,7 +770,7 @@ name = "Lints"
 [[lean_lib]]
 name = "Data"
 ```
-The linter itself consists of two modules: `Lints.Options` defines the option that controls the linter and should be imported by the entire project, while `Lints.GetVariants` only needs to be imported by the root module:
+检查器本身由两个模块组成：`Lints.Options` 定义控制它的选项，应由整个项目导入；`Lints.GetVariants` 则只需由根模块导入：
 ```lean (file := "Lints/Options.lean")
 module
 public meta import Lean.Linter.Init
@@ -803,7 +816,7 @@ public def getVariantsLinter : EnvLinter where
   errorsFound := "THE FOLLOWING NAMESPACES DEFINE ONLY SOME OF `get!`, \
     `get?`, AND `getD`:"
 ```
-The library itself contains a variety of data structures, with their implementations in multiple modules:
+库本身包含多种数据结构，实现在多个模块中：
 ```lean (file := "Data/Stack.lean")
 module
 import Lints.Options
@@ -832,7 +845,7 @@ public def Stack.get? (s : Stack) (i : Nat) : Option Nat := s.items[i]?
 public def Stack.getD (s : Stack) (i : Nat) (default : Nat) : Nat :=
   s.items.getD i default
 ```
-The root module imports all the implementation modules along with the linter:
+根模块导入全部实现模块以及检查器：
 ```lean (file := "Data.lean")
 module
 public import Lints.GetVariants
@@ -842,7 +855,7 @@ public import Data.Safe
 ```
 ```lakeCmd "lake build" +ignoreOutput -show
 ```
-Linting the package returns the following warnings:
+对包执行代码检查会返回以下警告：
 ```lakeCmd "lake lint --builtin-only" +error
 -- Found 1 error in 12 declarations (plus 24 automatically generated ones) in Data with 1 linters
 
@@ -854,48 +867,49 @@ THE FOLLOWING NAMESPACES DEFINE ONLY SOME OF `get!`, `get?`, AND `getD`: -/
 :::
 ::::
 
-## Recording Code Quality Entries
+## 记录代码质量条目
 %%%
+file := "Recording-Code-Quality-Entries"
 tag := "recording-code-quality"
 %%%
 
-Each saved value is referred to as an {name Lean.Linter.CodeQuality.Entry}`Entry`.
-They are saved using {name}`Lean.Linter.logCodeQualityEntry`.
-Analogous to {name Lean.Linter.logLintIf}`logLintIf`, {name Lean.Linter.logCodeQualityEntryIf}`logCodeQualityEntryIf` takes a linter option name and logs the entry if the corresponding linter is enabled, taking linter sets, {option}`linter.all`, and the {lakeOpt}`--lint-only` option into account.
+每个保存的值称为一个 {name Lean.Linter.CodeQuality.Entry}`Entry`。
+通过 {name}`Lean.Linter.logCodeQualityEntry` 保存它们。
+类似于 {name Lean.Linter.logLintIf}`logLintIf`，{name Lean.Linter.logCodeQualityEntryIf}`logCodeQualityEntryIf` 接受检查器选项名，在对应检查器启用时记录条目，并考虑检查器集合、{option}`linter.all` 和 {lakeOpt}`--lint-only` 选项。
 
-Code quality entries relate a metric name, a source, and a value.
-The metric name may be any string, but to avoid overlap, it should typically include the linter's option name as a prefix.
-Using only the linter's name risks conflicting with the automatic counts of linter warnings that Lake emits as code quality metrics.
-The helpers {name}`Lean.Linter.findCodeQualitySource` and {name}`Lean.Linter.findCodeQualitySource?` determine a {name Lean.Linter.CodeQuality.Source}`Source` from syntax parsed from the file, with the former falling back to the current module if it cannot find a declaration.
-Sources may only be modules or declarations, and there is no way to attribute an entry to a smaller unit.
-Instead, dictionary values can be used that encode the finer structure.
-Values may be floating-point values or dictionaries that map strings to floating-point numbers.
-Integral measures, such as counts, should also use floating-point numbers.
+代码质量条目关联度量名称、来源和值。
+度量名称可以是任意字符串，但为避免冲突，通常应以检查器选项名作为前缀。
+仅使用检查器名称可能与 Lake 自动输出为代码质量度量的检查警告计数冲突。
+辅助函数 {name}`Lean.Linter.findCodeQualitySource` 和 {name}`Lean.Linter.findCodeQualitySource?` 从文件解析出的语法确定 {name Lean.Linter.CodeQuality.Source}`Source`；前者找不到声明时会回退为当前模块。
+来源只能是模块或声明，无法将条目归属于更小的单位。
+不过，可以使用字典值编码更细的结构。
+值可以是浮点值，或从字符串到浮点数的字典。
+计数等整数度量也应使用浮点数。
 
-The same metric name may be logged any number of times for a given source.
-Clients are responsible for aggregating metrics appropriately.
+对给定来源，同一度量名称可以记录任意多次。
+使用方负责适当地汇总度量。
 
-{docstring Lean.Linter.CodeQuality.Entry +allowMissing}
+{zhdocstringFrom Lean.Linter.CodeQuality.Entry +allowMissing}
 
-{docstring Lean.Linter.CodeQuality.Source +allowMissing}
+{zhdocstringFrom Lean.Linter.CodeQuality.Source +allowMissing}
 
-{docstring Lean.Linter.CodeQuality.Value +allowMissing}
+{zhdocstringFrom Lean.Linter.CodeQuality.Value +allowMissing}
 
-{docstring Lean.Linter.logCodeQualityEntry}
+{zhdocstringFrom Lean.Linter.logCodeQualityEntry}
 
-{docstring Lean.Linter.logCodeQualityEntryIf}
+{zhdocstringFrom Lean.Linter.logCodeQualityEntryIf}
 
-{docstring Lean.Linter.findMatchingDecl?}
+{zhdocstringFrom Lean.Linter.findMatchingDecl?}
 
-{docstring Lean.Linter.findCodeQualitySource}
+{zhdocstringFrom Lean.Linter.findCodeQualitySource}
 
-{docstring Lean.Linter.findCodeQualitySource?}
+{zhdocstringFrom Lean.Linter.findCodeQualitySource?}
 
 
-::::example "Measuring Simp Lemma Usage" (tag := "example-simp-metrics")
-Even though linters are primarily intended to warn about potentially problematic code, they can also be used to just gather metrics, with warnings emitted by later checks.
-This example demonstrates a command linter that logs metrics about the usage of explicit {tactic}`simp` lemmas, which could provide insights into missing {attrs}`@[simp]` annotations in a library.
-These metrics are then collected and summarized by a small Lean program.
+::::example "度量 simp 引理的使用" (tag := "example-simp-metrics")
+虽然检查器主要用于警告潜在的问题代码，也可以仅收集度量，而由后续检查发出警告。
+本示例展示一个记录显式 {tactic}`simp` 引理使用度量的命令检查器，可据此发现库中可能缺失的 {attrs}`@[simp]` 标注。
+这些度量随后由一个小型 Lean 程序收集和汇总。
 
 :::lakeSession
 ```toml
@@ -913,9 +927,9 @@ name = "simp-stats"
 root = "SimpStats"
 ```
 
-The linter first traverses the syntax of the command with {name}`simpLemmaStarts`, which finds the source location of each explicit {tactic}`simp` lemma.
-Lemmas are identified by their starting position because a {tactic}`simp` lemma list allows the lemmas to be applied to arguments.
-The {name}`simpUsage` linter itself then uses the info tree to discover constant references that begin at the identified starting positions, logging a metric that contains a dictionary that maps fully-resolved names to occurrence counts.
+检查器首先使用 {name}`simpLemmaStarts` 遍历命令语法，找出每个显式 {tactic}`simp` 引理的源码位置。
+由于 {tactic}`simp` 引理列表允许将引理应用于实参，因此使用开始位置来标识引理。
+随后 {name}`simpUsage` 检查器本身利用信息树，找到从这些位置开始的常量引用，记录一个字典度量，将完全解析后的名称映射为出现次数。
 
 ```lean (file := "Lints/SimpUsage.lean")
 module
@@ -975,8 +989,8 @@ def simpUsage : Linter where
 initialize addLinter simpUsage
 ```
 
-This script takes the collected metrics from a project and summarizes them.
-The function {name}`parseEntries` parses a sequence of JSON values, while {name}`main` processes the result and sorts the simp lemmas by their usage count.
+此脚本获取项目收集的度量并进行汇总。
+函数 {name}`parseEntries` 解析 JSON 值序列，{name}`main` 则处理结果，并按使用次数排序 simp 引理。
 ```lean (file := "SimpStats.lean")
 import Lean.Data.Json
 open Lean
@@ -1014,7 +1028,7 @@ def main : IO UInt32 := do
   return 0
 ```
 
-The project itself contains four lemmas, {name}`t1` through {name}`t4`, spread across two modules:
+项目本身包含四个引理 {name}`t1` 到 {name}`t4`，分布在两个模块中：
 ```lean (file := "Code.lean")
 module
 public import Code.Lemmas
@@ -1040,7 +1054,7 @@ public theorem t3 (n : Nat) : 0 + n + 0 = n := by
 ```lakeCmd "lake build" +ignoreOutput -show
 ```
 
-After building, the code quality metrics list the uses of explicit {tactic}`simp` lemmas, and the sorting script summarizes them:
+构建后，代码质量度量列出显式 {tactic}`simp` 引理的使用情况，排序脚本对其进行汇总：
 ```lakeCmd "lake lint --code-quality"
 {"value": {"dict": {"dictionary": {"Nat.add_zero": 1}}},
  "source": {"declaration": {"name": "t1", "module": "Code.Lemmas"}},
@@ -1065,56 +1079,57 @@ After building, the code quality metrics list the uses of explicit {tactic}`simp
 ::::
 
 
-## Package Code Quality Checks
+## 包级代码质量检查
 %%%
+file := "Package-Code-Quality-Checks"
 tag := "package-code-quality-checks"
 %%%
 
-Package code quality checks are an opportunity to measure a property of an entire library or executable {tech}[target], as opposed to a declaration or module in isolation.
-They are configured in the Lake configuration file or on the command line, and do not need to be imported by the code that they are measuring.
-Package checks emit code quality entries.
-Because they run as part of Lean and Lake, they have access to Lean's metaprogramming features and do not need to build their own _ad hoc_ mechanisms.
-Scripts that enforce a limit or invariant on a whole package only need to parse JSON, rather than interacting with Lean code in complicated ways.
+包级代码质量检查可以度量整个库或可执行{tech (key := "target")}[目标]的性质，而不是孤立地度量单个声明或模块。
+它们在 Lake 配置文件或命令行中配置，不需要被待度量的代码导入。
+包级检查输出代码质量条目。
+由于作为 Lean 和 Lake 的一部分运行，它们可以访问 Lean 的元编程功能，无需各自构建特设机制。
+用于落实包级限制或不变量的脚本只需解析 JSON，而不必以复杂方式与 Lean 代码交互。
 
-Package checks are enabled by adding their defining modules to the {tomlField Lake.PackageConfig}`checks` field in the Lake configuration or by using Lake's {lakeOpt}`--checks` option.
-Within the configured package check modules, each check is a public definition of type {name Lean.Linter.CodeQuality.PackageCheck}`PackageCheck` in the `meta` phase that is registered with the {attr}`package_code_quality_check` attribute.
-Given an argument of type {name Lean.Linter.CodeQuality.PackageCheckContext}`PackageCheckContext`, a package check may use any feature of {name Lean.MetaM}`MetaM` to compute an array of code quality entries.
-The context specifies the library or executable's {tech (key := "module roots")}[root module] along with the {tech}[workspace]'s source search path.
-Package checks should not throw exceptions to indicate that the package violated an invariant or desired property; instead, these issues should be returned as entries and then checked by a consumer of the data.
+将定义检查的模块加入 Lake 配置中的 {tomlField Lake.PackageConfig}`checks` 字段，或使用 Lake 的 {lakeOpt}`--checks` 选项，即可启用包级检查。
+在所配置的检查模块中，每个检查都是 `meta` 阶段中类型为 {name Lean.Linter.CodeQuality.PackageCheck}`PackageCheck` 的公开定义，并使用 {attr}`package_code_quality_check` 属性注册。
+给定 {name Lean.Linter.CodeQuality.PackageCheckContext}`PackageCheckContext` 类型的实参，包级检查可以使用 {name Lean.MetaM}`MetaM` 的任意功能计算代码质量条目数组。
+上下文指定库或可执行文件的{tech (key := "module roots")}[根模块]以及{tech (key := "workspace")}[工作区]的源码搜索路径。
+包级检查不应通过抛出异常来表示包违反不变量或预期性质；应将问题作为条目返回，由数据使用方检查。
 
-Enabled checks are run only when the {lakeOpt}`--code-quality` or {lakeOpt}`--checks` options are passed—{lake}`lint` will not otherwise run them.
-For each root module, all registered package checks are run concurrently, and their resulting entries are appended to the overall collection of quality metrics.
-Modules that are included in libraries through their {tech}[globs] field are not considered as roots.
-Custom targets are not included, even if they build Lean code, and neither are non-default library and executable targets.
-If modules are specified on the command line, they are checked instead of the default targets' root modules.
-Exceptions thrown by package checks are written to standard error, but do not terminate linting.
-If any exceptions were thrown, {lake}`lint` returns a non-zero exit code.
+只有传入 {lakeOpt}`--code-quality` 或 {lakeOpt}`--checks` 选项时，才会运行启用的检查；否则 {lake}`lint` 不运行它们。
+对于每个根模块，全部注册的包级检查会并发运行，结果条目追加到总体质量度量集合中。
+通过库的{tech (key := "globs")}[模块匹配模式]字段纳入的模块不被视为根。
+即使自定义目标会构建 Lean 代码，也不会纳入检查；非默认的库和可执行目标同样不会纳入。
+若在命令行指定模块，则检查这些模块，代替默认目标的根模块。
+包级检查抛出的异常会写入标准错误，但不会终止代码检查。
+若抛出过任何异常，{lake}`lint` 返回非零退出码。
 
-Checks are run in an environment in which the root module is imported.
-Modules that are imported by multiple root modules can be checked multiple times by package checks.
-If the root module is a {tech}[module] using the {ref "module-scopes"}[module system], then only public and server information is available in this environment; private declarations are not visible.
-If the root module does not use the module system, then private information is also visible.
-Each root module is checked in a fresh environment.
+检查在已导入根模块的环境中运行。
+被多个根模块导入的模块可能被包级检查重复检查。
+若根模块使用{ref "module-scopes"}[模块系统]，即是一个{tech (key := "module")}[模块]，该环境仅包含公开和服务器信息，私有声明不可见。
+若根模块不使用模块系统，私有信息也可见。
+每个根模块都在新的环境中检查。
 
-:::syntax attr (title := "Package Code Quality Checks")
+:::syntax attr (title := "包级代码质量检查")
 ```grammar
 package_code_quality_check
 ```
 
-Registers a package code quality check.
+注册一个包级代码质量检查。
 :::
 
-{docstring Lean.Linter.CodeQuality.PackageCheck +allowMissing}
+{zhdocstringFrom Lean.Linter.CodeQuality.PackageCheck +allowMissing}
 
-{docstring Lean.Linter.CodeQuality.PackageCheckContext +allowMissing}
+{zhdocstringFrom Lean.Linter.CodeQuality.PackageCheckContext +allowMissing}
 
-::::example "Finding Duplicate Theorems" (tag := "example-package-check")
+::::example "寻找重复定理" (tag := "example-package-check")
 
-Because package checks have access to an entire library, they can be used to find duplicate theorems.
-This example check is limited: it only finds theorems that match each other almost exactly, and does not take reorderings of hypotheses or unfoldings of definitions into account.
-A more realistic check could use a more nuanced similarity measure, reporting theorems that exceed some threshold measure.
+由于包级检查可以访问整个库，因此可用于寻找重复定理。
+本示例检查有局限：它只找到几乎完全相同的定理，不考虑假设重排或定义展开。
+更实际的检查可以使用更细致的相似性度量，报告超过某个相似阈值的定理。
 
-First, the `Checks` module is added to the package's {tomlField Lake.PackageConfig}`checks` field:
+首先将 `Checks` 模块加入包的 {tomlField Lake.PackageConfig}`checks` 字段：
 :::lakeSession
 ```toml
 name = "dups"
@@ -1128,12 +1143,12 @@ name = "Checks"
 name = "Code"
 ```
 
-Its single check starts by computing equivalence classes of theorems.
-Theorems are identified by checking whether their types are propositions, and internal theorems produced as helpers for other declarations are skipped.
-Non-internal theorems are sorted into equivalence classes using a hash table; the {lean}`BEq` instance for {lean}`Lean.Expr` and its corresponding {lean}`Hashable Lean.Expr` instance check equality modulo renaming of bound variables and changes of binder info.
-Only modules in the root module's package are searched.
-As a result, theorems that differ only by hypothesis naming or status as implicit parameters are grouped, while those that re-order hypotheses are not.
-After the equivalence classes are identified, each element of each class with more than one element is given a metrics entry that lists the entire class.
+其唯一检查首先计算定理的等价类。
+通过检查类型是否为命题来识别定理，并跳过作为其他声明辅助项生成的内部定理。
+使用哈希表将非内部定理分成等价类；{lean}`Lean.Expr` 的 {lean}`BEq` 实例及对应的 {lean}`Hashable Lean.Expr` 实例在忽略绑定变量重命名和绑定信息变化的意义下检查相等性。
+仅搜索根模块所在包中的模块。
+因此，仅假设名称或隐式参数状态不同的定理会被归为一组，假设顺序不同的定理则不会。
+确定等价类后，对包含多个元素的每个等价类中的每个元素，添加一个列出整个等价类的度量条目。
 ```lean (file := "Checks.lean")
 module
 public meta import Lean.Linter.CodeQuality.Frontend
@@ -1177,8 +1192,8 @@ public def duplicateTheorems : PackageCheck where
     return entries
 ```
 
-The code itself contains multiple restatements of the same theorem, three of which fall into the same equivalence class.
-{name}`zero_add'` and {name}`add_zero_rev` have different statements.
+代码本身包含同一定理的多个重述，其中三个属于同一等价类。
+{name}`zero_add'` 和 {name}`add_zero_rev` 的陈述则不同。
 ```lean (file := "Code/Basic.lean")
 module
 
@@ -1203,7 +1218,7 @@ public import Code.Extra
 ```
 ```lakeCmd "lake build Code Checks" +ignoreOutput -show
 ```
-Each of the three versions of the theorem is marked with the entire equivalence class in the output:
+输出中，该定理的三个版本都标注了整个等价类：
 ```lakeCmd "lake lint --code-quality"
 {"value":
  {"dict":

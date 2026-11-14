@@ -40,6 +40,11 @@
 - 新增模块后更新 `Manual/ZhDocString.lean`，确保 `Manual.lean`
   的 import DAG 可以构建全部中文模块。
 
+上游新增章节还可使用 `{zhdocstringFrom 英文声明}`、
+`{zhincludeDocstringFrom 英文声明}`、`{zhOptionDocsFrom 选项}` 和
+`:::zhgrindTactic`，翻译表位于
+`Manual/ZhDocString/UpstreamDocs.json`。它们直接读取真实声明的签名、构造子和字段，按完整声明名关联中文 Markdown；每条记录同时保存原文，构建时严格核对，原文变化或缺译会报错。不得删掉原文核对、使用空译文或通过隐藏字段绕过缺译。
+
 ## 检查
 
 先运行与改动最接近的目标：

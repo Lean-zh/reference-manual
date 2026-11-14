@@ -80,13 +80,13 @@ tag := "structure-fields"
 
 ::::example "Inferring Universes"
 
-The structure {lean}`MyProd` is the same as {lean}`Prod`.
+结构体 {lean}`MyProd` 与 {lean}`Prod` 相同。
 ```lean
 structure MyProd (α β : Type _) where
   fst : α
   snd : β
 ```
-The two parameters and the two fields are constructor parameters:
+两个类型参数和两个字段都是构造子的参数：
 ```signature
 MyProd.mk.{u, v}
   {α : Type u}
@@ -95,7 +95,7 @@ MyProd.mk.{u, v}
   (snd : β)
   : MyProd.{u, v} α β
 ```
-Additionally, the constructor is {tech (key := "universe polymorphism")}[universe polymorphic]; the type constructor {name}`MyProd` takes two universe parameters:
+此外，构造子具有{tech (key := "universe polymorphism")}[宇宙多态性]；类型构造子 {name}`MyProd` 接受两个宇宙参数：
 ```signature
 MyProd.{u, v} (α : Type u) (β : Type v) : Type (max u v)
 ```
@@ -103,16 +103,16 @@ MyProd.{u, v} (α : Type u) (β : Type v) : Type (max u v)
 ```lean -show
 universe u v
 ```
-The universe level of each type of each field must be less than or equal to the universe level of the structure.
-Lean infers that {lean}`Type (max u v)` is the least universe that can accommodate both {lean}`Type u` and {lean}`Type v`.
+每个字段类型的宇宙层级都必须小于或等于结构体的宇宙层级。
+Lean 推断出，{lean}`Type (max u v)` 是能够同时容纳 {lean}`Type u` 和 {lean}`Type v` 的最低宇宙。
 
 ::::
 
 每个字段都会独立插入自动隐式参数，即使它们的名称相同；这些字段随后成为对类型进行量化的构造子参数。
 
-::::example "Auto-Implicit Parameters in Structure Fields"
+::::example "结构体字段中的自动隐式参数"
 
-The structure {lean}`MyStructure` contains fields whose types have auto-implicit parameters:
+结构体 {lean}`MyStructure` 包含一些字段，其类型带有自动隐式参数：
 
 
 ```lean
@@ -123,7 +123,7 @@ structure MyStructure where
 ```lean -show
 variable {n : Nat}
 ```
-Each fields in the constructor {name}`MyStructure.mk` takes its own implicit parameter {lean}`n` of type {lean}`Nat`:
+构造子 {name}`MyStructure.mk` 中的每个字段都各自接受一个类型为 {lean}`Nat` 的隐式参数 {lean}`n`：
 
 ```signature
 MyStructure.mk
@@ -131,8 +131,8 @@ MyStructure.mk
   (field2 : {n : Nat} → Fin n)
   : MyStructure
 ```
-The type constructor {name}`MyStructure` takes no universe parameters, and the resulting type is in `Type`,
-which is the universe for {name}`Nat` and {lean}`Fin n`:
+类型构造子 {name}`MyStructure` 不接受宇宙参数，得到的类型位于 `Type` 中；
+`Type` 也是 {name}`Nat` 和 {lean}`Fin n` 所在的宇宙：
 
 ```signature
 MyStructure : Type
@@ -289,10 +289,10 @@ $f:ident
 在模式匹配语境下，字段名映射到能匹配相应投影的模式，字段缩写可直接绑定同名模式变量。
 默认参数同样适用于模式；如果模式未指定带默认值字段的值，则模式只匹配默认值。
 
-When a field definition contains the {keywordOf Lean.Parser.Term.stuctInstField}`private` modifier, the value is placed in the current module's {tech}[private scope], even if the structure value is itself in the public scope.
-The value is wrapped in a public but non-exposed helper definition.
-This is particularly useful with instances of type classes, because the implementation of {tech}[methods] in public {tech}[instances] of type classes are {tech}[exposed] by default.
-This modifier allows them to be made private.
+当字段定义包含修饰符 {keywordOf Lean.Parser.Term.stuctInstField}`private` 时，即使结构体值本身处于公开作用域，该字段值也会被放入当前模块的{tech (key := "private scope")}[私有作用域]。
+该值会由一个公开但未暴露的辅助定义包装起来。
+这对类型类的实例尤其有用，因为公开类型类{tech (key := "instances")}[实例]中的{tech (key := "methods")}[方法]实现默认是{tech (key := "exposed")}[暴露]的。
+借助此修饰符，可以将这些实现设为私有。
 
 可选的类型标注允许在无法由上下文确定时显式指定结构体类型。
 ::::
@@ -321,8 +321,8 @@ false
 
 ::::example "Private Field Values"
 :::leanModules
-Even when a definition of a structure is {tech}[exposed], individual fields may be hidden using the field-level {keywordOf Lean.Parser.Term.stuctInstField}`private` modifier.
-In this module, the exposed public definition of {name}`x` may use the private definition {name}`secret` because the {name}`imaginary` field's value is not exposed:
+即使结构体的定义是{tech (key := "exposed")}[暴露]的，也可以使用字段级修饰符 {keywordOf Lean.Parser.Term.stuctInstField}`private` 隐藏个别字段。
+在此模块中，暴露的公开定义 {name}`x` 可以使用私有定义 {name}`secret`，因为字段 {name}`imaginary` 的值并未暴露：
 ```leanModule (moduleName := Main)
 module
 
@@ -343,9 +343,9 @@ public def x : Complex := {
 
 ::::example "Private Methods"
 :::leanModules +error
-In this module, the existence of the {name}`State` structure is public, but its constructor and field are private.
-The function {name}`State.toString` is also private, and is intended to be accessed via the {name}`ToString` instance.
-However, because the implementations of {tech}[methods] are exposed for public instances, this is not allowed:
+在此模块中，结构体 {name}`State` 的存在是公开的，但它的构造子和字段是私有的。
+函数 {name}`State.toString` 也是私有的，预期通过 {name}`ToString` 实例访问。
+然而，由于公开实例的{tech (key := "methods")}[方法]实现是暴露的，因此不允许这样做：
 ```leanModule (moduleName := Main) (name := tooExposed)
 module
 
@@ -368,7 +368,7 @@ Note: A private declaration `State.toString` (from the current module) exists bu
 ```
 :::
 :::leanModules
-Marking the implementation of {name}`toString` as {keyword}`private` removes it from the module's {tech}[public scope], giving it access to private functions:
+将 {name}`toString` 的实现标记为 {keyword}`private`，会将它移出模块的{tech (key := "public scope")}[公开作用域]，从而允许它访问私有函数：
 ```leanModule (moduleName := Main) (name := tooExposed)
 module
 
@@ -561,7 +561,7 @@ deriving Repr
 
 
 ::: example "结构体类型继承与字段重叠"
-In this example, a {lean}`Textbook` is a {lean}`Book` that is also an {lean}`AcademicWork`:
+在这个例子中，{lean}`Textbook` 是同时属于 {lean}`AcademicWork` 的 {lean}`Book`：
 
 ```lean
 structure Book where

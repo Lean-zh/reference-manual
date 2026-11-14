@@ -121,7 +121,7 @@ meta def grindTactic : DirectiveExpanderOf TacticDocsOptions
 open Verso.Search in
 def grindTacticDomainMapper : DomainMapper := {
   className := "grind-tactic-domain",
-  displayName := "Grind Tactic",
+  displayName := "grind 策略",
   dataToSearchables :=
     "(domainData) =>
   Object.entries(domainData.contents).map(([key, value]) => ({
@@ -136,8 +136,8 @@ open Verso.Genre.Manual.Markdown in
 @[block_extension Block.grindTactic]
 def grindTactic.descr : BlockDescr := withHighlighting {
   init st := st
-    |>.setDomainTitle grindTacticDomain "Grind Interactive Tactics"
-    |>.setDomainDescription grindTacticDomain "Tactics for steering `grind` interactively"
+    |>.setDomainTitle grindTacticDomain "grind 交互式策略"
+    |>.setDomainDescription grindTacticDomain "用于交互式控制 `grind` 的策略"
     |>.addQuickJumpMapper grindTacticDomain grindTacticDomainMapper
 
   traverse id info _ := do
@@ -164,7 +164,7 @@ def grindTactic.descr : BlockDescr := withHighlighting {
       return html%{
         <div class="namedocs" {...idAttr}>
           {permalink id xref false}
-          <span class="label">grind tactic</span>
+          <span class="label">grind 策略</span>
           <pre class="signature hl lean block">{← x.toHtml (g := Verso.Genre.Manual)}</pre>
           <div class="text">
             {← contents.mapM goB}

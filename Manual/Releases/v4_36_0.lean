@@ -20,574 +20,594 @@ file := "v4.36.0"
 %%%
 
 :::warn
-These release notes describe a _release candidate_, not the final release.
-They may be incomplete and are subject to change.
+这些发布说明描述的是_候选版本_，而非最终版本。
+内容可能不完整，并且可能变化。
 :::
 
-For this release, 219 changes landed.
-In addition to the 65 feature additions
-and 83 fixes listed below,
-there were 11 refactoring changes,
-1 documentation improvement,
-30 performance improvements,
-3 improvements to the test suite,
-and 26 other changes.
+此版本合入了 219 项更改。
+除下面列出的 65 项新增功能
+和 83 项修复外，
+还有 11 项重构，
+1 项文档改进，
+30 项性能改进，
+3 项测试套件改进，
+以及 26 项其他更改。
 
-# Language
+# 语言
+%%%
+file := "Language"
+tag := "Manual-Releases-v4_36_0-Language"
+%%%
 
 ```markdown
 
 - [#15839](https://github.com/leanprover/lean4/pull/15839)
-  fixes a race condition that was caused by incorrect code that was supposed to persist scoped extension state between module docstrings, but failed to do so. The issue is fixed by removing the incorrectly-implemented feature, which may be replaced by a correct version in a future PR.
+  修复一处竞争条件：原实现本应在模块文档字符串之间持久保存作用域扩展状态，但未正确实现。修复方式是移除此错误功能，未来 PR 可能以正确版本替代。
 
 - [#15572](https://github.com/leanprover/lean4/pull/15572)
-  adds a hint/code action the the "[deprecated]` attribute should specify the date or library version at which the deprecation was introduced" warning.
+  为“`[deprecated]` 属性应指定开始弃用的日期或库版本”警告添加提示与代码操作。
 
 - [#15499](https://github.com/leanprover/lean4/pull/15499)
-  makes the statements of generated equation lemmas (`f.eq_1`, `f.eq_2`, …) independent of the options where the equations are first requested. A local `set_option` on the first proof that used the equations could change their statements. Proofs elaborate in parallel, so the statements could differ between builds of the same file, and a proof could compile with some thread counts and fail with others.
+  使生成的方程引理（`f.eq_1`、`f.eq_2` 等）的陈述不依赖首次请求方程时的选项。此前首个使用方程的证明中的局部 `set_option` 可能改变陈述；由于证明并行精译，同一文件不同构建的陈述可能不同，导致某些线程数下编译成功、另一些下失败。
 
 - [#15485](https://github.com/leanprover/lean4/pull/15485)
-  skips running non-stateful linters if the command has a syntax error and `showPartialSyntaxErrors` is disabled.
+  命令存在语法错误且禁用 `showPartialSyntaxErrors` 时，跳过无状态检查器。
 
 - [#14316](https://github.com/leanprover/lean4/pull/14316)
-  makes the type class resolution cache persist across commands: a result whose query contains no metavariables, local instances or free variables and which is itself closed is kept for later commands, so identical queries there are served from the cache instead of being searched again. Such an entry is only served while the dependencies it recorded are unchanged, so new instances, unification hints and reducibility changes invalidate exactly the affected entries. On the build of the standard library this reduces type class resolution time by about 14% and total instructions by 1.2%; Mathlib gains 0.2% overall, as most of its queries involve local instances, which are not (yet) persisted.
+  使类型类解析缓存在命令间持久保存：若查询不含元变量、局部实例或自由变量，且结果本身封闭，就供后续命令复用，相同查询不再重新搜索。仅在记录的依赖未变化时使用条目，因此新实例、合一提示和可约性变化会精确使受影响条目失效。标准库构建中类型类解析时间减少约 14%，总指令数减少 1.2%；Mathlib 总体改善 0.2%，因为多数查询含尚未持久缓存的局部实例。
 
 - [#15399](https://github.com/leanprover/lean4/pull/15399)
-  fixes the type class resolution cache serving a result after a declaration it could have observed changed, most notably through a later `attribute [reducible]` or a scoped or local reducibility attribute coming into or going out of effect. As the cache currently lives within a single command, this is rarely visible yet, but it is a necessary prerequisite for sharing the cache across commands, where such changes are routine.
+  修复类型类解析缓存在可能观察到的声明改变后仍返回旧结果的问题，尤其是后续 `attribute [reducible]`，或作用域、局部可约性属性生效和失效时。目前缓存局限于单个命令，故较少显现，但这是跨命令共享缓存所需的前提，因为此类变化在命令间很常见。
 
 - [#15319](https://github.com/leanprover/lean4/pull/15319)
-  adds `Expr.hasAnyMVar` and `Expr.containsMVar` functions analogous to the existing `Expr.hasAnyFVar` and `Expr.containsFVar` functions.
+  新增 `Expr.hasAnyMVar`、`Expr.containsMVar`，对应已有的 `Expr.hasAnyFVar`、`Expr.containsFVar`。
 
 - [#15355](https://github.com/leanprover/lean4/pull/15355)
-  makes `SavedState.restore` drop the type class resolution cache entries that were recorded after a tracked environment change it rolls back. The generations validating an entry roll back with the environment while `Meta.Cache` survives the restore, so a different change made afterwards could bring the recorded generations back and let a stale entry be served; for example, an instance added and rolled back in a failed attempt could still be returned after a different instance was added. Apart from closing such edge cases, this is a necessary prerequisite for cross-command caching, whose entries must survive backtracking without being revalidated against a rolled-back state.
+  使 `SavedState.restore` 丢弃被回滚的已跟踪环境变化之后记录的类型类解析缓存条目。验证条目的代次随环境回滚，但 `Meta.Cache` 保留，后续不同变化可能恢复记录的代次并误用旧条目；例如失败尝试中添加后回滚的实例，可能在添加另一实例后仍被返回。除修复边界情况外，这也是跨命令缓存的前提：条目需经受回溯而不对已回滚状态重新验证。
 
 - [#15354](https://github.com/leanprover/lean4/pull/15354)
-  makes a type class resolution cache entry record the state of the instances and unification hints its search consulted, so that the entry is no longer served once they change, even through environment changes that do not clear the cache. For example, an instance added by a command run through `liftCommandElabM` is now found by later queries in the same computation, and so are scoped instances and unification hints activated at `CoreM` level. Apart from closing such edge cases, this is a necessary prerequisite for cross-command caching.
+  使类型类解析缓存条目记录搜索所查询的实例与合一提示状态，变化后即停止使用条目，即使环境变化不会清空缓存。例如，通过 `liftCommandElabM` 运行命令添加的实例现在能被同一计算的后续查询找到，在 `CoreM` 层激活的作用域实例和合一提示也同样如此。除修复边界情况外，这也是跨命令缓存的前提。
 
 - [#15325](https://github.com/leanprover/lean4/pull/15325)
-  makes type class resolution cache results depend on the options the search read. Previously a cached result was reused regardless of options within a command, so a result obtained under a term-level `set_option`, for example of `synthInstance.maxSize`, could be served where the option had a different value. Options the search never reads still do not partition the cache. Apart from fixing such in-command edge cases, this is a prerequisite to caching across commands.
+  使类型类解析缓存结果依赖搜索读取的选项。此前命令内缓存复用忽略选项，因此项级 `set_option`（如 `synthInstance.maxSize`）下的结果可能在选项值不同的地方使用。搜索从未读取的选项仍不会划分缓存。除修复命令内边界情况外，这也是跨命令缓存的前提。
 
 - [#15313](https://github.com/leanprover/lean4/pull/15313)
-  makes realizing the equation lemmas of large mutual `partial_fixpoint` blocks much faster (about 13× for a block of 200 functions), by no longer re-deriving and re-checking the fixpoint equation of the whole block for every function.
+  不再为每个函数重新推导并检查整个相互定义块的不动点方程，大幅加速大型相互 `partial_fixpoint` 块方程引理的实现化；200 个函数的块约快 13 倍。
 
 - [#11386](https://github.com/leanprover/lean4/pull/11386)
-  adds theorems tagged with `wf_preprocess` for making it possible to conveniently write functions over nested inductive types such as trees that use `List.any`, in the same way that they're currently able to use `List.map` and other common list functions.
+  添加标注 `wf_preprocess` 的定理，使用户可像使用 `List.map` 等常用列表函数一样，方便地使用 `List.any` 编写树等嵌套归纳类型上的函数。
 
 - [#15286](https://github.com/leanprover/lean4/pull/15286)
-  makes a tactic marked by `deprecated_syntax` warn no more than once per call. The tactics that its expansion uses no longer warn again. For example, if `mintro` is deprecated, `mintro a b c` expands to `mintro a; mintro b c` and printed five warnings; now it prints one.
+  使 `deprecated_syntax` 标注的策略每次调用至多警告一次，展开中使用的策略不再重复警告。例如弃用 `mintro` 后，`mintro a b c` 展开为 `mintro a; mintro b c`，原先打印五条警告，现在只有一条。
 
 - [#15216](https://github.com/leanprover/lean4/pull/15216)
-  makes `inferInstanceAs` reuse the existing instances of a non-exposed definition. This is done by checking the reusability of an instance in the private scope, as neither the auxiliary definitions being generated nor the ones in the existing instance are exposed in this case.
+  使 `inferInstanceAs` 复用非公开定义的现有实例。通过在私有作用域检查实例可复用性实现，因为此时新生成及已有实例中的辅助定义都不公开。
 
 - [#15204](https://github.com/leanprover/lean4/pull/15204)
-  rejects the `←` simp-argument modifier when the argument is a simproc or a simp extension, instead of silently ignoring it.
+  当 simp 实参是 simproc 或 simp 扩展时，拒绝 `←` 修饰符，不再静默忽略。
 
 - [#15237](https://github.com/leanprover/lean4/pull/15237)
-  adds `Environment.realizationEnvContains forConst c`, which reports whether `realizeConst forConst` callbacks can access `c`. This is the criterion for choosing `forConst` when a realization depends on multiple constants: the target must be one whose realization environment contains all others.
+  添加 `Environment.realizationEnvContains forConst c`，报告 `realizeConst forConst` 回调能否访问 `c`。当实现化依赖多个常量时，据此选择 `forConst`：目标的实现化环境必须包含其余全部常量。
 
 - [#14537](https://github.com/leanprover/lean4/pull/14537)
-  improves on the error messages of `rfl` and a few other tactics that fail due to a failed definitional-equality check. There was already a mechanism that analyzed what parts of the term need to be shown explicitly so that the mismatch becomes visible, but it sometimes ran with the wrong configuration. This change fixes these problems.
+  改进 `rfl` 等因定义相等性检查失败而失败的策略的错误消息。此前已能分析需显式显示项的哪些部分才能揭示不匹配，但有时采用错误配置；现修复这些问题。
 
 - [#15242](https://github.com/leanprover/lean4/pull/15242)
-  speeds up the elaboration of structurally recursive definitions by removing work from the construction of the `brecOn` application that has no effect on the result.
+  去除构造 `brecOn` 应用中不影响结果的工作，加速结构递归定义的精译。
 
 - [#15240](https://github.com/leanprover/lean4/pull/15240)
-  makes `Meta.isProofQuick` return a definite answer for applications such as `match` auxiliary functions, `casesOn`, `brecOn`, and recursors, whose type is a `motive` variable applied to arguments. Previously these fell through to `isProof`'s slow path, which infers the type and reduces it to a sort.
+  使 `Meta.isProofQuick` 对类型为 `motive` 变量应用于实参的 `match` 辅助函数、`casesOn`、`brecOn` 和递归器等应用给出确定答案。此前会进入 `isProof` 的慢路径，推断类型并归约到 sort。
 
 - [#15239](https://github.com/leanprover/lean4/pull/15239)
-  removes a redundant `abstractNestedProofs` pass when elaborating structurally recursive definitions, which reduces elaboration time for files with many such definitions.
+  精译结构递归定义时移除冗余的 `abstractNestedProofs` 处理，减少含大量此类定义的文件的精译时间。
 
 - [#15238](https://github.com/leanprover/lean4/pull/15238)
-  removes the per-declaration overhead #15232 introduced in the LCNF declaration extensions, which cost about 1% of instructions when compiling modules with many declarations, while keeping the linear-time replay of realized constants.
+  移除 #15232 在 LCNF 声明扩展引入的逐声明开销；它在编译大量声明的模块时耗费约 1% 指令，同时保留已实现化常量的线性时间重放。
 
 - [#15232](https://github.com/leanprover/lean4/pull/15232)
-  makes the cost of realizing a constant (e.g. the equation lemmas needed by `simp only [f]`) independent of the size of the current file. Previously, files with many such realizations slowed down quadratically: on a file with 4,000 definition/theorem pairs elaboration time drops from 99 s to 32 s, and the time per pair is now constant.
+  使常量实现化的代价（例如 `simp only [f]` 所需方程引理）不再依赖当前文件大小。此前包含大量实现化的文件会出现二次减速；4000 对定义/定理的文件精译从 99 秒降至 32 秒，每对耗时现在恒定。
 
 - [#15230](https://github.com/leanprover/lean4/pull/15230)
-  speeds up the elaboration of definitions using `match`, and of other auxiliary definitions created with `mkAuxDefinition` and `mkAuxTheorem` with `zetaDelta := false`. On a file with 12,800 small pattern-matching definitions, cumulative elaboration time drops from about 19s to about 17s.
+  加速含 `match` 的定义及使用 `mkAuxDefinition`、`mkAuxTheorem` 且 `zetaDelta := false` 创建的辅助定义的精译。在含 12800 个小模式匹配定义的文件中，累积精译时间从约 19 秒降至约 17 秒。
 
 - [#15228](https://github.com/leanprover/lean4/pull/15228)
-  fixes a per-command overhead in the frontend that grew linearly with the position of the command in the file, making files with many commands quadratic.
+  修复前端逐命令开销随命令在文件中位置线性增长，导致多命令文件二次增长的问题。
 
 - [#15223](https://github.com/leanprover/lean4/pull/15223)
-  fixes a quadratic slowdown when elaborating files with many recursive definitions. The `share common exprs` step of definition elaboration hashed the whole input file once per recursive call, so a file with thousands of structurally or well-founded recursive definitions could spend most of its elaboration time there.
+  修复大量递归定义文件精译的二次减速：定义精译中的 `share common exprs` 每次递归调用都对完整输入文件哈希，数千个结构递归或良基递归定义的文件可能将大部分时间耗在此处。
 
 - [#15091](https://github.com/leanprover/lean4/pull/15091)
-  adds `throws e => R` clauses to `def` contracts, after `ensures`, stating the exception postcondition of the generated specification theorem. A clause binds the raised exception and, in a state monad, the state at the throw. An ascription `throws (e : ε) s => R` selects the exception layer of type `ε`, and an unascribed binder selects the outermost layer. Every unmentioned exception layer keeps the postcondition `⊥`, so the specification still rules out its exceptions, while an omitted `ensures` keeps the postcondition `⊤`.
+  为 `def` 契约添加位于 `ensures` 后的 `throws e => R` 子句，陈述生成规约定理的异常后置条件。它绑定抛出的异常，若为状态单子还绑定抛出时状态。`throws (e : ε) s => R` 的类型标注选择 `ε` 类型异常层；无标注则选择最外层。未提及异常层保持后置条件 `⊥`，因此仍排除其异常；省略 `ensures` 则保持后置条件 `⊤`。
 
 - [#15064](https://github.com/leanprover/lean4/pull/15064)
-  replaces the parser used for Verso docstrings with one that correctly tracks all details of the underlying concrete syntax. Along the way, the API for docstring extensions was improved and parser error messages were made much more actionable. This unblocks automatically formatting Verso docstring syntax.
+  替换 Verso 文档字符串解析器，正确跟踪底层具体语法的全部细节；同时改进文档字符串扩展 API，并使解析错误更便于采取行动。这为自动格式化 Verso 文档语法扫清障碍。
 
 - [#15199](https://github.com/leanprover/lean4/pull/15199)
-  removes the `internal.parseQuotWithCurrentStage` options from `Lean.Elab.BuiltinDo.Let` and `Lean.Elab.Do.InferControlInfo` that were introduced for bootstrapping reasons, recovering the build-instruction regression that #15090 introduced.
+  移除为自举引入的 `Lean.Elab.BuiltinDo.Let`、`Lean.Elab.Do.InferControlInfo` 中的 `internal.parseQuotWithCurrentStage` 选项，消除 #15090 引入的构建指令数回退。
 
 ```
 
-# Library
+# 库
+%%%
+file := "Library"
+tag := "Manual-Releases-v4_36_0-Library"
+%%%
 
 ```markdown
 
 - [#15654](https://github.com/leanprover/lean4/pull/15654)
-  fixes a memory leak in `String.toByteArray` and `String.toUTF8` that has been present for a long time but was uncovered by a recently added test.
+  修复 `String.toByteArray`、`String.toUTF8` 中长期存在、由近期新增测试发现的内存泄漏。
 
 - [#15581](https://github.com/leanprover/lean4/pull/15581)
-  redefines the order on `String` to be the lexicographic order of the UTF-8 encoding, not of the character list.
+  将 `String` 的序重新定义为 UTF-8 编码的字典序，而非字符列表的字典序。
 
 - [#15659](https://github.com/leanprover/lean4/pull/15659)
-  exports the lemmas declared in `Init.Data.Int.DivMod.Pow`.
+  导出 `Init.Data.Int.DivMod.Pow` 中声明的引理。
 
 - [#15651](https://github.com/leanprover/lean4/pull/15651)
-  adds `String.fromUTF8Lossy`, a function that attempts to parse a `ByteArray` into a `String`, replacing invalid UTF-8 with the Unicode replacement character in a certain well-defined way.
+  新增 `String.fromUTF8Lossy`，尝试将 `ByteArray` 解析为 `String`，并按明确规定的方式用 Unicode 替代字符替换无效 UTF-8。
 
 - [#15647](https://github.com/leanprover/lean4/pull/15647)
-  adds missing simprocs for bitgwise operations on `UIntX`/`IntX`.
+  为 `UIntX`/`IntX` 位运算补齐 simproc。
 
 - [#15628](https://github.com/leanprover/lean4/pull/15628)
-  makes `Lean.Json.parse` reject JSON objects that contain the same key twice (compared after unescaping), instead of silently keeping the last value.
+  使 `Lean.Json.parse` 拒绝重复键（转义解码后比较）的 JSON 对象，而非静默保留最后一个值。
 
 - [#15594](https://github.com/leanprover/lean4/pull/15594)
-  renames error function names and other helper functions.
+  重命名错误函数及其他辅助函数。
 
 - [#15547](https://github.com/leanprover/lean4/pull/15547)
-  add RAII-based scoped lock guard
+  添加基于 RAII 的作用域锁守卫。
 
 - [#15545](https://github.com/leanprover/lean4/pull/15545)
-  removes the allocation of the libuv handle in uv sockets, timer and signal objects.
+  移除 uv 套接字、定时器和信号对象中 libuv 句柄的独立分配。
 
 - [#15571](https://github.com/leanprover/lean4/pull/15571)
-  fixes how `0` is handled in the `LT JsonNumber` instance. Before the fix, `(0 : JsonNumber) < 5e-2` would evaluate to `false`.
+  修复 `LT JsonNumber` 实例处理 `0` 的方式；此前 `(0 : JsonNumber) < 5e-2` 求值为 `false`。
 
 - [#15523](https://github.com/leanprover/lean4/pull/15523)
-  fixes crashes in libuv timers and signals:
+  修复 libuv 定时器与信号的崩溃：
 
-  * One shot timer and signal callbacks resolved their promise before releasing the event loop's reference to the handle (sync := true) caused this.
-  * libuv treats a repeat period of 0 as a oneshot timer, so a repeating `Timer` with a 0 ms period fired once and every later promise stayed pending. It now ticks every millisecond.
-  * `Signal.cancel` only drops the pending promise and keeps the handler listening, and a signal that arrives with no promise pending resolves the promise of the next `next`.
-  * Signal waiters resolve with the number from `Signal.toInt32` on every platform, instead of the operating system's number for that signal.
+  * 单次定时器和信号回调在释放事件循环对句柄的引用前兑现承诺（sync := true），导致崩溃。
+  * libuv 将重复周期 0 视为单次定时器，因此周期 0 毫秒的重复 `Timer` 只触发一次，后续承诺一直等待。现在每毫秒触发一次。
+  * `Signal.cancel` 只丢弃待兑现承诺，保留处理器监听；无承诺等待时到达的信号会兑现下次 `next` 的承诺。
+  * 各平台上的信号等待器都用 `Signal.toInt32` 的数值兑现，而非操作系统的信号编号。
 
 - [#15469](https://github.com/leanprover/lean4/pull/15469)
-  makes the `Std.Http` server generate its `Date` header in the HTTP-date format of RFC 9110 §5.6.7, for example `Sun, 06 Nov 1994 08:49:37 GMT`, instead of with a numeric offset (`+0000`). Clients that parse HTTP dates strictly, such as Apache HttpClient's cache, Go's `http.ParseTime` and Rust's `httpdate`, did not accept the previous form.
+  使 `Std.Http` 服务器按 RFC 9110 §5.6.7 的 HTTP-date 格式生成 `Date` 头，如 `Sun, 06 Nov 1994 08:49:37 GMT`，而非数字时区偏移（`+0000`）。Apache HttpClient 缓存、Go 的 `http.ParseTime`、Rust 的 `httpdate` 等严格解析 HTTP 日期的客户端不接受旧格式。
 
 - [#15533](https://github.com/leanprover/lean4/pull/15533)
-  reimplements `String.toList` in Lean. In doing so it also removes all hints that
-  `String.data` ever existed as it has now almost been a year since its deprecation.
+  在 Lean 中重新实现 `String.toList`，同时移除所有曾有
+  `String.data` 的痕迹，后者弃用至今已近一年。
 
 - [#15443](https://github.com/leanprover/lean4/pull/15443)
-  makes the `Std.Http` server send responses on systems without a timezone database (for example the `ubuntu:24.04` Docker image, which does not ship `tzdata`). Previously the server closed every connection without a response, because generating the `Date` header looked up `UTC` in the zoneinfo files.
+  使 `Std.Http` 服务器在无时区数据库的系统（如不带 `tzdata` 的 `ubuntu:24.04` Docker 镜像）上也能发送响应。此前生成 `Date` 头时需在 zoneinfo 文件中查找 `UTC`，导致每次连接均不返回响应就关闭。
 
 - [#15517](https://github.com/leanprover/lean4/pull/15517)
-  changes the index of `Lean.Order.iSup` and `Lean.Order.iInf` to `{ι : Sort v}`, so `⨆ h : P, f h` over a proposition `P` elaborates. The lemmas `le_iSup`, `iSup_le`, `iInf_le`, `le_iInf`, `iSup_apply` and `iInf_apply` take the same `Sort` index.
+  将 `Lean.Order.iSup`、`Lean.Order.iInf` 的索引改为 `{ι : Sort v}`，使对命题 `P` 的 `⨆ h : P, f h` 可精译。`le_iSup`、`iSup_le`、`iInf_le`、`le_iInf`、`iSup_apply`、`iInf_apply` 使用相同的 `Sort` 索引。
 
 - [#15175](https://github.com/leanprover/lean4/pull/15175)
-  stops `Loop.configure` from leaking and rejects `System.random` values above 2^31-1 before allocating a huge array.
+  修复 `Loop.configure` 泄漏，并在分配巨大数组前拒绝超过 2^31-1 的 `System.random` 值。
 
 - [#15329](https://github.com/leanprover/lean4/pull/15329)
-  adds efficient `LE` and `Ord` instances for `ByteArray` and deduces all other order instances from that.
+  为 `ByteArray` 添加高效 `LE` 与 `Ord` 实例，并由此推导全部其他序实例。
 
 - [#15316](https://github.com/leanprover/lean4/pull/15316)
-  removes the duplicate `BEq (Option a)` instance derived in `Init.Data.Option.Basic` and instead makes the one derived in `Init.Core` exposed.
+  移除 `Init.Data.Option.Basic` 中重复派生的 `BEq (Option a)` 实例，改为公开 `Init.Core` 中派生的实例。
 
 - [#15315](https://github.com/leanprover/lean4/pull/15315)
-  changes the attributes at `Array.compareLex` and `Vector.compareLex` to make sure that they actually get specialized. Previously, the comparison function was just passed by closure.
+  调整 `Array.compareLex` 和 `Vector.compareLex` 的属性，确保真正进行特化；此前比较函数仅通过闭包传递。
 
 - [#15304](https://github.com/leanprover/lean4/pull/15304)
-  adds the missing order instances for `List`, `Array` and `Vector`.
+  补齐 `List`、`Array`、`Vector` 的序实例。
 
 - [#15299](https://github.com/leanprover/lean4/pull/15299)
-  makes `grind`, and with it `vcgen … with finish`, prove goals about assertions that use lattice operations more reliably. For example, the `nodup` proof of the `vcgen` tutorial now closes with `vcgen … with finish`, as it used to with `mvgen`.
+  使 `grind` 及 `vcgen … with finish` 更可靠地证明使用格运算的断言目标。例如 `vcgen` 教程的 `nodup` 证明现在可用 `vcgen … with finish` 关闭，像过去使用 `mvgen` 时一样。
 
 - [#15414](https://github.com/leanprover/lean4/pull/15414)
-  tunes down some overeager grind e-matching annotations that would over-eagerly trigger cross-theory reasoning.
+  降低某些过于积极、会过早触发跨理论推理的 grind E-匹配标注的激进程度。
 
 - [#15387](https://github.com/leanprover/lean4/pull/15387)
-  adds lemmas to the lattice theory in `Std.Internal.Order` and computation rules for predicate transformers.
+  为 `Std.Internal.Order` 的格理论添加引理及谓词变换器的计算规则。
 
 - [#15192](https://github.com/leanprover/lean4/pull/15192)
-  fixes `ContextAsync.race` and `ContextAsync.raceAll`,`ContextAsync.run` and `ContextAsync.background` cancellations and `Notify.notifyOne` no longer spends its wakeup on a waiter whose select was already decided.
+  修复 `ContextAsync.race`、`ContextAsync.raceAll`、`ContextAsync.run`、`ContextAsync.background` 的取消行为；`Notify.notifyOne` 不再将唤醒机会浪费在选择结果已决定的等待器上。
 
 - [#15274](https://github.com/leanprover/lean4/pull/15274)
-  adds the missing order instances on `BitVec`.
+  补齐 `BitVec` 的序实例。
 
 - [#15174](https://github.com/leanprover/lean4/pull/15174)
-  solves multiple issues in the TCP and UDP modules.
+  解决 TCP、UDP 模块中的多个问题。
 
 - [#15266](https://github.com/leanprover/lean4/pull/15266)
-  adds logical models for the `Float.minimum` and `Float.minimumNumber` operations that were added in #15257.
+  为 #15257 添加的 `Float.minimum`、`Float.minimumNumber` 操作提供逻辑模型。
 
 - [#15257](https://github.com/leanprover/lean4/pull/15257)
-  defines `Float.minimum` and `Float.minimumNumber`, which correspond to the IEEE-754-2019 operations of the same name. It redefines `Min Float` to mean `Float.minimum`.
+  定义对应 IEEE-754-2019 同名操作的 `Float.minimum`、`Float.minimumNumber`，并将 `Min Float` 重新定义为 `Float.minimum`。
 
 - [#15115](https://github.com/leanprover/lean4/pull/15115)
-  exposes `Char.ordinal`, `Char.ofOrdinal`, `Char.succ?` and `Char.succMany?`, so that they reduce across module boundaries. Ranges over `Char` are built from `Char.succ?` and `Char.succMany?` via the `UpwardEnumerable Char` instance, so previously `cbv` and kernel reduction got stuck on these in any file using the module system.
+  公开 `Char.ordinal`、`Char.ofOrdinal`、`Char.succ?`、`Char.succMany?`，使其跨模块边界归约。`Char` 上的范围通过 `UpwardEnumerable Char` 实例由后两者构造，因此此前在使用模块系统的文件中，`cbv`、内核归约会卡在这些应用处。
 
 - [#15247](https://github.com/leanprover/lean4/pull/15247)
-  introduces a basic FFI module for CaDiCaL as well as a small wrapper around it to interact with our `Std.Sat` API.
+  添加基础的 CaDiCaL FFI 模块，以及与 `Std.Sat` API 交互的小型包装。
 
 - [#15252](https://github.com/leanprover/lean4/pull/15252)
-  removes the `withPtrEq` function.
+  移除 `withPtrEq` 函数。
 
 - [#15217](https://github.com/leanprover/lean4/pull/15217)
-  renames the `EPred` type variable to `EPosts` and the `epost` value variable to `eposts`, since they denote a bundle of exception postconditions rather than a single predicate, and adds deprecated_arg aliases so code passing `EPred` by name keeps compiling.
+  将类型变量 `EPred` 更名为 `EPosts`、值变量 `epost` 更名为 `eposts`，因为它们表示异常后置条件的集合而非单个谓词；提供 deprecated_arg 别名，使按名称传递 `EPred` 的代码仍能编译。
 
 - [#15171](https://github.com/leanprover/lean4/pull/15171)
-  renames several `Std.WP` names for consistency and deprecates the old ones. The `WP.wpTrans` projection becomes `WP.trans`, its monotonicity field `WP.wp_trans_monotone` becomes `WP.trans_monotone`, and the `wpTrans_apply_eq` lemma becomes `trans_apply_eq`. The weakest-precondition monotonicity lemmas `WP.wp_consequence`/`wp_econs` become a uniform `wp_monotone` family: `wp_monotone` for both channels, `wp_monotone_post` and `wp_monotone_epost` for one channel, `wp_monotone_bot` for the empty exception postcondition, and the `_le` transitivity variants.
+  为一致性重命名多个 `Std.WP` 名称，并弃用旧名：`WP.wpTrans` 投影改为 `WP.trans`，单调性字段 `WP.wp_trans_monotone` 改为 `WP.trans_monotone`，引理 `wpTrans_apply_eq` 改为 `trans_apply_eq`。最弱前置条件单调性引理 `WP.wp_consequence`/`wp_econs` 改为统一的 `wp_monotone` 系列：双通道使用 `wp_monotone`，单通道使用 `wp_monotone_post`、`wp_monotone_epost`，空异常后置条件使用 `wp_monotone_bot`，并提供 `_le` 传递性变体。
 
 - [#15201](https://github.com/leanprover/lean4/pull/15201)
-  refactors the AIG to CNF transformation from only acting on `AIG Nat` to acting on generic `AIG` types. This has two advantages:
-  1. We don't have to perform the `relabelNat` step anymore and the CNF representation gets slightly more efficient. This is because instead of using the `Nat` from the `AIG` atom as the identifier we now use the indices into the AIG as an identifier and thus avoid producing one tseitin atom per AIG atom.
-  2. In the future we will be able to use the AIG to CNF API in an incremental fashion across multiple runs. Towards this we also already introduce the `State.cast` API for reusing a cache state across runs.
+  重构 AIG 到 CNF 转换，从仅操作 `AIG Nat` 推广到泛型 `AIG`，有两项优势：
+  1. 无需执行 `relabelNat`，CNF 表示也略高效：不再用 AIG 原子的 `Nat` 标识，而直接用 AIG 索引，避免为每个 AIG 原子额外生成一个 Tseitin 原子。
+  2. 未来可跨多次运行增量使用 AIG 到 CNF API；为此已引入 `State.cast`，以跨运行复用缓存状态。
 
 - [#15067](https://github.com/leanprover/lean4/pull/15067)
-  extends the frame mechanism to the exception channel of `Std.WP`. For example, a program logic whose exceptional exits carry state now supports a frame rule such as `⦃P⦄ x ⦃Q; E⦄ → ⦃F ⋆ P⦄ x ⦃F ⋆ Q; F ⋆ E⦄`. The frame closure, the frame condition, and the frame rule gain a companion operator `opE : R → EPred → EPred` for the exception postcondition that defaults to ignoring the frame.
+  将框架机制扩展到 `Std.WP` 的异常通道。例如，异常退出携带状态的程序逻辑现在支持 `⦃P⦄ x ⦃Q; E⦄ → ⦃F ⋆ P⦄ x ⦃F ⋆ Q; F ⋆ E⦄` 这样的框架规则。框架闭包、框架条件及框架规则增加异常后置条件的配套操作 `opE : R → EPred → EPred`，默认忽略框架。
 
 - [#14793](https://github.com/leanprover/lean4/pull/14793)
-  fixes #14776
+  修复 #14776。
 
 - [#14795](https://github.com/leanprover/lean4/pull/14795)
-  fixes two issues in recv functions of the UDP and TCP modules.
+  修复 UDP 和 TCP 模块接收函数的两个问题。
 
 ```
 
-# Tactics
+# 策略
+%%%
+file := "Tactics"
+tag := "Manual-Releases-v4_36_0-Tactics"
+%%%
 
 ```markdown
 
 - [#15750](https://github.com/leanprover/lean4/pull/15750)
-  fixes two `grind` regressions introduced by #15420 and reported in leanprover/cslib#1141, where proofs about inductive predicates over λ-terms that v4.35.0 proved fail on v4.36.0-rc1. The normalizer now rewrites `∀ _ : α, True` to `True` for every `α`, not only for propositions, and the eager `cases` that `grind` applies to new hypotheses resets the E-matching round counter like any other case split.
+  修复 #15420 引入并由 leanprover/cslib#1141 报告的两处 `grind` 回归：关于 λ-项上归纳谓词的证明在 v4.35.0 成功，却在 v4.36.0-rc1 失败。规范化器现在对所有 `α` 将 `∀ _ : α, True` 重写为 `True`，不再仅限命题；`grind` 对新假设执行的立即 `cases` 也像其他情形拆分一样重置 E-匹配轮数。
 
 - [#15678](https://github.com/leanprover/lean4/pull/15678)
-  fixes `grind` failing to prove goals such as `c = b → a ≤ b + c + d → a ≤ b + b + d` in an ordered ring when the `Sym.simp` normalizer is enabled (`set_option backward.grind.normalizer false`). The normalizer rewrites `b + b + d` to `2 * b + d`, so the two inequalities are no longer congruent after `c = b`, and no module related the two sums.
+  修复启用 `Sym.simp` 规范化器（`set_option backward.grind.normalizer false`）时，`grind` 无法证明有序环中 `c = b → a ≤ b + c + d → a ≤ b + b + d` 等目标的问题。规范化将 `b + b + d` 改为 `2 * b + d`，使两不等式在 `c = b` 后不再同余，而原先没有模块关联两个和。
 
 - [#15675](https://github.com/leanprover/lean4/pull/15675)
-  fixes `grind` failing with the internal error "structure does not have a lawful LT instance" (or "structure does not support LT") when `linarith` has to reason about `<` on a type without a `LawfulOrderLT` instance. For example, `[IntModule α] [LE α] [LT α] [IsLinearOrder α] [OrderedAdd α] (a b c : α) : a < b → b < c → a < c` now fails with a regular `grind failed` message.
+  修复 `linarith` 在无 `LawfulOrderLT` 实例的类型上推理 `<` 时，`grind` 报内部错误“structure does not have a lawful LT instance”或“structure does not support LT”的问题。例如 `[IntModule α] [LE α] [LT α] [IsLinearOrder α] [OrderedAdd α] (a b c : α) : a < b → b < c → a < c` 现在以普通 `grind failed` 消息失败。
 
 - [#15672](https://github.com/leanprover/lean4/pull/15672)
-  fixes `grind` failing to use `k⁻¹` for a numeral `k` in a field when the `Sym.simp` normalizer is enabled (`set_option backward.grind.normalizer false`). For example, `[Field R] [IsCharP R 0] (h : f (a * 2⁻¹) = 1) (h2 : a = 2 * b) : f b = 1` was not proved.
+  修复启用 `Sym.simp` 规范化器（`set_option backward.grind.normalizer false`）时，`grind` 无法使用域中数值 `k` 的 `k⁻¹` 的问题。例如此前无法证明 `[Field R] [IsCharP R 0] (h : f (a * 2⁻¹) = 1) (h2 : a = 2 * b) : f b = 1`。
 
 - [#15642](https://github.com/leanprover/lean4/pull/15642)
-  adds the option `Grind.Config.distrib` (default `false`) to the `Sym.simp`-based `grind` normalizer. By default, a product of two non-constant polynomials such as `x * (y + 1)`, a power of a sum, and the inverse of a product are kept as atoms whose factors are normalized, as the legacy normalizer does; `grind +distrib` expands them into polynomial normal form. Linear arithmetic procedures treat nonlinear terms as atoms, so keeping them unexpanded preserves facts such as `x * (y + 1) = x * z` after `y + 1 = z` is derived.
+  为基于 `Sym.simp` 的 `grind` 规范化器添加默认 `false` 的 `Grind.Config.distrib`。默认像旧规范化器一样，将 `x * (y + 1)` 等非常量多项式之积、和的幂、积的逆保留为因子已规范化的原子；`grind +distrib` 则展开为多项式范式。线性算术把非线性项视为原子，保持未展开可在导出 `y + 1 = z` 后保留 `x * (y + 1) = x * z` 等事实。
 
 - [#15624](https://github.com/leanprover/lean4/pull/15624)
-  makes `grind` put `k#w` literals with a symbolic width `w` in the `OfNat.ofNat` form it uses for `BitVec` literals, so with the `Sym.simp`-based normalizer theorems such as `BitVec.sdiv_zero` apply to `x.sdiv 0` as they do with the legacy normalizer.
+  使 `grind` 将符号位宽 `w` 的 `k#w` 字面量转为所用的 `BitVec` 字面量 `OfNat.ofNat` 形式，使 `Sym.simp` 规范化器下 `BitVec.sdiv_zero` 等定理能像旧规范化器一样应用于 `x.sdiv 0`。
 
 - [#15623](https://github.com/leanprover/lean4/pull/15623)
-  makes the `Sym.simp`-based `grind` normalizer rewrite dependent propositional binder domains, so `∀ h : i < a.size, q h` becomes `∀ h : i + 1 ≤ a.size, ...` as with the legacy normalizer.
+  使基于 `Sym.simp` 的 `grind` 规范化器重写依赖命题绑定的定义域，例如将 `∀ h : i < a.size, q h` 变为 `∀ h : i + 1 ≤ a.size, ...`，与旧规范化器一致。
 
 - [#15619](https://github.com/leanprover/lean4/pull/15619)
-  fixes a panic in the `Sym.simp`-based `grind` normalizer on `match` equations whose patterns contain arithmetic, e.g. `grind [h.eq_def]` for a function matching on `Vec α (n + 1 + 1)`.
+  修复基于 `Sym.simp` 的 `grind` 规范化器处理模式含算术的 `match` 方程时的 panic，例如对匹配 `Vec α (n + 1 + 1)` 的函数使用 `grind [h.eq_def]`。
 
 - [#15618](https://github.com/leanprover/lean4/pull/15618)
-  fixes spurious `ring term with unexpected instance` issues in `grind` for casts over abstract rings, e.g. `(m + n) • a = m • a + n • a` with `[CommRing R]`, and the corresponding failures of the `Sym.simp`-based normalizer.
+  修复 `grind` 在抽象环上类型转换中误报 `ring term with unexpected instance` 的问题，例如 `[CommRing R]` 下的 `(m + n) • a = m • a + n • a`，以及基于 `Sym.simp` 的规范化器的相应失败。
 
 - [#15616](https://github.com/leanprover/lean4/pull/15616)
-  adds `BitVec.zero`, `BitVec.ofNat _ (Bool.toNat _)`, and `BitVec.carry` to the list of supported terms by `bv_decide`
+  将 `BitVec.zero`、`BitVec.ofNat _ (Bool.toNat _)` 和 `BitVec.carry` 加入 `bv_decide` 支持的项。
 
 - [#15612](https://github.com/leanprover/lean4/pull/15612)
-  fixes `grind` losing a hypothesis whose type is marked `[grind cases eager]` when the hypothesis is introduced by `intros` or asserted as a parameter fact. Only the constructor fields survived in each branch, so `example : P → ¬P → False := by grind` and `grind [(mkP)]` on the goal `P` failed for a predicate `P` with field-less constructors.
+  修复由 `intros` 引入或作为参数事实断言的假设，其类型标注 `[grind cases eager]` 时被 `grind` 丢失的问题。原先各分支只保留构造器字段，因此对无字段构造器的谓词 `P`，`example : P → ¬P → False := by grind` 及目标 `P` 上的 `grind [(mkP)]` 会失败。
 
 - [#15611](https://github.com/leanprover/lean4/pull/15611)
-  fixes `grind?` failing with "proof contains unresolved internal metavariable" when a parameter fact has a type marked `[grind cases eager]`. Asserting such a fact splits the goal during initialization, and `grind?` only produced a script for the first goal. It now handles every goal, and the suggested script carries one `·` block per goal.
+  修复参数事实类型标注 `[grind cases eager]` 时，`grind?` 报“proof contains unresolved internal metavariable”。这种事实在初始化时拆分目标，而原先只为第一个目标生成脚本；现在处理每个目标，并在建议脚本中为每个目标提供一个 `·` 块。
 
 - [#15609](https://github.com/leanprover/lean4/pull/15609)
-  makes `grind [mkP]` accept a theorem whose statement is not a `∀` and is not indexable, e.g., `theorem mkP : P` for a nullary inductive predicate `P`. The parameter is asserted as a fact, so the workaround `grind [(mkP)]` is no longer needed. `grind?` and `finish?` keep such identifiers in their suggestions.
+  使 `grind [mkP]` 接受陈述不是 `∀` 且不可索引的定理，如零元归纳谓词 `P` 的 `theorem mkP : P`。参数被作为事实断言，不再需要 `grind [(mkP)]` 变通写法；`grind?` 与 `finish?` 的建议也保留这些标识符。
 
 - [#15606](https://github.com/leanprover/lean4/pull/15606)
-  fixes a spurious "generated tactic cannot close the goal" warning from `finish?` when its parameters alone close the goal, e.g. `grind => finish? [inj f_inj]`.
+  修复 `finish?` 仅凭参数就关闭目标时误报“generated tactic cannot close the goal”的警告，例如 `grind => finish? [inj f_inj]`。
 
 - [#15602](https://github.com/leanprover/lean4/pull/15602)
-  fixes `grind?` and `finish?` dropping parameters such as `inj f_inj` and `funCC q` from their suggestions, which then failed when pasted.
+  修复 `grind?`、`finish?` 在建议中丢失 `inj f_inj`、`funCC q` 等参数，导致粘贴后失败的问题。
 
 - [#15600](https://github.com/leanprover/lean4/pull/15600)
-  fixes `grind` failing on instances wrapped in `@[implicit_reducible]` definitions.
+  修复 `grind` 在由 `@[implicit_reducible]` 定义包装的实例上失败的问题。
 
 - [#15599](https://github.com/leanprover/lean4/pull/15599)
-  fixes a `grind` internal error, `ring term has not been internalized`, triggered when the ring solver learned a disequality such as `a ≠ b` while a term containing `a - b` was still being internalized. The Rabinowitsch step then built `(a - b) * (a - b)⁻¹` and internalized it before `(a - b)⁻¹` had an `ENode`. Closes #15590.
+  修复 `grind` 内部错误 `ring term has not been internalized`：环求解器发现 `a ≠ b` 等不等式时，含 `a - b` 的项仍在内部化；Rabinowitsch 步骤随即构造并内部化 `(a - b) * (a - b)⁻¹`，但 `(a - b)⁻¹` 尚无 `ENode`。关闭 #15590。
 
 - [#15589](https://github.com/leanprover/lean4/pull/15589)
-  fixes a panic in `grind ring` when propagating implied equalities in rings without `NoNatZeroDivisors`, such as `BitVec n`.
+  修复 `grind ring` 在 `BitVec n` 等无 `NoNatZeroDivisors` 的环中传播蕴含等式时的 panic。
 
 - [#15588](https://github.com/leanprover/lean4/pull/15588)
-  fixes a `grind` internal error (`ring term has not been internalized`) triggered when a user-defined `Pow Int Nat` instance with higher priority is in scope. Mathlib's `Monoid.npow` instance on `Int` hits this case after #15506.
+  修复作用域内存在高优先级自定义 `Pow Int Nat` 实例时 `grind` 的内部错误 `ring term has not been internalized`；#15506 后，Mathlib 的 `Int` 上 `Monoid.npow` 实例会触发此情况。
 
 - [#15555](https://github.com/leanprover/lean4/pull/15555)
-  makes `vcgen` take the program type and the `WP` instance from the goal's `wp` application when it applies a spec. Thus `vcgen` works on a goal whose program is not of the instance's program type, for example a program `e : Exp` in a goal `wp (Prog := Tagged n Exp) e Q E` for `def Tagged (n : Nat) (α : Type) := α`.
+  使 `vcgen` 应用规约时从目标的 `wp` 应用获取程序类型和 `WP` 实例，因此即使程序类型与实例程序类型不同也可工作，例如 `def Tagged (n : Nat) (α : Type) := α` 下，目标 `wp (Prog := Tagged n Exp) e Q E` 中的程序 `e : Exp`。
 
 - [#15582](https://github.com/leanprover/lean4/pull/15582)
-  makes `cbv` evaluate `cond` (`bif c then a else b`) lazily, like `ite` and `dite`. Before this change, `cbv` evaluated both branches of `cond`, even when the condition was the literal `true`. An expensive or non-terminating branch that the condition does not select cost time or exhausted `cbv.maxSteps`. The fix gives the `cond` simproc pattern all four arguments of `cond`.
+  使 `cbv` 像处理 `ite`、`dite` 一样惰性求值 `cond`（`bif c then a else b`）。此前即使条件为字面量 `true`，也求值两个分支；未选中的昂贵或不终止分支会浪费时间或耗尽 `cbv.maxSteps`。修复使 `cond` simproc 模式包含全部四个实参。
 
 - [#15497](https://github.com/leanprover/lean4/pull/15497)
-  adds a guard to `WP.Frames`, so that `vcgen` can frame a resource across a program whose footprint depends on the state.
+  为 `WP.Frames` 添加守卫，使 `vcgen` 能为占用范围依赖状态的程序保留跨调用的资源框架。
 
 - [#15526](https://github.com/leanprover/lean4/pull/15526)
-  fixes a kernel error when `sym => simp` rewrites inside a non-dependent arrow (e.g. `x + 0 = y → p`) in a file using `module`.
+  修复使用 `module` 的文件中，`sym => simp` 在非依赖箭头（如 `x + 0 = y → p`）内重写时的内核错误。
 
 - [#15515](https://github.com/leanprover/lean4/pull/15515)
-  makes `vcgen` split a spec precondition `fun _ => ∃ h : i < xs.size, Q () xs[i]` into the VC `i < xs.size` and the entailment for `Q () xs[i]` under a hypothesis `h`, so that the `wp` of the program tail in the body is stepped. The precondition `fun _ => ⨆ h : i < xs.size, Q () xs[i]` splits the same way.
+  使 `vcgen` 将规约前置条件 `fun _ => ∃ h : i < xs.size, Q () xs[i]` 拆为验证条件 `i < xs.size` 及假设 `h` 下关于 `Q () xs[i]` 的蕴涵，使主体中程序尾部的 `wp` 得以推进。`fun _ => ⨆ h : i < xs.size, Q () xs[i]` 同样拆分。
 
 - [#15524](https://github.com/leanprover/lean4/pull/15524)
-  fixes a `grind` internal error (`unknown free variable`) on hints such as `grind [h _ _ pf]` whose only hole is a proof. It broke `List.pairwise_iff_forall_infix` in Mathlib after #15506.
+  修复 `grind [h _ _ pf]` 等唯一孔是证明的提示导致 `unknown free variable` 内部错误；#15506 后它破坏了 Mathlib 的 `List.pairwise_iff_forall_infix`。
 
 - [#15506](https://github.com/leanprover/lean4/pull/15506)
-  fixes a `grind` internal error (`semiring term has not been internalized`) triggered when power propagation rebuilds a term whose arguments are still being internalized (#15479).
+  修复幂传播重建仍在内部化实参的项时，`grind` 报 `semiring term has not been internalized` 的内部错误（#15479）。
 
 - [#15503](https://github.com/leanprover/lean4/pull/15503)
-  fixes `sym` with `arith` and `grind` with the `Sym.simp`-based normalizer on goals whose equations are over a type in `Sort u`, such as `{α : Sort u} (a b : α)`. The ring classifier computed the universe level of the carrier with `getDecLevel`, which fails with "invalid universe level, u is not greater than 0" for such types; it now uses `getDecLevel?` and reports that the type has no ring structure, as the order classifier already did.
+  修复 `sym` 配合 `arith`、以及 `grind` 配合 `Sym.simp` 规范化器在 `{α : Sort u} (a b : α)` 等 `Sort u` 类型等式目标上的失败。环分类器使用 `getDecLevel` 计算载体宇宙层级，会报“invalid universe level, u is not greater than 0”；现在用 `getDecLevel?` 并报告类型无环结构，与序分类器一致。
 
 - [#15491](https://github.com/leanprover/lean4/pull/15491)
-  makes `vcgen` recognize more `@[spec]` preconditions as conjunctive in the schematic postcondition `Q`/`E`. `vcgen` applies such a spec directly and runs no frame inference for it.
+  使 `vcgen` 识别更多 `@[spec]` 前置条件对模式后置条件 `Q`/`E` 保持合取的情况；对此类规约直接应用，不运行框架推断。
 
 - [#15487](https://github.com/leanprover/lean4/pull/15487)
-  makes `vcgen` split a pointwise `∧` in a spec's precondition like a lattice meet `⊓`.
+  使 `vcgen` 像格的交 `⊓` 一样拆分规约前置条件中的逐点 `∧`。
 
 - [#15483](https://github.com/leanprover/lean4/pull/15483)
-  makes `Sym.simp` rewrite a raw `Nat` literal that is not the argument of a numeral into the `OfNat.ofNat` form, as `Meta.simp` does. Rewrite rules whose pattern variable binds the raw literal of a numeral, such as the `[grind hom]` rule `(OfNat.ofNat a : Fin n).val = a % n`, produced terms like `nat_lit 0 % (p + 1)` that no later step recognized as a numeral, so `grind` with the `Sym.simp`-based normalizer failed on goals over `Fin (p + 1)` and `BitVec n`.
+  使 `Sym.simp` 像 `Meta.simp` 一样，将不处于数值实参位置的原始 `Nat` 字面量重写为 `OfNat.ofNat`。模式变量绑定原始数值字面量的规则，如 `[grind hom]` 规则 `(OfNat.ofNat a : Fin n).val = a % n`，会生成 `nat_lit 0 % (p + 1)` 等后续步骤不再识别为数值的项，导致采用 `Sym.simp` 规范化器的 `grind` 在 `Fin (p + 1)`、`BitVec n` 目标上失败。
 
 - [#15482](https://github.com/leanprover/lean4/pull/15482)
-  makes `grind` prove goals over `UIntN` and `BitVec` that multiply by a numeral close to the modulus, such as `-1 * a` or `4294967295 * a` over `UInt32`; these previously exhausted the `lia` step budget. The `[grind hom]` injection into `Nat` turned `(c * a).toNat` into `c * a.toNat % 2^w`, and `cutsat` splits on the coefficient `c` when it has to eliminate `a.toNat` exactly, while `(-a).toNat` is `(2^w - a.toNat) % 2^w`, with coefficient `1`.
+  使 `grind` 能证明 `UIntN`、`BitVec` 上乘以接近模数的数值的目标，例如 `UInt32` 上 `-1 * a`、`4294967295 * a`；此前会耗尽 `lia` 步数。`[grind hom]` 注入 `Nat` 时将 `(c * a).toNat` 变为 `c * a.toNat % 2^w`，`cutsat` 精确消去 `a.toNat` 时会按系数 `c` 拆分；而 `(-a).toNat` 为 `(2^w - a.toNat) % 2^w`，系数仅为 `1`。
 
 - [#15478](https://github.com/leanprover/lean4/pull/15478)
-  fixes a kernel-rejected proof in `grind`'s ring module. For an inverse `a⁻¹` with a numeral `a`, `processInv` asserts `a * a⁻¹ = 1` or `a⁻¹ = 0` with theorems whose numeral is `denoteInt k`, i.e. an `OfNat` numeral or its negation, but the recognizer also accepted `↑(0 : Nat)`, `↑(3 : Int)`, `-0`, and `- -3`, which are only propositionally equal to `denoteInt k`; `Field.inv_zero : 0⁻¹ = 0` was then pushed as a proof of `(↑0)⁻¹ = ↑0`.
+  修复 `grind` 环模块生成被内核拒绝的证明。对数值 `a` 的逆 `a⁻¹`，`processInv` 使用数值为 `denoteInt k`（即 `OfNat` 数值或其相反数）的定理断言 `a * a⁻¹ = 1` 或 `a⁻¹ = 0`；但识别器也接受仅与它命题相等的 `↑(0 : Nat)`、`↑(3 : Int)`、`-0`、`- -3`，从而把 `Field.inv_zero : 0⁻¹ = 0` 当作 `(↑0)⁻¹ = ↑0` 的证明推入。
 
 - [#15476](https://github.com/leanprover/lean4/pull/15476)
-  makes the `Sym` arithmetic normalizer rewrite a cast of a numeral (`↑(0 : Nat)`, `↑(-2 : Int)`) to the numeral of the carrier wherever it occurs, as the legacy `grind` normalizer does. Casts were interpreted only inside `+`, `*`, ...; a cast standing alone, as a function argument or under `⁻¹`, was kept, so `(↑0)⁻¹` reached the ring solver of `grind`, which applied `Field.inv_zero` to it and produced a proof rejected by the kernel (`grind_9321` with `backward.grind.normalizer := false`).
+  使 `Sym` 算术规范化器像旧 `grind` 一样，将任意位置的数值类型转换（如 `↑(0 : Nat)`、`↑(-2 : Int)`）重写为载体中的数值。此前仅在 `+`、`*` 等内部解释转换，单独、作为函数实参或位于 `⁻¹` 下的转换会保留，使 `(↑0)⁻¹` 进入环求解器，错误应用 `Field.inv_zero` 并产生内核拒绝的证明（`backward.grind.normalizer := false` 下的 `grind_9321`）。
 
 - [#15475](https://github.com/leanprover/lean4/pull/15475)
-  makes the `Sym.simp`-based `grind` normalizer rewrite every `Fin` literal to its canonical form. A literal such as `@OfNat.ofNat (Fin (1 + 1)) 0 Fin.instOfNat`, with a nested numeral as value and a ground type index, was left as is, and `grind` treated it as a literal distinct from `(0 : Fin 2)`, producing proofs rejected by the kernel (`grind_canon_ofnat`).
+  使基于 `Sym.simp` 的 `grind` 规范化器将每个 `Fin` 字面量重写为规范形式。此前 `@OfNat.ofNat (Fin (1 + 1)) 0 Fin.instOfNat` 等值为嵌套数值、类型索引为闭项的字面量保持原样，被视为与 `(0 : Fin 2)` 不同的字面量，产生被内核拒绝的证明（`grind_canon_ofnat`）。
 
 - [#15473](https://github.com/leanprover/lean4/pull/15473)
-  adds a `Sym.dsimp` pass after `Sym.simp` in the `Sym.simp`-based `grind` normalizer, so that beta-redexes and projections of structure instances in the fixed arguments of an application are reduced, as the legacy normalizer does with `Simp.Config.dsimp`. `Sym.simp` does not visit these arguments, and a redex left in the implicit objects of a morphism composition made the goals of `Functor.flip` in `grind_cat.lean` miss `NatTrans.naturality`.
+  在基于 `Sym.simp` 的 `grind` 规范化器中，`Sym.simp` 后增加 `Sym.dsimp`，归约应用固定实参中的 β-红式和结构体实例投影，与旧规范化器的 `Simp.Config.dsimp` 一致。`Sym.simp` 不访问这些实参，态射复合隐式对象中残留的红式使 `grind_cat.lean` 中 `Functor.flip` 的目标无法匹配 `NatTrans.naturality`。
 
 - [#15467](https://github.com/leanprover/lean4/pull/15467)
-  makes the projection reduction of `Sym` (`Sym.reduceProjApp?`, used by `Sym.simp`, `Sym.dsimp`, and the canonicalizer) expose the structure argument at `.reducible` transparency, as `simp` does, instead of the ambient one. With the `Sym.simp`-based `grind` normalizer, E-matching patterns are normalized at attribute time at `.default` transparency, so a pattern such as `(asIso f).hom` unfolded `asIso` and collapsed to a variable, and the theorem was rejected with `invalid pattern`.
+  使 `Sym` 的投影归约（`Sym.simp`、`Sym.dsimp`、规范化器使用的 `Sym.reduceProjApp?`）像 `simp` 一样，以 `.reducible` 而非环境透明度暴露结构体实参。基于 `Sym.simp` 的 `grind` 在设置属性时以 `.default` 透明度规范化 E-匹配模式，曾将 `(asIso f).hom` 展开并折叠为变量，导致以 `invalid pattern` 拒绝定理。
 
 - [#15466](https://github.com/leanprover/lean4/pull/15466)
-  fixes two ways a `grind` congruence table entry could go stale, which made `grind.debug` fail nondeterministically on goals with `match` conditions, and adds a deterministic invariant check for the table.
+  修复 `grind` 同余表条目失效的两条路径，它们曾使 `grind.debug` 在含 `match` 条件的目标上不确定地失败；同时为该表添加确定性不变量检查。
 
 - [#15465](https://github.com/leanprover/lean4/pull/15465)
-  makes the `Sym.simp`-based `grind` normalizer respect the annotations on `match` equations: `Grind.simpMatchDiscrsOnly` (only the discriminants of the `match` are simplified) and `Grind.PreMatchCond` (the condition is left as is). E-matching instances of match equations, e.g. from `f.eq_def`, now work with `backward.grind.normalizer := false`, where they used to fail or produce proofs rejected by the kernel.
+  使基于 `Sym.simp` 的 `grind` 规范化器遵守 `match` 方程标注：`Grind.simpMatchDiscrsOnly` 只简化判别式，`Grind.PreMatchCond` 保持条件原样。`f.eq_def` 等匹配方程的 E-匹配实例现在能在 `backward.grind.normalizer := false` 下工作，此前会失败或生成内核拒绝的证明。
 
 - [#15464](https://github.com/leanprover/lean4/pull/15464)
-  adds the option `backward.grind.normalizer`. It defaults to `true`, which selects the legacy `simp`-based `grind` normalizer; with `false`, `grind` normalizes hypotheses, the target, E-matching instances, generalized patterns, and E-matching patterns at attribute time with the `Sym.simp`-based normalizer developed with `grind_norm`. The default behavior is unchanged.
+  添加默认 `true` 的 `backward.grind.normalizer` 选项，选择旧的基于 `simp` 的规范化器；设为 `false` 时，`grind` 使用由 `grind_norm` 开发的 `Sym.simp` 规范化器，处理假设、目标、E-匹配实例、广义模式及设置属性时的 E-匹配模式。默认行为不变。
 
 - [#15463](https://github.com/leanprover/lean4/pull/15463)
-  extends `Sym.Simp.evalGround` to evaluate `Int.toNat`, `Int.natAbs`, and `toNat` on `UInt8`, `UInt16`, `UInt32`, and `UInt64` literals, e.g. `(-7 : Int).natAbs` becomes `7`. `grind` is affected too, since the `[grind hom]` rewriter uses `evalGround`.
+  扩展 `Sym.Simp.evalGround`，求值 `Int.toNat`、`Int.natAbs` 及 `UInt8`、`UInt16`、`UInt32`、`UInt64` 字面量的 `toNat`，如 `(-7 : Int).natAbs` 变为 `7`。由于 `[grind hom]` 重写器使用 `evalGround`，`grind` 也受益。
 
 - [#15461](https://github.com/leanprover/lean4/pull/15461)
-  makes the realized constants required by `bv_decide` private to avoid name clashes while
-  importing multiple modules that realized them.
+  将 `bv_decide` 所需的实现化常量设为私有，避免导入多个
+  实现化了这些常量的模块时名称冲突。
 
 - [#15460](https://github.com/leanprover/lean4/pull/15460)
-  extends `Sym.Simp.evalGround` to evaluate `String.push` and `String.singleton` on literals, e.g. `"abc".push 'd'` becomes `"abcd"`. `grind` is affected too, since the `[grind hom]` rewriter uses `evalGround`.
+  扩展 `Sym.Simp.evalGround`，求值字面量上的 `String.push` 和 `String.singleton`，如 `"abc".push 'd'` 变为 `"abcd"`。`[grind hom]` 重写器使用此函数，因此 `grind` 也受益。
 
 - [#15458](https://github.com/leanprover/lean4/pull/15458)
-  makes the `Sym.simp`-based `grind` normalizer produce bit-vector literals in `OfNat.ofNat` form, the form `grind` keeps, instead of `BitVec.ofNat`. Ground bit-vector terms such as `3#8 + 5#8`, `3 &&& 5`, `(3#8).zeroExtend 16`, and `300#8` are now evaluated to the same literals as the legacy normalizer.
+  使基于 `Sym.simp` 的 `grind` 规范化器产生 `grind` 所保留的 `OfNat.ofNat` 形式位向量字面量，而非 `BitVec.ofNat`。`3#8 + 5#8`、`3 &&& 5`、`(3#8).zeroExtend 16`、`300#8` 等闭项现在求值为与旧规范化器相同的字面量。
 
 - [#15448](https://github.com/leanprover/lean4/pull/15448)
-  fixes a kernel error in `grind` on goals mentioning both `Char.ofNat 97` and `'a'`, and makes `grind` evaluate `Char.toNat`, `Char.val`, and `Char.ofNat` when the argument is equal to a literal, e.g. `y = 'a' → y.toNat = 97` and `n = 97 → Char.ofNat n = 'a'`.
+  修复 `grind` 在同时提及 `Char.ofNat 97` 和 `'a'` 的目标上的内核错误，并在实参等于字面量时求值 `Char.toNat`、`Char.val`、`Char.ofNat`，例如 `y = 'a' → y.toNat = 97` 和 `n = 97 → Char.ofNat n = 'a'`。
 
 - [#15445](https://github.com/leanprover/lean4/pull/15445)
-  makes `grind` prove goals about `Fin.log2` and about the scoped `Nat` and `Int` casts into `Fin n` through their `val` interpretation, such as `(x.log2).val = Nat.log2 x.val`, `((i : Int) : Fin n).val = (i % n).toNat`, and `((k : Nat) : Fin n).val = k % n`.
+  使 `grind` 可通过 `val` 解释证明 `Fin.log2` 及作用域内 `Nat`、`Int` 到 `Fin n` 转换的目标，例如 `(x.log2).val = Nat.log2 x.val`、`((i : Int) : Fin n).val = (i % n).toNat`、`((k : Nat) : Fin n).val = k % n`。
 
 - [#15434](https://github.com/leanprover/lean4/pull/15434)
-  makes the `Sym.Arith` normalizer solve equations over commutative rings with a nonzero characteristic, such as `Fin n`, `UInt8`, and `BitVec w`, when it runs in the mode used by the `grind` normalizer. An equation `k * m + k' = 0` or `k * m₁ = k * m₂` whose coefficient `k` is invertible modulo the characteristic is solved for the monomial: in `Fin 5`, `4 * x + 2 = 0` becomes `x = 2`, as `2 * x = 6` already becomes `x = 3` over `Int`.
+  使 `Sym.Arith` 规范化器在 `grind` 使用的模式中，求解 `Fin n`、`UInt8`、`BitVec w` 等非零特征交换环的方程。若系数 `k` 模特征可逆，`k * m + k' = 0` 或 `k * m₁ = k * m₂` 会对单项式求解：`Fin 5` 中 `4 * x + 2 = 0` 变为 `x = 2`，正如 `Int` 中 `2 * x = 6` 已可变为 `x = 3`。
 
 - [#15433](https://github.com/leanprover/lean4/pull/15433)
-  extends `Sym.Simp.evalGround` to evaluate the `Fin` functions on literals: `succ`, `castSucc`, `rev`, `last`, `val`, `pred`, `castAdd`, `addNat`, `natAdd`, `castLT`, `castLE`, `subNat`, `mk`, and `ofNat`. It also normalizes `Fin` literals: `(7 : Fin 5)` becomes `2`, and a type index that is not a numeral, as in `(4 : Fin (5 + 1))`, is evaluated. `Fin` arithmetic and comparisons were already supported.
+  扩展 `Sym.Simp.evalGround` 求值字面量上的 `Fin` 函数：`succ`、`castSucc`、`rev`、`last`、`val`、`pred`、`castAdd`、`addNat`、`natAdd`、`castLT`、`castLE`、`subNat`、`mk`、`ofNat`。同时规范化 `Fin` 字面量：`(7 : Fin 5)` 变为 `2`，并求值 `(4 : Fin (5 + 1))` 中非数值形式的类型索引。`Fin` 算术和比较此前已支持。
 
 - [#15398](https://github.com/leanprover/lean4/pull/15398)
-  introduces a CEGAR/Lemmas on Demand procedure into bv_decide for supporting uninterpreted functions even without interacting with `grind` mode. Towards this it refactors the solving pipeline to be fully incremental and makes use of incremental SAT solving. The congruence feature is available behind `bv_decide +uf`, it is currently limited to:
-  1. Only functions that return Bool/BitVec
-  2. Only performing congruence reasoning on non-dependent Bool/BitVec arguments (see the bv_uf test for examples of what this entails)
+  为 bv_decide 引入 CEGAR/按需引理过程，即使不与 `grind` 模式交互也能支持未解释函数。为此将求解流程重构为完全增量式，并使用增量 SAT 求解。通过 `bv_decide +uf` 启用同余功能，目前仅限：
+  1. 返回 Bool/BitVec 的函数；
+  2. 仅对非依赖 Bool/BitVec 实参进行同余推理，详见 bv_uf 测试示例。
 
 - [#15420](https://github.com/leanprover/lean4/pull/15420)
-  fixes a `grind` regression introduced by #15378: a goal such as `Imp (∀ i, i < n → ∃ j, j = i + 1 ∧ p j) (p 4)`, where `Imp a b` unfolds to `a → b` through a `[grind norm]` rule, was no longer proved, while the same goal written with a syntactic `→` still was. `grind` now normalizes the goal before negating it, and the normalizer no longer rewrites `(∀ x, p x) → q` into `(∃ x, ¬p x) ∨ q`.
+  修复 #15378 引入的 `grind` 回归：`Imp a b` 通过 `[grind norm]` 规则展开为 `a → b` 时，`Imp (∀ i, i < n → ∃ j, j = i + 1 ∧ p j) (p 4)` 不再可证，但显式 `→` 形式仍可证。现在先规范化目标再取反，且规范化器不再将 `(∀ x, p x) → q` 重写为 `(∃ x, ¬p x) ∨ q`。
 
 - [#15419](https://github.com/leanprover/lean4/pull/15419)
-  extends `Sym.Simp.evalGround` to evaluate `Char.val` on character literals, e.g. `'a'.val` becomes `97`. It complements #15411, which added the other `Char` operations.
+  扩展 `Sym.Simp.evalGround` 求值字符字面量的 `Char.val`，如 `'a'.val` 变为 `97`，补充 #15411 添加的其他 `Char` 操作。
 
 - [#15417](https://github.com/leanprover/lean4/pull/15417)
-  fixes an `Application type mismatch` error in `grind` when the homomorphism rewriter translates an equality whose hypothesis mentions a `let`-bound literal, e.g. `b = m.cpop` with `let m : BitVec 2 := 1#2`. Closes #15388.
+  修复同态重写器转换假设提及 `let` 绑定字面量的等式时，`grind` 报 `Application type mismatch` 的问题，例如 `let m : BitVec 2 := 1#2` 下的 `b = m.cpop`。关闭 #15388。
 
 - [#15411](https://github.com/leanprover/lean4/pull/15411)
-  extends `Sym.Simp.evalGround` to evaluate `Char` operations on character literals: `toNat`, `toLower`, `toUpper`, `toString`, `isWhitespace`, `isUpper`, `isLower`, `isAlpha`, `isDigit`, `isAlphanum`, `==`, and `!=`. It also converts `Char.ofNat n` into a character literal when `n` is a numeral, so that a character has a single representation.
+  扩展 `Sym.Simp.evalGround` 求值字符字面量上的 `Char` 操作：`toNat`、`toLower`、`toUpper`、`toString`、`isWhitespace`、`isUpper`、`isLower`、`isAlpha`、`isDigit`、`isAlphanum`、`==`、`!=`。当 `n` 为数值时也将 `Char.ofNat n` 转为字符字面量，使字符只有一种表示。
 
 - [#15409](https://github.com/leanprover/lean4/pull/15409)
-  adds `Sym.Simp.reduceControl`, a variant of `simpControl` that does not block the simplifier: it simplifies the condition of `ite`/`dite`/`cond` and the discriminants of `match`, reduces the term when they are decided, and otherwise lets the simplifier visit the branches. The `Sym.simp`-based `grind` normalizer uses it in place of `reduceMatcher`.
+  添加不会阻塞简化器的 `simpControl` 变体 `Sym.Simp.reduceControl`：简化 `ite`/`dite`/`cond` 条件和 `match` 判别式，确定后归约该项，否则允许简化器访问分支。基于 `Sym.simp` 的 `grind` 规范化器用它代替 `reduceMatcher`。
 
 - [#15405](https://github.com/leanprover/lean4/pull/15405)
-  fixes a sharing violation in the `arith` simproc of `Sym.simp`, e.g., on `a + f (b + 0)`. With `sym.debug` enabled, it surfaced as a panic in `assertShared`.
+  修复 `Sym.simp` 的 `arith` simproc 在 `a + f (b + 0)` 等项上的共享违规；启用 `sym.debug` 时会在 `assertShared` 中 panic。
 
 - [#15322](https://github.com/leanprover/lean4/pull/15322)
-  makes `Sym.intros` introduce a binder whose name starts with `__` as an implementation-detail local, as the elaborator does for such binders. `vcgen` introduces the join point `__do_jp` of a `do` block with `Sym.intros`, so its verification conditions no longer show the join point and its body in the local context.
+  使 `Sym.intros` 像精译器一样，将名称以 `__` 开头的绑定作为实现细节局部变量引入。`vcgen` 通过 `Sym.intros` 引入 `do` 块的汇合点 `__do_jp`，因此验证条件局部上下文中不再显示汇合点及其主体。
 
 - [#15389](https://github.com/leanprover/lean4/pull/15389)
-  fixes a sharing violation in `Sym.dsimp` when it descends into a `fun`, `∀`, or `let` binder whose bound variable occurs in the body or in a later binder type. With `sym.debug` enabled, the violation surfaced as a panic in `assertShared`.
+  修复 `Sym.dsimp` 深入 `fun`、`∀`、`let` 绑定且绑定变量出现在主体或后续绑定类型时的共享违规；启用 `sym.debug` 时原先在 `assertShared` 中 panic。
 
 - [#15383](https://github.com/leanprover/lean4/pull/15383)
-  adds the `fallback` modifier to the `[grind hom]` attribute. A fallback rule is applied to a term only when no other homomorphism rule matches it, using the second tier `Sym.simp` already has for `eq_def` unfolding.
+  为 `[grind hom]` 添加 `fallback` 修饰符，仅在无其他同态规则匹配时应用回退规则，使用 `Sym.simp` 已有的 `eq_def` 展开第二层机制。
 
 - [#15378](https://github.com/leanprover/lean4/pull/15378)
-  fixes the `pushNot` simproc of the `grind` normalizer so that `¬(p → q)` becomes `p ∧ ¬q` and `¬∀ x, p x` becomes `∃ x, ¬p x`. These rewrites have been dead code since #9271: the simproc matched the `forallE` case against the whole `¬p` instead of `p`, and checked the domain with the syntactic `Expr.isProp`, which is false for a proposition variable. The same `isProp` check is fixed in the `Sym.simp`-based normalizer.
+  修复 `grind` 规范化器的 `pushNot` simproc，将 `¬(p → q)` 变为 `p ∧ ¬q`，将 `¬∀ x, p x` 变为 `∃ x, ¬p x`。自 #9271 起，这些重写一直是死代码：simproc 将 `forallE` 分支与整个 `¬p` 而非 `p` 匹配，并用对命题变量返回 false 的语法检查 `Expr.isProp` 检查定义域。基于 `Sym.simp` 的规范化器中的相同 `isProp` 检查也已修复。
 
 - [#15377](https://github.com/leanprover/lean4/pull/15377)
-  removes the `grind =` attribute from the lemmas that are already `[grind hom]` rules, so that `grind` derives the `toNat`, `toInt` and `val` image of a term once, through the homomorphism rewriter, instead of twice.
+  从已是 `[grind hom]` 规则的引理上移除 `grind =` 属性，使 `grind` 仅通过同态重写器推导一次项的 `toNat`、`toInt`、`val` 像，而非两次。
 
 - [#15370](https://github.com/leanprover/lean4/pull/15370)
-  makes `grind` prove goals that mention the `Bool`-valued signed comparisons `BitVec.slt` and `BitVec.sle`, such as `(x < y) ↔ (x.toBitVec.slt y.toBitVec = true)` for `Int64`, `x.slt y = true ↔ x.toInt < y.toInt`, `x.slt y → y.sle z → x.slt z` and `x.slt y = !(y.sle x)`.
+  使 `grind` 能证明涉及返回 `Bool` 的有符号比较 `BitVec.slt`、`BitVec.sle` 的目标，如 `Int64` 的 `(x < y) ↔ (x.toBitVec.slt y.toBitVec = true)`，以及 `x.slt y = true ↔ x.toInt < y.toInt`、`x.slt y → y.sle z → x.slt z`、`x.slt y = !(y.sle x)`。
 
 - [#15369](https://github.com/leanprover/lean4/pull/15369)
-  makes `grind` prove goals about the signed value of a bitwise complement, such as `(~~~x).toInt = (~~~x.toInt).bmod (2 ^ 16)` for `BitVec 16` and the corresponding goals for the fixed-width signed integer types, as well as plain `Int` facts such as `~~~a = -a - 1`.
+  使 `grind` 能证明按位取反的有符号值性质，如 `BitVec 16` 的 `(~~~x).toInt = (~~~x.toInt).bmod (2 ^ 16)`、固定位宽有符号整数的对应目标，以及 `~~~a = -a - 1` 等普通 `Int` 事实。
 
 - [#15367](https://github.com/leanprover/lean4/pull/15367)
-  makes `grind` prove goals about the signed value of a bit vector shifted left by a variable amount, such as `(x <<< n).toInt = (x.toInt <<< n).bmod (2 ^ 16)`, and lets nested signed results compose, such as `((x <<< m) <<< n).toInt = (x.toInt * 2 ^ m * 2 ^ n).bmod (2 ^ 16)`, `((x + y) <<< n).toInt = ((x.toInt + y.toInt) * 2 ^ n).bmod (2 ^ 16)` and `((x * y) * z).toInt = (x.toInt * y.toInt * z.toInt).bmod (2 ^ 16)`.
+  使 `grind` 能证明位向量按变量位数左移后的有符号值性质，如 `(x <<< n).toInt = (x.toInt <<< n).bmod (2 ^ 16)`；也允许组合嵌套有符号结果，如 `((x <<< m) <<< n).toInt = (x.toInt * 2 ^ m * 2 ^ n).bmod (2 ^ 16)`、`((x + y) <<< n).toInt = ((x.toInt + y.toInt) * 2 ^ n).bmod (2 ^ 16)`、`((x * y) * z).toInt = (x.toInt * y.toInt * z.toInt).bmod (2 ^ 16)`。
 
 - [#15366](https://github.com/leanprover/lean4/pull/15366)
-  makes `simp [f]` and `dsimp [f]` in `sym =>` mode behave like the default simplifier when `f` is a definition or a conditional theorem. Side conditions of conditional theorems, such as the equational theorems of definitions with overlapping patterns, are now discharged using `grind`. Non-recursive definitions are unfolded when no equational theorem applies. `dsimp` accepts definitions and `rfl`-theorems. Reducible definitions are ignored with a warning instead of failing.
+  当 `f` 是定义或条件定理时，使 `sym =>` 中的 `simp [f]`、`dsimp [f]` 表现得像默认简化器。条件定理（如模式重叠定义的方程定理）的旁条件现在用 `grind` 解决；无适用方程定理时展开非递归定义。`dsimp` 接受定义和 `rfl` 定理；可约定义被忽略并警告，而非失败。
 
 - [#15363](https://github.com/leanprover/lean4/pull/15363)
-  fixes a `grind` failure on goals containing `-0 : Int`, such as `f (-((0 : Nat) : Int)) = f 0`, where `grind` produced a proof rejected by the kernel. `-0` is now normalized to `0`.
+  修复 `grind` 在包含 `-0 : Int` 的目标（如 `f (-((0 : Nat) : Int)) = f 0`）上生成内核拒绝证明的问题；现在将 `-0` 规范化为 `0`。
 
 - [#15365](https://github.com/leanprover/lean4/pull/15365)
-  makes `grind` relate the unsigned value of an arithmetic shift to the signed value of its operand: goals such as `((x.sshiftRight n).toNat : Int) = (x.toInt / 2 ^ n) % 2 ^ 16` over `BitVec 16` are now proved.
+  使 `grind` 关联算术移位的无符号值与操作数的有符号值，现能证明 `BitVec 16` 上 `((x.sshiftRight n).toNat : Int) = (x.toInt / 2 ^ n) % 2 ^ 16` 等目标。
 
 - [#15364](https://github.com/leanprover/lean4/pull/15364)
-  makes `grind` reason about bit-vector rotations through its `[grind hom]` injection into `Nat`: goals such as `(x.rotateLeft n).toNat = (x.toNat * 2 ^ (n % 16) + x.toNat / 2 ^ (16 - n % 16)) % 2 ^ 16` over `BitVec 16`, and the `rotateRight` counterpart, are now proved.
+  使 `grind` 通过 `[grind hom]` 到 `Nat` 的注入推理位向量旋转，现能证明 `BitVec 16` 上 `(x.rotateLeft n).toNat = (x.toNat * 2 ^ (n % 16) + x.toNat / 2 ^ (16 - n % 16)) % 2 ^ 16` 及对应 `rotateRight` 目标。
 
 - [#15362](https://github.com/leanprover/lean4/pull/15362)
-  fixes `Sym.DSimp.zetaDelta` and `Sym.DSimp.zetaDeltaAll` so that they unfold a let-bound variable that appears as the head of an application. Previously, `dsimp [foo]` and `dsimp [*]` in `grind`/`sym`, and the `bv_decide` normalization passes, left terms such as `foo a b` untouched when `foo := fun x y => x + y` was a local definition, while `Meta.DSimp` reduces them to `a + b`.
+  修复 `Sym.DSimp.zetaDelta`、`Sym.DSimp.zetaDeltaAll`，使其展开出现在应用头部的 let 绑定变量。此前当 `foo := fun x y => x + y` 为局部定义时，`grind`/`sym` 的 `dsimp [foo]`、`dsimp [*]` 及 `bv_decide` 规范化都不处理 `foo a b`，而 `Meta.DSimp` 会归约为 `a + b`。
 
 - [#15350](https://github.com/leanprover/lean4/pull/15350)
-  makes `grind` reason about bit-vector exponentiation through its `[grind hom]` injections: goals such as `(x.pow z).toNat = x.toNat ^ z % 2 ^ 16` and `(x.pow z).toInt = (x.toInt ^ z).bmod (2 ^ 16)` over `BitVec 16` are now proved.
+  使 `grind` 通过 `[grind hom]` 注入推理位向量幂，现能证明 `BitVec 16` 上 `(x.pow z).toNat = x.toNat ^ z % 2 ^ 16`、`(x.pow z).toInt = (x.toInt ^ z).bmod (2 ^ 16)` 等目标。
 
 - [#15348](https://github.com/leanprover/lean4/pull/15348)
-  makes `grind` reason about bit-vector concatenation through its `[grind hom]` injection into `Nat`: goals such as `(x ++ y).toNat = x.toNat * 2 ^ 8 + y.toNat` over `BitVec 8` are now proved. It also fixes `Sym.simp` rules whose left-hand side has `Nat` arithmetic in a type index, such as the width `m + n` of `(x ++ y).toNat`, which never fired on terms whose width had been normalized to a numeral.
+  使 `grind` 通过 `[grind hom]` 到 `Nat` 的注入推理位向量拼接，如证明 `BitVec 8` 上 `(x ++ y).toNat = x.toNat * 2 ^ 8 + y.toNat`。同时修复左侧类型索引含 `Nat` 算术的 `Sym.simp` 规则，例如 `(x ++ y).toNat` 位宽 `m + n`，此前无法在位宽已规范化为数值时触发。
 
 - [#15347](https://github.com/leanprover/lean4/pull/15347)
-  lets the `cutsat` solver in `grind` reorder its variables more than once during a proof search. Variables created after the first model search, e.g. by later E-matching rounds, were appended to the variable order; when such a variable has a large coefficient in its bound constraints, the Cooper case split that eliminates it enumerated that coefficient and exhausted `liaSteps`. For example, `(x <<< 1).toInt = (x.toInt <<< 1).bmod (2 ^ 16)` over `BitVec 16` failed because the quotient `x.toNat / 2 ^ 16`, introduced by the instance of `BitVec.toInt_eq_toNat_bmod`, ended up last in the order with a coefficient of `2 ^ 16`. Such goals are now proved.
+  允许 `grind` 的 `cutsat` 求解器在一次证明搜索中多次重排变量。首次模型搜索后由后续 E-匹配等创建的变量原先追加在末尾；若其界约束系数很大，Cooper 消元的情形拆分会枚举该系数并耗尽 `liaSteps`。例如 `BitVec 16` 的 `(x <<< 1).toInt = (x.toInt <<< 1).bmod (2 ^ 16)` 曾失败，因为 `BitVec.toInt_eq_toNat_bmod` 实例引入的商 `x.toNat / 2 ^ 16` 位于顺序末尾、系数为 `2 ^ 16`。现在可证明这些目标。
 
 - [#15345](https://github.com/leanprover/lean4/pull/15345)
-  adds support for `&&&` with a constant mask to `grind`, for masks of the form `1…10…0` (a run of ones followed by a run of zeros), over `Nat` and, through the `[grind hom]` injections, `BitVec` and the fixed-width integer types. The mask is rewritten into `%`, `/`, and `*` by literals, which `cutsat` supports: `x &&& (2^n - 1)` becomes `x % 2^n`, and `x &&& ((2^n - 1) * 2^k)` becomes `x / 2^k % 2^n * 2^k`. For example, `(x &&& 0xe0).toNat = x.toNat / 32 % 8 * 32` over `BitVec 8` and `x &&& 0xC0 = 0 → x &&& 0x40 = 0` over `UInt8` are now proved by `grind`. Masks with holes (e.g. `0b101`) and `Int` are not handled yet.
+  为 `grind` 添加常量掩码 `&&&` 支持，掩码形如 `1…10…0`（一串 1 后接一串 0），适用于 `Nat`，并通过 `[grind hom]` 适用于 `BitVec` 及固定位宽整数。掩码重写为 `cutsat` 支持的字面量 `%`、`/`、`*`：`x &&& (2^n - 1)` 为 `x % 2^n`，`x &&& ((2^n - 1) * 2^k)` 为 `x / 2^k % 2^n * 2^k`。现可证明 `BitVec 8` 的 `(x &&& 0xe0).toNat = x.toNat / 32 % 8 * 32` 及 `UInt8` 的 `x &&& 0xC0 = 0 → x &&& 0x40 = 0`。尚不处理有空洞的掩码（如 `0b101`）或 `Int`。
 
 - [#15344](https://github.com/leanprover/lean4/pull/15344)
-  makes `Sym.Arith.normalize?` (and hence the `arith` simproc of `Sym.simp`) cancel `x * x⁻¹` for an atom `x` when a discharger proves `x ≠ 0`, in any field. `a * b / a` becomes `b`, `a ^ 3 / a` becomes `a ^ 2`, and `a / (2 * a)` becomes `2⁻¹`. The simproc DSL accepts `arith with d`, so `arith with grind` uses the goal's hypotheses. A result that asked for a side condition is context-dependent.
+  使 `Sym.Arith.normalize?`（从而 `Sym.simp` 的 `arith` simproc）在任意域上，当旁条件证明器证明 `x ≠ 0` 时消去原子 `x` 的 `x * x⁻¹`。`a * b / a` 变为 `b`，`a ^ 3 / a` 变为 `a ^ 2`，`a / (2 * a)` 变为 `2⁻¹`。simproc DSL 接受 `arith with d`，因此 `arith with grind` 使用目标假设；请求过旁条件的结果依赖上下文。
 
 - [#15343](https://github.com/leanprover/lean4/pull/15343)
-  makes numeral inverses rational coefficients in `Sym.Arith.normalize?` (and hence in the `arith` simproc of `Sym.simp`) for fields of characteristic zero. `a / 2 + a / 2` now normalizes to `a`, `a / 2 + b / 3` to `(3 * a + 2 * b) * 6⁻¹`, and relations become denominator-free: `a / 2 + b / 3 = 1` becomes `3 * a + 2 * b = 6`. Without an `IsCharP _ 0` instance, numeral inverses remain atoms.
+  在特征零的域中，使 `Sym.Arith.normalize?`（及 `Sym.simp` 的 `arith`）将数值的逆作为有理系数。`a / 2 + a / 2` 规范化为 `a`，`a / 2 + b / 3` 为 `(3 * a + 2 * b) * 6⁻¹`；关系消去分母，如 `a / 2 + b / 3 = 1` 变为 `3 * a + 2 * b = 6`。没有 `IsCharP _ 0` 实例时，数值的逆仍为原子。
 
 - [#15259](https://github.com/leanprover/lean4/pull/15259)
-  registers `BitVec.toNat_ofInt` as a `[grind hom]` rule, so `grind` can reason about the unsigned value of `BitVec.ofInt`. In particular, `cutsat` can now follow carries computed through `BitVec.ofInt`.
+  将 `BitVec.toNat_ofInt` 注册为 `[grind hom]` 规则，使 `grind` 能推理 `BitVec.ofInt` 的无符号值，尤其使 `cutsat` 可跟踪经 `BitVec.ofInt` 计算的进位。
 
 - [#15262](https://github.com/leanprover/lean4/pull/15262)
-  registers `BitVec.toInt_signExtend` as a `[grind hom]` rule, so `grind` can reason about the signed value of `BitVec.signExtend`: narrowing reduces `toInt` modulo `2 ^ v`, and widening leaves it unchanged.
+  将 `BitVec.toInt_signExtend` 注册为 `[grind hom]` 规则，使 `grind` 能推理 `BitVec.signExtend` 的有符号值：缩窄时将 `toInt` 模 `2 ^ v`，扩宽时保持不变。
 
 - [#15311](https://github.com/leanprover/lean4/pull/15311)
-  fixes `grind` never activating E-matching theorems whose ground pattern contains a lambda, a dependent `∀`, or a nonparametric literal such as a `Char` or a negative `Int`. For example, `@[grind .] theorem myPred_of_true : myPred (fun _ => True)` was never used even when the goal contained `myPred mySet` and `mySet = fun _ => True`, and `@[grind =] theorem fc_a : fc 'a' = 1` could not prove `fc 'a' = 1`. Passing such theorems explicitly with `grind [myPred_of_true]` worked, since explicit parameters bypass symbol indexing.
+  修复 `grind` 从不激活闭模式含 lambda、依赖 `∀` 或 `Char`、负 `Int` 等非参数字面量的 E-匹配定理。例如即使目标含 `myPred mySet` 与 `mySet = fun _ => True`，也不用 `@[grind .] theorem myPred_of_true : myPred (fun _ => True)`；`@[grind =] theorem fc_a : fc 'a' = 1` 也无法证明 `fc 'a' = 1`。显式 `grind [myPred_of_true]` 原本可行，因为参数会绕过符号索引。
 
 - [#15310](https://github.com/leanprover/lean4/pull/15310)
-  fixes `Sym.dsimp` producing terms with dangling free variables when a binder type depends on an earlier binder, e.g. `∀ k : Nat, k < 32 → ...`. This caused `bv_decide` to fail with `unknown free variable`. Closes #15195.
+  修复绑定类型依赖先前绑定时（如 `∀ k : Nat, k < 32 → ...`），`Sym.dsimp` 产生悬空自由变量，导致 `bv_decide` 报 `unknown free variable`。关闭 #15195。
 
 - [#15046](https://github.com/leanprover/lean4/pull/15046)
-  fixes `Lean.Meta.Sym.Simp.toHave`, which passed the dependencies of a `have` to `Expr.betaRev` in forward order even though `betaRev` expects them reversed. Any `have` whose value depended on two or more earlier `have`s of the same telescope was rebuilt with its dependencies swapped, producing an ill-typed proof term that the kernel rejects with an application type mismatch.
+  修复 `Lean.Meta.Sym.Simp.toHave` 将 `have` 的依赖按正序传给要求逆序的 `Expr.betaRev` 的问题。若 `have` 的值依赖同一参数列中至少两个先前 `have`，重建时会交换依赖，生成类型不正确的证明项，被内核以应用类型不匹配拒绝。
 
 - [#14827](https://github.com/leanprover/lean4/pull/14827)
-  makes `vcgen` state exception postcondition verification conditions pointwise for more exception postcondition types, and makes `throws` clauses work for custom types. For `Except ε`, a spec with the exception postcondition `fun e => e = "x"` now yields `∀ e, e = "x" → …` in place of an entailment between two functions. A custom type such as `structure Thrown where onThrow : String → Prop` gets the same pointwise verification conditions from a `ToEStack` instance, which converts it to an exception postcondition stack. With an `EPostSlot` instance, the type also supports `throws` clauses of `def` contracts.
+  使 `vcgen` 对更多异常后置条件类型逐点陈述验证条件，并使 `throws` 子句适用于自定义类型。对 `Except ε`，异常后置条件 `fun e => e = "x"` 现在产生 `∀ e, e = "x" → …`，而非函数间蕴涵。`structure Thrown where onThrow : String → Prop` 等自定义类型通过将其转换为异常后置条件栈的 `ToEStack` 实例，也能获得相同逐点条件；加上 `EPostSlot` 实例后还支持 `def` 契约的 `throws` 子句。
 
 - [#15290](https://github.com/leanprover/lean4/pull/15290)
-  moves the syntax of the `vcgen` tactic to the new module `Std.WP.Tactic` and deprecates the tactics of the `Std.Do` proof mode. `import Std.WP` now provides `vcgen`. Each call of a proof mode tactic, such as `mintro` or `mspec`, reports one deprecation warning that points to `vcgen`. The option `mvcgen.warning` is deprecated because it has no effect.
+  将 `vcgen` 语法移到新模块 `Std.WP.Tactic`，并弃用 `Std.Do` 证明模式策略。`import Std.WP` 现在提供 `vcgen`；`mintro`、`mspec` 等证明模式策略每次调用报告一条指向 `vcgen` 的弃用警告。无实际效果的选项 `mvcgen.warning` 也弃用。
 
 - [#15298](https://github.com/leanprover/lean4/pull/15298)
-  teaches `Sym.Arith.normalize?` (and hence the `arith` simproc of `Sym.simp`) the field rewrites that need no side conditions. In a `Field`, `a / b` becomes `a * b⁻¹`, and inverses are pushed down to the atoms: `(a * b)⁻¹ ↦ a⁻¹ * b⁻¹`, `(-a)⁻¹ ↦ -a⁻¹`, `a⁻¹⁻¹ ↦ a`, `0⁻¹ ↦ 0`, `1⁻¹ ↦ 1`, after normalizing the term under the inverse. `x⁻¹` for an atom or numeral `x` is then an atom of the polynomial, so `a / b + a / b` normalizes to `2 * (a * b⁻¹)`.
+  为 `Sym.Arith.normalize?`（及 `Sym.simp` 的 `arith`）添加不需要旁条件的域重写。在 `Field` 中，`a / b` 变为 `a * b⁻¹`，先规范化逆号下的项，再将逆推到原子：`(a * b)⁻¹ ↦ a⁻¹ * b⁻¹`、`(-a)⁻¹ ↦ -a⁻¹`、`a⁻¹⁻¹ ↦ a`、`0⁻¹ ↦ 0`、`1⁻¹ ↦ 1`。原子或数值 `x` 的 `x⁻¹` 随后成为多项式原子，因此 `a / b + a / b` 变为 `2 * (a * b⁻¹)`。
 
 - [#15297](https://github.com/leanprover/lean4/pull/15297)
-  extends `Sym.Arith.normalize?` (and hence the `arith` simproc of `Sym.simp`) to non-commutative `Ring` and `Semiring` structures. Monomials keep the order of their factors, so `a * b` and `b * a` stay distinct and `(a + b)^2` normalizes to `a^2 + a*b + b*a + b^2`. Terms, relations, and the characteristic are supported as for the commutative case.
+  将 `Sym.Arith.normalize?`（及 `Sym.simp` 的 `arith`）扩展到非交换 `Ring`、`Semiring`。单项式保留因子顺序，因此 `a * b` 与 `b * a` 不同，`(a + b)^2` 规范化为 `a^2 + a*b + b*a + b^2`。项、关系及特征的支持与交换情形相同。
 
 - [#15296](https://github.com/leanprover/lean4/pull/15296)
-  fixes the `arith` simproc of `Sym.simp` so that reflexive relations between atoms are closed: `x ≤ x` and `x = x` now normalize to `0 ≤ 0` and `0 = 0` and are closed by `post`, like `x + 0 ≤ x` already was.
+  修复 `Sym.simp` 的 `arith` simproc，使原子间自反关系得以关闭：`x ≤ x`、`x = x` 现在规范化为 `0 ≤ 0`、`0 = 0` 并由 `post` 关闭，与此前 `x + 0 ≤ x` 一致。
 
 - [#15295](https://github.com/leanprover/lean4/pull/15295)
-  makes the relation normalizer of `Sym.Arith` (and hence the `arith` simproc of `Sym.simp`) use the characteristic of the ring, so that `256 * u + v = v` on `UInt8` normalizes to `0 = 0` and `u + 2 = v` is recognized as already normal. Previously only terms were reduced modulo the characteristic.
+  使 `Sym.Arith` 关系规范化器（及 `Sym.simp` 的 `arith`）使用环特征，因此 `UInt8` 上 `256 * u + v = v` 规范化为 `0 = 0`，`u + 2 = v` 被识别为已规范。此前仅对项按特征取模。
 
 - [#15293](https://github.com/leanprover/lean4/pull/15293)
-  extends `Sym.Arith.normalize?` (and hence the `arith` simproc of `Sym.simp`) to relations `lhs = rhs`, `lhs ≤ rhs`, and `lhs < rhs` over a `CommRing` or `CommSemiring`. Everything is moved to one side and split by sign, so `x + y = z + 2 * x` becomes `y = x + z`, and `a ≤ b + a` becomes `0 ≤ b`; when both sides normalize to the same polynomial, the goal is closed.
+  将 `Sym.Arith.normalize?`（及 `Sym.simp` 的 `arith`）扩展到 `CommRing`、`CommSemiring` 上的 `lhs = rhs`、`lhs ≤ rhs`、`lhs < rhs`。先全部移到一侧再按符号拆分，使 `x + y = z + 2 * x` 变为 `y = x + z`，`a ≤ b + a` 变为 `0 ≤ b`；两侧归为同一多项式时关闭目标。
 
 - [#15292](https://github.com/leanprover/lean4/pull/15292)
-  adds the `arith` simproc to `Sym.simp`, which normalizes ring and semiring terms into polynomial normal form using `Sym.Arith.normalize?`. It is opt-in through `register_sym_simp` and intended as a `pre` simproc: it sees the maximal arithmetic subtree first, simplifies its atoms with the full simplifier, and reifies it once. Normal forms are final (`done := true`) and cached.
+  为 `Sym.simp` 添加 `arith` simproc，使用 `Sym.Arith.normalize?` 将环、半环项规范化为多项式范式。通过 `register_sym_simp` 选择启用，适合作为 `pre` simproc：先看到最大算术子树，用完整简化器简化其原子，再反射为语法一次。范式标为最终结果（`done := true`）并缓存。
 
 - [#15280](https://github.com/leanprover/lean4/pull/15280)
-  makes `Expr.toPolyS` and `Expr.toPolyS_nc` handle a zero exponent like `Expr.toPoly` does, so `x ^ 0` in a semiring normalizes to `1` instead of a monomial with exponent `0`. The `Sym.Arith` normalizer now rewrites `x ^ 0 : Nat` to `1`.
+  使 `Expr.toPolyS`、`Expr.toPolyS_nc` 像 `Expr.toPoly` 一样处理零指数，半环中 `x ^ 0` 规范化为 `1` 而非指数为 0 的单项式。`Sym.Arith` 现在将 `x ^ 0 : Nat` 重写为 `1`。
 
 - [#15279](https://github.com/leanprover/lean4/pull/15279)
-  adds `Sym.Arith.normalize?`, which rewrites a term of a `CommRing` or `CommSemiring` into polynomial normal form with a proof by reflection. It is the normalizer that `Sym.simp` will use for arithmetic; this PR provides the `SymM`-level API and its tests, not the simplifier integration.
+  新增 `Sym.Arith.normalize?`，通过反射式证明将 `CommRing`、`CommSemiring` 的项重写为多项式范式。它将供 `Sym.simp` 算术使用；本 PR 提供 `SymM` 层 API 与测试，尚未集成简化器。
 
 - [#15267](https://github.com/leanprover/lean4/pull/15267)
-  fixes regressions in bv_decide around projection and match reduction.
+  修复 bv_decide 在投影与匹配归约方面的回归。
 
 - [#15263](https://github.com/leanprover/lean4/pull/15263)
-  moves the classification of order structures (`LE`, `IsPreorder`, `LT`, `LawfulOrderLT`, `IsPartialOrder`, `IsLinearPreorder`, `OrderedRing`) from `grind`'s order module into `Sym.Arith`, so other `Sym` components can reuse it. No user-visible change.
+  将序结构分类（`LE`、`IsPreorder`、`LT`、`LawfulOrderLT`、`IsPartialOrder`、`IsLinearPreorder`、`OrderedRing`）从 `grind` 序模块移到 `Sym.Arith`，供其他 `Sym` 组件复用。没有用户可见变化。
 
 - [#15190](https://github.com/leanprover/lean4/pull/15190)
-  makes the `grind` ring solver use the ring classification, operator caches, reification, and denotation from `Sym.Arith`, and deletes the copies it kept under `Grind/Arith/CommRing`. A type is now classified once per `SymM` run instead of once per goal, so every goal of a `grind` run and every tactic of a `sym` block share the result. Code that drives `grind` programmatically sees the new layout: the per-goal ring state holds solver data only, `Result` carries the `Sym.Arith` ring records, and `goalToMessageData` and `evalCheck` take them.
+  使 `grind` 环求解器使用 `Sym.Arith` 的环分类、运算缓存、反射和解释，删除 `Grind/Arith/CommRing` 下的重复实现。现在每次 `SymM` 运行只分类一次类型，而非每个目标一次，因此同次 `grind` 的各目标及 `sym` 块的各策略共享结果。通过程序驱动 `grind` 的代码会看到新布局：逐目标环状态仅保存求解数据，`Result` 携带 `Sym.Arith` 环记录，`goalToMessageData`、`evalCheck` 接收这些记录。
 
 ```
 
-# Compiler
+# 编译器
+%%%
+file := "Compiler"
+tag := "Manual-Releases-v4_36_0-Compiler"
+%%%
 
 ```markdown
 
 - [#15516](https://github.com/leanprover/lean4/pull/15516)
-  removes the limit of 255 object fields per constructor, and thus per structure.
+  移除每个构造器（因此也包括每个结构体）最多 255 个对象字段的限制。
 
 - [#15539](https://github.com/leanprover/lean4/pull/15539)
-  fixes an RC race condition that occurs exclusively in debug code associated with the IR
-  interpreter by marking some global objects as persistent. Additionally, it marks one other global
-  object as persistent that is currently not used in a multi threaded way but might be in the future
-  for hardening purposes.
+  将一些全局对象标为持久，修复仅发生在 IR
+  解释器调试代码中的引用计数竞争；同时为加固，将另一个目前未多线程使用、
+  但未来可能这样使用的全局对象
+  也标为持久。
 
 - [#15520](https://github.com/leanprover/lean4/pull/15520)
-  makes the symbol cache return references instead of copying the cache contents out. In addition, it removes uses of references after potential recursive calls into the interpreter. While this is not necessary with the current bucket-based `std::unordered_map` a future `flat_map` design might invalidate these references due to re-hashing which we want to avoid.
+  使符号缓存返回引用，而不复制缓存内容；同时不在可能递归调用解释器后使用这些引用。当前基于桶的 `std::unordered_map` 虽无需如此，但未来 `flat_map` 可能因重哈希使引用失效，故提前避免。
 
 - [#15131](https://github.com/leanprover/lean4/pull/15131)
-  introduces new fast paths to high arity closure applications. Previously, they would always maintain ownership of their arguments as they pass them to their underlying function pointer, causing non-linearities. This PR introduces the same fast paths as with the other low arity closures for passing the arguments linearly if the closure is passed linearly. Furthermore, closures *may* now tail call, exact behavior is platform and compiler dependent at this point in time and should not be relied upon.
+  为高元数闭包应用添加快速路径。此前向底层函数指针传参时总保留实参所有权，导致非线性。现在像低元数闭包一样，若闭包被线性传递，则使用线性传参快速路径。此外，闭包现在*可能*进行尾调用；具体行为仍依赖平台和编译器，不应依赖。
 
 - [#15493](https://github.com/leanprover/lean4/pull/15493)
-  makes the IR interpreter resize its stack frames correctly upon function entry instead of dynamically on variable access. This ensure that variable access remains branch free.
+  使 IR 解释器在函数入口正确调整栈帧，而非变量访问时动态调整，确保变量访问无分支。
 
 - [#15486](https://github.com/leanprover/lean4/pull/15486)
-  pre-computes some information about IR decls, to be used in future work.
+  预先计算 IR 声明的部分信息，供未来工作使用。
 
 - [#15407](https://github.com/leanprover/lean4/pull/15407)
-  makes `ctorIdx` just read the constructor tag in almost all cases. There are a few notable exceptions to be had here:
-  - types with only one ctor may end up being unwrapped to other types if they turn out to be trivial so we want to statically return `1`
-  - built-ins like `Nat` and `Int`
+  使 `ctorIdx` 在几乎所有情况下仅读取构造器标签，显著例外包括：
+  - 只有一个构造器的类型若为平凡类型，可能被展开为其他类型，因此静态返回 `1`；
+  - `Nat`、`Int` 等内置类型。
 
 - [#15277](https://github.com/leanprover/lean4/pull/15277)
-  makes constant folding on `USize` slightly smarter by relaxing the forced equivalence between the `UInt32` and `UInt64` result of the same operation. Previously we required the `UInt32` output and the `UInt64` output to be literally the same. However, in order for a `USize` literal to be interpreted the same on both platform widths, we only need the `UInt32` truncated version of the `UInt64` output to be the same as the `UInt32` output.
+  放宽同一运算 `UInt32` 与 `UInt64` 结果必须相等的约束，使 `USize` 常量折叠更智能。此前要求两个输出完全相同；但为使 `USize` 字面量在两种平台位宽上含义一致，只需 `UInt64` 输出截为 `UInt32` 后与 `UInt32` 输出相同。
 
 - [#15276](https://github.com/leanprover/lean4/pull/15276)
-  changes the heuristic for the "equivalent case" folder in LCNF simp. Previously it
-  compared every alternative with every other alternative in a cases up to alpha equivalence, causing
-  O(n^2) alpha equivalence queries per cases. The new heuristic is inspired by GHC and instead takes
-  either:
-  - the default or
-  - the first alternative with all of its parameters unused
+  修改 LCNF simp 中“等价情形”折叠器的启发式。此前对 `cases` 每对分支
+  都做 α-等价比较，导致每个 cases
+  有 O(n^2) 次查询。新方法受 GHC 启发，改为选择
+  以下之一：
+  - 默认分支；
+  - 首个全部参数都未使用的分支。
 
 - [#15275](https://github.com/leanprover/lean4/pull/15275)
-  introduces constant folders in a more systematic fashion that attempt to cover all interesting and simple connections for `Nat`, `UInt`, and a few special cases in other types.
+  更系统地引入常量折叠器，尝试覆盖 `Nat`、`UInt` 及其他类型少量特例中所有有意义的简单关系。
 
 - [#15256](https://github.com/leanprover/lean4/pull/15256)
-  extends the derived values analysis by allowing the compiler to take any form of potentially relevant allocation as a parent for a derived value.
+  扩展派生值分析，允许编译器将任意形式的可能相关分配用作派生值的父项。
 
 - [#15251](https://github.com/leanprover/lean4/pull/15251)
-  changes the way that ExplicitRC determines derived borrows. Previously it would eagerly compute the entire derived values tree for the entire program. This would mean that a single variable `s` would always have all derived values possible in all control flow branches as its children. As all of these children are walked upon use of the value, this causes a lot of excess work. The new pass avoids this by only keeping the derived values in the current program scope around in the tree.
+  修改 ExplicitRC 确定派生借用的方式。此前立即为整个程序计算完整派生值树，使单个变量 `s` 总以所有控制流分支中所有可能派生值为子项；每次使用都会遍历这些子项，造成大量额外工作。新过程仅在树中保留当前程序作用域中的派生值。
 
 ```
 
-# Server
+# 服务器
+%%%
+file := "Server"
+tag := "Manual-Releases-v4_36_0-Server"
+%%%
 
 ```markdown
 
 - [#15331](https://github.com/leanprover/lean4/pull/15331)
-  fixes the goal view showing "no goals" instead of the goal state after an empty `grind =>`, `sym =>` or `impossible by` block, e.g. right after the token or on the following indented line where the next tactic is about to be typed.
+  修复空 `grind =>`、`sym =>` 或 `impossible by` 块之后，例如关键字后或准备输入下一策略的下一缩进行，目标视图显示“no goals”而非目标状态的问题。
 
 ```
 
@@ -596,57 +616,65 @@ and 26 other changes.
 ```markdown
 
 - [#15630](https://github.com/leanprover/lean4/pull/15630)
-  adds the options `--add-downstream <MODULE>` and `--add-public-downstream <MODULE>` to `lake shake`, which ensure that the given module is imported, directly or transitively, in every checked module where that does not create an import cycle. This gives projects a built-in way to check and enforce that a module providing e.g. linters or code actions, such as a project's `Init` module, is in effect everywhere.
+  为 `lake shake` 添加 `--add-downstream <MODULE>`、`--add-public-downstream <MODULE>`，确保每个不会造成导入环的被检查模块，都直接或传递导入指定模块。这为项目检查并强制某个提供检查器或代码操作的模块（如项目 `Init`）处处生效提供内置方式。
 
 - [#15474](https://github.com/leanprover/lean4/pull/15474)
-  makes Lake fetch facets named by partial target keys under their resolved keys, so package-elided, package-named and module requests share the same build-store entries as direct target requests.
+  使 Lake 以解析后的键获取由部分目标键命名的分面，让省略包名、显式包名及模块请求，与直接目标请求共享构建存储条目。
 
 - [#15231](https://github.com/leanprover/lean4/pull/15231)
-  fixes an issue where Lake would not reuse the cached `.ltar` of a module for `-o` if its contents where not already cached and/or the package was platform independent.
+  修复模块内容尚未缓存和/或包与平台无关时，Lake 为 `-o` 无法复用缓存 `.ltar` 的问题。
 
 - [#14906](https://github.com/leanprover/lean4/pull/14906)
-  splits `leanir` code generation into a separate Lake job and target . The `leanArts` facet on modules and libraries id deprecated and replaced with two distinct facets: `elabArts` and `irArts`. For backwards compatibility, uses of `leanArts` delegate to `irArts`.
+  将 `leanir` 代码生成分离为独立 Lake 作业和目标。模块与库的 `leanArts` 分面弃用，分为 `elabArts` 和 `irArts`；为兼容，`leanArts` 委托到 `irArts`。
 
 - [#12545](https://github.com/leanprover/lean4/pull/12545)
-  adds a `lake samply` command that records a CPU profile of a Lean
-  executable using [samply](https://github.com/mstange/samply), symbolicates
-  addresses, demangles Lean compiler names, and serves the result to
-  [Firefox Profiler](https://profiler.firefox.com).
+  添加 `lake samply` 命令，使用 [samply](https://github.com/mstange/samply)
+  记录 Lean 可执行文件的 CPU 性能剖析，解析地址、
+  还原 Lean 编译器符号名，并将结果提供给
+  [Firefox Profiler](https://profiler.firefox.com) 查看。
 
 ```
 
-# Other
+# 其他
+%%%
+file := "Other"
+tag := "Manual-Releases-v4_36_0-Other"
+%%%
 
 ```markdown
 
 - [#15665](https://github.com/leanprover/lean4/pull/15665)
-  adds Lean Beam's CLI, MCP server, daemon, and LSP plugin to Linux and macOS release toolchains.
+  将 Lean Beam 的 CLI、MCP 服务器、守护进程及 LSP 插件加入 Linux、macOS 发行工具链。
 
 - [#15559](https://github.com/leanprover/lean4/pull/15559)
-  stops a `module` from exporting constants such as `foo.eq_1` when they were realized only inside a proof, so that such proofs no longer trigger downstream rebuilds. Importing modules realize these constants again on demand.
+  不再从 `module` 导出仅在证明内部实现化的 `foo.eq_1` 等常量，使这些证明不再触发下游重建；导入模块会按需再次实现化这些常量。
 
 - [#15558](https://github.com/leanprover/lean4/pull/15558)
-  stops a `module` from exporting the entries of declaration-keyed environment extensions, such as projection function info, that belong to private declarations, so that changes to them no longer trigger downstream rebuilds.
+  不再从 `module` 导出声明键控环境扩展中属于私有声明的条目，例如投影函数信息，使其变化不再触发下游重建。
 
 - [#15565](https://github.com/leanprover/lean4/pull/15565)
-  fixes a panic in `leanir` and three smaller issues found while enabling `compiler.postponeCompile` for core.
+  修复启用核心的 `compiler.postponeCompile` 时发现的 `leanir` panic 及另外三个较小问题。
 
 - [#15512](https://github.com/leanprover/lean4/pull/15512)
-  speeds up module system imports outside the language server and reduces their memory use by no longer building a redundant copy of the imported environment extension entries. Mathlib import time is reduced by ~6%.
+  不再为导入环境扩展条目创建冗余副本，加快语言服务器之外的模块系统导入并减少内存使用；Mathlib 导入时间减少约 6%。
 
 - [#15150](https://github.com/leanprover/lean4/pull/15150)
-  ensures that `Lean.toolchain` includes a `v` for release versions, e.g. `"leanprover/lean4:v4.34.0-rc2"`, to match the standard format of toolchains in `lean-toolchain` files. (This also enables `ToolchainVer.ofString` to succeed on `Lean.toolchain`.)
+  确保发行版本的 `Lean.toolchain` 含 `v`，如 `"leanprover/lean4:v4.34.0-rc2"`，以符合 `lean-toolchain` 文件标准格式，也使 `ToolchainVer.ofString` 可成功解析 `Lean.toolchain`。
 
 ```
 
-# Uncategorised
+# 未分类
+%%%
+file := "Uncategorised"
+tag := "Lean-__________________--____________--Lean-4___36___0-rc2-_LPAR_2026-10-27_RPAR_--Uncategorised"
+%%%
 
 ```markdown
 
 - [#15002](https://github.com/leanprover/lean4/pull/15002)
-  adds HTML-like syntax to `Lean.Data.Html.Syntax`, together with an elaborator from the syntax into `Lean.Data.Html`.
+  为 `Lean.Data.Html.Syntax` 添加类似 HTML 的语法及将其精译到 `Lean.Data.Html` 的精译器。
 
 - [#14935](https://github.com/leanprover/lean4/pull/14935)
-  adds a type `Lean.Data.Html` of HTML forests — aimed primarily at authoring HTML (as opposed to internal representation in a web server, etc) — as well as a renderer that produces a `String` object.
+  新增表示 HTML 森林的 `Lean.Data.Html` 类型，主要面向 HTML 编写（而非网络服务器内部表示等），并提供产生 `String` 的渲染器。
 
 ```

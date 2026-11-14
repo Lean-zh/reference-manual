@@ -58,11 +58,17 @@ lean_lib IndexMap where
 lean_lib IndexMapGrind where
   srcDir := "extended-examples"
 
+-- `include_str` reads this table during elaboration; track it as an input so that changing
+-- translations also rebuilds the affected documentation instead of reusing stale oleans.
+input_file upstreamDocTranslations where
+  text := true
+  path := "Manual/ZhDocString/UpstreamDocs.json"
+
 @[default_target]
 lean_lib Manual where
   weakLeanArgs := lakePluginArgs%
   -- These executables run during elaboration
-  needs := #[`@/subversoExtractMod, `@/«extract-lakefile»]
+  needs := #[`@/subversoExtractMod, `@/«extract-lakefile», upstreamDocTranslations]
 
 /-- Rendering of elaborated Lake configurations, shared by `Manual` and `extract-lakefile`. -/
 lean_lib ManualLakeTest where

@@ -35,7 +35,7 @@ meta def ZhDocstringOpts.parse : ArgParse m ZhDocstringOpts :=
 meta instance : FromArgs ZhDocstringOpts m := ⟨ZhDocstringOpts.parse⟩
 end
 
-private meta def translatedBlocks (names : List Name) (blame : Syntax)
+meta def translatedBlocks (names : List Name) (blame : Syntax)
     (docs? : Option String) : DocElabM (Array Term) := do
   let some docs := docs? | return #[]
   let some ast := MD4Lean.parse docs
@@ -47,7 +47,7 @@ private def finalNameComponent : Name → String
   | .str _ s => s
   | .num _ n => toString n
 
-private def translatedDeclLabel : Block.Docstring.DeclType → String
+def translatedDeclLabel : Block.Docstring.DeclType → String
   | .structure false .. => "结构体"
   | .structure true .. => "类型类"
   | .def .safe => "定义"

@@ -9,6 +9,7 @@ import Std.Async
 import Std.Sync.Channel
 
 import Manual.Meta
+import Manual.ZhDocString.Upstream
 
 import Lean.Parser.Command
 
@@ -24,110 +25,116 @@ set_option pp.rawOnError true
 
 set_option linter.unusedVariables false
 
-#doc (Manual) "Asynchronous Programming" =>
+#doc (Manual) "异步编程" =>
 %%%
 file := some "Async"
+tag := "Lean-__________________--IO--Asynchronous-Programming"
 %%%
 
-The {name}`Async` monad provides tools and abstractions for constructing asynchronous programs that can safely multiplex different sources of data.
-Typical use cases include network servers and other interactive applications that perform IO and must react to a variety of events, such as incoming data, timeouts, and disconnections.
-Generally speaking, sequential programs that interact with the operating system can use {name}`IO` alone.
-Parallel programs should use {name}`Task`s.
-{name}`Async` is most appropriate when a program may spend a significant amount of time waiting on external events or I/O.
+{name}`Async` 单子提供构建异步程序的工具与抽象，使程序能够安全地复用不同的数据源。
+典型用途包括网络服务器及其他执行 IO 的交互式应用：它们必须响应传入数据、超时、连接断开等多种事件。
+一般来说，与操作系统交互的顺序程序只需使用 {name}`IO`。
+并行程序应使用 {name}`Task`。
+当程序可能花费大量时间等待外部事件或 I/O 时，{name}`Async` 最为合适。
 
-The most important feature of {name}`Async` is {deftech}_event selection_.
-Given a set of potential inputs, and a computation to be carried out in response to each, event selection ensures that computations are triggered as events occur.
-Each computation is triggered exactly once, as its associated event occurs, and data can never be lost.
-These properties are very difficult to ensure without appropriate library support.
+{name}`Async` 最重要的功能是{deftech (key := "event selection")}_事件选择_。
+给定一组潜在输入以及对各个输入作出响应的计算，事件选择会确保事件发生时触发相应计算。
+每个计算都在关联事件发生时恰好触发一次，并且数据绝不会丢失。
+若无适当的库支持，这些性质很难保证。
 
-Behind the scenes, asynchronous tasks are represented using tasks and promises.
-An asynchronous computation runs on the current thread until it must wait for a result that is not yet available, such as a timer or incoming network data.
-The missing data is represented by a {name IO.Promise}`Promise`.
-At that point, the asynchronous computation suspends.
-Rather than blocking the thread, it yields control and arranges to resume once the awaited promise is resolved.
-A single thread can therefore make progress on many waiting computations at once.
-The standard library resolves these promises in response to operating system events—timers, sockets, signals, and name resolution—using the `libuv` event loop as its I/O backend.
-The asynchronous model itself depends only on tasks and promises, however: any source that resolves a promise, such as a channel, can be used to reinvoke an asynchronous computation just as well.
+在底层，异步任务使用任务和承诺来表示。
+异步计算先在当前线程上运行，直到必须等待尚不可用的结果，例如定时器或传入的网络数据。
+尚不可用的数据由 {name IO.Promise}`Promise` 表示。
+此时，异步计算会挂起。
+它不会阻塞线程，而是让出控制权，并安排在等待的承诺兑现后恢复执行。
+因此，一个线程能够同时推进许多处于等待中的计算。
+标准库使用 `libuv` 事件循环作为 I/O 后端，响应定时器、套接字、信号和名称解析等操作系统事件，兑现这些承诺。
+不过，异步模型本身仅依赖任务和承诺：任何能兑现承诺的数据源（例如通道）都同样能使异步计算恢复执行。
 
-# Asynchronous Computations
+# 异步计算
+%%%
+file := "Asynchronous-Computations"
+tag := "Lean-__________________--IO--Asynchronous-Programming--Asynchronous-Computations"
+%%%
 
 :::paragraph
-There are three monads for writing asynchronous programs, each corresponding to one of the variants of {name}`IO`:
+编写异步程序有三个单子，分别对应 {name}`IO` 的一种变体：
 
-* {name}`Async` describes asynchronous computations that may throw an {name}`IO.Error`, and corresponds to {name}`IO`.
-* {name}`EAsync` describes asynchronous computations that may throw a specified type of error, and corresponds to {name}`EIO`.
-* {name}`BaseAsync` describes asynchronous computations that cannot throw an error, and corresponds to {name}`BaseIO`.
+* {name}`Async` 描述可能抛出 {name}`IO.Error` 的异步计算，对应 {name}`IO`。
+* {name}`EAsync` 描述可能抛出指定类型错误的异步计算，对应 {name}`EIO`。
+* {name}`BaseAsync` 描述不会抛出错误的异步计算，对应 {name}`BaseIO`。
 
 :::
 
-{docstring Async}
+{zhdocstringFrom Async}
 
-{docstring EAsync}
+{zhdocstringFrom EAsync}
 
-{docstring BaseAsync}
+{zhdocstringFrom BaseAsync}
 
-Infinite loops in {name}`EAsync` and {name}`Async` use a special instance of {name}`ForIn` that ensures that they don't consume stack frames when used in {keywordOf Lean.Parser.Term.doRepeat}`repeat` and {keywordOf Lean.Parser.Term.doWhile}`while` loops.
-They can therefore be used in long-running asynchronous applications such as servers without the stack overflowing.
+{name}`EAsync` 和 {name}`Async` 中的无限循环使用特殊的 {name}`ForIn` 实例，确保在 {keywordOf Lean.Parser.Term.doRepeat}`repeat` 和 {keywordOf Lean.Parser.Term.doWhile}`while` 循环中不消耗栈帧。
+因此，可以在服务器等长期运行的异步应用中使用它们，而不会造成栈溢出。
 
-Each of these monads has a corresponding type of asynchronous tasks that it can coordinate.
-These tasks can be thought of as handles to an in-flight computation.
-Calling {name}`async` on a monadic action creates a task that runs in a thread from the thread pool, and calling {name}`await` on a task results in a monadic action that waits for the task to complete.
-Passing {name}`Task.Priority.dedicated` as the `prio` parameter to {name}`async` causes the task to run on a dedicated thread instead.
+每个单子都有一种对应的异步任务类型，可由该单子协调。
+这些任务可以看作正在执行的计算的句柄。
+对单子动作调用 {name}`async` 会创建一个在线程池线程上运行的任务；对任务调用 {name}`await` 会得到一个等待该任务完成的单子动作。
+将 {name}`Task.Priority.dedicated` 作为 `prio` 参数传给 {name}`async`，则会改为使用专用线程运行任务。
 
-{docstring ETask}
+{zhdocstringFrom ETask}
 
-{docstring AsyncTask}
+{zhdocstringFrom AsyncTask}
 
-{docstring MaybeTask +allowMissing}
+{zhdocstringFrom MaybeTask +allowMissing}
 
-Crucially, calling {name}`await` on a task never blocks an OS-level thread.
-Threads are only blocked at the {ref "async-run"}[boundary] between the {name}`IO` and the {name}`Async` monads.
-When an asynchronous task {name}`await`s a value, the code that will handle the value is attached to the task.
-When the task is resolved, this code is scheduled in the thread pool like any other task.
+关键在于，对任务调用 {name}`await` 绝不会阻塞操作系统线程。
+只有在 {name}`IO` 与 {name}`Async` 单子之间的{ref "async-run"}[边界]上，线程才会阻塞。
+异步任务通过 {name}`await` 等待值时，用于处理该值的代码会附加到任务上。
+任务完成时，这段代码会像其他任务一样被调度到线程池中执行。
 
-Asynchronous tasks use the same system of {tech (key := "task priority")}[priorities] as {ref "concurrency"}[other Lean tasks], and are run by the same scheduler.
+异步任务与{ref "concurrency"}[其他 Lean 任务]使用相同的{tech (key := "task priority")}[优先级]系统，并由同一个调度器运行。
 
-## Running Asynchronous Computations
+## 运行异步计算
 %%%
+file := "Running-Asynchronous-Computations"
 tag := "async-run"
 %%%
 
-Asynchronous computations can be run from {name}`IO` by either waiting or blocking.
-When a thread waits on an asynchronous computation, the asynchronous computation is run on the thread that is waiting until its first suspension.
-After suspension, it may be scheduled in any thread in the thread pool, and the waiting thread blocks until the result is available.
-When a thread blocks on an asynchronous computation, the computation is run on a worker thread in an ordinary {tech}[task] with the specified priority, and the calling thread calls {name}`Task.get` to block on the result.
-Because {name}`Async` is a defined alias for {name}`EAsync`, {tech}[generalized field notation] can be used to call {name}`EAsync.wait` on a term with type {name}`Async`.
+可以从 {name}`IO` 中以等待或阻塞两种方式运行异步计算。
+线程等待异步计算时，该计算会先在等待它的线程上执行，直到首次挂起。
+挂起后，计算可以被调度到线程池中的任意线程；等待线程则阻塞，直到结果可用。
+线程阻塞于异步计算时，该计算作为指定优先级的普通{tech (key := "task")}[任务]在工作线程上运行，调用线程调用 {name}`Task.get` 阻塞等待结果。
+由于 {name}`Async` 是 {name}`EAsync` 的定义别名，可以使用{tech (key := "generalized field notation")}[广义字段记法]在 {name}`Async` 类型的项上调用 {name}`EAsync.wait`。
 
-{docstring EAsync.wait}
+{zhdocstringFrom EAsync.wait}
 
-{docstring BaseAsync.wait}
+{zhdocstringFrom BaseAsync.wait}
 
-{docstring Async.block}
+{zhdocstringFrom Async.block}
 
-{docstring EAsync.block}
+{zhdocstringFrom EAsync.block}
 
-{docstring ETask.block}
+{zhdocstringFrom ETask.block}
 
-{docstring AsyncTask.block}
+{zhdocstringFrom AsyncTask.block}
 
-Asynchronous computations can also be run as ordinary {name}`Task`s in {name}`IO`.
+异步计算还可以在 {name}`IO` 中作为普通的 {name}`Task` 运行。
 
-{docstring Async.toIO}
+{zhdocstringFrom Async.toIO}
 
-{docstring EAsync.toEIO}
+{zhdocstringFrom EAsync.toEIO}
 
-{docstring BaseAsync.toBaseIO}
+{zhdocstringFrom BaseAsync.toBaseIO}
 
-{docstring EAsync.asTask}
+{zhdocstringFrom EAsync.asTask}
 
-{docstring BaseAsync.asTask}
+{zhdocstringFrom BaseAsync.asTask}
 
-Compared to {name}`IO.asTask`, {name}`EAsync.asTask` schedules an _asynchronous task_.
-While tasks from {name}`IO.asTask` are synchronous, occupying their worker thread until completed, tasks from {name}`EAsync.asTask` release their worker threads at suspension points and resume as tasks when the awaited value becomes available.
+与 {name}`IO.asTask` 相比，{name}`EAsync.asTask` 调度的是_异步任务_。
+{name}`IO.asTask` 创建的任务是同步的，会一直占用工作线程直到完成；{name}`EAsync.asTask` 创建的任务则会在挂起点释放工作线程，并在等待的值可用时恢复为任务。
 
-::::example "Running an Asynchronous Computation"
-{name}`Async.block` runs an asynchronous computation and returns its result in {name}`IO`.
-The following program prints a message, waits ten milliseconds, and then prints another:
+::::example "运行异步计算"
+{name}`Async.block` 运行异步计算，并在 {name}`IO` 中返回其结果。
+以下程序打印一条消息，等待十毫秒，然后再打印一条消息：
 :::ioExample
 ```ioLean
 module
@@ -141,7 +148,7 @@ def greet : Async Unit := do
 
 public def main : IO Unit := greet.block
 ```
-It prints both messages, with a brief pause between them:
+它会打印两条消息，中间有短暂的停顿：
 ```stdout
 before sleeping
 after sleeping
@@ -149,23 +156,27 @@ after sleeping
 :::
 ::::
 
-## Managing Tasks
+## 管理任务
+%%%
+file := "Managing-Tasks"
+tag := "Lean-__________________--IO--Asynchronous-Programming--Asynchronous-Computations--Managing-Tasks"
+%%%
 
-The typical interface to asynchronous tasks is via the {name}`MonadAsync` and {name}`MonadAwait` instances for a monad.
-Their respective methods {name}`MonadAsync.async` and {name}`MonadAwait.await` are {ref "exporting-names"}[exported] from {namespace}`Std.Async`.
-Typically, the main thread of execution will create some number of asynchronous tasks, then await their results when needed to make progress.
-The {name}`async` and {name}`await` functions are not built in to the Lean compiler, and they don't trigger a whole-program transformation.
-They just create or consume tasks that are associated with underlying promises in the correct manner for the framework.
+通常通过单子的 {name}`MonadAsync` 和 {name}`MonadAwait` 实例操作异步任务。
+各自的方法 {name}`MonadAsync.async` 和 {name}`MonadAwait.await` 从 {namespace}`Std.Async` 中{ref "exporting-names"}[导出]。
+主执行线程通常会创建若干异步任务，并在需要它们的结果以继续执行时等待这些结果。
+{name}`async` 和 {name}`await` 不是 Lean 编译器的内置函数，也不会触发全程序变换。
+它们只是按照框架要求的方式创建或消费与底层承诺关联的任务。
 
-{docstring MonadAwait}
+{zhdocstringFrom MonadAwait}
 
-{docstring MonadAsync}
+{zhdocstringFrom MonadAsync}
 
-To launch an asynchronous task whose value will never be needed, use {name}`background`.
+若要启动一个永远不需要其返回值的异步任务，请使用 {name}`background`。
 
-{docstring background}
+{zhdocstringFrom background}
 
-In addition to instances for the {name}`Async` monads and tasks, the library includes instances that allow reader and state monad transformers to be used with {name}`async` and {name}`await`, and exception monad transformers to be used with {name}`await`.
+除 {name}`Async` 单子及任务的实例外，库还提供了允许读取器和状态单子变换器使用 {name}`async` 与 {name}`await` 的实例，以及允许异常单子变换器使用 {name}`await` 的实例。
 
 ```lean -show
 -- The transformer instances for `await` and `async`.
@@ -176,15 +187,15 @@ example : MonadAsync AsyncTask (StateT Nat Async) := inferInstance
 example : MonadAsync AsyncTask (ReaderT Nat Async) := inferInstance
 ```
 
-:::example "Spawning and Awaiting Tasks"
+:::example "创建并等待任务"
 ```imports -show
 import Std.Async
 ```
 ```lean -show
 open Std.Async
 ```
-{name}`async` starts a computation as a task that runs concurrently, and {name}`await` waits for a task's result.
-Here, a color and a flavor are fetched concurrently, and the two results are combined into a pair:
+{name}`async` 将计算作为并发任务启动，{name}`await` 则等待任务的结果。
+这里并发获取一种颜色和一种口味，再将两个结果合成一个有序对：
 ```lean (name := bothOut)
 def fetchColor : Async String := do
   sleep 20
@@ -206,9 +217,9 @@ def fetchBoth : Async (String × String) := do
 ```
 :::
 
-::::example "Background Tasks"
-{name}`background` starts a computation whose result is never awaited.
-Here, a logger runs in the background and prints each message sent to a channel:
+::::example "后台任务"
+{name}`background` 启动一个结果永远不会被等待的计算。
+这里有一个在后台运行的日志记录器，打印发送到通道的每条消息：
 :::ioExample
 ```ioLean
 module
@@ -228,52 +239,60 @@ public def main : IO Unit := do
     discard <| ch.send "hello from the background"
     sleep 20
 ```
-The background logger prints the message it receives before the program exits:
+后台日志记录器会在程序退出前打印其收到的消息：
 ```stdout
 hello from the background
 ```
 :::
 ::::
 
-## Transforming and Inspecting Tasks
+## 变换和检查任务
+%%%
+file := "Transforming-and-Inspecting-Tasks"
+tag := "Lean-__________________--IO--Asynchronous-Programming--Asynchronous-Computations--Transforming-and-Inspecting-Tasks"
+%%%
 
-The eventual result of an asynchronous task can be transformed without first awaiting it.
-{name}`AsyncTask.map` applies a function to a task's result, while {name}`AsyncTask.bindIO` and {name}`AsyncTask.mapTaskIO` sequence further {name}`IO` work onto it.
-In each case, an error in the original task propagates to the transformed task.
+无需先等待任务完成，就可以变换异步任务最终产生的结果。
+{name}`AsyncTask.map` 将函数应用于任务结果，而 {name}`AsyncTask.bindIO` 和 {name}`AsyncTask.mapTaskIO` 将后续 {name}`IO` 工作接到该任务之后。
+无论哪种方式，原始任务中的错误都会传播到变换后的任务。
 
-{docstring AsyncTask.map}
+{zhdocstringFrom AsyncTask.map}
 
-{docstring AsyncTask.bindIO}
+{zhdocstringFrom AsyncTask.bindIO}
 
-{docstring AsyncTask.mapTaskIO}
+{zhdocstringFrom AsyncTask.mapTaskIO}
 
-A task's progress can be inspected without blocking by retrieving its {name}`IO.TaskState`.
+通过获取任务的 {name}`IO.TaskState`，可以在不阻塞的情况下检查其进度。
 
-{docstring ETask.getState}
+{zhdocstringFrom ETask.getState}
 
-{docstring AsyncTask.getState}
+{zhdocstringFrom AsyncTask.getState}
 
-A {name}`MaybeTask` is either an immediately-available value or a task that will produce one.
-It can be converted to an ordinary {name}`Task`, have its value read by blocking, be mapped over, and have a {name}`Task` of a {name}`MaybeTask` collapsed into a single {name}`Task`.
+{name}`MaybeTask` 要么是一个立即可用的值，要么是一个将产生该值的任务。
+它可以转换为普通 {name}`Task`，可以阻塞读取其值，也可以映射其值；还可以将包含 {name}`MaybeTask` 的 {name}`Task` 展平为单个 {name}`Task`。
 
-{docstring MaybeTask.toTask}
+{zhdocstringFrom MaybeTask.toTask}
 
-{docstring MaybeTask.get}
+{zhdocstringFrom MaybeTask.get}
 
-{docstring MaybeTask.map}
+{zhdocstringFrom MaybeTask.map}
 
-{docstring MaybeTask.joinTask}
+{zhdocstringFrom MaybeTask.joinTask}
 
-## Conversions
+## 转换
+%%%
+file := "Conversions"
+tag := "Manual-IO-Async-Conversions"
+%%%
 
-An existing {name}`Task`, {name}`IO.Promise`, or {name}`Except` value can be converted into an {name}`Async` computation.
-These conversions make it possible to call code that produces a {name}`Task` or {name}`IO.Promise`, such as a wrapper around a callback-based API or a hand-written asynchronous primitive, directly from within an {name}`Async` program.
-The corresponding conversions from {name}`Task` and {name}`Except` are also available for {name}`EAsync` and {name}`BaseAsync`; the conversions from {name}`IO.Promise` are specific to {name}`Async` because a dropped promise is reported as an {name}`IO.Error`.
+现有的 {name}`Task`、{name}`IO.Promise` 或 {name}`Except` 值都可以转换为 {name}`Async` 计算。
+这些转换使 {name}`Async` 程序能直接调用产生 {name}`Task` 或 {name}`IO.Promise` 的代码，例如基于回调的 API 的包装或手写的异步原语。
+{name}`EAsync` 和 {name}`BaseAsync` 也有从 {name}`Task` 与 {name}`Except` 转换的对应操作；从 {name}`IO.Promise` 转换的操作仅用于 {name}`Async`，因为丢弃的承诺会被报告为 {name}`IO.Error`。
 
-An {name}`IO.Promise` can be dropped before it is ever resolved, for example if the code that was expected to resolve it is canceled or abandoned and the last reference to the promise goes away.
-After that, the promise can never be resolved.
-Because {tech}[reference counts] are deterministic, the runtime detects this the moment it happens, rather than at some unpredictable later time.
-{name}`Async.ofPromise` and {name}`Async.ofPurePromise` detect a dropped promise and produce an {name}`Async` error rather than panicking; the message can be supplied via their `error` parameter, and defaults to `the promise linked to the Async was dropped`.
+{name}`IO.Promise` 可能在兑现前就被丢弃，例如预期负责兑现它的代码被取消或放弃，且该承诺的最后一个引用消失时。
+此后，该承诺就再也无法兑现。
+由于{tech (key := "reference counts")}[引用计数]是确定性的，运行时会在事情发生的当下检测到它，而非在某个不可预测的后续时刻。
+{name}`Async.ofPromise` 和 {name}`Async.ofPurePromise` 会检测被丢弃的承诺，并产生 {name}`Async` 错误而非触发 panic；错误消息可通过 `error` 参数提供，默认为 `the promise linked to the Async was dropped`。
 
 ```lean -show
 -- A promise that is dropped without ever being resolved surfaces as an `Async`
@@ -299,52 +318,56 @@ Because {tech}[reference counts] are deterministic, the runtime detects this the
     throw (IO.userError "ofPurePromise: a dropped promise should produce an error")
 ```
 
-{docstring Async.ofTask}
+{zhdocstringFrom Async.ofTask}
 
-{docstring EAsync.ofTask}
+{zhdocstringFrom EAsync.ofTask}
 
-{docstring EAsync.ofETask}
+{zhdocstringFrom EAsync.ofETask}
 
-{docstring BaseAsync.ofTask}
+{zhdocstringFrom BaseAsync.ofTask}
 
-{docstring Async.ofIOTask}
+{zhdocstringFrom Async.ofIOTask}
 
-{docstring Async.ofAsyncTask}
+{zhdocstringFrom Async.ofAsyncTask}
 
-{docstring Async.ofPromise}
+{zhdocstringFrom Async.ofPromise}
 
-{docstring Async.ofPurePromise}
+{zhdocstringFrom Async.ofPurePromise}
 
-{name}`ETask.ofPromise!` converts a promise to a task directly, panicking if the promise is dropped rather than producing an error.
+{name}`ETask.ofPromise!` 直接将承诺转换为任务；若承诺被丢弃，它会触发 panic 而不是产生错误。
 
-{docstring ETask.ofPromise!}
+{zhdocstringFrom ETask.ofPromise!}
 
-{docstring Async.ofExcept}
+{zhdocstringFrom Async.ofExcept}
 
-{docstring EAsync.ofExcept}
+{zhdocstringFrom EAsync.ofExcept}
 
-{docstring BaseAsync.ofExcept}
+{zhdocstringFrom BaseAsync.ofExcept}
 
-# Concurrent Composition
+# 并发组合
+%%%
+file := "Concurrent-Composition"
+tag := "Lean-__________________--IO--Asynchronous-Programming--Concurrent-Composition"
+%%%
 
-Concurrent composition runs several asynchronous computations at the same time and combines their results.
-These operators are defined in terms of {name}`async` and {name}`await`, but they provide a higher-level, more structured approach to concurrent asynchronous programming.
-Each operator launches {tech}[tasks] on the shared scheduler at the {tech (key := "task priority")}[priority] given by the optional `prio` parameter, and then awaits them.
-There are two families of concurrent operators: those that wait for every subcomputation and return all results, and those that return the result of the first subcomputation that finishes.
+并发组合同时运行多个异步计算，并合并它们的结果。
+这些运算以 {name}`async` 和 {name}`await` 定义，但为并发异步编程提供了更高层、更有结构的方式。
+每种运算都会以可选参数 `prio` 给出的{tech (key := "task priority")}[优先级]在共享调度器上启动{tech (key := "tasks")}[任务]，然后等待它们。
+并发运算分为两类：一类等待每个子计算并返回全部结果，另一类返回首个完成的子计算的结果。
 
-{name}`Async.concurrently` runs two computations and returns their results as a pair, while {name}`Async.concurrentlyAll` runs an array of computations and returns their results in the same order.
-Both wait for every subcomputation to finish, awaiting them positionally rather than chronologically, so an exception is reported in the position of the failing subcomputation rather than in the order in which failures occur (see {ref "errors-and-concurrency"}[errors and concurrency]).
+{name}`Async.concurrently` 运行两个计算并将结果作为有序对返回；{name}`Async.concurrentlyAll` 运行计算数组并按相同顺序返回结果。
+二者都会等待所有子计算完成，且按位置而非时间顺序等待，因此异常按失败子计算的位置报告，而不是按失败发生的先后报告（见{ref "errors-and-concurrency"}[错误与并发]）。
 
-{name}`Async.race` runs two computations and returns the result of whichever finishes first, while {name}`Async.raceAll` does the same for an array of computations.
-The result of the call to {name}`Async.race` or {name}`Async.raceAll` is that of the first subcomputation to chronologically finish, whether it is a thrown exception or a returned value.
-A computation that fails quickly takes precedence over one that succeeds slowly.
+{name}`Async.race` 运行两个计算并返回先完成者的结果；{name}`Async.raceAll` 对计算数组执行相同操作。
+{name}`Async.race` 或 {name}`Async.raceAll` 的结果，是时间上首个完成的子计算的结果，无论它是抛出的异常还是返回的值。
+快速失败的计算优先于缓慢成功的计算。
 
-None of these operators cancel the computations whose results are not used.
-In {name}`Async.race` and {name}`Async.raceAll`, the computations that do not finish first continue running to completion, and their results are discarded.
-In {name}`Async.concurrently` and {name}`Async.concurrentlyAll`, a failure in one subcomputation does not stop the others.
-The corresponding operators on {name}`ContextAsync`, such as {name}`ContextAsync.race`, do cancel the computations that are no longer needed.
+这些运算都不会取消结果未被使用的计算。
+在 {name}`Async.race` 和 {name}`Async.raceAll` 中，未最先完成的计算仍会运行至完成，随后丢弃它们的结果。
+在 {name}`Async.concurrently` 和 {name}`Async.concurrentlyAll` 中，一个子计算失败并不会停止其他子计算。
+{name}`ContextAsync` 上的对应运算（例如 {name}`ContextAsync.race`）则会取消不再需要的计算。
 
-To start a computation concurrently without awaiting its result, use {name}`background`.
+若要并发启动计算且不等待其结果，请使用 {name}`background`。
 
 ```lean -show
 -- `race` returns the first computation to finish.
@@ -385,34 +408,35 @@ def ctxRaceCancelsLoser : Async Bool := ContextAsync.run do
   unless r == #[1, 2, 3] do throw (IO.userError "concurrentlyAll: order")
 ```
 
-Each operator is available for {name}`BaseAsync`, {name}`EAsync`, and {name}`Async`.
+每种运算都适用于 {name}`BaseAsync`、{name}`EAsync` 和 {name}`Async`。
 
-{docstring Async.concurrently}
+{zhdocstringFrom Async.concurrently}
 
-{docstring EAsync.concurrently}
+{zhdocstringFrom EAsync.concurrently}
 
-{docstring BaseAsync.concurrently}
+{zhdocstringFrom BaseAsync.concurrently}
 
-{docstring Async.concurrentlyAll}
+{zhdocstringFrom Async.concurrentlyAll}
 
-{docstring EAsync.concurrentlyAll}
+{zhdocstringFrom EAsync.concurrentlyAll}
 
-{docstring BaseAsync.concurrentlyAll}
+{zhdocstringFrom BaseAsync.concurrentlyAll}
 
-{docstring Async.race}
+{zhdocstringFrom Async.race}
 
-{docstring EAsync.race}
+{zhdocstringFrom EAsync.race}
 
-{docstring BaseAsync.race}
+{zhdocstringFrom BaseAsync.race}
 
-{docstring Async.raceAll}
+{zhdocstringFrom Async.raceAll}
 
-{docstring EAsync.raceAll}
+{zhdocstringFrom EAsync.raceAll}
 
-{docstring BaseAsync.raceAll}
+{zhdocstringFrom BaseAsync.raceAll}
 
-# Event Selection
+# 事件选择
 %%%
+file := "Event-Selection"
 tag := "async-select"
 %%%
 
@@ -420,31 +444,31 @@ tag := "async-select"
 ```lean -show
 variable (α : Type)
 ```
-{tech}[Event selection] involves both {deftech}_selectors_, which are the source of events, and {deftech}[selectables], which pair selectors with code to be executed when the selector's event occurs.
-When a selector's event occurs, the selector has {deftech}_resolved_.
-A selectable's code is not executed immediately when its selector resolves; instead, it is run when invoked by event selection.
-When a selectable whose selector has resolved is chosen for execution, it is {deftech}_selected_.
+{tech (key := "Event selection")}[事件选择]同时涉及作为事件来源的{deftech (key := "selectors")}_选择器_，以及将选择器与其事件发生时执行的代码配对的{deftech (key := "selectables")}[可选项]。
+选择器的事件发生时，该选择器就已{deftech (key := "resolved")}_就绪_。
+选择器就绪后，可选项的代码不会立即执行，而是由事件选择调用时才运行。
+选择器已就绪的可选项被选中执行时，称其已被{deftech (key := "selected")}_选中_。
 
-A {lean}`Selector α` provides a value of type {lean}`α` when its event occurs, while a {lean}`Selectable α` contains an {name}`Async` action to run when its selector has resolved.
-The type of the selector in a {name}`Selectable` is a field of the _constructor_ {name}`Selectable.case`, rather than a {tech}[parameter] to the type; this means that selectables that are waiting on different types of event data can be used together.
+{lean}`Selector α` 在事件发生时提供 {lean}`α` 类型的值；{lean}`Selectable α` 则包含一个在选择器就绪后运行的 {name}`Async` 动作。
+{name}`Selectable` 中选择器的类型是_构造器_ {name}`Selectable.case` 的字段，而非该类型的{tech (key := "parameter")}[参数]；因此等待不同类型事件数据的可选项可以一起使用。
 :::
 
-{docstring Selector}
+{zhdocstringFrom Selector}
 
-{docstring Selectable +allowMissing}
+{zhdocstringFrom Selectable +allowMissing}
 
-Event selection is invoked using three operators:
- * {name}`Selectable.one` blocks until one selectable's event occurs and returns the resulting value,
- * {name}`Selectable.tryOne` checks whether any selectable is resolved and returns the associated value but does not block,
- * {name}`Selectable.combine` creates a new {name}`Selector` whose event occurs when any of the underlying {name}`Selectable`s selector's event occurs, yielding the {name}`Selectable`'s data.
+事件选择通过以下三个运算调用：
+ * {name}`Selectable.one` 阻塞直到一个可选项的事件发生，并返回结果值；
+ * {name}`Selectable.tryOne` 检查是否有可选项已就绪，并返回关联值，但不会阻塞；
+ * {name}`Selectable.combine` 创建新的 {name}`Selector`：当底层任意 {name}`Selectable` 的选择器事件发生时，新选择器的事件也会发生，并产生该 {name}`Selectable` 的数据。
 
-{docstring Selectable.one}
+{zhdocstringFrom Selectable.one}
 
-{docstring Selectable.tryOne}
+{zhdocstringFrom Selectable.tryOne}
 
-{docstring Selectable.combine}
+{zhdocstringFrom Selectable.combine}
 
-:::example "Polling Without Blocking"
+:::example "无阻塞轮询"
 ```imports -show
 import Std.Async
 import Std.Sync.Channel
@@ -452,8 +476,8 @@ import Std.Sync.Channel
 ```lean -show
 open Std Async
 ```
-{name}`Selectable.tryOne` checks whether any selector has already resolved and returns the corresponding value immediately, or {name}`none` if none has, rather than blocking.
-Defining selection with `:=` rather than `←` makes `pick` the {name}`Async` computation itself rather than its result, so the same poll can be run more than once.
+{name}`Selectable.tryOne` 检查是否有选择器已经就绪，立即返回对应的值；若都未就绪，则返回 {name}`none`，而不阻塞。
+用 `:=` 而非 `←` 定义选择，使 `pick` 表示 {name}`Async` 计算本身而非结果，因此可以重复运行同一次轮询。
 ```lean (name := tryOneOut)
 #eval show IO (Option String × Option String × Option String) from do
   let colors ← Channel.new (α := String)
@@ -474,7 +498,7 @@ Defining selection with `:=` rather than `←` makes `pick` the {name}`Async` co
 ```
 :::
 
-:::example "Selection and Timeouts"
+:::example "选择与超时"
 ```imports -show
 import Std.Async
 import Std.Sync.Channel
@@ -482,9 +506,9 @@ import Std.Sync.Channel
 ```lean -show
 open Std Async
 ```
-A {name}`CloseableChannel` provides a selector via {name}`CloseableChannel.recvSelector` that resolves when the channel receives a value.
-{name}`Selector.sleep` is a selector that resolves after the specified number of milliseconds have passed.
-The function {name}`recv` combines these, waiting for up to 100 milliseconds to receive a value, after which it terminates without one:
+{name}`CloseableChannel` 通过 {name}`CloseableChannel.recvSelector` 提供选择器，在通道收到值时就绪。
+{name}`Selector.sleep` 是经过指定毫秒数后就绪的选择器。
+函数 {name}`recv` 组合二者，最多等待 100 毫秒接收值；超时后不返回值并终止：
 ```lean
 def recv (ch : CloseableChannel Nat) : Async (Option Nat) := do
   Selectable.one #[
@@ -493,7 +517,7 @@ def recv (ch : CloseableChannel Nat) : Async (Option Nat) := do
   ]
 ```
 
-If the channel contains a value, then the {name CloseableChannel.recvSelector}`recvSelector` wins:
+若通道包含一个值，则 {name CloseableChannel.recvSelector}`recvSelector` 获胜：
 ```lean (name := recvWin)
 #eval show IO _ from do
   let ch ← CloseableChannel.new (α := Nat)
@@ -503,7 +527,7 @@ If the channel contains a value, then the {name CloseableChannel.recvSelector}`r
 ```leanOutput recvWin
 some 42
 ```
-If not, the timer wins:
+否则定时器获胜：
 ```lean (name := timerWin)
 #eval show IO _ from do
   let ch ← CloseableChannel.new (α := Nat)
@@ -515,7 +539,7 @@ none
 ```
 :::
 
-:::example "Selection"
+:::example "选择"
 ```imports -show
 import Std.Async
 import Std.Sync.Channel
@@ -523,8 +547,8 @@ import Std.Sync.Channel
 ```lean -show
 open Std Async
 ```
-A {name}`CloseableChannel` provides a selector via {name}`CloseableChannel.recvSelector` that resolves when the channel receives a value.
-The function {name}`recv2` selects the first value returned on either channel:
+{name}`CloseableChannel` 通过 {name}`CloseableChannel.recvSelector` 提供选择器，在通道收到值时就绪。
+函数 {name}`recv2` 选择两个通道中最先返回的值：
 ```lean
 def recv2 (ch1 ch2 : CloseableChannel Nat) : Async (Option Nat) := do
   Selectable.one #[
@@ -533,7 +557,7 @@ def recv2 (ch1 ch2 : CloseableChannel Nat) : Async (Option Nat) := do
   ]
 ```
 
-If only one channel contains a value, then it is returned:
+若只有一个通道包含值，则返回该值：
 ```lean (name := chan1)
 #eval show IO _ from do
   let ch1 ← CloseableChannel.new (α := Nat)
@@ -556,7 +580,7 @@ some 1
 some 2
 ```
 
-If neither channel contains a value, then {name}`recv2` blocks until one does; the first one to have a value wins:
+若两个通道都没有值，{name}`recv2` 会阻塞，直到其中一个通道具有值；先有值者获胜：
 ```lean (name := recv2race)
 #eval show IO _ from do
   let ch1 ← CloseableChannel.new (α := Nat)
@@ -575,12 +599,12 @@ some 2
 :::
 
 
-Both {name}`Selectable.one` and {name}`Selectable.tryOne` throw an exception when passed an empty array of selectables, because it's impossible to get a value from nothing.
+{name}`Selectable.one` 和 {name}`Selectable.tryOne` 在收到空可选项数组时都会抛出异常，因为不可能从空无中获取值。
 
-Event selection is {deftech}_fair_.
-This means that there is an equal probability that any of the selectables with currently-resolved selectors win and have their associated code invoked.
-This is important because a bias in event selection can lead to one of the selectables _never_ being called, which can in turn cause data to accumulate without bound in the source it would have handled.
-Behind the scenes, fairness is ensured by randomizing the order of selectables each time.
+事件选择是{deftech (key := "fair")}_公平的_。
+这意味着，在选择器当前已就绪的所有可选项中，每个可选项获胜并调用关联代码的概率相等。
+这很重要，因为有偏的事件选择可能使某个可选项_永远_不被调用，从而导致它本应处理的数据源无限积累数据。
+在底层，每次都会随机排列可选项的顺序，以保证公平性。
 
 ```lean -show
 -- Both selection operators reject an empty array.
@@ -607,9 +631,9 @@ def fairness : Async Unit := do
 #eval fairness.block
 ```
 
-Furthermore, event selection never results in data being lost in the losing selectables.
-The implementation ensures that data is never removed from a selector without being passed to the selectable's code, and that resolving a selector calls the associated selectable's code at most once.
-Data loss and double delivery are ruled out via a protocol that distinguishes checking whether a selector is resolved from actually consuming its data along with an atomic means of selecting one of the resolved selectors.
+此外，事件选择绝不会导致落败可选项的数据丢失。
+实现确保从选择器取出的数据必定传给可选项的代码，并确保选择器就绪后至多调用一次关联可选项的代码。
+防止数据丢失和重复投递的协议，将检查选择器是否就绪与实际消费其数据分开，并以原子方式从已就绪选择器中选择一个。
 
 ```lean -show
 -- Hidden regression test for the no-data-loss claim above. Both channels are
@@ -635,84 +659,88 @@ def noDataLoss : Async (String × String) := do
   unless next == "B:from B" do throw (IO.userError "noDataLoss next")
 ```
 
-## Selection Protocol
+## 选择协议
 %%%
+file := "Selection-Protocol"
 tag := "selector-protocol"
 %%%
 
 :::sectionNote
-This section is primarily intended for authors of new selectors.
+本节主要面向新选择器的作者。
 :::
 
-Event selection begins by randomizing the order of the selectables.
-Each selector's non-blocking poll {name}`Selector.tryFn` is consulted until one of them returns {name}`some`.
-This is the winning selectable; its code is invoked and no further work is needed.
-On this fast path, only one selector is ever consumed, so there is no risk of data loss or double delivery.
-No cleanup is needed because a {name Selector.tryFn}`tryFn` that returns {name}`none` must leave its data source unchanged.
+事件选择首先随机排列可选项的顺序。
+依次调用各个选择器的非阻塞轮询函数 {name}`Selector.tryFn`，直到有一个返回 {name}`some`。
+该可选项即为获胜者；随后调用其代码，无需继续其他工作。
+在这条快速路径上，只有一个选择器的数据被消费，因此不会发生数据丢失或重复投递。
+无需清理，因为返回 {name}`none` 的 {name Selector.tryFn}`tryFn` 必须保持其数据源不变。
 
-If no selector was resolved in the first iteration (that is, each {name Selector.tryFn}`tryFn` returned {name}`none`), then it is necessary to wait until one of the selectors is resolved.
-The process of waiting has three phases: {ref "selector-protocol-registration"}[registration], {ref "selector-protocol-race"}[racing], and {ref "selector-protocol-cleanup"}[cleanup].
-Racing is concurrent with registration: the race begins before all selectors have been registered, and it may even terminate before all selectors have been registered.
+若首轮中没有选择器就绪（即每个 {name Selector.tryFn}`tryFn` 都返回 {name}`none`），则必须等待某个选择器就绪。
+等待过程分为三个阶段：{ref "selector-protocol-registration"}[注册]、{ref "selector-protocol-race"}[竞争]与{ref "selector-protocol-cleanup"}[清理]。
+竞争与注册并发进行：在全部选择器注册完毕前，竞争就已开始，甚至可能已经结束。
 
-The winning selectable's data is passed to the selectable's {name}`Selectable.cont` continuation.
-This continuation asynchronously computes the result that is returned from {name}`Selectable.one`.
+获胜可选项的数据会传给其 {name}`Selectable.cont` 续延。
+该续延以异步方式计算 {name}`Selectable.one` 返回的结果。
 
-### Registration
+### 注册
 %%%
+file := "Registration"
 tag := "selector-protocol-registration"
 %%%
 
-Prior to registration, the order of the selectables is randomized again.
-During registration, a {tech}[waiter] is registered with each selector in turn using {name}`Selector.registerFn`.
-Selectors must consider registration to be merely an expression of interest in the selector's data, so a {name Selector.registerFn}`registerFn` should not itself consume data.
+注册前会再次随机排列可选项的顺序。
+注册过程中，通过 {name}`Selector.registerFn` 依次向各个选择器注册一个{tech (key := "waiter")}[等待器]。
+选择器必须将注册仅视为对其数据感兴趣的表示，因此 {name Selector.registerFn}`registerFn` 本身不应消费数据。
 
-Racing begins as soon as the first {name Selector.registerFn}`registerFn` has been called.
-The first selector that has data wins the race via the waiters.
-Selectors may win the race during their {name Selector.registerFn}`registerFn` calls.
-If the data becomes available between the initial {name Selector.tryFn}`tryFn` loop and the registration phase, then there's no reason to wait until later to win the race.
+首次调用 {name Selector.registerFn}`registerFn` 后，竞争便开始。
+最先有数据的选择器通过等待器赢得竞争。
+选择器可以在调用自身的 {name Selector.registerFn}`registerFn` 期间获胜。
+如果数据在最初的 {name Selector.tryFn}`tryFn` 循环与注册阶段之间变得可用，就没有理由延后到其他时候才获胜。
 
-All the waiters involved in a selection share a single atomic flag that indicates whether a winner has already been chosen, while each waiter has its own promise by which the selector can deliver its data if it wins the race.
-The registration process stops early if the flag is already set, because that indicates that a selector has already won, so further registration is pointless.
-Likewise, if a {name Selector.registerFn}`registerFn` throws an exception, then the process stops.
-If a selector has already won, then its result is returned and the exception is discarded; otherwise, the exception becomes the result of the selection.
+一次选择涉及的所有等待器共享一个原子标志，表示是否已选出获胜者；每个等待器又各有一个承诺，供选择器获胜时投递数据。
+若该标志已经设置，注册过程就会提前停止，因为这说明某个选择器已经获胜，继续注册没有意义。
+同样，若 {name Selector.registerFn}`registerFn` 抛出异常，该过程也会停止。
+若已有选择器获胜，则返回其结果并丢弃异常；否则，异常成为此次选择的结果。
 
-### Racing
+### 竞争
 %%%
+file := "Racing"
 tag := "selector-protocol-race"
 %%%
 
-Racing begins as soon as a single selectable is registered, and it continues until a selectable wins the race or registration fails due to an exception.
-When a selectable's event is ready, it calls {name}`Waiter.race` on its waiter; the waiter determines whether it has won.
+首个可选项一旦注册，竞争便开始，直到一个可选项获胜或注册因异常而失败。
+可选项的事件就绪时，会在自己的等待器上调用 {name}`Waiter.race`；等待器判断它是否获胜。
 
-A {deftech}_waiter_ is a means of atomically selecting a single offered value.
-Internally, it contains an atomic flag that indicates that a winner has been selected.
-When a client has a value, it calls {name}`Waiter.race` with two callbacks: one is used when the offered value was not accepted (it did not win the race), the other is used when it is accepted.
-The callback that is invoked upon winning the race should resolve the waiter's promise, which is provided to the winning callback.
-The callback that is invoked upon losing the race must leave all data in place.
-This two-phase protocol ensures that there is no data loss, because selectors only consume events once they've already won the race.
+{deftech (key := "waiter")}_等待器_是一种以原子方式从提供的值中选出一个值的机制。
+其内部包含一个原子标志，用于表示已经选出了获胜者。
+客户端有值时，会带着两个回调调用 {name}`Waiter.race`：一个用于所提供的值未被接受（竞争落败）的情况，另一个用于值被接受的情况。
+竞争获胜时调用的回调应兑现等待器的承诺，该承诺会作为参数提供给获胜回调。
+竞争落败时调用的回调必须保持所有数据原样不动。
+这一两阶段协议保证不会丢失数据，因为选择器只有在已经获胜后才消费事件。
 
-{docstring Waiter +allowMissing}
+{zhdocstringFrom Waiter +allowMissing}
 
-{docstring Waiter.race}
+{zhdocstringFrom Waiter.race}
 
-{docstring Waiter.withPromise}
+{zhdocstringFrom Waiter.withPromise}
 
-{docstring Waiter.checkFinished}
+{zhdocstringFrom Waiter.checkFinished}
 
-### Cleanup
+### 清理
 %%%
+file := "Cleanup"
 tag := "selector-protocol-cleanup"
 %%%
 
-When the {ref "selector-protocol-race"}[race] is completed, selectors are offered the opportunity to clean up.
-This occurs no matter whether the race has been won or a  {name}`Selector.registerFn` threw an exception, but not when the initial {name Selector.tryFn}`tryFn` loop returned a value.
-In this phase, {name}`Selector.unregisterFn` is called on every selector in the array, regardless of whether it was registered in the {ref "selector-protocol-registration"}[registration phase] or whether it threw an exception during registration.
+{ref "selector-protocol-race"}[竞争]结束后，选择器有机会进行清理。
+无论是有选择器获胜，还是 {name}`Selector.registerFn` 抛出异常，都会进行清理；但最初的 {name Selector.tryFn}`tryFn` 循环直接返回值时不会清理。
+此阶段会对数组中的每个选择器调用 {name}`Selector.unregisterFn`，不论它是否在{ref "selector-protocol-registration"}[注册阶段]注册过，也不论它是否在注册期间抛出异常。
 
-Cleanup always occurs, regardless of whether an error occurred during registration, racing, or in prior selectors' {name Selector.unregisterFn}`unregisterFn` implementations.
-Selectors must therefore be written so that {name Selector.unregisterFn}`unregisterFn` is safe to use even when their {name Selector.registerFn}`registerFn` lost the race, was never called, or threw an exception.
+清理总会发生，不受注册、竞争或此前选择器的 {name Selector.unregisterFn}`unregisterFn` 实现中发生的错误影响。
+因此，必须保证即使选择器的 {name Selector.registerFn}`registerFn` 落败、从未被调用或抛出了异常，调用其 {name Selector.unregisterFn}`unregisterFn` 仍然安全。
 
 
-:::example "Natural Number Ticker"
+:::example "自然数节拍器"
 ```imports -show
 import Std.Async
 ```
@@ -720,13 +748,13 @@ import Std.Async
 open Std.Async
 ```
 
-A {name}`natTicker` is a selector that makes a {name}`Nat` available every 100 milliseconds, incrementing each time.
-Its state is determined by two values:
-1. a counter, which is an {name}`IO.Ref` that contains the next {name}`Nat` to emit
-2. the time at which the process was started
+{name}`natTicker` 是每隔 100 毫秒提供一个 {name}`Nat` 的选择器，其值逐次递增。
+其状态由两个值决定：
+1. 一个计数器，即保存下一个待发出 {name}`Nat` 的 {name}`IO.Ref`；
+2. 该过程的启动时间。
 
-The {name}`Selector.tryFn` checks whether at least 100ms have elapsed for each emitted `Nat`.
-If so, the value is incremented and returned immediately:
+{name}`Selector.tryFn` 检查是否已为每个发出的 `Nat` 经过至少 100 毫秒。
+若是，则递增该值并立即返回：
 ```lean
 def tickerTryFn (counter : IO.Ref Nat) (startMs : Nat) := do
   let nowMs ← IO.monoMsNow
@@ -738,8 +766,8 @@ def tickerTryFn (counter : IO.Ref Nat) (startMs : Nat) := do
     return none
 ```
 
-If the race was not immediately run, a waiter is registered.
-A background task is launched that sleeps until the next {name}`Nat` is ready, and the waiter's {name Waiter.race}`race` is invoked; if the race is won, then the counter is incremented:
+若竞争未立即进行，则注册一个等待器。
+随后启动后台任务，休眠直到下一个 {name}`Nat` 就绪，并调用等待器的 {name Waiter.race}`race`；若竞争获胜，就递增计数器：
 ```lean
 def tickerRegisterFn (counter : IO.Ref Nat) (startMs : Nat)
     (waiter : Waiter Nat) : Async Unit := do
@@ -752,7 +780,7 @@ def tickerRegisterFn (counter : IO.Ref Nat) (startMs : Nat)
       counter.set (n + 1)
       promise.resolve (.ok n)
 ```
-These components can be combined into a selector:
+这些组件可以组合成一个选择器：
 ```lean
 def natTicker : IO (Selector Nat) := do
   let current ← IO.mkRef 0
@@ -764,10 +792,10 @@ def natTicker : IO (Selector Nat) := do
   }
 ```
 
-This selector is not thread-safe.
-Multiple uses in a single {name}`Selectable.one` are safe, because they do not lose data (the {name ST.Ref.set}`set` is only invoked when the race has been definitively won).
-However, concurrent invocations of {name}`Selectable.one` on the same {name}`natTicker` can lead to data races.
-Fixing this requires careful locking.
+该选择器不是线程安全的。
+在同一次 {name}`Selectable.one` 中多次使用它是安全的，因为不会丢失数据（仅在明确获胜后才调用 {name ST.Ref.set}`set`）。
+然而，在同一个 {name}`natTicker` 上并发调用 {name}`Selectable.one` 可能造成数据竞争。
+修正此问题需要谨慎地加锁。
 
 ```lean -show
 -- Backs the "multiple uses in a single `Selectable.one`" safety claim above:
@@ -784,58 +812,66 @@ Fixing this requires careful locking.
 ```
 :::
 
-# Standard Selectors
+# 标准选择器
+%%%
+file := "Standard-Selectors"
+tag := "Lean-__________________--IO--Asynchronous-Programming--Standard-Selectors"
+%%%
 
-The standard library includes a number of {tech}[selectors] for events such as timers, receiving values through channels, and {ref "async-network"}[network sockets].
-These selectors allow {name}`Async` programs to reliably process inputs from many different sources.
+标准库为定时器、通过通道接收值，以及{ref "async-network"}[网络套接字]等事件提供了多种{tech (key := "selectors")}[选择器]。
+这些选择器让 {name}`Async` 程序能够可靠地处理来自多种数据源的输入。
 
-When a selector is built on some data source, it is very important not to use the same data source directly.
-For example, {name Std.CloseableChannel.recvSelector}`recvSelector` and {name Std.CloseableChannel.recv}`recv` should not be used on the same channel.
-This can lead to violations of the {ref "selector-protocol"}[selector protocol] when the selector relies on exclusive control over the real-world state of the data source.
+选择器建立在某个数据源之上时，必须避免再直接使用同一数据源，这一点非常重要。
+例如，不应在同一通道上同时使用 {name Std.CloseableChannel.recvSelector}`recvSelector` 和 {name Std.CloseableChannel.recv}`recv`。
+若选择器依赖对数据源实际状态的独占控制，这种混用可能违反{ref "selector-protocol"}[选择器协议]。
 
-{docstring Sleep.selector}
+{zhdocstringFrom Sleep.selector}
 
-{docstring Std.Channel.recvSelector}
+{zhdocstringFrom Std.Channel.recvSelector}
 
-{docstring Std.CloseableChannel.recvSelector}
+{zhdocstringFrom Std.CloseableChannel.recvSelector}
 
-{docstring Std.Broadcast.Receiver.recvSelector}
+{zhdocstringFrom Std.Broadcast.Receiver.recvSelector}
 
-{docstring Std.Notify.selector}
+{zhdocstringFrom Std.Notify.selector}
 
-{docstring Std.CancellationToken.selector}
+{zhdocstringFrom Std.CancellationToken.selector}
 
-{docstring Std.CancellationContext.doneSelector}
+{zhdocstringFrom Std.CancellationContext.doneSelector}
 
-{docstring Selector.cancelled}
+{zhdocstringFrom Selector.cancelled}
 
-{docstring TCP.Socket.Server.acceptSelector}
+{zhdocstringFrom TCP.Socket.Server.acceptSelector}
 
-{docstring TCP.Socket.Client.recvSelector}
+{zhdocstringFrom TCP.Socket.Client.recvSelector}
 
-{docstring UDP.Socket.recvSelector}
+{zhdocstringFrom UDP.Socket.recvSelector}
 
-{docstring Signal.Waiter.selector}
+{zhdocstringFrom Signal.Waiter.selector}
 
-{docstring Std.StreamMap.selector}
+{zhdocstringFrom Std.StreamMap.selector}
 
-# Errors
+# 错误
+%%%
+file := "Errors"
+tag := "Lean-__________________--IO--Asynchronous-Programming--Errors"
+%%%
 
 :::leanSection
 ```lean -show
 variable (α : Type) (ε : Type)
 ```
-Error handling in {name}`Async` mirrors error handling in {name}`IO`:
- * {name}`BaseAsync`, like {name}`BaseIO`, cannot throw an error.
- * {name}`EAsync`, like {name}`EIO`, is parameterized by an error type. Behind the scenes, {lean}`EAsync ε α` is {lean}`BaseAsync (Except ε α)`, and its {name}`Monad` instance is like that of {name}`ExceptT`.
- * {lean}`Async α` is {lean}`EAsync IO.Error α`, just as {lean}`IO α` is {lean}`EIO IO.Error α`.
+{name}`Async` 中的错误处理与 {name}`IO` 中的错误处理对应：
+ * 与 {name}`BaseIO` 一样，{name}`BaseAsync` 不能抛出错误。
+ * 与 {name}`EIO` 一样，{name}`EAsync` 以错误类型为参数。在底层，{lean}`EAsync ε α` 就是 {lean}`BaseAsync (Except ε α)`，其 {name}`Monad` 实例类似于 {name}`ExceptT` 的实例。
+ * {lean}`Async α` 就是 {lean}`EAsync IO.Error α`，正如 {lean}`IO α` 就是 {lean}`EIO IO.Error α`。
 :::
 
-The details of error handling in {name}`Async` are consequences of this arrangement.
-When an asynchronous task (spawned via {name}`async`) throws an exception, this is not observable in the parent.
-The error surfaces when the task's result is requested via {name}`await`.
-If the task is never {name}`await`ed, *the error vanishes*.
-In other words, errors in tasks created via {name}`background` or {name}`ContextAsync.disown` are not propagated at all.
+{name}`Async` 错误处理的细节由这种组织方式决定。
+通过 {name}`async` 创建的异步任务抛出异常时，父任务不会观察到它。
+只有通过 {name}`await` 请求任务结果时，错误才会显现。
+如果从未对任务调用 {name}`await`，*错误便会消失*。
+换言之，通过 {name}`background` 或 {name}`ContextAsync.disown` 创建的任务中的错误完全不会传播。
 
 ```lean -show
 -- Hidden regression tests for the error-handling claims above.
@@ -893,22 +929,23 @@ def finalizerMasks : Async String := do
   unless r == "from finalizer" do throw (IO.userError "finalizerMasks")
 ```
 
-## Errors and Concurrency
+## 错误与并发
 %%%
+file := "Errors-and-Concurrency"
 tag := "errors-and-concurrency"
 %%%
 
-The concurrency operators {name}`Async.concurrently` and {name}`Async.concurrentlyAll` await the results of their sub-tasks positionally rather than chronologically.
-This means that errors that result from these tasks are reported in source-code order, rather than the chronological order in which the errors occurred.
+并发运算 {name}`Async.concurrently` 和 {name}`Async.concurrentlyAll` 按位置而非时间顺序等待子任务的结果。
+这意味着任务产生的错误按源代码顺序报告，而不是按错误发生的时间顺序报告。
 
-:::example "Concurrency and Error Propagation"
+:::example "并发与错误传播"
 ```imports -show
 import Std.Async
 ```
 ```lean -show
 open Std Async
 ```
-{name}`failFast` waits 5 milliseconds before throwing an exception, while {name}`failSlow` waits 250 milliseconds:
+{name}`failFast` 等待 5 毫秒后抛出异常，{name}`failSlow` 则等待 250 毫秒：
 ```lean
 def failFast : Async Nat := do
   sleep 5
@@ -918,7 +955,7 @@ def failSlow : Async Nat := do
   sleep 250
   throw <| .userError "Slow failure"
 ```
-When run via {name}`Async.concurrently`, the program fails with the error from {name}`failSlow`. Even though it was chronologically produced after the failure from {name}`failFast`, the result of {name}`failSlow` was awaited first.
+通过 {name}`Async.concurrently` 运行时，程序会以 {name}`failSlow` 的错误失败。虽然它比 {name}`failFast` 的错误更晚发生，但程序先等待的是 {name}`failSlow` 的结果。
 ```lean +error (name := failed)
 #eval Async.block do
   let val ← Async.concurrently (prio := .dedicated) failSlow failFast
@@ -929,8 +966,8 @@ Slow failure
 ```
 :::
 
-{name}`Async.race` and {name}`Async.raceAll` return the result of the _first_ completed task, whether it is a success or a failure.
-This means that a quickly-produced error takes precedence over a slowly-produced success.
+{name}`Async.race` 和 {name}`Async.raceAll` 返回_首个_完成任务的结果，无论成功还是失败。
+这意味着迅速产生的错误优先于缓慢产生的成功结果。
 
 ```lean -show
 -- `race` resolves with the first to *finish*: a fast error beats a slow success.
@@ -945,13 +982,17 @@ def raceSlowOk : Async Nat := do sleep 100; return 42
   unless r == "fast failure" do throw (IO.userError "raceFailFast")
 ```
 
-## Errors in Event Selection
+## 事件选择中的错误
+%%%
+file := "Errors-in-Event-Selection"
+tag := "Lean-__________________--IO--Asynchronous-Programming--Errors--Errors-in-Event-Selection"
+%%%
 
-During selection, errors might occur at any stage of {ref "async-select"}[the protocol].
-Errors thrown by a selector during the initial {name Selector.tryFn}`tryFn` loop terminate the selection immediately.
-An error thrown from a {name Selector.registerFn}`registerFn` becomes the selection's result unless the race is already won; in that case, the winner's result takes priority.
-Errors thrown in an {name Selector.unregisterFn}`unregisterFn` are suppressed and discarded.
-A selector that wins the race may resolve the promise with either {name}`Except.ok` or {name}`Except.error`; in the latter case, the result of the call to {name}`Selectable.one` is itself an error.
+选择期间，{ref "async-select"}[协议]的任何阶段都可能发生错误。
+选择器在最初的 {name Selector.tryFn}`tryFn` 循环中抛出错误时，选择立即终止。
+{name Selector.registerFn}`registerFn` 抛出的错误会成为选择结果，除非已有竞争获胜者；后一种情况下优先采用获胜者的结果。
+{name Selector.unregisterFn}`unregisterFn` 抛出的错误会被抑制并丢弃。
+竞争获胜的选择器可用 {name}`Except.ok` 或 {name}`Except.error` 兑现承诺；后一种情况下，{name}`Selectable.one` 调用本身的结果也是错误。
 
 ```lean -show
 -- A tryFn error terminates the selection, even when a sibling is ready.
@@ -1068,13 +1109,17 @@ def unregisterErrorCleansUp : Async Unit := do
 #eval unregisterErrorCleansUp.block
 ```
 
-# Timers
+# 定时器
+%%%
+file := "Timers"
+tag := "Lean-__________________--IO--Asynchronous-Programming--Timers"
+%%%
 
-There are two varieties of timer: _sleep timers_ allow a computation to wait one time for a given duration, while _interval timers_ provide an event repeatedly, separated by the duration.
-Creating a timer does not start the countdown.
-Timers begin running at the first call to {name}`Sleep.wait`, call to {name}`Interval.tick`, or the first selection in which they take part.
-When a sleep timer loses a {ref "selector-protocol-race"}[race], it restarts in its next selection.
-Stopping a timer with {name}`Sleep.stop` or {name}`Interval.stop` leaves any task that's awaiting the timer hanging forever.
+定时器分为两类：_休眠定时器_允许计算等待给定时长一次；_间隔定时器_则以该时长为间隔重复提供事件。
+创建定时器不会开始倒计时。
+首次调用 {name}`Sleep.wait`、调用 {name}`Interval.tick`，或定时器首次参与选择时，才会开始运行。
+休眠定时器在{ref "selector-protocol-race"}[竞争]中落败后，会在下一次选择时重新开始。
+使用 {name}`Sleep.stop` 或 {name}`Interval.stop` 停止定时器，会使等待该定时器的所有任务永远挂起。
 
 ```lean -show
 def timeIt (act : Async α) : Async Nat := do
@@ -1111,39 +1156,39 @@ def sleepSelectorRestartsAfterLoss : Async Unit := do
 #eval sleepSelectorRestartsAfterLoss.block
 ```
 
-{docstring sleep}
+{zhdocstringFrom sleep}
 
-{docstring Sleep +allowMissing}
+{zhdocstringFrom Sleep +allowMissing}
 
-{docstring Sleep.mk}
+{zhdocstringFrom Sleep.mk}
 
-{docstring Sleep.wait}
+{zhdocstringFrom Sleep.wait}
 
-{docstring Sleep.reset}
+{zhdocstringFrom Sleep.reset}
 
-{docstring Sleep.stop}
+{zhdocstringFrom Sleep.stop}
 
-{docstring Interval +allowMissing}
+{zhdocstringFrom Interval +allowMissing}
 
-{docstring Interval.mk}
+{zhdocstringFrom Interval.mk}
 
-{docstring Interval.tick}
+{zhdocstringFrom Interval.tick}
 
-{docstring Interval.reset}
+{zhdocstringFrom Interval.reset}
 
-{docstring Interval.stop}
+{zhdocstringFrom Interval.stop}
 
-{docstring Selector.sleep}
+{zhdocstringFrom Selector.sleep}
 
 
 
-::::example "Selectors and Timers"
-This program runs a loop.
-At each iteration, it waits up to two seconds for a line of input.
-If the input is provided, then it echoes it and loops again.
-If the iteration times out, then the program exits.
-Checking for the timeout is done by using {name}`Selectable.one` to race the timer against a channel that delivers the lines of input.
-This channel can be selected against, and it is fed by a dedicated thread that reads `stdin`.
+::::example "选择器与定时器"
+此程序运行一个循环。
+每轮迭代最多等待两秒钟以获取一行输入。
+若收到输入，就回显该行并继续循环。
+若本轮超时，则程序退出。
+通过 {name}`Selectable.one` 让定时器与传递输入行的通道竞争，以检查是否超时。
+该通道可以参与选择，并由一个读取 `stdin` 的专用线程向其提供数据。
 
 :::ioExample
 ```ioLean
@@ -1179,12 +1224,12 @@ public def main : IO Unit := do
   discard <| IO.asTask (prio := .dedicated) (reader (← IO.getStdin) ch)
   (echo ch).block
 ```
-When run with this input:
+使用以下输入运行时：
 ```stdin
 One line
 Another
 ```
-it produces this output:
+它产生以下输出：
 ```stdout
 got: One line
 got: Another
@@ -1194,177 +1239,186 @@ done
 
 ::::
 
-# Asynchronous I/O
+# 异步 I/O
+%%%
+file := "Asynchronous-I___O"
+tag := "Lean-__________________--IO--Asynchronous-Programming--Asynchronous-I___O"
+%%%
 :::leanSection
 ```lean -show
 open Std.Async.IO
 open Std (Channel Broadcast)
 variable {α : Type} [Inhabited α]
 ```
-The type classes {name}`AsyncRead`, {name}`AsyncWrite`, and {name}`AsyncStream` provide buffered asynchronous I/O.
-The main {name}`AsyncRead` instances are {inst}`AsyncRead (Channel α) α`, {inst}`AsyncRead (CloseableChannel α) (Option α)`, and {inst}`AsyncRead (Broadcast.Receiver α) (Option α)`.
-Similarly, the main {name}`AsyncWrite` instances are for {inst}`AsyncWrite (Channel α) α`, {inst}`AsyncWrite (CloseableChannel α) α`, and {inst}`AsyncWrite (Broadcast α) α`.
-{name}`AsyncStream` has instances for the same types as {name}`AsyncRead`, but provides {tech}[selector]-based iteration of elements so they can be combined with other data sources.
+类型类 {name}`AsyncRead`、{name}`AsyncWrite` 和 {name}`AsyncStream` 提供带缓冲的异步 I/O。
+主要的 {name}`AsyncRead` 实例包括 {inst}`AsyncRead (Channel α) α`、{inst}`AsyncRead (CloseableChannel α) (Option α)` 和 {inst}`AsyncRead (Broadcast.Receiver α) (Option α)`。
+类似地，主要的 {name}`AsyncWrite` 实例包括 {inst}`AsyncWrite (Channel α) α`、{inst}`AsyncWrite (CloseableChannel α) α` 和 {inst}`AsyncWrite (Broadcast α) α`。
+{name}`AsyncStream` 在与 {name}`AsyncRead` 相同的类型上具有实例，但提供基于{tech (key := "selector")}[选择器]的元素迭代，因此可以与其他数据源组合。
 :::
 
-{docstring Std.Async.IO.AsyncRead +allowMissing}
+{zhdocstringFrom Std.Async.IO.AsyncRead +allowMissing}
 
-{docstring Std.Async.IO.AsyncWrite +allowMissing}
+{zhdocstringFrom Std.Async.IO.AsyncWrite +allowMissing}
 
-{docstring Std.Async.IO.AsyncStream +allowMissing}
+{zhdocstringFrom Std.Async.IO.AsyncStream +allowMissing}
 
-## Network
+## 网络
 %%%
+file := "Network"
 tag := "async-network"
 %%%
 
-The standard library provides asynchronous TCP and UDP sockets along with DNS name resolution.
-Operations that wait for the network, such as accepting a connection, receiving data, or resolving a name, are {name}`Async` actions.
-TCP and UDP sockets additionally provide {tech}[selectors], namely {name}`TCP.Socket.Server.acceptSelector`, {name}`TCP.Socket.Client.recvSelector`, and {name}`UDP.Socket.recvSelector`, so that network events can be multiplexed with other I/O using {ref "async-select"}[event selection].
-Socket addresses are represented by the types {name}`Std.Net.SocketAddress` and {name}`Std.Net.IPAddr`.
-As with other selectors, a socket's selector and its corresponding blocking operation each expect exclusive control of the socket.
-They must not be used at the same time on the same socket.
+标准库提供异步 TCP 和 UDP 套接字，以及 DNS 名称解析。
+接受连接、接收数据和解析名称等需要等待网络的操作都是 {name}`Async` 动作。
+TCP 和 UDP 套接字还提供{tech (key := "selectors")}[选择器]，即 {name}`TCP.Socket.Server.acceptSelector`、{name}`TCP.Socket.Client.recvSelector` 和 {name}`UDP.Socket.recvSelector`，因此可通过{ref "async-select"}[事件选择]将网络事件与其他 I/O 复用。
+套接字地址由 {name}`Std.Net.SocketAddress` 和 {name}`Std.Net.IPAddr` 类型表示。
+与其他选择器一样，套接字的选择器及其对应的阻塞操作都要求独占控制该套接字。
+不得在同一套接字上同时使用二者。
 
 ### TCP
 
-TCP is connection-oriented: a client establishes a connection to a server, after which the two exchange a reliable, ordered stream of bytes.
-The protocol includes measures for ensuring that the data that is sent actually arrives, including re-transmission of missing parts; these features rely on having an established connection with its associated state.
-A TCP server socket accepts incoming connections, while a TCP client socket connects to a server and exchanges data.
-A server is set up by creating it, binding it to an address, listening, and then accepting connections.
-A client is created, connected to an address, and then used to send and receive data.
+TCP 面向连接：客户端先与服务器建立连接，随后双方交换可靠、有序的字节流。
+该协议包含确保已发送数据确实到达的机制，包括重传缺失部分；这些功能依赖已建立的连接及其关联状态。
+TCP 服务器套接字接受传入连接，TCP 客户端套接字则连接服务器并交换数据。
+设置服务器时，依次创建套接字、绑定地址、开始监听，然后接受连接。
+设置客户端时，先创建套接字，连接到地址，再用它发送和接收数据。
 
-{docstring TCP.Socket.Server +allowMissing}
+{zhdocstringFrom TCP.Socket.Server +allowMissing}
 
-{docstring TCP.Socket.Server.mk}
+{zhdocstringFrom TCP.Socket.Server.mk}
 
-{docstring TCP.Socket.Server.bind}
+{zhdocstringFrom TCP.Socket.Server.bind}
 
-{docstring TCP.Socket.Server.listen}
+{zhdocstringFrom TCP.Socket.Server.listen}
 
-{docstring TCP.Socket.Server.accept}
+{zhdocstringFrom TCP.Socket.Server.accept}
 
-{docstring TCP.Socket.Server.tryAccept}
+{zhdocstringFrom TCP.Socket.Server.tryAccept}
 
-{docstring TCP.Socket.Server.getSockName}
+{zhdocstringFrom TCP.Socket.Server.getSockName}
 
-{docstring TCP.Socket.Server.noDelay}
+{zhdocstringFrom TCP.Socket.Server.noDelay}
 
-{docstring TCP.Socket.Server.keepAlive}
+{zhdocstringFrom TCP.Socket.Server.keepAlive}
 
-{docstring TCP.Socket.Client +allowMissing}
+{zhdocstringFrom TCP.Socket.Client +allowMissing}
 
-{docstring TCP.Socket.Client.mk}
+{zhdocstringFrom TCP.Socket.Client.mk}
 
-{docstring TCP.Socket.Client.bind}
+{zhdocstringFrom TCP.Socket.Client.bind}
 
-{docstring TCP.Socket.Client.connect}
+{zhdocstringFrom TCP.Socket.Client.connect}
 
-{docstring TCP.Socket.Client.send}
+{zhdocstringFrom TCP.Socket.Client.send}
 
-{docstring TCP.Socket.Client.sendAll}
+{zhdocstringFrom TCP.Socket.Client.sendAll}
 
-{docstring TCP.Socket.Client.recv?}
+{zhdocstringFrom TCP.Socket.Client.recv?}
 
-{docstring TCP.Socket.Client.shutdown}
+{zhdocstringFrom TCP.Socket.Client.shutdown}
 
-{docstring TCP.Socket.Client.getPeerName}
+{zhdocstringFrom TCP.Socket.Client.getPeerName}
 
-{docstring TCP.Socket.Client.getSockName}
+{zhdocstringFrom TCP.Socket.Client.getSockName}
 
-{docstring TCP.Socket.Client.noDelay}
+{zhdocstringFrom TCP.Socket.Client.noDelay}
 
-{docstring TCP.Socket.Client.keepAlive}
+{zhdocstringFrom TCP.Socket.Client.keepAlive}
 
 ### UDP
 
-Unlike TCP, UDP is connectionless: rather than first establishing a connection, a single socket sends and receives independent messages, called {deftech}_datagrams_, to and from any address.
-There is no provision for ensuring that the datagrams actually arrive; with UDP, this is an application-level concern.
-A datagram can also be delivered to many recipients at once using broadcast or multicast.
+与 TCP 不同，UDP 无连接：单个套接字无需先建立连接，就能与任意地址收发称为{deftech (key := "datagrams")}_数据报_的独立消息。
+UDP 不提供确保数据报实际到达的机制；这需要由应用层处理。
+数据报还可以通过广播或组播同时投递给多个接收方。
 
-{docstring UDP.Socket.mk}
+{zhdocstringFrom UDP.Socket.mk}
 
-{docstring UDP.Socket.bind}
+{zhdocstringFrom UDP.Socket.bind}
 
-{docstring UDP.Socket.connect}
+{zhdocstringFrom UDP.Socket.connect}
 
-{docstring UDP.Socket.send}
+{zhdocstringFrom UDP.Socket.send}
 
-{docstring UDP.Socket.sendAll}
+{zhdocstringFrom UDP.Socket.sendAll}
 
-{docstring UDP.Socket.recv}
+{zhdocstringFrom UDP.Socket.recv}
 
-{docstring UDP.Socket.getSockName}
+{zhdocstringFrom UDP.Socket.getSockName}
 
-{docstring UDP.Socket.getPeerName}
+{zhdocstringFrom UDP.Socket.getPeerName}
 
-{docstring UDP.Socket.setBroadcast}
+{zhdocstringFrom UDP.Socket.setBroadcast}
 
-{docstring UDP.Socket.setTTL}
+{zhdocstringFrom UDP.Socket.setTTL}
 
-{docstring UDP.Socket.setMulticastLoop}
+{zhdocstringFrom UDP.Socket.setMulticastLoop}
 
-{docstring UDP.Socket.setMulticastTTL}
+{zhdocstringFrom UDP.Socket.setMulticastTTL}
 
-{docstring UDP.Socket.setMulticastInterface}
+{zhdocstringFrom UDP.Socket.setMulticastInterface}
 
-{docstring UDP.Socket.setMembership}
+{zhdocstringFrom UDP.Socket.setMembership}
 
-{docstring UDP.Membership +allowMissing}
+{zhdocstringFrom UDP.Membership +allowMissing}
 
 ### DNS
 
-DNS resolution converts between names and socket addresses.
-{name}`DNS.getAddrInfo` performs forward resolution from a host and service to a list of addresses, while {name}`DNS.getNameInfo` performs reverse resolution from an address to a host and service.
+DNS 解析在名称与套接字地址之间转换。
+{name}`DNS.getAddrInfo` 将主机与服务正向解析为地址列表，{name}`DNS.getNameInfo` 则将地址反向解析为主机与服务。
 
-{docstring DNS.getAddrInfo}
+{zhdocstringFrom DNS.getAddrInfo}
 
-{docstring DNS.getNameInfo}
+{zhdocstringFrom DNS.getNameInfo}
 
-{docstring DNS.NameInfo +allowMissing}
+{zhdocstringFrom DNS.NameInfo +allowMissing}
 
-## Signals
+## 信号
+%%%
+file := "Signals"
+tag := "Lean-__________________--IO--Asynchronous-Programming--Asynchronous-I___O--Signals"
+%%%
 
-Unix-style signals are asynchronous notifications that can be received from the operating system at any time.
-For example, when a user presses `Ctrl-C`, the `SIGINT` signal is sent to the process.
-A {name}`Signal.Waiter` is a Lean representation of an underlying signal handler.
-The signals that can be handled are enumerated in the type {name}`Signal`:
+Unix 风格的信号是随时可能从操作系统接收的异步通知。
+例如，用户按下 `Ctrl-C` 时，系统会向进程发送 `SIGINT`。
+{name}`Signal.Waiter` 是底层信号处理器的 Lean 表示。
+可处理的信号由类型 {name}`Signal` 枚举：
 
-{docstring Signal}
+{zhdocstringFrom Signal}
 
-Depending on the platform, some signals cannot be caught.
-On Unix-like operating systems, `SIGKILL` and `SIGSTOP` can't be caught.
-`SIGBUS`, `SIGFPE`, `SIGILL`, or `SIGSEGV` can't be handled because Lean uses `libuv` to install signal handlers, and `libuv` cannot safely catch these signals.
-Finally, the Lean run-time system ignores `SIGPIPE`.
-On Windows, waiters can be created for `SIGTERM` and `SIGABRT`, but they never fire. `SIGHUP` fires when the console is closed, with approximately ten seconds provided for cleanup. `SIGINT` is not delivered in terminal raw mode, and `SIGWINCH` is emulated and may be untimely.
+某些信号无法捕获，具体取决于平台。
+在类 Unix 操作系统上，`SIGKILL` 和 `SIGSTOP` 无法捕获。
+`SIGBUS`、`SIGFPE`、`SIGILL` 和 `SIGSEGV` 也无法处理，因为 Lean 使用 `libuv` 安装信号处理器，而 `libuv` 无法安全地捕获这些信号。
+此外，Lean 运行时系统会忽略 `SIGPIPE`。
+在 Windows 上，可以为 `SIGTERM` 和 `SIGABRT` 创建等待器，但它们永远不会触发。控制台关闭时会触发 `SIGHUP`，并留出约十秒进行清理。终端处于原始模式时不会投递 `SIGINT`；`SIGWINCH` 通过模拟实现，可能不够及时。
 
-To install a signal handler, first use {name}`Signal.Waiter.mk` to create a signal waiter.
-The handler is installed when the waiter is first used.
-The waiter can be used via {name}`Signal.Waiter.wait`, which allows it to be waited for using {name}`await`, but most use cases probably want to use {name}`Signal.Waiter.selector` together with {ref "async-select"}[event selection] to handle arriving signals by canceling ongoing work and cleaning up.
-This pattern, and the {name}`Signal.Waiter` API, mirror those of timers; unlike timers, the arrival of a signal is unpredictable.
+要安装信号处理器，先用 {name}`Signal.Waiter.mk` 创建信号等待器。
+等待器首次使用时才会安装处理器。
+可通过 {name}`Signal.Waiter.wait` 使用等待器，以便用 {name}`await` 等待信号；不过，多数场景可能更适合将 {name}`Signal.Waiter.selector` 与{ref "async-select"}[事件选择]组合，通过取消正在进行的工作并清理来响应信号。
+这一模式及 {name}`Signal.Waiter` 的 API 与定时器类似；不同的是，信号到来的时间不可预测。
 
-The `repeating` parameter to {name}`Signal.Waiter.mk` determines whether the waiter awaits a single signal or repeated signals.
-If it is {name}`false`, then as soon as a matching signal arrives, the waiter moves into a finished state.
-Subsequent selections or calls to {name Signal.Waiter.wait}`wait` immediately return the same data.
-If `repeating` is {name}`true`, then subsequent calls to {name Signal.Waiter.wait}`wait` or subsequent selections will block until another signal arrives.
-A repeating waiter keeps listening for signals until {name}`Signal.Waiter.stop` is called.
+{name}`Signal.Waiter.mk` 的 `repeating` 参数决定等待单次信号还是重复信号。
+若为 {name}`false`，一旦匹配信号到来，等待器就进入完成状态。
+此后再次选择或调用 {name Signal.Waiter.wait}`wait`，都会立即返回相同数据。
+若 `repeating` 为 {name}`true`，后续调用 {name Signal.Waiter.wait}`wait` 或再次选择时，会阻塞直到下一个信号到来。
+重复等待器会持续监听信号，直到调用 {name}`Signal.Waiter.stop`。
 
-{docstring Signal.Waiter +allowMissing}
+{zhdocstringFrom Signal.Waiter +allowMissing}
 
-{docstring Signal.Waiter.mk}
+{zhdocstringFrom Signal.Waiter.mk}
 
-{docstring Signal.Waiter.wait}
+{zhdocstringFrom Signal.Waiter.wait}
 
-{docstring Signal.Waiter.stop}
+{zhdocstringFrom Signal.Waiter.stop}
 
-{docstring Signal.Waiter.selector}
+{zhdocstringFrom Signal.Waiter.selector}
 
-::::example "Selectors and Signals"
-This program runs a loop.
-At each iteration, it waits for a line of input or `Ctrl-C`, which sends `SIGINT`.
-If the input is provided, then it echoes it and loops again.
-If it receives `SIGINT`, then iteration stops and the program terminates.
-Checking for the signal is done by using {name}`Selectable.one` to race the signal handler against a channel that delivers the lines of input.
-This channel can be selected against, and it is fed by a dedicated thread that reads `stdin`.
+::::example "选择器与信号"
+此程序运行一个循环。
+每轮迭代等待一行输入或会发送 `SIGINT` 的 `Ctrl-C`。
+若收到输入，就回显该行并继续循环。
+若收到 `SIGINT`，则停止迭代并终止程序。
+通过 {name}`Selectable.one` 让信号处理器与传递输入行的通道竞争，以检查信号。
+该通道可以参与选择，并由读取 `stdin` 的专用线程向其提供数据。
 
 :::ioExample
 ```ioLean
@@ -1407,67 +1461,75 @@ done
 :::
 ::::
 
-# Cancellation
+# 取消
+%%%
+file := "Cancellation"
+tag := "Lean-__________________--IO--Asynchronous-Programming--Cancellation"
+%%%
 
-Typical asynchronous applications need to handle _cancellation_, where work needs to be abandoned.
-For example, if a user presses `Ctrl-C` or a timeout occurs, then a download may be abandoned and temporary files cleaned up without terminating the entire application.
-The {name}`ContextAsync` monad provides tools for managing hierarchical trees of tasks, where canceling a task also cancels its children.
+典型的异步应用需要处理_取消_，即放弃正在进行的工作。
+例如，用户按下 `Ctrl-C` 或发生超时时，可以放弃下载并清理临时文件，而无需终止整个应用。
+{name}`ContextAsync` 单子提供管理任务层次树的工具，取消一个任务时也会取消它的子任务。
 
-Cancellation is _cooperative_: tasks must explicitly check whether they've been canceled and terminate themselves.
-In other words, cancellation is an event that tasks may opt into observing, rather than a mechanism to forcibly terminate other tasks.
+取消是_协作式的_：任务必须显式检查自己是否已被取消，并自行终止。
+换言之，取消是任务可以自行选择观察的事件，而非强制终止其他任务的机制。
 
 :::paragraph
-There are two primary ways to cancel a tree of {name}`ContextAsync` computations:
+取消一棵 {name}`ContextAsync` 计算树主要有两种方式：
 
- * {name}`ContextAsync.run` executes a cancelable tree of tasks as an ordinary {name}`Async` task.
-  When the root task returns normally, the entire tree is canceled.
- * {name}`ContextAsync.cancel` cancels the current task and all of its children.
+ * {name}`ContextAsync.run` 将可取消的任务树作为普通 {name}`Async` 任务执行。
+   根任务正常返回时，会取消整棵树。
+ * {name}`ContextAsync.cancel` 取消当前任务及其全部子任务。
 
-For cancellation to work as expected, concurrent tasks should be started with the helpers that are specifically designed for {name}`ContextAsync`.
-When this is not possible, use {name}`ContextAsync.runIn` to associate the current cancellation context with the new computation.
+为使取消按预期工作，应使用专为 {name}`ContextAsync` 设计的辅助函数启动并发任务。
+无法这样做时，使用 {name}`ContextAsync.runIn` 将当前取消上下文与新计算关联。
 :::
 
-{docstring ContextAsync}
+{zhdocstringFrom ContextAsync}
 
-{docstring ContextAsync.async}
+{zhdocstringFrom ContextAsync.async}
 
-{docstring ContextAsync.cancel}
+{zhdocstringFrom ContextAsync.cancel}
 
-{docstring ContextAsync.run}
+{zhdocstringFrom ContextAsync.run}
 
-{docstring ContextAsync.runIn}
+{zhdocstringFrom ContextAsync.runIn}
 
-{docstring ContextAsync.getContext}
+{zhdocstringFrom ContextAsync.getContext}
 
-{docstring ContextAsync.background}
+{zhdocstringFrom ContextAsync.background}
 
-{docstring ContextAsync.disown}
+{zhdocstringFrom ContextAsync.disown}
 
-{docstring ContextAsync.concurrently}
+{zhdocstringFrom ContextAsync.concurrently}
 
-{docstring ContextAsync.concurrentlyAll}
+{zhdocstringFrom ContextAsync.concurrentlyAll}
 
-{docstring ContextAsync.race}
+{zhdocstringFrom ContextAsync.race}
 
-{docstring ContextAsync.raceAll}
+{zhdocstringFrom ContextAsync.raceAll}
 
-## Reacting to Cancellation
+## 响应取消
+%%%
+file := "Reacting-to-Cancellation"
+tag := "Lean-__________________--IO--Asynchronous-Programming--Cancellation--Reacting-to-Cancellation"
+%%%
 
-Asynchronous computations can react to cancellation via explicit polling with {name}`ContextAsync.isCancelled`.
-They can also block until the current context is canceled using {name}`ContextAsync.awaitCancellation`; this is useful when there is no more work to be done until cancellation, but still allows for cleanup.
-Finally, cancellation can be awaited together with other events using {tech}[event selection] with {name}`Selector.cancelled` or {name}`ContextAsync.doneSelector` (they are synonymous).
+异步计算可以通过 {name}`ContextAsync.isCancelled` 显式轮询来响应取消。
+也可以使用 {name}`ContextAsync.awaitCancellation` 阻塞，直到当前上下文被取消；这适用于取消前已无其他工作的情况，同时仍允许进行清理。
+最后，还可以借助 {name}`Selector.cancelled` 或 {name}`ContextAsync.doneSelector`（二者同义），通过{tech (key := "event selection")}[事件选择]同时等待取消与其他事件。
 
-{docstring ContextAsync.isCancelled}
+{zhdocstringFrom ContextAsync.isCancelled}
 
-:::example "Observing Cancellation"
+:::example "观察取消"
 ```imports -show
 import Std.Async
 ```
 ```lean -show
 open Std.Async
 ```
-{name}`ContextAsync.isCancelled` reports whether the current context has been canceled.
-Here, the context is canceled explicitly with {name}`ContextAsync.cancel`:
+{name}`ContextAsync.isCancelled` 报告当前上下文是否已被取消。
+这里使用 {name}`ContextAsync.cancel` 显式取消上下文：
 ```lean (name := flagOut)
 #eval Async.block <| ContextAsync.run do
   let before ← ContextAsync.isCancelled
@@ -1480,16 +1542,16 @@ Here, the context is canceled explicitly with {name}`ContextAsync.cancel`:
 ```
 :::
 
-:::example "Cooperating with Cancellation"
+:::example "协作响应取消"
 ```imports -show
 import Std.Async
 ```
 ```lean -show
 open Std.Async
 ```
-Because cancellation is cooperative, a long-running computation must check {name}`ContextAsync.isCancelled` itself and stop once it has been canceled.
-This worker records numbers until its context is canceled.
-The cancellation here comes from the worker itself after three iterations, but in practice it would come from a timeout or a parent task; the worker's reaction is the same:
+由于取消是协作式的，长期运行的计算必须自行检查 {name}`ContextAsync.isCancelled`，并在被取消后停止。
+此工作任务会不断记录数字，直到其上下文被取消。
+这里的取消由工作任务自身在迭代三次后触发；实际应用中可能来自超时或父任务，但工作任务的响应方式相同：
 ```lean (name := workerOut)
 def worker : ContextAsync (Array Nat) := do
   let log ← IO.mkRef (#[] : Array Nat)
@@ -1506,11 +1568,11 @@ def worker : ContextAsync (Array Nat) := do
 ```
 :::
 
-{docstring ContextAsync.awaitCancellation}
+{zhdocstringFrom ContextAsync.awaitCancellation}
 
-{docstring Selector.cancelled}
+{zhdocstringFrom Selector.cancelled}
 
-:::example "Interrupting a Wait"
+:::example "中断等待"
 ```imports -show
 import Std.Async
 import Std.Sync.Channel
@@ -1519,9 +1581,9 @@ import Std.Sync.Channel
 open Std.Async
 open Std (CloseableChannel)
 ```
-Cancellation can be awaited alongside other events using {tech}[event selection].
-Here, a computation waits for either a value on a channel or cancellation, whichever comes first.
-Because the context is canceled before the selection runs, the cancellation branch wins and the result is {name}`none`:
+取消可以通过{tech (key := "event selection")}[事件选择]与其他事件一起等待。
+这里的计算等待通道中的值或取消，以先发生者为准。
+由于选择运行前上下文就已被取消，因此取消分支获胜，结果为 {name}`none`：
 ```lean (name := cancelSelOut)
 def waitOrCancel (ch : CloseableChannel Nat) : ContextAsync (Option Nat) := do
   Selectable.one #[
@@ -1539,44 +1601,52 @@ none
 ```
 :::
 
-{docstring ContextAsync.doneSelector}
+{zhdocstringFrom ContextAsync.doneSelector}
 
-{docstring ContextAsync.getCancellationReason}
+{zhdocstringFrom ContextAsync.getCancellationReason}
 
-## Cancellation Contexts
+## 取消上下文
+%%%
+file := "Cancellation-Contexts"
+tag := "Lean-__________________--IO--Asynchronous-Programming--Cancellation--Cancellation-Contexts"
+%%%
 
-{name}`ContextAsync` is a {ref "reader-monad"}[reader] on top of {name}`Async` that provides access to a cancellation context.
-This context contains an ID and a cancellation token along with a mutex-guarded mutable state that encodes a tree of IDs, each with a cancellation token, and a source of unique ID values.
-When child tasks are created, they are assigned new IDs and associated with the current task.
-When tasks are canceled, the tree in the state is used to cancel their children.
+{name}`ContextAsync` 是构建于 {name}`Async` 之上的{ref "reader-monad"}[读取器]，提供对取消上下文的访问。
+该上下文包含一个 ID、一个取消令牌，以及一份由互斥锁保护的可变状态；该状态编码一棵 ID 树，其中每个 ID 都有自己的取消令牌，同时保存唯一 ID 值的来源。
+创建子任务时，会为其分配新 ID，并将其与当前任务关联。
+取消任务时，会利用状态中的树来取消它的子任务。
 
-{docstring Std.CancellationContext +allowMissing}
+{zhdocstringFrom Std.CancellationContext +allowMissing}
 
-{docstring Std.CancellationContext.State +allowMissing}
+{zhdocstringFrom Std.CancellationContext.State +allowMissing}
 
-{docstring Std.CancellationContext.new}
+{zhdocstringFrom Std.CancellationContext.new}
 
-{docstring Std.CancellationContext.fork}
+{zhdocstringFrom Std.CancellationContext.fork}
 
-{docstring Std.CancellationContext.cancel}
+{zhdocstringFrom Std.CancellationContext.cancel}
 
-{docstring Std.CancellationContext.isCancelled}
+{zhdocstringFrom Std.CancellationContext.isCancelled}
 
-{docstring Std.CancellationContext.getCancellationReason}
+{zhdocstringFrom Std.CancellationContext.getCancellationReason}
 
-{docstring Std.CancellationContext.done}
+{zhdocstringFrom Std.CancellationContext.done}
 
-{docstring Std.CancellationContext.doneSelector}
+{zhdocstringFrom Std.CancellationContext.doneSelector}
 
-{docstring Std.CancellationReason}
+{zhdocstringFrom Std.CancellationReason}
 
-## Cancellation Tokens
+## 取消令牌
+%%%
+file := "Cancellation-Tokens"
+tag := "Lean-__________________--IO--Asynchronous-Programming--Cancellation--Cancellation-Tokens"
+%%%
 
-A cancellation token is a mutex-guarded piece of shared mutable state that tracks whether the token has been canceled along with a set of consumers that have requested notification when cancellation occurs.
-Behind the scenes, {name}`ContextAsync.isCancelled` checks the current context's cancellation token, then checks whether the cancellation reason is {name}`some` or {name}`none`.
+取消令牌是一份由互斥锁保护的共享可变状态，跟踪令牌是否已被取消，并保存一组请求在取消发生时获得通知的使用方。
+在底层，{name}`ContextAsync.isCancelled` 会检查当前上下文的取消令牌，再检查取消原因为 {name}`some` 还是 {name}`none`。
 
-{docstring Std.CancellationToken +allowMissing}
+{zhdocstringFrom Std.CancellationToken +allowMissing}
 
-{docstring Std.CancellationToken.State}
+{zhdocstringFrom Std.CancellationToken.State}
 
-{docstring Std.CancellationToken.Consumer +allowMissing}
+{zhdocstringFrom Std.CancellationToken.Consumer +allowMissing}

@@ -21,6 +21,7 @@ open Lean.Elab.Tactic.GuardMsgs.WhitespaceMode
 
 #doc (Manual) "命令行界面" =>
 %%%
+file := "Command-Line-Interface"
 tag := "lake-cli"
 %%%
 
@@ -112,6 +113,7 @@ Lean 发行版包含了 C 编译器工具链。
 
 # 环境变量
 %%%
+file := "Environment-Variables"
 tag := "lake-environment"
 %%%
 
@@ -268,6 +270,7 @@ fun o =>
 
 # 选项
 %%%
+file := "Options"
 tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Options"
 %%%
 
@@ -337,8 +340,8 @@ Lake 的命令行界面提供了许多全局选项以及执行重要任务的子
 
 : {lakeOptDef flag}`--fail-fast`
 
-  After the first required build job fails, Lake stops scheduling new build jobs.
-  Jobs that are already running are allowed to finish.
+  第一个必需的构建作业失败后，Lake 就不再调度新的构建作业。
+  已经运行的作业仍可执行至结束。
 
 : {lakeOptDef flag}`--no-cache`
 
@@ -351,6 +354,7 @@ Lake 的命令行界面提供了许多全局选项以及执行重要任务的子
 
 # 控制输出
 %%%
+file := "Controlling-Output"
 tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Controlling-Output"
 %%%
 
@@ -395,6 +399,7 @@ tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Command
 
 # 自动更新工具链
 %%%
+file := "Automatic-Toolchain-Updates"
 tag := "automatic-toolchain-updates"
 %%%
 
@@ -423,6 +428,7 @@ tag := "automatic-toolchain-updates"
 
 # 创建包
 %%%
+file := "Creating-Packages"
 tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Creating-Packages"
 %%%
 
@@ -486,6 +492,7 @@ version of the configuration file, respectively. The default is TOML.
 
 # 构建与运行
 %%%
+file := "Building-and-Running"
 tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Building-and-Running"
 %%%
 
@@ -745,6 +752,7 @@ the workspace's root package's additional Lean arguments and the given args
 
 # 模块导入
 %%%
+file := "Module-Imports"
 tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Module-Imports"
 %%%
 
@@ -844,13 +852,13 @@ ANNOTATIONS:
 
 : `--add-downstream <MODULE>`
 
-  Add the module as an `import` to every checked module that does not reach it yet, except where that would create an import cycle
+  将该模块以 `import` 的形式添加到每个尚未传递导入它的待检查模块中，但会形成导入环的情况除外
 
 : `--add-public-downstream <MODULE>`
 
-  Like `--add-downstream`, but add the module as a `public import` wherever it is not reached through public imports yet.
-  As these are passed on to importing modules, this adds far fewer imports.
-  Only one of these two options can be used, once
+  与 `--add-downstream` 类似，但对于尚未通过公开导入传递导入该模块的模块，使用 `public import` 添加它。
+  由于公开导入会传递给导入当前模块的模块，这样需要添加的导入要少得多。
+  这两个选项只能选择一个，且只能使用一次
 
 : `--explain`
 
@@ -869,6 +877,7 @@ ANNOTATIONS:
 
 # 挑战与外部检查器
 %%%
+file := "Challenges-and-External-Checkers"
 tag := "lake-comparator"
 %%%
 
@@ -1097,6 +1106,7 @@ See `lake help comparator` to judge a solution against a challenge instead.
 
 ## 配置
 %%%
+file := "Configuration"
 tag := "lake-comparator-config"
 %%%
 
@@ -1143,6 +1153,7 @@ tag := "lake-comparator-config"
 
 ## 沙箱
 %%%
+file := "Sandbox"
 tag := "lake-comparator-sandbox"
 %%%
 
@@ -1159,12 +1170,17 @@ tag := "lake-comparator-sandbox"
 由于主目录被隐藏，仅能通过用户自身凭据获取的依赖在沙箱内不可用。
 
 # 开发工具
+%%%
+file := "Development-Tools"
+tag := "Lean-__________________--_____________________--Lake--_______________--____________"
+%%%
 
 Lake 包含了对指定标准开发工具和工作流的支持。
 在命令行上，可以使用适当的 `lake` 子命令调用这些工具。
 
 ## 测试和代码检查
 %%%
+file := "Tests-and-Linters"
 tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Development-Tools--Tests-and-Linters"
 %%%
 
@@ -1364,6 +1380,10 @@ package or its dependencies. It merely verifies that one is specified.
 :::
 
 ## 性能剖析
+%%%
+file := "Profiling"
+tag := "Lean-__________________--_____________________--Lake--_______________--____________--____________"
+%%%
 
 ```lakeHelp samply
 Profile an executable target with samply and demangle Lean names
@@ -1427,6 +1447,7 @@ Open the output file in Firefox Profiler at https://profiler.firefox.com/from-fi
 
 ## 脚本
 %%%
+file := "Scripts"
 tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Development-Tools--Scripts"
 %%%
 
@@ -1489,6 +1510,7 @@ A bare `lake run` command will run the default script(s) of the root package
 
 ## 语言服务器
 %%%
+file := "Language-Server"
 tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Development-Tools--Language-Server"
 %%%
 
@@ -1511,6 +1533,7 @@ with the package configuration's `moreServerArgs` field and `args`.
 
 # 依赖管理
 %%%
+file := "Dependency-Management"
 tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Dependency-Management"
 %%%
 
@@ -1548,6 +1571,7 @@ A bare `lake update` will upgrade all dependencies.
 
 # 打包和分发
 %%%
+file := "Packaging-and-Distribution"
 tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Packaging-and-Distribution"
 %%%
 
@@ -1568,6 +1592,7 @@ then uploads the asset to the pre-existing GitHub release `tag` using `gh`.
 
 ## 缓存的云端构建
 %%%
+file := "Cached-Cloud-Builds"
 tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Packaging-and-Distribution--Cached-Cloud-Builds"
 %%%
 
@@ -1614,6 +1639,7 @@ the package's `buildArchive` in its Lake directory (`.lake`).
 
 # 本地缓存
 %%%
+file := "Local-Caches"
 tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Local-Caches"
 %%%
 
@@ -2000,6 +2026,7 @@ the outputs correspond to must be manually specified via `--rev`.
 
 # 配置文件
 %%%
+file := "Configuration-Files"
 tag := "The-Lean-Language-Reference--Build-Tools-and-Distribution--Lake--Command-Line-Interface--Configuration-Files"
 %%%
 

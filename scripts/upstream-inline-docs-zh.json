@@ -1,0 +1,322 @@
+[
+    {
+        "source": "`vcgen` will break down a Hoare triple proof goal like `⦃P⦄ prog ⦃Q⦄` into verification conditions,\nprovided that all functions used in `prog` have specifications registered with `@[spec]`.\n\n`vcgen` is experimental and subject to change. `set_option experimental.vcgen true` acknowledges\nits experimental status and silences the warning that each call reports.\n\n### Program types\n\n`vcgen` works on any program type `Prog` that carries a `Std.WP.WP` interpretation. A monad\nis one such program type. An inductive type of commands is another, once its weakest precondition is\ndefined in terms of an operational semantics.\n\n### Verification conditions and specifications\n\nA verification condition is an entailment `pre ⊑ post` in the assertion lattice of the goal. The\noriginal program `prog` no longer occurs in it. The assertion lattice is any `CompleteLattice`, and\nthe entailment is its order, so a verification condition is an ordinary Lean goal that `grind` can\nattack.\n\nA `@[spec]` theorem declares a specification in one of two forms. A Hoare triple\n`foo_spec : ⦃P⦄ foo a b c ⦃Q⦄` states it directly. An equation `baz_eq : baz a b c = ...` states it\nby rewriting.\n\n### Features\n\nWhen used like `vcgen [foo_spec, bar_def, baz_eq]`, `vcgen` will additionally\n\n* add a Hoare triple specification `foo_spec : ⦃P⦄ foo ... ⦃Q⦄` to the `spec` set for a function\n  `foo` occurring in `prog`,\n* unfold a definition `def bar_def ... := ...` in `prog`,\n* rewrite with an equational specification `baz_eq : baz ... = ...` in `prog`.\n\n### Config options\n\nSee `Lean.Elab.Tactic.Do.VCGen.Config` for the options. Of particular note are `stepLimit = some 42`,\nwhich is useful for bisecting bugs and tracing execution, and `errorOnMissingSpec := false`, which\nleaves a goal whose head has no matching spec as a verification condition for you to discharge.\n\n### Extended syntax\n\nOften, `vcgen` will be used like this:\n```\nvcgen [...] invariants\n· I1\n· I2\nwith try finish\n```\nThe `with` clause takes one step of `grind` mode, such as `finish`. That step shares the E-graph that\n`vcgen` builds, so it sees the hypotheses of every verification condition. A sequence of steps needs\nexplicit grouping, as in `with (s₁; s₂)`.\n\nInvariants also take a labelled form, which is useful for naming inaccessibles:\n```\nvcgen [...] invariants\n| inv1 _ acc _ => I1 acc\n| _ => I2\n```\n\n`vcgen` has two further clauses.\n\n```\nvcgen until f a _ c\n```\nstops VC generation at the first program that matches the pattern, and leaves that program in the\ngoal. Holes are written `_`, as in `conv in`.\n\n```\nvcgen frames\n| f a _ c => F\n```\nsupplies a frame for a call. Take `mkFreshNat : StateM (Nat × Nat) Nat`, which returns `s.1` and\nincrements it. Its specification mentions `s.1` alone:\n```\n@[spec] theorem mkFreshNat_spec :\n    ⦃fun s => ⌜s.1 = n⌝⦄ mkFreshNat ⦃fun r s => ⌜r = n ∧ s.1 = n + 1⌝⦄\n```\nA caller that knows `s.2 = 7` loses that fact at the call, because the postcondition says nothing\nabout `s.2`. Writing\n```\nvcgen frames\n| mkFreshNat => fun s => ⌜s.2 = 7⌝\n```\ncarries `s.2 = 7` past the call, and `vcgen` proves that `mkFreshNat` preserves it. The named binders\nare in scope in the frame, bound to the matched arguments.\n\n### Invariant suggestions\n\n`vcgen [...] invariants?` warns that invariant suggestions are not available in `vcgen` and that\nthe keyword is slated for removal. Alternatives after `invariants?` elaborate like `invariants`.",
+        "page": "The--vcgen--tactic/index.html",
+        "translation": "`vcgen` 将 `⦃P⦄ prog ⦃Q⦄` 这样的霍尔三元组证明目标分解为验证条件，前提是 `prog` 使用的所有函数都具有通过 `@[spec]` 注册的规约。\n\n`vcgen` 仍处于实验阶段，可能发生变化。`set_option experimental.vcgen true` 表示接受其实验状态，并关闭每次调用产生的警告。\n\n程序类型\n\n`vcgen` 适用于具有 `Std.WP.WP` 解释的任意程序类型 `Prog`。单子是这样的程序类型；一旦基于操作语义定义了最弱前置条件，命令的归纳类型也属于此类。\n\n验证条件与规约\n\n验证条件是目标断言格中的蕴涵 `pre ⊑ post`，其中不再出现原始程序 `prog`。断言格可以是任意 `CompleteLattice`，蕴涵就是其序关系，因此验证条件是普通的 Lean 目标，可使用 `grind` 求解。\n\n`@[spec]` 定理以两种形式声明规约：霍尔三元组 `foo_spec : ⦃P⦄ foo a b c ⦃Q⦄` 直接陈述规约；等式 `baz_eq : baz a b c = ...` 则通过重写给出规约。\n\n功能\n\n调用 `vcgen [foo_spec, bar_def, baz_eq]` 时，`vcgen` 还会将霍尔三元组规约 `foo_spec : ⦃P⦄ foo ... ⦃Q⦄` 加入 `prog` 中函数 `foo` 的规约集，在 `prog` 中展开定义 `def bar_def ... := ...`，并用等式规约 `baz_eq : baz ... = ...` 重写 `prog`。\n\n配置选项\n\n全部选项见 `Lean.Elab.Tactic.Do.VCGen.Config`。其中 `stepLimit = some 42` 可用于二分定位错误并跟踪执行；`errorOnMissingSpec := false` 会将头部没有匹配规约的目标保留为验证条件，交给用户证明。\n\n扩展语法\n\n常见用法是 `vcgen [...] invariants · I1 · I2 with try finish`。`with` 子句接受一个 `grind` 模式步骤，例如 `finish`。该步骤共享 `vcgen` 构建的 E-图，因此能看到每个验证条件的假设。步骤序列必须显式分组，例如 `with (s₁; s₂)`。\n\n不变式还支持带标签的形式，便于命名不可访问的变量：`vcgen [...] invariants | inv1 _ acc _ => I1 acc | _ => I2`。\n\n`vcgen` 还有两个子句。`vcgen until f a _ c` 会在首次遇到匹配模式的程序时停止生成验证条件，并将该程序保留在目标中。与 `conv in` 一样，孔使用 `_` 表示。\n\n`vcgen frames | f a _ c => F` 为一次调用提供框架。例如 `mkFreshNat : StateM (Nat × Nat) Nat` 返回 `s.1` 并将其递增，其规约只提到 `s.1`：`@[spec] theorem mkFreshNat_spec : ⦃fun s => ⌜s.1 = n⌝⦄ mkFreshNat ⦃fun r s => ⌜r = n ∧ s.1 = n + 1⌝⦄`。调用方即使已知 `s.2 = 7`，也会在调用处失去该事实，因为后置条件未提及 `s.2`。写作 `vcgen frames | mkFreshNat => fun s => ⌜s.2 = 7⌝` 可让 `s.2 = 7` 在调用后保留，`vcgen` 会证明 `mkFreshNat` 保持它。模式中的具名绑定在框架中可见，并绑定到匹配的实参。\n\n不变式建议\n\n`vcgen [...] invariants?` 会警告 `vcgen` 不提供不变式建议，且该关键字计划移除。`invariants?` 后的分支按 `invariants` 的方式精译。"
+    },
+    {
+        "source": "Configuration options for tactics.",
+        "page": "The--vcgen--tactic/index.html",
+        "translation": "策略的配置选项。"
+    },
+    {
+        "source": "The simp lemma specification `*` means to rewrite with all hypotheses",
+        "page": "The--vcgen--tactic/index.html",
+        "translation": "simp 引理规约 `*` 表示使用所有假设进行重写。"
+    },
+    {
+        "source": "An erasure specification `-thm` says to remove `thm` from the simp set",
+        "page": "The--vcgen--tactic/index.html",
+        "translation": "移除规约 `-thm` 表示从 simp 集合中移除 `thm`。"
+    },
+    {
+        "source": "A simp lemma specification is:\n* optional `↑` or `↓` to specify use before or after entering the subterm\n* optional `←` to use the lemma backward\n* `thm` for the theorem to rewrite with",
+        "page": "The--vcgen--tactic/index.html",
+        "translation": "simp 引理规约包含：\n* 可选的 `↑` 或 `↓`，指定在进入子项之前或之后使用；\n* 可选的 `←`，表示反向使用引理；\n* 用于重写的定理 `thm`。"
+    },
+    {
+        "source": "After `mvcgen [...]`, there can be an optional `invariants` followed by either\n* a bulleted list of invariants `· term; · term`.\n* a labelled list of invariants `| inv1 => term; inv2 a b c => term`, which is useful for naming\n  inaccessibles.\nThe tracing variant ` invariants? ` will suggest a skeleton for missing invariants; see the\ndocstring for `mvcgen`.",
+        "page": "The--vcgen--tactic/index.html",
+        "translation": "`mvcgen [...]` 后可以接可选的 `invariants`，其后为以下形式之一：\n* 不变式的项目列表 `· term; · term`；\n* 带标签的不变式列表 `| inv1 => term; inv2 a b c => term`，这种形式便于为不可访问变量命名。\n跟踪变体 `invariants?` 会为缺失的不变式建议一个骨架；参见 `mvcgen` 的文档字符串。"
+    },
+    {
+        "source": "Either the contextual keyword ` invariants ` or its tracing form ` invariants? ` which suggests\nskeletons for missing invariants as a hint.",
+        "page": "The--vcgen--tactic/index.html",
+        "translation": "上下文关键字 `invariants` 或其跟踪形式 `invariants?`；后者以提示的形式建议缺失不变式的骨架。"
+    },
+    {
+        "source": "An invariant alternative of the form `· term`, one per invariant goal.",
+        "page": "The--vcgen--tactic/index.html",
+        "translation": "形如 `· term` 的不变式分支，每个不变式目标对应一个。"
+    },
+    {
+        "source": "An invariant alternative of the form `| inv<n> a b c => term`, one per invariant goal.",
+        "page": "The--vcgen--tactic/index.html",
+        "translation": "形如 `| inv<n> a b c => term` 的不变式分支，每个不变式目标对应一个。"
+    },
+    {
+        "source": "`set_option <id> <value>` sets the option `<id>` to `<value>`. Depending on the type of the option,\nthe value can be `true`, `false`, a string, or a numeral. Options are used to configure behavior of\nLean as well as user-defined extensions. The setting is active until the end of the current `section`\nor `namespace` or the end of the file.\nAuto-completion is available for `<id>` to list available options.\n\n`set_option <id> <value> in <command>` sets the option for just a single command:\n```\nset_option pp.all true in\n#check 1 + 1\n```\nSimilarly, `set_option <id> <value> in` can also be used inside terms and tactics to set an option\nonly in a single term or tactic.",
+        "page": "Linters-and-Code-Quality/Implementing-Linters/index.html",
+        "translation": "`set_option <id> <value>` 将选项 `<id>` 设置为 `<value>`。\n根据选项类型，值可以为 `true`、`false`、字符串或数字。\n选项用于配置 Lean 以及用户自定义扩展的行为。\n设置持续有效至当前 `section` 或 `namespace` 结束，或文件结束。\n`<id>` 支持自动补全，可列出可用选项。\n\n`set_option <id> <value> in <command>` 仅为单条命令设置选项：\n```\nset_option pp.all true in\n#check 1 + 1\n```\n类似地，也可在项和策略内部使用 `set_option <id> <value> in`，使选项仅在单个项或策略中生效。"
+    },
+    {
+        "source": "Defines the `builtin_env_linter` attribute for registering an environment linter.\nEach environment linter needs to have a registered Boolean-value `Lean.Option` that will be\nassociated with it by providing the option name in the attribute, i.e.\n`@[builtin_env_linter linter.envLinter.myLinter]`.",
+        "page": "Linters-and-Code-Quality/Implementing-Linters/index.html",
+        "translation": "定义用于注册环境检查器的 `builtin_env_linter` 属性。\n每个环境检查器都需要一个已注册的布尔值 `Lean.Option`，通过在属性中提供选项名与其关联，例如 `@[builtin_env_linter linter.envLinter.myLinter]`。"
+    },
+    {
+        "source": "Marks a theorem or definition for use by the `grind` tactic.\n\nAn optional modifier (e.g. `=`, `→`, `←`, `cases`, `intro`, `ext`, `inj`, etc.)\ncontrols how `grind` uses the declaration:\n* whether it is applied forwards, backwards, or both,\n* whether equalities are used on the left, right, or both sides,\n* whether case-splits, constructors, extensionality, or injectivity are applied,\n* or whether custom instantiation patterns are used.\n\nSee the individual modifier docstrings for details.",
+        "page": "The--grind--tactic/Homomorphism-Annotations/index.html",
+        "translation": "将定理或定义标记为供 `grind` 策略使用。\n\n可选的修饰符（例如 `=`、`→`、`←`、`cases`、`intro`、`ext`、`inj` 等）控制 `grind` 如何使用该声明：\n* 正向、反向或双向应用；\n* 使用等式的左侧、右侧或两侧；\n* 应用分类讨论、构造子、外延性或单射性；\n* 或使用自定义实例化模式。\n\n详细信息请参见各修饰符的文档字符串。"
+    },
+    {
+        "source": "`grind` is a tactic inspired by modern SMT solvers. **Picture a virtual whiteboard**:\nevery time grind discovers a new equality, inequality, or logical fact,\nit writes it on the board, groups together terms known to be equal,\nand lets each reasoning engine read from and contribute to the shared workspace.\nThese engines work together to handle equality reasoning, apply known theorems,\npropagate new facts, perform case analysis, and run specialized solvers\nfor domains like linear arithmetic and commutative rings.\n\nSee [the reference manual's chapter on `grind`](https://lean-lang.org/doc/reference/4.36.0-rc2/find/?domain=Verso.Genre.Manual.section&name=grind-tactic) for more information.\n\n`grind` is *not* designed for goals whose search space explodes combinatorially,\nthink large pigeonhole instances, graph‑coloring reductions, high‑order N‑queens boards,\nor a 200‑variable Sudoku encoded as Boolean constraints.  Such encodings require\n thousands (or millions) of case‑splits that overwhelm `grind`’s branching search.\n\nFor **bit‑level or combinatorial problems**, consider using **`bv_decide`**.\n`bv_decide` calls a state‑of‑the‑art SAT solver (CaDiCaL) and then returns a\n*compact, machine‑checkable certificate*.\n\n### Equality reasoning\n\n`grind` uses **congruence closure** to track equalities between terms.\nWhen two terms are known to be equal, congruence closure automatically deduces\nequalities between more complex expressions built from them.\nFor example, if `a = b`, then congruence closure will also conclude that `f a` = `f b`\nfor any function `f`. This forms the foundation for efficient equality reasoning in `grind`.\nHere is an example:\n```\nexample (f : Nat → Nat) (h : a = b) : f (f b) = f (f a) := by\n  grind\n```\n\n### Applying theorems using E-matching\n\nTo apply existing theorems, `grind` uses a technique called **E-matching**,\nwhich finds matches for known theorem patterns while taking equalities into account.\nCombined with congruence closure, E-matching helps `grind` discover\nnon-obvious consequences of theorems and equalities automatically.\n\nConsider the following functions and theorems:\n```\ndef f (a : Nat) : Nat :=\n  a + 1\n\ndef g (a : Nat) : Nat :=\n  a - 1\n\n@[grind =]\ntheorem gf (x : Nat) : g (f x) = x := by\n  simp [f, g]\n```\nThe theorem `gf` asserts that `g (f x) = x` for all natural numbers `x`.\nThe attribute `[grind =]` instructs `grind` to use the left-hand side of the equation,\n`g (f x)`, as a pattern for E-matching.\nSuppose we now have a goal involving:\n```\nexample {a b} (h : f b = a) : g a = b := by\n  grind\n```\nAlthough `g a` is not an instance of the pattern `g (f x)`,\nit becomes one modulo the equation `f b = a`. By substituting `a`\nwith `f b` in `g a`, we obtain the term `g (f b)`,\nwhich matches the pattern `g (f x)` with the assignment `x := b`.\nThus, the theorem `gf` is instantiated with `x := b`,\nand the new equality `g (f b) = b` is asserted.\n`grind` then uses congruence closure to derive the implied equality\n`g a = g (f b)` and completes the proof.\n\nThe pattern used to instantiate theorems affects the effectiveness of `grind`.\nFor example, the pattern `g (f x)` is too restrictive in the following case:\nthe theorem `gf` will not be instantiated because the goal does not even\ncontain the function symbol `g`.\n\n```\nexample (h₁ : f b = a) (h₂ : f c = a) : b = c := by\n  grind\n```\n\nYou can use the command `grind_pattern` to manually select a pattern for a given theorem.\nIn the following example, we instruct `grind` to use `f x` as the pattern,\nallowing it to solve the goal automatically:\n```\ngrind_pattern gf => f x\n\nexample {a b c} (h₁ : f b = a) (h₂ : f c = a) : b = c := by\n  grind\n```\nYou can enable the option `trace.grind.ematch.instance` to make `grind` print a\ntrace message for each theorem instance it generates.\n\nYou can also specify a **multi-pattern** to control when `grind` should apply a theorem.\nA multi-pattern requires that all specified patterns are matched in the current context\nbefore the theorem is applied. This is useful for theorems such as transitivity rules,\nwhere multiple premises must be simultaneously present for the rule to apply.\nThe following example demonstrates this feature using a transitivity axiom for a binary relation `R`:\n```\nopaque R : Int → Int → Prop\naxiom Rtrans {x y z : Int} : R x y → R y z → R x z\n\ngrind_pattern Rtrans => R x y, R y z\n\nexample {a b c d} : R a b → R b c → R c d → R a d := by\n  grind\n```\nBy specifying the multi-pattern `R x y, R y z`, we instruct `grind` to\ninstantiate `Rtrans` only when both `R x y` and `R y z` are available in the context.\nIn the example, `grind` applies `Rtrans` to derive `R a c` from `R a b` and `R b c`,\nand can then repeat the same reasoning to deduce `R a d` from `R a c` and `R c d`.\n\nInstead of using `grind_pattern` to explicitly specify a pattern,\nyou can use the `@[grind]` attribute or one of its variants, which will use a heuristic to\ngenerate a (multi-)pattern. The complete list is available in the reference manual. The main ones are:\n\n- `@[grind →]` will select a multi-pattern from the hypotheses of the theorem (i.e. it will use the theorem for forwards reasoning).\n  In more detail, it will traverse the hypotheses of the theorem from left-to-right, and each time it encounters a minimal indexable\n  (i.e. has a constant as its head) subexpression which \"covers\" (i.e. fixes the value of) an argument which was not\n  previously covered, it will add that subexpression as a pattern, until all arguments have been covered.\n- `@[grind ←]` will select a multi-pattern from the conclusion of theorem (i.e. it will use the theorem for backwards reasoning).\n  This may fail if not all the arguments to the theorem appear in the conclusion.\n- `@[grind]` will traverse the conclusion and then the hypotheses left-to-right, adding patterns as they increase the coverage,\n  stopping when all arguments are covered.\n- `@[grind =]` checks that the conclusion of the theorem is an equality, and then uses the left-hand-side of the equality as a pattern.\n  This may fail if not all of the arguments appear in the left-hand-side.\n\nHere is the previous example again but using the attribute `[grind →]`\n```\nopaque R : Int → Int → Prop\n@[grind →] axiom Rtrans {x y z : Int} : R x y → R y z → R x z\n\nexample {a b c d} : R a b → R b c → R c d → R a d := by\n  grind\n```\n\nTo control theorem instantiation and avoid generating an unbounded number of instances,\n`grind` uses a generation counter. Terms in the original goal are assigned generation zero.\nWhen `grind` applies a theorem using terms of generation `≤ n`, any new terms it creates\nare assigned generation `n + 1`. This limits how far the tactic explores when applying\ntheorems and helps prevent an excessive number of instantiations.\n\n#### Key options:\n- `grind (ematch := <num>)` controls the number of E-matching rounds.\n- `grind [<name>, ...]` instructs `grind` to use the declaration `name` during E-matching.\n- `grind only [<name>, ...]` is like `grind [<name>, ...]` but does not use theorems tagged with `@[grind]`.\n- `grind (gen := <num>)` sets the maximum generation.\n\n### Linear integer arithmetic (`lia`)\n\n`grind` can solve goals that reduce to **linear integer arithmetic (LIA)** using an\nintegrated decision procedure called **`lia`**.  It understands\n\n* equalities   `p = 0`\n* inequalities  `p ≤ 0`\n* disequalities `p ≠ 0`\n* divisibility  `d ∣ p`\n\nThe solver incrementally assigns integer values to variables; when a partial\nassignment violates a constraint it adds a new, implied constraint and retries.\nThis *model-based* search is **complete for LIA**.\n\n#### Key options:\n\n* `grind -lia` disable the solver (useful for debugging)\n* `grind +qlia` accept rational models (shrinks the search space but is incomplete for ℤ)\n* `grind (liaSteps := n)` cap the number of steps performed by the model search (the solver becomes incomplete when the threshold is reached)\n\n#### Examples:\n\n```\n-- Even + even is never odd.\nexample {x y : Int} : 2 * x + 4 * y ≠ 5 := by\n  grind\n\n-- Mixing equalities and inequalities.\nexample {x y : Int} :\n    2 * x + 3 * y = 0 → 1 ≤ x → y < 1 := by\n  grind\n\n-- Reasoning with divisibility.\nexample (a b : Int) :\n    2 ∣ a + 1 → 2 ∣ b + a → ¬ 2 ∣ b + 2 * a := by\n  grind\n\nexample (x y : Int) :\n    27 ≤ 11*x + 13*y →\n    11*x + 13*y ≤ 45 →\n    -10 ≤ 7*x - 9*y →\n    7*x - 9*y ≤ 4 → False := by\n  grind\n\n-- Types that implement the `ToInt` type-class.\nexample (a b c : UInt64)\n    : a ≤ 2 → b ≤ 3 → c - a - b = 0 → c ≤ 5 := by\n  grind\n```\n\n### Algebraic solver (`ring`)\n\n`grind` ships with an algebraic solver nick-named **`ring`** for goals that can\nbe phrased as polynomial equations (or disequations) over commutative rings,\nsemirings, or fields.\n\n*Works out of the box*\nAll core numeric types and relevant Mathlib types already provide the required\ntype-class instances, so the solver is ready to use in most developments.\n\nWhat it can decide:\n\n* equalities of the form `p = q`\n* disequalities `p ≠ q`\n* basic reasoning under field inverses (`a / b := a * b⁻¹`)\n* goals that mix ring facts with other `grind` engines\n\n#### Key options:\n\n* `grind -ring` turn the solver off (useful when debugging)\n* `grind (ringSteps := n)` cap the number of steps performed by this procedure.\n\n#### Examples\n\n```\nopen Lean Grind\n\nexample [CommRing α] (x : α) : (x + 1) * (x - 1) = x^2 - 1 := by\n  grind\n\n-- Characteristic 256 means 16 * 16 = 0.\nexample [CommRing α] [IsCharP α 256] (x : α) :\n    (x + 16) * (x - 16) = x^2 := by\n  grind\n\n-- Works on built-in rings such as `UInt8`.\nexample (x : UInt8) : (x + 16) * (x - 16) = x^2 := by\n  grind\n\nexample [CommRing α] (a b c : α) :\n    a + b + c = 3 →\n    a^2 + b^2 + c^2 = 5 →\n    a^3 + b^3 + c^3 = 7 →\n    a^4 + b^4 = 9 - c^4 := by\n  grind\n\nexample [Field α] [NoNatZeroDivisors α] (a : α) :\n    1 / a + 1 / (2 * a) = 3 / (2 * a) := by\n  grind\n```\n\n### Other options\n\n- `grind (splits := <num>)` caps the *depth* of the search tree.  Once a branch performs `num` splits\n  `grind` stops splitting further in that branch.\n- `grind -splitIte` disables case splitting on if-then-else expressions.\n- `grind -splitMatch` disables case splitting on `match` expressions.\n- `grind +splitImp` instructs `grind` to split on any hypothesis `A → B` whose antecedent `A` is **propositional**.\n- `grind -linarith` disables the linear arithmetic solver for (ordered) modules and rings.\n\n### Additional Examples\n\n```\nexample {a b} {as bs : List α} : (as ++ bs ++ [b]).getLastD a = b := by\n  grind\n\nexample (x : BitVec (w+1)) : (BitVec.cons x.msb (x.setWidth w)) = x := by\n  grind\n\nexample (as : Array α) (lo hi i j : Nat) :\n    lo ≤ i → i < j → j ≤ hi → j < as.size → min lo (as.size - 1) ≤ i := by\n  grind\n```",
+        "page": "The--grind--tactic/Interactive-Mode/index.html",
+        "translation": "`grind` 是一种受现代 SMT 求解器启发的策略。可以想象有一块虚拟白板：每当 `grind` 发现新的等式、不等式或逻辑事实时，它就把该事实写到白板上，把已知相等的项归为一组，并让各个推理引擎读取共享工作区中的内容并向其中贡献信息。这些引擎协同工作，处理等式推理、应用已知定理、传播新事实、执行情况分析，并针对线性算术和交换环等领域运行专用求解器。更多信息请参阅参考手册中关于 `grind` 的章节。\n\n`grind` 并非为搜索空间发生组合爆炸的目标而设计，例如大型鸽巢原理实例、图着色归约、高阶 N 皇后棋盘，或编码为布尔约束的 200 变量数独。这类编码需要成千上万（乃至数百万）次情况拆分，会压垮 `grind` 的分支搜索。对于位级或组合问题，请考虑使用 `bv_decide`。`bv_decide` 会调用先进的 SAT 求解器（CaDiCaL），随后返回紧凑且可由机器检查的证书。\n\n等式推理\n\n`grind` 使用同余闭包跟踪项之间的等式。当已知两个项相等时，同余闭包会自动推出由它们构成的更复杂表达式之间的等式。例如，若 `a = b`，则对于任意函数 `f`，同余闭包也会得出 `f a = f b`。这构成了 `grind` 中高效等式推理的基础。示例如下：\n\nexample ( f : Nat → Nat ) ( h : a = b ) : f ( f b ) = f ( f a ) := by a : Nat b : Nat f : Nat → Nat h : a = b ⊢ f ( f b ) = f ( f a ) grind All goals completed! 🐙\n\n使用 E-matching 应用定理\n\n为了应用现有定理，`grind` 使用一种称为 E-matching 的技术；它在考虑等式的同时，为已知定理的模式寻找匹配。E-matching 与同余闭包相结合，可帮助 `grind` 自动发现定理和等式中并不显然的推论。考虑以下函数和定理：\n\ndef f ( a : Nat ) : Nat := a + 1 def g ( a : Nat ) : Nat := a - 1 @[ grind = ] theorem gf ( x : Nat ) : g ( f x ) = x := by x : Nat ⊢ g ( f x ) = x simp [ f , g ] All goals completed! 🐙\n\n定理 `gf` 断言，对所有自然数 `x`，都有 `g ( f x ) = x`。属性 `[ grind = ]` 指示 `grind` 使用等式左侧 `g ( f x )` 作为 E-matching 的模式。假设现在有如下目标：\n\nexample {a b} (h : f b = a) : g a = b := by grind\n\n尽管 `g a` 不是模式 `g ( f x )` 的实例，但模等式 `f b = a` 后它就是。将 `g a` 中的 `a` 替换为 `f b`，便得到项 `g ( f b )`；在赋值 `x := b` 下，它与模式 `g ( f x )` 匹配。因此，定理 `gf` 以 `x := b` 实例化，并断言新等式 `g ( f b ) = b`。随后，`grind` 使用同余闭包推出隐含的等式 `g a = g ( f b )` 并完成证明。\n\n用于实例化定理的模式会影响 `grind` 的效果。例如，在下例中，模式 `g ( f x )` 过于严格：由于目标甚至不含函数符号 `g`，定理 `gf` 不会被实例化。\n\nexample (h₁ : f b = a) (h₂ : f c = a) : b = c := by grind\n\n可以使用命令 `grind_pattern` 为给定定理手动选择模式。在下例中，我们指示 `grind` 使用 `f x` 作为模式，使其能够自动解决目标：\n\ngrind_pattern gf => f x example {a b c} (h₁ : f b = a) (h₂ : f c = a) : b = c := by grind\n\n可以启用选项 `trace.grind.ematch.instance`，让 `grind` 为其生成的每个定理实例打印跟踪消息。还可以指定多模式，以控制 `grind` 应在何时应用定理。多模式要求所有指定模式都已在当前上下文中匹配，之后才应用定理。对于传递性规则之类的定理，这很有用，因为应用规则前必须同时存在多个前提。下例使用二元关系 `R` 的传递性公理演示此功能：\n\nopaque R : Int → Int → Prop axiom Rtrans { x y z : Int } : R x y → R y z → R x z grind_pattern Rtrans => R x y , R y z example { a b c d } : R a b → R b c → R c d → R a d := by a : Int b : Int c : Int d : Int ⊢ R a b → R b c → R c d → R a d grind All goals completed! 🐙\n\n通过指定多模式 `R x y , R y z`，我们指示 `grind` 仅在上下文中同时有 `R x y` 和 `R y z` 时实例化 `Rtrans`。在此例中，`grind` 应用 `Rtrans`，从 `R a b` 和 `R b c` 推出 `R a c`，随后可重复同一推理，从 `R a c` 和 `R c d` 推出 `R a d`。\n\n除了使用 `grind_pattern` 显式指定模式之外，还可以使用属性 `@[ grind ]` 或它的某个变体；这些属性会使用启发式方法生成（多）模式。完整列表见参考手册。主要变体如下：\n\n* `@[ grind → ]` 从定理的假设中选择多模式（即使用该定理进行前向推理）。更具体地说，它会从左到右遍历定理的假设；每当遇到一个最小的、可索引的（即以常量为首部的）子表达式，且该表达式“覆盖”（即确定其值）了此前尚未覆盖的实参时，就将该子表达式加入模式，直到所有实参都被覆盖。\n* `@[ grind ← ]` 从定理的结论中选择多模式（即使用该定理进行后向推理）。若定理的实参并非全都出现在结论中，此操作可能失败。\n* `@[ grind ]` 先遍历结论，再从左到右遍历假设，并在模式能提高覆盖率时将其加入；当所有实参都被覆盖时停止。\n* `@[ grind = ]` 检查定理的结论是否为等式，随后使用等式左侧作为模式。若实参并非全都出现在左侧，此操作可能失败。\n\n下面再次给出先前的例子，但改用属性 `[ grind → ]`：\n\nopaque R : Int → Int → Prop @[ grind → ] axiom Rtrans { x y z : Int } : R x y → R y z → R x z example { a b c d } : R a b → R b c → R c d → R a d := by a : Int b : Int c : Int d : Int ⊢ R a b → R b c → R c d → R a d grind All goals completed! 🐙\n\n为了控制定理实例化并避免生成无界数量的实例，`grind` 使用代计数器。原始目标中的项被赋予第 0 代。当 `grind` 使用代满足 `generation ≤ n` 的项应用定理时，它创建的所有新项都被赋予第 `n + 1` 代。这会限制策略在应用定理时探索的深度，并有助于防止实例化数量过多。\n\n关键选项：\n\n* `grind ( ematch := < num > )` 控制 E-matching 的轮数。\n* `grind [ < name > , ... ]` 指示 `grind` 在 E-matching 期间使用声明 `name`。\n* `grind only [ < name > , ... ]` 与 `grind [ < name > , ... ]` 类似，但不使用带有 `@[ grind ]` 标记的定理。\n* `grind ( gen := < num > )` 设置最大代。\n\n线性整数算术（`lia`）\n\n`grind` 可以使用名为 `lia` 的集成判定过程，解决可归约为线性整数算术（LIA）的目标。它理解：\n\n* 等式 `p = 0`\n* 不等式 `p ≤ 0`\n* 不等关系 `p ≠ 0`\n* 整除关系 `d ∣ p`\n\n求解器以增量方式为变量赋整数值；当某个部分赋值违反约束时，它会加入一个新的隐含约束并重试。此基于模型的搜索对于 LIA 是完备的。\n\n关键选项：\n\n* `grind - lia` 禁用求解器（调试时有用）。\n* `grind + qlia` 接受有理数模型（可缩小搜索空间，但对于 `ℤ` 不完备）。\n* `grind ( liaSteps := n )` 限制模型搜索所执行的步数（达到阈值后，求解器将变得不完备）。\n\n示例：\n\nexample { x y : Int } : 2 * x + 4 * y ≠ 5 := by x : Int y : Int ⊢ 2 * x + 4 * y ≠ 5 grind All goals completed! 🐙\n\n-- 混合使用等式与不等式。 example { x y : Int } : 2 * x + 3 * y = 0 → 1 ≤ x → y < 1 := by x : Int y : Int ⊢ 2 * x + 3 * y = 0 → 1 ≤ x → y < 1 grind All goals completed! 🐙\n\n-- 使用整除关系推理。 example ( a b : Int ) : 2 ∣ a + 1 → 2 ∣ b + a → ¬ 2 ∣ b + 2 * a := by a : Int b : Int ⊢ 2 ∣ a + 1 → 2 ∣ b + a → ¬ 2 ∣ b + 2 * a grind All goals completed! 🐙\n\nexample ( x y : Int ) : 27 ≤ 11 * x + 13 * y → 11 * x + 13 * y ≤ 45 → - 10 ≤ 7 * x - 9 * y → 7 * x - 9 * y ≤ 4 → False := by x : Int y : Int ⊢ 27 ≤ 11 * x + 13 * y → 11 * x + 13 * y ≤ 45 → - 10 ≤ 7 * x - 9 * y → 7 * x - 9 * y ≤ 4 → False grind All goals completed! 🐙\n\n-- 实现 `ToInt` 类型类的类型。 example ( a b c : UInt64 ) : a ≤ 2 → b ≤ 3 → c - a - b = 0 → c ≤ 5 := by a : UInt64 b : UInt64 c : UInt64 ⊢ a ≤ 2 → b ≤ 3 → c - a - b = 0 → c ≤ 5 grind All goals completed! 🐙\n\n代数求解器（`ring`）\n\n`grind` 自带一个昵称为 `ring` 的代数求解器，用于可表述为交换环、半环或域上的多项式方程（或不等方程）的目标。\n\n开箱即用\n\n所有核心数值类型以及相关的 Mathlib 类型都已提供所需的类型类实例，因此该求解器在大多数开发中可直接使用。\n\n它可以判定：\n\n* 形如 `p = q` 的等式\n* 形如 `p ≠ q` 的不等关系\n* 域中关于逆元的基本推理（`a / b := a * b ⁻¹`）\n* 将环事实与其他 `grind` 引擎混合使用的目标\n\n关键选项：\n\n* `grind - ring` 关闭求解器（调试时有用）。\n* `grind ( ringSteps := n )` 限制此过程执行的步数。\n\n示例：\n\nopen Lean Grind example [ CommRing α ] ( x : α ) : ( x + 1 ) * ( x - 1 ) = x ^ 2 - 1 := by α : Type u_1 inst✝ : CommRing α x : α ⊢ ( x + 1 ) * ( x - 1 ) = x ^ 2 - 1 grind All goals completed! 🐙\n\n-- 特征为 256 意味着 16 * 16 = 0。 example [ CommRing α ] [ IsCharP α 256 ] ( x : α ) : ( x + 16 ) * ( x - 16 ) = x ^ 2 := by α : Type u_1 inst✝¹ : CommRing α inst✝ : IsCharP α 256 x : α ⊢ ( x + 16 ) * ( x - 16 ) = x ^ 2 grind All goals completed! 🐙\n\n-- 也适用于 `UInt8` 等内置环。 example ( x : UInt8 ) : ( x + 16 ) * ( x - 16 ) = x ^ 2 := by x : UInt8 ⊢ ( x + 16 ) * ( x - 16 ) = x ^ 2 grind All goals completed! 🐙\n\nexample [ CommRing α ] ( a b c : α ) : a + b + c = 3 → a ^ 2 + b ^ 2 + c ^ 2 = 5 → a ^ 3 + b ^ 3 + c ^ 3 = 7 → a ^ 4 + b ^ 4 = 9 - c ^ 4 := by α : Type u_1 inst✝ : CommRing α a : α b : α c : α ⊢ a + b + c = 3 → a ^ 2 + b ^ 2 + c ^ 2 = 5 → a ^ 3 + b ^ 3 + c ^ 3 = 7 → a ^ 4 + b ^ 4 = 9 - c ^ 4 grind All goals completed! 🐙\n\nexample [ Field α ] [ NoNatZeroDivisors α ] ( a : α ) : 1 / a + 1 / ( 2 * a ) = 3 / ( 2 * a ) := by α : Type u_1 inst✝¹ : Field α inst✝ : NoNatZeroDivisors α a : α ⊢ 1 / a + 1 / ( 2 * a ) = 3 / ( 2 * a ) grind All goals completed! 🐙\n\n其他选项\n\n* `grind ( splits := < num > )` 限制搜索树的深度。一旦某个分支执行了 `num` 次拆分，`grind` 就停止在该分支中继续拆分。\n* `grind - splitIte` 禁止对 if-then-else 表达式进行情况拆分。\n* `grind - splitMatch` 禁止对 `match` 表达式进行情况拆分。\n* `grind + splitImp` 指示 `grind` 对前件 `A` 为命题的任意假设 `A → B` 进行拆分。\n* `grind - linarith` 禁用用于（有序）模和环的线性算术求解器。\n\n更多示例\n\nexample { a b } { as bs : List α } : ( as ++ bs ++ [ b ] ) . getLastD a = b := by α : Type u_1 a : α b : α as : List α bs : List α ⊢ ( as ++ bs ++ [ b ] ) . getLastD a = b grind All goals completed! 🐙\n\nexample ( x : BitVec ( w + 1 ) ) : ( BitVec.cons x . msb ( x . setWidth w ) ) = x := by w : Nat x : BitVec ( w + 1 ) ⊢ BitVec.cons x . msb ( BitVec.setWidth w x ) = x grind All goals completed! 🐙\n\nexample ( as : Array α ) ( lo hi i j : Nat ) : lo ≤ i → i < j → j ≤ hi → j < as . size → min lo ( as . size - 1 ) ≤ i := by α : Type u_1 as : Array α lo : Nat hi : Nat i : Nat j : Nat ⊢ lo ≤ i → i < j → j ≤ hi → j < as . size → min lo ( as . size - 1 ) ≤ i grind All goals completed! 🐙"
+    },
+    {
+        "source": "The `!` modifier instructs `grind` to consider only minimal indexable subexpressions\nwhen selecting patterns.",
+        "page": "The--grind--tactic/Interactive-Mode/index.html",
+        "translation": "`!` 修饰符指示 `grind` 在选择模式时，只考虑最小的可索引子表达式。"
+    },
+    {
+        "source": "`sym` enters an interactive symbolic simulation mode built on `grind`.\nUnlike `grind =>`, it does not eagerly introduce hypotheses or apply by-contradiction,\ngiving the user explicit control over `intro`, `apply`, and `internalize` steps.\n\nExample:\n```\nexample (x : Nat) : myP x → myQ x := by\n  sym [myP_myQ] =>\n    intro h\n    finish\n```",
+        "page": "The--grind--tactic/Interactive-Mode/index.html",
+        "translation": "`sym` 进入基于 `grind` 的交互式符号模拟模式。\n与 `grind =>` 不同，它不会立即引入假设或使用反证法，让用户能够显式控制 `intro`、`apply` 和 `internalize` 步骤。\n\n例如：\n```\nexample (x : Nat) : myP x → myQ x := by\n  sym [myP_myQ] =>\n    intro h\n    finish\n```"
+    },
+    {
+        "source": "Exception postcondition stack **type**: `EStack⟨ε₁ → l, ε₂ → l⟩` is `(ε₁ → l) × (ε₂ → l) × EStack⟨⟩`.",
+        "page": "The--vcgen--tactic/Predicate-Transformers/index.html",
+        "translation": "异常后置条件栈的**类型**：`EStack⟨ε₁ → l, ε₂ → l⟩` 即 `(ε₁ → l) × (ε₂ → l) × EStack⟨⟩`。"
+    },
+    {
+        "source": "Exception postcondition stack **value**: `estack⟨e₁, e₂⟩` is `(e₁, e₂, ())`.",
+        "page": "The--vcgen--tactic/Predicate-Transformers/index.html",
+        "translation": "异常后置条件栈的**值**：`estack⟨e₁, e₂⟩` 即 `(e₁, e₂, ())`。"
+    },
+    {
+        "source": "`for x in e do s` iterates over `e` assuming `e`'s type has an instance of the `ForIn` typeclass.\n`break` and `continue` are supported inside `for` loops.\n`for x in e, x2 in e2, ... do s` iterates over the given collections in parallel,\nuntil at least one of them is exhausted.\nThe types of `e2` etc. must implement the `Std.ToStream` typeclass.",
+        "page": "The--vcgen--tactic/Predicate-Transformers/index.html",
+        "translation": "`for x in e do s` 遍历 `e`，要求 `e` 的类型具有 `ForIn` 类型类实例。\n`for` 循环内支持 `break` 和 `continue`。\n`for x in e, x2 in e2, ... do s` 并行遍历给定的集合，直到至少一个集合耗尽为止。\n`e2` 等集合的类型必须实现 `Std.ToStream` 类型类。"
+    },
+    {
+        "source": "Hoare triple notation without exception postcondition (defaults to `⊥`). An optional `(m := …)`\nafter the precondition ascribes the program to monad `…`.",
+        "page": "The--vcgen--tactic/Predicate-Transformers/index.html",
+        "translation": "不带异常后置条件的霍尔三元组记法（异常后置条件默认为 `⊥`）。\n前置条件后可选的 `(m := …)` 将程序的单子标注为 `…`。"
+    },
+    {
+        "source": "Hoare triple notation with an exception postcondition:\n`⦃ P ⦄ x ⦃ Q; E ⦄ := Triple x P Q E`.",
+        "page": "The--vcgen--tactic/Predicate-Transformers/index.html",
+        "translation": "带异常后置条件的霍尔三元组记法：\n`⦃ P ⦄ x ⦃ Q; E ⦄ := Triple x P Q E`。"
+    },
+    {
+        "source": "`let` is used to declare a local definition. Example:\n```\nlet x := 1\nlet y := x + 1\nx + y\n```\nSince functions are first class citizens in Lean, you can use `let` to declare\nlocal functions too.\n```\nlet double := fun x => 2*x\ndouble (double 3)\n```\nFor recursive definitions, you should use `let rec`.\nYou can also perform pattern matching using `let`. For example,\nassume `p` has type `Nat × Nat`, then you can write\n```\nlet (x, y) := p\nx + y\n```\n\nThe *anaphoric let* `let := v` defines a variable called `this`.",
+        "page": "The--vcgen--tactic/Verification-Conditions/index.html",
+        "translation": "`let` 用于声明局部定义。\n例如：\n```\nlet x := 1\nlet y := x + 1\nx + y\n```\n由于函数在 Lean 中是一等值，也可以用 `let` 声明局部函数。\n```\nlet double := fun x => 2*x\ndouble (double 3)\n```\n递归定义应使用 `let rec`。\n也可通过 `let` 进行模式匹配。\n例如，假设 `p` 的类型为 `Nat × Nat`，则可以写：\n```\nlet (x, y) := p\nx + y\n```\n\n*回指 let* `let := v` 定义一个名为 `this` 的变量。"
+    },
+    {
+        "source": "Embedding of pure Lean values into `SVal`. An alias for `SPred.pure`.",
+        "page": "The--mvcgen--tactic/Predicate-Transformers/index.html",
+        "translation": "将纯 Lean 值嵌入 `SVal`。\n它是 `SPred.pure` 的别名。"
+    },
+    {
+        "source": "Entailment in `SPred`; sugar for `SPred.entails`.",
+        "page": "The--mvcgen--tactic/Predicate-Transformers/index.html",
+        "translation": "`SPred` 中的蕴涵；是 `SPred.entails` 的语法糖。"
+    },
+    {
+        "source": "Tautology in `SPred`; sugar for `SPred.entails ⌜True⌝`.",
+        "page": "The--mvcgen--tactic/Predicate-Transformers/index.html",
+        "translation": "`SPred` 中的重言式；是 `SPred.entails ⌜True⌝` 的语法糖。"
+    },
+    {
+        "source": "Bi-entailment in `SPred`; sugar for `SPred.bientails`.",
+        "page": "The--mvcgen--tactic/Predicate-Transformers/index.html",
+        "translation": "`SPred` 中的双向蕴涵；是 `SPred.bientails` 的语法糖。"
+    },
+    {
+        "source": "An embedding of the special syntax for `SPred` into ordinary terms that provides alternative\ninterpretations of logical connectives and quantifiers.\n\nWithin `spred(...)`, `term(...)` escapes to the ordinary Lean interpretation of this syntax.",
+        "page": "The--mvcgen--tactic/Predicate-Transformers/index.html",
+        "translation": "将 `SPred` 的专用语法嵌入普通项，为逻辑连接词和量词提供另一种解释。\n\n在 `spred(...)` 内，`term(...)` 会转回该语法在普通 Lean 中的解释。"
+    },
+    {
+        "source": "Escapes from a surrounding `spred(...)` term, returning to the usual interpretations of quantifiers\nand connectives.",
+        "page": "The--mvcgen--tactic/Predicate-Transformers/index.html",
+        "translation": "从外围的 `spred(...)` 项中转出，恢复量词和连接词的通常解释。"
+    },
+    {
+        "source": "`And a b`, or `a ∧ b`, is the conjunction of propositions. It can be\nconstructed and destructed like a pair: if `ha : a` and `hb : b` then\n`⟨ha, hb⟩ : a ∧ b`, and if `h : a ∧ b` then `h.left : a` and `h.right : b`.\n\nConventions for notations in identifiers:\n\n * The recommended spelling of `∧` in identifiers is `and`.",
+        "page": "The--mvcgen--tactic/Predicate-Transformers/index.html",
+        "translation": "`And a b`（即 `a ∧ b`）是命题的合取。\n可像有序对一样构造和拆解它：若 `ha : a` 且 `hb : b`，则 `⟨ha, hb⟩ : a ∧ b`；若 `h : a ∧ b`，则 `h.left : a` 且 `h.right : b`。\n\n标识符中的记法约定：\n\n* 建议在标识符中将 `∧` 写为 `and`。"
+    },
+    {
+        "source": "`Or a b`, or `a ∨ b`, is the disjunction of propositions. There are two\nconstructors for `Or`, called `Or.inl : a → a ∨ b` and `Or.inr : b → a ∨ b`,\nand you can use `match` or `cases` to destruct an `Or` assumption into the\ntwo cases.\n\nConventions for notations in identifiers:\n\n * The recommended spelling of `∨` in identifiers is `or`.",
+        "page": "The--mvcgen--tactic/Predicate-Transformers/index.html",
+        "translation": "`Or a b`（即 `a ∨ b`）是命题的析取。\n`Or` 有两个构造子，分别为 `Or.inl : a → a ∨ b` 和 `Or.inr : b → a ∨ b`；可使用 `match` 或 `cases` 将 `Or` 假设拆成两种情形。\n\n标识符中的记法约定：\n\n* 建议在标识符中将 `∨` 写为 `or`。"
+    },
+    {
+        "source": "`Not p`, or `¬p`, is the negation of `p`. It is defined to be `p → False`,\nso if your goal is `¬p` you can use `intro h` to turn the goal into\n`h : p ⊢ False`, and if you have `hn : ¬p` and `h : p` then `hn h : False`\nand `(hn h).elim` will prove anything.\nFor more information: [Propositional Logic](https://lean-lang.org/theorem_proving_in_lean4/propositions_and_proofs.html#propositional-logic)\n\nConventions for notations in identifiers:\n\n * The recommended spelling of `¬` in identifiers is `not`.",
+        "page": "The--mvcgen--tactic/Predicate-Transformers/index.html",
+        "translation": "`Not p`（即 `¬p`）是 `p` 的否定，定义为 `p → False`。\n因此，若目标为 `¬p`，可使用 `intro h` 将目标变为 `h : p ⊢ False`；若有 `hn : ¬p` 和 `h : p`，则 `hn h : False`，而 `(hn h).elim` 可以证明任意命题。\n更多信息见[命题逻辑](https://lean-lang.org/theorem_proving_in_lean4/propositions_and_proofs.html#propositional-logic)。\n\n标识符中的记法约定：\n\n* 建议在标识符中将 `¬` 写为 `not`。"
+    },
+    {
+        "source": "If and only if, or logical bi-implication. `a ↔ b` means that `a` implies `b` and vice versa.\nBy `propext`, this implies that `a` and `b` are equal and hence any expression involving `a`\nis equivalent to the corresponding expression with `b` instead.\n\nConventions for notations in identifiers:\n\n * The recommended spelling of `↔` in identifiers is `iff`.",
+        "page": "The--mvcgen--tactic/Predicate-Transformers/index.html",
+        "translation": "当且仅当，即逻辑双向蕴涵。\n`a ↔ b` 表示 `a` 蕴含 `b` 且反之亦然。\n由 `propext` 可知，`a` 和 `b` 相等，因此任何包含 `a` 的表达式，都与将其中 `a` 替换为 `b` 得到的表达式等价。\n\n标识符中的记法约定：\n\n* 建议在标识符中将 `↔` 写为 `iff`。"
+    },
+    {
+        "source": "Explicit binder, like `(x y : A)` or `(x y)`.\nDefault values can be specified using `(x : A := v)` syntax, and tactics using `(x : A := by tac)`.",
+        "page": "The--mvcgen--tactic/Predicate-Transformers/index.html",
+        "translation": "显式绑定器，例如 `(x y : A)` 或 `(x y)`。\n可使用 `(x : A := v)` 语法指定默认值，也可使用 `(x : A := by tac)` 指定策略。"
+    },
+    {
+        "source": "A *hole* (or *placeholder term*), which stands for an unknown term that is expected to be inferred based on context.\nFor example, in `@id _ Nat.zero`, the `_` must be the type of `Nat.zero`, which is `Nat`.\n\nThe way this works is that holes create fresh metavariables.\nThe elaborator is allowed to assign terms to metavariables while it is checking definitional equalities.\nThis is often known as *unification*.\n\nNormally, all holes must be solved for. However, there are a few contexts where this is not necessary:\n* In `match` patterns, holes are catch-all patterns.\n* In some tactics, such as `refine'` and `apply`, unsolved-for placeholders become new goals.\n\nRelated concept: implicit parameters are automatically filled in with holes during the elaboration process.\n\nSee also `?m` syntax (synthetic holes).",
+        "page": "The--mvcgen--tactic/Predicate-Transformers/index.html",
+        "translation": "*空洞*（或*占位项*）表示一个预期根据上下文推断的未知项。\n例如，在 `@id _ Nat.zero` 中，`_` 必须是 `Nat.zero` 的类型，即 `Nat`。\n\n其原理是，空洞会创建新的元变量。\n精译器在检查定义相等性时，可以为元变量赋值。\n这通常称为*合一*。\n\n通常所有空洞都必须求解，但在少数上下文中不必如此：\n* 在 `match` 模式中，空洞是匹配任意内容的模式。\n* 在某些策略（如 `refine'` 和 `apply`）中，未求解的占位符会成为新的目标。\n\n相关概念：精译过程中，隐式参数会自动填入空洞。\n\n另见 `?m` 语法（合成空洞）。"
+    },
+    {
+        "source": "`binderIdent` matches an `ident` or a `_`. It is used for identifiers in binding\nposition, where `_` means that the value should be left unnamed and inaccessible.",
+        "page": "The--mvcgen--tactic/Predicate-Transformers/index.html",
+        "translation": "`binderIdent` 匹配 `ident` 或 `_`。\n它用于绑定位置的标识符，其中 `_` 表示该值不命名且不可访问。"
+    },
+    {
+        "source": "A postcondition expressing total correctness.\nThat is, it expresses that the asserted computation finishes without throwing an exception\n*and* the result satisfies the given predicate `p`.",
+        "page": "The--mvcgen--tactic/Predicate-Transformers/index.html",
+        "translation": "表示全正确性的后置条件。\n即断言计算正常完成、不抛出异常，*且*结果满足给定谓词 `p`。"
+    },
+    {
+        "source": "A postcondition expressing partial correctness.\nThat is, it expresses that *if* the asserted computation finishes without throwing an exception\n*then* the result satisfies the given predicate `p`.\nNothing is asserted when the computation throws an exception.",
+        "page": "The--mvcgen--tactic/Predicate-Transformers/index.html",
+        "translation": "表示部分正确性的后置条件。\n即断言：*如果*计算正常完成且未抛出异常，*那么*结果满足给定谓词 `p`。\n若计算抛出异常，则不作任何断言。"
+    },
+    {
+        "source": "Entailment of postconditions.\n\nThis consists of:\n * Entailment of the assertion about the return value, for all possible return values.\n * Entailment of the exception conditions.\n\nWhile implication of postconditions (`PostCond.imp`) results in a new postcondition, entailment is\nan ordinary proposition.",
+        "page": "The--mvcgen--tactic/Predicate-Transformers/index.html",
+        "translation": "后置条件的蕴涵。\n\n它包括：\n* 对所有可能返回值，关于返回值的断言之间的蕴涵；\n* 异常条件之间的蕴涵。\n\n后置条件的蕴涵运算（`PostCond.imp`）产生新的后置条件，而此处的蕴涵关系是普通命题。"
+    },
+    {
+        "source": "Conjunction of postconditions.\n\nThis is defined pointwise, as the conjunction of the assertions about the return value and the\nconjunctions of the assertions about each potential exception.",
+        "page": "The--mvcgen--tactic/Predicate-Transformers/index.html",
+        "translation": "后置条件的合取。\n\n逐点定义为关于返回值的断言的合取，以及关于每种可能异常的断言的合取。"
+    },
+    {
+        "source": "Implication of postconditions.\n\nThis is defined pointwise, as the implication of the assertions about the return value and the\nimplications of each of the assertions about each potential exception.\n\nWhile entailment of postconditions (`PostCond.entails`) is an ordinary proposition, implication of\npostconditions is itself a postcondition.",
+        "page": "The--mvcgen--tactic/Predicate-Transformers/index.html",
+        "translation": "后置条件的蕴涵运算。\n\n逐点定义为关于返回值的断言之间的蕴涵，以及关于每种可能异常的断言之间的蕴涵。\n\n后置条件的蕴涵关系（`PostCond.entails`）是普通命题，而此蕴涵运算的结果本身是后置条件。"
+    },
+    {
+        "source": "`wp⟦x⟧ Q` is defined as `(WP.wp x).apply Q`.",
+        "page": "The--mvcgen--tactic/Predicate-Transformers/index.html",
+        "translation": "`wp⟦x⟧ Q` 定义为 `(WP.wp x).apply Q`。"
+    },
+    {
+        "source": "A Hoare triple for reasoning about monadic programs. A Hoare triple `Triple x P Q` is a\n*specification* for `x`: if assertion `P` holds before `x`, then postcondition `Q` holds after\nrunning `x`.\n\n`⦃P⦄ x ⦃Q⦄` is convenient syntax for `Triple x P Q`.",
+        "page": "The--mvcgen--tactic/Predicate-Transformers/index.html",
+        "translation": "用于推理单子程序的霍尔三元组。\n霍尔三元组 `Triple x P Q` 是 `x` 的*规约*：若运行 `x` 前断言 `P` 成立，则运行 `x` 后后置条件 `Q` 成立。\n\n`⦃P⦄ x ⦃Q⦄` 是 `Triple x P Q` 的便捷语法。"
+    },
+    {
+        "source": "`#eval e` evaluates the expression `e` by compiling it and running the compiled code. It then\nprints the resulting value.\n\n* The command attempts to use `ToExpr`, `Repr`, or `ToString` instances to print the result.\n* If `e` is a monadic value of type `m ty`, then the command tries to adapt the monad `m`\n  to one of the monads that `#eval` supports, which include `IO`, `CoreM`, `MetaM`, `TermElabM`, and `CommandElabM`.\n  Users can define `MonadEval` instances to extend the list of supported monads.\n\nThe `#eval` command gracefully degrades in capability depending on what is imported.\nImporting the `Lean.Elab.Command` module provides full capabilities.\n\nDue to unsoundness, `#eval` refuses to evaluate expressions that depend on `sorry`, even indirectly,\nsince the presence of `sorry` can lead to runtime instability and crashes.\nThis check can be overridden with the `#eval! e` command.\n\nOptions:\n* If `eval.pp` is true (default: true) then tries to use `ToExpr` instances to make use of the\n  usual pretty printer. Otherwise, only tries using `Repr` and `ToString` instances.\n* If `eval.type` is true (default: false) then pretty prints the type of the evaluated value.\n* If `eval.derive.repr` is true (default: true) then attempts to auto-derive a `Repr` instance\n  when there is no other way to print the result.\n\nSee also: `#reduce e` for evaluation by term reduction.",
+        "page": "Build-Tools-and-Distribution/Lake/index.html",
+        "translation": "`#eval e` 通过编译表达式 `e` 并运行编译后的代码来求值，然后打印结果。\n\n* 此命令尝试使用 `ToExpr`、`Repr` 或 `ToString` 实例打印结果。\n* 若 `e` 是类型为 `m ty` 的单子值，则尝试将单子 `m` 适配到 `#eval` 支持的单子之一，包括 `IO`、`CoreM`、`MetaM`、`TermElabM` 和 `CommandElabM`。用户可定义 `MonadEval` 实例扩展支持的单子列表。\n\n`#eval` 的功能会根据导入内容逐步降低。\n导入模块 `Lean.Elab.Command` 可获得完整功能。\n\n由于不可靠性，`#eval` 拒绝求值任何直接或间接依赖 `sorry` 的表达式，因为 `sorry` 可能导致运行时不稳定或崩溃。\n可使用 `#eval! e` 命令绕过此检查。\n\n选项：\n* 若 `eval.pp` 为真（默认：真），则尝试使用 `ToExpr` 实例，以使用通常的美化打印器。否则只尝试 `Repr` 和 `ToString` 实例。\n* 若 `eval.type` 为真（默认：假），则美化打印求值结果的类型。\n* 若 `eval.derive.repr` 为真（默认：真），则在无法通过其他方式打印结果时，尝试自动派生 `Repr` 实例。\n\n另见通过项归约求值的 `#reduce e`。"
+    },
+    {
+        "source": "A field assignment in a declarative configuration.",
+        "page": "Build-Tools-and-Distribution/Lake/index.html",
+        "translation": "声明式配置中的字段赋值。"
+    },
+    {
+        "source": "Defines the configuration of a Lake package.  Has many forms:\n\n```lean\npackage «pkg-name»\npackage «pkg-name» { /- config opts -/ }\npackage «pkg-name» where /- config opts -/\n```\n\nThere can only be one `package` declaration per Lake configuration file.\nThe defined package configuration will be available for reference as `_package`.",
+        "page": "Build-Tools-and-Distribution/Lake/index.html",
+        "translation": "定义 Lake 包的配置，有以下多种形式：\n\n```lean\npackage «pkg-name»\npackage «pkg-name» { /- config opts -/ }\npackage «pkg-name» where /- config opts -/\n```\n\n每个 Lake 配置文件只能有一个 `package` 声明。\n定义的包配置可通过 `_package` 引用。"
+    },
+    {
+        "source": "A `docComment` parses a \"documentation comment\" like `/-- foo -/`. This is not treated like a\nregular comment (that is, as whitespace); it is parsed and forms part of the syntax tree structure.\n\nAt parse time, `docComment` checks the value of the `doc.verso` option. If it is true, the contents\nare parsed as Verso markup. If not, the contents are treated as plain text or Markdown. Use\n`plainDocComment` to always treat the contents as plain text.\n\nA plain text doc comment node contains a `/--` atom and then a node holding the comment's text as an\natom and its closing `-/` atom. Use `TSyntax.getDocString` to extract the text from a doc string\nsyntax node.  A Verso comment node contains the `/--` atom, the document's syntax tree, and a\nclosing `-/` atom.",
+        "page": "Build-Tools-and-Distribution/Lake/index.html",
+        "translation": "`docComment` 解析形如 `/-- foo -/` 的“文档注释”。\n它不被视为普通注释（即空白），而是会被解析并成为语法树结构的一部分。\n\n解析时，`docComment` 检查选项 `doc.verso` 的值。\n若为真，则将内容解析为 Verso 标记；否则将其视为纯文本或 Markdown。\n使用 `plainDocComment` 可始终将内容视为纯文本。\n\n纯文本文档注释节点包含一个 `/--` 原子，随后是一个包含注释文本原子和闭合 `-/` 原子的节点。\n使用 `TSyntax.getDocString` 可从文档字符串语法节点中提取文本。\nVerso 注释节点则包含 `/--` 原子、文档语法树和闭合的 `-/` 原子。"
+    },
+    {
+        "source": "`letRecDecl` matches the body of a let-rec declaration: a doc comment, attributes, and then\na let declaration without the `let` keyword, such as `/-- foo -/ @[simp] bar := 1`.",
+        "page": "Build-Tools-and-Distribution/Lake/index.html",
+        "translation": "`letRecDecl` 匹配 let-rec 声明的主体：文档注释、属性，以及不带 `let` 关键字的 let 声明，例如 `/-- foo -/ @[simp] bar := 1`。"
+    },
+    {
+        "source": "Declare a post-`lake update` hook for the package.\nRuns the monadic action is after a successful `lake update` execution\nin this package or one of its downstream dependents.\n\n**Example**\n\nThis feature enables Mathlib to synchronize the Lean toolchain and run\n`cache get` after a `lake update`:\n\n```\nlean_exe cache\npost_update pkg do\n  let wsToolchainFile := (← getRootPackage).dir / \"lean-toolchain\"\n  let mathlibToolchain ← IO.FS.readFile <| pkg.dir / \"lean-toolchain\"\n  IO.FS.writeFile wsToolchainFile mathlibToolchain\n  let exeFile ← runBuild cache.fetch\n  let exitCode ← env exeFile.toString #[\"get\"]\n  if exitCode ≠ 0 then\n    error s!\"{pkg.name}: failed to fetch cache\"\n```",
+        "page": "Build-Tools-and-Distribution/Lake/index.html",
+        "translation": "为包声明一个 `lake update` 后置钩子。\n在此包或其任一下游依赖包中成功执行 `lake update` 后，运行该单子动作。\n\n**示例**\n\n此功能允许 Mathlib 在 `lake update` 后同步 Lean 工具链并运行 `cache get`：\n\n```\nlean_exe cache\npost_update pkg do\n  let wsToolchainFile := (← getRootPackage).dir / \"lean-toolchain\"\n  let mathlibToolchain ← IO.FS.readFile <| pkg.dir / \"lean-toolchain\"\n  IO.FS.writeFile wsToolchainFile mathlibToolchain\n  let exeFile ← runBuild cache.fetch\n  let exitCode ← env exeFile.toString #[\"get\"]\n  if exitCode ≠ 0 then\n    error s!\"{pkg.name}: failed to fetch cache\"\n```"
+    },
+    {
+        "source": "Adds a new package dependency to the workspace. The general syntax is:\n\n```\nrequire [\"<scope>\" /] <pkg-name> [@ [git]? <version>]\n  [from <source>] [with <options>]\n```\n\nThe `from` clause tells Lake where to locate the dependency.\nSee the `fromClause` syntax documentation (e.g., hover over it) to see\nthe different forms this clause can take.\n\nWithout a `from` clause, Lake will lookup the package in the default\nregistry (i.e., Reservoir) and use the information there to download the\npackage at the requested `version`. The `scope` is used to disambiguate between\npackages in the registry with the same `pkg-name`. In Reservoir, this scope\nis the package owner (e.g., `leanprover` of `@leanprover/doc-gen4`).\n\nThe `with` clause specifies a `NameMap String` of Lake options\nused to configure the dependency. This is equivalent to passing `-K`\noptions to the dependency on the command line.",
+        "page": "Build-Tools-and-Distribution/Lake/index.html",
+        "translation": "向工作区添加新的包依赖。\n一般语法为：\n\n```\nrequire [\"<scope>\" /] <pkg-name> [@ [git]? <version>]\n  [from <source>] [with <options>]\n```\n\n`from` 子句指定 Lake 在何处查找依赖。\n不同形式见 `fromClause` 的语法文档（例如可将鼠标悬停其上查看）。\n\n没有 `from` 子句时，Lake 会在默认注册表（即 Reservoir）中查找包，使用其中的信息下载请求的 `version` 版本。\n`scope` 用于区分注册表中具有相同 `pkg-name` 的包。\n在 Reservoir 中，此作用域是包的所有者，例如 `@leanprover/doc-gen4` 中的 `leanprover`。\n\n`with` 子句指定用于配置依赖的 Lake 选项，类型为 `NameMap String`。\n它等价于在命令行上为依赖传入 `-K` 选项。"
+    },
+    {
+        "source": "The version of the package to require.\nTo specify a Git revision, use the syntax `@ git <rev>`.",
+        "page": "Build-Tools-and-Distribution/Lake/index.html",
+        "translation": "要请求的包版本。\n要指定 Git 修订版本，使用语法 `@ git <rev>`。"
+    },
+    {
+        "source": "Specifies a specific source from which to draw the package dependency.\nDependencies that are downloaded from a remote source or copied from a\nrelative path will be placed into the workspace's `packagesDir`.\n\n**Path Dependencies**\n\n```\nfrom [copy] <path>\n```\n\nLake locates the package at a fixed `path` relative to the requiring\npackage's directory. With `copy`, the package will be loaded from a local\nworkspace copy rather than being loaded directly from the source.\n\n**Git Dependencies**\n\n```\nfrom git <url> [@ <rev>] [/ <subDir>]\n```\n\nLake clones the Git repository available at the specified fixed Git `url`,\nand checks out the specified revision `rev`. The revision can be a commit hash,\nbranch, or tag. If none is provided, Lake defaults to `master`. After checkout,\nLake loads the package located in `subDir` (or the repository root if no\nsubdirectory is specified).",
+        "page": "Build-Tools-and-Distribution/Lake/index.html",
+        "translation": "指定获取包依赖的具体来源。\n从远端下载或从相对路径复制的依赖会放入工作区的 `packagesDir` 中。\n\n**路径依赖**\n\n```\nfrom [copy] <path>\n```\n\nLake 在相对于依赖方包目录的固定 `path` 处查找包。\n指定 `copy` 时，会从本地工作区副本加载包，而不是直接从源位置加载。\n\n**Git 依赖**\n\n```\nfrom git <url> [@ <rev>] [/ <subDir>]\n```\n\nLake 克隆指定固定 Git `url` 处的仓库，并检出指定修订版本 `rev`。\n修订版本可以是提交哈希、分支或标签；未指定时默认为 `master`。\n检出后，Lake 加载 `subDir` 中的包；未指定子目录时，则加载仓库根目录中的包。"
+    },
+    {
+        "source": "A `NameMap String` of Lake options used to configure the dependency.\nThis is equivalent to passing `-K` options to the dependency on the command line.",
+        "page": "Build-Tools-and-Distribution/Lake/index.html",
+        "translation": "用于配置依赖的 Lake 选项，类型为 `NameMap String`。\n它等价于在命令行上为依赖传入 `-K` 选项。"
+    },
+    {
+        "source": "Define a new Lean library target for the package.\nCan optionally be provided with a configuration of type `LeanLibConfig`.\nHas many forms:\n\n```lean\nlean_lib «target-name»\nlean_lib «target-name» { /- config opts -/ }\nlean_lib «target-name» where /- config opts -/\n```",
+        "page": "Build-Tools-and-Distribution/Lake/index.html",
+        "translation": "为包定义一个新的 Lean 库目标。\n可选地提供一个 `LeanLibConfig` 类型的配置。\n有以下多种形式：\n\n```lean\nlean_lib «target-name»\nlean_lib «target-name» { /- config opts -/ }\nlean_lib «target-name» where /- config opts -/\n```"
+    },
+    {
+        "source": "Define a new Lean binary executable target for the package.\nCan optionally be provided with a configuration of type `LeanExeConfig`.\nHas many forms:\n\n```lean\nlean_exe «target-name»\nlean_exe «target-name» { /- config opts -/ }\nlean_exe «target-name» where /- config opts -/\n```",
+        "page": "Build-Tools-and-Distribution/Lake/index.html",
+        "translation": "为包定义一个新的 Lean 二进制可执行目标。\n可选地提供一个 `LeanExeConfig` 类型的配置。\n有以下多种形式：\n\n```lean\nlean_exe «target-name»\nlean_exe «target-name» { /- config opts -/ }\nlean_exe «target-name» where /- config opts -/\n```"
+    },
+    {
+        "source": "Define a new external library target for the package. Has one form:\n\n```lean\nextern_lib «target-name» (pkg : NPackage _package.name) :=\n  /- build term of type `FetchM (Job FilePath)` -/\n```\n\nThe `pkg` parameter (and its type specifier) is optional.\nIt is of type `NPackage _package.name` to provably demonstrate the package\nprovided is the package in which the target is defined.\n\nThe term should build the external library's **static** library.",
+        "page": "Build-Tools-and-Distribution/Lake/index.html",
+        "translation": "为包定义一个新的外部库目标，形式如下：\n\n```lean\nextern_lib «target-name» (pkg : NPackage _package.name) :=\n  /- build term of type `FetchM (Job FilePath)` -/\n```\n\n`pkg` 参数及其类型标注是可选的。\n其类型为 `NPackage _package.name`，以证明传入的包就是定义此目标的包。\n\n该项应构建外部库的**静态**库。"
+    },
+    {
+        "source": "Define a new custom target for the package. Has one form:\n\n```lean\ntarget «target-name» (pkg : NPackage _package.name) : α :=\n  /- build term of type `FetchM (Job α)` -/\n```\n\nThe `pkg` parameter (and its type specifier) is optional.\nIt is of type `NPackage _package.name` to provably demonstrate the package\nprovided is the package in which the target is defined.",
+        "page": "Build-Tools-and-Distribution/Lake/index.html",
+        "translation": "为包定义一个新的自定义目标，形式如下：\n\n```lean\ntarget «target-name» (pkg : NPackage _package.name) : α :=\n  /- build term of type `FetchM (Job α)` -/\n```\n\n`pkg` 参数及其类型标注是可选的。\n其类型为 `NPackage _package.name`，以证明传入的包就是定义此目标的包。"
+    },
+    {
+        "source": "Define a new package facet. Has one form:\n\n```lean\npackage_facet «facet-name» (pkg : Package) : α :=\n  /- build term of type `FetchM (Job α)` -/\n```\n\nThe `pkg` parameter (and its type specifier) is optional.",
+        "page": "Build-Tools-and-Distribution/Lake/index.html",
+        "translation": "定义一个新的包分面，形式如下：\n\n```lean\npackage_facet «facet-name» (pkg : Package) : α :=\n  /- build term of type `FetchM (Job α)` -/\n```\n\n`pkg` 参数及其类型标注是可选的。"
+    },
+    {
+        "source": "Define a new library facet. Has one form:\n\n```lean\nlibrary_facet «facet-name» (lib : LeanLib) : α :=\n  /- build term of type `FetchM (Job α)` -/\n```\n\nThe `lib` parameter (and its type specifier) is optional.",
+        "page": "Build-Tools-and-Distribution/Lake/index.html",
+        "translation": "定义一个新的库分面，形式如下：\n\n```lean\nlibrary_facet «facet-name» (lib : LeanLib) : α :=\n  /- build term of type `FetchM (Job α)` -/\n```\n\n`lib` 参数及其类型标注是可选的。"
+    },
+    {
+        "source": "Define a new module facet. Has one form:\n\n```lean\nmodule_facet «facet-name» (mod : Module) : α :=\n  /- build term of type `FetchM (Job α)` -/\n```\n\nThe `mod` parameter (and its type specifier) is optional.",
+        "page": "Build-Tools-and-Distribution/Lake/index.html",
+        "translation": "定义一个新的模块分面，形式如下：\n\n```lean\nmodule_facet «facet-name» (mod : Module) : α :=\n  /- build term of type `FetchM (Job α)` -/\n```\n\n`mod` 参数及其类型标注是可选的。"
+    },
+    {
+        "source": "Define a new Lake script for the package.\n\n**Example**\n\n```\n/-- Display a greeting -/\nscript «script-name» (args) do\n  if h : 0 < args.length then\n    IO.println s!\"Hello, {args[0]'h}!\"\n  else\n    IO.println \"Hello, world!\"\n  return 0\n```",
+        "page": "Build-Tools-and-Distribution/Lake/index.html",
+        "translation": "为包定义一个新的 Lake 脚本。\n\n**示例**\n\n```\n/-- Display a greeting -/\nscript «script-name» (args) do\n  if h : 0 < args.length then\n    IO.println s!\"Hello, {args[0]'h}!\"\n  else\n    IO.println \"Hello, world!\"\n  return 0\n```"
+    },
+    {
+        "source": "A macro that expands to the path of package's directory\nduring the Lakefile's elaboration.",
+        "page": "Build-Tools-and-Distribution/Lake/index.html",
+        "translation": "一个宏，在 Lakefile 精译期间展开为包目录的路径。"
+    },
+    {
+        "source": "A macro that expands to the specified configuration option (or `none`,\nif the option has not been set) during the Lakefile's elaboration.\n\nConfiguration arguments are set either via the Lake CLI (by the `-K` option)\nor via the `with` clause in a `require` statement.",
+        "page": "Build-Tools-and-Distribution/Lake/index.html",
+        "translation": "一个宏，在 Lakefile 精译期间展开为指定配置选项；若未设置该选项，则展开为 `none`。\n\n配置参数通过 Lake CLI 的 `-K` 选项设置，或通过 `require` 语句的 `with` 子句设置。"
+    },
+    {
+        "source": "The `meta if` command has two forms:\n\n```lean\nmeta if <c:term> then <a:command>\nmeta if <c:term> then <a:command> else <b:command>\n```\n\nIt expands to the command `a` if the term `c` evaluates to true\n(at elaboration time). Otherwise, it expands to command `b` (if an `else`\nclause is provided).\n\nOne can use this command to specify, for example, external library targets\nonly available on specific platforms:\n\n```lean\nmeta if System.Platform.isWindows then\nextern_lib winOnlyLib := ...\nelse meta if System.Platform.isOSX then\nextern_lib macOnlyLib := ...\nelse meta if System.Platform.isLinux then\nextern_lib linuxOnlyLib := ...\n```",
+        "page": "Build-Tools-and-Distribution/Lake/index.html",
+        "translation": "`meta if` 命令有两种形式：\n\n```lean\nmeta if <c:term> then <a:command>\nmeta if <c:term> then <a:command> else <b:command>\n```\n\n若项 `c` 在精译期间求值为真，则展开为命令 `a`。\n否则，若提供了 `else` 子句，则展开为命令 `b`。\n\n例如，可用此命令指定只在特定平台上可用的外部库目标：\n\n```lean\nmeta if System.Platform.isWindows then\nextern_lib winOnlyLib := ...\nelse meta if System.Platform.isOSX then\nextern_lib macOnlyLib := ...\nelse meta if System.Platform.isLinux then\nextern_lib linuxOnlyLib := ...\n```"
+    },
+    {
+        "source": "The `do` command syntax groups multiple similarly indented commands together.\nThe group can then be passed to another command that usually only accepts a\nsingle command (e.g., `meta if`).",
+        "page": "Build-Tools-and-Distribution/Lake/index.html",
+        "translation": "`do` 命令语法将多个缩进相同的命令分为一组。\n该组随后可传给通常只接受单个命令的其他命令（例如 `meta if`）。"
+    },
+    {
+        "source": "Executes a term of type `IO α` at elaboration-time\nand produces an expression corresponding to the result via `ToExpr α`.",
+        "page": "Build-Tools-and-Distribution/Lake/index.html",
+        "translation": "在精译期间执行一个 `IO α` 类型的项，并通过 `ToExpr α` 生成对应于结果的表达式。"
+    }
+]

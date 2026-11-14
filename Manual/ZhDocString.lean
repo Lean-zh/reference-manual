@@ -14,3 +14,4 @@ import Manual.ZhDocString.NotationsMacros.Do
 import Manual.ZhDocString.NotationsMacros.Syntax
 import Manual.ZhDocString.BuildTools.Lake
 import Manual.ZhDocString.BuildTools.Config
+import Manual.ZhDocString.Upstream

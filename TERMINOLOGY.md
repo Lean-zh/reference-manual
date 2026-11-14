@@ -106,3 +106,11 @@
 | well-typed                   | 良型的                           |
 | `.olean` file                | `.olean` 文件                    |
 | η-equivalence                | η-等价                           |
+| event selection              | 事件选择                         |
+| selector                     | 选择器                           |
+| selectable                   | 可选项                           |
+| waiter                       | 等待器                           |
+| generation (grind)           | 生成层级                         |
+| stateful linter              | 有状态检查器                     |
+| predicate transformer        | 谓词变换器                       |
+| assertion lattice            | 断言格                           |

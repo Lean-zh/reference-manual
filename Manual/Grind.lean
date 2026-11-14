@@ -177,16 +177,20 @@ tag := "grind-minimizing"
 触发实例化的模式。详情参见{ref "e-matching"}[关于 E-匹配的章节]。
 有些定理可能带有 `usr` 前缀，表示使用了自定义模式。
 
-# Local Definitions
+# 局部定义
+%%%
+file := "Local-Definitions"
+tag := "Lean-__________________--grind--______--Local-Definitions"
+%%%
 
-{tactic}`grind` has two flags that control how it treats local definitions with {keywordOf Lean.Parser.Term.let}`let`.
-They are enabled by default, but duplicating the local definition's value can lead to the term exploding in size; consider disabling them when working with terms that contain many nested {keywordOf Lean.Parser.Term.let}`let`s.
+{tactic}`grind` 有两个标志，用于控制它如何处理以 {keywordOf Lean.Parser.Term.let}`let` 引入的局部定义。
+这两个标志默认启用，但复制局部定义的值可能导致项的大小爆炸；处理包含多层嵌套 {keywordOf Lean.Parser.Term.let}`let` 的项时，可以考虑禁用它们。
 
 : `zeta` (default `true`)
 
-  This controls whether {tactic}`grind` performs {tech (key := "ζ")}[ζ-reduction].
-  Unless this flag is disabled, terms that contain a {keywordOf Lean.Parser.Term.let}`let` are reduced before they are added to the whiteboard, so that {lean}`let x := 5; x + x` is reduced to {lean}`5 + 5` before further processing.
-  If it is disabled, the term is not reduced.
+  此标志控制 {tactic}`grind` 是否执行{tech (key := "ζ")}[ζ-归约]。
+  除非禁用此标志，否则包含 {keywordOf Lean.Parser.Term.let}`let` 的项会先归约，再加入白板；例如，{lean}`let x := 5; x + x` 会先归约为 {lean}`5 + 5`，再做后续处理。
+  如果禁用此标志，则不对该项进行归约。
   ```lean -show
   example : (let x := 5; x + x) = 10 := by grind
   /-- `grind` failed -/
@@ -196,19 +200,19 @@ They are enabled by default, but duplicating the local definition's value can le
 
 : `zetaDelta` (default `true`)
 
-  This flag controls whether {tactic}`grind` replaces variables in terms that have local definitions in the context with their definitions.
+  此标志控制 {tactic}`grind` 是否将项中那些在上下文中具有局部定义的变量替换为其定义。
   :::tacticExample
-  If a proof goal is {goal}`let x := 5; (x + x = 10)`, running
+  若证明目标是 {goal}`let x := 5; (x + x = 10)`，运行
   ```setup
   intro x
   ```
-  results in a proof state in which the definition of `x` is in the context:
+  后，证明状态的上下文中会出现 `x` 的定义：
   ```pre
   x : Nat := 5
   ⊢ x + x = 10
   ```
-  Running {tacticStep}`grind` succeeds, because {lean}`5` is substituted for `x`.
-  Without the `zetaDelta` flag, it fails.
+  运行 {tacticStep}`grind` 会成功，因为 `x` 被替换成了 {lean}`5`。
+  禁用 `zetaDelta` 标志后则会失败。
   ```post -show
   ```
   :::

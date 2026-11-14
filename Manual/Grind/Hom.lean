@@ -9,6 +9,7 @@ import VersoManual
 import Lean.Parser.Term
 
 import Manual.Meta
+import Manual.ZhDocString.Upstream
 import Manual.Papers
 
 
@@ -21,8 +22,9 @@ open Lean.Elab.Tactic.GuardMsgs.WhitespaceMode
 
 set_option linter.constructorNameAsVariable false
 
-#doc (Manual) "Homomorphism Annotations" =>
+#doc (Manual) "同态标注" =>
 %%%
+file := "Homomorphism-Annotations"
 tag := "grind-hom"
 %%%
 
@@ -38,12 +40,12 @@ axiom h : Nat → U
 variable {p : Prop} [Decidable p]
 ```
 
-The {tactic}`grind` tactic can be extended to a new domain by defining a mapping from the new domain to one for which there already exists a dedicated solver.
-This extension consists of a _homomorphism_: a structure-preserving translation from the new domain to the existing domain.
-In other words, {tactic}`grind` can be made to reason about some new type {lean}`T` using an existing solver for {lean}`U` by defining a mapping {name}`T.toU` from {lean}`T` to {lean}`U` that satisfies certain properties.
-Lean includes homomorphism rewrite rules for {name}`Fin`, {name}`BitVec`, {name}`UInt8`–{name}`UInt64`, {name}`USize`, {name}`Int8`–{name}`Int64`, and {name}`ISize` that rewrite them to {ref "cutsat"}[the `lia` solver's] domain.
-Additionally, the inequality relations and byte-index bounds of {name}`String.Pos` are mapped, allowing {tactic}`grind` to reason about string positions.
-Homomorphism rewriting is controlled by the `hom` flag to {tactic}`grind`, and it is enabled by default.
+通过定义从新领域到已有专用求解器所支持领域的映射，可以扩展 {tactic}`grind` 以处理新领域。
+这种扩展由一个_同态_构成，即从新领域到既有领域的保结构转换。
+换言之，为 {lean}`T` 定义满足特定性质的映射 {name}`T.toU`，将其映射到 {lean}`U`，就能让 {tactic}`grind` 利用 {lean}`U` 的现有求解器推理新类型 {lean}`T`。
+Lean 为 {name}`Fin`、{name}`BitVec`、{name}`UInt8`–{name}`UInt64`、{name}`USize`、{name}`Int8`–{name}`Int64` 和 {name}`ISize` 提供同态重写规则，将它们重写到{ref "cutsat"}[`lia` 求解器的]领域。
+此外，还会映射 {name}`String.Pos` 的不等关系与字节索引界，使 {tactic}`grind` 能够推理字符串位置。
+同态重写由 {tactic}`grind` 的 `hom` 标志控制，默认启用。
 
 ```lean -show
 -- These tests check the claims made just above: that each listed
@@ -166,69 +168,69 @@ example (a b : Nat) (h : a ≤ b) (h₂ : b ≤ a) : a = b := by
 ```
 
 
-To use the feature at all, the mapping should be injective with respect to equality.
-That is, given {lean}`x` and {lean}`y` of type {lean}`T`, it should be the case that {lean}`x = y` is logically equivalent to {lean}`x.toU = y.toU`.
-Adding the {attr}`grind hom` attribute to a suitable injectivity theorem activates the mapping feature.
+要使用此功能，映射首先必须对相等关系具有单射性。
+也就是说，对 {lean}`T` 类型的 {lean}`x` 和 {lean}`y`，{lean}`x = y` 应与 {lean}`x.toU = y.toU` 逻辑等价。
+给合适的单射性定理添加 {attr}`grind hom` 属性，即可启用此映射功能。
 
 :::paragraph
-To be useful, the mapping should translate operations of interest on {lean}`T` into operations in {lean}`U` that are supported by {tactic}`grind`'s solvers.
-The {attr}`grind hom` attribute can be added to the following kinds of theorems:
+要使映射有用，它应将 {lean}`T` 上所关注的运算转换为 {lean}`U` 上受 {tactic}`grind` 求解器支持的运算。
+{attr}`grind hom` 属性可以添加到以下种类的定理上：
 
-* To translate {lean}`f` into {lean}`g`, it should be the case that {lean}`(f x y).toU = g x.toU y.toU`.
-* Ordering relations can be translated by showing that {lean}`x ≤ y ↔ x.toU ≤ y.toU` and {lean}`x < y ↔ x.toU < y.toU`.
-* Numeric literals can be translated by providing a theorem that translates them into a function into {lean}`U`.
-  This is done by adding the {attr}`grind hom` attribute to a theorem of the form {lean}`(OfNat.ofNat n : T).toU = h n`.
-* Conditionals can be translated by providing a theorem that shows that {lean}`(if p then x else y).toU = if p then x.toU else y.toU`.
+* 要将 {lean}`f` 转换为 {lean}`g`，应有 {lean}`(f x y).toU = g x.toU y.toU`。
+* 可以通过证明 {lean}`x ≤ y ↔ x.toU ≤ y.toU` 和 {lean}`x < y ↔ x.toU < y.toU` 来转换序关系。
+* 可以通过提供将数值字面量转换为取值于 {lean}`U` 的函数的定理来转换字面量。
+  具体做法是为形如 {lean}`(OfNat.ofNat n : T).toU = h n` 的定理添加 {attr}`grind hom` 属性。
+* 可以通过提供证明 {lean}`(if p then x else y).toU = if p then x.toU else y.toU` 的定理来转换条件表达式。
 
-As a last resort, fallback rules can be provided that are applied after other rules have failed to rewrite a term.
-These are typically used for rules that would otherwise overlap others.
+最后，还可以提供回退规则，在其他规则均未能重写某个项后应用。
+这通常用于原本会与其他规则重叠的规则。
 :::
 
-Additional facts about the range of the mapping can be provided by tagging lemmas with {attr}`grind hom_pred`.
-This is typically used to restrict the range, such as by asserting that the target of {name}`Fin.val` is less than the {name}`Fin`'s bound.
-These lemmas are instantiated when the constants that they mention are used in terms that are not themselves rewritten by {attr}`grind hom` rules.
+给引理添加 {attr}`grind hom_pred` 标注，可以提供关于映射值域的额外事实。
+这通常用于限制值域，例如断言 {name}`Fin.val` 的目标值小于对应 {name}`Fin` 的上界。
+当这些引理所提及的常量出现在本身未被 {attr}`grind hom` 规则重写的项中时，就会实例化这些引理。
 ::::
 
-Homomorphism lemmas are applied prior to adding statements to the shared “whiteboard,” rather than repeatedly while the solvers run.
-This can be much more efficient.
-Because the mapping is injective, _disequality_ of terms in the new type implies disequality in the solver's domain, so {tactic}`grind`'s strategy of negating statements to derive a contradiction can be applied directly even without having a bijection.
-Because they run only very early in the process, homomorphism lemmas are applied without a discharger.
-This means that they do not permit conditional rewrites that require further proving (though rewrites can still be made conditional on an instance-implicit hypothesis, and propositional hypotheses are permitted when they are fully determined by the left-hand side).
+同态引理在将陈述加入共享“白板”之前应用，而不是在求解器运行期间反复应用。
+这可以高效得多。
+由于映射为单射，新类型中项的_不等_蕴含求解器领域中对应项的不等，因此即使映射不是双射，也能直接使用 {tactic}`grind` 对陈述取反再推导矛盾的策略。
+由于同态引理仅在流程很早的阶段运行，应用时不会使用旁条件证明器。
+因此，它们不允许需要额外证明的条件重写（但仍可用实例隐式假设作为条件；若命题假设完全由左侧决定，也允许使用）。
 
-Homomorphism rules are declared using three attributes: {attr}`grind hom`, {attr}`grind hom fallback`, and {attr}`grind hom_pred`.
-These attributes respectively register homomorphism rules, fallback rules to be tried when the other {attr}`grind hom` rules don't apply, and facts about the range of the mapping.
+同态规则使用三个属性声明：{attr}`grind hom`、{attr}`grind hom fallback` 和 {attr}`grind hom_pred`。
+这些属性分别注册同态规则、其他 {attr}`grind hom` 规则不适用时尝试的回退规则，以及关于映射值域的事实。
 
-:::syntax attr (title := "Homomorphism Rules")
+:::syntax attr (title := "同态规则")
 ```grammar
 grind hom
 ```
-{includeDocstring Lean.Parser.Attr.grindHom}
+{zhincludeDocstringFrom Lean.Parser.Attr.grindHom}
 :::
 
-:::syntax attr (title := "Fallback Homomorphism Rules")
+:::syntax attr (title := "回退同态规则")
 ```grammar
 grind hom fallback
 ```
-{includeDocstring Lean.Parser.Attr.grindHomFallback}
+{zhincludeDocstringFrom Lean.Parser.Attr.grindHomFallback}
 :::
 
-:::syntax attr (title := "Homomorphism Predicates")
+:::syntax attr (title := "同态谓词")
 ```grammar
 grind hom_pred
 ```
-{includeDocstring Lean.Parser.Attr.grindHomPred}
+{zhincludeDocstringFrom Lean.Parser.Attr.grindHomPred}
 :::
 
 
-When debugging, homomorphism rewrites can be observed by setting {option}`trace.grind.hom` or {option}`trace.grind.hom.pred` to `true`.
+调试时，将 {option}`trace.grind.hom` 或 {option}`trace.grind.hom.pred` 设为 `true`，即可观察同态重写。
 
-{optionDocs trace.grind.hom}
+{zhOptionDocsFrom trace.grind.hom}
 
-{optionDocs trace.grind.hom.pred}
+{zhOptionDocsFrom trace.grind.hom.pred}
 
-:::example "Very Small Integers"
+:::example "极小整数"
 
-Tiny numbers (that is, whole numbers from zero to three) can be represented using a four-constructor inductive type:
+极小数（即零到三的整数）可以用具有四个构造器的归纳类型表示：
 
 ```lean
 inductive Tiny where
@@ -242,7 +244,7 @@ inductive Tiny where
 namespace Tiny
 ```
 
-A few instances allow numeric literals to be used for {name}`Tiny`:
+提供几个实例后，就可以为 {name}`Tiny` 使用数值字面量：
 ```lean
 instance : Zero Tiny where
   zero := .zero
@@ -257,7 +259,7 @@ instance : OfNat Tiny 3 where
   ofNat := .three
 ```
 
-They can be converted to and from {name}`Nat`:
+它们可以与 {name}`Nat` 相互转换：
 ```lean
 def toNat : Tiny → Nat
   | .zero => 0
@@ -272,7 +274,7 @@ def ofNat : (n : Nat) → n < 4 → Tiny
   | 3, _ => 3
 ```
 
-And they can be compared with each other:
+也可以互相比较：
 ```lean
 instance : LE Tiny where
   le x y := x.toNat ≤ y.toNat
@@ -281,14 +283,14 @@ instance : LT Tiny where
   lt x y := x.toNat < y.toNat
 ```
 
-{name}`Tiny.toNat` is an injective mapping:
+{name}`Tiny.toNat` 是单射映射：
 ```lean
 @[grind hom]
 theorem eq_iff_toNat_eq (x y : Tiny) : x = y ↔ x.toNat = y.toNat := by
   cases x <;> cases y <;> simp [toNat]
 ```
 
-Similarly, because the {inst}`LE Tiny` and {inst}`LT Tiny` instances are defined in terms of those for {name}`Nat`, they are logically equivalent:
+类似地，由于 {inst}`LE Tiny` 和 {inst}`LT Tiny` 实例用 {name}`Nat` 上的对应实例定义，相应关系逻辑等价：
 ```lean
 @[grind hom]
 theorem le_iff_toNat_le (x y : Tiny) : x ≤ y ↔ x.toNat ≤ y.toNat := by
@@ -298,16 +300,16 @@ theorem lt_iff_toNat_lt (x y : Tiny) : x < y ↔ x.toNat < y.toNat := by
   rfl
 ```
 
-Whenever a {name}`Tiny` number is converted to a {name}`Nat`, the resulting number is less than four.
-Adding a {attr}`grind hom_pred` attribute to the proof causes {tactic}`grind` to include this knowledge when {name}`Tiny.toNat` is used in a term that is added to the “whiteboard” but not rewritten by a {attr}`grind hom` rule:
+将 {name}`Tiny` 数转换为 {name}`Nat` 时，结果始终小于四。
+给该事实的证明添加 {attr}`grind hom_pred` 属性后，只要 {name}`Tiny.toNat` 用于一个加入“白板”但未被 {attr}`grind hom` 规则重写的项，{tactic}`grind` 就会引入此事实：
 ```lean
 @[grind hom_pred]
 theorem toNat_lt_4 (x : Tiny) : x.toNat < 4 := by
   cases x <;> simp [toNat]
 ```
 
-A finite type like {name}`Tiny` must decide the meaning of operations that go outside its bounds.
-In this case, {name}`Tiny.succ` and the addition operator are defined such that they truncate; modular arithmetic would be another valid implementation.
+像 {name}`Tiny` 这样的有限类型，必须决定越界运算的含义。
+这里将 {name}`Tiny.succ` 和加法定义为截断运算；模运算则是另一种合法实现。
 ```lean
 def succ (x : Tiny) : Tiny :=
   match x with
@@ -324,8 +326,8 @@ instance : Add Tiny where
   | .three, y => y.succ.succ.succ
 ```
 
-Natural numbers do not exhibit truncating addition, so it seems natural to require that the result of the addition does not truncate prior to mapping it to natural number addition.
-However, this results in an error:
+自然数加法不会截断，因此看起来很自然的做法是：先要求加法结果未被截断，再将其映射为自然数加法。
+然而，这会产生错误：
 ```lean +error (name := homNoH)
 @[grind hom]
 theorem toNat_add_lt_4_eq_add (x y : Tiny)
@@ -338,21 +340,21 @@ invalid `[grind hom]` theorem, `toNat_add_lt_4_eq_add` is conditional: hypothesi
   x.toNat + y.toNat < 4
 is not determined by the left-hand side and would have to be discharged when the rule is applied. Homomorphism rules must be unconditional; use E-matching attributes such as `[grind =]` or `[grind →]` for conditional theorems
 ```
-This is because conditional rewrites are disallowed; the homomorphism feature is used too early in {tactic}`grind` to support them.
+这是因为条件重写不被允许；同态功能在 {tactic}`grind` 中应用得太早，无法支持它。
 
-Instead, addition of tiny numbers can be mapped to truncating addition of natural numbers:
+可以改为将极小数的加法映射为自然数上的截断加法：
 ```lean
 @[grind hom]
 theorem toNat_add_eq_add (x y : Tiny) :
     (x + y).toNat = min (x.toNat + y.toNat) 3 := by
   cases x <;> cases y <;> rfl
 ```
-Given these definitions, we might expect the following example to succeed, but it does not:
+给定这些定义，我们可能预期下面的示例成功，但它并未成功：
 ```lean +error (name := noLits)
 example : (2 : Tiny) + (1 : Tiny) = (3 : Tiny) := by grind
 ```
-Examining {tactic}`grind`'s output, the problem is that it does not successfully register the contradiction that arises from the fact that {lean}`(2 : Tiny) + (1 : Tiny) = (3 : Tiny)` is negated.
-This is because the rewriting process does not rewrite literals like {lean (type := "Tiny")}`2` (that is, {lean}`OfNat.ofNat (α := Tiny) 2`), which are left alone:
+检查 {tactic}`grind` 的输出发现，问题在于它未能成功登记对 {lean}`(2 : Tiny) + (1 : Tiny) = (3 : Tiny)` 取反所产生的矛盾。
+原因是重写过程不会重写 {lean (type := "Tiny")}`2` 这样的字面量（即 {lean}`OfNat.ofNat (α := Tiny) 2`），而将它们原样保留：
 ```leanOutput noLits
 `grind` failed
 case grind.1
@@ -372,7 +374,7 @@ h_1 : toNat 1 + toNat 2 ≤ 3
 [grind] Diagnostics
 ```
 
-Setting {option}`trace.grind.hom` to `true` demonstrates the rewriting performed by the homomorphism lemmas, as well as the added {attr}`grind hom_pred` facts:
+将 {option}`trace.grind.hom` 设为 `true`，可以查看同态引理执行的重写，以及添加的 {attr}`grind hom_pred` 事实：
 ```lean +error (name := noLits')
 set_option trace.grind.hom true in
 example : (2 : Tiny) + (1 : Tiny) = (3 : Tiny) := by grind
@@ -386,7 +388,7 @@ example : (2 : Tiny) + (1 : Tiny) = (3 : Tiny) := by grind
 [grind.hom.pred] toNat 3 < 4
 ```
 
-This can be fixed by providing rules for each supported literal:
+为每个受支持的字面量提供规则，即可修复该问题：
 ```lean
 @[grind hom]
 theorem toNat_zero_eq_zero : (0 : Tiny).toNat = 0 := by simp [toNat]
@@ -398,14 +400,14 @@ theorem toNat_two_eq_two : (2 : Tiny).toNat = 2 := by simp [toNat]
 theorem toNat_three_eq_three : (3 : Tiny).toNat = 3 := by simp [toNat]
 ```
 
-After this, the proof is successful, as is one that exercises the truncation behavior of addition:
+随后，证明就会成功，下面这个涉及加法截断行为的证明也能成功：
 ```lean
 example : (2 : Tiny) + (1 : Tiny) = (3 : Tiny) := by grind
 
 example : (3 : Tiny) + (3 : Tiny) = (3 : Tiny) := by grind
 ```
 
-Enabling {option}`trace.grind.hom` reveals that the {attr}`grind hom_pred` rule no longer fires, because all subterms of type {name}`Tiny` are now rewritten:
+启用 {option}`trace.grind.hom` 可发现 {attr}`grind hom_pred` 规则不再触发，因为所有 {name}`Tiny` 类型的子项现在都被重写了：
 ```lean (name := withLits)
 set_option trace.grind.hom true in
 example : (2 : Tiny) + (1 : Tiny) = (3 : Tiny) := by grind
@@ -420,10 +422,10 @@ example : (2 : Tiny) + (1 : Tiny) = (3 : Tiny) := by grind
 
 
 
-:::example "Difference Lists" (tag := "difference-lists-hom")
+:::example "差分列表" (tag := "difference-lists-hom")
 
-Difference lists, in which lists are represented as functions, {ref "difference-lists-ac" (domain := Manual.examples)}[provide an associative append operator].
-Reasoning about them as lists using {attr}`grind hom` is very appealing; however, the default representation as a function doesn't have the right injectivity property:
+差分列表将列表表示为函数，{ref "difference-lists-ac" (domain := Manual.examples)}[提供满足结合律的追加运算]。
+通过 {attr}`grind hom` 将它们视为列表来推理很有吸引力；但默认的函数表示不具有所需的单射性：
 ```lean
 namespace NotInj
 def DList α := List α → List α
@@ -446,8 +448,8 @@ theorem DList.not_toList_inj :
 end NotInj
 ```
 
-In other words, Lean's function type includes functions that aren't really difference lists.
-To use {attr}`grind hom` with difference lists, they need more structure to rule out these counterexamples:
+换言之，Lean 的函数类型包含一些实际上并非差分列表的函数。
+要为差分列表使用 {attr}`grind hom`，就需要额外结构以排除这些反例：
 ```lean
 @[ext]
 structure DList α where
@@ -457,7 +459,7 @@ structure DList α where
 def DList.toList (xs : DList α) : List α :=
   xs.appendTail []
 ```
-This additional well-formedness property rules out the invalid cases:
+这一额外的良构性质排除了无效情形：
 ```lean
 theorem DList.ext_toList (xs ys : DList α) (h : xs.toList = ys.toList) :
     xs = ys := by
@@ -475,7 +477,7 @@ theorem DList.toList_inj (xs ys : DList α) :
   . apply DList.ext_toList
 ```
 
-The difference list operators can now be translated to list operators:
+现在可以将差分列表运算转换为列表运算：
 ```lean
 def DList.nil : DList α where
   appendTail xs := xs
@@ -511,7 +513,7 @@ theorem DList.append_toList {xs ys : DList α} :
   apply xs.wf
 ```
 
-Now, {tactic}`grind` can reason about properties of difference lists, as well as conversions between difference lists and ordinary lists:
+现在，{tactic}`grind` 能够推理差分列表的性质，以及差分列表与普通列表之间的转换：
 
 ```lean
 variable (a b c : DList Nat)
@@ -548,7 +550,7 @@ example (h₁ : a.toList = [1,2]) (h₂ : b.toList = [3]) :
 example (h : a.toList = []) : a = .nil := by grind -hom
 ```
 
-Even more powerfully, additional {name}`List` lemmas can be used explicitly to reason about difference lists:
+更进一步，还可以显式使用额外的 {name}`List` 引理来推理差分列表：
 
 ```lean
 example (h : a ++ b = a ++ c) : b = c := by
@@ -562,9 +564,9 @@ example (h : a ++ b = .nil) : a = .nil := by
 ```
 :::
 
-:::example "Times of Day"
+:::example "一天中的时刻"
 
-A time can be represented by hours and minutes:
+时刻可以用小时和分钟表示：
 
 ```lean
 structure Time where
@@ -576,8 +578,8 @@ structure Time where
 namespace Time
 ```
 
-Each time can be represented as the number of minutes since midnight.
-This representation is not unique, because more than a day's worth of minutes wrap around to a time in the next day.
+每个时刻都可以表示为从午夜起经过的分钟数。
+这种表示并不唯一，因为超过一天的分钟数会回绕到次日的某个时刻。
 
 ```lean
 def toMinutes (t : Time) : Nat :=
@@ -588,19 +590,19 @@ def ofMinutes (n : Nat) : Time where
   minute := ⟨n % 60, by grind⟩
 ```
 
-While it's not particularly sensible to add two points in time, it's perfectly reasonable to add minutes to a time, yielding a later time.
+将两个时刻相加不太合理，但给时刻加上若干分钟以得到更晚的时刻，则完全合理。
 ```lean
 def addMinutes (t : Time) (n : Nat) : Time :=
   ofMinutes (t.toMinutes + n)
 ```
 
-One time is less than another if it occurs earlier in the day.
+若一个时刻在一天中出现得更早，就称它小于另一个时刻。
 ```lean
 instance : LT Time where
   lt a b := a.toMinutes < b.toMinutes
 ```
 
-Using {attr}`grind hom`, these operators can be mapped directly to the natural numbers.
+使用 {attr}`grind hom`，可以将这些运算直接映射到自然数。
 
 ```lean
 @[grind hom]
@@ -628,16 +630,16 @@ theorem toMinutes_addMinutes (t : Time) (n : Nat) :
   grind
 ```
 
-However, there is no rule that relates facts about the fields of {name}`Time` to minute counts.
-This leads to failures when using {tactic}`grind` to reason about the fields:
+然而，没有规则将关于 {name}`Time` 字段的事实关联到分钟计数。
+这会使 {tactic}`grind` 在推理这些字段时失败：
 
 ```lean +error
 example (a b : Time) (h : a.hour < b.hour) : a < b := by
   grind
 ```
 
-One way around this is to use the defining equation of {name}`toMinutes` as a {attr}`grind hom` rule.
-Using this rule causes _all_ applications of {name}`toMinutes` to be rewritten in terms of the time's field values.
+一种解决方法是将 {name}`toMinutes` 的定义等式作为 {attr}`grind hom` 规则。
+使用该规则会将_所有_ {name}`toMinutes` 的应用重写为关于时刻字段值的表达式。
 
 ```lean
 theorem toMinutes_eq (t : Time) :
@@ -649,9 +651,9 @@ example (a b : Time) (h : a.hour < b.hour) : a < b := by
   grind
 ```
 
-Unfortunately, this rule is applied in situations where one of the more specific rules would have been better.
-It's a useful fallback, but it is not the best choice when the other rules could have been used.
-In particular, it takes precedence over {name}`toMinutes_addMinutes`, which causes this proof to fail:
+遗憾的是，在某些本应使用更具体规则的情况下，这条规则也会应用。
+它作为回退规则很有用，但在可用其他规则时并非最佳选择。
+特别地，它优先于 {name}`toMinutes_addMinutes`，导致下面的证明失败：
 
 ```lean +error (name := timeOrdinary)
 attribute [local grind hom] toMinutes_eq in
@@ -673,7 +675,7 @@ example (t : Time) (h : t.hour < 23) :
     60 * ↑t.hour + ↑t.minute + 1 ≤ 60 * ↑(t.addMinutes 60).hour + ↑(t.addMinutes 60).minute
 ```
 
-The solution is to add {name}`toMinutes_eq` as a fallback rule:
+解决方法是将 {name}`toMinutes_eq` 添加为回退规则：
 
 ```lean
 attribute [grind hom fallback] toMinutes_eq
@@ -696,7 +698,7 @@ example (t : Time) (h : t.hour < 23) :
     60 * ↑t.hour + ↑t.minute + 1 ≤ (60 * ↑t.hour + ↑t.minute + 60) % 1440
 ```
 
-With the fallback in place, all of these proofs succeed:
+设置回退规则后，所有这些证明都能成功：
 
 ```lean
 example (t : Time) : t.addMinutes 1440 = t := by

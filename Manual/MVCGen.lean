@@ -107,6 +107,7 @@ tag := "mvcgen-predicate-transformers"
 
 ## 有状态谓词
 %%%
+file := "Stateful-Predicates"
 tag := "mvcgen-stateful-predicates"
 %%%
 
@@ -155,6 +156,7 @@ def ItIsSecret : SPred [String] := fun s => ⌜s = "secret"⌝
 
 ### 蕴涵
 %%%
+file := "Entailment"
 tag := "mvcgen-entailment"
 %%%
 
@@ -194,6 +196,7 @@ variable {σ : List (Type u)} {P Q : SPred σ}
 
 ### 记法
 %%%
+file := "Notation"
 tag := "mvcgen-notation"
 %%%
 
@@ -214,6 +217,7 @@ term($t)
 
 ### 联结词与量词
 %%%
+file := "Connectives-and-Quantifiers"
 tag := "mvcgen-connectives-and-quantifiers"
 %%%
 
@@ -305,6 +309,7 @@ spred(∃ (_ $_* : $ty),  $_)
 
 ### 有状态值
 %%%
+file := "Stateful-Values"
 tag := "mvcgen-stateful-values"
 %%%
 
@@ -323,6 +328,7 @@ tag := "mvcgen-stateful-values"
 
 ## 断言
 %%%
+file := "Assertions"
 tag := "mvcgen-assertions"
 %%%
 
@@ -409,6 +415,7 @@ $_ →ₚ $_
 
 ## 谓词变换器
 %%%
+file := "Predicate-Transformers"
 tag := "mvcgen-predicate-transformers-2"
 %%%
 
@@ -450,6 +457,7 @@ variable {σ : List (Type u)} {ps : PostShape} {x y : PredTrans ps α} {Q : Asse
 
 ### 最弱前置条件
 %%%
+file := "Weakest-Preconditions"
 tag := "mvcgen-weakest-preconditions"
 %%%
 
@@ -467,6 +475,7 @@ wp⟦$_ $[: $_]?⟧
 
 ### 最弱前置条件单子态射
 %%%
+file := "Weakest-Precondition-Monad-Morphisms"
 tag := "mvcgen-weakest-precondition-monad-morphisms"
 %%%
 
@@ -570,6 +579,7 @@ theorem rev_correct :
 
 ### 充分性引理
 %%%
+file := "Adequacy-Lemmas"
 tag := "mvcgen-adequacy"
 %%%
 
@@ -592,6 +602,7 @@ tag := "mvcgen-adequacy"
 
 ## 霍尔三元组
 %%%
+file := "Hoare-Triples"
 tag := "mvcgen-hoare-triples"
 %%%
 
@@ -618,6 +629,7 @@ variable [WP m ps] {x : m α} {P : Assertion ps} {Q : PostCond α ps}
 
 ## 规约引理
 %%%
+file := "Specification-Lemmas"
 tag := "mvcgen-specification-lemmas"
 %%%
 
@@ -679,6 +691,7 @@ example : Assertion (.arg Nat .pure) = SPred [Nat] := rfl
 
 ## 不变式规约
 %%%
+file := "Invariant-Specifications"
 tag := "mvcgen-invariant-specifications"
 %%%
 

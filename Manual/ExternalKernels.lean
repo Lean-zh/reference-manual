@@ -70,6 +70,7 @@ Lean 发行版包含以下独立实现的内核：
 
 # Lean 导出格式
 %%%
+file := "Lean-Export-Format"
 tag := "export-format"
 %%%
 
@@ -104,6 +105,10 @@ tag := "export-format"
 为便于阅读，示例中加入了换行；请注意，NDJSON 格式要求这些 JSON 对象在实际输出时不包含任何换行。
 
 ## 索引
+%%%
+file := "Indices"
+tag := "Lean-__________________--____________--Lean-____________--______"
+%%%
 
 :::paragraph
 导出格式使用显式索引来引用名称、层级和表达式。
@@ -148,6 +153,10 @@ tag := "export-format"
 
 
 ## 名称
+%%%
+file := "Names"
+tag := "Lean-__________________--____________--Lean-____________--______-0"
+%%%
 
 名称有两种格式，分别对应 {name}`Lean.Name` 的构造器。
 索引 0 预定义为指向 {name}`Lean.Name.anonymous`。
@@ -173,6 +182,10 @@ tag := "export-format"
 ```
 
 ## 层级
+%%%
+file := "Levels"
+tag := "Lean-__________________--____________--Lean-____________--______-1"
+%%%
 
 {tech (key := "Universe levels")}[宇宙层级]有四种格式，分别对应 {name}`Lean.Level` 的构造器。
 索引 0 预定义为指向 {name}`Lean.Level.zero`，不会另行表示。
@@ -206,6 +219,10 @@ tag := "export-format"
 ```
 
 ## 表达式
+%%%
+file := "Expressions"
+tag := "Lean-__________________--____________--Lean-____________--_________"
+%%%
 
 精译后代码中可能出现的每个 {name}`Lean.Expr` 构造器都有对应的 JSON 表示。
 自由变量和元变量不会出现在导出文件中。
@@ -322,12 +339,20 @@ tag := "export-format"
 `--export-mdata` 标志使导出文件包含元数据；存在元数据时，{exportField}`data` 是一个对象，其值是由 {name}`repr` 格式化的字符串。
 
 ## 声明
+%%%
+file := "Declarations"
+tag := "Lean-__________________--____________--Lean-____________--______-2"
+%%%
 
 核心类型论中的每种声明都有对应的 JSON 表示。
 有时，多种 Lean 声明会精译为同一种底层表示；{ref "structures"}[结构体]和{ref "inductive-types"}[归纳类型]就是一个例子。
 这种情况下只使用一种表示。
 
 ### 公理
+%%%
+file := "Axioms"
+tag := "Lean-__________________--____________--Lean-____________--______--______"
+%%%
 
 ```exportFormat "Axiom"
 {
@@ -341,6 +366,10 @@ tag := "export-format"
 ```
 
 ### 定义
+%%%
+file := "Definitions"
+tag := "Lean-__________________--____________--Lean-____________--______--______-0"
+%%%
 
 ```exportFormat "Definition"
 {
@@ -357,6 +386,10 @@ tag := "export-format"
 ```
 
 ### 不透明声明
+%%%
+file := "Opaques"
+tag := "Lean-__________________--____________--Lean-____________--______--_______________"
+%%%
 
 ```exportFormat "Opaque"
 {
@@ -372,6 +405,10 @@ tag := "export-format"
 ```
 
 ### 定理
+%%%
+file := "Theorems"
+tag := "Lean-__________________--____________--Lean-____________--______--______-1"
+%%%
 
 ```exportFormat "Theorem"
 {
@@ -386,6 +423,10 @@ tag := "export-format"
 ```
 
 ### 商类型
+%%%
+file := "Quotients"
+tag := "Lean-__________________--____________--Lean-____________--______--_________"
+%%%
 
 官方 Lean 内核使用无字段的构造器 {name}`Lean.Declaration.quotDecl` 作为输入来声明商类型相关声明。
 随后，它会将组成商类型包的四个声明加入环境。
@@ -403,6 +444,10 @@ tag := "export-format"
 ```
 
 ### 归纳声明
+%%%
+file := "Inductive-Declaration___"
+tag := "Lean-__________________--____________--Lean-____________--______--____________"
+%%%
 
 官方 Lean 内核接收一个 {name}`Lean.Declaration.inductDecl`，其中包含一组（相互）归纳声明及其构造器。
 内核据此推导{tech (key := "recursors")}[递归器]及信息字段，例如 {name Lean.InductiveVal.isRec}`isRec`、{name Lean.InductiveVal.isReflexive}`isReflexive` 或 {name Lean.ConstructorVal.cidx}`cidx`。

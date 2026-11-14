@@ -181,8 +181,8 @@ info: #[`package.barrel, `package.cache, `package.defaultModules, `package.deps,
 
 : `defaultModules`
 
-  The Lean modules of the package's {tech}[default targets]: every module of each default library, and the root module of each default executable together with the modules it transitively imports from the workspace.
-  Other default targets, such as {ref "lake-config-custom-target"}[custom targets], are not included.
+  包的{tech (key := "default targets")}[默认目标]所包含的 Lean 模块：每个默认库的所有模块，以及每个默认可执行文件的根模块和它在工作区中传递导入的模块。
+  其他默认目标（例如{ref "lake-config-custom-target"}[自定义目标]）不在其中。
 
 
 : `optCache`
@@ -234,15 +234,15 @@ info: [`lean_lib.elabArts, `lean_lib.extraDep, `lean_lib.leanArts, `lean_lib.irA
 
 : `elabArts`
 
-  The library's elaboration artifacts ({tech (key := ".olean files")}`*.olean` and `*.ilean` files).
+  库的精译工件（{tech (key := ".olean files")}`*.olean` 和 `*.ilean` 文件）。
 
 : `irArts` (default)
 
-  Both the library's elaboration artifacts and the library's code-generation artifacts (`*.ir`, `*.ir.sig`, and `*.c` files).
+  库的精译工件和代码生成工件（`*.ir`、`*.ir.sig` 和 `*.c` 文件）。
 
 : `leanArts`
 
-  The artifacts that the Lean compiler produces for the library (alias of `irArts`).
+  Lean 编译器为该库生成的工件（`irArts` 的别名）。
 
 : `static`
 
@@ -323,15 +323,15 @@ module.transImports
 
 : `elabArts`
 
- The module's elaboration artifacts (`*.olean` and `*.ilean` files).
+  模块的精译工件（`*.olean` 和 `*.ilean` 文件）。
 
 : `irArts` (default)
 
- Both the module's elaboration artifacts and the module's code-generation artifacts (`*.ir`, `*.ir.sig`, and `*.c` files).
+  模块的精译工件和代码生成工件（`*.ir`、`*.ir.sig` 和 `*.c` 文件）。
 
 : `leanArts`
 
- The artifacts that the Lean compiler produces for the module (alias of `irArts`).
+  Lean 编译器为该模块生成的工件（`irArts` 的别名）。
 
 : `deps`
 

@@ -19,29 +19,33 @@ tag := "release-v4.34.1"
 file := "v4.34.1"
 %%%
 
-This patch release contains multiple runtime fixes,
-and we encourage all users of v4.34.0 or earlier to upgrade to it.
+此补丁版本包含多项运行时修复，
+建议所有 v4.34.0 或更早版本的用户升级。
 
-For this release, 3 changes landed.
-In addition to the 0 feature additions
-and 3 fixes listed below,
-there were 0 refactoring changes,
-0 documentation improvements,
-0 performance improvements,
-0 improvements to the test suite,
-and 0 other changes.
+此版本合入了 3 项更改。
+除下面列出的 0 项新增功能
+和 3 项修复外，
+还有 0 项重构，
+0 项文档改进，
+0 项性能改进，
+0 项测试套件改进，
+以及 0 项其他更改。
 
-# Compiler
+# 编译器
+%%%
+file := "Compiler"
+tag := "Manual-Releases-v4_34_1-Compiler"
+%%%
 
 ```markdown
 
 - [#15289](https://github.com/leanprover/lean4/pull/15289)
-  makes maximal sharing, including the kernel's sharing of every theorem it checks, panic when a shared subterm gains more than `INT_MAX` references, instead of eventually freeing the subterm while it is still referenced. On inputs north of 100GB, the possibility of triggering undefined behavior in the official kernel this way, which could be extended into a proof of False, could not be excluded. Other kernels such as nanoda or con-leche not based on the Lean runtime or not making use of this specific function were not affected.
+  当共享子项的引用数超过 `INT_MAX` 时，让最大共享机制（包括内核对所检查每个定理的共享）触发 panic，而非最终在仍有引用时释放子项。在超过 100GB 的输入上，无法排除以此触发官方内核未定义行为、并进一步构造 False 证明的可能。不基于 Lean 运行时或不使用此特定函数的 nanoda、con-leche 等内核不受影响。
 
 - [#15288](https://github.com/leanprover/lean4/pull/15288)
-  fixes potential undefined behavior when an object with a huge number of incoming references is shared between threads. The official kernel does not use multithreading in its default configuration (as used by comparator and `lake check/compare`), but other Lean-based checkers such as con-leche might be affected.
+  修复大量入引用的对象在线程间共享时可能出现的未定义行为。官方内核的默认配置（comparator 及 `lake check/compare` 所用配置）不使用多线程，但 con-leche 等基于 Lean 的检查器可能受影响。
 
 - [#15241](https://github.com/leanprover/lean4/pull/15241)
-  prevents deletion cascades from releasing objects whose reference count has been frozen after over- or underflow. Like #14838, on machines with at least 18GB of free RAM, it could potentially be used to trigger use-after-free in the official kernel, which could be extended into a proof of False. Other kernels such as nanoda or con-ron not based on the Lean runtime were not affected.
+  防止删除级联释放因引用计数上溢或下溢而被冻结的对象。与 #14838 一样，在至少有 18GB 可用内存的机器上，此问题可能触发官方内核的释放后使用，并进一步构造 False 的证明。不依赖 Lean 运行时的 nanoda、con-ron 等内核不受影响。
 
 ```

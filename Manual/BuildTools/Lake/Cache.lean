@@ -27,12 +27,12 @@ file := "Caching-Builds"
 tag := "lake-cache"
 %%%
 
-Builds of large packages can consume significant time.
-Compounding this, switching between local development branches can cause Lake to rebuild the same code many times.
-To address these problems, Lake provides a number of ways to {deftech (key := "build cache")}_cache_ builds for later reuse.
-Lake's {ref "lake-cache-local"}[local artifact cache] enables reuse of builds when switching between branches and across multiple local copies of the same package.
-The {ref "lake-cache-remote"}[remote artifact cache] expands this to sharing artifact caches across machines. However, it requires the package developers to own cloud storage.
-As an alternative for developers without cloud storage but already using GitHub, {ref "lake-github"}[release builds] provide a low-setup way to ship complete builds to users.
+大型包的构建可能耗时很久。
+在本地开发分支之间切换，还可能导致 Lake 多次重新构建相同的代码，使这个问题更加严重。
+为解决这些问题，Lake 提供了多种{deftech (key := "build cache")}_缓存构建_的方法，以便日后复用。
+Lake 的{ref "lake-cache-local"}[本地工件缓存]允许在切换分支时，以及同一个包的多个本地副本之间，复用构建产物。
+{ref "lake-cache-remote"}[远程工件缓存]将这种复用扩展到不同机器之间，但要求包开发者拥有云存储。
+对于没有云存储但已使用 GitHub 的开发者，{ref "lake-github"}[发布版本构建]提供了另一种配置成本较低的方式，可以向用户分发完整的构建产物。
 
 # 工件缓存
 %%%
@@ -42,13 +42,13 @@ tag := "lake-cache-local"
 
 *这是一项仍在开发中的实验性功能。*
 
-Lake supports a {deftech (key := "local cache")}_local artifact cache_ that stores individual build products, tracking the complete set of inputs that contributed to their final value.
+Lake 支持{deftech (key := "local cache")}_本地工件缓存_：它保存各个构建产物，并追踪参与生成其最终值的全部输入。
 每个 {tech (key := "toolchain")}[工具链] 都有其自己的缓存，因为工具链版本之间的中间构建产物是不兼容的。
 不过，一个工具链的缓存在使用它的所有本地 {tech (key := "workspaces")}[工作区] 之间是共享的，因此常见的依赖不需要重新构建。
 如果两个具有相同工具链的独立工作区依赖于相同的包，则它们可以共享彼此的构建产物。
 
 因为这是一项实验性功能，所以本地缓存默认处于禁用状态。
-It is only enabled when the {envVar}`LAKE_ARTIFACT_CACHE` environment variable is set to `true` or when the {tomlField Lake.PackageConfig}`enableArtifactCache` field is set to `true` in the {ref "lake-config"}[configuration file].
+只有将环境变量 {envVar}`LAKE_ARTIFACT_CACHE` 设为 `true`，或在{ref "lake-config"}[配置文件]中将字段 {tomlField Lake.PackageConfig}`enableArtifactCache` 设为 `true` 时，才会启用它。
 
 
 # 远程工件缓存
@@ -67,20 +67,22 @@ tag := "lake-cache-remote"
 ## 映射
 %%%
 file := "Mappings"
+tag := "Lean-__________________--_____________________--Lake--____________--__________________--______"
 %%%
 
 当传递 `-o` 选项时，{lake}`build` 会追踪用于生成每个构建产物的输入。
 它们被存储为 JSON 行格式的 {deftech (key := "mappings file")}_映射文件_，文件中每一行都必须是一个有效的 JSON 对象。
-A mappings file tracks a single package within a build, and includes all intermediate and final build products from the package that are part of the build.
+一个映射文件追踪一次构建中的一个包，包含该包在此次构建中涉及的所有中间和最终构建产物。
 
-By default, {lake}`build` saves the workspace's {tech}[root package]'s mappings.
-The {lakeOpt}`--package` option selects a different package in the workspace, such as a dependency, saving its mappings instead.
-The tracked build products include those that were already up to date and not regenerated, but not the package's targets that the build did not cover.
-The {lake}`cache put` command uploads the build products in the mappings file from the local cache to the remote cache.
+默认情况下，{lake}`build` 保存工作区{tech (key := "root package")}[根包]的映射。
+{lakeOpt}`--package` 选项可选择工作区中的其他包（例如依赖包），改为保存它的映射。
+追踪的构建产物包括已经是最新状态、因而没有重新生成的产物，但不包括此次构建未涉及的包目标。
+{lake}`cache put` 命令将映射文件中的构建产物从本地缓存上传到远程缓存。
 
 ## 配置
 %%%
 file := "Configuration"
+tag := "Manual-BuildTools-Lake-Cache-Configuration"
 %%%
 
 :::paragraph
@@ -96,13 +98,14 @@ file := "GitHub-Release-Builds"
 tag := "lake-github"
 %%%
 
-Lake supports uploading and downloading the complete set of build artifacts (i.e., the archived build directory) to/from the GitHub releases of packages.
+Lake 支持将完整的构建工件集合（即打包后的构建目录）上传到包的 GitHub 发布版本，或从中下载。
 这使得最终用户能够从云端获取预构建的工件，而无需自己从源码重建整个包。
 可以使用 {envVar}`LAKE_NO_CACHE` 环境变量来禁用此功能。
 
 ## 下载
 %%%
 file := "Downloading"
+tag := "Lean-__________________--_____________________--Lake--____________--GitHub-__________________--______"
 %%%
 
 要下载工件，应配置包选项 `releaseRepo` 和 `buildArchive`，使其指向托管发布版本的 GitHub 仓库以及其中正确的工件名称（如果默认设置不充分）。
@@ -118,6 +121,7 @@ Lake 在内部使用 `curl` 下载发布版本，并使用 `tar` 将其解包，
 ## 上传
 %%%
 file := "Uploading"
+tag := "Lean-__________________--_____________________--Lake--____________--GitHub-__________________--______-0"
 %%%
 
 要将构建的包作为工件上传到 GitHub 发布版本，Lake 提供了 {lake}`upload` 命令作为便捷的简写。

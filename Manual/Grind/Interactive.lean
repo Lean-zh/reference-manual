@@ -9,33 +9,35 @@ import VersoManual
 import Lean.Parser.Term
 
 import Manual.Meta
+import Manual.ZhDocString.Upstream
 
 open Verso.Genre Manual
 open Verso.Genre.Manual.InlineLean
 open Verso.Doc.Elab (CodeBlockExpander)
 
-#doc (Manual) "Interactive Mode" =>
+#doc (Manual) "交互模式" =>
 %%%
+file := "Interactive-Mode"
 tag := "grind-interactive"
 %%%
 
-Because {tactic}`grind` relies on the current set of {ref "e-matching"}[annotated lemmas], proofs may stop working or take longer to process when library annotations change.
-Additionally, as it searches for a proof, {tactic}`grind` may attempt many steps that don't contribute to the final result, which can take time.
-A script can replace {tactic}`grind`'s search, leading it directly down the successful proof path and instantiating precisely those lemmas that actually contribute to the proof.
-Rechecking such a proof is both faster and more resilient to library changes.
-This script feature is called {tactic}`grind`'s {deftech}_interactive mode_, and scripts are written in a special-purpose tactic language.
+由于 {tactic}`grind` 依赖当前的{ref "e-matching"}[已标注引理]集合，库中的标注变化后，证明可能失效或变慢。
+此外，搜索证明时，{tactic}`grind` 可能尝试许多对最终结果没有贡献的步骤，这也需要时间。
+可以用脚本替代 {tactic}`grind` 的搜索，直接沿着成功的证明路径前进，并且只实例化真正对证明有贡献的引理。
+重新检查这样的证明既更快，也更能适应库的变化。
+这一脚本功能称为 {tactic}`grind` 的{deftech (key := "interactive mode")}_交互模式_，脚本使用专用策略语言编写。
 
-A script for {tactic}`grind`'s interactive mode consists of {keywordOf Lean.Parser.Tactic.grind}`grind =>` followed by an indented block of {tactic}`grind` tactics.
-Each of these tactics runs one of {tactic}`grind`'s engines, instantiates a theorem, performs a case split, inspects the shared state, or manages the remaining goals.
-The steps operate on the same “whiteboard” that the automatic search uses: the equalities, inequalities, and Boolean facts that all prior steps have discovered, together with the equivalence classes derived from them.
+{tactic}`grind` 交互模式脚本由 {keywordOf Lean.Parser.Tactic.grind}`grind =>` 及其后缩进的 {tactic}`grind` 策略块组成。
+每个策略会运行 {tactic}`grind` 的某个引擎、实例化定理、拆分情形、检查共享状态或管理剩余目标。
+这些步骤操作自动搜索所使用的同一块“白板”：此前各步骤发现的等式、不等式、布尔事实及由它们导出的等价类。
 
-Interactive mode can also be used to understand why {tactic}`grind` is unable to complete a proof.
-The {ref "grind-interactive-inspect"}[inspection tactics] reveal the current state of the whiteboard, which may make it possible to notice a missing theorem instantiation or case split that a few explicit steps or an additional annotation in a library can supply.
-An explicit script can also make it easier for readers to understand _why_ {tactic}`grind` succeeds.
+交互模式也能帮助理解 {tactic}`grind` 为何无法完成证明。
+{ref "grind-interactive-inspect"}[检查策略]揭示白板的当前状态，可能让用户发现缺失的定理实例化或情形拆分；这些可以通过若干显式步骤或库中的额外标注补足。
+显式脚本也可以帮助读者理解 {tactic}`grind` 成功的_原因_。
 
-:::example "Reading a `grind?` Proof"
+:::example "阅读 `grind?` 证明"
 
-The structure {lean}`Two` can be thought of as a two-element array, indexed by {name}`Bool` instead of {name}`Nat`.
+结构体 {lean}`Two` 可视为用 {name}`Bool` 而非 {name}`Nat` 索引的双元素数组。
 ```lean
 structure Two α where
   fst : α
@@ -47,7 +49,7 @@ def get (xs : Two α) (i : Bool) : α :=
   if i then xs.fst else xs.snd
 ```
 
-The API for {name}`Two` includes a number of lemmas, annotated for use with {tactic}`grind`:
+{name}`Two` 的 API 包含若干标注为供 {tactic}`grind` 使用的引理：
 ```lean
 def both (x : α) : Two α := ⟨x, x⟩
 
@@ -82,8 +84,8 @@ theorem both_fst_eq_snd {x : α} :
     (both x).fst = (both x).snd := rfl
 ```
 
-Using these lemmas, {tactic}`grind` can prove that {name}`Two.map` distributes over {name}`Two.both`.
-Calling {tactic}`grind?` results in multiple suggestions for more specific calls to {tactic}`grind`, one of which is an interactive script:
+借助这些引理，{tactic}`grind` 可以证明 {name}`Two.map` 对 {name}`Two.both` 满足分配律。
+调用 {tactic}`grind?` 会得到多个更具体的 {tactic}`grind` 调用建议，其中之一就是交互脚本：
 ```lean (name := mapBoth)
 theorem map_both {x : α} {f : α → β} :
     (both x).map f = both (f x) := by
@@ -103,11 +105,11 @@ Try these:
       instantiate only [= both_snd]
 ```
 
-The script makes the proof's two internal {ref "grind-interactive-cases"}[case splits] explicit.
+该脚本显式展示了证明内部的两次{ref "grind-interactive-cases"}[情形拆分]。
 
-During its search, {tactic}`grind` also instantiates {name}`Two.both_fst_eq_snd`, even though that equation contributes nothing to the proof.
-Because it does not end up contributing to the result, none of the suggested {tactic}`grind` calls mention it; when rechecking these suggested versions, the overhead of this needless instantiation is avoided.
-Setting the {option}`diagnostics` option reports how many times each theorem was instantiated:
+搜索期间，{tactic}`grind` 还实例化了 {name}`Two.both_fst_eq_snd`，尽管该等式对证明没有贡献。
+由于它最终未对结果作出贡献，所有建议的 {tactic}`grind` 调用都不会提及它；重新检查这些建议版本时，就避免了无用实例化的开销。
+设置 {option}`diagnostics` 选项可以报告各个定理被实例化的次数：
 ```lean (name := mapBothDiag)
 set_option diagnostics true in
 set_option diagnostics.threshold 1 in
@@ -132,7 +134,7 @@ example {x : α} {f : α → β} : (both x).map f = both (f x) := by
     use `set_option diagnostics.threshold <num>` to control threshold for reporting counters
 ```
 
-The suggested interactive-mode {tactic}`grind` does not instantiate {name}`Two.both_fst_eq_snd`:
+建议的交互模式 {tactic}`grind` 不会实例化 {name}`Two.both_fst_eq_snd`：
 ```lean (name := mapBothDiag2)
 set_option diagnostics true in
 set_option diagnostics.threshold 1 in
@@ -164,65 +166,71 @@ example {x : α} {f : α → β} : (both x).map f = both (f x) := by
 ```
 :::
 
-# Entry Points
+# 入口
 %%%
+file := "Entry-Points"
 tag := "grind-interactive-entry"
 %%%
 
-There are two versions of {tactic}`grind`'s interactive mode.
-The first, introduced with {keywordOf Lean.Parser.Tactic.grind}`grind =>`, is designed for controlling {tactic}`grind` and automatically takes certain steps that are needed for most proofs.
-The other, introduced with {tactic}`sym`, allows a higher degree of manual control and is intended for use in symbolic simulation workflows.
+{tactic}`grind` 的交互模式有两个版本。
+第一个用 {keywordOf Lean.Parser.Tactic.grind}`grind =>` 引入，旨在控制 {tactic}`grind`，会自动执行大多数证明所需的某些步骤。
+另一个用 {tactic}`sym` 引入，允许更细致的手动控制，面向符号模拟工作流。
 
-When used with a script, {tactic}`grind` initializes the proof by introducing all hypotheses and then invoking proof by contradiction so the initial goal is always {name}`False`.
-It then runs the script.
+使用脚本时，{tactic}`grind` 会先引入所有假设，再使用反证法初始化证明，因此初始目标总是 {name}`False`。
+随后运行脚本。
 
-:::syntax tactic (title := "Interactive `grind`")
+:::syntax tactic (title := "交互式 `grind`")
 ```grammar
 grind $_:optConfig $[only]? $[ [ $[$p],* ] ]? => $steps
 ```
 :::
 
-Unlike {tactic}`grind`, the {tactic}`sym` tactic does not begin by introducing hypotheses or invoking proof by contradiction.
-The author of the script has full control over the context and goal.
+与 {tactic}`grind` 不同，{tactic}`sym` 不会先引入假设或使用反证法。
+脚本作者可以完全控制上下文与目标。
 
-:::syntax tactic (title := "Symbolic Simulation")
+:::syntax tactic (title := "符号模拟")
 ```grammar
 sym $_:optConfig $[only]? $[ [ $[$p],* ] ]? => $steps
 ```
 :::
 
-Both tactics accept the same configuration options, the {keywordOf Lean.Parser.Tactic.grind}`only` modifier, and the bracketed list of theorems and parameters that ordinary {tactic}`grind` accepts.
-Certain features that are invoked automatically by {tactic}`grind` and manually in {tactic}`sym` have dedicated tactics that are described in the {ref "grind-sym"}[symbolic simulation mode section].
+两个策略接受相同的配置选项、{keywordOf Lean.Parser.Tactic.grind}`only` 修饰符，以及普通 {tactic}`grind` 接受的方括号中的定理和参数列表。
+某些功能由 {tactic}`grind` 自动调用，在 {tactic}`sym` 中则需手动调用；它们具有专用策略，在{ref "grind-sym"}[符号模拟模式一节]介绍。
 
-The {tactic}`grind?` tactic takes the same arguments as {tactic}`grind` but does not support entering interactive mode.
-It {ref "grind-minimizing"}[suggests] an equivalent {keywordOf Lean.Parser.Tactic.grind}`grind only` call, as well as an equivalent script.
-Within an interactive {tactic}`grind` script, the {grindTactic}`finish?` and {grindTactic}`cases?` tactics similarly suggest scripts.
+{tactic}`grind?` 接受与 {tactic}`grind` 相同的实参，但不支持进入交互模式。
+它会{ref "grind-minimizing"}[建议]等价的 {keywordOf Lean.Parser.Tactic.grind}`grind only` 调用和等价脚本。
+在交互式 {tactic}`grind` 脚本内，{grindTactic}`finish?` 和 {grindTactic}`cases?` 同样会建议脚本。
 
-# The `grind` Tactic Language
+# `grind` 策略语言
 %%%
+file := "The--grind--Tactic-Language"
 tag := "grind-interactive-steps"
 %%%
 
-The sequence of steps that follow {keywordOf Lean.Parser.Tactic.grind}`grind =>` is written in an indented block, with one step on each line; multiple steps may also be separated by `;`.
-As an alternative to indentation, they may be enclosed in braces.
-Such a sequence is represented by the syntax category {name Lean.Parser.Tactic.Grind.grindSeq}`grindSeq`.
+{keywordOf Lean.Parser.Tactic.grind}`grind =>` 后的步骤序列写在缩进块中，每行一步；多个步骤也可以用 `;` 分隔。
+也可以使用花括号包围步骤序列，以代替缩进。
+这种序列由语法类别 {name Lean.Parser.Tactic.Grind.grindSeq}`grindSeq` 表示。
 
-Just as in an ordinary Lean tactic script, {tactic}`grind` tactics manipulate a {tech}[proof state] that consists of a sequence of {tech}[goals], each of which consists of a sequence of assumptions and a conclusion.
-When there are no further goals, the proof is complete.
-Most tactics operate on the {tech}[main goal], and {ref "grind-interactive-goals"}[goal-management tactics] redistribute goals across steps exactly as their ordinary tactic counterparts do.
-Additionally, {tactic}`grind` tactics have access to the “whiteboard”.
+与普通 Lean 策略脚本一样，{tactic}`grind` 策略操作由一系列{tech (key := "goals")}[目标]组成的{tech (key := "proof state")}[证明状态]；每个目标又由一系列假设和一个结论组成。
+没有剩余目标时，证明就完成了。
+多数策略操作{tech (key := "main goal")}[主目标]，而{ref "grind-interactive-goals"}[目标管理策略]会像普通策略中的对应策略一样，在步骤之间重新分配目标。
+此外，{tactic}`grind` 策略可以访问“白板”。
 
-## Anchors
+## 锚点
+%%%
+file := "Anchors"
+tag := "Lean-__________________--grind--______--Interactive-Mode--The--grind--Tactic-Language--Anchors"
+%%%
 
-Several tactics refer to entries on the whiteboard by an {deftech}_anchor_, written `#` followed by a hexadecimal number, as in `#1a`.
-These anchors take the place of names: they identify a specific fact, equivalence class, or case-split candidate.
-Anchors appear in the output of the inspection tactics or in filtered states.
-The {grindTactic}`cases?` and {grindTactic}`show_cases` tactics report the anchors that {grindTactic}`cases` can act on.
+若干策略通过{deftech (key := "anchor")}_锚点_引用白板条目，写作 `#` 后接十六进制数，例如 `#1a`。
+锚点代替名称，用于标识特定事实、等价类或情形拆分候选项。
+锚点会出现在检查策略的输出或筛选后的状态中。
+{grindTactic}`cases?` 和 {grindTactic}`show_cases` 会报告 {grindTactic}`cases` 可操作的锚点。
 
-An anchor is a stable hash of the term that it refers to.
-It is computed from the term's structure while deliberately ignoring unstable implementation details such as internal names and instance arguments.
-This means that anchors are insensitive to many unrelated proof changes, but they may change if the structure of the referenced term changes.
-An anchor produced by {grindTactic}`cases?` can therefore be saved in a script file as long as the referenced candidate remains structurally the same.
+锚点是所引用项的稳定哈希。
+它根据项的结构计算，并刻意忽略内部名称和实例实参等不稳定的实现细节。
+因此，许多无关的证明变化不会影响锚点；但被引用项的结构改变时，锚点仍可能变化。
+所以，只要引用候选项的结构保持不变，就可以将 {grindTactic}`cases?` 产生的锚点保存在脚本文件中。
 
 ```lean (name := anchorCanary) -show
 -- Regression test: the anchor of `p ∨ q` is a stable hash; this pins its value so that any change
@@ -239,17 +247,17 @@ example (p q : Prop) (h : p ∨ q) : q ∨ p := by
   [split] #4283 := p ∨ q
 ```
 
-In some cases, multiple terms may be assigned the same anchor.
-Instantiating with an anchor instantiates all terms that share the anchor, but case splitting requires more control.
-When multiple case split candidates share an anchor, they are assigned {deftech}_ordinal disambiguators_: sequential numbers that track the order in which they were added to the whiteboard.
-These numbers are written after a `/`, so `#7a83/2` refers to the second term with anchor `#7a83`.
-Number `1` is assigned to the first term with a given anchor; thus, `#7a83/1` is equivalent to `#7a83`.
-Because they are assigned in order, ordinals are less stable than anchors; re-ordering hypotheses can change them.
+某些情况下，多个项可能具有同一锚点。
+用锚点实例化时，会实例化共享该锚点的所有项；情形拆分则需要更精确的控制。
+若多个情形拆分候选项共享锚点，则会为其分配{deftech (key := "ordinal disambiguators")}_序号消歧标记_：用连续数字记录它们加入白板的顺序。
+这些数字写在 `/` 后，例如 `#7a83/2` 表示锚点为 `#7a83` 的第二个项。
+具有给定锚点的首个项编号为 `1`，因此 `#7a83/1` 等价于 `#7a83`。
+由于按顺序分配，序号不如锚点稳定；调整假设顺序就可能改变序号。
 
-:::example "Ordinal Disambiguators"
-This theorem statement says that if there exist two values that are mapped to `0` or `1` by a function, and the sum of those two values of the function is `2`, then there exists a point that the function maps to `1`.
-Both disjunctions map to the same underlying anchor, namely `#4f8c`.
-After exposing them using {tactic}`obtain`, {grindTactic}`cases?` displays two possibilities, each with an ordinal disambiguator:
+:::example "序号消歧标记"
+该定理陈述：若存在两个值，函数将它们分别映射到 `0` 或 `1`，且两个函数值之和为 `2`，则存在一点被函数映射到 `1`。
+两个析取都映射到同一底层锚点 `#4f8c`。
+用 {tactic}`obtain` 将它们暴露后，{grindTactic}`cases?` 显示两个选项，各自带有序号消歧标记：
 ```lean +error (name := ordinals)
 example (f : Nat → Nat)
     (h : ∃ a b,
@@ -271,13 +279,17 @@ Try these:
 :::
 
 
-## Filters
+## 筛选器
+%%%
+file := "Filters"
+tag := "Lean-__________________--grind--______--Interactive-Mode--The--grind--Tactic-Language--Filters"
+%%%
 
-Any {tactic}`grind` tactic may be followed by `|` and a {deftech}_filter_ that selects some subset of the data in the {tactic}`grind` state.
-The filtered state is then displayed both before and after the step runs, which is convenient for watching how a step changes the whiteboard.
-If the filter after `|` is empty, then the entire state matches.
+任何 {tactic}`grind` 策略后都可接 `|` 和{deftech (key := "filter")}_筛选器_，从 {tactic}`grind` 状态中选择部分数据。
+筛选后的状态会在该步骤运行前后显示，方便观察步骤如何改变白板。
+若 `|` 后的筛选器为空，则整个状态均匹配。
 
-:::syntax grind_filter (title := "Generation Filters") (label := "grind filter")
+:::syntax grind_filter (title := "生成层级筛选器") (label := "grind 筛选器")
 ```grammar
 gen < $n
 ```
@@ -302,18 +314,18 @@ gen >= $n
 ```grammar
 gen > $n
 ```
-These filters are satisfied when the {tech}[generation] of the entry satisfies the indicated comparison against the numeral.
-  Lower generations correspond to facts discovered earlier in the search.
+当条目的{tech (key := "generation")}[生成层级]与给定数字满足所示比较关系时，这些筛选器就会匹配。
+  较低的生成层级对应搜索中较早发现的事实。
 :::
 
-:::syntax grind_filter (title := "Name Filters") (label := "grind filter")
+:::syntax grind_filter (title := "名称筛选器") (label := "grind 筛选器")
 ```grammar
 $x:ident
 ```
-This filter is satisfied when the identifier is the name of a local hypothesis or global constant and it occurs in the term.
+当标识符是局部假设或全局常量的名称，并且出现在该项中时，此筛选器匹配。
 :::
 
-:::syntax grind_filter (title := "Filter Expressions") (label := "grind filter")
+:::syntax grind_filter (title := "筛选表达式") (label := "grind 筛选器")
 ```grammar
 ($f)
 ```
@@ -326,11 +338,11 @@ $f || $f
 ```grammar
 !$f
 ```
-Filters may be grouped with parentheses, negated, and combined with conjunction and disjunction.
-Both conjunction and disjunction are left-associative and have the same precedence, so use explicit parentheses for grouping.
+筛选器可以用圆括号分组、取反，以及用合取和析取组合。
+合取与析取都是左结合且优先级相同，因此应显式使用圆括号分组。
 :::
 
-:::example "Filters"
+:::example "筛选器"
 ```lean
 inductive Color where | red | green
 inductive Fruit where | cherry | lime
@@ -343,9 +355,9 @@ example (peel pulp : Fruit → Color)
     instantiate | pulp
 ```
 
-Following a step with `|` and a {tech}[filter] shows the matching part of the {tactic}`grind` state in the editor, both before and after the step runs.
-Filtering by `| pulp` keeps only the entries that mention `pulp`.
-Before the round, these are `h2` and the equivalence class `{peel .cherry, pulp .cherry}` from `h1`:
+步骤后接 `|` 和{tech (key := "filter")}[筛选器]，会在编辑器中显示步骤运行前后与筛选器匹配的 {tactic}`grind` 状态部分。
+筛选器 `| pulp` 只保留提及 `pulp` 的条目。
+在这一轮前，它们是 `h2` 以及来自 `h1` 的等价类 `{peel .cherry, pulp .cherry}`：
 ```
 [grind] Grind state
   [facts] Asserted facts
@@ -355,94 +367,96 @@ Before the round, these are `h2` and the equivalence class `{peel .cherry, pulp 
     [eqc] {peel Fruit.cherry, pulp Fruit.cherry}
 ```
 
-The false proposition `peel .cherry = .red` is omitted because it does not mention `pulp`.
-Instantiating `h2` at `.cherry` asserts `pulp .cherry = .red` and closes the goal, so `no grind state` is shown after.
+假命题 `peel .cherry = .red` 未提及 `pulp`，因此被省略。
+在 `.cherry` 处实例化 `h2` 会断言 `pulp .cherry = .red` 并关闭目标，因此步骤之后显示 `no grind state`。
 :::
 
 
 
-# Goal Management and Sequencing
+# 目标管理与步骤串联
 %%%
+file := "Goal-Management-and-Sequencing"
 tag := "grind-interactive-goals"
 %%%
 
-These tactics don't invoke a solver or modify the {tactic}`grind` state.
-They mirror the corresponding {ref "tactic-language-control"}[control structures and tactics] in the primary tactic language.
+这些策略不调用求解器，也不修改 {tactic}`grind` 状态。
+它们对应主策略语言中的{ref "tactic-language-control"}[控制结构与策略]。
 
-:::grindTactic "skip"
+:::zhgrindTactic "skip"
 :::
 
-:::grindTactic "done"
+:::zhgrindTactic "done"
 :::
 
-A sequence may be grouped with parentheses, written `( steps )`, which runs the enclosed steps on the current goals with no added effect.
-This grouping is used to delimit the scope of a control structure such as {grindTactic}`first` or {grindTactic}`repeat`.
+可以用圆括号将序列分组，写作 `( steps )`；它会在当前目标上运行括号内的步骤，没有其他额外效果。
+这种分组用于限定 {grindTactic}`first` 或 {grindTactic}`repeat` 等控制结构的作用范围。
 
-:::grindTactic "case"
+:::zhgrindTactic "case"
 :::
 
-:::grindTactic "focus"
+:::zhgrindTactic "focus"
 :::
 
-:::grindTactic "next" (show := "next =>")
+:::zhgrindTactic "next" (show := "next =>")
 :::
 
-:::grindTactic "." (show := "·")
+:::zhgrindTactic "." (show := "·")
 :::
 
-The bullet is shorthand for {grindTactic}`next`.
-It focuses on the main goal, suppressing all others.
-It is an error if the enclosed tactic script does not result in a successful proof of the focused goal.
+圆点记号是 {grindTactic}`next` 的简写。
+它聚焦于主目标，并暂时隐藏其他目标。
+若内部策略脚本未能成功证明所聚焦的目标，则会报错。
 
-:::grindTactic "all_goals"
+:::zhgrindTactic "all_goals"
 :::
 
-:::grindTactic "any_goals"
+:::zhgrindTactic "any_goals"
 :::
 
-:::grindTactic "first"
+:::zhgrindTactic "first"
 :::
 
-:::grindTactic "try"
+:::zhgrindTactic "try"
 :::
 
-:::grindTactic "repeat"
+:::zhgrindTactic "repeat"
 :::
 
-:::grindTactic "fail_if_success"
+:::zhgrindTactic "fail_if_success"
 :::
 
-:::grindTactic "fail"
+:::zhgrindTactic "fail"
 :::
 
-:::grindTactic "<;>"
+:::zhgrindTactic "<;>"
 
-If the tactic fails on any of the {tech}[subgoals], then the whole {grindTactic}`<;>` tactic fails.
+若策略在任何{tech (key := "subgoals")}[子目标]上失败，则整个 {grindTactic}`<;>` 策略失败。
 :::
 
 
-# Completing Proofs
+# 完成证明
 %%%
+file := "Completing-Proofs"
 tag := "grind-interactive-finish"
 %%%
 
-These tactics close goals, either by handing control back to {tactic}`grind`'s automatic search or by escaping into Lean's ordinary tactic language.
-Goals may also be closed by one of the {ref "grind-interactive-solvers"}[theory solvers].
+这些策略通过将控制权交回 {tactic}`grind` 的自动搜索，或转入普通 Lean 策略语言来关闭目标。
+目标也可以通过{ref "grind-interactive-solvers"}[理论求解器]关闭。
 
-:::grindTactic "finish"
+:::zhgrindTactic "finish"
 :::
 
-:::grindTactic "finish?"
+:::zhgrindTactic "finish?"
 :::
 
-When {grindTactic}`finish?` closes a goal, it offers a code action that replaces the call with the script it discovered, just as {tactic}`grind?` suggests a {keywordOf Lean.Parser.Tactic.grind}`grind only` call.
-This enables an interactive workflow where parts of the proof can be discovered by {tactic}`grind` and then manually modified if needed.
+{grindTactic}`finish?` 关闭目标时，会提供代码操作，将该调用替换为发现的脚本，正如 {tactic}`grind?` 会建议 {keywordOf Lean.Parser.Tactic.grind}`grind only` 调用。
+由此可以交互地使用 {tactic}`grind` 发现部分证明，再在需要时手动修改。
 
-:::example "Recording a `grind` Proof as an Interactive Script"
+:::example "将 `grind` 证明记录为交互脚本"
 ```lean -show
 variable (pred : Nat → Prop)
 ```
-{lean}`WithSucc` is closed under successor:
+{lean}`WithSucc` 对后继运算封闭：
 ```lean
 @[grind]
 inductive WithSucc (pred : Nat → Prop): Nat → Prop where
@@ -450,19 +464,19 @@ inductive WithSucc (pred : Nat → Prop): Nat → Prop where
   | step : WithSucc pred n → WithSucc pred (n + 1)
 ```
 
-{tactic}`grind` proves {lean}`WithSucc pred 2` from a proof of {lean}`WithSucc pred 0` by instantiating {name}`WithSucc.step` twice:
+{tactic}`grind` 将 {name}`WithSucc.step` 实例化两次，从 {lean}`WithSucc pred 0` 的证明得到 {lean}`WithSucc pred 2`：
 ```lean
 example (h : WithSucc pred 0) : WithSucc pred 2 := by
   grind
 ```
 
-Following the goal with {keyword}`=> finish?` instead closes it and reports a script that reproduces the proof:
+改为在目标后接 {keyword}`=> finish?`，会关闭目标并报告可重现该证明的脚本：
 ```lean
 example (h : WithSucc pred 0) : WithSucc pred 2 := by
   grind => finish?
 ```
 
-Applying the suggested script makes each instantiation explicit:
+应用建议脚本后，每次实例化都变得显式：
 ```lean
 example (h : WithSucc pred 0) : WithSucc pred 2 := by
   grind =>
@@ -471,60 +485,62 @@ example (h : WithSucc pred 0) : WithSucc pred 2 := by
 ```
 :::
 
-:::grindTactic "sorry"
+:::zhgrindTactic "sorry"
 :::
 
-:::grindTactic "admit"
+:::zhgrindTactic "admit"
 :::
 
-:::grindTactic "tactic" (show := "tactic =>")
+:::zhgrindTactic "tactic" (show := "tactic =>")
 :::
 
-:::grindTactic "exact"
+:::zhgrindTactic "exact"
 :::
 
-# Theory Solvers
+# 理论求解器
 %%%
+file := "Theory-Solvers"
 tag := "grind-interactive-solvers"
 %%%
 
-Each of these tactics runs one of {tactic}`grind`'s decision procedures on the current state.
+以下每个策略都会在当前状态上运行 {tactic}`grind` 的一种判定过程。
 
-:::grindTactic "lia"
+:::zhgrindTactic "lia"
 :::
 
-:::grindTactic "linarith"
+:::zhgrindTactic "linarith"
 :::
 
-:::grindTactic "ring"
+:::zhgrindTactic "ring"
 :::
 
-:::grindTactic "ac"
+:::zhgrindTactic "ac"
 :::
 
-# Theorem Instantiation
+# 定理实例化
 %%%
+file := "Theorem-Instantiation"
 tag := "grind-interactive-instantiate"
 %%%
 
-These tactics add new facts to the {tactic}`grind` state (that is, the “whiteboard”) by instantiating theorems.
+这些策略通过实例化定理向 {tactic}`grind` 状态（即“白板”）添加新事实。
 
-:::grindTactic "instantiate"
+:::zhgrindTactic "instantiate"
 :::
 
-{grindTactic}`instantiate` runs a single round of E-matching.
-By default, this round uses all of {tactic}`grind`'s currently active theorems; the bracketed list supplies further theorems to instantiate alongside them, and an {tech}[anchor] adds a specific local theorem from the state.
-Running {grindTactic}`show_local_thms` displays the local theorems' anchors.
-The bracketed list may additionally specify namespaces using the {keyword}`namespace` keyword, which causes theorems with scoped {attr}`grind` attributes from the namespace to be used.
-The {keywordOf Lean.Parser.Tactic.Grind.instantiate}`only` modifier restricts the round to the listed theorems.
+{grindTactic}`instantiate` 运行一轮 E-匹配。
+默认使用 {tactic}`grind` 当前所有活跃定理；方括号列表提供同时实例化的额外定理，{tech (key := "anchor")}[锚点]则添加状态中的特定局部定理。
+运行 {grindTactic}`show_local_thms` 可显示局部定理的锚点。
+方括号列表还可通过 {keyword}`namespace` 关键字指定命名空间，从而使用该命名空间中具有局部作用域 {attr}`grind` 属性的定理。
+{keywordOf Lean.Parser.Tactic.Grind.instantiate}`only` 修饰符将该轮限制为所列定理。
 
-The {keywordOf Lean.Parser.Tactic.Grind.instantiate}`approx` modifier has no effect on how the step runs.
-It is a marker that appears in automatically generated scripts, such as those suggested by {tactic}`grind?` and {grindTactic}`finish?`, when {tactic}`grind` cannot determine a precise list of theorems for the step.
-It signals that the listed theorems are an approximation that may need to be adjusted by hand.
+{keywordOf Lean.Parser.Tactic.Grind.instantiate}`approx` 修饰符不影响步骤的运行方式。
+它是出现在 {tactic}`grind?`、{grindTactic}`finish?` 等自动生成脚本中的标记，表示 {tactic}`grind` 无法为该步骤确定精确的定理列表。
+它说明列出的定理仅是近似，可能需要手动调整。
 
-:::example "Instantiating a Local Hypothesis"
-A hypothesis that is a quantified statement becomes a local theorem in the {tactic}`grind` state.
-Because this hypothesis has no global name, it is instantiated by its {tech}[anchor], which {grindTactic}`show_local_thms` reports:
+:::example "实例化局部假设"
+全称量化陈述形式的假设会成为 {tactic}`grind` 状态中的局部定理。
+由于此假设没有全局名称，需要使用 {grindTactic}`show_local_thms` 报告的{tech (key := "anchor")}[锚点]来实例化：
 ```lean (name := instAnchor)
 example (f : Nat → Nat) (h : ∀ n, f n ≤ n * n) :
     f 3 ≤ 9 := by
@@ -540,15 +556,15 @@ example (f : Nat → Nat) (h : ∀ n, f n ≤ n * n) :
 ```lean -show
 variable (f : Nat → Nat) (h : ∀ n, f n ≤ n * n)
 ```
-Instantiating {lean}`h` at {lean}`3` adds the fact {lean}`f 3 ≤ 3 * 3` to the state, from which {tactic}`grind` concludes that {lean}`f 3 ≤ 9`.
+在 {lean}`3` 处实例化 {lean}`h`，会向状态添加事实 {lean}`f 3 ≤ 3 * 3`，{tactic}`grind` 据此得到 {lean}`f 3 ≤ 9`。
 :::
 
-:::grindTactic "use"
+:::zhgrindTactic "use"
 :::
 
-:::example "Namespaces"
-The predicate {name}`IsEmpty` is a roundabout way of stating that a list is empty.
-Within namespace `A`, the theorem {name}`A.nil_IsEmpty` is used by {tactic}`grind` to prove {lean}`IsEmpty []`.
+:::example "命名空间"
+谓词 {name}`IsEmpty` 以迂回的方式陈述列表为空。
+在命名空间 `A` 内，{tactic}`grind` 使用定理 {name}`A.nil_IsEmpty` 证明 {lean}`IsEmpty []`。
 ```lean
 def IsEmpty (xs : List α) : Prop := xs.length = 0
 
@@ -560,7 +576,7 @@ example : IsEmpty ([] : List String) := by grind
 end A
 ```
 
-Outside of the namespace, the theorem is not used:
+在命名空间外，该定理不会被使用：
 ```lean +error (name := nogrind)
 example : IsEmpty ([] : List String) := by grind
 ```
@@ -574,7 +590,7 @@ h : ¬IsEmpty []
   [eqc] False propositions
 ```
 
-Specifying the `A` namespace in {grindTactic}`instantiate` re-enables {name}`A.nil_IsEmpty`:
+在 {grindTactic}`instantiate` 中指定命名空间 `A`，就会重新启用 {name}`A.nil_IsEmpty`：
 ```lean
 example : IsEmpty ([] : List String) := by
   grind =>
@@ -583,35 +599,37 @@ example : IsEmpty ([] : List String) := by
 
 :::
 
-:::grindTactic "mbtc"
+:::zhgrindTactic "mbtc"
 :::
 
-# Case Analysis
+# 情形分析
 %%%
+file := "Case-Analysis"
 tag := "grind-interactive-cases"
 %%%
 
-These tactics invoke {tactic}`grind`'s {ref "grind-split"}[case splitting].
+这些策略调用 {tactic}`grind` 的{ref "grind-split"}[情形拆分]。
 
-:::grindTactic "cases"
+:::zhgrindTactic "cases"
 :::
 
-:::grindTactic "cases?"
+:::zhgrindTactic "cases?"
 :::
 
-:::grindTactic "cases_next"
+:::zhgrindTactic "cases_next"
 :::
 
-# State Inspection
+# 状态检查
 %%%
+file := "State-Inspection"
 tag := "grind-interactive-inspect"
 %%%
 
-Many of the tactics in this section take an optional {tech}[filter] as a parameter.
-This filter should be provided _without_ the `|` character, because that invokes the general state display mechanism instead of customizing the tactic's display.
+本节许多策略接受可选的{tech (key := "filter")}[筛选器]参数。
+提供筛选器时_不要_带 `|` 字符，否则会调用通用状态显示机制，而非定制该策略的显示。
 
-:::example "Inspecting the Whiteboard"
-{grindTactic}`show_state` prints the asserted facts, the true and false propositions, and the equivalence classes found so far:
+:::example "检查白板"
+{grindTactic}`show_state` 打印断言的事实、真假命题，以及目前发现的等价类：
 ```lean (name := showState)
 inductive Color where | red | green
 inductive Fruit where | cherry | lime
@@ -635,93 +653,96 @@ example (peel pulp : Fruit → Color)
     [eqc] {peel Fruit.cherry, pulp Fruit.cherry}
 ```
 
-The class `{peel .cherry, pulp .cherry}` comes from `h1`.
-The universally quantified statement `h2` is not yet instantiated, so the proof is not complete until {grindTactic}`finish` hands control back to {tactic}`grind`'s search.
-The companion tactics {grindTactic}`show_asserted`, {grindTactic}`show_true`, {grindTactic}`show_false`, and {grindTactic}`show_eqcs` display individual sections of this state.
+等价类 `{peel .cherry, pulp .cherry}` 来自 `h1`。
+全称量化陈述 `h2` 尚未实例化，因此必须由 {grindTactic}`finish` 将控制权交回 {tactic}`grind` 的搜索才能完成证明。
+配套策略 {grindTactic}`show_asserted`、{grindTactic}`show_true`、{grindTactic}`show_false` 和 {grindTactic}`show_eqcs` 分别显示该状态的各个部分。
 :::
 
-:::grindTactic "show_state"
+:::zhgrindTactic "show_state"
 :::
 
-:::grindTactic "show_asserted"
+:::zhgrindTactic "show_asserted"
 :::
 
-:::grindTactic "show_true"
+:::zhgrindTactic "show_true"
 :::
 
-:::grindTactic "show_false"
+:::zhgrindTactic "show_false"
 :::
 
-:::grindTactic "show_eqcs"
+:::zhgrindTactic "show_eqcs"
 :::
 
-:::grindTactic "show_cases"
+:::zhgrindTactic "show_cases"
 :::
 
-:::grindTactic "show_local_thms"
+:::zhgrindTactic "show_local_thms"
 :::
 
-:::grindTactic "show_goals"
+:::zhgrindTactic "show_goals"
 :::
 
-:::grindTactic "show_term"
+:::zhgrindTactic "show_term"
 :::
 
-# Local Context and Naming
+# 局部上下文与命名
 %%%
+file := "Local-Context-and-Naming"
 tag := "grind-interactive-context"
 %%%
 
-These tactics add hypotheses to the local context and make inaccessible names available to later steps.
+这些策略向局部上下文添加假设，并使后续步骤能使用原本不可访问的名称。
 
-:::grindTactic Grind.«have» (show := "have")
+:::zhgrindTactic Grind.«have» (show := "have")
 :::
 
-A second form of {keywordOf Lean.Parser.Tactic.Grind.haveSilent}`have`, written `have h : t` with no value, proves `t` from the current {tactic}`grind` state using the default search strategy and adds it as a hypothesis.
+{keywordOf Lean.Parser.Tactic.Grind.haveSilent}`have` 的另一种形式写作不带值的 `have h : t`：它使用默认搜索策略从当前 {tactic}`grind` 状态证明 `t`，然后将其添加为假设。
 
-:::grindTactic haveSilent (show := "have")
+:::zhgrindTactic haveSilent (show := "have")
 :::
 
-:::grindTactic "rename_i"
+:::zhgrindTactic "rename_i"
 :::
 
-:::grindTactic "expose_names"
+:::zhgrindTactic "expose_names"
 :::
 
-# Configuration
+# 配置
 %%%
+file := "Configuration"
 tag := "grind-interactive-config"
 %%%
 
-These tactics run a sequence of {tactic}`grind` tactics with modified options or configuration.
+这些策略在修改选项或配置后运行一系列 {tactic}`grind` 策略。
 
-:::grindTactic "set_option"
+:::zhgrindTactic "set_option"
 :::
 
-:::grindTactic "set_config"
+:::zhgrindTactic "set_config"
 :::
 
-# Symbolic Simulation Mode
+# 符号模拟模式
 %%%
+file := "Symbolic-Simulation-Mode"
 tag := "grind-sym"
 %%%
 
-The {tactic}`sym` tactic is a lower-level version of {keywordOf Lean.Parser.Tactic.grind}`grind =>` that provides a higher degree of manual control over the state.
-When run, {tactic}`sym` enters interactive mode without the eager introduction of hypotheses and use of proof by contradiction that {tactic}`grind` performs.
+{tactic}`sym` 是 {keywordOf Lean.Parser.Tactic.grind}`grind =>` 的更底层版本，允许更精细地手动控制状态。
+运行 {tactic}`sym` 会进入交互模式，但不会像 {tactic}`grind` 那样立即引入假设并使用反证法。
 
-When using {tactic}`sym`, assumptions must be manually introduced, just as in the standard proof tactic language.
-Introducing an assumption moves it from the goal's conclusion into a new hypothesis.
-It is often also useful to add the assumption to the “whiteboard”, so that it participates in congruence closure and {tactic}`grind`'s other processes.
-Adding a hypothesis or term to the whiteboard is called {deftech}_internalization_.
-Once internalized, a hypothesis participates in congruence reasoning, {tech}[constraint propagation], and the theory solvers; until then, {tactic}`grind` does not reason about it.
+使用 {tactic}`sym` 时，必须像标准证明策略语言那样手动引入假设。
+引入假设会将其从目标结论移到新的假设中。
+通常还需要将假设加入“白板”，让它参与同余闭包及 {tactic}`grind` 的其他处理过程。
+将假设或项加入白板称为{deftech (key := "internalization")}_内部化_。
+内部化之后，假设参与同余推理、{tech (key := "constraint propagation")}[约束传播]和理论求解器；在此之前，{tactic}`grind` 不会对其进行推理。
 
-The following tactics are available only after {tactic}`sym`; they are not available in plain interactive {tactic}`grind` because it carries out their operations automatically when needed.
+以下策略仅在 {tactic}`sym` 之后可用；普通的交互式 {tactic}`grind` 中不可用，因为后者会在需要时自动执行相应操作。
 
-:::grindTactic symIntro (show := "intro")
+:::zhgrindTactic symIntro (show := "intro")
 :::
 
-::::example "Introduction and Internalization"
-Introducing a hypothesis changes the goal and, by default, adds the hypothesis to the whiteboard:
+::::example "引入与内部化"
+引入假设会改变目标，并默认将假设加入白板：
 
 :::grindTacticExample +sym
 {grindGoal}`∀ (a b : Nat), a = b → b = a`
@@ -729,8 +750,8 @@ Introducing a hypothesis changes the goal and, by default, adds the hypothesis t
 intro a b
 ```
 
-When the current goal is an implication and the {tactic}`grind` state is empty, running {grindTactic Lean.Parser.Tactic.Grind.symIntro}`intro` both adds the antecedent as an assumption and integrates it into the whiteboard.
-If the initial goal and grind state are:
+当前目标为蕴涵且 {tactic}`grind` 状态为空时，运行 {grindTactic Lean.Parser.Tactic.Grind.symIntro}`intro`，既会将前件加入假设，又会将其并入白板。
+若初始目标和 grind 状态如下：
 ```grindProofState
 case grind
 a b : Nat
@@ -739,18 +760,18 @@ a b : Nat
 ```grindState
 [grind] Grind state
 ```
-then running
+那么运行
 ```grindStep
 intro h
 ```
-results in a new assumption:
+会得到新假设：
 ```grindProofState
 case grind
 a b : Nat
 h : a = b
 ⊢ b = a
 ```
-This new assumption has also modified the {tactic}`grind` state, which is now:
+该新假设同时修改了 {tactic}`grind` 状态，现在为：
 ```grindState
 [grind] Grind state
   [facts] Asserted facts
@@ -765,7 +786,7 @@ This new assumption has also modified the {tactic}`grind` state, which is now:
 intro a b
 ```
 
-With the same goal and empty state:
+对于相同目标和空状态：
 ```grindProofState
 case grind
 a b : Nat
@@ -774,11 +795,11 @@ a b : Nat
 ```grindState
 [grind] Grind state
 ```
-introducing without internalization:
+引入假设而不内部化：
 ```grindStep
 intro (internalize := false) h
 ```
-results in a modified goal but an empty state:
+会改变目标，但状态仍为空：
 ```grindProofState
 case grind
 a b : Nat
@@ -792,95 +813,96 @@ h : a = b
 
 ::::
 
-The shorthand `intro~` introduces binders without internalizing them, equivalent to `intro (internalize := false)`.
+简写 `intro~` 引入绑定而不内部化，等价于 `intro (internalize := false)`。
 
-:::grindTactic symIntros (show := "intros")
+:::zhgrindTactic symIntros (show := "intros")
 :::
 
-The shorthand `intros~` introduces all remaining binders without internalizing them.
+简写 `intros~` 引入所有剩余绑定而不内部化。
 
-:::grindTactic "apply"
+:::zhgrindTactic "apply"
 :::
 
-:::grindTactic "internalize"
+:::zhgrindTactic "internalize"
 :::
 
-:::grindTactic "internalize_all"
+:::zhgrindTactic "internalize_all"
 :::
 
-:::grindTactic "by_contra"
+:::zhgrindTactic "by_contra"
 :::
 
-:::grindTactic "rw"
+:::zhgrindTactic "rw"
 :::
 
-:::grindTactic "cbv"
+:::zhgrindTactic "cbv"
 :::
 
-The {grindTactic}`simp` and {grindTactic}`dsimp` tactics in {tactic}`sym` scripts run {tactic}`grind`'s own simplifier, a separate implementation built for its internal representation of terms, with its own performance characteristics and feature set.
-This simplifier operates directly on that representation and avoids testing definitional equality.
-Instead of {tech}[simp sets], it uses {deftech}_named variants_: named bundles of simprocs (to be run before and after simplification) along with configuration overrides.
-Named variants are described in more detail {ref "grind-sym-simp-variants"}[in the next section].
+{tactic}`sym` 脚本中的 {grindTactic}`simp` 和 {grindTactic}`dsimp` 使用 {tactic}`grind` 自身的简化器；它是针对内部项表示专门构建的独立实现，具有自己的性能特征与功能集。
+该简化器直接操作此表示，避免测试定义相等性。
+它不使用{tech (key := "simp sets")}[简化集]，而使用{deftech (key := "named variants")}_具名变体_：带名称的 simproc 组合（分别在简化前后运行）及配置覆盖。
+具名变体将在{ref "grind-sym-simp-variants"}[下一节]详细介绍。
 
-:::grindTactic "simp"
+:::zhgrindTactic "simp"
 :::
 
-:::grindTactic "dsimp"
+:::zhgrindTactic "dsimp"
 :::
 
-Bitvector decision procedures are also available.
-They are available in both {tactic}`grind` and {tactic}`sym` scripts and act on the goal.
-In {tactic}`grind` or {tactic}`sym` scripts, {grindTactic}`bv_normalize` fails if it does not close the goal.
+位向量判定过程也可以使用。
+它们在 {tactic}`grind` 与 {tactic}`sym` 脚本中均可用，并作用于目标。
+在 {tactic}`grind` 或 {tactic}`sym` 脚本中，若 {grindTactic}`bv_normalize` 未关闭目标，则会失败。
 
-:::grindTactic "bv_decide"
+:::zhgrindTactic "bv_decide"
 :::
 
-:::grindTactic "bv_decide?"
+:::zhgrindTactic "bv_decide?"
 :::
 
-:::grindTactic "bv_normalize"
+:::zhgrindTactic "bv_normalize"
 :::
 
-:::grindTactic "bv_check"
+:::zhgrindTactic "bv_check"
 :::
 
-## Registering Simplification Variants
+## 注册简化变体
 %%%
+file := "Registering-Simplification-Variants"
 tag := "grind-sym-simp-variants"
 %%%
 
-Named variants, used by the {tactic}`sym` versions of {grindTactic}`simp` and {grindTactic}`dsimp`, are declared using the {keywordOf Lean.Parser.Command.registerSymSimp}`register_sym_simp` and {keywordOf Lean.Parser.Command.registerSymDSimp}`register_sym_dsimp` commands.
-Once registered, a variant is then selected by following {grindTactic}`simp` or {grindTactic}`dsimp` with that name.
+{tactic}`sym` 版本的 {grindTactic}`simp` 与 {grindTactic}`dsimp` 使用的具名变体，通过 {keywordOf Lean.Parser.Command.registerSymSimp}`register_sym_simp` 和 {keywordOf Lean.Parser.Command.registerSymDSimp}`register_sym_dsimp` 命令声明。
+注册后，在 {grindTactic}`simp` 或 {grindTactic}`dsimp` 后接变体名称即可选择它。
 
-:::syntax command (title := "Registering a `Sym.simp` Variant")
+:::syntax command (title := "注册 `Sym.simp` 变体")
 ```grammar
 register_sym_simp $name:ident where
   $fields*
 ```
 
-{includeDocstring Lean.Parser.Command.registerSymSimp}
+{zhincludeDocstringFrom Lean.Parser.Command.registerSymSimp}
 :::
 
-:::syntax command (title := "Registering a `Sym.dsimp` Variant")
+:::syntax command (title := "注册 `Sym.dsimp` 变体")
 ```grammar
 register_sym_dsimp $name:ident where
   $fields*
 ```
 
-{includeDocstring Lean.Parser.Command.registerSymDSimp}
+{zhincludeDocstringFrom Lean.Parser.Command.registerSymDSimp}
 :::
 
-The fields in the `where` block are all optional:
+`where` 块中的字段均为可选：
 
-: `pre` and `post`
+: `pre` 和 `post`
 
-  The simproc chains applied before and after simplification, respectively.
+  分别在简化前后应用的 simproc 链。
 
 : `maxSteps`
 
-  Bounds the number of simplification steps.
+  限制简化步数。
 
 : `maxDischargeDepth`
 
-  Bounds the depth of recursive side-goal discharge.
-  Available only for {keywordOf Lean.Parser.Command.registerSymSimp}`register_sym_simp`.
+  限制递归证明旁目标的深度。
+  仅适用于 {keywordOf Lean.Parser.Command.registerSymSimp}`register_sym_simp`。

@@ -9,6 +9,7 @@ import VersoManual
 import Lean.Parser.Term
 
 import Manual.Meta
+import Manual.ZhDocString.Upstream
 import Manual.Papers
 
 
@@ -50,6 +51,7 @@ example (dir file p) (h : dir ++ "/" = p) :
 # 范式
 %%%
 file := "Normal-Forms"
+tag := "Lean-__________________--grind--______--_____________________--______"
 %%%
 
 :::leanSection
@@ -88,30 +90,31 @@ variable {α : Type u} {op : α → α → α} [Std.Associative op] {u x y z : �
 # 扩展
 %%%
 file := "Extension"
+tag := "Lean-__________________--grind--______--_____________________--______-0"
 %%%
 
 通过为运算提供 {name}`Std.Associative` 实例，可以扩展 `ac` 求解器以支持新运算。
 {name}`Std.Commutative`、{name}`Std.IdempotentOp` 和 {name}`Std.LawfulIdentity` 实例让求解器能够识别更多相等的项，进一步扩展其能力。
 
-{docstring Std.Associative}
+{zhdocstringFrom Std.Associative}
 
-{docstring Std.Commutative}
+{zhdocstringFrom Std.Commutative}
 
-{docstring Std.IdempotentOp}
+{zhdocstringFrom Std.IdempotentOp}
 
-{docstring Std.LawfulIdentity}
+{zhdocstringFrom Std.LawfulIdentity}
 
 扩展 {lit}`ac` 求解器时，观察其运行过程可能很有帮助。
 可以使用 {option}`trace.grind.ac` 选项及更具体的 {option}`trace.grind.ac.assert`、{option}`trace.grind.ac.internalize`、{option}`trace.grind.ac.basis` 选项来观察其内部行为。
 其中，{option}`trace.grind.ac.assert` 显示添加到“白板”的规范化结果。
 
-{optionDocs trace.grind.ac}
+{zhOptionDocsFrom trace.grind.ac}
 
-{optionDocs trace.grind.ac.assert}
+{zhOptionDocsFrom trace.grind.ac.assert}
 
-{optionDocs trace.grind.ac.internalize}
+{zhOptionDocsFrom trace.grind.ac.internalize}
 
-{optionDocs trace.grind.ac.basis}
+{zhOptionDocsFrom trace.grind.ac.basis}
 
 :::example "幂等性与单位元" (file := "Idempotence and Identity")
 
@@ -269,6 +272,7 @@ h : ¬a ++ b = b ++ a
 # 排除项
 %%%
 file := "Exclusions"
+tag := "Lean-__________________--grind--______--_____________________--_________"
 %%%
 
 `ac` 求解器不处理某些内置运算，具体包括 {name}`And`、{name}`Or` 和 {name}`Iff`。
