@@ -28,22 +28,22 @@ def version : RoleExpanderOf Unit
 @[role]
 def manualLink : RoleExpanderOf Unit
   | (), content => do
-    ``(Verso.Doc.Inline.link #[$[$(← content.mapM elabInline)],*] Lean.manualRoot)
+    ``(Verso.Doc.Inline.link #[$[$(← content.mapM elabInline)],*] ("https://www.leanprover.cn/reference-manual/" ++ Lean.versionString ++ "/"))
 end
 
 open Verso.Doc Concrete in
 def tutorials : Tutorials where
   content :=
-  (verso (Page) "Tutorials"
+  (verso (Page) "Lean 中文教程"
    :::::::
-   These tutorials cover version {version}[] of Lean.
-   While the {manualLink}[reference manual] describes the system and its features in detail, these tutorials provide focused introductions to specific tools.
+   这些教程适用于 Lean {version}[]。
+   {manualLink}[参考手册]详细介绍 Lean 系统及其功能，这些教程则集中介绍具体工具的使用。
    :::::::).toPart
 
   topics := #[
-    { title := #[inlines!"Tactics"],
-      titleString := "Tactics"
-      description := #[blocks!"These tutorials demonstrate Lean's advanced proof automation."]
+    { title := #[inlines!"策略"],
+      titleString := "策略"
+      description := #[blocks!"这些教程演示 Lean 的高级证明自动化工具。"]
       tutorials := #[%doc Tutorial.VCGen, %doc Tutorial.MVCGen, %doc Tutorial.Grind.IndexMap]
     }
 

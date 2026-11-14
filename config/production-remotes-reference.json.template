@@ -2,9 +2,9 @@
   "version": 0,
   "sources": {
     "tutorials": {
-      "root": "https://lean-lang.org/doc/tutorials/__VERSION__",
+      "root": "https://www.leanprover.cn/reference-manual/__VERSION__/tutorials",
       "shortName": "tutorials",
-      "longName": "Lean Tutorials",
+      "longName": "Lean 中文教程",
       "updateFrequency": "always",
       "sources": [{"local": "_tutorial-out/xref.json"}]
     }
