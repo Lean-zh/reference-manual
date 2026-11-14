@@ -228,7 +228,7 @@ grind hom_pred
 
 {zhOptionDocsFrom trace.grind.hom.pred}
 
-:::example "极小整数"
+:::example "极小整数" (file := "Very-Small-Integers")
 
 极小数（即零到三的整数）可以用具有四个构造器的归纳类型表示：
 
@@ -422,7 +422,7 @@ example : (2 : Tiny) + (1 : Tiny) = (3 : Tiny) := by grind
 
 
 
-:::example "差分列表" (tag := "difference-lists-hom")
+:::example "差分列表" (file := "Difference-Lists") (tag := "difference-lists-hom")
 
 差分列表将列表表示为函数，{ref "difference-lists-ac" (domain := Manual.examples)}[提供满足结合律的追加运算]。
 通过 {attr}`grind hom` 将它们视为列表来推理很有吸引力；但默认的函数表示不具有所需的单射性：
@@ -564,7 +564,7 @@ example (h : a ++ b = .nil) : a = .nil := by
 ```
 :::
 
-:::example "一天中的时刻"
+:::example "一天中的时刻" (file := "Times-of-Day")
 
 时刻可以用小时和分钟表示：
 

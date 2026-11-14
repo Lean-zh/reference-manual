@@ -110,7 +110,7 @@ Lean 推断出，{lean}`Type (max u v)` 是能够同时容纳 {lean}`Type u` 和
 
 每个字段都会独立插入自动隐式参数，即使它们的名称相同；这些字段随后成为对类型进行量化的构造子参数。
 
-::::example "结构体字段中的自动隐式参数"
+::::example "结构体字段中的自动隐式参数" (file := "Auto-Implicit-Parameters-in-Structure-Fields")
 
 结构体 {lean}`MyStructure` 包含一些字段，其类型带有自动隐式参数：
 

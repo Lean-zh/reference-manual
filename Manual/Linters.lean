@@ -218,7 +218,7 @@ tag := "code-quality-metrics"
 JSON 输出可能包含换行，应使用真正的 JSON 解析器解析。
 :::
 
-:::example "度量条目的 JSON 表示"
+:::example "度量条目的 JSON 表示" (file := "Metrics-Entries-as-JSON")
 归属于模块的标量值，重放检查警告时会产生此类条目：
 ```codeQualityEntries
 {"name": "linter.unusedVariables",
@@ -242,7 +242,7 @@ JSON 输出可能包含换行，应使用真正的 JSON 解析器解析。
 这些检查可以用统一机制，取代 CI 和报告中的各种特设数据收集机制。
 
 
-::::example "将现有警告用作度量" (tag := "example-warnings-as-metrics")
+::::example "将现有警告用作度量" (file := "Existing-Warnings-as-Metrics") (tag := "example-warnings-as-metrics")
 :::lakeSession
 ```toml -show
 name = "metrics"
@@ -365,7 +365,7 @@ open Lean Elab Command
 {zhdocstringFrom Lean.Elab.Command.addLinter +allowMissing}
 
 
-::::example "统计策略数量" (tag := "example-linter-enabled")
+::::example "统计策略数量" (file := "Counting-Tactics") (tag := "example-linter-enabled")
 此自定义检查器在命令的策略数超过可配置阈值时发出警告。
 它处理命令的信息树，记录具有策略信息且种类为策略种类的{tech (key := "original")}[原始]语法的唯一开始位置，以找到策略。
 由于宏展开步骤及同一策略的重复执行都会保存策略信息，因此需要去重。
@@ -508,7 +508,7 @@ open Lean Elab Command
 
 {zhdocstringFrom Lean.Elab.Command.addModuleLinter +allowMissing}
 
-:::::example "限制声明数量" (tag := "example-module-linter")
+:::::example "限制声明数量" (file := "Limiting-the-Number-of-Declarations") (tag := "example-module-linter")
 
 ::::leanModules (moduleRoot := Limit)
 模块 `Limit.Linter` 包含一个模块检查器，在模块声明过多时发出警告。
@@ -612,7 +612,7 @@ open Lean Elab Command
 
 {zhdocstringFrom Lean.Elab.Command.PreStateFn}
 
-::::example "落实文件布局" (tag := "example-file-layout")
+::::example "落实文件布局" (file := "Enforcing-a-File-Layout") (tag := "example-file-layout")
 :::leanModules (moduleRoot := Layout)
 
 此有状态检查器检查模块是否具有指定结构。
@@ -754,7 +754,7 @@ builtin_env_linter $_:ident
 {zhdocstringFrom Lean.Linter.addEnvLinterOption +allowMissing}
 
 
-::::example "API 完整性检查器" (tag := "example-env-linter")
+::::example "API 完整性检查器" (file := "API-Completeness-Linter") (tag := "example-env-linter")
 一般来说，提供 `get!` 函数的数据结构也应提供 `get?` 和 `getD`。
 不过，这些函数不必在同一模块中定义。
 环境检查器可以确保：项目中任何定义了这些名称之一的命名空间，也定义了其余名称。
@@ -906,7 +906,7 @@ tag := "recording-code-quality"
 {zhdocstringFrom Lean.Linter.findCodeQualitySource?}
 
 
-::::example "度量 simp 引理的使用" (tag := "example-simp-metrics")
+::::example "度量 simp 引理的使用" (file := "Measuring-Simp-Lemma-Usage") (tag := "example-simp-metrics")
 虽然检查器主要用于警告潜在的问题代码，也可以仅收集度量，而由后续检查发出警告。
 本示例展示一个记录显式 {tactic}`simp` 引理使用度量的命令检查器，可据此发现库中可能缺失的 {attrs}`@[simp]` 标注。
 这些度量随后由一个小型 Lean 程序收集和汇总。
@@ -1123,7 +1123,7 @@ package_code_quality_check
 
 {zhdocstringFrom Lean.Linter.CodeQuality.PackageCheckContext +allowMissing}
 
-::::example "寻找重复定理" (tag := "example-package-check")
+::::example "寻找重复定理" (file := "Finding-Duplicate-Theorems") (tag := "example-package-check")
 
 由于包级检查可以访问整个库，因此可用于寻找重复定理。
 本示例检查有局限：它只找到几乎完全相同的定理，不考虑假设重排或定义展开。

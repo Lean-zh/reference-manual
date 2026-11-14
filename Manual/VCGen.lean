@@ -159,7 +159,7 @@ variable {Pred : Type u} [Assertion Pred] {P Q : Pred}
 {lean}`Nat → Prop` 等函数类型上的格运算逐点进行，因此状态谓词间的蕴涵是全称量化的蕴涵。
 {lean}`(Nat → Prop) × (Bool → Prop)` 等有序对上的格运算逐分量进行，因此成对谓词间的蕴涵是各分量谓词间蕴涵的合取。
 
-:::example "不同断言类型上的蕴涵"
+:::example "不同断言类型上的蕴涵" (file := "Entailment-at-Different-Assertion-Types")
 ```imports -show
 import Std.WP
 import Std.Tactic.Do
@@ -224,7 +224,7 @@ variable {p : Prop} {n k : Nat} {Pred : Type u} [Assertion Pred]
 {tactic}`vcgen` 将纯前置条件移入普通 Lean 上下文，使其成为验证条件的假设。
 :::
 
-:::example "状态单子的断言"
+:::example "状态单子的断言" (file := "Assertions-for-State-Monads")
 ```imports -show
 import Std.WP
 import Std.Tactic.Do
@@ -570,7 +570,7 @@ Std.WP.Spec.bind.{u, v, w, w'}
   ⦃ post; epost ⦄
 ```
 
-:::example "逻辑变量"
+:::example "逻辑变量" (file := "Logical-Variables")
 ```imports -show
 import Std.WP
 import Std.Tactic.Do
@@ -693,7 +693,7 @@ tag := "Lean-__________________--The--vcgen--tactic--Enabling--vcgen--For-Monads
 库中原语运算的规约引理，应保留关于状态的所有未被刻意隐藏的事实。
 虽然按运算如何将输入状态变成输出状态来思考更容易，但在后置条件为全称量化变量时，{tech (key := "verification condition")}[验证条件]生成更可靠，因为自动化可将其直接实例化为下一条语句的前置条件，而无需证明蕴涵。
 
-:::example "自动框架规约"
+:::example "自动框架规约" (file := "Auto-Framing-Specifications")
 ```imports -show
 import Std.WP
 import Std.Tactic.Do
@@ -875,7 +875,7 @@ tag := "vcgen-discharging"
 单子多态定理则产生{ref "vcgen-assertion-lattices"}[抽象断言格]上的目标。
 若这些目标可归约为纯断言间的蕴涵，{tactic}`grind` 就能解决，如下例所示。抽象格上的其他目标可能需要手动证明。
 
-:::example "单子多态证明" (tag := "vcgen-monad-polymorphic")
+:::example "单子多态证明" (file := "Monad-Polymorphic-Proofs") (tag := "vcgen-monad-polymorphic")
 ```imports -show
 import Std.WP
 import Std.Tactic.Do

@@ -132,7 +132,7 @@ tag := "async-run"
 与 {name}`IO.asTask` 相比，{name}`EAsync.asTask` 调度的是_异步任务_。
 {name}`IO.asTask` 创建的任务是同步的，会一直占用工作线程直到完成；{name}`EAsync.asTask` 创建的任务则会在挂起点释放工作线程，并在等待的值可用时恢复为任务。
 
-::::example "运行异步计算"
+::::example "运行异步计算" (file := "Running-an-Asynchronous-Computation")
 {name}`Async.block` 运行异步计算，并在 {name}`IO` 中返回其结果。
 以下程序打印一条消息，等待十毫秒，然后再打印一条消息：
 :::ioExample
@@ -187,7 +187,7 @@ example : MonadAsync AsyncTask (StateT Nat Async) := inferInstance
 example : MonadAsync AsyncTask (ReaderT Nat Async) := inferInstance
 ```
 
-:::example "创建并等待任务"
+:::example "创建并等待任务" (file := "Spawning-and-Awaiting-Tasks")
 ```imports -show
 import Std.Async
 ```
@@ -217,7 +217,7 @@ def fetchBoth : Async (String × String) := do
 ```
 :::
 
-::::example "后台任务"
+::::example "后台任务" (file := "Background-Tasks")
 {name}`background` 启动一个结果永远不会被等待的计算。
 这里有一个在后台运行的日志记录器，打印发送到通道的每条消息：
 :::ioExample
@@ -468,7 +468,7 @@ variable (α : Type)
 
 {zhdocstringFrom Selectable.combine}
 
-:::example "无阻塞轮询"
+:::example "无阻塞轮询" (file := "Polling-Without-Blocking")
 ```imports -show
 import Std.Async
 import Std.Sync.Channel
@@ -498,7 +498,7 @@ open Std Async
 ```
 :::
 
-:::example "选择与超时"
+:::example "选择与超时" (file := "Selection-and-Timeouts")
 ```imports -show
 import Std.Async
 import Std.Sync.Channel
@@ -539,7 +539,7 @@ none
 ```
 :::
 
-:::example "选择"
+:::example "选择" (file := "Selection")
 ```imports -show
 import Std.Async
 import Std.Sync.Channel
@@ -740,7 +740,7 @@ tag := "selector-protocol-cleanup"
 因此，必须保证即使选择器的 {name Selector.registerFn}`registerFn` 落败、从未被调用或抛出了异常，调用其 {name Selector.unregisterFn}`unregisterFn` 仍然安全。
 
 
-:::example "自然数节拍器"
+:::example "自然数节拍器" (file := "Natural-Number-Ticker")
 ```imports -show
 import Std.Async
 ```
@@ -938,7 +938,7 @@ tag := "errors-and-concurrency"
 并发运算 {name}`Async.concurrently` 和 {name}`Async.concurrentlyAll` 按位置而非时间顺序等待子任务的结果。
 这意味着任务产生的错误按源代码顺序报告，而不是按错误发生的时间顺序报告。
 
-:::example "并发与错误传播"
+:::example "并发与错误传播" (file := "Concurrency-and-Error-Propagation")
 ```imports -show
 import Std.Async
 ```
@@ -1182,7 +1182,7 @@ def sleepSelectorRestartsAfterLoss : Async Unit := do
 
 
 
-::::example "选择器与定时器"
+::::example "选择器与定时器" (file := "Selectors-and-Timers")
 此程序运行一个循环。
 每轮迭代最多等待两秒钟以获取一行输入。
 若收到输入，就回显该行并继续循环。
@@ -1412,7 +1412,7 @@ Unix 风格的信号是随时可能从操作系统接收的异步通知。
 
 {zhdocstringFrom Signal.Waiter.selector}
 
-::::example "选择器与信号"
+::::example "选择器与信号" (file := "Selectors-and-Signals")
 此程序运行一个循环。
 每轮迭代等待一行输入或会发送 `SIGINT` 的 `Ctrl-C`。
 若收到输入，就回显该行并继续循环。
@@ -1521,7 +1521,7 @@ tag := "Lean-__________________--IO--Asynchronous-Programming--Cancellation--Rea
 
 {zhdocstringFrom ContextAsync.isCancelled}
 
-:::example "观察取消"
+:::example "观察取消" (file := "Observing-Cancellation")
 ```imports -show
 import Std.Async
 ```
@@ -1542,7 +1542,7 @@ open Std.Async
 ```
 :::
 
-:::example "协作响应取消"
+:::example "协作响应取消" (file := "Cooperating-with-Cancellation")
 ```imports -show
 import Std.Async
 ```
@@ -1572,7 +1572,7 @@ def worker : ContextAsync (Array Nat) := do
 
 {zhdocstringFrom Selector.cancelled}
 
-:::example "中断等待"
+:::example "中断等待" (file := "Interrupting-a-Wait")
 ```imports -show
 import Std.Async
 import Std.Sync.Channel

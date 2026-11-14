@@ -35,7 +35,7 @@ tag := "grind-interactive"
 {ref "grind-interactive-inspect"}[检查策略]揭示白板的当前状态，可能让用户发现缺失的定理实例化或情形拆分；这些可以通过若干显式步骤或库中的额外标注补足。
 显式脚本也可以帮助读者理解 {tactic}`grind` 成功的_原因_。
 
-:::example "阅读 `grind?` 证明"
+:::example "阅读 `grind?` 证明" (file := "Reading-a-grind-Proof")
 
 结构体 {lean}`Two` 可视为用 {name}`Bool` 而非 {name}`Nat` 索引的双元素数组。
 ```lean
@@ -254,7 +254,7 @@ example (p q : Prop) (h : p ∨ q) : q ∨ p := by
 具有给定锚点的首个项编号为 `1`，因此 `#7a83/1` 等价于 `#7a83`。
 由于按顺序分配，序号不如锚点稳定；调整假设顺序就可能改变序号。
 
-:::example "序号消歧标记"
+:::example "序号消歧标记" (file := "Ordinal-Disambiguators")
 该定理陈述：若存在两个值，函数将它们分别映射到 `0` 或 `1`，且两个函数值之和为 `2`，则存在一点被函数映射到 `1`。
 两个析取都映射到同一底层锚点 `#4f8c`。
 用 {tactic}`obtain` 将它们暴露后，{grindTactic}`cases?` 显示两个选项，各自带有序号消歧标记：
@@ -342,7 +342,7 @@ $f || $f
 合取与析取都是左结合且优先级相同，因此应显式使用圆括号分组。
 :::
 
-:::example "筛选器"
+:::example "筛选器" (file := "Filters")
 ```lean
 inductive Color where | red | green
 inductive Fruit where | cherry | lime
@@ -452,7 +452,7 @@ tag := "grind-interactive-finish"
 {grindTactic}`finish?` 关闭目标时，会提供代码操作，将该调用替换为发现的脚本，正如 {tactic}`grind?` 会建议 {keywordOf Lean.Parser.Tactic.grind}`grind only` 调用。
 由此可以交互地使用 {tactic}`grind` 发现部分证明，再在需要时手动修改。
 
-:::example "将 `grind` 证明记录为交互脚本"
+:::example "将 `grind` 证明记录为交互脚本" (file := "Recording-a-grind-Proof-as-an-Interactive-Script")
 ```lean -show
 variable (pred : Nat → Prop)
 ```
@@ -538,7 +538,7 @@ tag := "grind-interactive-instantiate"
 它是出现在 {tactic}`grind?`、{grindTactic}`finish?` 等自动生成脚本中的标记，表示 {tactic}`grind` 无法为该步骤确定精确的定理列表。
 它说明列出的定理仅是近似，可能需要手动调整。
 
-:::example "实例化局部假设"
+:::example "实例化局部假设" (file := "Instantiating-a-Local-Hypothesis")
 全称量化陈述形式的假设会成为 {tactic}`grind` 状态中的局部定理。
 由于此假设没有全局名称，需要使用 {grindTactic}`show_local_thms` 报告的{tech (key := "anchor")}[锚点]来实例化：
 ```lean (name := instAnchor)
@@ -562,7 +562,7 @@ variable (f : Nat → Nat) (h : ∀ n, f n ≤ n * n)
 :::zhgrindTactic "use"
 :::
 
-:::example "命名空间"
+:::example "命名空间" (file := "Namespaces")
 谓词 {name}`IsEmpty` 以迂回的方式陈述列表为空。
 在命名空间 `A` 内，{tactic}`grind` 使用定理 {name}`A.nil_IsEmpty` 证明 {lean}`IsEmpty []`。
 ```lean
@@ -628,7 +628,7 @@ tag := "grind-interactive-inspect"
 本节许多策略接受可选的{tech (key := "filter")}[筛选器]参数。
 提供筛选器时_不要_带 `|` 字符，否则会调用通用状态显示机制，而非定制该策略的显示。
 
-:::example "检查白板"
+:::example "检查白板" (file := "Inspecting-the-Whiteboard")
 {grindTactic}`show_state` 打印断言的事实、真假命题，以及目前发现的等价类：
 ```lean (name := showState)
 inductive Color where | red | green
@@ -741,7 +741,7 @@ tag := "grind-sym"
 :::zhgrindTactic symIntro (show := "intro")
 :::
 
-::::example "引入与内部化"
+::::example "引入与内部化" (file := "Introduction-and-Internalization")
 引入假设会改变目标，并默认将假设加入白板：
 
 :::grindTacticExample +sym

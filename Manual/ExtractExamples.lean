@@ -24,13 +24,24 @@ partial def extractExamples (_mode : Mode) (cfg : Manual.Config) (_state : Trave
 
   let code := (← part text |>.run #[] |>.run #[]).snd
   let dest := cfg.destination / "extracted-examples"
+  -- Translated titles can share a slug. Start with a clean output directory and disambiguate
+  -- collisions, so every example is checked and deleted or renamed examples cannot survive.
+  if ← dest.pathExists then IO.FS.removeDirAll dest
+  let mut used : Std.HashSet String := {}
   for (ctx, content) in code do
 
-    let filename := ctx.map (Slug.toString ∘ String.sluggify)
+    let base := ctx.map (Slug.toString ∘ String.sluggify)
       |>.foldl (init := dest) (· / ·)
       |>.withExtension "lean"
+    let mut filename := base
+    let mut suffix := 1
+    while used.contains filename.toString do
+      filename := base.withFileName s!"{base.fileStem.getD "example"}-{suffix}.lean"
+      suffix := suffix + 1
+    used := used.insert filename.toString
     filename.parent.forM fun p => IO.FS.createDirAll p
     IO.FS.writeFile filename content
+  IO.println s!"Extracted {code.size} independent Lean examples."
 
 where
   part : Part Manual → ExtractM Unit
