@@ -30,7 +30,7 @@ tag := "Lean-__________________--Supported-Platforms--Tier-1"
 
 * 使用 glibc 2.26+ 的 `x86-64` Linux
 * 使用 glibc 2.27+ 的 `aarch64` Linux
-* `aarch64`（Apple 芯片）macOS 10.15+
+* `aarch64`（Apple 芯片）macOS 14+
 * `x86-64` Windows 11（任意版本）、Windows 10（版本 1903 或更高）、Windows Server 2022、Windows Server 2025
 :::
 
@@ -47,6 +47,6 @@ tag := "Lean-__________________--Supported-Platforms--Tier-2"
 
 :::paragraph
 第二层级平台包括：
-* `x86-64` macOS 10.15+
+* `x86-64` macOS 14+
 * Emscripten WebAssembly
 :::

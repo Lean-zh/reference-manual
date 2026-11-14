@@ -6,7 +6,11 @@ Author: Joachim Breitner
 
 import VersoManual
 
+import Manual.Releases.«v4_36_0»
+import Manual.Releases.«v4_35_0»
+import Manual.Releases.«v4_34_1»
 import Manual.Releases.«v4_34_0»
+import Manual.Releases.«v4_33_1»
 import Manual.Releases.«v4_33_0»
 import Manual.Releases.«v4_32_2»
 import Manual.Releases.«v4_32_1»
@@ -67,7 +71,15 @@ searchPriority := 10
 阅读相应的发行说明。它们可能包含有助于您理解的建议
 与以前版本的差异并升级您的项目。
 
+{include 0 Manual.Releases.«v4_36_0»}
+
+{include 0 Manual.Releases.«v4_35_0»}
+
+{include 0 Manual.Releases.«v4_34_1»}
+
 {include 0 Manual.Releases.«v4_34_0»}
+
+{include 0 Manual.Releases.«v4_33_1»}
 
 {include 0 Manual.Releases.«v4_33_0»}
 

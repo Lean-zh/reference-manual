@@ -27,11 +27,14 @@ import Manual.IO
 import Manual.Interaction
 import Manual.Monads
 import Manual.BuildTools
+import Manual.Linters
+import Manual.ExternalKernels
 import Manual.Releases
 import Manual.Namespaces
 import Manual.Runtime
 import Manual.SupportedPlatforms
 import Manual.VCGen
+import Manual.MVCGen
 
 open Verso.Genre Manual
 open Verso.Genre.Manual.InlineLean
@@ -102,6 +105,8 @@ Lean 同时也是一种纯*函数式编程语言*，其运行时基于引用计�
 
 {include 0 Manual.VCGen}
 
+{include 0 Manual.MVCGen}
+
 {include 0 Manual.Monads}
 
 {include 0 Manual.BasicProps}
@@ -142,6 +147,10 @@ Overview of the standard library, including types from the prelude and those tha
 {include 0 Manual.NotationsMacros}
 
 {include 0 Manual.BuildTools}
+
+{include 0 Manual.Linters}
+
+{include 0 Manual.ExternalKernels}
 
 {include 0 Manual.ValidatingProofs}
 

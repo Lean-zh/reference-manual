@@ -207,7 +207,7 @@ tag := "structure-constructors"
 structure Palindrome where
   ofString ::
   text : String
-  is_palindrome : text.data.reverse = text.data
+  is_palindrome : text.toList.reverse = text.toList
 ```
 
 其构造子为 {name}`Palindrome.ofString`，而非 `Palindrome.mk`。

@@ -16,6 +16,7 @@ import Manual.IO.Files
 import Manual.IO.Threads
 import Manual.IO.Ref
 import Manual.ZhDocString.IO
+import Manual.IO.Async
 
 open Manual
 open Verso.Genre
@@ -558,3 +559,5 @@ tag := "Lean-__________________--IO--Random-Numbers--System-Randomness"
 {zhdocstring IO.getRandomBytes Manual.ZhDocString.IO.c055}
 
 {include 0 Manual.IO.Threads}
+
+{include 0 Manual.IO.Async}

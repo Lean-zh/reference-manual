@@ -555,6 +555,11 @@ Repr.reprPrec.{u} {α : Type u} [Repr α] : α → Nat → Std.Format
 tag := "repr-instance-howto"
 %%%
 
+:::leanSection
+```lean -show
+open Std (HashSet)
+variable {α : Type} [BEq α] [Hashable α] [Repr α]
+```
 Lean 可以使用{ref "deriving-instances"}[实例派生]为大多数类型自动生成合适的 {name}`Repr` 实例。
 不过，在某些情况下需要手动编写实例：
 
@@ -569,6 +574,7 @@ Lean 可以使用{ref "deriving-instances"}[实例派生]为大多数类型自�
 
 * 为结构派生的 {name}`Repr` 实例使用{tech (key := "structure instance")}[结构实例]记法。
   手写实例可以显式使用构造器名称，也可以使用{tech (key := "anonymous constructor syntax")}[匿名构造器语法]。
+:::
 
 ```lean -show -keep
 /-- info: Std.HashSet.ofList [0, 3, 5] -/

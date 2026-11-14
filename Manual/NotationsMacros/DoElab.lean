@@ -646,10 +646,15 @@ doElem_control_info
 tag := "The-Lean-Language-Reference--Notations-and-Macros--Extending--do--Notation--Elaboration--Mutable-Variables"
 %%%
 
+:::leanSection
+```lean -show
+open Lean.Elab.Do (MutVar)
+```
 上下文中的一个重要组成部分，是当前正在精译的 {keywordOf Lean.Parser.Term.do}`do` 元素可用的那组可变变量。
 这组信息存放在两个字段中：{name Lean.Elab.Do.Context.mutVars}`mutVars` 给出最初绑定这些变量的标识符，而 {name Lean.Elab.Do.Context.mutVarDefs}`mutVarDefs` 则把它们的名字映射到表示这些变量的局部变量上。
 由于 {tech (key := "hygiene")}[卫生] 机制，{name Lean.Elab.Do.Context.mutVars}`mutVars` 中的标识符带有 {tech (key := "macro scopes")}[宏作用域]；不过，{inst}`ToMessageData MutVar` 实例会自动将其移除。
 如果以其他方式显示这些名字，那么在构造面向用户的错误信息之前，应先使用 {name}`Name.simpMacroScopes` 去除宏作用域。
+:::
 
 {zhdocstring Lean.Elab.Do.MutVar ZhDoc.NotationsMacros.Do.MutVar}
 
@@ -660,6 +665,8 @@ tag := "The-Lean-Language-Reference--Notations-and-Macros--Extending--do--Notati
 
 当某个可变变量通过 {keywordOf Lean.Parser.Term.doLet}`let mut` 建立时，会创建一个 {keywordOf Lean.Parser.Term.«let»}`let` 绑定来表示它，并把初始变量的绑定标识符与 {name}`Expr.fvar` 加入围绕续延所使用的上下文；这个续延会在 {name}`withReader` 下被调用，以便加入新变量。
 在建立该 {keywordOf Lean.Parser.Term.«let»}`let` 绑定之后，使用 {name Lean.Elab.Do.declareMutVar}`declareMutVar` 来注册一个可变变量，或注册它们组成的数组。
+它们的 `erased` 参数用于将变量标记为仅供验证使用，与 {keywordOf Lean.Parser.Term.doErased}`erased mut` 一样：规约和证明可以读取这些变量，而编译后的代码在其位置放置占位符。
+普通可变变量使用 `false`。
 
 {zhdocstring Lean.Elab.Do.declareMutVar ZhDoc.NotationsMacros.Do.declareMutVar}
 
@@ -940,7 +947,7 @@ def openMutBody (x : Ident) (seq : TSyntax ``doSeq)
       resultName := ← mkFreshUserName `__r, resultType := ← mkPUnit
       k := mkClose p outerDecl.type base
     }
-    mkLetFVars #[innerX] (← declareMutVar x do elabDoSeq seq bodyCont)
+    mkLetFVars #[innerX] (← declareMutVar x (erased := false) do elabDoSeq seq bodyCont)
 ```
 
 调用 {name}`addLocalVarInfo` 会把精译后 {keywordOf Lean.Parser.Term.«let»}`let` 绑定变量与源码中的标识符之间的联系告知语言服务器，从而支持例如悬停显示类型信息等特性。

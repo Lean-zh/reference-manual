@@ -132,9 +132,9 @@ variable {α : Type u} (line : String)
 如果该行（在去掉开头和结尾的空格后）只由字母组成，则将其返回；否则，函数返回 {name}`none`。
 
 ```lean
-def getAlpha : IO (Option String) := do
-  let line := (← (← IO.getStdin).getLine).trim
-  if line.length > 0 && line.all Char.isAlpha then
+def getAlpha : IO (Option String.Slice) := do
+  let line := (← (← IO.getStdin).getLine).trimAscii
+  if !line.isEmpty && line.all Char.isAlpha then
     return line
   else
     return none

@@ -3,7 +3,7 @@
 本仓库是
 [Lean 语言参考手册](https://github.com/leanprover/reference-manual)
 的中文版本，当前迁移基线为 Lean
-4.34.0-rc1，并随上游源码持续同步。手册面向需要精确查阅语言行为的读者；中文站点发布于
+4.36.0-rc2，并随上游源码持续同步。手册面向需要精确查阅语言行为的读者；中文站点发布于
 <https://www.leanprover.cn/reference-manual/latest/>。
 
 ## 翻译贡献
@@ -24,10 +24,10 @@
 lake update
 lake build
 ./generate-html.sh --mode preview
-python3 ./server.py -d _out/site 8880
+lake exe verso-serve _out/site
 ```
 
-然后访问 <http://localhost:8880>。生成站点位于 `_out/site/`。
+然后访问服务器输出的地址。生成站点位于 `_out/site/`。
 
 只检查中文 docstring 基础设施可运行：
 
@@ -56,7 +56,7 @@ Lean 源码中的 `{docstring ...}`
 ## 分支与发布
 
 - `main` 跟踪最新 Lean 正式版或候选版。
-- 上游 nightly/PR 兼容性 CI 保持原样，用于尽早发现 API 变化。
+- 跟踪上游 nightly 兼容性 CI；上游已移除旧 Lean PR 测试工作流。
 - `v*` 标签触发 `.github/workflows/release-tag.yml`，构建后更新
   `Lean-zh/reference-manual` 的 `deploy` 分支。
 

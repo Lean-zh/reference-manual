@@ -297,7 +297,19 @@ file := "SMT-Inspired Automation"
 :::tactic "grind"
 :::
 
+:::syntax tactic (title := "Interactive `grind`")
+```grammar
+grind $_:optConfig $[only]? $[ [ $[$p],* ] ]? => $steps
+```
+:::
+
+Following {tactic}`grind` with {keywordOf Lean.Parser.Tactic.grind}`=>` and a sequence of steps enters interactive mode, in which {tactic}`grind`'s engines are driven by hand.
+The {ref "grind-interactive"}[section on interactive mode] describes the available steps.
+
 :::tactic "grind?"
+:::
+
+:::tactic "sym" (show := "sym =>")
 :::
 
 :::tactic "lia"
@@ -324,7 +336,7 @@ file := "Rewriting"
 :::tactic "erw"
 :::
 
-:::tactic Lean.Parser.Tactic.tacticRwa__
+:::tactic Lean.Parser.Tactic.rwa
 :::
 
 {zhdocstring Lean.Meta.Rewrite.Config ZhDoc.Tactics.Rewrite.Config}
@@ -1247,6 +1259,9 @@ file := "Verification Condition Generation"
 %%%
 
 :::tactic "mvcgen"
+:::
+
+:::tactic "vcgen"
 :::
 
 ## 用于 `Std.Do.SPred` 有状态目标的策略

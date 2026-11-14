@@ -259,7 +259,7 @@ elab_rules <= expected
 #eval
   let x := "x"
   let y := "y"
-  "It was " ++ y
+  "It was " ++ anything!
 ```
 ```leanOutput lets
 "It was y"

@@ -46,8 +46,9 @@ tag := "cutsat"
 
   `p ≠ 0`
 
-它对于线性整数算术是完备的，并且通过用 {name}`Int.ofNat` 将自然数转换成整数，也支持自然数。
-对于其他能够嵌入到 {lean}`Int` 中的类型，可以通过提供 {name}`Lean.Grind.ToInt` 的实例来增加支持。
+它对于线性整数算术是完备的，并通过将 {name}`Nat`、{name}`Fin`、{name}`BitVec`、{name}`UInt8`–{name}`UInt64`、{name}`USize`、{name}`Int8`–{name}`Int64` 和 {name}`ISize` 重写为整数来支持这些类型。
+这一机制不能直接扩展，但可以使用{ref "grind-hom"}[同态规则]将其他类型映射到受支持的域。
+
 非线性项（例如 `x * x`）也是允许的，但会被表示为变量。
 此外，该求解器还能把信息传播回比喻意义上的 {tactic}`grind` 白板，从而触发其他子系统进一步推进证明。
 默认情况下它是启用的；可以用标志 {lit}`-lia` 将其禁用。
@@ -308,8 +309,8 @@ h_4 : ¬f (x + y) = 0
 tag := "cutsat-ToInt"
 %%%
 
-LIA 求解器也可以处理包含自然数的线性约束。
-它会使用 `Int.ofNat` 将其转换为整数约束。
+LIA 求解器还可以处理包含 {name}`Nat`、{name}`Fin`、{name}`BitVec`、{name}`UInt8`–{name}`UInt64`、{name}`USize`、{name}`Int8`–{name}`Int64` 和 {name}`ISize` 的线性约束。
+在内部，它通过{ref "grind-hom"}[同态重写]将这些约束转换为整数约束。
 
 :::example "作为线性整数算术的自然数"
 ```lean
@@ -321,9 +322,8 @@ example (x y z : Nat) :
 ```
 :::
 
-通过 {lean}`Lean.Grind.ToInt` 类型类，有一种可扩展机制可以告诉求解器某个类型能够嵌入到整数中。
-借助这一机制，我们可以求解如下目标：
-
+:::example "将定长类型嵌入整数算术" (file := "Embedding Fixed-Size Types Into Integer Arithmetic")
+以下示例将定长类型嵌入整数算术。
 ```lean
 example (a b c : Fin 11) : a ≤ 2 → b ≤ 3 → c = a + b → c ≤ 5 := by
   grind
@@ -334,10 +334,7 @@ example (a : Fin 2) : a ≠ 0 → a ≠ 1 → False := by
 example (a b c : UInt64) : a ≤ 2 → b ≤ 3 → c - a - b = 0 → c ≤ 5 := by
   grind
 ```
-
-{zhdocstring Lean.Grind.ToInt ZhDoc.ToInt}
-
-{zhdocstring Lean.Grind.IntInterval ZhDoc.IntInterval}
+:::
 
 # 实现说明
 %%%

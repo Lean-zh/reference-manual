@@ -177,7 +177,7 @@ tag := "Lean-__________________--Basic-Types--Finite-Natural-Numbers--API-Refere
 %%%
 tag := "Lean-__________________--Basic-Types--Finite-Natural-Numbers--API-Reference--Bitwise-Operations"
 %%%
-通常，对 {name}`Fin` 的按位运算应该使用 Lean 的重载按位运算符来访问，特别是通过实例 {inst}`ShiftLeft (Fin n)`、{inst}`ShiftRight (Fin n)`、{inst}`AndOp (Fin n)`、{inst}`OrOp (Fin n)`、{inst}`Xor (Fin n)`
+通常，对 {name}`Fin` 的按位运算应该使用 Lean 的重载按位运算符来访问，特别是通过实例 {inst}`ShiftLeft (Fin n)`、{inst}`ShiftRight (Fin n)`、{inst}`AndOp (Fin n)`、{inst}`OrOp (Fin n)`、{inst}`XorOp (Fin n)`
 
 {zhdocstring Fin.shiftLeft Manual.ZhDocString.Ch19Ch20.G5.c123}
 

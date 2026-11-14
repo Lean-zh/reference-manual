@@ -183,19 +183,21 @@ tag := "ref-locks"
 %%%
 
 可变引用可以用作锁机制。
-_取走_引用内容后，再次尝试取走或读取它的操作都会阻塞，直至通过 {name ST.Ref.set}`set` 重新设置其内容。
+_取走_引用内容后，再次尝试取走、用 {name ST.Ref.set}`set` 设置或读取它的操作都会阻塞，直至通过 {name ST.Ref.put}`put` 将其放回。
 这是一项可用于实现其他同步机制的底层功能；只要可能，通常应优先采用更高层的抽象。
 
 {zhdocstring ST.Ref.take Manual.ZhDocString.IO.c160}
+
+{docstring ST.Ref.put}
 
 
 ::::example "用引用单元充当锁" (file := "Reference Cells as Locks")
 该程序启动 100 个线程。
 每个线程模拟一次购买尝试：生成一个随机价格；若账户余额充足，就从余额中扣除该价格。
 若余额不足，则不作扣减。
-由于每个线程在检查前都会用 {name ST.Ref.take}`take` 取走余额单元，并在完成后才将其放回，因此该单元起到了锁的作用。
+由于每个线程在检查前都会用 {name ST.Ref.take}`take` 取走余额单元，并在完成后才用 {name ST.Ref.put}`put` 将其放回，因此该单元起到了锁的作用。
 与使用纯函数原子修改单元内容的 {name}`ST.Ref.modify` 不同，临界区中还可以发生其他 {name}`IO` 动作。
-该程序的 `main` 函数被标记为 {keywordOf Lean.Parser.Command.declaration}`unsafe`，因为 {name ST.Ref.take}`take` 本身并不安全。
+该程序的 `main` 函数被标记为 {keywordOf Lean.Parser.Command.declaration}`unsafe`，因为 {name ST.Ref.take}`take` 和 {name ST.Ref.put}`put` 本身都不安全。
 
 :::ioExample
 ```ioLean
@@ -212,9 +214,9 @@ unsafe def main : IO Unit := do
       IO.sleep (← IO.rand 10 100).toUInt32
       let b ← balance.take
       if cost ≤ b then
-        balance.set (b - cost)
+        balance.put (b - cost)
       else
-        balance.set b
+        balance.put b
         validationUsed.set true
     orders := orders.push o
 
