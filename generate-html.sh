@@ -85,6 +85,8 @@ lake --quiet exe generate-manual --depth 2 --verbose --delay-html-multi multi.js
 echo "Running generate-tutorials with args --verbose --delay tutorials.json --remote-config $TUT_REMOTE_CONFIG"
 lake --quiet exe generate-tutorials --verbose --delay tutorials.json --remote-config "$TUT_REMOTE_CONFIG"
 
+python3 scripts/fix-tutorial-root-links.py tutorials.json _tutorial-out/xref.json
+
 echo "Running generate-manual with args --verbose --resume-html-multi multi.json --remote-config $REF_REMOTE_CONFIG $MANUAL_OUTPUT_FLAG $DRAFT_FLAG"
 lake --quiet exe generate-manual --verbose --resume-html-multi multi.json --remote-config "$REF_REMOTE_CONFIG" $MANUAL_OUTPUT_FLAG $DRAFT_FLAG
 
