@@ -33,6 +33,9 @@ def deploy_version(source_dir, version, commit_sha, branch):
     """
     # Save current git commit to restore later
     current_commit = run_git_command(["git", "rev-parse", "HEAD"])
+    # Read the landing page before switching away from the source branch.
+    with open(os.path.join(os.path.dirname(__file__), "index.html"), encoding="utf-8") as f:
+        landing_page = f.read()
 
     try:
         # Create a temporary directory
@@ -67,6 +70,14 @@ def deploy_version(source_dir, version, commit_sha, branch):
             stamp_html_files(version_dir, commit_sha)
 
             run_git_command(["git", "add", version_dir])
+
+            # GitHub Pages needs an index at the repository root. Serve generated
+            # files directly, including any paths Jekyll would otherwise ignore.
+            with open("index.html", "w", encoding="utf-8") as f:
+                f.write(landing_page)
+            with open(".nojekyll", "w", encoding="utf-8"):
+                pass
+            run_git_command(["git", "add", "index.html", ".nojekyll"])
 
             # Update the "latest" pointer if needed
             latest_link = "latest"
