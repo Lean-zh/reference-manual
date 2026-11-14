@@ -219,6 +219,7 @@ TITLE_REPLACEMENTS = (
     (re.compile(r'title="Permalink"'), 'title="永久链接"'),
 )
 GENERATED_UI_REPLACEMENTS = (
+    (">Inherited from <", ">继承自 <"),
     ('<span class="label">tactic</span>', '<span class="label">策略</span>'),
     ('<span class="label">conv tactic</span>', '<span class="label">conv 策略</span>'),
     ('title="文档：tactic"', 'title="文档：策略"'),
@@ -428,6 +429,8 @@ def localize_generated_html(root: Path) -> tuple[int, int, int, int]:
             text = localize_upstream_inline_docstrings(text, upstream_inline_translations)
         if rel.startswith(("Tactic-Proofs/", "Notations-and-Macros/", *UPSTREAM_TRANSLATED_PREFIXES)):
             text = localize_tactic_namedocs(text, namedocs_translations)
+        for source, replacement in GENERATED_UI_REPLACEMENTS:
+            text = text.replace(source, replacement)
         parser = NamedDocsParser()
         parser.feed(text)
         translated_hovers.update(parser.translations)
@@ -435,8 +438,6 @@ def localize_generated_html(root: Path) -> tuple[int, int, int, int]:
         for pattern, replacement in TITLE_REPLACEMENTS:
             text, count = pattern.subn(replacement, text)
             title_count += count
-        for source, replacement in GENERATED_UI_REPLACEMENTS:
-            text = text.replace(source, replacement)
         page_text[path] = text
         hover_ids.update(HOVER_ATTR_RE.findall(text))
 

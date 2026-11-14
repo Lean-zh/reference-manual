@@ -403,6 +403,9 @@ structure PackageConfig (p : Name) (n : Name) extends WorkspaceConfig, LeanConfi
   -/
   builtinLint? : Option Bool := none
 
+  /-- 运行代码质量检查时，向每个环境额外导入的模块。 -/
+  checks : Array Name := #[]
+
   /--
   此包是否预期仅在单一工具链（包的工具链）上工作。
 
